@@ -270,7 +270,8 @@ and |u| the Euclidean norm, is integrable for the normalised Lebesgue measure
 lemma integrable_exp_mul_realVac (C : ℝ) :
     Integrable (fun u : ι → ℂ ↦ Real.exp (C * ‖u‖) * ‖realVac u‖) (normalizedVolume ι) := by
   -- The wider Gaussian `exp (-|u|² / 4)` is integrable, since its integral is not zero.
-  have h_accretive : (scalar ι (4⁻¹ : ℂ)).IsAccretive := by norm_num [IsAccretive]
+  have h_accretive : (scalar ι (4⁻¹ : ℂ)).IsStrictlyAccretive := by
+    norm_num [isStrictlyAccretive_iff_posDef]
   have h_gauss : ∫ u : ι → ℂ, exp (-(star u ⬝ᵥ scalar ι (4⁻¹ : ℂ) *ᵥ (u - 0))) ∂normalizedVolume ι =
       (scalar ι (4⁻¹ : ℂ)).det⁻¹ :=
     integral_gauss h_accretive 0
@@ -466,12 +467,12 @@ lemma realMultiplier_mul_integral_eq_one {ε : ι → ℤˣ} (g h : USign ε) :
     ofReal 2⁻¹ • (Jᴴ * J + fromBlocks 1 (1 + signMatrix ε) (1 - signMatrix ε) 1)
   -- `A + Aᴴ = Jᴴ J + (1 1; 1 1)` is positive definite: `Jᴴ J` is positive definite as `J` is
   -- invertible, and `(1 1; 1 1)` is positive semidefinite.
-  have hA_pos : A.IsAccretive := by
+  have hA_pos : A.IsStrictlyAccretive := by
     have hA_add : A + Aᴴ = Jᴴ * J + (1 : Matrix ι ι ℂ).submatrix (id ⊕ᵥ id) (id ⊕ᵥ id) := by
       simp [A, J, ← ext_iff, fromBlocks_conjTranspose, fromBlocks_multiply, fromBlocks_smul,
         Matrix.one_apply]
       grind
-    rw [IsAccretive, hA_add]
+    rw [isStrictlyAccretive_iff_posDef, hA_add]
     exact (PosDef.conjTranspose_mul_self J
       (by simp [J, mulVec_injective_iff_isUnit])).add_posSemidef (PosSemidef.one.submatrix _)
   -- A factorisation of `A` into three block matrices, from the unitarity of `h` and `k`.

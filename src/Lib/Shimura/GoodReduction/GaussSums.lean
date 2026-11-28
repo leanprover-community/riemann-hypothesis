@@ -442,14 +442,15 @@ lemma isSelfAdjoint_quotMean_pow (c : R) {κ : R} [NeZero κ] (hκ : κ = c - st
     refine .trans ?_ (LinearMap.toMatrix'_mul ..)
     ext; simp [M, e]
   -- Since `κ c̄ + κ̄ c = κ̄ κ`, this hermitian form is `B (κ x) (κ x)`.
-  have h_pos : ((M (κ * star c))ᴴ + (M (κ * star c))ᴴᴴ).PosDef := by
+  have h_pos : (M (κ * star c))ᴴ.IsStrictlyAccretive := by
+    rw [isStrictlyAccretive_iff_posDef]
     refine .of_dotProduct_mulVec_pos (isHermitian_add_transpose_self _) fun x _ ↦ ?_
     have hx : F κ (e x) ≠ 0 := by simpa [map_eq_zero_iff, action_injective]
     refine (zero_lt_real.mpr (h.pos _ hx)).trans_eq ?_
     simp [re_eq_add_conj, h.adjoint, ← h.conj_symm, M_adj, M_form, hκ, add_mulVec]
     ring
   obtain ⟨h_det_M, h_det_c⟩ : (M κ).det ≠ 0 ∧ (F (star c)).det ≠ 0 := by
-    simpa [M_mul, and_comm] using IsAccretive.det_ne_zero h_pos
+    simpa [M_mul, and_comm] using IsStrictlyAccretive.det_ne_zero h_pos
   -- `M κ` is skew-hermitian, as `κ̄ = -κ`.
   have h_real : conj (M κ).det ^ 4 = (M κ).det ^ 4 := by
     have h_star : star κ = -κ := by rw [hκ, star_sub, star_star, neg_sub]

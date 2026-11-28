@@ -17,8 +17,8 @@ import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 This file collects four topics of linear algebra. The first is a Gram–Schmidt process
 whose change of basis is block triangular for a weight on the columns. The second concerns tight
 frames of `ℂ^Φ` made of vectors of the lattice `𝔞₀` attached to a CM field. The third is the polar
-decomposition in the unitary group of a diagonal sign form, with properties of accretive matrices.
-The last gives a condition under which a Hermitian form takes the value `1` on a subspace.
+decomposition in the unitary group of a diagonal sign form, with properties of strictly accretive
+matrices. The last gives a condition under which a Hermitian form takes the value `1` on a subspace.
 
 ## Main definitions and results
 
@@ -27,8 +27,8 @@ The last gives a condition under which a Hermitian form takes the value `1` on a
   is block triangular for a given weight `wt` on the columns: `b i j = 0` whenever `wt j < wt i`.
 * `New.IsTightFrame`: vectors of `𝔞₀`, with multiplicities, that form a tight frame of `ℂ^Φ`.
 * `New.exists_polar`: `g = k * z` with `k` unitary and `z` positive definite and an exponential.
-* `New.isAccretive_blockDiagPart_inv_mul`: the block diagonal part of `g` is invertible and
-  `(blockDiagPart ε g)⁻¹ * g` is accretive.
+* `New.isStrictlyAccretive_blockDiagPart_inv_mul`: the block diagonal part of `g` is invertible and
+  `(blockDiagPart ε g)⁻¹ * g` is strictly accretive.
 * `New.exists_mem_dotProduct_mulVec_eq_one`: a Hermitian form on `ℂ^m` that is not negative
   semidefinite on a subspace takes the value `1` on that subspace.
 
@@ -37,7 +37,7 @@ Notions from other files:
   invertible complex matrices `g` with `gᴴ * signMatrix ε * g = signMatrix ε`.
 * `New.unitaryLie J`: the Lie algebra of this group for `J = signMatrix ε`: the real vector space
   of complex matrices `X` with `Xᴴ * J + J * X = 0`; `New.expU X` is `exp X` in the group.
-* `Matrix.IsAccretive z`: the matrix `z + zᴴ` is positive definite.
+* `Matrix.IsStrictlyAccretive z`: the matrix `z + zᴴ` is positive definite.
 * `New.WeilData E`: data on a CM field `E`; only its finite idele `α` is used here.
 -/
 
@@ -106,7 +106,7 @@ lemma IsTightFrame.repeat_vectors {m : I → ℕ} {M : ℕ} (hw : IsTightFrame w
 
 end New
 
-/-! ## Polar decomposition in U(p,q) and accretive matrices -/
+/-! ## Polar decomposition in U(p,q) and strictly accretive matrices -/
 
 section PolarDecomposition
 
@@ -153,65 +153,67 @@ theorem New.exists_polar {ε : n → ℤˣ} (g : USign ε) :
         mul_assoc])
   exact ⟨⟨g * z⁻¹, k_mem⟩, z, z_pos, by simp, Set.mem_range_self _⟩
 
-/-- The accretive matrices, those with `z + zᴴ` positive definite, form a neighbourhood of each
-accretive matrix `z`. -/
-theorem Matrix.IsAccretive.setOf_mem_nhds {z : Matrix n n ℂ} (hz : z.IsAccretive) :
-    {y : Matrix n n ℂ | y.IsAccretive} ∈ nhds z := by
-  -- `y` is accretive exactly when the real spectrum of `y + star y` lies in the open set
+/-- The strictly accretive matrices, those with `z + zᴴ` positive definite, form a neighbourhood of
+each strictly accretive matrix `z`. -/
+theorem Matrix.IsStrictlyAccretive.setOf_mem_nhds {z : Matrix n n ℂ} (hz : z.IsStrictlyAccretive) :
+    {y : Matrix n n ℂ | y.IsStrictlyAccretive} ∈ nhds z := by
+  -- `y` is strictly accretive exactly when the real spectrum of `y + star y` lies in the open set
   -- `(0, ∞)`, and the spectrum is upper hemicontinuous.
   have h_spec : UpperHemicontinuous fun y : Matrix n n ℂ ↦ spectrum ℝ (y + star y) :=
     (upperHemicontinuous_spectrum ℝ _).comp (continuous_id.add continuous_star)
-  have h_iff (y : Matrix n n ℂ) : y.IsAccretive ↔ spectrum ℝ (y + star y) ⊆ Set.Ioi 0 := by
-    simp [IsAccretive, ← star_eq_conjTranspose, ← isStrictlyPositive_iff_posDef, Set.subset_def,
-      CStarAlgebra.isStrictlyPositive_iff_isSelfAdjoint_and_spectrum_pos]
+  have h_iff (y : Matrix n n ℂ) : y.IsStrictlyAccretive ↔ spectrum ℝ (y + star y) ⊆ Set.Ioi 0 := by
+    simp [isStrictlyAccretive_iff_posDef, ← star_eq_conjTranspose, ← isStrictlyPositive_iff_posDef,
+      Set.subset_def, CStarAlgebra.isStrictlyPositive_iff_isSelfAdjoint_and_spectrum_pos]
   filter_upwards [h_spec z (Set.Ioi 0) (isOpen_Ioi.mem_nhdsSet.2 ((h_iff z).1 hz))] with y hy
   exact (h_iff y).2 (isOpen_Ioi.mem_nhdsSet.1 hy)
 
-/-- If `z` is accretive (`z + zᴴ` positive definite) and `w` assigns integer weights to the indices,
-then `weightMinors w z` is non-zero. Here `weightMinors w z` is the product over `t : ℤ` of the
-principal minor of `z` on `{i | t ≤ w i}`, each factor with `t ≤ 0` divided by `det z`. -/
+/-- If `z` is strictly accretive (`z + zᴴ` positive definite) and `w` assigns integer weights to the
+indices, then `weightMinors w z` is non-zero. Here `weightMinors w z` is the product over `t : ℤ` of
+the principal minor of `z` on `{i | t ≤ w i}`, each factor with `t ≤ 0` divided by `det z`. -/
 @[simp]
-theorem Matrix.IsAccretive.weightMinors_ne_zero {z : Matrix n n ℂ} (hz : z.IsAccretive)
-    (w : n → ℤ) : weightMinors w z ≠ 0 := by
+theorem Matrix.IsStrictlyAccretive.weightMinors_ne_zero {z : Matrix n n ℂ}
+    (hz : z.IsStrictlyAccretive) (w : n → ℤ) : weightMinors w z ≠ 0 := by
   have h_minor (t : ℤ) : principalMinor z (fun i ↦ t ≤ w i) ≠ 0 :=
-    det_ne_zero (hz.submatrix (by simp))
+    det_ne_zero <| isStrictlyAccretive_iff_posDef.mpr <|
+      (isStrictlyAccretive_iff_posDef.mp hz).submatrix (by simp)
   have h_denom (t : ℤ) : (if t ≤ 0 then z.det else 1) ≠ 0 := by grind [det_ne_zero]
   exact finprod_ne_zero fun t ↦ div_ne_zero (h_minor t) (h_denom t)
 
-/-- If `z` is accretive (`z + zᴴ` positive definite) and `k` has non-zero determinant, then
-`kᴴ * z * k` is accretive. -/
+/-- If `z` is strictly accretive (`z + zᴴ` positive definite) and `k` has non-zero determinant, then
+`kᴴ * z * k` is strictly accretive. -/
 @[simp]
-lemma Matrix.IsAccretive.conjTranspose_mul_mul {z k : Matrix n n ℂ} (hz : z.IsAccretive)
-    (hk : k.det ≠ 0) : (kᴴ * z * k).IsAccretive := by
-  simpa [IsAccretive, mul_assoc, mul_add, add_mul] using
+lemma Matrix.IsStrictlyAccretive.conjTranspose_mul_mul {z k : Matrix n n ℂ}
+    (hz : z.IsStrictlyAccretive) (hk : k.det ≠ 0) : (kᴴ * z * k).IsStrictlyAccretive := by
+  rw [isStrictlyAccretive_iff_posDef] at hz ⊢
+  simpa [mul_assoc, mul_add, add_mul] using
     PosDef.conjTranspose_mul_mul_same hz (mulVec_injective_of_det_ne_zero hk)
 
-/-- If `k⁻¹ * z` is accretive (its sum with its conjugate transpose is positive definite), then `z`
-has non-zero determinant and `z⁻¹ * k` is accretive. -/
-theorem Matrix.IsAccretive.det_ne_zero_and_inv_mul {z k : Matrix n n ℂ}
-    (h_accr : (k⁻¹ * z).IsAccretive) : z.det ≠ 0 ∧ (z⁻¹ * k).IsAccretive := by
+/-- If `k⁻¹ * z` is strictly accretive (its sum with its conjugate transpose is positive definite),
+then `z` has non-zero determinant and `z⁻¹ * k` is strictly accretive. -/
+theorem Matrix.IsStrictlyAccretive.det_ne_zero_and_inv_mul {z k : Matrix n n ℂ}
+    (h_accr : (k⁻¹ * z).IsStrictlyAccretive) : z.det ≠ 0 ∧ (z⁻¹ * k).IsStrictlyAccretive := by
   obtain ⟨hk_det, hz_det⟩ : k.det ≠ 0 ∧ z.det ≠ 0 := by simpa using h_accr.det_ne_zero
-  -- With `y = z⁻¹ * k` the inverse of `k⁻¹ * z`, the accretive `yᴴ * (k⁻¹ * z) * y` equals `yᴴ`,
-  -- and `yᴴ` has the same hermitian part as `y`.
-  have h_adj : (z⁻¹ * k)ᴴ.IsAccretive := by
+  -- With `y = z⁻¹ * k` the inverse of `k⁻¹ * z`, the strictly accretive `yᴴ * (k⁻¹ * z) * y` equals
+  -- `yᴴ`, and `yᴴ` has the same hermitian part as `y`.
+  have h_adj : (z⁻¹ * k)ᴴ.IsStrictlyAccretive := by
     simpa [hk_det, hz_det, mul_assoc] using
       h_accr.conjTranspose_mul_mul (k := z⁻¹ * k) (by simp [hk_det, hz_det])
-  exact ⟨hz_det, by simpa [IsAccretive, add_comm] using h_adj⟩
+  exact ⟨hz_det, by simpa [isStrictlyAccretive_iff_posDef, add_comm] using h_adj⟩
 
 /-- For g in `USign ε`, the unitary group of the diagonal form with signs ε, the block diagonal
-part B of g (the entries g_ij with ε_i = ε_j) is invertible and B⁻¹ g is accretive: the sum of
-B⁻¹ g and its conjugate transpose is positive definite. -/
+part B of g (the entries g_ij with ε_i = ε_j) is invertible and B⁻¹ g is strictly accretive: the sum
+of B⁻¹ g and its conjugate transpose is positive definite. -/
 @[simp]
-theorem New.isAccretive_blockDiagPart_inv_mul {ε : n → ℤˣ} (g : USign ε) :
-    (blockDiagPart ε g).det ≠ 0 ∧ ((blockDiagPart ε g)⁻¹ * g).IsAccretive := by
+theorem New.isStrictlyAccretive_blockDiagPart_inv_mul {ε : n → ℤˣ} (g : USign ε) :
+    (blockDiagPart ε g).det ≠ 0 ∧ ((blockDiagPart ε g)⁻¹ * g).IsStrictlyAccretive := by
   -- With `J = signMatrix ε` the block diagonal part is `(g + J g J) / 2` and `J g J = g⁻¹ᴴ`, so
   -- `g⁻¹ * blockDiagPart ε g = (1 + g⁻¹ g⁻¹ᴴ) / 2` is positive definite; now invert it.
   have h_pos : ((1 / 2 : ℂ) • (1 + g.val.val⁻¹ * g.val.val⁻¹ᴴ)).PosDef :=
     (PosDef.one.add_posSemidef (posSemidef_self_mul_conjTranspose _)).smul one_half_pos
   have h_conj : signMatrix ε * g.val.val * signMatrix ε = g.val.val⁻¹ᴴ := by
     simp [inv_coe_eq_mul_conjTranspose_mul, isHermitian.eq, mul_assoc]
-  exact IsAccretive.det_ne_zero_and_inv_mul
-    (PosDef.isAccretive (by simpa [blockDiagPart_eq, h_conj, mul_add] using h_pos))
+  exact IsStrictlyAccretive.det_ne_zero_and_inv_mul
+    (PosDef.isStrictlyAccretive (by simpa [blockDiagPart_eq, h_conj, mul_add] using h_pos))
 
 end PolarDecomposition
 

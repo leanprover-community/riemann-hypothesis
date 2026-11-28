@@ -33,9 +33,9 @@ eigenfunction of the Casimir operator of `gl_n`.
 ## Main definitions and results
 
 * `New.flenstedJensen_eq_of_accretive`, `New.dsCoeff_eq_flenstedJensen`: any block diagonal `a` with
-  `a⁻¹ g` accretive (`Matrix.IsAccretive`: `z + zᴴ` positive definite) gives the same value. The
-  integrand is a density on the flag variety of `K_ℂ`; polarization makes the integral locally
-  constant, and the admissible `a` form a convex set.
+  `a⁻¹ g` accretive (`Matrix.IsStrictlyAccretive`: `z + zᴴ` positive definite) gives the same
+  value. The integrand is a density on the flag variety of `K_ℂ`; polarization makes the integral
+  locally constant, and the admissible `a` form a convex set.
 * `New.flenstedJensen_eq_integral_of_eq_mul_mul_conjTranspose`,
   `New.dsCoeff_eq_integral_of_eq_mul_mul_conjTranspose`: the value as an integral over `K` for any
   splitting `g = p z qᴴ` with `p`, `q` block diagonal and `z` accretive.
@@ -138,7 +138,7 @@ analytic family in `x` near `g`: it is given by an analytic function with values
 `K = maxCompactU ε` being the compact group `U(diag ε) ∩ U(n)`. -/
 theorem isAnalyticFamily_flenstedJensen (l : HCParam ε) {g : Matrix n n ℂ}
     {a : Matrix n n ℂ → Matrix n n ℂ} (ha : AnalyticAt ℂ a g)
-    (h_acc : ((a g)⁻¹ * g).IsAccretive) :
+    (h_acc : ((a g)⁻¹ * g).IsStrictlyAccretive) :
     IsAnalyticFamily
       (fun (x : Matrix n n ℂ) (k : maxCompactU ε) ↦
         weightMinors l.lowestKType (a x * k) * conj (weightMinors l.lowestKType k) /
@@ -152,7 +152,7 @@ theorem isAnalyticFamily_flenstedJensen (l : HCParam ε) {g : Matrix n n ℂ}
   simp only [conj_weightMinors]
   refine IsAnalyticFamily.of_analyticAt (by fun_prop) Θ
     (ι := fun k : maxCompactU ε ↦ ((k : Matrix n n ℂ), (k : Matrix n n ℂ)ᴴ)) fun k ↦ ?_
-  have hz : ((k : Matrix n n ℂ)ᴴ * ((a g)⁻¹ * g) * k).IsAccretive :=
+  have hz : ((k : Matrix n n ℂ)ᴴ * ((a g)⁻¹ * g) * k).IsStrictlyAccretive :=
     h_acc.conjTranspose_mul_mul (GeneralLinearGroup.det_ne_zero _)
   -- The side conditions of `fun_prop` are the nonvanishing of minors and determinants; `det_mul`
   -- is applied only where it does not hide the product in `hz`.
@@ -166,7 +166,7 @@ theorem HCParam.analyticAt_dsCoeff (g : USign ε) : AnalyticAt ℂ l.dsCoeff g :
   -- Differentiate under the integral sign, with the block diagonal part as the analytic factor.
   unfold HCParam.dsCoeff HCParam.flenstedJensen
   exact ((isAnalyticFamily_flenstedJensen l (a := fun x ↦ blockDiagPart ε x) (by fun_prop)
-    (isAccretive_blockDiagPart_inv_mul g).2).analyticAt_integral (haarK ε)).div_const
+    (isStrictlyAccretive_blockDiagPart_inv_mul g).2).analyticAt_integral (haarK ε)).div_const
 
 -- `grind` may use that `2ρ` is ordered as `l` wherever two entries of `λ + ρ` occur.
 grind_pattern twoRho_lt_twoRho => paramAddRho l a, paramAddRho l b
@@ -234,7 +234,8 @@ noncomputable def HCParam.splittingIntegral (l : HCParam ε) (g : Matrix n n ℂ
 /-- For a matrix `a` with `a⁻¹ g` accretive, Flensted-Jensen's normalised integral at `(a, a⁻¹ g)`
 is the integral `I(a, 1) = l.splittingIntegral g (a, 1)` divided by
 `Λ.kTypeNormSq = ∫_K |m_Λ|²`, where `Λ = l.lowestKType`. -/
-theorem flenstedJensen_eq_splittingIntegral {g a : Matrix n n ℂ} (ha_acc : (a⁻¹ * g).IsAccretive) :
+theorem flenstedJensen_eq_splittingIntegral {g a : Matrix n n ℂ}
+    (ha_acc : (a⁻¹ * g).IsStrictlyAccretive) :
     l.flenstedJensen a (a⁻¹ * g) = l.splittingIntegral g (a, 1) / l.lowestKType.kTypeNormSq := by
   obtain ⟨ha_det, -⟩ : a.det ≠ 0 ∧ g.det ≠ 0 := by simpa using ha_acc.det_ne_zero
   have h_inv (k : maxCompactU ε) :
@@ -264,7 +265,7 @@ upper triangular in the order of decreasing `l`, so `F` is a density. Here `2ρ_
 compact positive roots (the roots e_i − e_j with `ε i = ε j` that are positive for `l`), and
 `b^w = diagChar w b` is ∏ b_ii^(w_i). -/
 theorem splittingIntegrand_mul_borel {h : ℕ} (hl : l.HasGap h) {g p r y b : Matrix n n ℂ}
-    (h_acc : (r * g⁻¹ * p).IsAccretive) (hy : y.det ≠ 0)
+    (h_acc : (r * g⁻¹ * p).IsStrictlyAccretive) (hy : y.det ≠ 0)
     (hb_mem : b ∈ blockDiagAlg ε) (hb : IsBorelMatrix (-l) b) :
     l.splittingIntegrand g p r (y * b) =
       ‖diagChar (-twoRho l fun i j : n ↦ ε i = ε j) b‖ ^ 2 * l.splittingIntegrand g p r y := by
@@ -309,12 +310,12 @@ theorem splittingIntegrand_mul_borel {h : ℕ} (hl : l.HasGap h) {g p r y b : Ma
 invertible block diagonal `x`, one has `I(p x, xᴴ r) = I(p, r)`, where
 `I = l.splittingIntegral g` and a matrix `z` is accretive if `z + zᴴ` is positive definite. -/
 theorem splittingIntegral_mul_conjTranspose_mul {h : ℕ} (hl : l.HasGap h) {g p r x : Matrix n n ℂ}
-    (h_acc : (r * g⁻¹ * p).IsAccretive) (hx_mem : x ∈ blockDiagAlg ε) (hx_det : x.det ≠ 0) :
+    (h_acc : (r * g⁻¹ * p).IsStrictlyAccretive) (hx_mem : x ∈ blockDiagAlg ε) (hx_det : x.det ≠ 0) :
     l.splittingIntegral g (p * x, xᴴ * r) = l.splittingIntegral g (p, r) := by
   obtain ⟨⟨hr, -⟩, hp⟩ : (r.det ≠ 0 ∧ g.det ≠ 0) ∧ p.det ≠ 0 := by simpa using h_acc.det_ne_zero
   have h_cont : ContinuousOn (l.splittingIntegrand g p r) {y | y ∈ blockDiagAlg ε ∧ y.det ≠ 0} := by
     rintro y ⟨-, hy⟩
-    have hz : (yᴴ * (r * g⁻¹ * p) * y).IsAccretive := h_acc.conjTranspose_mul_mul hy
+    have hz : (yᴴ * (r * g⁻¹ * p) * y).IsStrictlyAccretive := h_acc.conjTranspose_mul_mul hy
     have h_minors (w : n → ℤ) {u : Matrix n n ℂ → Matrix n n ℂ} (hu : Continuous u)
         (hu_det : (u y).det ≠ 0) : ContinuousAt (fun y ↦ weightMinors w (u y)) y :=
       (analyticAt_weightMinors hu_det).continuousAt.comp hu.continuousAt
@@ -333,7 +334,7 @@ theorem splittingIntegral_mul_conjTranspose_mul {h : ℕ} (hl : l.HasGap h) {g p
 /-- The integral `I = HCParam.splittingIntegral l g` over `K` is complex analytic at each pair
 `(p, r)` for which `r g⁻¹ p` is accretive. -/
 theorem analyticAt_splittingIntegral {l : HCParam ε} {g p r : Matrix n n ℂ}
-    (h_acc : (r * g⁻¹ * p).IsAccretive) :
+    (h_acc : (r * g⁻¹ * p).IsStrictlyAccretive) :
     AnalyticAt ℂ (l.splittingIntegral g) (p, r) := by
   obtain ⟨⟨hr, -⟩, hp⟩ : (r.det ≠ 0 ∧ g.det ≠ 0) ∧ p.det ≠ 0 := by simpa using h_acc.det_ne_zero
   -- The integrand is an analytic function `Θ` of `(p, r)` and the pair `(k, kᴴ)`.
@@ -343,7 +344,7 @@ theorem analyticAt_splittingIntegral {l : HCParam ε} {g p r : Matrix n n ℂ}
   refine (IsAnalyticFamily.of_analyticAt (by fun_prop) Θ
     (ι := fun k : maxCompactU ε ↦ ((k : Matrix n n ℂ), (k : Matrix n n ℂ)ᴴ))
     fun k ↦ ?_).analyticAt_integral _
-  have hz : ((k : Matrix n n ℂ)ᴴ * (r * g⁻¹ * p) * k).IsAccretive :=
+  have hz : ((k : Matrix n n ℂ)ᴴ * (r * g⁻¹ * p) * k).IsStrictlyAccretive :=
     h_acc.conjTranspose_mul_mul (GeneralLinearGroup.det_ne_zero _)
   -- The side conditions of `fun_prop` are the nonvanishing of minors and determinants; `det_mul`
   -- is applied only where it does not hide the product in `hz`.
@@ -367,10 +368,10 @@ theorem apply_mul_zero_eq_zero_of_polarization {D : Matrix n n ℂ × Matrix n n
 Then the derivative at `(p, 1)` of `I = HCParam.splittingIntegral l g` vanishes at `(X, 0)` for
 each block diagonal `X`. -/
 theorem fderiv_splittingIntegral_eq_zero {l : HCParam ε} {h : ℕ} (hl : l.HasGap h)
-    {g p X : Matrix n n ℂ} (hp : p ∈ blockDiagAlg ε) (h_acc : (g⁻¹ * p).IsAccretive)
+    {g p X : Matrix n n ℂ} (hp : p ∈ blockDiagAlg ε) (h_acc : (g⁻¹ * p).IsStrictlyAccretive)
     (hX : X ∈ blockDiagAlg ε) :
     fderiv ℂ (l.splittingIntegral g) (p, 1) (X, 0) = 0 := by
-  have h_acc' : (1 * g⁻¹ * p).IsAccretive := by rwa [one_mul]
+  have h_acc' : (1 * g⁻¹ * p).IsStrictlyAccretive := by rwa [one_mul]
   have h_diff : DifferentiableAt ℂ (l.splittingIntegral g) (p, 1) :=
     (analyticAt_splittingIntegral h_acc').differentiableAt
   -- By invariance `I` is constant along `t ↦ (p x, xᴴ)`, `x = 1 + t Y`, for small real `t`.
@@ -394,20 +395,21 @@ integral `l.flenstedJensen a z = ∫_K m_Λ(ak) conj(m_Λ(k)) / m_{−λ−ρ}(k
 `z = a⁻¹ g` is the same for all `a` commuting with `diag ε` with `a⁻¹ g` accretive (`z + zᴴ`
 positive definite). -/
 theorem flenstedJensen_eq_of_accretive {l : HCParam ε} {h : ℕ} (hl : l.HasGap h)
-    {g a b : Matrix n n ℂ} (ha : a ∈ blockDiagAlg ε) (ha_acc : (a⁻¹ * g).IsAccretive)
-    (hb : b ∈ blockDiagAlg ε) (hb_acc : (b⁻¹ * g).IsAccretive) :
+    {g a b : Matrix n n ℂ} (ha : a ∈ blockDiagAlg ε) (ha_acc : (a⁻¹ * g).IsStrictlyAccretive)
+    (hb : b ∈ blockDiagAlg ε) (hb_acc : (b⁻¹ * g).IsStrictlyAccretive) :
     l.flenstedJensen b (b⁻¹ * g) = l.flenstedJensen a (a⁻¹ * g) := by
   -- The `p` that commute with the signs and make `g⁻¹ p` accretive form a convex set, and
   -- `p ↦ I(p, 1)` has derivative zero along it; so it is constant on the segment from `a` to `b`.
-  have h_convex : Convex ℝ {p : Matrix n n ℂ | (g⁻¹ * p).IsAccretive} :=
+  have h_convex : Convex ℝ {p : Matrix n n ℂ | (g⁻¹ * p).IsStrictlyAccretive} :=
     convex_iff_forall_pos.2 fun x hx y hy s t hs ht _ ↦ by
-      simpa [IsAccretive, mul_add, add_mul, add_add_add_comm, star_trivial] using
+      rw [Set.mem_ofPred_eq, isStrictlyAccretive_iff_posDef] at hx hy
+      simpa [isStrictlyAccretive_iff_posDef, mul_add, add_mul, add_add_add_comm, star_trivial] using
         (hx.smul hs).add (hy.smul ht)
   have h_deriv (t : ℝ) (ht : t ∈ Set.Icc (0 : ℝ) 1) :
       HasDerivAt (fun t : ℝ ↦ l.splittingIntegral g (a + t • (b - a), 1)) 0 t := by
     have h_mem : a + t • (b - a) ∈ blockDiagAlg ε :=
       add_mem ha ((blockDiagAlg ε).smul_mem (sub_mem hb ha) (t : ℂ))
-    have h_acc : (g⁻¹ * (a + t • (b - a))).IsAccretive := h_convex.add_smul_sub_mem
+    have h_acc : (g⁻¹ * (a + t • (b - a))).IsStrictlyAccretive := h_convex.add_smul_sub_mem
       ha_acc.det_ne_zero_and_inv_mul.2 hb_acc.det_ne_zero_and_inv_mul.2 ht
     have h_line : HasDerivAt (fun t : ℝ ↦ (a + t • (b - a), (1 : Matrix n n ℂ))) (b - a, 0) t := by
       simpa using (((hasDerivAt_id t).smul_const (b - a)).const_add a).prodMk (hasDerivAt_const t 1)
@@ -425,7 +427,7 @@ opposite signs at least `m` apart) and `g` in `U(diag ε)`. Then c_λ(g) = `l.ds
 Flensted-Jensen's integral at `(a, a⁻¹ g)` for any block diagonal `a` such that `a⁻¹ g` is
 accretive (positive definite Hermitian part). -/
 theorem dsCoeff_eq_flenstedJensen {l : HCParam ε} {m : ℕ} (hl : l.HasGap m) {g : USign ε}
-    {a : Matrix n n ℂ} (ha : a ∈ blockDiagAlg ε) (ha_acc : (a⁻¹ * g).IsAccretive) :
+    {a : Matrix n n ℂ} (ha : a ∈ blockDiagAlg ε) (ha_acc : (a⁻¹ * g).IsStrictlyAccretive) :
     l.dsCoeff g = l.flenstedJensen a (a⁻¹ * g) :=
   flenstedJensen_eq_of_accretive hl ha ha_acc (blockDiagPart_mem _) (by simp)
 
@@ -436,8 +438,8 @@ products of minors `m_w = weightMinors w`, `Λ = l.lowestKType` and `λ + ρ = p
 invertible `p`, `q` one such `a` is `p q⁻¹`, so the integral depends only on the product
 `p z qᴴ`. -/
 theorem flenstedJensen_eq_integral_of_eq_mul_mul_conjTranspose {h : ℕ} (hl : l.HasGap h)
-    {g a p q z : Matrix n n ℂ} (ha : a ∈ blockDiagAlg ε) (ha_acc : (a⁻¹ * g).IsAccretive)
-    (hp : p ∈ blockDiagAlg ε) (hq : q ∈ blockDiagAlg ε) (hz : z.IsAccretive)
+    {g a p q z : Matrix n n ℂ} (ha : a ∈ blockDiagAlg ε) (ha_acc : (a⁻¹ * g).IsStrictlyAccretive)
+    (hp : p ∈ blockDiagAlg ε) (hq : q ∈ blockDiagAlg ε) (hz : z.IsStrictlyAccretive)
     (h_split : g = p * z * qᴴ) :
     l.flenstedJensen a (a⁻¹ * g) =
       (∫ k : maxCompactU ε, weightMinors l.lowestKType (p * k) *
@@ -450,7 +452,7 @@ theorem flenstedJensen_eq_integral_of_eq_mul_mul_conjTranspose {h : ℕ} (hl : l
     simpa [h_split, hz.det_ne_zero] using ha_acc.det_ne_zero_and_inv_mul.1
   have h_left : (p * q⁻¹)⁻¹ * g = q * z * qᴴ := by
     simp [h_split, Matrix.mul_inv_rev, mul_assoc, hp_det, hq_det]
-  have h_acc : ((p * q⁻¹)⁻¹ * g).IsAccretive := by
+  have h_acc : ((p * q⁻¹)⁻¹ * g).IsStrictlyAccretive := by
     simpa [h_left] using hz.conjTranspose_mul_mul (show qᴴ.det ≠ 0 by simp [hq_det])
   have h_invariance : l.splittingIntegral g (p * q⁻¹, 1) = l.splittingIntegral g (p, qᴴ) := by
     have h_shift :
@@ -482,13 +484,13 @@ variable (ε) in
 is block diagonal for the signs `ε`; such an `a` is invertible. These are the products `p z qᴴ` with
 `p`, `q` invertible and block diagonal and `z` accretive; see `New.mem_splittable_iff`. -/
 def splittable : Set (Matrix n n ℂ) :=
-  {g : Matrix n n ℂ | ∃ a ∈ blockDiagAlg ε, (a⁻¹ * g).IsAccretive}
+  {g : Matrix n n ℂ | ∃ a ∈ blockDiagAlg ε, (a⁻¹ * g).IsStrictlyAccretive}
 
 /-- A matrix lies in `New.splittable ε` if and only if it is a product `p z qᴴ` with `p`, `q`
 invertible and block diagonal for the signs `ε` and `z` accretive. -/
 theorem mem_splittable_iff {g : Matrix n n ℂ} :
     g ∈ splittable ε ↔ ∃ p ∈ blockDiagAlg ε, ∃ q ∈ blockDiagAlg ε, ∃ z : Matrix n n ℂ,
-      p.det ≠ 0 ∧ q.det ≠ 0 ∧ z.IsAccretive ∧ g = p * z * qᴴ := by
+      p.det ≠ 0 ∧ q.det ≠ 0 ∧ z.IsStrictlyAccretive ∧ g = p * z * qᴴ := by
   constructor
   · rintro ⟨a, ha, ha_acc⟩
     obtain ⟨ha_det, -⟩ : a.det ≠ 0 ∧ g.det ≠ 0 := by simpa using ha_acc.det_ne_zero
@@ -501,8 +503,9 @@ theorem mem_splittable_iff {g : Matrix n n ℂ} :
     exact hz.conjTranspose_mul_mul (by simp [hq_det])
 
 /-- If `a⁻¹ g` is accretive, then so is `a⁻¹ x` for all `x` near `g`. -/
-theorem eventually_isAccretive_inv_mul {a g : Matrix n n ℂ} (h_acc : (a⁻¹ * g).IsAccretive) :
-    ∀ᶠ x : Matrix n n ℂ in nhds g, (a⁻¹ * x).IsAccretive :=
+theorem eventually_isStrictlyAccretive_inv_mul {a g : Matrix n n ℂ}
+    (h_acc : (a⁻¹ * g).IsStrictlyAccretive) :
+    ∀ᶠ x : Matrix n n ℂ in nhds g, (a⁻¹ * x).IsStrictlyAccretive :=
   (continuous_const_mul a⁻¹).continuousAt.eventually h_acc.setOf_mem_nhds
 
 open scoped Classical in
@@ -514,7 +517,7 @@ noncomputable def HCParam.splitCoeff (l : HCParam ε) (g : Matrix n n ℂ) : ℂ
 /-- For a parameter `l` of gap `h`, the coefficient `l.splitCoeff g` is Flensted-Jensen's integral
 at `(a, a⁻¹ g)` for every block diagonal `a` with `a⁻¹ g` accretive. -/
 theorem splitCoeff_eq_flenstedJensen {h : ℕ} (hl : l.HasGap h) {g a : Matrix n n ℂ}
-    (ha : a ∈ blockDiagAlg ε) (ha_acc : (a⁻¹ * g).IsAccretive) :
+    (ha : a ∈ blockDiagAlg ε) (ha_acc : (a⁻¹ * g).IsStrictlyAccretive) :
     l.splitCoeff g = l.flenstedJensen a (a⁻¹ * g) := by
   have h_mem : g ∈ splittable ε := ⟨a, ha, ha_acc⟩
   rw [HCParam.splitCoeff, dite_eq_left h_mem]
@@ -531,7 +534,7 @@ Flensted-Jensen's integral at `(a, a⁻¹ g)` for a chosen such `a`, and is `0` 
 of principal minors of weight `w`, `Λ = l.lowestKType` and `λ + ρ = paramAddRho l`. -/
 theorem splitCoeff_mul_mul_conjTranspose {h : ℕ} (hl : l.HasGap h) {p q z : Matrix n n ℂ}
     (hp : p ∈ blockDiagAlg ε) (hq : q ∈ blockDiagAlg ε) (hp_det : p.det ≠ 0) (hq_det : q.det ≠ 0)
-    (hz : z.IsAccretive) :
+    (hz : z.IsStrictlyAccretive) :
     l.splitCoeff (p * z * qᴴ) =
       (∫ k : maxCompactU ε, weightMinors l.lowestKType (p * k) *
           conj (weightMinors l.lowestKType (q * k)) /
@@ -548,7 +551,8 @@ a block diagonal `a` with `a⁻¹ g` accretive (and `0` if there is none), and `
 `c_λ(g) = Ξ(a, a⁻¹ g)` with `a` the block diagonal part of `g`. -/
 theorem splitCoeff_eq_dsCoeff {h : ℕ} (hl : l.HasGap h) (g : USign ε) :
     l.splitCoeff g = l.dsCoeff g :=
-  splitCoeff_eq_flenstedJensen hl (blockDiagPart_mem _) (isAccretive_blockDiagPart_inv_mul g).2
+  splitCoeff_eq_flenstedJensen hl (blockDiagPart_mem _)
+    (isStrictlyAccretive_blockDiagPart_inv_mul g).2
 
 /-- The coefficient in any splitting. Let `l = 2λ` be a parameter of gap `m`: its entries are
 distinct and congruent to `card n - 1` mod 2, and `|λ i - λ j| ≥ m` whenever `ε i ≠ ε j`. Let `g` in
@@ -560,7 +564,7 @@ one, `m_w = weightMinors w` is the product of principal minors of weight `w`, `�
 and `λ + ρ = paramAddRho l`. -/
 theorem dsCoeff_eq_integral_of_eq_mul_mul_conjTranspose {m : ℕ} (hl : l.HasGap m) {g : USign ε}
     {p q z : Matrix n n ℂ} (hp : p ∈ blockDiagAlg ε) (hq : q ∈ blockDiagAlg ε)
-    (hz : z.IsAccretive) (h_split : (g : Matrix n n ℂ) = p * z * qᴴ) :
+    (hz : z.IsStrictlyAccretive) (h_split : (g : Matrix n n ℂ) = p * z * qᴴ) :
     l.dsCoeff g =
       (∫ k : maxCompactU ε, weightMinors l.lowestKType (p * k) *
           conj (weightMinors l.lowestKType (q * k)) /
@@ -623,12 +627,13 @@ Flensted-Jensen's coefficient `c = l.flenstedJensen 1` satisfies `c (b' y b) = b
 where `b ^ Λ = ∏ i, b i i ^ Λ i` for the highest weight `Λ` of the lowest `K`-type. -/
 theorem flenstedJensen_triangular_mul_mul_triangular {l : HCParam ε} (hl : l.HasGap h)
     {b' y b : Matrix n n ℂ} (hb'_mem : b' ∈ blockDiagAlg ε) (hb' : IsBorelMatrix l b')
-    (hb_mem : b ∈ blockDiagAlg ε) (hb : IsBorelMatrix (-l) b) (hy : y.IsAccretive)
-    (hb'yb : (b' * y * b).IsAccretive) :
+    (hb_mem : b ∈ blockDiagAlg ε) (hb : IsBorelMatrix (-l) b) (hy : y.IsStrictlyAccretive)
+    (hb'yb : (b' * y * b).IsStrictlyAccretive) :
     l.flenstedJensen 1 (b' * y * b) =
       diagChar l.lowestKType b' * diagChar l.lowestKType b * l.flenstedJensen 1 y := by
   -- At an accretive matrix the left factor `1` is admissible.
-  have h_value {x : Matrix n n ℂ} (hx : x.IsAccretive) : l.flenstedJensen 1 x = l.splitCoeff x := by
+  have h_value {x : Matrix n n ℂ} (hx : x.IsStrictlyAccretive) :
+      l.flenstedJensen 1 x = l.splitCoeff x := by
     simpa using (splitCoeff_eq_flenstedJensen hl (one_mem _) (by simpa using hx)).symm
   rw [h_value hy, h_value hb'yb]
   exact splitCoeff_triangular_mul_mul_triangular hl hb'_mem hb' hb_mem hb
@@ -710,7 +715,8 @@ theorem fderiv_flenstedJensen_integrand_single [DecidableEq n] {l : HCParam (n :
     (hF : ∀ᶠ x : Matrix n n ℂ in nhds (y : Matrix n n ℂ), F x k =
       weightMinors l.lowestKType (a * k) * starRingEnd ℂ (weightMinors l.lowestKType k) /
         weightMinors (-paramAddRho l) ((k : Matrix n n ℂ)ᴴ * (a⁻¹ * x) * k))
-    (hF_diff : DifferentiableAt ℂ F y) (h_acc : (a⁻¹ * y).IsAccretive) {i j : n} (hij : l i ≤ l j) :
+    (hF_diff : DifferentiableAt ℂ F y) (h_acc : (a⁻¹ * y).IsStrictlyAccretive) {i j : n}
+    (hij : l i ≤ l j) :
     fderiv ℂ F y ((y : Matrix n n ℂ) * ((k : Matrix n n ℂ) * single i j 1 * (k : GL n ℂ)⁻¹.val)) k =
       (if i = j then (paramAddRho l i : ℂ) else 0) * F y k := by
   -- Under `y ↦ c t = y * (k * t * k⁻¹)` with `t` triangular for `l` the integrand is multiplied by
@@ -798,15 +804,16 @@ theorem casimir_dsCoeffSmooth [DecidableEq n] {l : HCParam (n := n) ε} [hl : l.
       weightMinors (-paramAddRho l) ((k : Matrix n n ℂ)ᴴ * ((blockDiagPart ε g)⁻¹ * x) * k)
   -- Near `g`, `Φ` is given by an analytic map `F₀` into `C(K, ℂ)`, so by a globally smooth `F`.
   obtain ⟨F₀, F₀_an, F₀_eq⟩ : DiscreteSeries.IsAnalyticFamily Φ g :=
-    isAnalyticFamily_flenstedJensen l analyticAt_const (isAccretive_blockDiagPart_inv_mul g).2
+    isAnalyticFamily_flenstedJensen l analyticAt_const
+      (isStrictlyAccretive_blockDiagPart_inv_mul g).2
   obtain ⟨F, F_smooth, F_eq⟩ := exists_contDiff_eventuallyEq F₀_an.restrictScalars.contDiffAt
   have F_Φ : ∀ᶠ x : Matrix n n ℂ in nhds (g : Matrix n n ℂ), F x = Φ x := by
     filter_upwards [F₀_eq, F_eq] with x hx₀ hx using by rw [hx, hx₀]
   have near : ∀ᶠ y : USign ε in nhds g, (∀ᶠ x in nhds (y : Matrix n n ℂ), F x = Φ x) ∧
-      AnalyticAt ℂ F y ∧ ((blockDiagPart ε g)⁻¹ * y).IsAccretive :=
+      AnalyticAt ℂ F y ∧ ((blockDiagPart ε g)⁻¹ * y).IsStrictlyAccretive :=
     continuous_mat.tendsto g <| F_Φ.eventually_nhds.and <|
       (F₀_an.congr F_eq.symm).eventually_analyticAt.and <|
-        eventually_isAccretive_inv_mul (isAccretive_blockDiagPart_inv_mul g).2
+        eventually_isStrictlyAccretive_inv_mul (isStrictlyAccretive_blockDiagPart_inv_mul g).2
   -- `f` is the restriction of `F` to the group.
   let f : SmoothU ε C(maxCompactU ε, ℂ) := ⟨fun y : USign ε ↦ F y, ⟨F, F_smooth⟩, rfl⟩
   have f_eigen :

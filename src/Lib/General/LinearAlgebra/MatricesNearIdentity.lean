@@ -18,7 +18,7 @@ It proves Jacobi's formula for the derivative of the determinant at the identity
 `det (exp M) = exp (tr M)`.
 Estimates in the Hilbert–Schmidt norm, which is the norm of all matrices in this file, control the
 inverse and the logarithm of `1 + X`.
-A matrix at distance less than `1` from the identity is accretive.
+A matrix at distance less than `1` from the identity is strictly accretive.
 
 ## Main definitions and results
 
@@ -28,7 +28,7 @@ A matrix at distance less than `1` from the identity is accretive.
 
 Notions from other files:
 * `entryMask r X` keeps the entries `(i, j)` of `X` with `r i j` and replaces the others by `0`.
-* A matrix `A` is accretive (`A.IsAccretive`) if `A + Aᴴ` is positive definite.
+* A matrix `A` is strictly accretive (`A.IsStrictlyAccretive`) if `A + Aᴴ` is positive definite.
 -/
 
 @[expose] public section
@@ -57,7 +57,7 @@ lemma New.hasDerivAt_det_of_eq_one {n : Type*} [Fintype n] [DecidableEq n] {γ :
 The main results are the bound `‖tr (X Y)‖ ≤ ‖X‖ ‖Y‖`, invariance under unitary left factors, the
 inverse of `1 + X` for small `X`, the formula `det (exp M) = exp (tr M)`, and the logarithm of
 `1 + X`, written as the integral of `(1 + s X)⁻¹ X` over `[0, 1]`. A matrix at distance less than
-`1` from the identity is accretive.
+`1` from the identity is strictly accretive.
 -/
 
 section FrobeniusNormTools
@@ -323,10 +323,10 @@ lemma pos_of_mem_spectrum_add_star (h_near : ‖X - 1‖ < 1) {x : ℝ}
   rw [spectrum.mem_iff, h_eq] at hx
   exact hx ((isUnit_one_sub_of_norm_lt_one hW).smul (Units.mk0 (x - 2) (by linarith)))
 
-/-- A matrix `X` at Hilbert–Schmidt distance less than `1` from the identity is accretive, that is,
-`X + Xᴴ` is positive definite. -/
-lemma isAccretive_of_norm_sub_one_lt (h_near : ‖X - 1‖ < 1) : X.IsAccretive := by
-  rw [Matrix.IsAccretive, ← star_eq_conjTranspose]
+/-- A matrix `X` at Hilbert–Schmidt distance less than `1` from the identity is strictly accretive,
+that is, `X + Xᴴ` is positive definite. -/
+lemma isStrictlyAccretive_of_norm_sub_one_lt (h_near : ‖X - 1‖ < 1) : X.IsStrictlyAccretive := by
+  rw [Matrix.isStrictlyAccretive_iff_posDef, ← star_eq_conjTranspose]
   exact ((StarOrderedRing.isStrictlyPositive_iff_spectrum_pos _ (.add_star_self X)).2
     fun _ hx ↦ pos_of_mem_spectrum_add_star h_near hx).posDef
 

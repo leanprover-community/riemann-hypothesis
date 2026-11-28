@@ -569,12 +569,13 @@ theorem eventually_flenstedJensen_eq_holMinors_of_mem_blockDiagAlg (hl : l.HasGa
       a ∈ blockDiagAlg ε → l.flenstedJensen 1 a = holMinors ε l.lowestKType a := by
   -- Write `a = b' * b` with `b' = 1 + z` lower and `b` upper triangular, both block diagonal. Such
   -- factors multiply both sides by the same characters, and both sides are `1` at `1`.
-  have h_acc : {z : Matrix n n ℂ | z.IsAccretive} ∈ 𝓝 1 := PosDef.one.isAccretive.setOf_mem_nhds
+  have h_acc : {z : Matrix n n ℂ | z.IsStrictlyAccretive} ∈ 𝓝 1 :=
+    PosDef.one.isStrictlyAccretive.setOf_mem_nhds
   have h_dom : IsKDominant ε o l.lowestKType := hl.isKDominant_lowestKType_of_order h_same
   have h_order {i j : n} (h_sign : ε i = ε j) (hij : l j < l i) : o i < o j := by
     grind [ho.1.eq_iff (a := i) (b := j)]
   filter_upwards [eventually_exists_eq_lower_mul_borel ε o h_acc, h_acc] with a ha ha_acc ha_mem
-  obtain ⟨z, b, hz, hb_mem, hb, (hb'_acc : (1 + z).IsAccretive), -, rfl⟩ := ha ha_mem
+  obtain ⟨z, b, hz, hb_mem, hb, (hb'_acc : (1 + z).IsStrictlyAccretive), -, rfl⟩ := ha ha_mem
   have hb'_mem : 1 + z ∈ blockDiagAlg ε :=
     add_mem (one_mem _) (mem_blockDiagAlg.2 fun i j h_sign ↦ hz i j fun hij ↦ h_sign hij.2)
   have hb' : IsBorelMatrix (-o) (1 + z) := ⟨blockTriangular_one.add fun i j hij ↦
@@ -589,7 +590,7 @@ theorem eventually_flenstedJensen_eq_holMinors_of_mem_blockDiagAlg (hl : l.HasGa
   calc l.flenstedJensen 1 ((1 + z) * b)
       = diagChar l.lowestKType (1 + z) * diagChar l.lowestKType b * l.flenstedJensen 1 1 := by
         simpa only [mul_one] using flenstedJensen_triangular_mul_mul_triangular hl hb'_mem hb'_param
-          hb_mem hb_param PosDef.one.isAccretive (by rwa [mul_one])
+          hb_mem hb_param PosDef.one.isStrictlyAccretive (by rwa [mul_one])
     _ = holMinors ε l.lowestKType ((1 + z) * b) := by
         rw [h_one, ← holMinors_oppBorel_mul_mul_borel ho h_dom hb' (by simp) hb, mul_one]
 
@@ -606,7 +607,8 @@ theorem dsCoeff_eq_holMinors_lowestKType (hl : l.HasGap h) (ho : IsPosFirstOrder
   -- Both sides are analytic on the group, so it is enough to treat `g = x' * a * x` near `1`.
   refine USign.eq_of_analyticAt_of_eventually_eq l.analyticAt_dsCoeff
     (analyticAt_holMinors l.lowestKType) ?_ g
-  have h_acc : ∀ᶠ z : Matrix n n ℂ in 𝓝 1, z.IsAccretive := PosDef.one.isAccretive.setOf_mem_nhds
+  have h_acc : ∀ᶠ z : Matrix n n ℂ in 𝓝 1, z.IsStrictlyAccretive :=
+    PosDef.one.isStrictlyAccretive.setOf_mem_nhds
   have h_coe : Tendsto (fun g : USign ε ↦ (g : Matrix n n ℂ)) (𝓝 1) (𝓝 1) :=
     Continuous.tendsto' (by fun_prop) 1 1 rfl
   filter_upwards [h_coe.eventually (h_acc.and (eventually_exists_eq_corner_mul_mul_corner ε

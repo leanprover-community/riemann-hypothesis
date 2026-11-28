@@ -310,7 +310,7 @@ product of principal minors of weight `w`, `c_λ = l.dsCoeff` is `g ↦ Ξ(a, a�
 block-diagonal part of `g` and `Ξ` the normalised integral `flenstedJensen`, and
 `σ = m_{-(λ-ρ) - Λ}(J)` with `Λ = l.lowestKType = λ + ρ - 2ρ_c`. -/
 lemma sign_mul_orbital_eq_integral_weightMinors_div (hg : l.HasGap h) (x : n → Circle)
-    (hA : (signMatrix ε * diagTorus ε x).IsAccretive)
+    (hA : (signMatrix ε * diagTorus ε x).IsStrictlyAccretive)
     (h_int : Integrable fun g : USign ε ↦
       weightMinors (-l.compactForm.lowestKType) ((g : Matrix n n ℂ)ᴴ * signMatrix ε * g) /
         weightMinors (-paramAddRho l) ((g : Matrix n n ℂ)ᴴ * (signMatrix ε * diagTorus ε x) * g)) :
@@ -329,7 +329,7 @@ lemma sign_mul_orbital_eq_integral_weightMinors_div (hg : l.HasGap h) (x : n →
   have expand (g : USign ε) :
       weightMinors (-l.compactForm.lowestKType - l.lowestKType) (signMatrix ε) *
         l.dsCoeff (g⁻¹ * diagTorus ε x * g :) = ∫ k, w k * F (g * k : USign ε) ∂haarK ε := by
-    have h_acc : ((signMatrix ε)⁻¹ * (g⁻¹ * diagTorus ε x * g :)).IsAccretive := by
+    have h_acc : ((signMatrix ε)⁻¹ * (g⁻¹ * diagTorus ε x * g :)).IsStrictlyAccretive := by
       simpa only [mul_assoc, Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul,
         coe_units_inv, U.inv_coe_eq_mul_conjTranspose_mul, isUnit_iff_ne_zero, ne_eq,
         IsHermitianInvolution.det_ne_zero, not_false_eq_true, nonsing_inv_mul_cancel_left]
@@ -397,7 +397,7 @@ and `N = ∫ |m_{λ-ρ}(k)|² dk` over `U(n)`. Here `m_w = weightMinors w` is th
 `t` of the principal minor on `{i | t ≤ w i}`, each factor with `t ≤ 0` divided by the
 determinant. -/
 lemma kTypeNormSq_mul_kTypeChar_eq_integral (hg : l.HasGap h) (x : n → Circle)
-    (hA : (signMatrix ε * diagTorus ε x).IsAccretive) :
+    (hA : (signMatrix ε * diagTorus ε x).IsStrictlyAccretive) :
     l.compactForm.lowestKType.kTypeNormSq * l.compactForm.lowestKType.kTypeChar (diagTorusK x) =
       ∫ k : maxCompactU (1 : n → ℤˣ),
         weightMinors (-l.compactForm.lowestKType) ((k : Matrix n n ℂ)ᴴ * signMatrix ε * k) /
@@ -422,10 +422,11 @@ lemma kTypeNormSq_mul_kTypeChar_eq_integral (hg : l.HasGap h) (x : n → Circle)
         isUnit_iff_ne_zero, ne_eq, IsHermitianInvolution.det_ne_zero, not_false_eq_true,
         nonsing_inv_nonsing_inv, inv_inv_of_invertible, Subgroup.coe_mul, diagTorus,
         Units.val_mul, IsUnit.unit_spec, mul_inv_cancel_left_of_invertible, a, A]
-    have h_acc : (a⁻¹ * ((y⁻¹ * diagTorusK x * y : K) : Matrix n n ℂ)).IsAccretive := by
+    have h_acc : (a⁻¹ * ((y⁻¹ * diagTorusK x * y : K) : Matrix n n ℂ)).IsStrictlyAccretive := by
       rw [split]
       simp only [InvMemClass.coe_inv, coe_units_inv, maxCompactU.coe_inv, hA, ne_eq,
-        GeneralLinearGroup.det_ne_zero, not_false_eq_true, IsAccretive.conjTranspose_mul_mul]
+        GeneralLinearGroup.det_ne_zero, not_false_eq_true,
+        IsStrictlyAccretive.conjTranspose_mul_mul]
     rw [← dsCoeff_of_mem_maxCompactU hg.signs_one (Subtype.prop _),
       dsCoeff_eq_flenstedJensen hg.signs_one (by simp only [mem_blockDiagAlg_one]) h_acc,
       split, flenstedJensen]
@@ -500,7 +501,7 @@ is `l.dsCoeff`, `χ` is the character of `U(n)` of highest weight
 integral of `weightMinors_{-(λ-ρ)}(kᴴ J k) / weightMinors_{-(λ+ρ)}(kᴴ A k)` over the `k ∈ U(n)`
 outside `openOrbit ε l`. -/
 lemma orbital_eq_char_sub_offOrbitIntegral (hg : l.HasGap h) :
-    ∃ σ : ℂ, ‖σ‖ = 1 ∧ ∀ x : n → Circle, (signMatrix ε * diagTorus ε x).IsAccretive →
+    ∃ σ : ℂ, ‖σ‖ = 1 ∧ ∀ x : n → Circle, (signMatrix ε * diagTorus ε x).IsStrictlyAccretive →
       σ * ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε x * g :) =
         l.compactForm.lowestKType.kTypeNormSq * l.compactForm.lowestKType.kTypeChar (diagTorusK x) -
           offOrbitIntegral l (signMatrix ε * diagTorus ε x) := by
@@ -548,13 +549,13 @@ attribute [local fun_prop] AnalyticAt.fun_zpow
 
 /-- The integral `offOrbitIntegral l A` over the unitary matrices outside the open orbit is
 complex analytic in the matrix `A` at every accretive `A` (one with `A + Aᴴ` positive definite). -/
-lemma analyticAt_offOrbitIntegral {A : Matrix n n ℂ} (hA : A.IsAccretive) :
+lemma analyticAt_offOrbitIntegral {A : Matrix n n ℂ} (hA : A.IsStrictlyAccretive) :
     AnalyticAt ℂ (offOrbitIntegral l) A := by
   refine (isAnalyticFamily_of_differentiable ?_).analyticAt_integral _
   -- the integrand is continuous in `k` and differentiable in `z`, as `z` near `A` is accretive
-  filter_upwards [hA.setOf_mem_nhds] with z (hz : z.IsAccretive) k
+  filter_upwards [hA.setOf_mem_nhds] with z (hz : z.IsStrictlyAccretive) k
   constructor <;> fun_prop (disch := simp [hz, GeneralLinearGroup.det_ne_zero,
-    IsHermitianInvolution.det_ne_zero, IsAccretive.det_ne_zero])
+    IsHermitianInvolution.det_ne_zero, IsStrictlyAccretive.det_ne_zero])
 
 /-- Let `P`, `Q` be Laurent polynomials with `P(x) = Q(x) * offOrbitIntegral l (J x)` at the points
 `x` of the torus with `J x` accretive, where `J = signMatrix ε`, evaluation at `x` is `torusEval x`,
@@ -564,7 +565,7 @@ and `offOrbitIntegral l A` is the integral of `m_{-(λ-ρ)}(kᴴ J k) / m_{-(λ+
 vector `f`, this identity holds at `x = ε * z ^ f`, by analytic continuation from `|z| = 1`. At that
 point `J x = diag (z ^ f)`, and `weightMinors γ J` is the monomial of exponent `γ` at `ε`. -/
 lemma eq_mul_offOrbitIntegral_of_pos {P Q : ℂ[n → ℤ]}
-    (hP : ∀ x : n → Circle, (signMatrix ε * diagTorus ε x).IsAccretive →
+    (hP : ∀ x : n → Circle, (signMatrix ε * diagTorus ε x).IsStrictlyAccretive →
       torusEval x P = torusEval x Q * offOrbitIntegral l (signMatrix ε * diagTorus ε x))
     (f : n → ℤ) {z : ℂ} (hz : 0 < z) :
     ∑ γ ∈ P.coeff.support, P.coeff γ * weightMinors γ (signMatrix ε) * z ^ (f ⬝ᵥ γ) =
@@ -574,9 +575,9 @@ lemma eq_mul_offOrbitIntegral_of_pos {P Q : ℂ[n → ℤ]}
   let T (R : ℂ[n → ℤ]) (z : ℂ) : ℂ :=
     ∑ γ ∈ R.coeff.support, R.coeff γ * weightMinors γ (signMatrix ε) * z ^ (f ⬝ᵥ γ)
   let D (z : ℂ) : Matrix n n ℂ := diagonal (z ^ f ·)
-  have D_acc {z : ℂ} (hz : 0 < z) : (D z).IsAccretive :=
-    (PosDef.diagonal fun _ ↦ zpow_pos hz _).isAccretive
-  have on_circle (θ : ℝ) (hθ : (D (circleMap 0 1 θ)).IsAccretive) : T P (circleMap 0 1 θ) =
+  have D_acc {z : ℂ} (hz : 0 < z) : (D z).IsStrictlyAccretive :=
+    (PosDef.diagonal fun _ ↦ zpow_pos hz _).isStrictlyAccretive
+  have on_circle (θ : ℝ) (hθ : (D (circleMap 0 1 θ)).IsStrictlyAccretive) : T P (circleMap 0 1 θ) =
       T Q (circleMap 0 1 θ) * offOrbitIntegral l (D (circleMap 0 1 θ)) := by
     let x : n → Circle := fun i ↦
       ⟨ε i * circleMap 0 1 θ ^ f i, by
@@ -599,7 +600,7 @@ lemma eq_mul_offOrbitIntegral_of_pos {P Q : ℂ[n → ℤ]}
   have D_cont : ContinuousWithinAt (D ∘ circleMap 0 1) {0}ᶜ 0 :=
     by fun_prop (disch := simp only [ne_eq, circleMap_eq_center_iff, one_ne_zero,
       not_false_eq_true, true_or])
-  have acc_near : ∀ᶠ θ : ℝ in nhdsWithin 0 {0}ᶜ, (D (circleMap 0 1 θ)).IsAccretive :=
+  have acc_near : ∀ᶠ θ : ℝ in nhdsWithin 0 {0}ᶜ, (D (circleMap 0 1 θ)).IsStrictlyAccretive :=
     D_cont.tendsto.eventually (D_acc h_start).setOf_mem_nhds
   -- the circle tends to `1` without meeting it, as its derivative there is not zero
   have near_one : ∃ᶠ z : ℂ in nhdsWithin (circleMap 0 1 0) {circleMap 0 1 0}ᶜ,
@@ -720,7 +721,7 @@ lemma exists_norm_offOrbitIntegral_le (hg : l.HasGap h) {o : n → ℤ}
 `o ⬝ᵥ γ < o ⬝ᵥ paramAddRho l + o ⬝ᵥ β + h` for every exponent `β` of `Q` (`paramAddRho l = λ + ρ`),
 then the coefficient of `x^γ` in `P` is zero. -/
 lemma coeff_eq_zero_of_low_level (hg : l.HasGap h) {P Q : ℂ[n → ℤ]}
-    (hP : ∀ x : n → Circle, (signMatrix ε * diagTorus ε x).IsAccretive →
+    (hP : ∀ x : n → Circle, (signMatrix ε * diagTorus ε x).IsStrictlyAccretive →
       torusEval x P = torusEval x Q * offOrbitIntegral l (signMatrix ε * diagTorus ε x))
     {o : n → ℤ} (ho : ∀ i j : n, l j < l i → o i < o j) (γ : n → ℤ)
     (hQ : ∀ β : n → ℤ, Q.coeff β ≠ 0 → o ⬝ᵥ γ < o ⬝ᵥ paramAddRho l + o ⬝ᵥ β + h) :

@@ -424,7 +424,8 @@ lemma integral_beta_mul_realVac {ι : Type*} [Fintype ι] [DecidableEq ι] (x c 
       ∫ b : ι → ℂ, exp (-(2⁻¹ * (star b ⬝ᵥ b + star y ⬝ᵥ b - (star b ⬝ᵥ y + star y ⬝ᵥ y))))
         ∂normalizedVolume ι = 2 ^ Fintype.card ι := by
     simpa using (integral_add_right_eq_self _ y).trans
-      (integral_gauss (A := scalar ι 2⁻¹) (by simp [IsAccretive, add_pos]) (y + y))
+      (integral_gauss (A := scalar ι 2⁻¹) (by simp [isStrictlyAccretive_iff_posDef, add_pos])
+        (y + y))
   have h_square (b : ι → ℂ) :
       (realHeisenberg 1).β y b * (realVac c * realVac b) = realVac c * realVac y *
         exp (-(2⁻¹ * (star b ⬝ᵥ b + star y ⬝ᵥ b - (star b ⬝ᵥ y + star y ⬝ᵥ y)))) := by

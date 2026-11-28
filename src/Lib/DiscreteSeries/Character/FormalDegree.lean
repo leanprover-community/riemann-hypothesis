@@ -420,7 +420,7 @@ lemma formalDegree_mul_kTypeNormSq_and_isOrbitalLaurent [Nonempty n] {ε : n →
   obtain ⟨P, hP⟩ : ∃ P, IsOrbitalLaurent l (D ^ (N + 1)) P := exists_laurent_orbital_integral l hg
   let Λ : HCParam (1 : n → ℤˣ) := l.compactForm.lowestKType
   obtain ⟨σ, norm_σ, orbital⟩ : ∃ σ : ℂ, ‖σ‖ = 1 ∧ ∀ x : n → Circle,
-      (signMatrix ε * diagTorus ε x).IsAccretive →
+      (signMatrix ε * diagTorus ε x).IsStrictlyAccretive →
         σ * ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε x * g :) = Λ.kTypeNormSq *
           Λ.kTypeChar (diagTorusK x) - offOrbitIntegral l (signMatrix ε * diagTorus ε x) :=
     orbital_eq_char_sub_offOrbitIntegral hgap
@@ -449,7 +449,7 @@ lemma formalDegree_mul_kTypeNormSq_and_isOrbitalLaurent [Nonempty n] {ε : n →
   -- By `orbital` and Weyl's formula for `U(n)`, on the accretive part of the torus
   -- `P - scalar • numerator 1` is a multiple of `offOrbitIntegral`; with the bound
   -- `level_add_lt_of_coeff_ne_zero` this excludes exponents of level at most that of `top`.
-  have off_orbit (x : n → Circle) (hx : (signMatrix ε * diagTorus ε x).IsAccretive) :
+  have off_orbit (x : n → Circle) (hx : (signMatrix ε * diagTorus ε x).IsStrictlyAccretive) :
       torusEval x (P - scalar • numerator 1) =
         torusEval x (-(l.formalDegree * noncompactSign / σ) • (l.compactForm.rootProd Eq * D ^ N)) *
           offOrbitIntegral l (signMatrix ε * diagTorus ε x) := by

@@ -2,12 +2,11 @@ module
 
 import TauCeti.Analysis.SpecialFunctions.Gaussian.Reproducing
 import TauCeti.Analysis.Matrix.L2OpNorm
-import TauCeti.Analysis.Matrix.OstrowskiTaussky
+public import TauCeti.Analysis.Matrix.Accretive
 public import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Algebra.Algebra.Field
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Matrix.Order
 import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.PiTensorProduct
@@ -21,27 +20,24 @@ import Lib.Base
 # Matrix norm estimates and the complex Gaussian integral
 
 This file proves estimates for complex matrices and computes the complex Gaussian integral on
-`ι → ℂ`. Here `‖A‖` is the `ℓ²` operator norm. For accretive `A`, the integral of
-`exp (-x* A (x - a))` against normalised Lebesgue measure is `(det A)⁻¹`.
-Nonvanishing of accretive determinants follows from Tau Ceti's Ostrowski–Taussky inequality.
+`ι → ℂ`. Here `‖A‖` is the `ℓ²` operator norm. For strictly accretive `A` (`A + Aᴴ` positive
+definite), the integral of `exp (-x* A (x - a))` against normalised Lebesgue measure is
+`(det A)⁻¹`.
 
 ## Main definitions and results
 
 * `New.l2_opNorm_le_of_apply`: for an `m × n` matrix the operator norm is at most `|m| |n|` times
   a bound for the entries.
-* `Matrix.IsAccretive`: the matrices `A` with `A + Aᴴ` positive definite. Positive definite matrices
-  are accretive (`Matrix.PosDef.isAccretive`), and accretive matrices have nonzero determinant
-  (`Matrix.IsAccretive.det_ne_zero`).
 * `New.Fock.normalizedVolume`: Lebesgue measure divided by `π ^ card ι`, so that `exp (-|x|²)` has
   integral `1`.
 * `New.Fock.map_mulVec_addHaar_eq_smul`, `New.lintegral_eq_norm_det_sq_mul_lintegral_mulVec`: the
   change of variables by an invertible complex matrix `u`, whose real Jacobian is `‖det u‖ ^ 2`.
-* `New.Fock.integral_gauss`: if `A` is accretive, the integral of `exp (-x* A (x - a))` is
-  `(det A)⁻¹`.
+* `New.Fock.integral_gauss`: if `A` is strictly accretive (`Matrix.IsStrictlyAccretive`), the
+  integral of `exp (-x* A (x - a))` is `(det A)⁻¹`.
 
 ## Relation to the literature
 
-The Ostrowski–Taussky inequality and the complex Gaussian integral are known results.
+The complex Gaussian integral is a known result.
 -/
 
 @[expose] public section
@@ -68,25 +64,13 @@ lemma l2_opNorm_le_of_apply {M : ℝ} (h_apply : ∀ (i : m) (j : n), ‖A i j�
 
 end New
 
-/-! ## Accretive matrices, normalised measure on `ι → ℂ` and the complex Gaussian integral -/
+/-! ## Normalised measure on `ι → ℂ` and the complex Gaussian integral -/
 
 section GaussianIntegral
 
-open MeasureTheory Matrix Complex Finset ComplexOrder MatrixOrder PiLp CStarAlgebra NNReal WithLp
+open MeasureTheory Matrix Complex Finset PiLp NNReal WithLp
 
 variable {ι : Type _} [Fintype ι] (x : ι → ℂ) {A : Matrix ι ι ℂ}
-
-/-- A complex square matrix `A` is (strictly) accretive if `A + Aᴴ` is positive definite. -/
-def Matrix.IsAccretive (A : Matrix ι ι ℂ) : Prop := (A + Aᴴ).PosDef
-
-omit [Fintype ι] in
-lemma Matrix.PosDef.isAccretive (hA : A.PosDef) : A.IsAccretive := hA.add hA.conjTranspose
-
-lemma Matrix.IsAccretive.det_ne_zero [DecidableEq ι]
-    (hA : A.IsAccretive) : A.det ≠ 0 := fun h_det ↦ by
-  have h_le : ‖(A + Aᴴ).det‖ ≤ 2 ^ Fintype.card ι * ‖A.det‖ :=
-    hA.posSemidef.norm_det_le_two_pow_mul (by simpa using PosSemidef.zero)
-  simp [h_det, hA.det_pos.ne'] at h_le
 
 namespace New.Fock
 
@@ -130,35 +114,6 @@ lemma norm_sq_le_re_star_dotProduct_self : ‖x‖ ^ 2 ≤ (star x ⬝ᵥ x).re 
   gcongr
   exact (pi_norm_le_iff_of_nonneg (norm_nonneg _)).2 (PiLp.norm_apply_le (toLp 2 x))
 
-/-- An accretive matrix `A` (that is, `A + Aᴴ` is positive definite) is congruent to a diagonal
-matrix whose entries have positive real part. -/
-lemma exists_eq_conjTranspose_mul_diagonal_mul [DecidableEq ι] (hA : A.IsAccretive) :
-    ∃ (p : GL ι ℂ) (d : ι → ℂ),
-      A = (p : Matrix ι ι ℂ)ᴴ * diagonal d * (p : Matrix ι ι ℂ) ∧ ∀ i : ι, 0 < (d i).re := by
-  -- Write `A + Aᴴ = Bᴴ B` and diagonalise `H = B⁻ᴴ (Im A) B⁻¹` by a unitary `U`, with real
-  -- eigenvalues `λ`. Then `p = U⁻¹ B` and `d = i λ + 1 / 2`.
-  obtain ⟨b, hb_unit, hb : A + Aᴴ = star b * b⟩ :=
-    isStrictlyPositive_iff_eq_star_mul_self.mp hA.isStrictlyPositive
-  lift b to GL ι ℂ using hb_unit with B
-  set H : Matrix ι ι ℂ := star (B : Matrix ι ι ℂ)⁻¹ * imaginaryPart A * (B : Matrix ι ι ℂ)⁻¹
-  have hH : H.IsHermitian := ((imaginaryPart A).prop.conjugate' B⁻¹).isHermitian
-  set U : Matrix ι ι ℂ := ↑hH.eigenvectorUnitary
-  have h_spectral : U * diagonal (ofReal ∘ hH.eigenvalues) * star U = H := by
-    simpa using hH.spectral_theorem.symm
-  let d : ι → ℂ := fun i ↦ I * hH.eigenvalues i + 2⁻¹
-  have hd : diagonal d = I • diagonal (ofReal ∘ hH.eigenvalues) + (2⁻¹ : ℂ) • 1 := by
-    simp [smul_one_eq_diagonal, ← diagonal_smul, d]
-  refine ⟨Unitary.toUnits hH.eigenvectorUnitary⁻¹ * B, d, ?_, by simp [d]⟩
-  calc
-    A = I • (imaginaryPart A : Matrix ι ι ℂ) + (2⁻¹ : ℂ) • (A + Aᴴ) := by
-      rw [imaginaryPart_apply_coe, smul_smul, mul_neg, I_mul_I, neg_neg, star_eq_conjTranspose]
-      module
-    _ = star (B : Matrix ι ι ℂ) * (I • H + (2⁻¹ : ℂ) • 1) * B := by
-      simp [mul_add, add_mul, hb, H, ← mul_assoc, ← star_mul]
-    _ = star (B : Matrix ι ι ℂ) * (U * diagonal d * star U) * B := by
-      simp [hd, mul_add, add_mul, h_spectral, U]
-    _ = _ := by simp [U, star_eq_conjTranspose, mul_assoc]
-
 /-- The complex Gaussian integral in one variable: if `0 < re d`, then `exp (-z̄ d (z - a))` has
 integral `π / d` over `ℂ`. -/
 lemma integral_cexp_neg_star_mul {d : ℂ} (hd : 0 < d.re) (a : ℂ) :
@@ -169,14 +124,14 @@ lemma integral_cexp_neg_star_mul {d : ℂ} (hd : 0 < d.re) (a : ℂ) :
     ring
   · simp
 
-/-- The complex Gaussian integral: if `A` is accretive (that is, `A + Aᴴ` is positive definite),
-then `exp (-x* A (x - a))` has integral `(det A)⁻¹` for `normalizedVolume ι`, Lebesgue measure on
-`ι → ℂ` divided by `π ^ card ι`. -/
-lemma integral_gauss [DecidableEq ι] (hA : A.IsAccretive) (a : ι → ℂ) :
+/-- The complex Gaussian integral: if `A` is strictly accretive (that is, `A + Aᴴ` is positive
+definite), then `exp (-x* A (x - a))` has integral `(det A)⁻¹` for `normalizedVolume ι`, Lebesgue
+measure on `ι → ℂ` divided by `π ^ card ι`. -/
+lemma integral_gauss [DecidableEq ι] (hA : A.IsStrictlyAccretive) (a : ι → ℂ) :
     ∫ x : ι → ℂ, exp (-(star x ⬝ᵥ A *ᵥ (x - a))) ∂normalizedVolume ι = A.det⁻¹ := by
   -- Write `A = pᴴ diagonal d p`. After the change of variables `y = p x` the integrand is a
   -- product of Gaussians in one variable.
-  obtain ⟨p, d, rfl, hd⟩ := exists_eq_conjTranspose_mul_diagonal_mul hA
+  obtain ⟨p, d, rfl, hd⟩ := hA.exists_eq_conjTranspose_mul_diagonal_mul
   set P : Matrix ι ι ℂ := (p : Matrix ι ι ℂ)
   let g (i : ι) (z : ℂ) : ℂ := exp (-(star z * (d i * (z - (P *ᵥ a) i))))
   have h_form (x : ι → ℂ) :

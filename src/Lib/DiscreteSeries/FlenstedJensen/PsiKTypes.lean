@@ -113,7 +113,7 @@ theorem dsCoeff_polar (hg : l.HasGap h) (p q : maxCompactU ε) {z : USign ε}
           weightMinors (-paramAddRho l) ((u : Matrix n n ℂ)ᴴ * z * u) ∂haarK ε) /
         l.lowestKType.kTypeNormSq :=
   dsCoeff_eq_integral_of_eq_mul_mul_conjTranspose hg (mem_maxCompactU.1 p.property)
-    (mem_maxCompactU.1 q.property) hz.isAccretive (by simp [← maxCompactU.coe_inv])
+    (mem_maxCompactU.1 q.property) hz.isStrictlyAccretive (by simp [← maxCompactU.coe_inv])
 
 /-- For a parameter λ of gap h and g in U(diag ε), c_λ(g⁻¹) is the complex conjugate of c_λ(g). -/
 theorem dsCoeff_inv (hg : l.HasGap h) (g : USign ε) : l.dsCoeff ↑g⁻¹ = conj (l.dsCoeff g) := by
@@ -251,7 +251,7 @@ private theorem New.integral_circle_weightMinors_div {o ν Λ μ : n → ℤ} {N
     (hν : IsKDominant ε o ν) (hμ : IsKDominant 1 (-o) μ) (hN : (N : ℤ) = o ⬝ᵥ (ν - Λ))
     (hN_zero : N = 0 ↔ ν = Λ) (j k : maxCompactU ε) (u : ℂ) {w y C : Matrix n n ℂ}
     {A : ℂ → Matrix n n ℂ} (hy : IsCircleFactorization 1 (-o) μ y A C)
-    (hA_acc : ∀ s : ℂ, ‖s‖ ≤ 1 → (w * A s).IsAccretive) :
+    (hA_acc : ∀ s : ℂ, ‖s‖ ≤ 1 → (w * A s).IsStrictlyAccretive) :
     ∫ θ : UnitAddCircle,
         (let t : maxCompactU ε := diagTorusK fun i : n ↦ θ.toCircle ^ o i
         weightMinors ν (k * t * j⁻¹).val * (u * conj (weightMinors Λ (k * t).val) /
@@ -267,7 +267,7 @@ private theorem New.integral_circle_weightMinors_div {o ν Λ μ : n → ℤ} {N
     s ^ N * (u * conj (weightMinors Λ k) / weightMinors μ (w * A s)) / diagChar μ C
   have hq : AnalyticOnNhd ℂ q (Metric.closedBall 0 1) := fun s hs ↦ by
     have := hA_acc s (by simpa using hs)
-    fun_prop (disch := simp [*, -det_mul, IsAccretive.det_ne_zero])
+    fun_prop (disch := simp [*, -det_mul, IsStrictlyAccretive.det_ne_zero])
   have h_hol : IsHolOfWeight ε o (fun _ : Unit ↦ ν) (fun g ↦ ∏ τ, weightMinors ν (k * g τ)) ε :=
     isHolOfWeight_weightMinors ho k (fun _ ↦ hν) (GeneralLinearGroup.det_ne_zero _)
   have h_circle : ∫ θ : UnitAddCircle,
@@ -323,12 +323,12 @@ private theorem New.eventually_forall_accretive_circleFactorization {o μ : n �
     (ho : (-o).Injective) (hμ : IsKDominant 1 (-o) μ) (x : USign ε) :
     let S (y : Matrix n n ℂ) (k : maxCompactU ε) : Matrix n n ℂ := (k : Matrix n n ℂ)ᴴ * y * k
     ∀ᶠ b : USign ε in nhds 1, ∀ k : maxCompactU ε,
-      (∀ j : maxCompactU ε, (S ((blockDiagPart ε x)⁻¹ * x) j * S b k).IsAccretive) ∧
-      (S b k).IsAccretive ∧
+      (∀ j : maxCompactU ε, (S ((blockDiagPart ε x)⁻¹ * x) j * S b k).IsStrictlyAccretive) ∧
+      (S b k).IsStrictlyAccretive ∧
       ∃ (A : ℂ → Matrix n n ℂ) (C : Matrix n n ℂ),
         IsCircleFactorization 1 (-o) μ (S b k) A C ∧
           ∀ s : ℂ, ‖s‖ ≤ 1 → ∀ j : maxCompactU ε,
-            (S ((blockDiagPart ε x)⁻¹ * x) j * A s).IsAccretive := by
+            (S ((blockDiagPart ε x)⁻¹ * x) j * A s).IsStrictlyAccretive := by
   intro S
   -- By compactness of `K`, what holds near `1` holds at every `k* b k` for `b` near `1`.
   have h_transfer {P : Matrix n n ℂ → Prop} (hP : ∀ᶠ y : Matrix n n ℂ in nhds 1, P y) :
@@ -337,10 +337,10 @@ private theorem New.eventually_forall_accretive_circleFactorization {o μ : n �
       rfl).eventually <| isCompact_univ.eventually_forall_mem
         S {z | P z} fun k _ ↦ hP.filter_mono (by simp [S, ← maxCompactU.coe_inv])
   have h_acc_near : ∀ᶠ y : Matrix n n ℂ in nhds 1, ∀ j ∈ Set.univ,
-      S ((blockDiagPart ε x)⁻¹ * x) j * y ∈ {z : Matrix n n ℂ | z.IsAccretive} :=
+      S ((blockDiagPart ε x)⁻¹ * x) j * y ∈ {z : Matrix n n ℂ | z.IsStrictlyAccretive} :=
     isCompact_univ.eventually_forall_mem _ _ (by
-      simp [S, IsAccretive.setOf_mem_nhds, GeneralLinearGroup.det_ne_zero])
-  filter_upwards [h_transfer h_acc_near, h_transfer PosDef.one.isAccretive.setOf_mem_nhds,
+      simp [S, IsStrictlyAccretive.setOf_mem_nhds, GeneralLinearGroup.det_ne_zero])
+  filter_upwards [h_transfer h_acc_near, h_transfer PosDef.one.isStrictlyAccretive.setOf_mem_nhds,
     h_transfer (eventually_exists_isCircleFactorization ho hμ h_acc_near)] with b hb_acc hb
       hb_factor
   intro k

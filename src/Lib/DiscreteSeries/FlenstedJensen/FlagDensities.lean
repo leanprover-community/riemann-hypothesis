@@ -270,15 +270,15 @@ lemma exists_chart_exp_lowerLiePart_mul_borel (ε : n → ℤˣ) (o : n → ℤ)
     grind
   obtain ⟨ψ, ⟨ψ_deriv, ψ_one⟩, chart⟩ :=
     exists_borel_chart 1 o L hasStrictFDerivAt_exp_zero NormedSpace.exp_zero (by simp) L_lower
-  have accretive : ∀ᶠ x : Matrix n n ℂ in nhds 1, (1 + ψ x).IsAccretive :=
+  have accretive : ∀ᶠ x : Matrix n n ℂ in nhds 1, (1 + ψ x).IsStrictlyAccretive :=
     ψ_deriv.continuousAt.const_add 1
-      (IsAccretive.setOf_mem_nhds (by simp [ψ_one, PosDef.one.isAccretive]))
+      (IsStrictlyAccretive.setOf_mem_nhds (by simp [ψ_one, PosDef.one.isStrictlyAccretive]))
   refine ⟨ψ, ψ_deriv, ψ_one, (chart.and accretive).mono fun x ⟨hx, x_accretive⟩ ↦ ?_⟩
   obtain ⟨tri, -, x_eq⟩ := hx (by simp)
   refine ⟨1 + (1 - L) (ψ x), tri, fun i ↦ ?_, x_eq⟩
   -- The diagonal of `1 + (1 - L) (ψ x)` is the real part of that of `1 + ψ x`.
   simpa [L, lowerLiePart, lt_def, ← two_mul, signMatrix, mul_right_comm, ← Int.cast_mul]
-    using x_accretive.diag_pos
+    using (isStrictlyAccretive_iff_posDef.mp x_accretive).diag_pos
 
 /-- The set `openOrbit ε o = G B` is a neighbourhood of each of its points. -/
 lemma openOrbit_mem_nhds (ε : n → ℤˣ) {y : Matrix n n ℂ} (hy : y ∈ openOrbit ε o) :

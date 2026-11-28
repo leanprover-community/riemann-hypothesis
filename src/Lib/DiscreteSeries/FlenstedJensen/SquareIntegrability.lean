@@ -269,7 +269,7 @@ theorem norm_det_blockDiagPart_pow_le {h : ℕ} (hg : l.HasGap h) {c : ℕ} (hc 
   suffices ‖weightMinors v a‖ ≤ ‖weightMinors μ a * weightMinors μ g * weightMinors v g⁻¹‖ by
     -- cancel `|m_μ(a)|`, using `m_v = m_μ · det ^ c` and `m_μ(g⁻¹) = m_{-μ}(g) = conj m_μ(g)`
     simpa [a, μ, v, principalMinor_of_forall, ↓weightMinors_add_ite, weightMinors_neg,
-      weightMinors_unitary_inv, ha_pos.isAccretive, field, GeneralLinearGroup.det_ne_zero]
+      weightMinors_unitary_inv, ha_pos.isStrictlyAccretive, field, GeneralLinearGroup.det_ne_zero]
   -- Write each `weightMinors` as a product of minors over `-B < t ≤ B`; by
   -- `jacobi_complementary_minor` and `|det g| = 1`, a minor of `g⁻¹` has the norm of the
   -- complementary minor of `g`.
@@ -381,7 +381,7 @@ theorem dsCoeff_neg_mul_borel_inv (hg : l.HasGap h) (g : USign ε) {x : Matrix n
       diagChar l.lowestKType x * (-l).dsCoeff (g : Matrix n n ℂ)⁻¹ := by
   have hx_det : x.det ≠ 0 := hx_borel.2
   have h_det : (blockDiagPart ε (g : Matrix n n ℂ)⁻¹).det ≠ 0 := by
-    simpa using (isAccretive_blockDiagPart_inv_mul g⁻¹).1
+    simpa using (isStrictlyAccretive_blockDiagPart_inv_mul g⁻¹).1
   -- `x` cancels in the denominator of the integrand and stays only as a right factor in the
   -- argument of `weightMinors`, which it multiplies by the character; the sides then differ only
   -- in the order of the factors.

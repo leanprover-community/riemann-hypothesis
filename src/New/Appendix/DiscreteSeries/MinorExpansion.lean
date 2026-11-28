@@ -267,8 +267,8 @@ lemma conj_flenstedJensen_one (z : Matrix n n ℂ) :
 `ε i = ε j`. If `X` and `(1 - u) * X` are accretive, then `l.flenstedJensen 1` at
 `((1 - u) * X)ᴴ` is the conjugate of its value at `X`. -/
 lemma flenstedJensen_shift_eq_conj (hl : l.HasGap h) {u : Matrix n n ℂ}
-    (hu : ∀ i j, ¬(l i < l j ∧ ε i = ε j) → u i j = 0) (hX : X.IsAccretive)
-    (huX : ((1 - u) * X).IsAccretive) :
+    (hu : ∀ i j, ¬(l i < l j ∧ ε i = ε j) → u i j = 0) (hX : X.IsStrictlyAccretive)
+    (huX : ((1 - u) * X).IsStrictlyAccretive) :
     l.flenstedJensen 1 ((1 - u) * X)ᴴ = conj (l.flenstedJensen 1 X) := by
   have h_det : (1 - u).det ≠ 0 ∧ X.det ≠ 0 := by simpa [det_mul] using huX.det_ne_zero
   -- `1 - u` is block diagonal and triangular, with diagonal entries `1`.
@@ -336,18 +336,18 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
       mul_le_mul_of_nonneg_right hg.le (mul_nonneg hX_nonneg hX_nonneg)]
   -- Step 1: the coefficient is `l.flenstedJensen 1 (y l)`. Removing either factor conjugates the
   -- value.
-  have hy_acc (c : n → ℤ) : (y c).IsAccretive :=
-    isAccretive_of_norm_sub_one_lt ((hy_near c).trans_lt (by linarith))
-  have hg_acc : (g : Matrix n n ℂ).IsAccretive :=
-    isAccretive_of_norm_sub_one_lt (hg.trans (by norm_num))
-  have hug_acc : ((1 - u) * (g : Matrix n n ℂ)).IsAccretive := by
+  have hy_acc (c : n → ℤ) : (y c).IsStrictlyAccretive :=
+    isStrictlyAccretive_of_norm_sub_one_lt ((hy_near c).trans_lt (by linarith))
+  have hg_acc : (g : Matrix n n ℂ).IsStrictlyAccretive :=
+    isStrictlyAccretive_of_norm_sub_one_lt (hg.trans (by norm_num))
+  have hug_acc : ((1 - u) * (g : Matrix n n ℂ)).IsStrictlyAccretive := by
     simpa [y, show r 0 = 0 from rfl] using hy_acc 0
   have h_coeff : l.dsCoeff g = l.flenstedJensen 1 (y l) := by
     have h_left := flenstedJensen_shift_eq_conj hl (u := u) (by simp [u, r]; grind) hg_acc hug_acc
     have h_right := flenstedJensen_shift_eq_conj hl (u := (r l)ᴴ)
       (X := ((1 - u) * (g : Matrix n n ℂ))ᴴ) (by simp [r]; grind)
-      (by simpa [IsAccretive, add_comm] using hug_acc)
-      (by simpa [y, IsAccretive, add_comm] using hy_acc l)
+      (by simpa [isStrictlyAccretive_iff_posDef, add_comm] using hug_acc)
+      (by simpa [y, isStrictlyAccretive_iff_posDef, add_comm] using hy_acc l)
     rw [dsCoeff_eq_flenstedJensen hl (one_mem _) (by simpa using hg_acc)]
     simpa [y] using (h_right.trans (congrArg _ h_left)).symm
   -- Step 2: on a set of highest entries of `l` the triangular factors do not change the minor.
