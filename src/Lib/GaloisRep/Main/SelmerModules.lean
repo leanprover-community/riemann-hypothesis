@@ -6,7 +6,6 @@ public import Lib.Adelic.Unitary.ComponentsAndBlockSums
 public import Lib.ClassField.Local.ArtinMap
 import Lib.Adelic.Adeles.LocalFactors
 public import Lib.ClassField.Global.AlbertBrauerHasseNoether -- shake: keep (needed public by an exposed definition)
-import Lib.Cyclotomic.Voronoi
 
 /-!
 # Selmer modules, Tate twists, components of cocycles and places above a prime
@@ -303,7 +302,7 @@ lemma decompGroup_le_cycloGalGroup {q m : ℕ} [NeZero m] {B : ClosurePlace} [Fa
   -- subgroup `cycloGalGroup m` contains both, since `m` is a unit at `B` and `q ≡ 1` mod `m`.
   obtain ⟨v, hB_over, rfl, -⟩ := exists_isPlaceOver_prime hq_nonunit
   have hm_unit : B.valuation (m : Ω) = 1 :=
-    hq_modEq.coprime_of_modEq_one.valuation_eq_one hq_nonunit
+    Nat.Coprime.valuation_eq_one (hq_modEq.gcd_eq.trans (Nat.gcd_one_left m)) hq_nonunit
   obtain ⟨frob, hfrob⟩ : ∃ frob : Gal(Ω/ℚ), IsFrob B v.q frob := hB_over.exists_isFrob Gal(Ω/ℚ)
   have h_inertia_le : inertiaGroup Gal(Ω/ℚ) B ≤ cycloGalGroup m :=
     fun σ hσ ↦ cyclotomicCharMod_eq_one_of_mem_inertiaGroup hσ hm_unit
