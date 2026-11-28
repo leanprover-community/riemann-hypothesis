@@ -673,6 +673,7 @@ lemma New.Exchange.exists_forall_eq_zero_of_petersson_restrict_eq_zero {t : n �
           (fun x : G D.E s ↦ φ (G.reindex (.refl (n ⊕ Unit)) h_signs (.sum (x, 1)) * (g, 1))) = 0) →
       y.val = 0 := by
   subst h_signs
+  erw [Space.reindex_refl, G.reindex_refl]
   choose ω hω_norm h_pair using h_place
   exact ⟨ω, fun y hy_level h_orth ↦ eq_zero_of_petersson_translate_eq_zero
     ⟨h_rank, h_exponent, h_dim, h_cusp, h_rank_pow, h_places, h_pow_le, h_level⟩ h_gap h_gap'

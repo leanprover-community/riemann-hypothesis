@@ -541,6 +541,7 @@ theorem inner_pointForm_kernelForm (hq : q.HasEmptyRow (Fin (2 * p.z - 20)))
   · exact h_datum _
   · simp only [map_one, mul_one, rename_rename]
     rfl
+  · simp only [U.block_refl]
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum Finset.prod Finset.univ in
@@ -644,7 +645,7 @@ theorem isTestForm_trivialLiftClassSum_pointForm {l : ℕ} [Fact l.Prime]
         _root_.funext_iff, gramForm_apply, ← apply_eq_evalForm, dot_mulVec_eq_sum_sum, ← mul_sum,
         ← sum_mul, DescentPair.charW]
       have h_block (a : Gf D.E (Fin 12 ⊕ Fin 4 ⊕ Fin 4)) :
-          U.blockSumOne (a, x) = U.block (.refl _) (a, x) := rfl
+          U.blockSumOne (a, x) = U.block (.refl _) (a, x) := by rw [U.block_refl]
       unfold F
       rw [h_block]
       ring
@@ -654,7 +655,8 @@ theorem isTestForm_trivialLiftClassSum_pointForm {l : ℕ} [Fact l.Prime]
             X₁.descentPair.incl =
             inclMatrix _ X₁.descentPair.incl :=
         mem_stabilizer_col_iff.1 ((mem_levelOf.1 hk).2 (.inl i) ⟨⟩)
-      refine ⟨?_, by simpa using (map_block_eq_blockGL (reduceAt w) _ 1 k).1, fun i ↦ ?_⟩
+      refine ⟨?_, by simpa using (map_block_eq_blockGL (reduceAt w) (.refl _)
+        (1 : stdLevel D.E (Fin 12 ⊕ Fin 4 ⊕ Fin 4)) k).1, fun i ↦ ?_⟩
       · classical
         simp [X₁, DescentPair.residueBlockDatum, ↓Matrix.map_mul, ↓reductionGL_map_modulusResidue,
           inv_mul_eq_iff_eq_mul_of_invertible, univ_eq_empty, -Sum.elim_inl]
@@ -664,13 +666,12 @@ theorem isTestForm_trivialLiftClassSum_pointForm {l : ℕ} [Fact l.Prime]
       · have h_blk := (map_block_eq_blockGL (reduceAt (X.placeAt (.inl i)))
           (Equiv.refl (RankOneIndex p.z)) (1 : stdLevel D.E (Fin 12 ⊕ Fin 4 ⊕ Fin 4)) k).2
         simp only [OneMemClass.coe_one] at h_blk
-        have h_mat : (reindexGL (Equiv.refl (RankOneIndex p.z))
+        have h_mat : ((Equiv.refl (RankOneIndex p.z)).reindexGL _
             (blockGL (stdLevel.map (Fin 12 ⊕ Fin 4 ⊕ Fin 4) (reduceAt (X.placeAt (.inl i))) 1,
               stdLevel.map (Fin (2 * p.z - 20)) (reduceAt (X.placeAt (.inl i))) k))).val =
             fromBlocks 1 0 0
               (stdLevel.map (Fin (2 * p.z - 20)) (reduceAt (X.placeAt (.inl i))) k).val := by
-          rw [map_one]
-          ext a b
+          rw [map_one, Equiv.reindexGL_refl]
           rfl
         have h_col_i : (stdLevel.map (Fin (2 * p.z - 20)) (reduceAt (D.chosenPlace i)) k).val *
             inclMatrix _ (lValueData hq.hasLiftRank .one).descentPair.incl =

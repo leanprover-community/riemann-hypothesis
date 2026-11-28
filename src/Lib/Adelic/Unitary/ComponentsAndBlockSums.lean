@@ -4,8 +4,10 @@ public import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Algebra.Group.Matrix
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import all TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Equivalence
 public import Lib.Adelic.Unitary.Defs
 public import Lib.General.LinearAlgebra.IntegralLattices
+public import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Equivalence
 public import Lib.Adelic.Witt.WittTheorem -- shake: keep (needed public by an exposed definition)
 
 /-!
@@ -388,10 +390,22 @@ lemma signMatrix_neg (s : n → ℤˣ) : signMatrix (-s) = -signMatrix (n := n) 
 
 variable [Fintype m] [Fintype n] [StarRing R] (e : m ≃ n) {J : Matrix m m R}
 
-/-- For a bijection e of index sets, the isomorphism GL_m(R) ≅ GL_n(R) relabelling rows and
-columns along e. -/
-@[simps! apply_val]
-def reindexGL : GL m R ≃* GL n R := Units.mapEquiv (reindexRingEquiv R e).toMulEquiv
+/-! Tau Ceti does not expose the definition of `Equiv.reindexGL`; this file imports it with
+`import all` to prove the next two lemmas and the unfolding lemmas of `New.U.reindex`,
+`New.U.block`, `New.G.reindex` and `New.Space.reindex` below, through which other files use it. -/
+
+omit [StarRing R] in
+/-- Reindexing along `e` commutes with applying a ring homomorphism to the entries. -/
+lemma _root_.Equiv.map_reindexGL {S : Type*} [CommRing S] (f : R →+* S) (g : GL m R) :
+    GeneralLinearGroup.map f (e.reindexGL R g) = e.reindexGL S (GeneralLinearGroup.map f g) :=
+  (rfl)
+
+omit [StarRing R] in
+/-- Reindexing along `e` is continuous on general linear groups over a topological ring. -/
+@[fun_prop]
+lemma _root_.Equiv.continuous_reindexGL [TopologicalSpace R] [IsTopologicalRing R] :
+    Continuous (e.reindexGL R) :=
+  Continuous.units_map _ (continuous_id.matrix_reindex e e)
 
 /-- The block embedding `U J × U J' → U J''`, `(g, h) ↦ diag(g, h)`, where `J''` is the block
 diagonal sum of `J` and `J'`. -/
@@ -410,10 +424,16 @@ abbrev U.blockSumOne :
 /-- Renaming the basis by `e` identifies the unitary group of `J` with that of the form `J'`
 obtained from `J` by the same renaming of rows and columns. -/
 def U.reindex {J' : Matrix n n R} (h : J.submatrix e.symm e.symm = J') : U J ≃* U J' where
-  toEquiv := (reindexGL e).subtypeEquiv <| by
+  toEquiv := (e.reindexGL R).subtypeEquiv <| by
     subst h
     simp [← ext_iff, reindex_equiv e.symm, mem_unitaryGroupOf_iff, star_eq_conjTranspose]
   map_mul' := by simp
+
+/-- The matrix of `New.U.reindex e h g` is that of `g` with rows and columns relabelled along
+`e`. -/
+lemma U.reindex_val {J' : Matrix n n R} (h : J.submatrix e.symm e.symm = J') (g : U J) :
+    (reindex e h g).val.val = g.val.val.submatrix e.symm e.symm :=
+  (rfl)
 
 variable {l : Type*} [Fintype l] [DecidableEq l] (e : m ⊕ l ≃ n)
 
@@ -427,7 +447,11 @@ group of the form `J`) under `New.U.block e` is diag(g₁, g₂) with rows and c
 along `e`. -/
 @[simp]
 lemma U.block_val (g : U (1 : Matrix m m R) × U (1 : Matrix l l R)) :
-    (block e g).val.val = (fromBlocks g.1 0 0 g.2).submatrix e.symm e.symm := rfl
+    (block e g).val.val = (fromBlocks g.1 0 0 g.2).submatrix e.symm e.symm := (rfl)
+
+/-- Along the identity bijection, `New.U.block` is the block diagonal sum `New.U.blockSumOne`. -/
+@[simp]
+lemma U.block_refl : block (R := R) (Equiv.refl (m ⊕ l)) = blockSumOne (m := m) (n := l) := (rfl)
 
 end
 
@@ -498,7 +522,24 @@ def G.reindex : G E s ≃* G E t :=
 
 @[simp]
 lemma G.adeleMatrix_reindex :
-    (reindex e h g).adeleMatrix = g.adeleMatrix.submatrix e.symm e.symm := rfl
+    (reindex e h g).adeleMatrix = g.adeleMatrix.submatrix e.symm e.symm := (rfl)
+
+/-- At each infinite place `w`, `G.reindex e h` relabels the component of `g` along `e`. -/
+lemma G.reindex_fst (w : InfinitePlace E) :
+    (reindex e h g).1 w = U.reindex e (by simp [← h, signMatrix]) (g.1 w) := (rfl)
+
+/-- `G.reindex e h` relabels the finite component of `g` along `e`. -/
+lemma G.reindex_snd : (reindex e h g).2 = U.reindex e (submatrix_one_equiv e.symm) g.2 := (rfl)
+
+/-- Relabelling along the identity changes nothing. -/
+@[simp]
+lemma G.reindex_refl (h : s ∘ (Equiv.refl n).symm = s) : reindex (E := E) (.refl n) h = .refl _ :=
+  (rfl)
+
+/-- The inverse of relabelling along `e` is relabelling along `e.symm`. -/
+@[simp]
+lemma G.reindex_symm :
+    (reindex e h).symm = reindex (E := E) e.symm (by simp [← h, Function.comp_assoc]) := (rfl)
 
 end
 
@@ -561,10 +602,15 @@ def sum (W : Space E m t) : Space E (n ⊕ m) (s ⊕ᵥ t) where
 obtained by relabelling its matrix and point. -/
 def reindex : Space E m t where
   J := V.J.reindex e e
-  x := reindexGL e V.x
+  x := e.reindexGL _ V.x
   gram_point := by
     subst h
     simp [← submatrix_map, gram_point, stdForm]
+
+omit [HasPrimitiveRoot5040 E] in
+/-- Relabelling a space along the identity changes nothing. -/
+@[simp]
+lemma reindex_refl (h : s ∘ (Equiv.refl n).symm = s) : V.reindex (.refl n) h = V := (rfl)
 
 /-- If `E` contains a primitive root of unity of order 5040 and (J, x) is a space with signs s,
 the space with signs −s, matrix −J and point x multiplied by the scalar `normNegOneIdele E`, the

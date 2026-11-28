@@ -199,10 +199,13 @@ lemma integral_algFormCoeff_blockEmb {s : ι → ℤˣ}
   have h_integrand (x : GInf E (1 : ι → ℤˣ)) :
       L g ((conjWeylMatrix κ₀ e₀ x * M * R x⁻¹) *ᵥ v) =
         Φ (x, g) * algFormCoeff 1 t ψ (j ((x, g), 1, u)) := by
-    -- The archimedean part of `diag((x, g), u)` is `diag(x, 1)`; its finite part is `diag(g, u)`.
     have h_rank_one : M *ᵥ R x⁻¹ *ᵥ v = t (R x⁻¹ *ᵥ v) • c := LinearMap.toMatrix'_mulVec _ _
+    -- The archimedean part of `diag((x, g), u)` is `diag(x, 1)`; its finite part is `diag(g, u)`.
+    have h_inf : (j ((x, g), 1, u)).1 = (j ((x, 1), 1)).1 :=
+      funext fun τ ↦ Subtype.ext (by simp only [j, G.coe_blockEmb_fst]; rfl)
+    have h_fin : (j ((x, g), 1, u)).2 = (j ((1, g), 1, u)).2 := by simp only [j, G.blockEmb_snd]
     rw [← mulVec_mulVec, ← mulVec_mulVec, h_rank_one, mulVec_smul, map_smul, smul_eq_mul,
-      hΦ_eq, mul_comm]
+      hΦ_eq, mul_comm, algFormCoeff_apply, h_inf, h_fin, ← Prod.fst_inv, ← map_inv]
     rfl
   calc C * L g (A *ᵥ v)
     _ = L g (B *ᵥ v) := by rw [hC, smul_mulVec, map_smul, smul_eq_mul]

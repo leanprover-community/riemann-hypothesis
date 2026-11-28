@@ -89,14 +89,19 @@ lemma U.mem_range_sum_right {R : Type*} [CommRing R] [StarRing R] {J : Matrix n 
     simp [sum, ← fromCols_fromRows_eq_fromBlocks]
   -- Exchange the summands and apply the left-block characterization.
   let swap := reindex (Equiv.sumComm n m) (fromBlocks_submatrix_sum_swap_sum_swap J 0 0 J')
+  have h_swap (x : U (fromBlocks J 0 0 J')) :
+      (swap x).val.val = x.val.val.submatrix Sum.swap Sum.swap :=
+    U.reindex_val _ _ x
   have hc : ((swap g).val.val).toCols₂ = fromRows 0 1 := by
     ext i j
+    rw [h_swap]
     cases i with
     | inl i => exact congrFun (congrFun h_cols (.inr i)) j
     | inr i => exact congrFun (congrFun h_cols (.inl i)) j
   obtain ⟨a, ha⟩ := (mem_range_sum_left (g := swap g) rfl hJ).2 hc
-  refine ⟨a, swap.injective (Eq.trans ?_ ha)⟩
-  exact Subtype.ext (Units.ext (fromBlocks_submatrix_sum_swap_sum_swap _ _ _ _))
+  refine ⟨a, swap.injective (Eq.trans (Subtype.ext (Units.ext ?_)) ha)⟩
+  rw [h_swap]
+  exact fromBlocks_submatrix_sum_swap_sum_swap _ _ _ _
 
 /-- The block diagonal embedding of the product of the adelic unitary groups for signs `s` and `t`
 into the one for the concatenated signs is a closed embedding. -/

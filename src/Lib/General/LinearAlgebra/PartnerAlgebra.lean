@@ -204,7 +204,7 @@ lemma exists_firstCols_eq_mul (O : Subring R) (g : GL b R) (hg : g ∈ intGL b O
       invLastRows e j = f.val * invLastRows e k ∧
       j.val.det * f.val.det = k.val.det * g.val.det := by
   -- Multiply `k` on the right by the block diagonal matrix `d` with blocks `g` and `f⁻¹`.
-  let d : GL n R := reindexGL e (blockGL (g, f⁻¹))
+  let d : GL n R := e.reindexGL _ (blockGL (g, f⁻¹))
   have hd : d ∈ intGL n O := by simp_all [d, mem_intGL, reindex_equiv e, ← map_inv]
   refine ⟨k * d, mul_mem hk hd, ?_, ?_, by simp [d, mul_assoc, Ring.inverse_mul_cancel]⟩ <;>
     simp [d, Matrix.mul_apply, reindex_equiv e, ← map_inv, ← ext_iff]

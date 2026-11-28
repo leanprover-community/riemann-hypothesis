@@ -311,7 +311,7 @@ lemma exists_isBranchingPairing [DecidableEq n'] [DecidableEq n] [Nonempty n]
     refine ⟨c, fun V _ η φ u K _ ↦ ?_⟩
     obtain rfl : V = stdSpace E n := IsStd.eq_stdSpace V
     -- By definition `G.blockEmb` is `G.sum` followed by `G.reindex`; its finite part is `U.block`.
-    simpa [algFormCoeff, map_intCast_mul_mulVec] using!
+    simpa [algFormCoeff, map_intCast_mul_mulVec, G.blockEmb, G.reindex_snd] using!
       hc φ (ofAlgForm (-l) 1 η) u _ K (isAutomorphic_algFormCoeff η) (hA.ofAlgForm_eq_bilin 1 η)
 
 omit [CMType E] in
@@ -830,10 +830,10 @@ lemma lastPathPairing_lastPathChain_mem_smoothInvariants (S : EdgeTuple ϑ)
     -- preimage of that of the second under `h ↦ diag(h, 1)`.
     let incl : Gf D.E (D.LastPathIndex false D.m) →* Gf D.E (D.LastPathIndex true D.m) :=
       (U.block (D.gridDiagEquiv D.m)).comp (.inl _ _)
-    have h_cont : Continuous incl := by
-      change Continuous fun h : Gf D.E (D.LastPathIndex false D.m) ↦
-        (G.blockEmb (s := 1) Sum.elim_one_one.symm ⟨⟨1, h⟩, 1⟩).2
-      fun_prop
+    have h_cont : Continuous incl :=
+      (show Continuous fun h : Gf D.E (D.LastPathIndex false D.m) ↦
+        (G.blockEmb (s := 1) (e := D.gridDiagEquiv D.m) Sum.elim_one_one.symm ⟨⟨1, h⟩, 1⟩).2 by
+          fun_prop).congr fun _ ↦ G.blockEmb_snd ..
     refine Subgroup.isOpen_mono (H₁ := rightStabilizer (lastPathChain S false D.m (y false)).val ⊓
       comap incl (rightStabilizer (lastPathChain S true D.m (y true)).val)) ?_
       (.and h_open (h_open'.preimage h_cont))

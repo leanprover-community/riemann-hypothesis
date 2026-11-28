@@ -7,6 +7,7 @@ import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Lift
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Unitary.Defs
 public import Lib.General.LinearAlgebra.IntegralLattices
+public import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Equivalence
 import Lib.Adelic.Unitary.ComponentsAndBlockSums
 
 /-!
@@ -147,6 +148,14 @@ variable {n ι R S E : Type*} [Fintype n] [DecidableEq n] [CommRing R] [CommRing
 /-- The reduction homomorphism from GL_n(O_w) to GL_n of the residue field at w. -/
 def reduceGL : intGL n (Valued.v (R := LocField w)).integer →* GL n (ResField w) :=
   intGL.map (n := n) (O := v.integer) (S := ResField w) (residue (LocInt w))
+
+/-- Reduction to the residue field commutes with relabelling the indices along `e`. -/
+lemma reduceGL_reindexGL {m : Type*} [Fintype m] [DecidableEq m] (e : n ≃ m) {g : GL n (LocField w)}
+    (hg : g ∈ intGL n v.integer) (hg' : e.reindexGL _ g ∈ intGL m v.integer) :
+    reduceGL ⟨e.reindexGL _ g, hg'⟩ = e.reindexGL _ (reduceGL ⟨g, hg⟩) :=
+  GeneralLinearGroup.ext fun a b ↦ by
+    rw [Equiv.coe_reindexGL, submatrix_apply]
+    exact congrArg (residue _) (Subtype.ext (congrFun₂ (Equiv.coe_reindexGL e _ g) a b))
 
 /-- Reduction GL_n(O_w) → GL_n(k_w) to the residue field k_w at the place w is surjective. -/
 lemma reduceGL_surjective : Surjective (reduceGL (n := n) (w := w)) := fun s ↦ by

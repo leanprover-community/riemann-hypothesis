@@ -598,7 +598,7 @@ abbrev reindexResidueGL {E : Type} [Field E] [NumberField E] [NumberField.IsCMFi
     (Q : TaylorWilesPlaces E J (ℓ ^ ν)) :
     ((j : J) → GL (Fin (card n)) (ResField (Q.place j))) ≃*
       ((j : J) → GL n (ResField (Q.place j))) :=
-  MulEquiv.piCongrRight fun j ↦ (reindexGL (R := ResField (Q.place j)) (equivFin n)).symm
+  MulEquiv.piCongrRight fun j ↦ ((equivFin n).reindexGL (ResField (Q.place j))).symm
 
 /-! ### Operators at one place and the action of the finite groups -/
 
@@ -687,14 +687,15 @@ lemma residueRep_mulSingle [DecidableEq J] (hQ : ∀ j : J, D.IsOffLevel (ℓ :=
       localFormRep V κ (Q.apart.star_ne j j) k y := by
   -- `k'` is `k` with indices in `n`; `x` has component `k'` at `w j` and is `1` off `w j` and
   -- its conjugate, so `D.repOff` does not cut it
-  have hk'_int : (reindexGL (equivFin n)).symm (k : GL (Fin (card n)) (LocField (Q.place j))) ∈
+  have hk'_int : ((equivFin n).reindexGL _).symm (k : GL (Fin (card n)) (LocField (Q.place j))) ∈
       localIntGL n (Q.place j) := by
     obtain ⟨m, hm⟩ := k.prop
-    exact ⟨reindexGL (equivFin n).symm m, by rw [← hm]; rfl⟩
-  let k' : localIntGL n (Q.place j) := ⟨(reindexGL (equivFin n)).symm k, hk'_int⟩
+    exact ⟨(equivFin n).symm.reindexGL _ m, by rw [← hm, Equiv.map_reindexGL, Equiv.reindexGL_symm]⟩
+  let k' : localIntGL n (Q.place j) := ⟨((equivFin n).reindexGL _).symm k, hk'_int⟩
   let x : stdLevel E n := ⟨ofSplitPlace (Q.apart.star_ne j j) k', by simp⟩
   have x_red : reduceFamily Q.place x = reindexResidueGL Q (mulSingle j (reduceGL k)) :=
-    (reduceFamily_ofSplitPlace j k').trans (Function.update_eq_iff.2 (by aesop))
+    (reduceFamily_ofSplitPlace j k').trans
+      (Function.update_eq_iff.2 (by aesop (add safe apply reduceGL_reindexGL)))
   obtain ⟨h_w_notMem, h_star_w_notMem, -, -⟩ := hQ j
   have x_off : (x : Gf E n) ∈ trivialOn n D.places :=
     supportedOn_compl.le (supportedOn_mono (by simp [h_w_notMem, h_star_w_notMem])
@@ -719,11 +720,12 @@ omit [ThePrime ℓ] [PadicIso ℓ] [Fintype J] in
 reindexed along the chosen ordering of `n`, in the pro-p Iwahori group: it is integral and reduces
 to `1`. -/
 private lemma reindexGL_atPlace_mem_proIwahori_of_mem_levelOf {k : Gf E n}
-    (hk : k ∈ levelOf Q.place ⊥) : reindexGL (equivFin n) (k.atPlace (Q.place j)) ∈ proIwahori := by
+    (hk : k ∈ levelOf Q.place ⊥) :
+    (equivFin n).reindexGL _ (k.atPlace (Q.place j)) ∈ proIwahori := by
   obtain ⟨m, hm⟩ := mem_stdLevel_iff.1 (levelOf_le_stdLevel hk) (Q.place j)
   obtain ⟨hk_Kf, hk_red⟩ := mem_levelOf.1 hk
   have h_red_one : reduceFamily Q.place ⟨k, hk_Kf⟩ = 1 := Subgroup.mem_bot.1 hk_red
-  refine ⟨⟨reindexGL (equivFin n) m, by rw [← hm]; rfl⟩, ?_⟩
+  refine ⟨⟨(equivFin n).reindexGL _ m, by rw [← hm, ← Equiv.map_reindexGL]; rfl⟩, ?_⟩
   -- `reduceAt_eq_zero` is applied by hand: as a `simp` lemma it makes the kernel check very slow
   have h_entries := fun a b ↦ reduceAt_eq_zero.1 ((map_eq_one n).1 (congrFun h_red_one j) a b)
   simp [reindex_equiv (equivFin n), Gf.atPlace, apply_ite, ite_apply,
@@ -776,7 +778,7 @@ lemma exists_localOperators_aeval_hecke (hQ : ∀ j : J, D.IsOffLevel (ℓ := �
       T (a.val y).val ∈ levelSpace D.repOff (levelOf Q.place ⊥) := by
     obtain ⟨-, hy_level⟩ := Submodule.mem_inf.1 (a.val y).prop
     refine mem_levelSpace.2 fun k ↦ ?_
-    have k_iwahori : reindexGL (equivFin n) ((k : Gf E n).atPlace (Q.place j)) ∈ proIwahori :=
+    have k_iwahori : (equivFin n).reindexGL _ ((k : Gf E n).atPlace (Q.place j)) ∈ proIwahori :=
       reindexGL_atPlace_mem_proIwahori_of_mem_levelOf k.prop
     -- `x` has the component of `k⁻¹` at `w j`; it fixes `a y` and `T (a y)`
     let x : Gf E n := ofSplitPlace (Q.apart.star_ne j j) ((k : Gf E n)⁻¹.atPlace _)

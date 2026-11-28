@@ -786,7 +786,7 @@ omit [WeilData E] in
 matrix of `x` and `y`, relabelled along `e`, lies in `GL_n(Ô)`. -/
 lemma reindexGL_blockGL_mem_intGL [DecidableEq κ] {n : Type*} [Fintype n] [DecidableEq n]
     (e : n ≃ ι ⊕ κ) {x : GL ι (𝔸f E)} {y : GL κ (𝔸f E)} (hx : x ∈ intGL ι (Ô E))
-    (hy : y ∈ intGL κ (Ô E)) : reindexGL e.symm (blockGL (x, y)) ∈ intGL n (Ô E) := by
+    (hy : y ∈ intGL κ (Ô E)) : e.symm.reindexGL _ (blockGL (x, y)) ∈ intGL n (Ô E) := by
   simp only [mem_intGL, ← map_inv] at hx hy ⊢
   -- Without `-coe_units_inv` the entries of `x⁻¹` become those of a matrix inverse.
   simp [hx, hy, e.forall_congr_left, -coe_units_inv]
@@ -804,7 +804,7 @@ lemma glMultiplier_fromBlocks [DecidableEq κ] (g' : GL κ (𝔸f E)) {n : Type*
   obtain ⟨k₁, hk₁, l₁, hl₁, d₁, rfl⟩ := exists_eq_mul_diagGL_mul g
   obtain ⟨k₂, hk₂, l₂, hl₂, d₂, rfl⟩ := exists_eq_mul_diagGL_mul g'
   let block : GL ι (𝔸f E) × GL κ (𝔸f E) →* GL n (𝔸f E) :=
-    (reindexGL e.symm).toMonoidHom.comp blockGL
+    (e.symm.reindexGL _).toMonoidHom.comp blockGL
   have h_diag : block (diagGL d₁, diagGL d₂) = diagGL (Sum.elim d₁ d₂ ∘ e) :=
     Units.ext (by simp [block, fromBlocks_diagonal, e.forall_congr_left])
   have hG : G = block (k₁, k₂) * diagGL (Sum.elim d₁ d₂ ∘ e) * block (l₁, l₂) := by

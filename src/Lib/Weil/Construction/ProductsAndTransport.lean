@@ -4,6 +4,7 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import Lib.Weil.Construction.AdelicRepresentation
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
 
 /-!
 # Products of data along a splitting of coordinates, and changes of coordinates
@@ -83,6 +84,19 @@ def G.blockEmb {E : Type*} [Field E] [NumberField E] [IsCMField E] (hs : s ∘ e
     G E s₁ × G E s₂ →* G E s :=
   (reindex e (by simp [← hs, comp_assoc])).toMonoidHom.comp sum
 
+/-- At each infinite place, `blockEmb hs g` is the block diagonal matrix of the components of `g`,
+relabelled along `e`. -/
+lemma G.coe_blockEmb_fst {E : Type*} [Field E] [NumberField E] [IsCMField E]
+    (g : G E s₁ × G E s₂) (w : InfinitePlace E) :
+    ((blockEmb hs g).1 w : GL n ℂ) = e.reindexGL ℂ (blockGL ((g.1.1 w : GL n₁ ℂ), g.2.1 w)) :=
+  congrArg Subtype.val (reindex_fst e (by simp [← hs, comp_assoc]) (sum g) w)
+
+/-- The finite component of `blockEmb hs g` is the block point `U.block e` of the finite components
+of `g`. -/
+lemma G.blockEmb_snd {E : Type*} [Field E] [NumberField E] [IsCMField E]
+    (g : G E s₁ × G E s₂) : (blockEmb hs g).2 = U.block e (g.1.2, g.2.2) :=
+  reindex_snd e (by simp [← hs, comp_assoc]) (sum g)
+
 /-- For the definite spaces `stdSpace` (all signs `1`; `hs` records that `e` keeps these signs), the
 block diagonal element `blockEmb hs g` of a pair `g` lies in the rational points `Γ` of
 `stdSpace E n` exactly when `g.fst` and `g.snd` lie in those of `stdSpace E n₁` and
@@ -101,9 +115,9 @@ lemma G.isClosedEmbedding_blockEmb : Topology.IsClosedEmbedding (blockEmb (E := 
   -- Reindexing along `e` has the continuous left inverse `reindex e.symm hs`, so it is a closed
   -- embedding; so is the block sum.
   have h_signs : (s₁ ⊕ᵥ s₂) ∘ e.symm = s := by simp [← hs, comp_assoc]
-  have h_reindex : Topology.IsClosedEmbedding (reindex (E := E) e.symm hs).symm :=
-    (reindex e.symm hs).toEquiv.right_inv.isClosedEmbedding (continuous_reindex e.symm hs)
-      (continuous_reindex e h_signs)
+  have h_reindex : Topology.IsClosedEmbedding (reindex (E := E) e h_signs) :=
+    LeftInverse.isClosedEmbedding (fun g ↦ ext_adeleMatrix (by simp))
+      (continuous_reindex e.symm hs) (continuous_reindex e h_signs)
   have h_sum : Topology.IsClosedEmbedding (sum : G E s₁ × G E s₂ →* G E (s₁ ⊕ᵥ s₂)) := by
     fun_prop
   exact h_reindex.comp h_sum

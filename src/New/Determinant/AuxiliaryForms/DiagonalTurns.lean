@@ -71,7 +71,7 @@ lemma gridSpace_subdiagEquiv : D.gridSpace 0 true j (j + 1) =
 def subdiagMap :
     C(New.G D.E (D.gridSigns true 0 j (j + 1)), New.G D.E (D.gridSigns false 0 (j + 1) j)) where
   toFun := (G.reindex (D.subdiagEquiv j).symm (D.gridSigns_subdiagEquiv j)).symm
-  continuous_toFun := G.continuous_reindex _ (by simp [← D.gridSigns_subdiagEquiv j, comp_def])
+  continuous_toFun := by rw [G.reindex_symm]; fun_prop
 
 /-- The map `subdiagMap` is a right inverse of the renumbering of the group of `Y^(j+1)_j`. -/
 lemma reindex_subdiagMap (g : New.G D.E (D.gridSigns true 0 j (j + 1))) :

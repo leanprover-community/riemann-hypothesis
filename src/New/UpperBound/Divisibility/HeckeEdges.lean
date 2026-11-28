@@ -91,17 +91,18 @@ lemma atPlace_embFin (v : FinPlace E) (γ : U (stdSpace E n).J) :
 /-- The group `GL_k(W)` over the valuation ring `W` of `v`, embedded in `GL_n(E)` by numbering the
 coordinates with `q`. -/
 def latticeGL (q : n ≃ Fin k) (v : FinPlace E) : GL (Fin k) (valuationRingAt v) →* GL n E :=
-  (GeneralLinearGroup.map (valuationRingAt v).subtype).comp (reindexGL q.symm).toMonoidHom
+  (GeneralLinearGroup.map (valuationRingAt v).subtype).comp (q.symm.reindexGL _).toMonoidHom
 
 lemma latticeGL_apply (q : n ≃ Fin k) (v : FinPlace E) (g : GL (Fin k) (valuationRingAt v))
-    (i j : n) : latticeGL q v g i j = g (q i) (q j) := rfl
+    (i j : n) : latticeGL q v g i j = g (q i) (q j) := by
+  simp [latticeGL]
 
 /-- A rational matrix lies in the maximal compact subgroup at `v` exactly if it comes from `GL_k`
 over the valuation ring of `v`, in the numbering `q` of the coordinates. -/
 lemma localGL_mem_localIntGL_iff_mem_range (q : n ≃ Fin k) {v : FinPlace E} {x : GL n E} :
     localGL v x ∈ localIntGL n v ↔ x ∈ (latticeGL q v).range := by
-  have h_onto : (reindexGL (R := valuationRingAt v) q.symm).toMonoidHom.range = ⊤ :=
-    MonoidHom.range_eq_top.2 (reindexGL q.symm).surjective
+  have h_onto : (q.symm.reindexGL (valuationRingAt v)).toMonoidHom.range = ⊤ :=
+    MonoidHom.range_eq_top.2 (q.symm.reindexGL _).surjective
   rw [localGL_mem_localIntGL_iff, latticeGL, MonoidHom.range_comp, h_onto, ← MonoidHom.range_eq_map]
   rfl
 
@@ -201,7 +202,11 @@ lemma conj_mem_localIntGL_of_transposeGL_mem_parahoric (q : n ≃ Fin k)
     change (d⁻¹.val)ᵀ i j = d⁻¹.val i j
     rw [coe_blockScaling_inv, diagonal_transpose]
   have h_lattice (x : GL (Fin k) (valuationRingAt l)) :
-      invTransposeGL (latticeGL q l (transposeGL x)) = latticeGL q l x⁻¹ := rfl
+      invTransposeGL (latticeGL q l (transposeGL x)) = latticeGL q l x⁻¹ :=
+    GeneralLinearGroup.ext fun i j ↦ by
+      change (latticeGL q l (transposeGL x))⁻¹ j i = _
+      rw [← map_inv, latticeGL_apply, latticeGL_apply]
+      rfl
   have h_eq : d * latticeGL q l (g⁻¹ * g') * d⁻¹ =
       invTransposeGL (d⁻¹ * latticeGL q l (transposeGL g * (transposeGL g')⁻¹) * d) := by
     simp only [map_mul, map_inv, hd, h_lattice, inv_inv]

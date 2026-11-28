@@ -64,7 +64,7 @@ chosen numbering of n followed by `New.ofSplitPlace`. -/
 noncomputable abbrev Patching.embedAtSplit {E : Type _} [Field E] [NumberField E]
     [NumberField.IsCMField E] {w : FinPlace E} (hw : star w ≠ w) :
     GL (Fin (Fintype.card n)) (LocField w) →* Gf E n :=
-  (ofSplitPlace hw).comp (reindexGL (Fintype.equivFin n)).symm.toMonoidHom
+  (ofSplitPlace hw).comp ((Fintype.equivFin n).reindexGL _).symm.toMonoidHom
 
 /-- The representation of GL_N(E_w), N the cardinality of n, on forms of weight κ (a `New.Weight E`)
 on V at a split place w: right translation `V.formTranslation κ` by G_f, pulled back along
@@ -89,8 +89,7 @@ instance : IsSmoothRep (localFormRep V κ hw).ρ := by
   refine ⟨fun x ↦ ?_⟩
   -- The stabiliser of `x` is open, and so is its preimage in the local group.
   have h_cont : Continuous (embedAtSplit (n := n) hw) :=
-    (continuous_ofSplitPlace hw).comp (.units_map _
-      (continuous_id.matrix_reindex (equivFin n).symm (equivFin n).symm))
+    (continuous_ofSplitPlace hw).comp (by simpa using (equivFin n).symm.continuous_reindexGL)
   obtain ⟨h_stab_open, -⟩ := x.prop
   have h_open : IsOpen (embedAtSplit hw ⁻¹' (rightStabilizer x.val).carrier) :=
     h_stab_open.preimage h_cont
@@ -106,9 +105,9 @@ instance :
   -- Let `K` be the open subgroup of the `k` whose part off `w, w̄` fixes `x` and whose component at
   -- `w` lies in `proIwahori`. The space in question embeds in the finite-dimensional space of
   -- `K`-fixed forms.
-  let r : GL n (LocField w) ≃* GL (Fin (card n)) (LocField w) := reindexGL (equivFin n)
+  let r : GL n (LocField w) ≃* GL (Fin (card n)) (LocField w) := (equivFin n).reindexGL _
   let Kloc : OpenSubgroup (GL n (LocField w)) := .comap r.toMonoidHom
-    (.units_map _ (continuous_id.matrix_reindex _ _)) ⟨proIwahori, isOpen_proIwahori⟩
+    (equivFin n).continuous_reindexGL ⟨proIwahori, isOpen_proIwahori⟩
   obtain ⟨h_stab_open, -⟩ := x.prop
   let K : OpenSubgroup (Gf E n) :=
     offPartComap hw ⟨rightStabilizer x.val, h_stab_open⟩ ⊓
@@ -196,7 +195,7 @@ lemma hasHeckePolyAt_iff_localFormRep {P : Polynomial ℂ} :
       ∃ t : ℕ → ℂ,
         P = heckePoly w.q (card n) t ∧ ∀ j : ℕ, heckeGL (localFormRep V κ hw).ρ j x = t j • x := by
   -- Both sides agree after transport along the isomorphism `r` that renumbers the indices.
-  let r : GL n (LocField w) ≃* GL (Fin (card n)) (LocField w) := reindexGL (equivFin n)
+  let r : GL n (LocField w) ≃* GL (Fin (card n)) (LocField w) := (equivFin n).reindexGL _
   have h_fixed : x ∈ levelSpace ((V.formTranslation κ).comp (ofSplitPlace hw)) (localIntGL n w) ↔
       x ∈ levelSpace (localFormRep V κ hw).ρ (localIntGL (Fin (card n)) w) := by
     simp [reindex_equiv r, r, reindex_equiv (equivFin n).symm, mem_intGL]
@@ -293,12 +292,15 @@ lemma HasParahoricType.hasProductLabel {f : Gf E n → M → ℂ} {hw : w.IsSpli
     obtain ⟨-, h_sqfree, -⟩ := ha
     exact h_sqfree
   let ε : {i // b i = 0} ≃ ρ := (Equiv.subtypeEquivRight h_block).trans e.toEquivRange.symm
-  let π : parabolic b →* GL ρ (ResField w) := (reindexGL ε).toMonoidHom.comp (blockHom b 0)
+  let π : parabolic b →* GL ρ (ResField w) := (ε.reindexGL _).toMonoidHom.comp (blockHom b 0)
+  have h_π (p : parabolic b) :
+      (π p : Matrix ρ ρ (ResField w)) = (blockHom b 0 p).val.submatrix ε.symm ε.symm :=
+    Equiv.coe_reindexGL ε _ _
   have h_par (k : intGL n Valued.v.integer) (hk : reduceGL k ∈ parabolic b) :
       rightRegular ℂ (Gf E n) (M → ℂ) (ofSplitPlace hw k.val) f =
         (∏ l, χ l (blockHom b l.succ ⟨reduceGL k, hk⟩).det.val) •
           ψ (π ⟨reduceGL k, hk⟩).det.val • L (σ (π ⟨reduceGL k, hk⟩) y) :=
-    h_act k (π ⟨reduceGL k, hk⟩) hk rfl
+    h_act k (π ⟨reduceGL k, hk⟩) hk (h_π ⟨reduceGL k, hk⟩).symm
   -- A matrix with trivial reduction acts as the identity matrix does.
   have h_ker (k : intGL n Valued.v.integer) (hk : reduceGL k = 1) :
       rightRegular ℂ (Gf E n) (M → ℂ) (ofSplitPlace hw k.val) f = f := by
@@ -339,7 +341,7 @@ lemma HasParahoricType.hasProductLabel {f : Gf E n → M → ℂ} {hw : w.IsSpli
   let Φ (x : GL ρ (ResField w)) : ℂ := star ((labelChar T c).evalGL x) * L (σ x y) g m
   have h_ev (p : parabolic b) :
       (labelChar T c).evalGL (blockHom b 0 p) = (labelChar T c).evalGL (π p) :=
-    congrArg (labelChar T c) (simClassOf_submatrix ε.symm (blockHom b 0 p).val).symm
+    congrArg (labelChar T c) (by rw [h_π, simClassOf_submatrix])
   have h_det_ne {ι : Type} [Fintype ι] [DecidableEq ι] (φ : MulChar (ResField w) ℂ)
       (u : GL ι (ResField w)) : φ u.val.det ≠ 0 := ((isUnits_det_units u).map φ).ne_zero
   -- Term by term: by `h_A` the factors `star (χ l _) * χ l _` are `1`, and `labelChar T a` is
@@ -354,7 +356,7 @@ lemma HasParahoricType.hasProductLabel {f : Gf E n → M → ℂ} {hw : w.IsSpli
   -- Extend by the identity outside block `0` to see that the projection `π` is onto.
   have h_surj : Surjective π := by
     intro x
-    refine ⟨⟨extendGL e x, fun _ ↦ ?_⟩, Units.ext (submatrix_extendGL e x)⟩
+    refine ⟨⟨extendGL e x, fun _ ↦ ?_⟩, Units.ext ((h_π _).trans (submatrix_extendGL e x))⟩
     grind [one_apply_ne, extendGL_apply_of_notMem_range]
   have h_mean : finMean Φ = finMean fun p : parabolic b ↦ Φ (π p) :=
     (finMean_comp_surjective π.toAdditive h_surj Φ).symm

@@ -120,9 +120,11 @@ variable {k k' Z : Type*} {k₀ R : Type*} [Field k] [Field k'] [Field k₀] [Al
 /-- Renumbering the rows and columns along `e` commutes with the action of `τ` on the entries. -/
 private lemma reindexGL_comp_galActionGL {n' : Type*} [Fintype n'] [DecidableEq n'] (e : n ≃ n')
     (τ : Gal(k'/k)) :
-    (reindexGL e).toMonoidHom.comp (galActionGL k k' n τ).toMonoidHom =
-      (galActionGL k k' n' (MonoidHom.id Gal(k'/k) τ)).toMonoidHom.comp (reindexGL e).toMonoidHom :=
-  rfl
+    (e.reindexGL _).toMonoidHom.comp (galActionGL k k' n τ).toMonoidHom =
+      (galActionGL k k' n' (MonoidHom.id Gal(k'/k) τ)).toMonoidHom.comp
+        (e.reindexGL _).toMonoidHom := by
+  ext
+  simp [galActionGL]
 
 omit [Finite k₀] in
 /-- Renumbering the rows and columns along `e` keeps the relation `DescendsTo` with `X`. -/
@@ -130,20 +132,20 @@ lemma descendsTo_comp_reindexGL {n' : Type*} [Fintype n'] [DecidableEq n'] (e : 
     {Ψ : GalSemidirect k k' n' → ℂ} {X : Hall k₀} (hΨ : DescendsTo Ψ X) :
     DescendsTo
     (Ψ ∘ SemidirectProduct.map (φ₁ := galActionGL k k' n) (φ₂ := galActionGL k k' n')
-      (reindexGL e).toMonoidHom (MonoidHom.id Gal(k'/k)) (by exact reindexGL_comp_galActionGL e))
+      (e.reindexGL _).toMonoidHom (MonoidHom.id Gal(k'/k)) (by exact reindexGL_comp_galActionGL e))
       X := by
   intro σ hσ s γ hs hγ
   set ρ : GalSemidirect k k' n →* GalSemidirect k k' n' :=
-    map (reindexGL e).toMonoidHom (.id _) (reindexGL_comp_galActionGL e)
+    map (e.reindexGL _).toMonoidHom (.id _) (reindexGL_comp_galActionGL e)
   -- `ρ s` is a root of the renumbered `γ`, which is similar to `γ`.
-  have h_pow : ρ s ^ orderOf σ = inl ((reindexGL e γ).map (algebraMap k₀ k')) := by
+  have h_pow : ρ s ^ orderOf σ = inl ((e.reindexGL _ γ).map (algebraMap k₀ k')) := by
     rw [← map_pow, hγ]
     -- `ρ` renumbers the matrix part, which commutes with applying `algebraMap k₀ k'` to the entries
-    rfl
-  calc Ψ (ρ s) = X.evalGL (reindexGL e γ) := hΨ σ hσ (ρ s) (reindexGL e γ) hs h_pow
+    exact congrArg inl (e.map_reindexGL _ γ).symm
+  calc Ψ (ρ s) = X.evalGL (e.reindexGL _ γ) := hΨ σ hσ (ρ s) (e.reindexGL _ γ) hs h_pow
     _ = X.evalGL γ := by
-      change X (simClassOf (γ.val.submatrix e.symm e.symm).toLin') = X (simClassOf γ.val.toLin')
-      rw [simClassOf_submatrix]
+      change X (simClassOf (e.reindexGL _ γ).val.toLin') = X (simClassOf γ.val.toLin')
+      rw [Equiv.coe_reindexGL, simClassOf_submatrix]
 
 /-- If (F, F') is a lift with coefficients in Z, then for every finite index set n some
 Z-combination of characters of GL_n(k')⋊Gal(k'/k) descends (`New.DescendsTo`) to F over k and to F'

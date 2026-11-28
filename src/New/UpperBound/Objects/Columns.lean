@@ -803,12 +803,11 @@ def restrictToY :
     refine ⟨?_, fun γ g ↦ ?_⟩
     · -- the stabiliser contains the preimage under `borderU` of the open stabiliser of `ψ`
       have cont : Continuous D.borderU := by
-        refine (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous_iff.2
-            (.matrix_reindex ?_ ..)
+        refine (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous_iff.2 ?_
         -- each entry of `diag (g, 1)` is a constant or an entry of `g`
-        simp only [U.sum, MonoidHom.inl_apply, MonoidHom.codRestrict_apply, MonoidHom.coe_comp,
-          MonoidHom.coe_prodMap, Function.comp_apply, val_blockGL_apply]
-        fun_prop
+        simp only [borderU, MonoidHom.coe_comp, Function.comp_def, MonoidHom.inl_apply, U.block_val,
+          OneMemClass.coe_one, Units.val_one]
+        exact Continuous.matrix_submatrix (by fun_prop) _ _
       exact ((rightStabilizer ψ).comap D.borderU).isOpen_mono (fun _ hk ↦ by simp [hk _])
         (smooth.preimage cont)
     -- `branching` intertwines the action of `diag (γ, 1)` with that of `γ`

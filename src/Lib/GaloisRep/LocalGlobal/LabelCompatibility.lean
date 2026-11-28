@@ -297,15 +297,15 @@ private lemma New.GaloisRep.Attached.isLabelledAt_one (hf : f ∈ (stdSpace E n)
   have h_inj : Injective (append ψ χ) := .of_comp (f := fun η ↦ (charName T η).val) <| by
     simpa [Function.comp_def, ← separable_prod_X_sub_C_iff, prod_univ_add] using h_sep
   let ρ := Patching.localFormRep (stdSpace E n) κ hw
-  have h_act (g : GL n (LocField w)) : (ρ (reindexGL (Fintype.equivFin n) g) ⟨f, hf⟩).val =
+  have h_act (g : GL n (LocField w)) : (ρ ((Fintype.equivFin n).reindexGL _ g) ⟨f, hf⟩).val =
       rightRegular ℂ (Gf E n) (WeylIndex n κ.1 → ℂ) (ofSplitPlace hw g) f := by
     simp [ρ, Patching.localFormRep, Patching.embedAtSplit]
   have h_fix : ∀ k, reduceGL (w := w) k = 1 →
-      ρ (reindexGL (Fintype.equivFin n) k.val) ⟨f, hf⟩ = ⟨f, hf⟩ :=
+      ρ ((Fintype.equivFin n).reindexGL _ k.val) ⟨f, hf⟩ = ⟨f, hf⟩ :=
     fun k hk ↦ Subtype.ext ((h_act k.val).trans (h_has.1 k hk))
   have h_sum : ∑ᶠ g : GL n (ResField w),
       star ((∏ b, (detChar (append ψ χ b)).rankPart (append 1 t b)).evalGL g) •
-        ρ (reindexGL (Fintype.equivFin n) (surjInv reduceGL_surjective g).val) ⟨f, hf⟩ ≠ 0 := by
+        ρ ((Fintype.equivFin n).reindexGL _ (surjInv reduceGL_surjective g).val) ⟨f, hf⟩ ≠ 0 := by
     intro h0
     have h1 := congrArg ((stdSpace E n).forms κ).subtype h0
     rw [map_finsum _ (Set.toFinite _), map_zero] at h1

@@ -146,6 +146,7 @@ lemma exists_integral_eq_mul_inner_restrictToFormY (hM : D.m = M)
     -- The index of `stdLevel` in itself is `1`, and `D.borderU h` is the point `diag (h, 1)`.
     have h_index : stdLevelIndex (stdLevel D.E (D.Y D.m)) = 1 := by simp
     rw [h_index, Nat.cast_one, div_one]
+    simp only [G.blockEmb_snd]
     rfl
   -- The inner product is the mean divided by the dimension, and `D.restrictToY` is the branching
   -- map divided by `c`.

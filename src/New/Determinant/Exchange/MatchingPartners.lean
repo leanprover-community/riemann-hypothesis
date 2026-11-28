@@ -87,17 +87,17 @@ lemma New.Rows.areMatched_block {n a b R : Type} [Fintype n] [DecidableEq n] [Fi
   -- invertible block triangular matrix. For the equation of matched functions at `k`, split
   -- `invLastRows e k = (x₁ x₂)` into columns and `firstCols e k = (y₁; y₂)` into rows: then
   -- `det y₁ = det x₂ * det k` and `x₁ y₁ + x₂ y₂ = 0`.
-  refine ⟨fun x hx ↦ ?_, fun y hy ↦ ?_, (reindexGL e).surjective.forall.2 fun k _ ↦ ?_⟩
+  refine ⟨fun x hx ↦ ?_, fun y hy ↦ ?_, (e.reindexGL _).surjective.forall.2 fun k _ ↦ ?_⟩
   · -- `x = (x₁ x₂)` forms the last rows of `k⁻¹` for `k = (1 0; x₁ x₂)⁻¹`
     have h_unit :
         IsUnit (fromBlocks 1 0 (x.submatrix id e).toCols₁ (x.submatrix id e).toCols₂).det := by
       simpa [apply_eq_zero_iff] using left_ne_zero_of_mul hx
-    exact ⟨reindexGL e (.mk'' _ h_unit)⁻¹, by simp [mem_intGL, ← ext_iff, e.surjective.forall]⟩
+    exact ⟨e.reindexGL _ (.mk'' _ h_unit)⁻¹, by simp [mem_intGL, ← ext_iff, e.surjective.forall]⟩
   · -- `y = (y₁; y₂)` forms the first columns of `k = (y₁ 0; y₂ 1)`
     have h_unit :
         IsUnit (fromBlocks (y.submatrix e id).toRows₁ 0 (y.submatrix e id).toRows₂ 1).det := by
       simpa [apply_eq_zero_iff] using left_ne_zero_of_mul hy
-    exact ⟨reindexGL e (.mk'' _ h_unit), by simp [mem_intGL, ← ext_iff, e.surjective.forall]⟩
+    exact ⟨e.reindexGL _ (.mk'' _ h_unit), by simp [mem_intGL, ← ext_iff, e.surjective.forall]⟩
   · -- relabel the basis, so that `e` becomes the identity
     set x : Matrix a (b ⊕ a) R := invLastRows (.refl _) k with hx
     set y : Matrix (b ⊕ a) b R := firstCols (.refl _) k with hy

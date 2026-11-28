@@ -921,6 +921,7 @@ lemma stdClassSum_thirdExchangeKernel_productDatum {a : Type}
   · -- the first spaces
     ext1
     simp [GeneralLinearGroup.ext_iff, Space.reindex, Space.sum, regroupEquiv, Matrix.one_apply]
+  · exact Space.reindex_refl _ _
   · -- the first characters: `W_j` has `m - j` negative signs, and `υ ^ m = υ ^ (m - j) * υ ^ j`
     rw [firstFactorChar, DescentPair.charW, descentPair, negCount_signsW,
       ← mul_assoc (upsilonU1 ^ (D.m - j)), pow_sub_mul_pow _ j.prop.2,
@@ -1016,6 +1017,7 @@ lemma stdClassSum_thirdExchangeKernel_productDatum {a : Type}
       | (change (1 : Matrix (PadIndex j) (PadIndex j) (𝔸 D.E)) (inr a) (inr b) =
           (1 : Matrix (Fin (2 * D.m + (D.m - j))) (Fin (2 * D.m + (D.m - j))) (𝔸 D.E)) a b
          simp only [Matrix.one_apply, inr.injEq])
+  · exact DFunLike.congr_fun (G.reindex_refl _) _
 
 -- Keeps definitional checks from unfolding `Finset.prod`.
 seal Finset.prod in

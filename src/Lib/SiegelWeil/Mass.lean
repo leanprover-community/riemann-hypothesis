@@ -90,7 +90,8 @@ lemma classSum_stdRatPoints_eq_mass :
   let ι : Gf E (Fin (card κ)) ≃* Gf E κ :=
     reindex (equivFin κ).symm (submatrix_one_equiv (equivFin κ))
   have ι_apply (g : Gf E (Fin (card κ))) (i j : κ) :
-      (ι g).val i j = g.val (equivFin κ i) (equivFin κ j) := rfl
+      (ι g).val i j = g.val (equivFin κ i) (equivFin κ j) :=
+    congrFun (congrFun (U.reindex_val _ _ g) i) j
   have h_rat : stdRatPoints = stdRatPoints.comap ι.toMonoidHom := Subgroup.ext fun g ↦ by
     rw [Subgroup.mem_comap, mem_stdRatPoints_iff, mem_stdRatPoints_iff]
     simp [ι_apply, reindex_equiv (equivFin κ)]

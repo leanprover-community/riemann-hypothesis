@@ -82,7 +82,7 @@ the two reductions. -/
 lemma map_block_eq_blockGL [DecidableEq m] [DecidableEq N] {R : Type*} [CommRing R] (f : Ô E →+* R)
     (ε : N ⊕ m ≃ n) (k : stdLevel E N) (l : stdLevel E m) :
     ∃ h, stdLevel.map (S := R) n f ⟨U.block ε (k, l), h⟩ =
-      reindexGL ε (blockGL (stdLevel.map N f k, stdLevel.map m f l)) := by
+      ε.reindexGL _ (blockGL (stdLevel.map N f k, stdLevel.map m f l)) := by
   -- Compare entries, indexed through `ε` by the indices of the two blocks.
   refine ⟨?_, ?_⟩
   · simp [mem_stdLevel, mem_stdLevel.1, reindex_equiv ε]

@@ -227,7 +227,7 @@ lemma SquareLaw.sum_eq_nextDatum [DecidableEq R] {χ : MulChar R ℂ} {c : ℂ}
 
 /-- The embedding `g ↦ g ⊕ 1` of `GL b R` in `GL n R`, in the order of the basis given by `e`. -/
 abbrev blockInlGL (e : b ⊕ a ≃ n) : GL b R →* GL n R :=
-  (reindexGL e).toMonoidHom.comp (blockGL (R := R).comp (MonoidHom.inl (GL b R) (GL a R)))
+  (e.reindexGL _).toMonoidHom.comp (blockGL (R := R).comp (MonoidHom.inl (GL b R) (GL a R)))
 
 omit [Fintype R] in
 lemma blockInlGL_sumEmpty (g : GL b R) : blockInlGL (sumEmpty b Empty) g = g := by

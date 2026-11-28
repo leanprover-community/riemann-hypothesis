@@ -189,7 +189,7 @@ def turned (ε : D.NodeIndex c.low ⊕ D.NodeIndex c.high ≃ D.NodeIndex c.fst 
 
 /-- The element of a family at `W₂`, in the basis of the square. -/
 abbrev sndGL (g : NodeFamily ϑ) : GL B (gridModulus ϑ).ResidueRing :=
-  reindexGL c.sndEquiv.symm (g c.snd)
+  c.sndEquiv.symm.reindexGL _ (g c.snd)
 
 /-- The element of a family on `W₁ ⊕ W₂`. -/
 abbrev sumGL (g : NodeFamily ϑ) : GL (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ).ResidueRing :=

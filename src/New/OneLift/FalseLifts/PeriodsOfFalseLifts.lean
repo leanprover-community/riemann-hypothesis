@@ -343,7 +343,7 @@ theorem stdClassSum_gramForm_eq_zero (hO_fits : O.FitsParams l₀)
     (h_rank : 2 * card r + 2 * card N + 3 < card n) (ε : N ⊕ l ≃ n) {κ : InfinitePlace E → ℕ → ℕ}
     (C : (WeylIndex l κ → ℂ) →ₗ⋆[ℂ] WeylIndex n O.columnCount → ℂ)
     (hC : ∀ (g : GInf E (1 : n → ℤˣ)) (y : GInf E (1 : l → ℤˣ)) (ζ : WeylIndex l κ → ℂ),
-      (∀ τ : InfinitePlace E, (g τ : GL n ℂ) = reindexGL ε (blockGL (1, y τ))) →
+      (∀ τ : InfinitePlace E, (g τ : GL n ℂ) = ε.reindexGL ℂ (blockGL (1, y τ))) →
         conjWeylRep O.columnCount O.detExp g (C ζ) = C (conjWeylRep κ 0 y ζ))
     (ϑ : Gf E l → WeylIndex l κ → ℂ)
     (h_kernels : ∀ j : WeylIndex l κ, ∃ (c : ℂ) (g : G E O.signs) (b : AutChar E)
@@ -381,12 +381,12 @@ theorem stdClassSum_gramForm_eq_zero (hO_fits : O.FitsParams l₀)
     let k : GInf E (1 : n → ℤˣ) := (diag ((1, h₁), u, h)).1⁻¹
     have h_move : f h = gramForm (C (conjWeylRep κ 0 u⁻¹ (ϑ h)))
         (conjWeylRep O.columnCount O.detExp k (Ξ (U.block ε (h₁, h) * x))) := by
-      rw [← hC k u⁻¹ (ϑ h) fun _ ↦ rfl, gramForm_conjWeylRep]
+      rw [← hC k u⁻¹ (ϑ h) fun τ ↦ by simp [k, diag, G.coe_blockEmb_fst, ← map_inv],
+        gramForm_conjWeylRep]
     simp only [F, ← mul_assoc (c _), ← h_coord, h_move]
     generalize conjWeylRep κ 0 u⁻¹ (ϑ h) = v
     conv_rhs => rw [pi_eq_sum_univ' v]
-    simp [y, algFormCoeff_apply, -map_inv]
-    rfl
+    simp [y, k, algFormCoeff_apply, -map_inv, diag, G.blockEmb_snd]
   refine ⟨fun δ hδ h ↦ ?_, fun K _ hK ↦ ?_⟩
   · rw [← h_sum (δ.1 * 1) (δ.2 * h), ← h_sum 1 h]
     exact Finset.sum_congr rfl fun j _ ↦ congrArg (c j * ·) (hF_rat j δ hδ (1, h))
@@ -421,7 +421,7 @@ lemma stdClassSum_gramForm_kernelVector_eq_zero (hO_fits : O.FitsParams l₀)
     (h_rank : 2 * card r + 2 * card N + 3 < card n) (ε : N ⊕ l ≃ n) {κ : InfinitePlace E → ℕ → ℕ}
     (C : (WeylIndex l κ → ℂ) →ₗ⋆[ℂ] WeylIndex n O.columnCount → ℂ)
     (hC : ∀ (g : GInf E (1 : n → ℤˣ)) (y : GInf E (1 : l → ℤˣ)) (ζ : WeylIndex l κ → ℂ),
-      (∀ τ : InfinitePlace E, (g τ : GL n ℂ) = reindexGL ε (blockGL (1, y τ))) →
+      (∀ τ : InfinitePlace E, (g τ : GL n ℂ) = ε.reindexGL ℂ (blockGL (1, y τ))) →
         conjWeylRep O.columnCount O.detExp g (C ζ) = C (conjWeylRep κ 0 y ζ))
     (b : AutChar E) {𝔪 : Modulus E} (h𝔪 : 𝔪.places ⊆ O.places) {Ψ : Matrix l r 𝔪.ResidueRing → ℂ}
     (g : G E O.signs) (h₁ : Gf E N) {x : Gf E n} (hx : x ∈ supportedOn n O.places)
@@ -556,7 +556,7 @@ lemma algFormRep_conj_block_apply_eq_self (Ξ : O.FormV) (ε : N ⊕ l ≃ n) {x
         inclMatrix (ResField (O.placeAt (inr i))) O.incl := by
     obtain ⟨h_blk, h_red⟩ : ∃ h : U.block ε (1, k.val) ∈ stdLevel E n,
       stdLevel.reduceAt (O.twistPlace i) ⟨_, h⟩ =
-        reindexGL ε (blockGL (1, stdLevel.reduceAt (O.twistPlace i) k)) := by
+        ε.reindexGL _ (blockGL (1, stdLevel.reduceAt (O.twistPlace i) k)) := by
       simpa using! map_block_eq_blockGL (reduceAt (O.twistPlace i)) ε 1 k
     have h_eq : stdLevel.reduceAt (O.twistPlace i) ⟨_, h_mem⟩ = stdLevel.reduceAt (O.twistPlace i)
       ⟨_, h_blk⟩ :=
@@ -609,7 +609,7 @@ lemma stdClassSum_period_eq_zero (hO_fits : O.FitsParams l₀)
     (hY : ∀ i : O.ChosenIndex, Function.Injective (Y i).mulVec)
     (C : (WeylIndex l κ → ℂ) →ₗ⋆[ℂ] WeylIndex n O.columnCount → ℂ)
     (hC : ∀ (g : GInf E (1 : n → ℤˣ)) (y : GInf E (1 : l → ℤˣ)) (ζ : WeylIndex l κ → ℂ),
-      (∀ τ : InfinitePlace E, (g τ : GL n ℂ) = reindexGL ε (blockGL (1, y τ))) →
+      (∀ τ : InfinitePlace E, (g τ : GL n ℂ) = ε.reindexGL ℂ (blockGL (1, y τ))) →
         conjWeylRep O.columnCount O.detExp g (C ζ) = C (conjWeylRep κ 0 y ζ))
     {b : AutChar E} {𝔪 : Modulus E} (h𝔪 : 𝔪.places ⊆ O.places) {Ψ : Matrix l r 𝔪.ResidueRing → ℂ}
     {g : G E O.signs} {h₁ : Gf E N} {x : Gf E n} (hx : x ∈ supportedOn n (.range O.chosenPlace))
@@ -715,7 +715,7 @@ lemma DividedSplitting.stdClassSum_inner_productForm_eq_zero {z : r ↪ l}
     cartanProduct V.ε 1 y ∘ₛₗ (starLinearEquiv ℂ).toLinearMap
   -- `C` is equivariant for the real group of the second block.
   have hC (g : GInf E (1 : n → ℤˣ)) (u : GInf E (1 : l → ℤˣ)) (ζ : WeylIndex l O.colsMinus → ℂ)
-      (hg : ∀ τ : InfinitePlace E, (g τ : GL n ℂ) = reindexGL V.ε (blockGL (1, u τ))) :
+      (hg : ∀ τ : InfinitePlace E, (g τ : GL n ℂ) = V.ε.reindexGL ℂ (blockGL (1, u τ))) :
       conjWeylRep O.columnCount O.detExp g (C ζ) = C (conjWeylRep O.colsMinus 0 u ζ) := by
     have h_inv (τ : InfinitePlace E) : (g τ).val.val⁻¹ = (g τ).val.valᴴ := by
       simpa using U.form_mul_inv_eq (g τ)

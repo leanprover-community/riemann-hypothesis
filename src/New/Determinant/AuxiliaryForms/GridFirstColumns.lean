@@ -167,10 +167,11 @@ lemma diagonalPeriodForm_formRep (D : Data P) (ϑ : D.MFoldTwist) {j : ℕ} {hj 
       ∫ x, y.val x * φ.val (ι x * (g, 1)) ∂(D.gridSpace 0 false j j).quotMeasure := by
     simp [periodPairing, ι]
   have h_mul (x) : ι (x * (1, u)) = ι x * (1, U.block (D.gridDiagEquiv j) (u, 1)) := by
-    refine Prod.ext ?_ ?_
-    · simp [ι, Prod.mul_def]
+    refine Prod.ext (funext fun τ ↦ ?_) ?_
+    · simp [ι, Prod.mul_def, G.reindex_fst]
       rfl
-    · refine .trans ?_ ((U.block _).map_mul (x.2, (gridModulus ϑ).flipScalar Unit ^ j) (u, 1))
+    · simp only [ι, Prod.snd_mul, G.reindex_snd]
+      refine .trans ?_ ((U.block _).map_mul (x.2, (gridModulus ϑ).flipScalar Unit ^ j) (u, 1))
       simp
       rfl
   rw [h_int, h_int, ← (integral_comp_mul_right u h_rat h_cont).1]

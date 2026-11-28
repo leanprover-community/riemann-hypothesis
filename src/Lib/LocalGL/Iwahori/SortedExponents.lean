@@ -672,9 +672,9 @@ lemma New.exists_monovary_card_fiber {n : Type*} {N r : ℕ} [Fintype n] (e : n 
 `GL n` of the valuation ring. -/
 private lemma New.reindexGL_symm_mem_intGL {F : Type*} [Field F] [Valued F ℤᵐ⁰] {N : ℕ}
     {n : Type*} [Fintype n] [DecidableEq n] (e : n ≃ Fin N) {g : GL (Fin N) F}
-    (hg : g ∈ intGL (Fin N) 𝒪[F]) : (reindexGL e).symm g ∈ intGL n 𝒪[F] := by
+    (hg : g ∈ intGL (Fin N) 𝒪[F]) : (e.reindexGL _).symm g ∈ intGL n 𝒪[F] := by
   obtain ⟨k, rfl⟩ := hg
-  exact ⟨(reindexGL e).symm k, rfl⟩
+  exact ⟨(e.reindexGL _).symm k, by ext; simp⟩
 
 /-- Let `x` be fixed by the integral matrices that reduce to `1`, and `s` a lift of `GL n` of the
 residue field to the valuation ring. Let the sum in `h_sum_ne`, against the product of the
@@ -686,15 +686,15 @@ private lemma New.exists_reindexGL_apply_eq_smul_of_finsum_ne_zero {F : Type*} [
     [Valued F ℤᵐ⁰] [CompactSpace 𝒪[F]] {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)} {x : ρ}
     {n : Type*} [Fintype n] [DecidableEq n] (e : n ≃ Fin N) {r : ℕ}
     {χ : Fin r → MulChar (IsLocalRing.ResidueField 𝒪[F]) ℂ} (b : n → Fin r)
-    (hx : ∀ k : intGL n 𝒪[F], intGL.map (residue 𝒪[F]) k = 1 → ρ (reindexGL e k.val) x = x)
+    (hx : ∀ k : intGL n 𝒪[F], intGL.map (residue 𝒪[F]) k = 1 → ρ (e.reindexGL _ k.val) x = x)
     {s : GL n (IsLocalRing.ResidueField 𝒪[F]) → intGL n 𝒪[F]}
     (h_lift : ∀ g : GL n (IsLocalRing.ResidueField 𝒪[F]), intGL.map (residue 𝒪[F]) (s g) = g)
     (h_sum_ne : ∑ᶠ g : GL n (IsLocalRing.ResidueField 𝒪[F]),
         star ((∏ a : Fin r, (detChar (χ a)).rankPart (card {i // b i = a})).evalGL g) •
-          ρ (reindexGL e (s g).val) x ≠ 0) :
+          ρ (e.reindexGL _ (s g).val) x ≠ 0) :
     ∃ y ∈ cyclicSpan ρ.ρ x, y ≠ 0 ∧
       ∀ (g : intGL n 𝒪[F]) (hg : intGL.map (residue 𝒪[F]) g ∈ parabolic b),
-        ρ (reindexGL e g) y =
+        ρ (e.reindexGL _ g) y =
           (∏ a : Fin r, χ a (blockHom b a ⟨intGL.map (residue 𝒪[F]) g, hg⟩).val.det) • y := by
   -- By Frobenius reciprocity (`sum_evalGL_prod_eq_zero_iff`) the sum `y` over some coset of
   -- `parabolic b` is nonzero; translating `y` by `g` permutes the coset and brings out the
@@ -702,19 +702,19 @@ private lemma New.exists_reindexGL_apply_eq_smul_of_finsum_ne_zero {F : Type*} [
   -- The action on `x` depends only on the reduction modulo the maximal ideal.
   have h_act (g z : intGL n 𝒪[F]) (w : GL n (IsLocalRing.ResidueField 𝒪[F]))
       (hw : w = intGL.map (residue 𝒪[F]) g * intGL.map (residue 𝒪[F]) z) :
-      ρ (reindexGL e g.val) (ρ (reindexGL e z.val) x) = ρ (reindexGL e (s w).val) x := by
+      ρ (e.reindexGL _ g.val) (ρ (e.reindexGL _ z.val) x) = ρ (e.reindexGL _ (s w).val) x := by
     simpa [inv_mul_eq_one, h_lift, hw, Representation.inv_apply_eq_iff] using
       hx ((s w)⁻¹ * (g * z))
   obtain ⟨g₀, hy_ne⟩ :
       ∃ g₀ : GL n (IsLocalRing.ResidueField 𝒪[F]),
         ∑ p : parabolic b, (∏ a : Fin r, star ((detChar (χ a)).evalGL (blockHom b a p))) •
-          ρ (reindexGL e (s (p * g₀)).val) x ≠ 0 := by
+          ρ (e.reindexGL _ (s (p * g₀)).val) x ≠ 0 := by
     simpa [finsum_eq_sum_of_fintype] using
       (sum_evalGL_prod_eq_zero_iff b (fun a ↦ lift_detChar (χ := χ a) (faithfulChar 𝓀[F]) rfl)
-        (fun g ↦ ρ (reindexGL e (s g).val))
+        (fun g ↦ ρ (e.reindexGL _ (s g).val))
         fun g z ↦ h_act (s g) (s z) (g * z) (by rw [h_lift, h_lift])).not.mp h_sum_ne
   set y : ρ := ∑ p : parabolic b, (∏ a : Fin r, star ((detChar (χ a)).evalGL (blockHom b a p))) •
-    ρ (reindexGL e (s (p * g₀)).val) x
+    ρ (e.reindexGL _ (s (p * g₀)).val) x
   refine ⟨y, ?_, hy_ne, fun g hg ↦ ?_⟩
   · -- each summand is a multiple of a translate of `x`
     exact _root_.sum_mem fun p _ ↦ smul_mem _ _ (subset_span ⟨_, rfl⟩)
@@ -732,10 +732,10 @@ private lemma New.blockTriangular_intGL_map_reindexGL_symm_of_valuation_lt_one {
     (e : n ≃ Fin N) {k : ℕ} (c : n → Fin k) (g : GL (Fin N) F) (hg : g ∈ intGL (Fin N) 𝒪[F])
     (h_low : ∀ i j : Fin N, c (e.symm j) < c (e.symm i) → v (g i j) < 1) :
     BlockTriangular (intGL.map (residue 𝒪[F])
-      (⟨(reindexGL e).symm g, reindexGL_symm_mem_intGL e hg⟩ : intGL n 𝒪[F])).val c := by
+      (⟨(e.reindexGL _).symm g, reindexGL_symm_mem_intGL e hg⟩ : intGL n 𝒪[F])).val c := by
   -- Entries of valuation less than `1` reduce to `0`. (`residue_eq_zero_iff` is left out so that
   -- `residue_eq_zero_iff_valuation_lt_one` gives the form with the valuation.)
-  simpa [reindexGL, BlockTriangular, intGL.map_apply, residue_eq_zero_iff_valuation_lt_one,
+  simpa [BlockTriangular, intGL.map_apply, residue_eq_zero_iff_valuation_lt_one,
     -residue_eq_zero_iff, e.forall_congr_left] using h_low
 
 /-- Let `b` grow with the order `e` (`Monovary e b`), and let each integral `g` whose reduction
@@ -747,10 +747,10 @@ private lemma New.reindexGL_apply_eq_prod_smul_of_blockTriangular {F : Type*} [F
     {n : Type*} [Fintype n] [DecidableEq n] (e : n ≃ Fin N) {r : ℕ}
     {χ : Fin r → MulChar (IsLocalRing.ResidueField 𝒪[F]) ℂ} {b : n → Fin r} (hb : Monovary e b)
     (h_block : ∀ (g : intGL n 𝒪[F]) (hg : intGL.map (residue 𝒪[F]) g ∈ parabolic b),
-      ρ (reindexGL e g) y =
+      ρ (e.reindexGL _ g) y =
         (∏ a : Fin r, χ a (blockHom b a ⟨intGL.map (residue 𝒪[F]) g, hg⟩).val.det) • y)
     (g : intGL n 𝒪[F]) (hg : BlockTriangular (intGL.map (residue 𝒪[F]) g).val e) :
-    ρ (reindexGL e g) y = (∏ i : n, χ (b i) (intGL.map (residue 𝒪[F]) g i i)) • y := by
+    ρ (e.reindexGL _ g) y = (∏ i : n, χ (b i) (intGL.map (residue 𝒪[F]) g i i)) • y := by
   -- Blocks of smaller level come first in the order `e`, so the reduction lies in `parabolic b`.
   have h_lt (i j : n) (h_lt_b : b j < b i) : e j < e i := by grind [hb h_lt_b, e.injective]
   have hg_par : intGL.map (residue 𝒪[F]) g ∈ parabolic b := fun i j h ↦ hg (h_lt i j h)
@@ -797,7 +797,7 @@ private lemma New.apply_eq_prod_smul_of_valuation_lt_one {F : Type*} [Field F] [
     {χ : Fin r → MulChar (IsLocalRing.ResidueField 𝒪[F]) ℂ} {b : n → Fin r} (hb : Monovary e b)
     {R : F → 𝓀[F]} (hR : ∀ a : 𝒪[F], R a = residue 𝒪[F] a)
     (h_block : ∀ (g : intGL n 𝒪[F]) (hg : intGL.map (residue 𝒪[F]) g ∈ parabolic b),
-      ρ (reindexGL e g) y =
+      ρ (e.reindexGL _ g) y =
         (∏ a : Fin r, χ a (blockHom b a ⟨intGL.map (residue 𝒪[F]) g, hg⟩).val.det) • y)
     (g : GL (Fin N) F) (hg : g ∈ intGL (Fin N) 𝒪[F])
     (h_low : ∀ i j : Fin N, j < i → v (g i j) < 1) :
@@ -808,9 +808,9 @@ private lemma New.apply_eq_prod_smul_of_valuation_lt_one {F : Type*} [Field F] [
   have h_act :=
     reindexGL_apply_eq_prod_smul_of_blockTriangular e hb h_block _
       (blockTriangular_intGL_map_reindexGL_symm_of_valuation_lt_one e e g hg h_low_e)
-  rw [(reindexGL e).apply_symm_apply] at h_act
+  rw [(e.reindexGL _).apply_symm_apply] at h_act
   -- Reindex the product along `e` and write the residues through `R`.
-  simpa [← e.symm.prod_comp, reindexGL, intGL.map_apply, ← hR] using h_act
+  simpa [← e.symm.prod_comp, intGL.map_apply, ← hR] using h_act
 
 /-- If `χ` is injective and the characters `χ a` and `χ a'` of the residue field agree at the
 residue of every unit of the valuation ring, then `a = a'`. -/
@@ -850,11 +850,11 @@ lemma New.exists_sorted_of_detChar {F : Type*} [Field F] [Valued F ℤᵐ⁰] [C
     [∀ z : ρ, Module.Finite ℂ ((cyclicSpan ρ.ρ z).submoduleOf (levelSpace ρ.ρ proIwahori 1))]
     (hB : IsUnitary ρ.ρ B) {n : Type*} {r : ℕ} {χ : Fin r → MulChar 𝓀[F] ℂ} [Fintype n]
     [DecidableEq n] (e : n ≃ Fin N) (hχ : Injective χ) {m : Fin r → ℕ} (hm : ∑ a : Fin r, m a = N)
-    (hx : ∀ k : intGL n 𝒪[F], intGL.map (residue 𝒪[F]) k = 1 → ρ (reindexGL e k.val) x = x)
+    (hx : ∀ k : intGL n 𝒪[F], intGL.map (residue 𝒪[F]) k = 1 → ρ (e.reindexGL _ k.val) x = x)
     {s : GL n 𝓀[F] → intGL n 𝒪[F]} (h_lift : ∀ g : GL n 𝓀[F], intGL.map (residue 𝒪[F]) (s g) = g)
     (h_sum_ne : ∑ᶠ g : GL n 𝓀[F],
         star ((∏ a : Fin r, (detChar (χ a)).rankPart (m a)).evalGL g) •
-          ρ (reindexGL e (s g).val) x ≠ 0) :
+          ρ (e.reindexGL _ (s g).val) x ≠ 0) :
     ∃ y ∈ cyclicSpan ρ.ρ x, ∃ (θ : Fin N → Fˣ →* ℂˣ) (c : Fin N → Fin r),
       IsIwahoriEigen ρ (torusChar θ) y ∧
       (Antitone fun i : Fin N ↦ ‖(θ i ϖ : ℂ)‖) ∧
@@ -881,7 +881,7 @@ lemma New.exists_sorted_of_detChar {F : Type*} [Field F] [Valued F ℤᵐ⁰] [C
       (h_low : ∀ i j : Fin N, b (e.symm j) < b (e.symm i) → v (g i j) < 1) :
       ∃ c : ℂ, ρ g y = c • y := by
     have h_par : intGL.map (residue 𝒪[F])
-        (⟨(reindexGL e).symm g, reindexGL_symm_mem_intGL e hg⟩ : intGL n 𝒪[F]) ∈ parabolic b :=
+        (⟨(e.reindexGL _).symm g, reindexGL_symm_mem_intGL e hg⟩ : intGL n 𝒪[F]) ∈ parabolic b :=
       blockTriangular_intGL_map_reindexGL_symm_of_valuation_lt_one e b g hg h_low
     exact ⟨_, by simpa using h_block _ h_par⟩
   have hy_fixed : y ∈ levelSpace ρ.ρ proIwahori :=

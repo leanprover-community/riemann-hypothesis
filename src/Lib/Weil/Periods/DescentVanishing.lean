@@ -450,8 +450,10 @@ lemma mem_range_secondBlock {g : G E (1 : n → ℤˣ)} :
     have h_entry (i : n) (j : n₁) :
         g.adeleMatrix i (o (.inl j)) = (1 : Matrix n n (𝔸 E)) i (o (.inl j)) := by
       simpa [firstFrame, inclMatrix, Matrix.mul_apply, Matrix.one_apply] using congrFun₂ hg i j
+    have h_g' : g'.adeleMatrix = g.adeleMatrix.submatrix o o := G.adeleMatrix_reindex o.symm hs g
     have h_cols : g'.adeleMatrix.toCols₁ = fromRows 1 0 := by
       ext i j : 1
+      rw [h_g']
       change g.adeleMatrix (o i) (o (.inl j)) = _
       cases i <;> simp [h_entry, Matrix.one_apply]
     obtain ⟨a, ha⟩ : ∃ a : U (stdForm E (1 : n₂ → ℤˣ)),
@@ -463,9 +465,10 @@ lemma mem_range_secondBlock {g : G E (1 : n → ℤˣ)} :
       apply ext_adeleMatrix
       rw [adeleMatrix_sum, ha_mat]
       simp [adeleMatrix]
-    refine ⟨toUnitary.symm a, ?_⟩
-    change (reindex o.symm hs).symm (G.sum (1, toUnitary.symm a)) = g
-    rw [h_sum, MulEquiv.symm_apply_apply]
+    refine ⟨toUnitary.symm a, ext_adeleMatrix ?_⟩
+    simp only [secondBlock, blockEmb, MonoidHom.comp_apply, MonoidHom.inr_apply,
+      MulEquiv.coe_toMonoidHom, h_sum, G.adeleMatrix_reindex, h_g']
+    simp
 
 /-- The frame `h⁻¹ o₁` does not change when `h` is multiplied on the left by the second block. -/
 lemma movedFrame_secondBlock_mul (v : G E (1 : n₂ → ℤˣ)) (h : G E (1 : n → ℤˣ)) :

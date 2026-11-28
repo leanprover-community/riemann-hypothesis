@@ -449,9 +449,9 @@ lemma Space.height_reindex (e : n ≃ m) (he : s ∘ e.symm = t) (g : G E s) :
     rw [vecAtPoint_move, vecAtPoint_move, ← map_inv (G.reindex (t := t) e he),
       G.adeleMatrix_reindex]
     have hx : (S.reindex e he).vecAtPoint (ξ ∘ e.symm) = S.vecAtPoint ξ ∘ e.symm := by
-      change (reindexGL e S.x)⁻¹.val *ᵥ (toAdele ∘ ξ ∘ e.symm) =
+      change (e.reindexGL _ S.x)⁻¹.val *ᵥ (toAdele ∘ ξ ∘ e.symm) =
         (S.x⁻¹.val *ᵥ (toAdele ∘ ξ)) ∘ e.symm
-      rw [← map_inv (reindexGL e)]
+      rw [← map_inv (e.reindexGL _), Equiv.coe_reindexGL]
       exact h_sub S.x⁻¹.val (toAdele ∘ ξ)
     rw [hx]
     exact h_sub g⁻¹.adeleMatrix (S.vecAtPoint ξ)

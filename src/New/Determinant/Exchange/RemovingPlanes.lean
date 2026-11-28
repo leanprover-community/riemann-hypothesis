@@ -276,7 +276,7 @@ lemma exists_isBaseAdapted (t : r → ℤˣ) (h_rank : card r = card n + 2 * car
   refine ⟨W', A,
     ⟨.of_eq_submatrix_mul .one ε.symm (IsBaseAdapted.isOrthoIntegral (D := removePlanes p W)) ?_⟩⟩
   simp [W', A, ← ext_iff, Matrix.mul_apply, lAdelic, kAdelic, iAdelic, Space.ratMap, removePlanes,
-    splittingOfGram, Space.reindex, val_reindexGL_apply, reindex_equiv ε.symm, Matrix.one_apply]
+    splittingOfGram, Space.reindex, reindex_equiv ε.symm, Matrix.one_apply]
 
 /-- Let `A`, `B` be adapted splittings of `W'` over `W`, and suppose that (`hBA`) the isotropic
 frame `B.k` consists of the columns `e` of `A.k` and the inclusions `B.i`, `A.i` of `W` are equal.

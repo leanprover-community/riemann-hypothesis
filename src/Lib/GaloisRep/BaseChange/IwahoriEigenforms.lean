@@ -688,9 +688,9 @@ lemma isLocalMatching_proIwahori
   let ε : m ≃ Fin (Fintype.card m) := Fintype.equivFin m
   -- `ρ` and `r` are the components at `u` and at `w`, renumbered; they retract the embeddings.
   set ρ : Gf E' m →* GL (Fin (Fintype.card m)) (LocField u) :=
-    (reindexGL ε).toMonoidHom.comp (Gf.atPlace u)
+    (ε.reindexGL _).toMonoidHom.comp (Gf.atPlace u)
   set r : Gf E m →* GL (Fin (Fintype.card m)) (LocField (u.below E)) :=
-    (reindexGL ε).toMonoidHom.comp (Gf.atPlace (u.below E))
+    (ε.reindexGL _).toMonoidHom.comp (Gf.atPlace (u.below E))
   obtain ⟨h_retr_w, h_retr_u, h_level⟩ := isLocalRetraction_ofSplitPlace m h_unique hu hw
   have hρ_retr : IsLocalRetraction (embedAtSplit hu) ρ (placesAbove E' {u.below E}) := by
     simp_all [IsLocalRetraction, ρ, ε]
@@ -701,12 +701,14 @@ lemma isLocalMatching_proIwahori
   -- `ρ` carries `galoisGf τ` to the entrywise action of `τ` at `u`, and a base change to `r`
   -- followed by the inclusion of the completion at `w`.
   have hρ_gal (δ : Gf E' m) : ρ (galoisGf τ δ) = (ρ δ).map (locMap (τ : E' →+* E') hs) :=
-    congrArg (reindexGL ε) (atPlace_galoisGf τ δ hs)
+    (congrArg (ε.reindexGL _) (atPlace_galoisGf τ δ hs)).trans (ε.map_reindexGL _ _).symm
   have hρ_charpoly (g : Gf E' m) :
       (ρ g).val.charpoly = (↑↑g : Matrix m m (𝔸f E')).charpoly.map (evalAt u) :=
-    (charpoly_reindex ε (g.atPlace u).val).trans (charpoly_map _ (evalAt u))
+    (congrArg charpoly (Equiv.coe_reindexGL ε _ _)).trans
+      ((charpoly_reindex ε (g.atPlace u).val).trans (charpoly_map _ (evalAt u)))
   have hρ_baseChange (x : Gf E m) :
-      ρ (baseChangeGf x) = (r x).map (locMap (algebraMap E E') rfl) := rfl
+      ρ (baseChangeGf x) = (r x).map (locMap (algebraMap E E') rfl) :=
+    (ε.map_reindexGL _ (x.atPlace (u.below E))).symm
   have h_stable (k : Gf E' m) : ρ (galoisGf τ k) ∈ proIwahori ↔ ρ k ∈ proIwahori := by
     rw [hρ_gal]
     exact map_mem_proIwahori_iff_of_isometry (v_locMap_eq_of_surjective _ hs τ.surjective)
@@ -718,10 +720,8 @@ lemma isLocalMatching_proIwahori
     simp only [Subgroup.mem_comap, hρ_baseChange]
     exact map_mem_proIwahori_iff_of_isEquiv (isEquiv_comap_locMap (algebraMap E E') rfl)
   -- `ρ` is continuous, as renumbering the entries of a matrix is, and `proIwahori` is open
-  have h_open : (Subgroup.comap ρ proIwahori).IsOpen := by
-    have h_reindex : Continuous fun M : Matrix m m (LocField u) ↦ M.submatrix ε.symm ε.symm := by
-      fun_prop
-    exact isOpen_proIwahori.preimage (.comp (.units_map _ h_reindex) (by fun_prop))
+  have h_open : (Subgroup.comap ρ proIwahori).IsOpen :=
+    isOpen_proIwahori.preimage (ε.continuous_reindexGL.comp (by fun_prop))
   have h_le_level : Subgroup.comap ρ proIwahori ≤ localLevel m (placesAbove E' {u.below E}) := by
     rintro g ⟨hg_int, -⟩
     simpa [h_level, mem_intGL, reindex_equiv ε.symm, ρ] using hg_int
@@ -731,7 +731,8 @@ lemma isLocalMatching_proIwahori
       h_stable⟩,
     h_baseChange, h_open, Subgroup.comap ρ proIwahori, ⟨le_rfl, h_le_level⟩,
     cocyclesSplit_comap_proIwahori hu hτ hs hρ_retr hρ_gal, fun t ht ↦
-      isMatchingPairAbove_proIwahori h_unique hμ_loc hw hτ hs hρ_gal (fun _ ↦ rfl) hρ_charpoly
+      isMatchingPairAbove_proIwahori h_unique hμ_loc hw hτ hs hρ_gal
+        (fun _ ↦ Equiv.coe_reindexGL ..) hρ_charpoly
         hρ_baseChange ht⟩
 
 /-- The operators of dominant double cosets multiply like the torus. Let `ρ` be a smooth
