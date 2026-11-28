@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.InnerProductSpace.HilbertSchmidt.NearIsometry
 public import Aesop.BuiltinRules
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Mathlib.Order.CompletePartialOrder
@@ -101,6 +102,14 @@ lemma hilbertSchmidtNorm_sq_eq_sum {ι : Type} [Fintype ι] (b : OrthonormalBasi
   rw [hilbertSchmidtNorm_sq_eq_trace, trace_eq_sum_inner _ b, ofReal_sum]
   simp [inner_self_eq_norm_sq_to_K, adjoint_inner_right]
 
+private lemma hilbertSchmidtNorm_toLinearMap (A : S →L[ℂ] T) :
+    hilbertSchmidtNorm A.toLinearMap = A.hilbertSchmidtNorm := by
+  rw [← sq_eq_sq₀ (hilbertSchmidtNorm_nonneg _)
+    (ContinuousLinearMap.hilbertSchmidtNorm_nonneg _),
+    hilbertSchmidtNorm_sq_eq_sum (stdOrthonormalBasis ℂ S),
+    ContinuousLinearMap.sq_hilbertSchmidtNorm_eq_sum _ (stdOrthonormalBasis ℂ S)]
+  rfl
+
 /-- The squared Hilbert–Schmidt norm is the sum of the squared moduli of the matrix entries. -/
 lemma hilbertSchmidtNorm_sq_eq_sum_entries {ι κ : Type} [Fintype ι] [Fintype κ]
     (b : OrthonormalBasis ι ℂ S) (c : OrthonormalBasis κ ℂ T) (A : S →ₗ[ℂ] T) :
@@ -164,39 +173,21 @@ its squared Hilbert–Schmidt norm `‖A pr_U‖²` is at least `dim U - ε dim 
 def IsNearIsometry (A : S →ₗ[ℂ] T) (ε : ℝ) : Prop :=
   ∀ U : Submodule ℂ S, finrank ℂ U - ε * finrank ℂ S ≤ hilbertSchmidtNorm (A ∘ₗ orthoProj U) ^ 2
 
+private lemma isNearIsometry_toLinearMap (A : S →L[ℂ] T) (ε : ℝ) :
+    IsNearIsometry A.toLinearMap ε ↔ A.IsNearIsometry ε := by
+  simp only [IsNearIsometry, ContinuousLinearMap.isNearIsometry_iff,
+    ← hilbertSchmidtNorm_toLinearMap, ContinuousLinearMap.toLinearMap_comp, orthoProj]
+
 /-- If the squared Hilbert–Schmidt norm of `A* A - 1` is at most `ε² dim S`, then
 `IsNearIsometry A ε`: on every subspace `U` the squared Hilbert–Schmidt norm of `A` is at least
 `dim U - ε dim S`. -/
 lemma isNearIsometry_of_hilbertSchmidtNorm_le {A : S →ₗ[ℂ] T} {ε : ℝ} (hε : 0 ≤ ε)
     (h_defect : hilbertSchmidtNorm (A.adjoint ∘ₗ A - 1) ^ 2 ≤ ε ^ 2 * finrank ℂ S) :
       IsNearIsometry A ε := by
-  intro U
-  set p : S →ₗ[ℂ] S := orthoProj U
-  have h_norm : hilbertSchmidtNorm (A ∘ₗ p) ^ 2 = re ⟪hilbertSchmidtVector p,
-    hilbertSchmidtVector (A.adjoint ∘ₗ A)⟫_ℂ := by
-    rw [← hilbertSchmidtNorm_adjoint, adjoint_comp, adjoint_orthoProj,
-      hilbertSchmidtNorm_orthoProj_comp_sq,
-      adjoint_adjoint]
-  have h_dim : (finrank ℂ U : ℝ) = re ⟪hilbertSchmidtVector p,
-    hilbertSchmidtVector (1 : S →ₗ[ℂ] S)⟫_ℂ := by
-    simpa [hilbertSchmidtNorm_orthoProj_sq, End.one_eq_id] using
-      hilbertSchmidtNorm_orthoProj_comp_sq U (1 : S →ₗ[ℂ] S)
-  have h_diff : hilbertSchmidtNorm (A ∘ₗ p) ^ 2 - finrank ℂ U =
-      re ⟪hilbertSchmidtVector p, hilbertSchmidtVector (A.adjoint ∘ₗ A - 1)⟫_ℂ := by
-    rw [map_sub, inner_sub_right, sub_re, h_norm, h_dim]
-  have h_bound : hilbertSchmidtNorm p * hilbertSchmidtNorm (A.adjoint ∘ₗ A - 1) ≤ ε * finrank ℂ
-    S := by
-    refine (abs_le_of_sq_le_sq' ?_ (by positivity)).2
-    calc (hilbertSchmidtNorm p * hilbertSchmidtNorm (A.adjoint ∘ₗ A - 1)) ^ 2
-        ≤ finrank ℂ S * (ε ^ 2 * finrank ℂ S) := by
-          rw [mul_pow, hilbertSchmidtNorm_orthoProj_sq]
-          gcongr
-          exact U.finrank_le
-      _ = (ε * finrank ℂ S) ^ 2 := by ring
-  have h_cs : |re ⟪hilbertSchmidtVector p,
-    hilbertSchmidtVector (A.adjoint ∘ₗ A - 1)⟫_ℂ| ≤ ε * finrank ℂ S :=
-    (abs_re_le_norm _).trans ((norm_inner_le_norm _ _).trans h_bound)
-  linarith [(abs_le.1 h_cs).1]
+  apply (isNearIsometry_toLinearMap A.toContinuousLinearMap ε).mpr
+  apply ContinuousLinearMap.isNearIsometry_of_sq_hilbertSchmidtNorm_le hε
+  simpa [← hilbertSchmidtNorm_toLinearMap, ← ContinuousLinearMap.adjoint_toLinearMap]
+    using h_defect
 
 omit [FiniteDimensional ℂ T] in
 /-- A near isometry with the error `ε` is one with any larger error. -/
@@ -215,36 +206,17 @@ lemma IsNearIsometry.finrank_range_pos [Nontrivial S] {pr₀ : T →ₗ[ℂ] T} 
   have h_pos : (0 : ℝ) < finrank ℂ S := by exact_mod_cast finrank_pos
   nlinarith
 
-omit [FiniteDimensional ℂ T] in
-/-- An orthogonal projection `pr` splits `y` orthogonally: `‖y‖² = ‖pr y‖² + ‖(1 - pr) y‖²`. -/
-lemma norm_sq_eq_add_of_isSymmetricProjection {pr : T →ₗ[ℂ] T} (hpr : pr.IsSymmetricProjection)
-    (y : T) : ‖y‖ ^ 2 = ‖pr y‖ ^ 2 + ‖(1 - pr) y‖ ^ 2 := by
-  have h_orth : ⟪pr y, (1 - pr) y⟫_ℂ = 0 := by
-    rw [hpr.isSymmetric, ← mul_apply_eq_comp, hpr.isIdempotentElem.mul_one_sub_self,
-      LinearMap.zero_apply, inner_zero_right]
-  simpa [sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _ h_orth
-
 /-- For an orthogonal projection `p` and any `q`: in squared Hilbert–Schmidt norm, the part
 `(1 - p q) A` that `p q` misses is at most the sum of the parts that `p` and `q` miss. -/
 lemma hilbertSchmidtNorm_one_sub_mul_comp_sq_le {p : T →ₗ[ℂ] T} (hp : p.IsSymmetricProjection)
     (q : T →ₗ[ℂ] T) (A : S →ₗ[ℂ] T) : hilbertSchmidtNorm ((1 - p * q) ∘ₗ A) ^ 2 ≤
       hilbertSchmidtNorm ((1 - p) ∘ₗ A) ^ 2 + hilbertSchmidtNorm ((1 - q) ∘ₗ A) ^ 2 := by
-  simp only [hilbertSchmidtNorm_sq_eq_sum (stdOrthonormalBasis ℂ S), ← sum_add_distrib, comp_apply]
-  refine sum_le_sum fun i _ ↦ ?_
-  -- The inequality holds for the value `y` of `A` at each basis vector.
-  generalize A (stdOrthonormalBasis ℂ S i) = y
-  -- Split `1 - p q` into the orthogonal parts `p (1 - q)` and `1 - p`.
-  have h_range : p * (1 - p * q) = p * (1 - q) := by
-    simp [mul_sub, ← mul_assoc, hp.isIdempotentElem.eq]
-  have h_ker : (1 - p) * (1 - p * q) = 1 - p := by
-    simp [mul_sub, ← mul_assoc, hp.isIdempotentElem.one_sub_mul_self]
-  have h_split : ‖(1 - p * q) y‖ ^ 2 = ‖p ((1 - q) y)‖ ^ 2 + ‖(1 - p) y‖ ^ 2 := by
-    rw [norm_sq_eq_add_of_isSymmetricProjection hp, ← mul_apply_eq_comp,
-      ← mul_apply_eq_comp (1 - p), h_range, h_ker, mul_apply_eq_comp]
-  have h_contract : ‖p ((1 - q) y)‖ ^ 2 ≤ ‖(1 - q) y‖ ^ 2 := by
-    linarith [norm_sq_eq_add_of_isSymmetricProjection hp ((1 - q) y),
-      sq_nonneg ‖(1 - p) ((1 - q) y)‖]
-  linarith
+  simpa [← hilbertSchmidtNorm_toLinearMap, LinearMap.sub_comp] using
+    ContinuousLinearMap.sq_hilbertSchmidtNorm_one_sub_mul_comp_le
+      (p := p.toContinuousLinearMap)
+      (ContinuousLinearMap.isStarProjection_iff_isSymmetricProjection.mpr hp)
+      q.toContinuousLinearMap A.toContinuousLinearMap (stdOrthonormalBasis ℂ S).toHilbertBasis
+      (ContinuousLinearMap.hilbertSchmidtEnergy_ne_top _ _)
 
 /-- Let `IsNearIsometry A ε`: `dim U - ε dim S ≤ ‖A pr_U‖²` in Hilbert–Schmidt norm for all
 subspaces `U`. If an orthogonal projection `pr` misses at most `δ dim S` of the squared norm of
@@ -253,17 +225,11 @@ lemma IsNearIsometry.proj_comp {A : S →ₗ[ℂ] T} {ε δ : ℝ} (hA : IsNearI
     {pr : T →ₗ[ℂ] T} (hpr : pr.IsSymmetricProjection)
     (h_rest : hilbertSchmidtNorm ((1 - pr) ∘ₗ A) ^ 2 ≤ δ * finrank ℂ S) :
     IsNearIsometry (pr ∘ₗ A) (ε + δ) := by
-  intro U
-  have h_split : hilbertSchmidtNorm (A ∘ₗ orthoProj U) ^ 2 = hilbertSchmidtNorm
-    ((pr ∘ₗ A) ∘ₗ orthoProj U) ^ 2 +
-      hilbertSchmidtNorm (((1 - pr) ∘ₗ A) ∘ₗ orthoProj U) ^ 2 := by
-    simp only [hilbertSchmidtNorm_sq_eq_sum (stdOrthonormalBasis ℂ S), ← sum_add_distrib,
-      comp_apply]
-    exact sum_congr rfl fun i _ ↦ norm_sq_eq_add_of_isSymmetricProjection hpr _
-  have h_cut : hilbertSchmidtNorm (((1 - pr) ∘ₗ A) ∘ₗ orthoProj U) ^ 2 ≤ hilbertSchmidtNorm
-    ((1 - pr) ∘ₗ A) ^ 2 :=
-    pow_le_pow_left₀ (hilbertSchmidtNorm_nonneg _) (hilbertSchmidtNorm_comp_orthoProj_le _ U) 2
-  linarith [hA U]
+  apply (isNearIsometry_toLinearMap (pr.toContinuousLinearMap ∘L A.toContinuousLinearMap) _).mpr
+  apply ContinuousLinearMap.IsNearIsometry.isStarProjection_comp
+    ((isNearIsometry_toLinearMap A.toContinuousLinearMap ε).mp hA)
+    (ContinuousLinearMap.isStarProjection_iff_isSymmetricProjection.mpr hpr)
+  simpa [← hilbertSchmidtNorm_toLinearMap, LinearMap.sub_comp] using h_rest
 
 variable {Γ : Type} [Group Γ] {ρ : Representation ℂ Γ T}
 
@@ -537,6 +503,7 @@ theorem IsSpread.exists_few_le_finrank_iSup_range [Nontrivial V] (h_spread : IsS
     _ = 5 / 2 * (l * rate) * finrank ℂ W := by rw [h_rate]; field
     _ ≤ 5 / 2 * (1 + log (16 * ε)⁻¹) * finrank ℂ W := by gcongr
 
+omit [Module.Finite ℂ W] in
 /-- The images of a subspace `C` under `#t` maps span at most `#t dim C` dimensions. -/
 lemma finrank_biSup_map_le (B : Θ → V →ₗ[ℂ] W) (t : Finset Θ) (C : Submodule ℂ V) :
     finrank ℂ ↥(⨆ s ∈ t, C.map (B s)) ≤ #t * finrank ℂ C := by
@@ -551,6 +518,7 @@ lemma finrank_biSup_map_le (B : Θ → V →ₗ[ℂ] W) (t : Finset Θ) (C : Sub
       _ ≤ finrank ℂ C + #t * finrank ℂ C := add_le_add (finrank_map_le (B s) C) ih
       _ = (#t + 1) * finrank ℂ C := by ring
 
+omit [Module.Finite ℂ W] in
 /-- Restricting finitely many maps to a subspace `U` lowers the dimension of the span of their
 images by at most the codimension of `U` for each map. -/
 lemma finrank_biSup_range_le (B : Θ → V →ₗ[ℂ] W) (t : Finset Θ) (U : Submodule ℂ V) :
