@@ -944,6 +944,50 @@ private lemma exists_comp_eq_and_eq_of_sectionCount_eq [IsAlgClosed k] {d₀ : �
     (h_rigid A) (h_rigid A') (hg_cls A) (hg_cls A') (h_killed A')
     ((h_baseHom A').trans (h_baseHom A).symm) h_cop hν hν'
 
+/-- Let `x₀` reduce `y` along `π`, and let `x` reduce `y'` along `π` followed by the `f`-th power of
+the Frobenius `t ↦ t ^ l`, where `y` and `y'` have the same map from `𝓞 E`. If `l ^ f` is a power
+of the norm of the place `w = ker x₀.baseHom`, then the twist does not change the map from `𝓞 E`:
+`x` has the map `x₀.baseHom`. -/
+lemma _root_.New.ThetaObject.IsPullbackAlong.baseHom_eq_of_iterateFrobenius {V : Type}
+    [CommRing V] {π : V →+* k} {l f r : ℕ} [Fact l.Prime] [CharP k l]
+    {y y' : ThetaObject X (Spec (CommRingCat.of V))}
+    {x₀ x : ThetaObject X (Spec (CommRingCat.of k))}
+    (hx : x.IsPullbackAlong (specMap ((iterateFrobenius k l f).comp π)) y')
+    (hx₀ : x₀.IsPullbackAlong (specMap π) y) (h_base : y'.baseHom = y.baseHom) {w : FinPlace E}
+    (h_ker : w.asIdeal = RingHom.ker x₀.baseHom) (h_pow : l ^ f = w.q ^ r) :
+    x.baseHom = x₀.baseHom := by
+  rw [hx.baseHom_eq_comp, h_base, RingHom.comp_assoc, ← hx₀.baseHom_eq_comp,
+    iterateFrobenius_comp_eq_of_ker_eq h_ker h_pow]
+
+/-- Let `x₀` reduce `y` along `π`, at a place `w = ker x₀.baseHom` that is good for `D`, let `σ`
+identify `k_wⁿ` with the `w`-torsion, and let `l ^ m B * q ^ dim B` be the same for all subspaces
+`B` of `k_wⁿ`. Then some line `W` of `k_wⁿ` (spanned by a vector whose torsion section reduces to
+zero) has the following property: if `A' ⊔ W = A ⊔ W`, the numbers of `v ∈ A` and of `v ∈ A'`
+whose sections reduce to a given `k`-point, weighted by `l ^ m A` and `l ^ m A'`, are equal. -/
+private lemma exists_ne_bot_pow_mul_sectionCount_eq {V : ValuationSubring ℂ} {π : V →+* k}
+    {y : ThetaObject X (Spec (CommRingCat.of V))} (e : y.FullLevelStructure)
+    {x₀ : ThetaObject X (Spec (CommRingCat.of k))} (hx₀ : x₀.IsPullbackAlong (specMap π) y)
+    (h_good : D.IsGoodAt (RingHom.ker x₀.baseHom)) {w : SplitFinPlace E}
+    {σ : (D.Index → ResField w.val) →ₗ[𝓞 E] AdelicTorsion E D.Index}
+    (hσ_range : σ.range =
+      Submodule.torsionBySet (𝓞 E) (AdelicTorsion E D.Index) (RingHom.ker x₀.baseHom))
+    {l : ℕ} {m : Submodule (ResField w.val) (D.Index → ResField w.val) → ℕ}
+    (h_split : ∀ B : Submodule (ResField w.val) (D.Index → ResField w.val),
+      l ^ m B * w.val.q ^ finrank (ResField w.val) B = l ^ m ⊥) :
+    ∃ W : Submodule (ResField w.val) (D.Index → ResField w.val), W ≠ ⊥ ∧
+      ∀ ⦃A A' : Submodule (ResField w.val) (D.Index → ResField w.val)⦄, A' ⊔ W = A ⊔ W →
+        ∀ a : (Over.map (specMap π)).obj (specOver k k) ⟶ y.groupScheme,
+          l ^ m A * sectionCount e (fun v : A ↦ σ v) a =
+            l ^ m A' * sectionCount e (fun v : A' ↦ σ v) a := by
+  -- A nonzero `w`-torsion section `σ t` reduces to zero, and `W` is the line spanned by `t`.
+  obtain ⟨_, ⟨t, rfl⟩, ht_ne, ht_red⟩ : ∃ s ∈ σ.range, s ≠ 0 ∧
+      toUnit ((Over.map (specMap π)).obj (specOver k k)) ≫ e.torsionPoint s = 0 := by
+    rw [hσ_range]
+    obtain ⟨-, h_exists_zero, -⟩ := exists_param_pow_card_eq_zero h_good e hx₀
+    exact h_exists_zero
+  exact ⟨ResField w.val ∙ t, by simpa using ne_zero_of_map ht_ne,
+    fun A A' h_sup ↦ pow_mul_sectionCount_eq_of_sup_span_eq e σ ht_red h_split h_sup⟩
+
 end New.Variety
 
 /-- The pointwise step of the congruence relation at the split place `w` below `π`, good for `D` and
@@ -1007,12 +1051,6 @@ lemma New.Variety.UniversalFamily.exists_ne_bot_factorsThrough_sup {E k : Type} 
     torsionPoint_comp_of_heckeIsogeny (hψ_ev C) hβ h_safe h_cop hb
   rw [← hσ_range] at h_place
   simp_rw [h_ker, pointOf_hom] at h_good hb hσ_range hx₀
-  -- A nonzero `w`-torsion section `σ t` reduces to zero.
-  obtain ⟨_, ⟨t, rfl⟩, ht_ne, ht_red⟩ : ∃ s ∈ σ.range, s ≠ 0 ∧
-      toUnit (map (specMap π) (specOver k k)) ≫ e.fullStructure.torsionPoint s = 0 := by
-    rw [hσ_range]
-    obtain ⟨-, h_exists_zero, -⟩ := exists_param_pow_card_eq_zero h_good e.fullStructure hx₀
-    exact h_exists_zero
   -- The reduced isogenies `g B` all have multiplier `l ^ m ⊥ = q ^ n`: a factor `q ^ dim B` from
   -- `ψ B` and `l ^ m B = q ^ (n - dim B)` from Frobenius.
   have h_split (B : Submodule (ResField w.val) (D.Index → ResField w.val)) :
@@ -1030,24 +1068,23 @@ lemma New.Variety.UniversalFamily.exists_ne_bot_factorsThrough_sup {E k : Type} 
       (s : AdelicTorsion E D.Index)
       (hs : e.fullStructure.torsionPoint s ≫ ψ C = 0) : l ^ m ⊥ • s = 0 := by
     rw [← h_split C, mul_smul, h_q_kills C s hs, smul_zero]
-  -- The line `W` is spanned by `t`; adding it does not change the weighted counts of sections.
-  refine ⟨ResField w.val ∙ t, by simpa using ne_zero_of_map ht_ne, fun A' A h_sup ↦ ?_⟩
-  have h_count (a : (Over.map (specMap π)).obj (specOver k k) ⟶ y.groupScheme) :
-      l ^ m A * sectionCount e.fullStructure (fun v : A ↦ σ v) a =
-        l ^ m A' * sectionCount e.fullStructure (fun v : A' ↦ σ v) a :=
-    pow_mul_sectionCount_eq_of_sup_span_eq e.fullStructure σ ht_red h_split h_sup a
+  -- The line `W` is spanned by a nonzero `w`-torsion vector whose section reduces to zero;
+  -- adding it does not change the weighted counts of sections.
+  obtain ⟨W, hW, h_count⟩ :=
+    exists_ne_bot_pow_mul_sectionCount_eq e.fullStructure hx₀ h_good hσ_range h_split
+  refine ⟨W, hW, fun A' A h_sup ↦ ?_⟩
   -- The twist by `l ^ m B`, a power of `q`, does not change the map `𝓞 E → k`.
   have h_baseHom (B : Submodule (ResField w.val) (D.Index → ResField w.val)) :
-      (x B).baseHom = x₀.baseHom := by
-    rw [(hx B).baseHom_eq_comp, hψ_ρ, RingHom.comp_assoc, ← hx₀.baseHom_eq_comp,
-      iterateFrobenius_comp_eq_of_ker_eq h_ker (h_exp B)]
+      (x B).baseHom = x₀.baseHom :=
+    (hx B).baseHom_eq_of_iterateFrobenius hx₀ (hψ_ρ B) h_ker (h_exp B)
   -- By rigidity the objects `x A'` and `x A` are equal, and some `j` with `g A' ≫ j = g A`
   -- respects the maps to the family.
   obtain ⟨j, hj, h_base, h_proj⟩ :=
     exists_comp_eq_and_eq_of_sectionCount_eq hβ e.fullStructure
       (e.hasSpanningCoords_of_specMap_comp_eq π hx₀)
       hb h_cop hσ_inj hσ_range (fun B ↦ (e' B).fullStructure) h_level h_tor_killed h_place h_ker_res
-      hg hg_cls (fun B ↦ (e' B).hasSpanningCoords_of_specMap_comp_eq _ (hx B)) h_baseHom h_count
+      hg hg_cls (fun B ↦ (e' B).hasSpanningCoords_of_specMap_comp_eq _ (hx B)) h_baseHom
+      (h_count h_sup)
   -- The two points agree on the base by `h_base`, and on each section by `h_proj` and `hj`.
   have hψ_π_one : ∀ (B : Submodule (ResField w.val) (D.Index → ResField w.val))
       (r : RealVectors E D.Index), e.π r ≫ ψ B = (e' B).π r := by simpa using hψ_π
