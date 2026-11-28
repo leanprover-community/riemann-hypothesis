@@ -6,6 +6,7 @@ import Mathlib.Algebra.Category.Grp.Zero
 import Mathlib.CategoryTheory.Abelian.CommSq
 import Mathlib.CategoryTheory.Limits.Types.Multicoequalizer
 import Mathlib.RingTheory.LocalProperties.Reduced
+public import TauCeti.CategoryTheory.Abelian.FunctorCohomology.ZariskiDescent
 public import Lib.Cohomology.Etale.BijectiveComparisons
 
 /-!
@@ -17,9 +18,9 @@ equivalence for F (`New.Variety.IsCohomEquiv`) if it induces bijections on all E
 subfunctor U of Y is dense (`New.Variety.IsCohomDense`) if, over every point h_A → Y with h_A =
 Hom(A,−), the inclusion of the preimage of U is an equivalence. The Mayer–Vietoris sequence, the
 calculus of dense subfunctors and closed classes of functors are used to cut functors into pieces.
-When ι attaches commutative rings to objects and `New.Variety.HasPartitions ι F` holds, partitions
-along idempotents are dense. Locally constant coefficients on test rings satisfy
-`New.Variety.HasPartitions`.
+When ι attaches commutative rings to objects and `CategoryTheory.HasPartitions ι F` holds,
+partitions along idempotents are dense. Locally constant coefficients on test rings satisfy
+`CategoryTheory.HasPartitions`.
 
 ## Main definitions and results
 
@@ -27,9 +28,9 @@ along idempotents are dense. Locally constant coefficients on test rings satisfy
 * `New.Variety.IsCohomDense.isCohomEquiv`: the inclusion of a dense subfunctor is an equivalence.
 * `New.Variety.IsClosedClass.freeAb_iSup`: if a closed class contains ℤ[V] for all V in a set of
   subfunctors closed under intersection, it contains ℤ[-] of their finite unions (Mayer–Vietoris).
-* `New.Variety.HasPartitions.isCohomDense_partition`: for an idempotent `e`, the maps that kill `e`
-  or `1 - e` are dense.
-* `New.Variety.HasPartitions.hasZariskiDescent`: Zariski descent for rings `κ` that receive an
+* `CategoryTheory.HasPartitions.isCohomDense_partition`: for an idempotent `e`, the maps that kill
+  `e` or `1 - e` are dense.
+* `CategoryTheory.HasPartitions.hasZariskiDescent`: Zariski descent for rings `κ` that receive an
   injective map from `ι`, when any two elements of `κ` are comparable for divisibility after a cut
   along an idempotent of `ι`.
 * `New.Variety.IsCohomDense.isCohomEquiv_of_fromPreimage`: a map is an equivalence if it is one over
@@ -41,8 +42,9 @@ Notions from other files:
 * `New.Variety.IsClosedClass`: a class of functors C → Ab that contains every zero functor and, for
   a short exact sequence whose first term lies in it, contains the middle term exactly when it
   contains the last.
-* `New.Variety.HasPartitions`: Each idempotent e ≠ 1 of ι(A) has a `New.Variety.IsQuotientByElem`
-  A → B, and ι(A) ≅ ι(B₁) × ι(B₂) via maps A → B₁, B₂ implies F(A) ≅ F(B₁) × F(B₂).
+* `CategoryTheory.HasPartitions` (Tau Ceti): each idempotent e ≠ 1 of ι(A) is killed by a universal
+  map A → B with ι(B) = ι(A) ⧸ (e), and ι(A) ≅ ι(B₁) × ι(B₂) via maps A → B₁, B₂ implies
+  F(A) ≅ F(B₁) × F(B₂).
 
 ## Relation to the literature
 
@@ -285,8 +287,8 @@ end Relations
 /-!
 ## Partitions along idempotents and Zariski descent
 
-Here `ι` attaches a commutative ring to each object of `C`, and `New.Variety.HasPartitions ι F` says
-that objects can be cut along idempotents and that `F` respects products of two rings.
+Here `ι` attaches a commutative ring to each object of `C`, and `CategoryTheory.HasPartitions ι F`
+says that objects can be cut along idempotents and that `F` respects products of two rings.
 -/
 
 section Partitions
@@ -360,16 +362,15 @@ lemma preimage_pointMap_elemKillingMaps_sup {B : C} (k : A ⟶ B) :
       ((pointMap (⟨k⟩ : (reprBy A).obj B)).app D f : (reprBy A).obj D).down = k ≫ f.down := rfl
   simp [h_point]
 
-/-- Let F satisfy `New.Variety.HasPartitions` for the rings ι(A). If ι(B) is the zero ring whenever
-Y(B) is non-empty, then H^n(Y,F) = 0 for all n. -/
-lemma HasPartitions.eq_zero_of_zero_ring (hF : HasPartitions ι F)
+/-- Let F satisfy `CategoryTheory.HasPartitions` for the rings ι(A). If ι(B) is the zero ring
+whenever Y(B) is non-empty, then H^n(Y,F) = 0 for all n. -/
+lemma _root_.CategoryTheory.HasPartitions.eq_zero_of_zero_ring (hF : HasPartitions ι F)
     (h_zero_ring : ∀ B : C, Y B → (0 : ι B) = 1) (n : ℕ) (x : H (freeAb Y) F n) :
     x = 0 := by
-  -- If the ring of `B` is zero, the diagonal of `F.obj B` is bijective, so `F.obj B` is trivial.
-  have h_triv (B : C) (y : Y.obj B) : Subsingleton (F.obj B) := by
-    constructor
-    simpa [h_zero_ring B y, bijective_iff_existsUnique, ExistsUnique,
-      subsingleton_of_zero_eq_one] using hF.bijective_prod (𝟙 B) (𝟙 B)
+  -- If the ring of `B` is zero, then so is `F.obj B` (`CategoryTheory.HasPartitions.subsingleton`).
+  have h_triv (B : C) (y : Y.obj B) : Subsingleton (F.obj B) :=
+    have := subsingleton_of_zero_eq_one (h_zero_ring B y)
+    hF.subsingleton
   -- Hence the zero map of `F` is bijective where `Y` has points, and so is injective on `H`.
   have h_zero_bij (B : C) (y : Y.obj B) : Bijective ((0 : F ⟶ F) B) :=
     have := h_triv B y
@@ -398,10 +399,10 @@ lemma bijective_map_prod_map_of_idempotent {B E : C} {π : A ⟶ B} {ρ : A ⟶ 
     refine (π_surj.prodMap ρ_surj).forall.mpr fun (x, y) ↦ ⟨x + e * (y - x), ?_⟩
     grind
 
-/-- Let F satisfy `New.Variety.HasPartitions` for the rings ι(A). For an idempotent e of ι(A), the
-maps out of A that kill e or kill 1 − e form a dense subfunctor of `reprBy A` for F. -/
-lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
-    (he : IsIdempotentElem e) :
+/-- Let F satisfy `CategoryTheory.HasPartitions` for the rings ι(A). For an idempotent e of ι(A),
+the maps out of A that kill e or kill 1 − e form a dense subfunctor of `reprBy A` for F. -/
+lemma _root_.CategoryTheory.HasPartitions.isCohomDense_partition (hF : HasPartitions ι F)
+    (e : ι A) (he : IsIdempotentElem e) :
     IsCohomDense F (elemKillingMaps e ⊔ elemKillingMaps (1 - e)) := by
   -- The preimage under a point `k` is the same subfunctor for the idempotent `ι.map k e`.
   suffices h_isCohomEquiv_of_idempotent : ∀ (A : C) (e : ι.obj A), IsIdempotentElem e →
@@ -416,11 +417,11 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
   obtain ⟨he_ne_one, he_ne_zero⟩ := not_or.mp h_trivial
   -- The two pieces are represented by the cuts `π` and `ρ`: they give projective functors, and a
   -- section on a piece is determined by its value at the cut. Here `π` kills `e` (`π_kill`),
-  -- every map that kills `e` factors uniquely through `π` (`π_univ`), `ι π` is onto (`π_surj`)
-  -- and its kernel lies in `(e)` (`π_ker`); likewise `ρ` for `1 - e`.
-  obtain ⟨B, π, π_kill, π_univ, π_surj, π_ker⟩ := hF.exists_quotient _ _ he he_ne_one
-  obtain ⟨E, ρ, ρ_kill, ρ_univ, ρ_surj, ρ_ker⟩ :=
-    hF.exists_quotient _ _ he.one_sub fun h_eq ↦ he_ne_zero (sub_eq_self.mp h_eq)
+  -- `ι π` is onto (`π_surj`), its kernel lies in `(e)` (`π_ker`), and every map that kills `e`
+  -- factors uniquely through `π` (`π_univ`); likewise `ρ` for `1 - e`.
+  obtain ⟨B, π, π_kill, π_surj, π_ker, π_univ⟩ := hF.exists_quotient he he_ne_one
+  obtain ⟨E, ρ, ρ_kill, ρ_surj, ρ_ker, ρ_univ⟩ :=
+    hF.exists_quotient he.one_sub fun h_eq ↦ he_ne_zero (sub_eq_self.mp h_eq)
   obtain ⟨hπ_proj, hπ_rep⟩ : Projective (freeAb (elemKillingMaps e).toFunctor) ∧
       Bijective fun s : freeAb (elemKillingMaps e).toFunctor ⟶ F ↦
         s B (FreeAddCommGroup.of ⟨⟨π⟩, π_kill⟩) :=
@@ -469,15 +470,16 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
     exact (isCohomEquiv_quotient_of_acyclic h_mv (hF.eq_zero_of_zero_ring h_inter_zero)
       _).injective.subsingleton
 
-/-- Zariski descent. Let `F` satisfy `New.Variety.HasPartitions` for the rings `ι`: idempotents of
-ι(A) cut A into two pieces, and F of A is the product of F over the pieces. Let `η : ι ⟶ κ` be a map
-of ring-valued functors such that (a) each `η.app A` is injective (has trivial kernel) and (b) any
-`a`, `b` in `κ.obj A` have an idempotent `e` of `ι.obj A` with `a ∣ η e * b` and
+/-- Zariski descent. Let `F` satisfy `CategoryTheory.HasPartitions` for the rings `ι`: idempotents
+of ι(A) cut A into two pieces, and F of A is the product of F over the pieces. Let `η : ι ⟶ κ` be a
+map of ring-valued functors such that (a) each `η.app A` is injective (has trivial kernel) and (b)
+any `a`, `b` in `κ.obj A` have an idempotent `e` of `ι.obj A` with `a ∣ η e * b` and
 `b ∣ (1 - η e) * a`. Then every subfunctor that is Zariski-locally everything for the rings `κ` (for
 each point y ∈ Y(A) and maximal ideal m of κ(A), some g ∉ m such that every map A → B inverting g
 sends y into U) is dense for `F` (`New.Variety.HasZariskiDescent`): pulled back to any point, its
 inclusion is an equivalence for `F`. -/
-lemma HasPartitions.hasZariskiDescent (hF : HasPartitions ι F) {κ : C ⥤ CommRingCat} (η : ι ⟶ κ)
+lemma _root_.CategoryTheory.HasPartitions.hasZariskiDescent (hF : HasPartitions ι F)
+    {κ : C ⥤ CommRingCat} (η : ι ⟶ κ)
     (hη_inj : ∀ (A : C) (x : ι.obj A), η A x = 0 → x = 0)
     (h_compare : ∀ A : C, IsComparableRing (η A)) :
     HasZariskiDescent κ F := by
@@ -580,12 +582,13 @@ lemma IsTest.isRadical_span_idempotent {A : Type*} [CommRing A] (h : IsTest A) {
 /-- Here `testIncl` is the inclusion of the full category of test rings (commutative rings
 satisfying `IsTest`) into commutative rings. Test rings can be cut along idempotents, and locally
 constant functions on the spectrum of a product of two test rings are pairs of such functions. -/
-lemma hasPartitions_locConstCoeff {Λ : Ab} : HasPartitions testIncl (locConstCoeff Λ) := by
-  refine ⟨fun A e he _ ↦ ?_, fun {A B₁ B₂} π₁ π₂ h_bij ↦ ?_⟩
+lemma hasPartitions_locConstCoeff {Λ : Ab} :
+    CategoryTheory.HasPartitions testIncl (locConstCoeff Λ) := by
+  refine ⟨fun {A e} he _ ↦ ?_, fun {A B₁ B₂} π₁ π₂ h_bij ↦ ?_⟩
   · -- cut along `e` by the quotient `A ⧸ (e)`, a test ring because `(e)` is radical; it kills `e`,
-    -- is universal (shown below), is onto and has kernel `(e)`
+    -- is onto, has kernel `(e)` and is universal (shown below)
     refine ⟨⟨_, A.property.quotient (A.property.isRadical_span_idempotent he)⟩,
-      ⟨ofHom (mk (span {e}))⟩, mk_singleton_self _, fun B f hf ↦ ?_, exists_rep, by simp⟩
+      ⟨ofHom (mk (span {e}))⟩, mk_singleton_self _, exists_rep, by simp, fun B f hf ↦ ?_⟩
     -- `f` kills `e`, hence the ideal `(e)`, so it factors through the quotient
     exact ⟨⟨ofHom (lift _ f.hom.hom (by simp_all [mem_span_singleton']))⟩, by aesop⟩
   · -- the spectrum of `A ≃ B₁ × B₂` is the disjoint union of the two spectra

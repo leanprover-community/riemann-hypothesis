@@ -77,9 +77,9 @@ noncomputable section
 
 * `New.Variety.Comparison`: a comparison of two theories, with the induced map
   `New.Variety.Comparison.pull`.
-* `New.Variety.HasPartitions` and `New.Variety.HasZariskiDescent`: for tests with rings `ι A`,
-  cutting along idempotents, and Zariski descent (a subfunctor that holds near every maximal ideal,
-  `New.Variety.IsZariskiLocallyTop`, is dense).
+* `New.Variety.HasZariskiDescent`: for tests with rings `ι A`, Zariski descent (a subfunctor that
+  holds near every maximal ideal, `New.Variety.IsZariskiLocallyTop`, is dense). Cutting along
+  idempotents is Tau Ceti's `CategoryTheory.HasPartitions`.
 -/
 
 section Defs
@@ -259,29 +259,6 @@ def IsCohomDense : Prop :=
   ∀ (A : C) (y : Y A), IsCohomEquiv F (freeAb.map (U.preimage (pointMap y)).ι)
 
 /-! ### Tests with rings: idempotents and Zariski descent -/
-
-/-- The map `π : A ⟶ B` cuts `A` along the element `e` of the ring `ι A`: (a) `ι π` kills `e`;
-(b) every `f : A ⟶ B'` such that `ι f` kills `e` factors uniquely through `π`; (c) `ι π` is
-surjective; (d) its kernel lies in the ideal `(e)`. By (a), (c), (d), `ι B = ι A ⧸ (e)`. -/
-def IsQuotientByElem {A B : C} (e : ι.obj A) π :=
-  ι.map (X := A) (Y := B) π e = 0 ∧
-  (∀ (B' : C) (f : A ⟶ B'), ι.map f e = 0 → ∃! g : B ⟶ B', π ≫ g = f) ∧
-  Surjective (ι.map π) ∧
-  RingHom.ker (ι.map π).hom ≤ Ideal.span {e}
-
-/-- The tests `C`, with rings `ι A`, can be cut along idempotents, compatibly with the coefficients
-`F`: each idempotent e ≠ 1 of ι(A) has a `New.Variety.IsQuotientByElem` A → B, and
-ι(A) ≅ ι(B₁) × ι(B₂) via maps A → B₁, B₂ implies F(A) ≅ F(B₁) × F(B₂). -/
-structure HasPartitions where
-  /-- Every idempotent `e ≠ 1` of the ring of `A` is killed by a universal map `π : A ⟶ B`, and the
-  ring of `B` is the quotient by `e`. -/
-  exists_quotient (A : C) (e : ι.obj A) :
-      IsIdempotentElem e → e ≠ 1 → ∃ B π, IsQuotientByElem ι (B := B) e π
-  /-- If two maps from `A` make the ring of `A` the product of the rings of `B₁` and `B₂`, they make
-  the group `F.obj A` the product of `F.obj B₁` and `F.obj B₂`. -/
-  bijective_prod {A B₁ B₂ : C} (π₁ : A ⟶ B₁) (π₂ : A ⟶ B₂) :
-      Bijective (fun x : ι.obj A ↦ (ι.map (Y := B₁) π₁ x, ι.map (Y := B₂) π₂ x)) →
-      Bijective fun x : F.obj A ↦ (F.map π₁ x, F.map π₂ x)
 
 /-- The subfunctor `U` of `Y` is locally everything for the rings `ι A`: for every `y ∈ Y(A)` and
 maximal ideal `m` of the ring `ι A` there is `a ∉ m` such that `y` maps into `U` along every

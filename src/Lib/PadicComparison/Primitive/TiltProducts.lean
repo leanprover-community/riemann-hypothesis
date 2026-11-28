@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Algebra.Category.ModuleCat.Biproducts
+public import TauCeti.CategoryTheory.Abelian.FunctorCohomology.ZariskiDescent
 public import Lib.PadicComparison.Completion
 public import Lib.PadicComparison.Descent.TestCovers
 
@@ -17,7 +18,7 @@ coefficient `c ↦ K ⊗ (S ⊗ W(R♭))^` has partitions.
   passes from the rings of `p`-adic tests to their tilts.
 * `New.Variety.hasPartitions_periodAlg`: a functor `Ψ` with an isomorphism `θ` from the period
   coefficients `asModules (tilt ⋙ periodAlg S) ⋙ tensorWith K K` turns a product of two tests into a
-  product (`New.Variety.HasPartitions`).
+  product (`CategoryTheory.HasPartitions`).
 -/
 
 @[expose] public section

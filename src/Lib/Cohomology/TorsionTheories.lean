@@ -745,7 +745,7 @@ def Theory.locallyConstant : Theory (𝟭 (TestOver A)) where
     -- Any two elements of a test ring are comparable after a partition
     -- (`IsTest.isComparableRing`), so Zariski descent follows from additivity along
     -- idempotents (`HasPartitions`).
-    refine HasPartitions.hasZariskiDescent ⟨fun B e he _ ↦ ?_, fun _ _ ↦ by
+    refine HasPartitions.hasZariskiDescent ⟨fun {B e} he _ ↦ ?_, fun _ _ ↦ by
       apply hasPartitions_locConstCoeff.bijective_prod⟩ (𝟙 _) (by simp) fun B ↦ B.2.isComparableRing
     -- The cut along `e` is the quotient by the ideal `(e)`, which is radical.
     obtain ⟨D, π, h_ker, h_surj, h_univ, h_kill⟩ := B.exists_quotient (span {e})
@@ -756,9 +756,8 @@ def Theory.locallyConstant : Theory (𝟭 (TestOver A)) where
       calc
         _ ↔ span (ρ '' {e}) = ⊥ := (congrArg (· = ⊥) (Ideal.map_span ρ {e})).to_iff
         _ ↔ _ := by rw [Set.image_singleton, Ideal.span_singleton_eq_bot]
-    refine ⟨D, π, (h_map_iff π).mp h_kill, ?_, h_surj,
-      h_ker.le.trans (B.property.isRadical_span_idempotent he)⟩
-    intro E f h
+    refine ⟨D, π, (h_map_iff π).mp h_kill, h_surj,
+      h_ker.le.trans (B.property.isRadical_span_idempotent he), fun E f h ↦ ?_⟩
     exact h_univ E f ((h_map_iff f).mpr h)
   restrict_surjective B I := by
     -- The maps that kill `I` are those through the quotient `π` by the radical of `I`, and locally

@@ -2,6 +2,7 @@ module
 
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
+public import TauCeti.CategoryTheory.Abelian.FunctorCohomology.ZariskiDescent
 public import Lib.General.Algebra.CohomologyBaseChange
 import Lib.Cohomology.Etale.DenseSubfunctors
 import Lib.PadicComparison.Completion
@@ -351,7 +352,7 @@ def thickeningOver : PadicTest ⥤ CommAlg k where
     exact congrArg (⟦·⟧) (by simpa using! .symm (IsLocalization.map_map ..))
 
 /-- Let `Θ : C ⥤ PadicTest` and let `F : AbFunctor C`, a functor from `C` to abelian groups, be
-additive on idempotent partitions (`New.Variety.HasPartitions`) for the rings `R` of the tests
+additive on idempotent partitions (`CategoryTheory.HasPartitions`) for the rings `R` of the tests
 `Θ(X)`. Then `F` satisfies Zariski descent (`New.Variety.HasZariskiDescent`) for the rings
 `R[1/p]`. -/
 lemma hasZariskiDescent_genericOver {C : Type 1} [Category C] (Θ : C ⥤ PadicTest) {F : AbFunctor C}

@@ -73,7 +73,7 @@ namespace New.Variety
 ## Tilts of tests and the kernel of Fontaine's map
 
 * `New.Variety.PadicTest.exists_isQuotientByElem`: the quotient of S by an idempotent e ≠ 1 is again
-  a test.
+  a test, as `CategoryTheory.HasPartitions` asks.
 -/
 
 section TestProperties
@@ -174,10 +174,13 @@ lemma ker_theta :
         -- modulo `p`, `a₀♯` is `θ a = 0`
         simp [← Quotient.eq_zero_iff_dvd, ← mk_fontaineTheta, mem_ker.mp ha]
 
+variable {c} in
 /-- For an idempotent e ≠ 1 in the ring of a p-adic test c, there is a map of tests f: c → d
-that is universal among maps killing e and is the quotient by the ideal (e). -/
-lemma exists_isQuotientByElem (e : c.ProdRing) (he : IsIdempotentElem e) (he_ne : e ≠ 1) :
-    ∃ (d : PadicTest) (f : c ⟶ d), IsQuotientByElem (B := d) ringFunctor e f := by
+that kills e, is the quotient by the ideal (e) and is universal among maps killing e. -/
+lemma exists_isQuotientByElem {e : c.ProdRing} (he : IsIdempotentElem e) (he_ne : e ≠ 1) :
+    ∃ (d : PadicTest) (f : c ⟶ d), ringFunctor.map f e = 0 ∧ Surjective (ringFunctor.map f) ∧
+      RingHom.ker (ringFunctor.map f).hom ≤ span {e} ∧
+      ∀ ⦃d' : PadicTest⦄ (g : c ⟶ d'), ringFunctor.map g e = 0 → ∃! h : d ⟶ d', f ≫ h = g := by
   -- project onto the cells where `e i ≠ 1`, that is, where the idempotent `e i` is `0`
   let d := cellPoint (.of OC c.ProdRing) (I := {i // e i ≠ 1})
     (n := nonempty_subtype.mpr (ne_iff.mp he_ne)) fun i ↦ Pi.evalRingHom c.Cell i
@@ -190,7 +193,7 @@ lemma exists_isQuotientByElem (e : c.ProdRing) (he : IsIdempotentElem e) (he_ne 
     refine fun x hx ↦ mem_span_singleton'.mpr ⟨x, ?_⟩
     have hx_zero (i : c.Index) (hi : e i ≠ 1) : x i = 0 := congrFun hx ⟨i, hi⟩
     simpa [funext_iff, mul_right_eq_self₀, or_iff_not_imp_left] using hx_zero
-  refine ⟨d.fst, f, hf_zero, fun d' (g : c.ProdRing →ₐ[OC] d'.ProdRing) hg ↦ ?_, hf_surj, hf_ker⟩
+  refine ⟨d.fst, f, hf_zero, hf_surj, hf_ker, fun d' (g : c.ProdRing →ₐ[OC] d'.ProdRing) hg ↦ ?_⟩
   -- a map `g` that kills `e` kills `ker f`, so factors uniquely through the surjection `f`
   obtain ⟨g₀, h_fac⟩ : ∃ g₀ : d.fst.ProdRing →ₐ[OC] d'.ProdRing, g₀.comp f = g :=
     ⟨_, f.liftOfSurjective_comp hf_surj g (hf_ker.trans ((span_singleton_le_iff_mem _).mpr hg))⟩

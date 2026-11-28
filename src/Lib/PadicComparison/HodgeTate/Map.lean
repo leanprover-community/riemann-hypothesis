@@ -793,14 +793,14 @@ lemma HodgeTatePair.hasPartitions_scalarCoeff :
     HasPartitions (HodgeTatePair.toTest ⋙ PadicTest.ringFunctor)
       (scalarCoeff (p := p) (k := k)) := by
   have h_generic := hasPartitions_genericCoeff (p := p)
-  refine ⟨fun A e he he' ↦ ?_, fun _ _ ↦ h_generic.bijective_prod _ _⟩
-  -- cut the test of `A` along `e`: `f` kills `e`, every map killing `e` factors through `f`, and
-  -- `f` is onto with kernel in `(e)`
-  obtain ⟨d, f, h_kill, h_factor, h_surj_ker⟩ := h_generic.exists_quotient _ e he he'
+  refine ⟨fun {A e} he he' ↦ ?_, fun _ _ ↦ h_generic.bijective_prod _ _⟩
+  -- cut the test of `A` along `e`: `f` kills `e`, is onto with kernel in `(e)`, and every map
+  -- killing `e` factors through `f`
+  obtain ⟨d, f, h_kill, h_surj, h_ker, h_factor⟩ := h_generic.exists_quotient he he'
   obtain ⟨l, hl, rfl⟩ := (A.existsUnique_hom ⟨d, A.rank⟩ f fun i ↦ (0, single i 1)).exists
-  refine ⟨_, l, h_kill, fun D g hg ↦ ?_, h_surj_ker⟩
+  refine ⟨_, l, h_kill, h_surj, h_ker, fun D g hg ↦ ?_⟩
   -- A map out of the cut pair is given by a map of tests and the images of the basis.
-  obtain ⟨g₀, hg₀, hg₀_unique⟩ := h_factor _ _ hg
+  obtain ⟨g₀, hg₀, hg₀_unique⟩ := h_factor _ hg
   refine (existsUnique_congr fun s ↦ ⟨fun hs ↦ ?_, ?_⟩).1
     (existsUnique_hom ⟨d, A.rank⟩ D g₀ fun i ↦ g.2 (single i 1))
   · -- `l ≫ s` and `g` have the same map of tests and send the basis to the same elements.
