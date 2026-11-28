@@ -675,8 +675,11 @@ theorem rightRegularL2_toL2_eq_smear (hg : l.HasLargeGap A) {y : l.DsModule} {α
     simpa using (integral_conv (· * g) (hw.inner_const 1) (integrable_bump_inv_smul 1 α)
       (.of_continuous ⟨1, norm_dsCoeff_le_one hg⟩)).1
   rw [hg.inner_smear_rightRegularL2_toL2_dsGenerator, ← toLp_toSimpleFunc w]
-  simpa [toL2, inner_toLp_rightRegularL2_toLp, -map_mul, ← hα, mul_left_comm, mul_comm,
-    inner_smul_right_eq_smul, mul_assoc, integral_const_mul, ne_of_gt] using h_swap
+  simp [toL2, inner_toLp_rightRegularL2_toLp, -map_mul, ← hα, inner_smul_right_eq_smul,
+    mul_assoc]
+  simp_rw [mul_left_comm (α.val.val _) (↑√l.formalDegree), integral_const_mul]
+  refine congrArg (fun x : ℂ ↦ ↑√l.formalDegree * x) ?_
+  simpa [mul_assoc, mul_comm (conj (toSimpleFunc w _))] using h_swap
 
 /-- The action `dsAction` of `gl n` on `U(𝔤) c_λ` is the derivative, along `toL2`, of right
 translation on `L²`. -/
