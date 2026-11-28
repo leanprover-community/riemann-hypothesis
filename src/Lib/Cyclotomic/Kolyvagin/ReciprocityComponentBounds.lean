@@ -738,6 +738,7 @@ lemma nsmul_component_eq_zero (h_bound : IsStickelbergerBound N e X)
   exact hzσ (by simpa [nsmul_eq_mul] using h_zero)
 
 omit [NeZero N] in
+/-- A positive integer coprime to `l` is a unit in `O`. -/
 lemma isUnit_natCast_of_not_dvd {k : ℕ} (hk : ¬l ∣ k) : IsUnit (k : O) := by
   have h_unit : IsUnit (k : ℤ_[l]) :=
     .of_map PadicInt.toZMod _ (by simpa [natCast_eq_zero_iff] using hk)
