@@ -198,6 +198,7 @@ lemma IsShort.sub_translate {B : ℝ} {k : Gf E n} {φ : AlgForm n κ e} (hφ : 
     change weylNormSq (σ ∘ (φ.val g - φ.val (g * k))) ≤ 4 * B
     linarith [h_norm σ g, h_norm σ (g * k), weylNormSq_nonneg (σ ∘ (φ.val g + φ.val (g * k)))]
 
+omit [DecidableEq n] in
 /-- Let y be an array over ℂ_p with entries of absolute value at most 1. The evaluation vector
 `New.weylEval` at y has norm at most 1: its coordinates are the values at y of the products of
 minors `New.nablaBasis`, which are polynomials with integer coefficients. -/

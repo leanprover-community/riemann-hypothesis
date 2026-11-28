@@ -327,7 +327,7 @@ is zero because G is positive semidefinite. -/
 lemma coe_weylNormSq : weylNormSq ξ = star ξ ⬝ᵥ weylGramOver *ᵥ ξ :=
   (eq_re_of_ofReal_le (weylGramOver_posDef.posSemidef.dotProduct_mulVec_nonneg ξ)).symm
 
-omit [DecidableEq Φ] in
+omit [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] in
 /-- The complex conjugate of the evaluation vector at y (the values `b_i y` of the basis minor
 products) is the evaluation vector at the conjugate array, since the `b_i` have integer
 coefficients. -/

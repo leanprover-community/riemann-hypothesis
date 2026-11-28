@@ -403,6 +403,7 @@ lemma GL.weylGram_eq_submatrix {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] (κ : �
     linearCombination_apply, mulVec, dotProduct, weylEval, h_basis, h_eval] at h ⊢
   exact h
 
+omit [∀ τ : Φ, DecidableEq (n τ)] in
 @[simp]
 lemma map_toPoly : MvPolynomial.map φ (toPoly n κ ξ) = toPoly n κ (φ ∘ ξ) := by
   simp [toPoly, ← C_mul', linearCombination_apply, mulVec, dotProduct]
