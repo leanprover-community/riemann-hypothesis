@@ -601,8 +601,7 @@ lemma paramW_lt_iff (τ : D.Φ) {a b : D.RowIndex} :
 `i` (`decreasingPosition` is the number of larger entries). -/
 lemma decreasingPosition_paramW (v : D.Φ) (i : D.RowIndex) :
     decreasingPosition (D.paramW v) i = D.basisNumber i :=
-  D.card_filter_basisNumber (q := fun j : D.RowIndex ↦ D.paramW v i < D.paramW v j) 0
-    (D.basisNumber i) (by simp [paramW_lt_iff]) (by simp)
+  decreasingPosition_eq_of_bijective D.basisNumber.bijective (fun _ _ ↦ D.paramW_lt_iff v) i
 
 /-- For 1 ≤ j ≤ m, the space W_j has exactly m − j minus signs. -/
 lemma negCount_signsW (j : D.LiftIndex) : negCount (D.signsW j) = D.m - j := by

@@ -114,6 +114,16 @@ def IsHCParam : Prop :=
   ∀ w : Φ,
     (l w).Injective ∧ ∀ i : n, ∃ p < Fintype.card n, l w i = hcParameter κ e (Fintype.card n) w p
 
+omit [DecidableEq n] in
+/-- A bijection with `Fin k` that numbers the entries of `l` in decreasing order gives their
+decreasing positions. The entries strictly above `l i` correspond to the positions before `e i`. -/
+lemma decreasingPosition_eq_of_bijective {l : n → ℤ} {k : ℕ} {e : n → Fin k}
+    (he : e.Bijective) (h_order : ∀ i j, l i < l j ↔ e j < e i) (i : n) :
+    decreasingPosition l i = e i := by
+  classical
+  rw [decreasingPosition, ← Fin.card_Iio (e i)]
+  exact card_bijective e he (by simp [h_order])
+
 variable {κ}
 
 /-- The sesquilinear form (ξ,η) ↦ ξ* G η on complex coordinate vectors of weight κ, conjugate

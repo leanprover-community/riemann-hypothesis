@@ -449,9 +449,8 @@ lemma IsHCParam.eq_hcParameter (h : IsHCParam κ e l) (w : Φ) (i : n) :
     simpa [Fin.exists_iff] using (h w).2
   have hv_inj : v.Injective := fun j k hjk ↦ h.injective w (by rw [hv j, hv k, hjk])
   have hv_bij : v.Bijective := (bijective_iff_injective_and_card v).2 ⟨hv_inj, by simp⟩
-  have h_position : decreasingPosition (l w) i = v i := by
-    rw [decreasingPosition, ← Fin.card_Iio (v i)]
-    exact card_bijective v hv_bij (by simp [hv, hcParameter_strictAnti.lt_iff_gt])
+  have h_position := decreasingPosition_eq_of_bijective (l := l w) hv_bij
+    (fun j k ↦ by simp [hv, hcParameter_strictAnti.lt_iff_gt]) i
   rw [h_position, hv]
 
 /-- For a parameter `l` of `(κ, e)`, every position q < |n| is taken: some index i is at position q
