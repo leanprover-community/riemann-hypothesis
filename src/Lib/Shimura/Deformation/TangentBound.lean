@@ -612,6 +612,60 @@ lemma eq_of_lift_star_sub [IsAlgClosed k] [Fact (ringChar k).Prime] (h_rig : x�
   exact eq_of_sub_eq_zero ((Ideal.torsionOf_eq_top_iff ..).mp (eq_top_mono (sup_le h_lev h_inf)
     h_level))
 
+include hp in
+/-- If `x` reduces to `x₀`, then so does its pull-back `z` along the map `k ⊕ M* → k[ε]`,
+`(a, φ) ↦ a + φ(l) ε`. -/
+lemma isPullbackAlong_sqZeroReduction_of_map_eval {l : M}
+    {z : ThetaObject X (Spec (of (TrivSqZeroExt k k)))}
+    (hz : IsPullbackAlong (specMap (map (eval k M l)).toRingHom) z x) :
+    IsPullbackAlong (sqZeroReduction k k) x₀ z := by
+  -- `using!`: `hp` names the reduction `sqZeroReduction`, which the simplified goal unfolds
+  simpa [← hz, IsPullbackAlong, ← map_comp_assoc, ← ofHom_comp, ← AlgHom.comp_toRingHom]
+    using! hp
+
+/-- The constant deformation `z₀` of `x₀`, its pull-back along `Spec k[ε] ⟶ Spec k`, reduces to
+`x₀`. -/
+lemma isPullbackAlong_sqZeroReduction_of_algebraMap
+    {z₀ : ThetaObject X (Spec (of (TrivSqZeroExt k k)))}
+    (hz₀ : IsPullbackAlong (specMap (algebraMap k k[ε])) z₀ x₀) :
+    IsPullbackAlong (sqZeroReduction k k) x₀ z₀ := by
+  simp [← hz₀, IsPullbackAlong, ← map_comp_assoc, ← ofHom_comp]
+
+/-- For `l ∈ M` and a `k[ε]`-algebra `C`, the ring map `θ : C ⊕ Hom(M, C) → C`,
+`(a, φ) ↦ a + ε φ(l)`, defines a morphism `d : Spec C ⟶ Spec (C ⊕ Hom(M, C))` over
+`Spec (k ⊕ M*)`; here `Spec C` lies over `Spec (k ⊕ M*)` through `Spec k[ε]` and the map
+`k ⊕ M* → k[ε]` given by `l`. -/
+lemma exists_specMap_eval (l : M) (C : Type) [CommRing C] [Algebra k[ε] C] [Algebra k C]
+    [IsScalarTower k k[ε] C] :
+    ∃ (θ : TrivSqZeroExt C (M →ₗ[k] C) →+* C)
+      (d : (Over.map (specMap (map (eval k M l)).toRingHom)).obj (specOver k[ε] C) ⟶
+        Over.mk (specMap (sqZeroMap (ofId k C)))),
+      d.left = specMap θ ∧ ∀ a, θ a = a.fst + (ε : k[ε]) • a.snd l := by
+  let θ := (liftEquivOfComm (A := C) ⟨(ε : k[ε]) • .applyₗ' (R := k) C l, by simp [smul_smul]⟩).1
+  refine ⟨θ, homMk (specMap θ) (homEquiv.injective ?_), rfl, fun a ↦ ?_⟩
+  · ext
+    simp [θ, TrivSqZeroExt.map, smul_def, IsScalarTower.algebraMap_apply k k[ε] C, mul_comm,
+      ↓ lift_def, ↓ algebraMap_eq_inl']
+  · simp [θ, ↓ lift_def]
+
+open NumberField in
+/-- If `Z` lifts a point `v` of `x₀.groupScheme` that `c` kills, then `c • Z` is infinitesimal for
+the first projection. -/
+lemma isInfinitesimal_smul_of_smul_eq_zero {v : specOver k C ⟶ x₀.groupScheme}
+    {Z : Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme}
+    (hZ : toSqZeroSpec C ≫ Z = hp.isGroupBaseChange.pointEquiv v) {c : 𝓞 E} (hv : c • v = 0) :
+    IsInfinitesimal (ofHom (fstHom C C (M →ₗ[k] C)).toRingHom) (c • Z) :=
+  isInfinitesimal_of_comp_eq_zero _
+    (by rw [ModuleObj.comp_smul, hZ, ← LinearEquiv.map_smul, hv, map_zero])
+
+open scoped Pointwise in
+/-- If `c • v = 0` and `t • I ⊆ (c)` for an ideal `I`, then `I` kills `t • v`. -/
+lemma smul_mem_torsionBySet_of_smul_eq_zero {R N : Type*} [CommRing R] [AddCommGroup N]
+    [Module R N] {I : Ideal R} {c t : R} (hct : t • I ≤ Ideal.span {c}) {v : N} (hv : c • v = 0) :
+    t • v ∈ Submodule.torsionBySet R N I := by
+  simpa [← smul_smul] using fun a ha ↦
+    (Ideal.torsionOf _ _ v).span_singleton_le_iff_mem.mpr hv (hct ⟨a, ha, mul_comm ..⟩)
+
 open scoped Pointwise in
 open NumberField in
 /-- The last step of the tangent bound. Let `k` be algebraically closed of prime characteristic,
@@ -666,12 +720,8 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
   obtain ⟨z₀, hz₀⟩ := x₀.exists_isPullbackAlong (specMap (algebraMap k k[ε]))
   have hzρ : z.baseHom = (algebraMap k k[ε]).comp x₀.baseHom := by
     simpa [hρ, ← comp_assoc] using hz.baseHom_eq_comp
-  have hq : IsPullbackAlong (sqZeroReduction k k) x₀ z := by
-    -- `using!`: `hp` names the reduction `sqZeroReduction`, which the simplified goal unfolds
-    simpa [m, ← hz, IsPullbackAlong, ← map_comp_assoc, ← ofHom_comp, ← AlgHom.comp_toRingHom]
-      using! hp
-  have hq₀ : IsPullbackAlong (sqZeroReduction k k) x₀ z₀ := by
-    simp [← hz₀, IsPullbackAlong, ← map_comp_assoc, ← ofHom_comp]
+  have hq := isPullbackAlong_sqZeroReduction_of_map_eval hp hz
+  have hq₀ := isPullbackAlong_sqZeroReduction_of_algebraMap hz₀
   -- Put `β' = star D.β`. Drinfeld's lemma lifts `(β' - b) c` to
   -- `G : z₀.groupScheme ⟶ z.groupScheme`. If `G` kills the kernel of `c`, it can be divided by `c`.
   -- A lift of `β' - b` forces `z₀ = z`, so `l = 0`.
@@ -689,12 +739,7 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
   algebraize [(algebraMap k[ε] C).comp (inlHom k k)]
   have : Module.Finite k C := .trans k[ε] C
   -- `θ` is the ring map `(a, φ) ↦ a + ε φ(l)` on `C ⊕ Hom(M, C)`, `d` the morphism of spectra.
-  let θ := (liftEquivOfComm (A := C) ⟨(ε : k[ε]) • .applyₗ' (R := k) C l, by simp [smul_smul]⟩).1
-  let d : (map m) (specOver _ C) ⟶ .mk (specMap (sqZeroMap (ofId k C))) :=
-    homMk (specMap θ) (homEquiv.injective (by
-      ext
-      simp [m, θ, TrivSqZeroExt.map, smul_def, algebraMap_toAlgebra, mul_comm, ↓ lift_def,
-        ↓ algebraMap_eq_inl']))
+  obtain ⟨θ, (d : (map m).obj (specOver _ C) ⟶ _), hd, hθ⟩ := exists_specMap_eval (k := k) l C
   let v : specOver k C ⟶ x₀.groupScheme :=
     homMk (V := (Over.map _).obj (specOver k[ε] C)) (𝟙 (Spec _))
       (by simp [← map_comp, ← ofHom_comp]) ≫ hz₀.isGroupBaseChange.pointEquiv y
@@ -703,24 +748,20 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
   obtain ⟨_, ψ, _, -, _, ψ_ker, ψ_univ⟩ := exists_isReductionModEps (specOver k[ε] C).hom
   have θ_red : ofHom θ ≫ ψ = ofHom (fstHom C C _).toRingHom ≫ ψ := by
     ext
-    simp [θ, smul_def, ψ_ker, -map_mul, ↓ lift_def]
+    simp [hθ, smul_def, ψ_ker, -map_mul]
   have h_agree : AgreeModEps hq hq₀ _ y' y := by
     intro _ _ s
     obtain ⟨s', hs'⟩ := ψ_univ s.w
     ext
-    simpa [← hs', hp.comp_toFamily, hz₀.comp_toFamily, ← hz.comp_toFamily, y', d, v, toSqZeroSpec,
+    simpa [← hs', hp.comp_toFamily, hz₀.comp_toFamily, ← hz.comp_toFamily, y', hd, v, toSqZeroSpec,
       θ_red, pointEquiv, ← map_comp_assoc, -map_comp] using
       s' ≫= map ψ ≫= congr($(hY v).1 ≫ x.toFamily.1)
   -- So `y ≫ G = (β' - b) c • y'`, which by `ω_ker` is zero once
   -- `ω (d ≫ c • Y v)`, which is `θ (ω (c • Y v))`, is zero.
   refine (G_agree _ y' y h_agree).trans (hz.isGroupBaseChange.pointEquiv.injective ?_)
-  have v_tiny : IsInfinitesimal (ofHom (fstHom C C _).toRingHom) (c • Y v) :=
-    isInfinitesimal_of_comp_eq_zero _
-      (by rw [ModuleObj.comp_smul, hY, ← LinearEquiv.map_smul, hv, map_zero])
+  have v_tiny := isInfinitesimal_smul_of_smul_eq_zero hp (hY v) hv
   -- `t • v` is killed by `𝔭`, and `t ≡ 1` modulo `𝔭`, so `hl` for `t • v` computes `ω (c • Y v)`.
-  have htv : t • v ∈ placeTorsion x₀ C := by
-    simpa [← smul_smul] using fun a ha ↦
-      (Ideal.torsionOf _ _ v).span_singleton_le_iff_mem.mpr hv (hct ⟨a, ha, mul_comm ..⟩)
+  have htv : t • v ∈ placeTorsion x₀ C := smul_mem_torsionBySet_of_smul_eq_zero hct hv
   have h_lift : toSqZeroSpec C ≫ (t • Y v) = hp.isGroupBaseChange.pointEquiv (t • v) := by
     rw [ModuleObj.comp_smul, hY, map_smul]
   have h_snd : snd (ω (c • Y v)) l = 0 := by
@@ -728,8 +769,8 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
       congr(snd $(ω_lift ⟨t • v, htv⟩ (t • Y v) h_lift) l).symm.trans (hl C _)
   -- the first component of `ω (c • Y v)` vanishes by `ω_red`, the second at `l` by `h_snd`
   have h_log : ω (d ≫ (c • Y v)) = 0 := by
-    simpa [↓ω_comp v_tiny d rfl, h_snd, θ, ↓ lift_def] using ω_red v_tiny
-  simpa [y', ← smul_smul] using ω_ker (v_tiny.precomp d rfl ψ θ_red) h_log
+    simpa [↓ω_comp v_tiny d hd, h_snd, hθ] using ω_red v_tiny
+  simpa [y', ← smul_smul] using ω_ker (v_tiny.precomp d hd ψ θ_red) h_log
 
 include hp in
 /-- **Tangent bound.** Let `M` be a `k`-vector space over an algebraically closed field `k`, let
