@@ -127,8 +127,11 @@ def current_identity(root):
             raise ValueError(f"expected a bounded regular input: {name}")
         files[name] = path.read_bytes()
     local_path(root, Path("src"), checked)
-    subprocess.run(["git", "-C", str(root), "diff", "--no-ext-diff", "--no-textconv", "--quiet",
-                    "HEAD", "--", "src", *files], check=True)
+    diff = subprocess.run(["git", "-C", str(root), "diff", "--no-ext-diff", "--no-textconv",
+                           "--quiet", "HEAD", "--", "src", *files])
+    if diff.returncode == 1:
+        raise ValueError("tracked build inputs differ from HEAD; restore the cache from a clean revision")
+    diff.check_returncode()
     if git(root, "ls-files", "--others", "--", "src"):
         raise ValueError("untracked source files differ from HEAD")
     config = tomllib.loads(files["lakefile.toml"].decode())

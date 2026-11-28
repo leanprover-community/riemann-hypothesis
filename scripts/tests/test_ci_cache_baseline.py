@@ -100,6 +100,16 @@ class Baseline(unittest.TestCase):
         with self.assertRaises(ValueError):
             cache.validated_blobs(record, identity, self.fetcher)
 
+    def test_modified_tracked_inputs(self):
+        self.base()
+        (self.root / "src/A.lean").write_text("-- changed\n")
+        for staged in (False, True):
+            with self.subTest(staged=staged):
+                if staged:
+                    run(self.root, "add", "src/A.lean")
+                with self.assertRaisesRegex(ValueError, "tracked build inputs differ from HEAD"):
+                    cache.current_identity(self.root)
+
     def test_pinned_when_no_ancestor_is_published(self):
         first = self.base()
         pinned = {**cache.identity_at(self.root, first, {}), "source_tree": "1" * 40}
