@@ -322,8 +322,7 @@ lemma norm_shortRows_mul_transpose_le_one (i : D.RowChoice) {p : ℕ} [Fact p.Pr
   let Z : Matrix D.FlatIndex D.FlatIndex (𝔸f D.E) :=
     ((i.classRep⁻¹ : Gf D.E D.FlatIndex) : Matrix D.FlatIndex D.FlatIndex (𝔸f D.E)) *
       (D.shortRows i)ᵀ.map (algebraMap D.E (𝔸f D.E))
-  have hZ_int : IsIntMatrix (Ô D.E) Z :=
-    (Space.exists_short_basis_stdSpace P.conductor_mem_differentIdeal i.classRep).choose_spec.left
+  have hZ_int : IsIntMatrix (Ô D.E) Z := D.isIntMatrix_inv_mul_shortRows_transpose i
   have hZ_map : IsIntMatrix NormedField.valuation.integer (Z.map (adeleExtension σ)) :=
     fun a b ↦ norm_adeleExtension_le_one σ (hZ_int a b)
   have h_prod : IsIntMatrix NormedField.valuation.integer
@@ -440,7 +439,7 @@ lemma sqrt_weylNormSq_smul_eval_stackedDetProdCoords_le (j : D.LiftIndex) (i : D
   -- The rows `D.shortRows i` form a short basis, so their entries are small too.
   have hY_small (ψ : D.E →+* ℂ) (x y : D.FlatIndex) :
       ‖ψ (D.shortRows i x y)‖ ≤ Space.shortBasisConst D.E D.FlatIndex (P.q₁ D.towerExp * P.d) :=
-    (Space.exists_short_basis_stdSpace P.conductor_mem_differentIdeal i.1.out).choose_spec.2 ψ y x
+    D.norm_shortRows_le i ψ x y
   have hY_le (τ : D.Φ) (x y : D.FlatIndex) : ‖σ (Φ τ (D.shortRows i x y))‖ ≤ D.M ^ 4 :=
     (hY_small (.comp σ (Φ τ)) x y).trans (by simpa using D.le_of_hasLogBound)
   have h_coords : weylNormSq ((σ : ℂ →+* ℂ) ∘ eval z ∘ stackedDetProdCoords j i (D.shortRows i)) ≤

@@ -478,7 +478,7 @@ lemma exists_sum_choiceFn_eq_integral {o : D.CarrierIndex → ℤ} (ho : IsPosFi
     rw [h_weight] at h_int ⊢
     obtain ⟨minor_ne, minor_hol⟩ := prod_variableMinor_mem_holomorphicData (E := D.E) ho
       (Function.Embedding.inl.trans e) D.reducedHalfGap fun _ ↦ D.m
-    have h_unit (r : D.RowChoice) : IsUnit (D.shortRows r) := by simp [shortRows]
+    have h_unit (r : D.RowChoice) : IsUnit (D.shortRows r) := D.isUnit_shortRows r
     exact reproducing_formula_modKernel ho D.ideal_untwistedModulus_eq_span
       nonempty_modulus_places S (hasWeight_upsilonU1_pow D.m) .one (by simp [IsKDominant]) h_int
       h_card e minor_ne minor_hol (fun p rows ↦ Q (p, rows))

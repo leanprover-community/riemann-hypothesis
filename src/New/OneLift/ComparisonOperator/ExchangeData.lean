@@ -202,9 +202,29 @@ abbrev RowChoice : Type :=
     (D.Φ → Fin D.reducedHalfGap → Fin (2 * D.m) → D.FlatIndex)
 
 /-- A chosen invertible matrix over E whose rows lie in the lattice at the class `i.1` and whose
-entries are small at every complex embedding (`New.Space.exists_short_basis_stdSpace`). -/
+entries are small at every complex embedding (`New.Space.exists_short_basis_stdSpace`). These
+properties are `isIntMatrix_inv_mul_shortRows_transpose`, `norm_shortRows_le` and
+`isUnit_shortRows`. -/
 def shortRows (i : D.RowChoice) : Matrix D.FlatIndex D.FlatIndex (P.E D.towerExp) :=
   (Space.exists_short_basis_stdSpace P.conductor_mem_differentIdeal i.1.out).choose.valᵀ
+
+/-- The rows of `shortRows i` lie in the lattice at the class `i.1`: for its representative
+`g = i.1.out`, the matrix `g⁻¹ (shortRows i)ᵀ` is integral. -/
+lemma isIntMatrix_inv_mul_shortRows_transpose (i : D.RowChoice) :
+    IsIntMatrix (Ô D.E)
+      (((i.1.out⁻¹ : Gf D.E D.FlatIndex) : Matrix D.FlatIndex D.FlatIndex (𝔸f D.E)) *
+        (D.shortRows i)ᵀ.map (algebraMap D.E (𝔸f D.E))) :=
+  (Space.exists_short_basis_stdSpace P.conductor_mem_differentIdeal i.1.out).choose_spec.1
+
+/-- The entries of `shortRows i` have absolute value at most `shortBasisConst` at every complex
+embedding. -/
+lemma norm_shortRows_le (i : D.RowChoice) (φ : D.E →+* ℂ) (x y : D.FlatIndex) :
+    ‖φ (D.shortRows i x y)‖ ≤ Space.shortBasisConst D.E D.FlatIndex (P.q₁ D.towerExp * P.d) :=
+  (Space.exists_short_basis_stdSpace P.conductor_mem_differentIdeal i.1.out).choose_spec.2 φ y x
+
+/-- The matrix `shortRows i` is invertible. -/
+lemma isUnit_shortRows (i : D.RowChoice) : IsUnit (D.shortRows i) := by
+  simp [shortRows]
 
 variable {D} (ϑ : D.TameChar) (j : D.LiftIndex)
 
