@@ -121,8 +121,8 @@ lemma framePoint_apply (h : D.IsAdapted 1 b) (a : InfinitePlace E × r → ℂ)
     framePoint h a z c (w, l) =
       (atRealPlace (D.frameAt 1 b) w *ᵥ (vecToMatrix a w ⊕ᵥ vecToMatrix c w ⊕ᵥ vecToMatrix z w))
         l := by
-  rw [framePoint_eq_mulVec h]
-  simp [realMatrix, mulVec, dotProduct, blockDiagonal, sum_prod_type]
+  rw [framePoint_eq_mulVec h, realMatrix_mulVec_apply]
+  rfl
 
 /-- The projection `posProj` on the positive coordinates sends the point `L a + I z + K c`
 (`framePoint h a z c`) to the point with `a` and `c` replaced by their midpoint and `z` by its

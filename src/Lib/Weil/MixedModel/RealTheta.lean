@@ -307,27 +307,28 @@ lemma realVec_realCoordSum (x : (InfinitePlace E × n → ℂ) × (InfinitePlace
   funext i
   rcases i with i | i <;> rfl
 
+omit [WeilData E] [Fintype n] [DecidableEq n] [DecidableEq p] in
+/-- The block of `realMatrix A` at `w` acts on the coordinates at `w` by the component of `A`. -/
+lemma realMatrix_mulVec_apply (y : InfinitePlace E × p → ℂ) (w : InfinitePlace E) (i : n) :
+    (realMatrix A *ᵥ y) (w, i) = ((A.map (evalInf w)) *ᵥ fun j ↦ y (w, j)) i := by
+  simp [realMatrix, mulVec, dotProduct, sum_prod_type, blockDiagonal_apply, ite_mul]
+
 omit [Fintype n] [DecidableEq n] [DecidableEq p] in
 /-- Acting by `realMatrix A` in Fock's coordinates is acting by `A` on real adelic vectors. -/
 lemma realVec_realMatrix_mulVec (y : InfinitePlace E × p → ℂ) :
     realVec (realMatrix A *ᵥ y) = A *ᵥ realVec y := by
   funext i
   refine Prod.ext (funext fun w ↦ ?_) ?_
-  · change (WeilData.scaleIdele E).val.1 w * (realMatrix A *ᵥ y) (w, i) = ((A *ᵥ realVec y) i).1 w
-    rw [mulVec, dotProduct, sum_prod_type_right, Finset.mul_sum,
-      mulVec, dotProduct, fst_sum, Finset.sum_apply]
-    refine Finset.sum_congr rfl fun j _ ↦ ?_
-    have h_inner :
-        ∑ w' : InfinitePlace E, realMatrix A (w, i) (w', j) * y (w', j) =
-          (A i j).1 w * y (w, j) := by
-      simp only [realMatrix, submatrix_apply, Prod.swap_prod_mk, blockDiagonal_apply,
-        Matrix.map_apply, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
-      rfl
-    rw [h_inner]
-    exact mul_left_comm ((WeilData.scaleIdele E).val.1 w) ((A i j).1 w) (y (w, j))
-  · change (0 : 𝔸f E) = ((A *ᵥ realVec y) i).2
-    rw [mulVec, dotProduct, snd_sum]
-    exact (Finset.sum_eq_zero fun j _ ↦ mul_zero ((A i j).2)).symm
+  · let scale : ℂ := (WeilData.scaleIdele E).val.1 w
+    change scale * (realMatrix A *ᵥ y) (w, i) = evalInf w ((A *ᵥ realVec y) i)
+    have h_scale : evalInf w ∘ realVec y = scale • (fun j : p ↦ y (w, j)) := rfl
+    rw [realMatrix_mulVec_apply, (evalInf w).map_mulVec, h_scale, mulVec_smul]
+    rfl
+  · let evalFinite := RingHom.snd (InfinitePlace E → ℂ) (𝔸f E)
+    change (0 : 𝔸f E) = evalFinite ((A *ᵥ realVec y) i)
+    have h_zero : evalFinite ∘ realVec y = 0 := rfl
+    rw [evalFinite.map_mulVec, h_zero, mulVec_zero]
+    rfl
 
 omit [WeilData E] [DecidableEq n] [Fintype p] in
 /-- If `A` has orthonormal columns at the infinite places (and integral finite entries), then
