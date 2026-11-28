@@ -4,6 +4,7 @@ public import Mathlib.MeasureTheory.Group.ModularCharacter
 public import Mathlib.Probability.IdentDistrib
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Topology.Algebra.ProperAction.Basic
+import TauCeti.MeasureTheory.Measure.Haar.Unique
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Topology.Algebra.ProperAction.Torsor
 import Mathlib.Topology.Separation.CompletelyRegular
@@ -586,23 +587,16 @@ lemma isMulRightInvariant_of_finite_covolume (_h_finite : IsFiniteMeasure (Γ.qu
     simpa [ne, ENNReal.mul_eq_right, -withDensity_apply] using h_scale
   rw [h_mod, h_one, one_smul]
 
-instance [CompactSpace G] : IsMulRightInvariant μ := by
-  -- The trivial subgroup is a lattice of a compact group.
-  apply isMulRightInvariant_of_finite_covolume (Γ := ⊥)
-  rw [quotMeasure_bot]
-  infer_instance
+instance [CompactSpace G] : IsMulRightInvariant μ :=
+  isMulRightInvariant_of_isHaarMeasure_of_isFiniteMeasure μ
 
 instance [IsMulRightInvariant μ] : IsInvInvariant μ := by
-  -- `μ.inv` and `μ` are left invariant, so both are multiples of the Haar measure normalized on
-  -- `K = K₀ ∪ K₀⁻¹`; the factors agree because `K` is symmetric.
+  -- The two measures agree on the symmetric set `K₀ ∪ K₀⁻¹` of positive finite measure.
   obtain ⟨K₀⟩ : Nonempty (TopologicalSpace.PositiveCompacts G) := inferInstance
   let K : TopologicalSpace.PositiveCompacts G := K₀ ⊔ K₀.map _ continuous_inv (isOpenMap_inv G)
-  have h_mass : μ.inv K = μ K := by simp [K, union_comm, ← Set.inv_preimage, preimage_preimage]
-  constructor
-  calc
-    μ.inv = μ.inv K • haarMeasure K := haarMeasure_unique _ K
-    _ = μ K • haarMeasure K := by rw [h_mass]
-    _ = μ := (haarMeasure_unique μ K).symm
+  refine ⟨isMulLeftInvariant_eq_of_apply_eq μ.inv μ
+    (measure_pos_of_nonempty_interior μ K.interior_nonempty).ne' K.isCompact.measure_lt_top.ne ?_⟩
+  simp [K, union_comm, ← Set.inv_preimage, preimage_preimage]
 
 variable (μ)
 
