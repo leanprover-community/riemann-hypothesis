@@ -195,7 +195,8 @@ lemma truncMap.exact_of_exact {S : AbFunctor C} {n e : ℕ} {F N M : AbFunctor C
     -- `a` (`hy`), and truncating twice is truncating once.
     refine ⟨y, (LinearMap.congr_fun (degreeTrunc_comp_precomp ξ) y).trans ?_⟩
     have h_idem : degreeTrunc d (m + e) (degreeTrunc d (m + e) a) = degreeTrunc d (m + e) a := by
-      aesop
+      ext i k
+      by_cases h : k + d i < m + e <;> simp [degreeTrunc, h]
     simpa [hy] using h_idem
   · -- Conversely `ζ` kills what comes from `ξ`, component by component.
     simp [← hy, Finsupp.ext_iff, h_exact.apply_apply_eq_zero]
