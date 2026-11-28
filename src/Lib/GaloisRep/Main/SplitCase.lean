@@ -571,6 +571,107 @@ private lemma New.GaloisRep.exists_attached_of_coeff_mem {ℓ : ℕ} {E : Type} 
     L.toSubmodule.isComplete_of_finiteDimensional d
     most_frob
 
+/-- Let every place above `ℓ`, and `u`, lie over primes of `QuadField D` that split
+(`New.GaloisRep.IsSplitPrimeToDisc`). Then some place `z` above `ℓ`, equal to `u` if `u` lies above
+`ℓ`, has places `v` and `x` over the place of `QuadField D` below it, induced by `ℓ`-adic embeddings
+`θ'` and `θ`, with `v` apart from `u`, and `x` apart from `v` and `u`, up to conjugation
+(`New.GaloisRep.IsPlaceApart`). -/
+private lemma New.GaloisRep.exists_isPlaceApart_isPlaceApart {ℓ : ℕ} {E : Type} {D : ℕ}
+    [ThePrime ℓ] [PadicIso ℓ] [Field E] [CMType E] [EmbeddedNumberField E] [HasPrimitiveRoot5040 E]
+    [HasQuadSubfield D E] {u : FinPlace E}
+    (hsp : ∀ v : FinPlace E,
+      ↑ℓ ∈ v.asIdeal ∨ v = u → IsSplitPrimeToDisc (v.below (QuadField D))) :
+    ∃ (z v x : FinPlace E) (θ' θ : Ω →+* PadicAlgCl ℓ), (↑ℓ ∈ u.asIdeal → u = z) ∧
+      IsPlaceApart D z u u v θ' ∧ IsPlaceApart D z v u x θ := by
+  obtain ⟨z, hz, huz⟩ : ∃ z : FinPlace E, ↑ℓ ∈ z.asIdeal ∧ (↑ℓ ∈ u.asIdeal → u = z) := by
+    by_cases hu : ↑ℓ ∈ u.asIdeal
+    · exact ⟨u, hu, fun _ ↦ rfl⟩
+    · obtain ⟨z, hz⟩ := FinPlace.exists_natCast_mem E ℓ
+      exact ⟨z, hz, fun hu' ↦ absurd hu' hu⟩
+  obtain ⟨v, θ', hv⟩ := exists_place_apart hz (hsp z (.inl hz)) u u
+  obtain ⟨x, θ, hx⟩ := exists_place_apart hz (hsp z (.inl hz)) v u
+  exact ⟨z, v, x, θ', θ, huz, hv, hx⟩
+
+/-- The seeds of `New.GaloisRep.sphericalCompat_of_split`: the `ℓ`-adic functions `F` of weight `κ`
+with polynomials `Q` and a continuous representation `r` such that `F` is an eigenvector of each
+operator `T y hy j` off `U`, with eigenvalue `b y hy j * ιℓ ((Q y).coeff j)`, at the split places
+`y` prime to `ℓ` or equal to `u`; `r` has characteristic polynomials `Q` at most Frobenius elements;
+and if `u` and its conjugate are off `U`, `r` is spherical above `u` with the jumps of `κ`, and
+`Q u` has degree `a` if `u` is split. -/
+private def New.GaloisRep.seeds {ℓ : ℕ} {E : Type} {a : ℕ} [ThePrime ℓ] [PadicIso ℓ] [Field E]
+    [CMType E] [EmbeddedNumberField E] (κ : Weight E) (u : FinPlace E) (U : Finset (FinPlace E))
+    (b : (y : FinPlace E) → star y ≠ y → ℕ → PadicAlgCl ℓ)
+    (T : (y : FinPlace E) → star y ≠ y → ℕ →
+      (Gf E (Fin a) × WeylIndex (Fin a) κ.1 → PadicAlgCl ℓ) →ₗ[PadicAlgCl ℓ]
+        Gf E (Fin a) × WeylIndex (Fin a) κ.1 → PadicAlgCl ℓ) :
+    Set (Gf E (Fin a) × WeylIndex (Fin a) κ.1 → PadicAlgCl ℓ) :=
+  {F | ∃ (r : GalRep ℓ E (Fin a)) (Q : FinPlace E → ℂ[X]),
+    (∀ (y : FinPlace E) (hy : star y ≠ y) (j : ℕ), y ∉ U → star y ∉ U →
+      (↑ℓ ∈ y.asIdeal → y = u) → T y hy j F = (b y hy j * ιℓ ((Q y).coeff j)) • F) ∧
+    Continuous r ∧
+    (∀ᶠ p : FrobeniusDatum E in mostFrobenii E, (r p.frob).val.charpoly = (Q p.place).map ιℓ) ∧
+    (u ∉ U ∧ star u ∉ U →
+      IsSphericalAbove r Eq (jumps κ a) u ((Q u).map ιℓ) ∧ (star u ≠ u → (Q u).natDegree = a))}
+
+/-- The step of `New.GaloisRep.sphericalCompat_of_split` after the approximation. Let the operators
+`T y hy j` not increase sup norms and multiply the model of the eigenform `f` (polynomials `P`) by
+`b y hy j * ιℓ (X.coeff j)` when `f` has the Hecke polynomial `X` at `y`, where `b ≠ 0`, and
+`b = -1` at the places `y` prime to `ℓ`. If the model of `f` is a uniform limit of combinations of
+seeds (`New.GaloisRep.seeds`), and `u` and its conjugate are off `U` when `f` is spherical at `u`,
+then `f` has an attached representation, and every attached representation satisfies the local
+conditions `IsCompatibleAt` at every place of `Ω` over `u`. -/
+private lemma New.GaloisRep.exists_attached_and_isCompatibleAt_of_mem_uniformClosure {ℓ : ℕ}
+    {E : Type} {a : ℕ} [ThePrime ℓ] [PadicIso ℓ] [Field E] [CMType E] [EmbeddedNumberField E]
+    [NeZero a] {P : FinPlace E → ℂ[X]} {κ : Weight E}
+    {f : Gf E (Fin a) → WeylIndex (Fin a) κ.1 → ℂ} (hf : f ∈ (stdSpace E (Fin a)).forms κ)
+    (h_eig : IsEigenform f P) {u : FinPlace E} {U : Finset (FinPlace E)}
+    {b : (y : FinPlace E) → star y ≠ y → ℕ → PadicAlgCl ℓ}
+    {T : (y : FinPlace E) → star y ≠ y → ℕ →
+      (Gf E (Fin a) × WeylIndex (Fin a) κ.1 → PadicAlgCl ℓ) →ₗ[PadicAlgCl ℓ]
+        Gf E (Fin a) × WeylIndex (Fin a) κ.1 → PadicAlgCl ℓ}
+    (hb : ∀ y hy j, b y hy j ≠ 0) (hb' : ∀ y hy j, ↑ℓ ∉ y.asIdeal → b y hy j = -1)
+    (hT : ∀ y hy j (F : Gf E (Fin a) × WeylIndex (Fin a) κ.1 → PadicAlgCl ℓ) (r : ℝ),
+      (∀ z, ‖F z‖ ≤ r) → ∀ z, ‖T y hy j F z‖ ≤ r)
+    (hE : ∀ y hy j (X : ℂ[X]), HasHeckePolyAt f y hy X →
+      T y hy j (padicModel κ κ 1 f) = (b y hy j * ιℓ (X.coeff j)) • padicModel κ κ 1 f)
+    (mem_closure : padicModel κ κ 1 f ∈ uniformClosure (seeds κ u U b T))
+    (hU : f ∈ sphericalAt (rightRegular ℂ (Gf E (Fin a)) (WeylIndex (Fin a) κ.1 → ℂ)) u →
+      u ∉ U ∧ star u ∉ U) :
+    (∃ R : GalRep ℓ E (Fin a), Attached P R) ∧
+      ∀ ⦃ρ : GalRep ℓ E (Fin a)⦄, Attached P ρ →
+        f ∈ sphericalAt (rightRegular ℂ (Gf E (Fin a)) (WeylIndex (Fin a) κ.1 → ℂ)) u →
+        ∀ A : ValuationSubring Ω, IsPlaceOver A u → IsCompatibleAt f a u ρ A := by
+  -- So there are seeds `y i` and a closed monoid `N` of pairs on which the first entry is the
+  -- limit of combinations of the others. It contains the pairs of eigenvalues of the `T w hw j`.
+  obtain ⟨s, t, N, apx, y, mem_N⟩ :=
+    exists_isApproximatingMonoid_of_mem_uniformClosure (padicModel_one_ne_zero h_eig.1) mem_closure
+  choose r Q y_eig y_cont y_frob y_sph using fun i ↦ (y i).property
+  have pair_mem (w : FinPlace E) (hw : star w ≠ w) (X : ℂ[X]) (j : ℕ) (h₁ : w ∉ U)
+      (h₂ : star w ∉ U) (h₃ : ↑ℓ ∈ w.asIdeal → w = u) (hX : HasHeckePolyAt f w hw X) :
+      (b w hw j * ιℓ (X.coeff j), fun i ↦ b w hw j * ιℓ ((Q i w).coeff j)) ∈ N :=
+    mem_N _ ⟨T w hw j, hT w hw j, hE w hw j X hX, fun i ↦ y_eig i w hw j h₁ h₂ h₃⟩
+  -- At places prime to `ℓ` the constant `b` is `-1`.
+  have neg_pair_mem (w : FinPlace E) (hw : star w ≠ w) (X : ℂ[X]) (j : ℕ) (h₁ : w ∉ U)
+      (h₂ : star w ∉ U) (hℓ : ↑ℓ ∉ w.asIdeal) (hX : HasHeckePolyAt f w hw X) :
+      (-ιℓ (X.coeff j), fun i ↦ -ιℓ ((Q i w).coeff j)) ∈ N := by
+    simpa only [hb' w hw j hℓ, neg_one_mul] using
+      pair_mem w hw X j h₁ h₂ (fun h ↦ absurd h hℓ) hX
+  obtain ⟨R, attached, R_mem⟩ :=
+    exists_attached_of_coeff_mem apx hf h_eig y_cont y_frob neg_pair_mem
+  -- Any attached `ρ` has the trace of `R`, the limit of combinations of the traces of the `r i`.
+  refine ⟨⟨R, attached⟩, fun ρ hρ f_sph A hA ↦ ?_⟩
+  have u_good : u ∉ U ∧ star u ∉ U := hU f_sph
+  have coeff_mem (u_split : star u ≠ u) (X : ℂ[X]) (hX : HasHeckePolyAt f u u_split X) (j : ℕ) :
+      ∃ c : PadicAlgCl ℓ, c ≠ 0 ∧
+        (c * ιℓ (X.coeff j), fun i ↦ c * ιℓ ((Q i u).coeff j)) ∈ N :=
+    ⟨b u u_split j, hb u u_split j,
+      pair_mem u u_split X j u_good.left u_good.right (fun _ ↦ rfl) hX⟩
+  have trace_mem (g : Gal(Ω/E)) : ((ρ g).val.trace, fun i ↦ (r i g).val.trace) ∈ N := by
+    simpa [hρ.trace_eq attached g rfl] using R_mem g
+  exact isCompatibleAt_of_isApproximatingMonoid apx h_eig.1 y_cont (fun i ↦ (y_sph i u_good).1)
+    (fun u_split i ↦ (y_sph i u_good).2 u_split) coeff_mem hρ.continuous hρ.isTraceNondeg
+    trace_mem hA
+
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
 /-- Let `E` be a CM field containing a primitive 5040th root of unity and `ℚ(√−D)`, with
@@ -596,13 +697,7 @@ lemma New.GaloisRep.sphericalCompat_of_split {ℓ : ℕ} {E : Type} {a D : ℕ} 
   have : NeZero a := .of_pos ha.pos
   -- Places `v`, `x` above `ℓ`, over one split place of `QuadField D`, apart from each other and
   -- from `u` up to conjugation.
-  obtain ⟨z, hz, huz⟩ : ∃ z : FinPlace E, ↑ℓ ∈ z.asIdeal ∧ (↑ℓ ∈ u.asIdeal → u = z) := by
-    by_cases hu : ↑ℓ ∈ u.asIdeal
-    · exact ⟨u, hu, fun _ ↦ rfl⟩
-    · obtain ⟨z, hz⟩ := FinPlace.exists_natCast_mem E ℓ
-      exact ⟨z, hz, fun hu' ↦ absurd hu' hu⟩
-  obtain ⟨v, θ', hv⟩ := exists_place_apart hz (hsp z (.inl hz)) u u
-  obtain ⟨x, θ, hx⟩ := exists_place_apart hz (hsp z (.inl hz)) v u
+  obtain ⟨z, v, x, θ', θ, huz, hv, hx⟩ := exists_isPlaceApart_isPlaceApart hsp
   have v_split : v.IsSplit := hv.isSplitPrimeToDisc.isSplit_of_below
   have x_split : x.IsSplit := hx.isSplitPrimeToDisc.isSplit_of_below
   -- `ϑ`: a cuspidal type on the matrices `≡ 1` modulo `v`, trivial on those `≡ 1` modulo `v ^ 2`
@@ -617,18 +712,10 @@ lemma New.GaloisRep.sphericalCompat_of_split {ℓ : ℕ} {E : Type} {a D : ℕ} 
   -- with polynomial `X` at `y` the eigenvalue is `b y hy j * ιℓ (X.coeff j)` (`hE`), where `b` is
   -- not zero (`hb`) and is `-1` for `y` prime to `ℓ` (`hb'`).
   choose b hb hb' T hT hE using exists_padicModel_hecke_contraction (N := a) (l := ℓ) κ
-  -- A seed is a common eigenvector, with polynomials `Q`, that has a representation `r`.
-  let Seed : Set (Gf E (Fin a) × WeylIndex (Fin a) κ.1 → PadicAlgCl ℓ) :=
-    {F | ∃ (r : GalRep ℓ E (Fin a)) (Q : FinPlace E → ℂ[X]),
-      (∀ (y : FinPlace E) (hy : star y ≠ y) (j : ℕ), y ∉ U → star y ∉ U →
-        (↑ℓ ∈ y.asIdeal → y = u) → T y hy j F = (b y hy j * ιℓ ((Q y).coeff j)) • F) ∧
-      Continuous r ∧
-      (∀ᶠ p : FrobeniusDatum E in mostFrobenii E, (r p.frob).val.charpoly = (Q p.place).map ιℓ) ∧
-      (u ∉ U ∧ star u ∉ U →
-        IsSphericalAbove r Eq (jumps κ a) u ((Q u).map ιℓ) ∧ (star u ≠ u → (Q u).natDegree = a))}
   -- The model of `f` is a uniform limit of combinations of models of forms of type `χ`, whose
-  -- weights `μ` are free except at the infinite places that induce the pair of `u`.
-  have mem_closure : padicModel κ κ 1 f ∈ uniformClosure Seed := by
+  -- weights `μ` are free except at the infinite places that induce the pair of `u`. These are
+  -- seeds: common eigenvectors with polynomials `Q` that have a representation `r`.
+  have mem_closure : padicModel κ κ 1 f ∈ uniformClosure (seeds κ u U b T) := by
     refine padicModel_mem_uniformClosure κ hK.isLevel hK.eventuallyEq_one
       {σ | ¬InducesPlacePair u σ} ⟨f, hf⟩ (fun k hk ↦ ?_) fun μ g₀ hg₀ μ_eq μ_free M hM ↦ ?_
     · -- Such a `k` is `1` at `v` and at `x`, so it fixes `f` and `χ k = 1`.
@@ -648,38 +735,9 @@ lemma New.GaloisRep.sphericalCompat_of_split {ℓ : ℕ} {E : Type} {a D : ℕ} 
       refine hE y hy j M _ (g_hecke y hy h₁ h₂) fun _ ↦ hM _ fun _ h_not_over ↦ ?_
       exact padicComponents_ofSplitPlace _ _ _ fun hℓ ↦ by rwa [h₃ hℓ]
     · simpa using ((g_hecke u h hu.left hu.right).isMonicOfDegree g_ne).natDegree_eq
-  -- So there are seeds `y i` and a closed monoid `N` of pairs on which the first entry is the
-  -- limit of combinations of the others. It contains the pairs of eigenvalues of the `T w hw j`.
-  obtain ⟨s, t, N, apx, y, mem_N⟩ :=
-    exists_isApproximatingMonoid_of_mem_uniformClosure (padicModel_one_ne_zero h_eig.1) mem_closure
-  choose r Q y_eig y_cont y_frob y_sph using fun i ↦ (y i).property
-  have pair_mem (w : FinPlace E) (hw : star w ≠ w) (X : ℂ[X]) (j : ℕ) (h₁ : w ∉ U)
-      (h₂ : star w ∉ U) (h₃ : ↑ℓ ∈ w.asIdeal → w = u) (hX : HasHeckePolyAt f w hw X) :
-      (b w hw j * ιℓ (X.coeff j), fun i ↦ b w hw j * ιℓ ((Q i w).coeff j)) ∈ N :=
-    mem_N _ ⟨T w hw j, hT w hw j, hE w hw j 1 X hX (by simp [← map_mul]),
-      fun i ↦ y_eig i w hw j h₁ h₂ h₃⟩
-  -- At places prime to `ℓ` the constant `b` is `-1`.
-  have neg_pair_mem (w : FinPlace E) (hw : star w ≠ w) (X : ℂ[X]) (j : ℕ) (h₁ : w ∉ U)
-      (h₂ : star w ∉ U) (hℓ : ↑ℓ ∉ w.asIdeal) (hX : HasHeckePolyAt f w hw X) :
-      (-ιℓ (X.coeff j), fun i ↦ -ιℓ ((Q i w).coeff j)) ∈ N := by
-    simpa only [hb' w hw j hℓ, neg_one_mul] using
-      pair_mem w hw X j h₁ h₂ (fun h ↦ absurd h hℓ) hX
-  obtain ⟨R, attached, R_mem⟩ :=
-    exists_attached_of_coeff_mem apx hf h_eig y_cont y_frob neg_pair_mem
-  -- Any attached `ρ` has the trace of `R`, the limit of combinations of the traces of the `r i`.
-  refine ⟨⟨R, attached⟩, fun ρ hρ f_sph A hA ↦ ?_⟩
-  have u_good : u ∉ U ∧ star u ∉ U :=
-    hK.notMem_of_maxCompactAt_le u hv.ne_right hv.star_ne_right hx.ne_right hx.star_ne_right
-      fun g hg ↦ mem_rightStabilizer.2 (by simpa [funext_iff] using f_sph ⟨g, hg⟩)
-  have coeff_mem (u_split : star u ≠ u) (X : ℂ[X]) (hX : HasHeckePolyAt f u u_split X) (j : ℕ) :
-      ∃ c : PadicAlgCl ℓ, c ≠ 0 ∧
-        (c * ιℓ (X.coeff j), fun i ↦ c * ιℓ ((Q i u).coeff j)) ∈ N :=
-    ⟨b u u_split j, hb u u_split j,
-      pair_mem u u_split X j u_good.left u_good.right (fun _ ↦ rfl) hX⟩
-  have trace_mem (g : Gal(Ω/E)) : ((ρ g).val.trace, fun i ↦ (r i g).val.trace) ∈ N := by
-    simpa [hρ.trace_eq attached g rfl] using R_mem g
-  exact isCompatibleAt_of_isApproximatingMonoid apx h_eig.1 y_cont (fun i ↦ (y_sph i u_good).1)
-    (fun u_split i ↦ (y_sph i u_good).2 u_split) coeff_mem hρ.continuous hρ.isTraceNondeg
-    trace_mem hA
+  exact exists_attached_and_isCompatibleAt_of_mem_uniformClosure hf h_eig hb hb' hT
+    (fun w hw j X hX ↦ hE w hw j 1 X hX (by simp [← map_mul])) mem_closure fun f_sph ↦
+      hK.notMem_of_maxCompactAt_le u hv.ne_right hv.star_ne_right hx.ne_right hx.star_ne_right
+        fun g hg ↦ mem_rightStabilizer.2 (by simpa [funext_iff] using f_sph ⟨g, hg⟩)
 
 end OddRank
