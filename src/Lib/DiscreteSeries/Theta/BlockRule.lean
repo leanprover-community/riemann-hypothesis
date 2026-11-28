@@ -94,6 +94,18 @@ lemma mem_centeredBlock {e y : ℤ} {d : ℕ} :
     Function.comp_apply]
   exact exists_congr fun b ↦ and_congr_right fun _ ↦ by omega
 
+/-- A doubled entry of the block has distance less than its length from the doubled centre,
+and parity opposite to its length. -/
+lemma mem_centeredBlock_iff_abs_lt_and_odd {e y : ℤ} {d : ℕ} :
+    y ∈ centeredBlock e d ↔ |y - 2 * e| < d ∧ Odd (y + d) := by
+  simp only [centeredBlock, mem_image, mem_doubledBlock, Int.even_iff, Int.odd_iff]
+  constructor
+  · rintro ⟨x, ⟨hx, hx_even⟩, rfl⟩
+    rw [add_sub_cancel_left]
+    exact ⟨hx, by omega⟩
+  · rintro ⟨hy, hy_odd⟩
+    exact ⟨y - 2 * e, ⟨hy, by omega⟩, by omega⟩
+
 lemma card_doubledBlock (d : ℕ) : (doubledBlock d).card = d := by
   rw [doubledBlock, card_image_of_injective _ fun a b hab ↦ by simpa using hab, card_range]
 
@@ -104,12 +116,9 @@ lemma card_centeredBlock (e : ℤ) (d : ℕ) : (centeredBlock e d).card = d := b
 lemma image_neg_centeredBlock (e : ℤ) (d : ℕ) :
     (centeredBlock e d).image Neg.neg = centeredBlock (-e) d := by
   ext y
-  simp only [Finset.mem_image, mem_centeredBlock]
-  constructor
-  · rintro ⟨x, ⟨b, hb, rfl⟩, rfl⟩
-    exact ⟨d - 1 - b, by omega, by omega⟩
-  · rintro ⟨b, hb, rfl⟩
-    exact ⟨2 * e + d - 1 - 2 * (d - 1 - b : ℕ), ⟨d - 1 - b, by omega, rfl⟩, by omega⟩
+  simp only [Finset.mem_image, neg_eq_iff_eq_neg, exists_eq_right,
+    mem_centeredBlock_iff_abs_lt_and_odd, abs_lt, Int.odd_iff]
+  omega
 
 /-- For a natural number d, signs u, v and an integer y: u v y > d says that |y| > d and that
 u v is the sign of y. -/

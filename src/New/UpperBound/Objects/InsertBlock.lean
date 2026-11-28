@@ -156,9 +156,8 @@ lemma IsSeparated.disjoint_entries_block (hX : X.IsSeparated h) (hB : B ⊆ X.ce
   refine disjoint_left.2 fun y hy_entries hy_block ↦ ?_
   have h_far : (h + X.length c : ℤ) ≤ |y - 2 * X.center c| :=
     hX.add_length_le_abs_sub_two_mul_centre hB hc hcB hy_entries
-  obtain ⟨b, hb, hy⟩ : ∃ b < X.length c, y = 2 * X.center c + X.length c - 1 - 2 * b :=
-    mem_centeredBlock.1 hy_block
-  grind
+  have h_near := (mem_centeredBlock_iff_abs_lt_and_odd.1 hy_block).1
+  omega
 
 omit [DecidableEq ι] in
 /-- In a separated system the stem and the blocks of the centres in B are pairwise disjoint, so the
@@ -181,8 +180,7 @@ lemma IsSeparated.odd_add_card_of_mem_entries (hX : X.IsSeparated h) (hB : B ⊆
   obtain hy_stem | hy_blocks : y ∈ X.stem ∨ y ∈ B.biUnion X.block := mem_union.1 hy
   · exact hX.odd_add_card y hy_stem
   · obtain ⟨c, hcB, hy_block⟩ : ∃ c ∈ B, y ∈ X.block c := mem_biUnion.1 hy_blocks
-    obtain ⟨b, -, hy_eq⟩ : ∃ b < X.length c, y = 2 * X.center c + X.length c - 1 - 2 * b :=
-      mem_centeredBlock.1 hy_block
+    have h_odd := (mem_centeredBlock_iff_abs_lt_and_odd.1 hy_block).2
     have h_length : X.length c % 2 = #X.stem % 2 := hX.length_mod_two c (hB hcB)
     grind
 
