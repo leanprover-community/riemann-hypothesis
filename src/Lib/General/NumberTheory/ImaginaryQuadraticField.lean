@@ -2,7 +2,6 @@ module
 
 public import Mathlib.GroupTheory.Nilpotent
 public import Mathlib.NumberTheory.Harmonic.EulerMascheroni
-public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.RingTheory.DedekindDomain.Different
@@ -16,6 +15,7 @@ import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Adeles.Basic
 import Lib.General.NumberTheory.EmbeddingsAndDifferent
 public import TauCeti.Data.Nat.Prime.Basic
+public import TauCeti.NumberTheory.DirichletCharacter.LFunction.Basic
 
 /-!
 # The imaginary quadratic field ℚ(√−d): characters, Frobenius and splitting of primes
@@ -81,15 +81,12 @@ modulo `N * d`. -/
 def quadTwist : DirichletCharacter ℂ (N * d) :=
   χ.changeLevel ⟨d, rfl⟩ * .changeLevel (by simp) ((chiK d).ringHomComp (algebraMap ℤ ℂ))
 
-/-- The entire function equal to L(s, χ) if χ is not principal, and to the continuation of
-(s − 1)L(s, χ) if χ is principal. -/
-def entireL : ℂ → ℂ := if χ = 1 then DirichletCharacter.LFunctionTrivChar₁ N else χ.LFunction
-
 /-- The real number `γ - Re L'/L(1, χ_K)`, with `γ` Euler's constant. The character is written as
 the twist by `(·/d)` of the character modulo `1`, which for `d ≡ 3 mod 4` is `χ_K` at level
-`1 * d`. For odd `d` it is not principal, so `New.entireL` of it is its `L`-function. -/
+`1 * d`. For odd `d` it is not principal, so its `DirichletCharacter.entireLFunction` (the
+`L`-function, with the pole removed for principal characters) is its `L`-function. -/
 def chowlaSelbergConst : ℝ :=
-  Real.eulerMascheroniConstant - (logDeriv (entireL (quadTwist (N := 1) 1 d)) 1).re
+  Real.eulerMascheroniConstant - (logDeriv (quadTwist (N := 1) 1 d).entireLFunction 1).re
 end Characters
 
 /-- If a number field `M` contains primitive roots of unity of coprime orders `n` and `d`, then its

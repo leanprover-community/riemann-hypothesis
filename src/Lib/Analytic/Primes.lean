@@ -7,9 +7,9 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Dynamics.Newton
 import Mathlib.NumberTheory.LSeries.Linearity
 import Mathlib.Order.CompletePartialOrder
-public import Lib.Analytic.PrimeNumberTheorem.LFunctionGrowth
+public import TauCeti.NumberTheory.DirichletCharacter.LFunction.Entire
 import Lib.Analytic.EntireLFunction
-import Lib.Analytic.PrimeNumberTheorem.ZeroFreeRegion
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.LogDeriv.ZeroFreeRegion
 
 /-!
 # Primes congruent to `1` modulo `M ^ k` with logarithm in a prescribed window
@@ -25,8 +25,8 @@ on its boundary yields the prime.
 Independently, the first section proves `n ≤ φ n * (2 * log n + 1)` (`New.le_totient_mul_log`).
 
 Notions from other files:
-* `entireL χ` is `L(s, χ)`, times `s - 1` if `χ` is principal;
-* `regularL χ` is `L(s, χ)`, times `(s - 1) / s` if `χ` is principal.
+* `χ.entireLFunction` (Tau Ceti) is `L(s, χ)`, times `s - 1` if `χ` is principal;
+* `χ.regularizedLFunction` (Tau Ceti) is `L(s, χ)`, times `(s - 1) / s` if `χ` is principal.
 
 ## Relation to the literature
 
@@ -108,11 +108,12 @@ lemma New.factorsThrough_sq_of_sq_eq_one {M k : ℕ} [NeZero M] (hM : 4 ∣ M) (
   exact Units.ext <| by simpa [u_eq, ← pow_apply', hχ] using one_apply_coe u
 
 /-- If `4 ∣ M` and `2 ≤ k`, then for a character `χ` mod `M ^ k` with trivial square there is a
-character `χ₀` mod `M ^ 2` with `regularL χ = regularL χ₀`, as the two moduli have the same prime
-factors. Here `regularL χ` is `L(s, χ)`, times `(s - 1) / s` if `χ` is principal. -/
-lemma New.exists_regularL_eq_of_sq_eq_one {M k : ℕ} [NeZero M] (hM : 4 ∣ M) (hk : 2 ≤ k)
-    {χ : DirichletCharacter ℂ (M ^ k)} (hχ : χ ^ 2 = 1) :
-    ∃ χ₀ : DirichletCharacter ℂ (M ^ 2), regularL χ = regularL χ₀ := by
+character `χ₀` mod `M ^ 2` with `χ.regularizedLFunction = χ₀.regularizedLFunction`, as the two
+moduli have the same prime factors. Here `χ.regularizedLFunction` is `L(s, χ)`, times `(s - 1) / s`
+if `χ` is principal. -/
+lemma New.exists_regularizedLFunction_eq_of_sq_eq_one {M k : ℕ} [NeZero M] (hM : 4 ∣ M)
+    (hk : 2 ≤ k) {χ : DirichletCharacter ℂ (M ^ k)} (hχ : χ ^ 2 = 1) :
+    ∃ χ₀ : DirichletCharacter ℂ (M ^ 2), χ.regularizedLFunction = χ₀.regularizedLFunction := by
   obtain ⟨h_dvd, χ₀, hχ₀⟩ := factorsThrough_sq_of_sq_eq_one hM hk hχ
   have h_one : χ = 1 ↔ χ₀ = 1 := by rw [hχ₀, changeLevel_eq_one_iff]
   have h_primes : (M ^ k).primeFactors = (M ^ 2).primeFactors := by
@@ -121,23 +122,26 @@ lemma New.exists_regularL_eq_of_sq_eq_one {M k : ℕ} [NeZero M] (hM : 4 ∣ M) 
   have h_LFunction {z : ℂ} (h : χ₀ ≠ 1 ∨ z ≠ 1) : χ.LFunction z = χ₀.LFunction z := by
     rw [hχ₀, LFunction_changeLevel h_dvd χ₀ h, h_primes, Finset.prod_eq_one, mul_one]
     simp +contextual [ZMod.isUnit_prime_iff_not_dvd]
-  have h_entire (z : ℂ) : entireL χ₀ z = entireL χ z := by
-    by_cases hχ₀_one : χ₀ = 1
-    · subst χ₀
-      by_cases hz : z = 1 <;>
-        simp [entireL, LFunctionTrivChar₁, LFunctionTrivChar, h_one.2 rfl, hz, h_primes,
-          ← h_LFunction]
-    · simp [entireL, hχ₀_one, mt h_one.1 hχ₀_one, h_LFunction (.inl hχ₀_one)]
-  exact ⟨χ₀, funext fun z ↦ by by_cases h : χ₀ = 1 <;> simp [regularL, ← h_entire, h_one, h]⟩
+  refine ⟨χ₀, funext fun z ↦ ?_⟩
+  by_cases hχ₀_one : χ₀ = 1
+  · subst χ₀
+    obtain rfl := h_one.2 rfl
+    by_cases hz : z = 1 <;>
+      simp [LFunctionTrivChar₁, LFunctionTrivChar, hz, h_primes, ← h_LFunction]
+  · rw [regularizedLFunction_of_ne_one _ hχ₀_one, regularizedLFunction_of_ne_one _
+      (mt h_one.1 hχ₀_one), h_LFunction (.inl hχ₀_one)]
 
 /-- For `4 ∣ M` and `A` fixed, for all large `X` the following holds for every `k > 1`, every
 Dirichlet character `χ` mod `M ^ k` with `M ^ k ≤ X ^ A`, and every `s` with `|s - 1| ≤ 1 / X`:
-`entireL χ s ≠ 0` and `|logDeriv (entireL χ) s| ≤ X`. Here `entireL χ` is the entire function equal
-to `L(s, χ)` for non-principal `χ`, and to the continuation of `(s - 1) L(s, χ)` for principal `χ`.
+`χ.entireLFunction s ≠ 0` and `|logDeriv χ.entireLFunction s| ≤ X`. Here `χ.entireLFunction` is
+the entire function equal to `L(s, χ)` for non-principal `χ`, and to the continuation of
+`(s - 1) L(s, χ)` for principal `χ`.
 No exceptional zero can occur, because the real characters come from the fixed modulus `M ^ 2`. -/
-lemma New.eventually_norm_logDeriv_entireL_le_near_one (A : ℕ) {M : ℕ} [NeZero M] (hM : 4 ∣ M) :
+lemma New.eventually_norm_logDeriv_entireLFunction_le_near_one (A : ℕ) {M : ℕ} [NeZero M]
+    (hM : 4 ∣ M) :
     ∀ᶠ X : ℝ in atTop, ∀ k : ℕ, 1 < k → ∀ (χ : DirichletCharacter ℂ (M ^ k)) (s : ℂ),
-      (M : ℝ) ^ k ≤ X ^ A → ‖s - 1‖ ≤ X⁻¹ → entireL χ s ≠ 0 ∧ ‖logDeriv (entireL χ) s‖ ≤ X := by
+      (M : ℝ) ^ k ≤ X ^ A → ‖s - 1‖ ≤ X⁻¹ →
+        χ.entireLFunction s ≠ 0 ∧ ‖logDeriv χ.entireLFunction s‖ ≤ X := by
   -- Apply the zero-free region with `l = (A + 1) log X`, for which `e ^ l = X ^ (A + 1)`.
   have h_log : Tendsto (fun X : ℝ ↦ (A + 1 : ℕ) * X.log) atTop atTop :=
     tendsto_log_atTop.const_mul_atTop (by positivity)
@@ -148,7 +152,7 @@ lemma New.eventually_norm_logDeriv_entireL_le_near_one (A : ℕ) {M : ℕ} [NeZe
       (isLittleO_pow_log_id_atTop (n := 25)).const_mul_left (2 * ((A + 1 : ℕ) : ℝ) ^ 25)
   filter_upwards [h_log.eventually_ge_atTop (10 ^ 10), h_small.eventuallyLE, eventually_ge_atTop 2,
     h_inv.eventually (eventually_all.2 fun χ₀ : DirichletCharacter ℂ (M ^ 2) ↦
-      eventually_le_norm_regularL χ₀)] with X hl h_pow hX h_near k hk χ s hq hs
+      χ₀.eventually_le_norm_regularizedLFunction)] with X hl h_pow hX h_near k hk χ s hq hs
   set l : ℝ := (A + 1 : ℕ) * X.log with l_def
   have hX_pos : 0 < X := by linarith
   have hl_pow : 0 < l ^ 25 := pow_pos (by linarith) 25
@@ -165,11 +169,12 @@ lemma New.eventually_norm_logDeriv_entireL_le_near_one (A : ℕ) {M : ℕ} [NeZe
     linarith [norm_le_norm_sub_add s 1, norm_one (α := ℂ),
       inv_le_one_of_one_le₀ (show 1 ≤ X by linarith)]
   have h_level : ((M ^ k : ℕ) : ℝ) ≤ rexp l := by push_cast; nlinarith
-  have h_not_small : χ ^ 2 = 1 → ∀ z : ℂ, ‖z - 1‖ ≤ 1 / l → 1 / l ≤ ‖regularL χ z‖ := fun hχ ↦ by
-    obtain ⟨χ₀, h_eq⟩ := exists_regularL_eq_of_sq_eq_one hM hk hχ
+  have h_not_small :
+      χ ^ 2 = 1 → ∀ z : ℂ, ‖z - 1‖ ≤ 1 / l → 1 / l ≤ ‖χ.regularizedLFunction z‖ := fun hχ ↦ by
+    obtain ⟨χ₀, h_eq⟩ := exists_regularizedLFunction_eq_of_sq_eq_one hM hk hχ
     simpa only [h_eq] using h_near χ₀
-  exact (norm_logDeriv_entireL_le χ hl h_level h_not_small h_re_lower (by nlinarith)).imp_right
-    fun h_le ↦ h_le.trans h_pow
+  exact (χ.entireLFunction_ne_zero_and_norm_logDeriv_le hl h_level h_not_small h_re_lower
+    (by nlinarith)).imp_right fun h_le ↦ h_le.trans h_pow
 
 /-- If `log n * (σ - re z) ≤ E`, then moving the `n`-th term of the Dirichlet series of `a` from
 `1 + z` to the real point `1 + σ` costs at most the factor `exp E`. -/
@@ -185,24 +190,26 @@ lemma New.norm_term_le_exp_mul (a : ℕ → ℂ) {z : ℂ} (σ E : ℝ) {n : ℕ
   grw [Real.rpow_def_of_pos hn_pos (σ - z.re), h_le]
 
 /-- For `0 < re z` the Dirichlet series of `Λ` on the class `1` mod `q` has at `1 + z` the sum
-`(1 - z * ∑ χ, L_χ'/L_χ (1 + z)) / φ(q) / z`. Here `L_χ = entireL χ` is `L(s, χ)` with the pole
-removed. -/
+`(1 - z * ∑ χ, L_χ'/L_χ (1 + z)) / φ(q) / z`. Here `L_χ = χ.entireLFunction` is `L(s, χ)` with the
+pole removed. -/
 lemma New.hasSum_residueClass_one (q : ℕ) [NeZero q] {z : ℂ} (hz : 0 < z.re) :
     LSeriesHasSum (fun n : ℕ ↦ residueClass (1 : ZMod q) n) (1 + z)
-      ((1 - z * ∑ χ : DirichletCharacter ℂ q, logDeriv (entireL χ) (1 + z)) / q.totient / z) := by
+      ((1 - z * ∑ χ : DirichletCharacter ℂ q, logDeriv χ.entireLFunction (1 + z)) / q.totient /
+        z) := by
   -- Use orthogonality of characters; the pole term `1 / z` comes from `χ = 1`.
   have h_re : 1 < (1 + z).re := by simpa using hz
   have h_coeff : (fun n : ℕ ↦ (residueClass (1 : ZMod q) n : ℂ)) =
       (q.totient : ℂ)⁻¹ • ∑ χ : DirichletCharacter ℂ q, fun n : ℕ ↦ χ n * vonMangoldt n := by
     ext n
     simp [residueClass_apply]
-  have h_value : (1 - z * ∑ χ : DirichletCharacter ℂ q, logDeriv (entireL χ) (1 + z)) / q.totient /
-      z = (q.totient : ℂ)⁻¹ * ∑ χ : DirichletCharacter ℂ q,
-        ((if χ = 1 then 1 else 0) / (1 + z - 1) - logDeriv (entireL χ) (1 + z)) := by
+  have h_value :
+      (1 - z * ∑ χ : DirichletCharacter ℂ q, logDeriv χ.entireLFunction (1 + z)) / q.totient / z =
+        (q.totient : ℂ)⁻¹ * ∑ χ : DirichletCharacter ℂ q,
+          ((if χ = 1 then 1 else 0) / (1 + z - 1) - logDeriv χ.entireLFunction (1 + z)) := by
     simp [ite_div]
     field_simp [ne_zero_of_re_pos hz]
   rw [h_coeff, h_value]
-  exact (LSeriesHasSum.sum fun χ _ ↦ LSeriesHasSum_mul_vonMangoldt χ h_re).smul _
+  exact (LSeriesHasSum.sum fun χ _ ↦ by convert χ.LSeriesHasSum_twist_vonMangoldt h_re).smul _
 
 /-- There are `φ(q) ≥ 1` characters mod `q`, so `‖1 - ∑ χ, z * c χ‖ ≤ 2 φ(q)` if each term of the
 sum has norm at most `1`. -/
@@ -357,13 +364,13 @@ lemma New.norm_sub_mul_sum_term_le (ha : ∀ n : ℕ, 0 ≤ a n)
 end Circle
 
 /-- The function `F z - z P z` of Newman's method is analytic on a disc on which no
-`entireL χ (1 + z)` vanishes: here `F z = (1 - z * ∑ χ, L_χ'/L_χ (1 + z)) / φ(q)`, with
-`L_χ = entireL χ`, and `P z` is the part with `n < N` of the Dirichlet series at `1 + z` of `Λ` on
-the class `1` mod `q` (`residueClass`). -/
+`χ.entireLFunction (1 + z)` vanishes: here `F z = (1 - z * ∑ χ, L_χ'/L_χ (1 + z)) / φ(q)`, with
+`L_χ = χ.entireLFunction`, and `P z` is the part with `n < N` of the Dirichlet series at `1 + z` of
+`Λ` on the class `1` mod `q` (`residueClass`). -/
 lemma New.analyticOnNhd_sub_mul_sum_term (q : ℕ) [NeZero q] (N : ℕ) {r : ℝ}
-    (h_ne : ∀ z : ℂ, ‖z‖ ≤ r → ∀ χ : DirichletCharacter ℂ q, entireL χ (1 + z) ≠ 0) :
+    (h_ne : ∀ z : ℂ, ‖z‖ ≤ r → ∀ χ : DirichletCharacter ℂ q, χ.entireLFunction (1 + z) ≠ 0) :
     AnalyticOnNhd ℂ (fun z : ℂ ↦
-      (1 - z * ∑ χ : DirichletCharacter ℂ q, logDeriv (entireL χ) (1 + z)) / q.totient -
+      (1 - z * ∑ χ : DirichletCharacter ℂ q, logDeriv χ.entireLFunction (1 + z)) / q.totient -
         z * ∑ n ∈ .range N, term (fun n : ℕ ↦ (residueClass (1 : ZMod q) n : ℂ)) (1 + z) n)
       (Metric.closedBall 0 r) := by
   intro z hz
@@ -394,7 +401,7 @@ theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M)
   -- Take `X` large: `q, U ≤ X ^ (2 * A)`, so `3 * U * q ≤ 3 * X ^ (4 * A) < e ^ (X / 4 - 2)`.
   -- The substitution `W = X ^ 2` turns "for large `W`" into "for large `X = √W`".
   rw [← comap_sqrt_atTop, eventually_comap]
-  filter_upwards [eventually_norm_logDeriv_entireL_le_near_one (2 * A) hM,
+  filter_upwards [eventually_norm_logDeriv_entireLFunction_le_near_one (2 * A) hM,
     (tendsto_exp_mul_div_rpow_atTop ↑(4 * A) 4⁻¹ (by simp)).eventually_gt_atTop (.exp 2 * 3),
     eventually_ge_atTop 200, eventually_ge_atTop C, eventually_gt_atTop 0] with
     X h_free h_exp hX200 hXC hX W hW k hk hq U ⟨hWU, hU⟩
@@ -406,12 +413,12 @@ theorem New.exists_prime_modEq_one_log_mem (M A : ℕ) [NeZero M] (hM : 4 ∣ M)
   have hq_cast : (q : ℝ) ≤ X ^ (2 * A) := by simpa [q] using hq
   let a (n : ℕ) : ℂ := residueClass (1 : ZMod q) n
   let F (z : ℂ) : ℂ :=
-    (1 - z * ∑ χ : DirichletCharacter ℂ q, logDeriv (entireL χ) (1 + z)) / q.totient
+    (1 - z * ∑ χ : DirichletCharacter ℂ q, logDeriv χ.entireLFunction (1 + z)) / q.totient
   have h_series (z : ℂ) (hz : 0 < z.re) : LSeriesHasSum a (1 + z) (F z / z) :=
     hasSum_residueClass_one q hz
-  -- For `‖z‖ ≤ 1 / X` each `z * logDeriv (entireL χ)` has norm at most `1`, so `‖F‖ ≤ 2`.
+  -- For `‖z‖ ≤ 1 / X` each `z * logDeriv χ.entireLFunction` has norm at most `1`, so `‖F‖ ≤ 2`.
   have h_disc {z : ℂ} (hz : ‖z‖ ≤ X⁻¹) (χ : DirichletCharacter ℂ q) :
-      entireL χ (1 + z) ≠ 0 ∧ ‖logDeriv (entireL χ) (1 + z)‖ ≤ X :=
+      χ.entireLFunction (1 + z) ≠ 0 ∧ ‖logDeriv χ.entireLFunction (1 + z)‖ ≤ X :=
     h_free k hk χ (1 + z) hq (by simpa)
   have hF (z : ℂ) (hz : ‖z‖ ≤ X⁻¹) : ‖F z‖ ≤ 2 := norm_one_sub_mul_sum_div_totient_le fun χ ↦ by
     grw [norm_mul, hz, (h_disc hz χ).2, inv_mul_cancel₀ hX.ne']

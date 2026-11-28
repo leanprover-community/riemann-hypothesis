@@ -544,9 +544,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 **PrimeNumberTheorem**: The prime number theorem in progressions
 
-- `Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth` (293): Growth of Dirichlet L-functions near the line `re s = 1`
 - `Lib/Analytic/PrimeNumberTheorem/Tauberian` (291): A Tauberian theorem with a power of the logarithm
-- `Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion` (150): A zero-free region for Dirichlet L-functions
 
 ### CM: Complex multiplication
 
