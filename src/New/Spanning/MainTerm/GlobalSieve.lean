@@ -41,8 +41,8 @@ Notions from other files:
 * `New.Filling.IsAdmissible`: the standing hypotheses on `S`, among them `1 ≤ |S.realM v| ≤ b ^ 23`
   and `N ≤ b ^ (60 n)`.
 * `New.ψf E`, written `ψ_f`: the character of the finite adeles with `ψ_f(x) = exp (2πi Tr a)` for
-  any `a ∈ E` with `x - a` integral. `New.stdAddChar E` is the standard character of the adeles, and
-  `New.Filling.selfDualChar` is `x ↦ ψ_f(-x / ϖ)`.
+  any `a ∈ E` with `x - a` integral. For totally complex `E`, `New.stdAddChar E` is the standard
+  character of the adeles. `New.Filling.selfDualChar` is `x ↦ ψ_f(-x / ϖ)`.
 * `New.LocProd T`: the product of the completions at `T`, with integers `New.SemilocalField.O`;
   `New.evalPlaces T` and `New.ratToPlaces T` map the finite adeles and `E` to it.
 * `New.integralOff T`, `New.Filling.ratIntegralOff T`: the finite adeles and the elements of `E`
@@ -234,9 +234,9 @@ lemma measurePreserving_scale_evalPlaces {r : InfinitePlace E → ℝ}
 
 end
 
-/-- The standard character of the adeles at `x` is `exp (-2πi ∑ v, 2 Re x_v)`, with `x_v = x.1 v`
-the components at the infinite places, times the standard character `ψf E` of the finite adeles at
-the finite part `x.2`. -/
+/-- On `New.𝔸 E`, `stdAddChar E x` is `exp (-2πi ∑ v, 2 Re x_v)` times `ψf E x.2`, where
+`x_v = x.1 v` is the complex coordinate at the infinite place `v`. For totally complex `E`, this is
+the standard additive character of the adeles. -/
 lemma coe_stdAddChar_apply {E : Type*} [Field E] [NumberField E] (x : 𝔸 E) :
     (New.stdAddChar E x : ℂ) = fourierChar (-∑ v : InfinitePlace E, 2 * (x.1 v).re) * ψf E x.2 :=
   Circle.coe_mul _ _
