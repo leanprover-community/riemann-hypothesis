@@ -55,21 +55,24 @@ noncomputable def divQuot (a : O) : QuotSpan a →ₗ[O] DivisibleQuot O :=
 lemma divQuot_mk (a t : O) : divQuot a (Ideal.Quotient.mk _ t) =
     Submodule.Quotient.mk (t • (algebraMap O (FractionRing O) a)⁻¹) := rfl
 
+private lemma exists_divQuot_torsionEquiv {a : O} (ha : a ≠ 0) :
+    ∃ e : QuotSpan a ≃ₗ[O] torsionBy O (DivisibleQuot O) a,
+      ∀ x, (e x : DivisibleQuot O) = divQuot a x := by
+  simp_rw [(Ideal.Quotient.mk_surjective (I := Ideal.span {a})).forall, divQuot_mk]
+  unfold DivisibleQuot
+  rw [Submodule.one_eq_range, ← torsionBySet_span_singleton_eq]
+  exact ⟨quotientEquivTorsionBySet ha, coe_quotientEquivTorsionBySet_apply_mk ha⟩
+
 lemma divQuot_injective {a : O} (ha : a ≠ 0) : Function.Injective (divQuot a) := by
-  rw [injective_iff_map_eq_zero, Ideal.Quotient.mk_surjective.forall]
-  intro t ht
-  rw [divQuot_mk, Submodule.Quotient.mk_eq_zero, mem_one] at ht
-  obtain ⟨s, hs⟩ := ht -- s = t/a in K
-  refine (Ideal.Quotient.eq_zero_iff_dvd ..).2 ⟨s, IsFractionRing.injective O (FractionRing O) ?_⟩
-  simp [map_mul, hs, ha, Algebra.smul_def, mul_left_comm (algebraMap O (FractionRing O) a)]
+  obtain ⟨e, he⟩ := exists_divQuot_torsionEquiv ha
+  simpa only [Function.comp_def, he] using (Subtype.val_injective.comp e.injective)
 
 /-- An element of K/O killed by `a ≠ 0` is the image of some x in O/a under division by `a`. -/
 lemma exists_divQuot_eq {a : O} (ha : a ≠ 0) {y : DivisibleQuot O} (hy : a • y = 0) :
     ∃ x : QuotSpan a, divQuot a x = y := by
-  obtain ⟨r, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-  rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero, mem_one] at hy
-  obtain ⟨s, hs⟩ := hy
-  exact ⟨Ideal.Quotient.mk _ s, by simp [divQuot_mk, Algebra.smul_def, hs, ha, mul_comm _ r]⟩
+  obtain ⟨e, he⟩ := exists_divQuot_torsionEquiv ha
+  obtain ⟨x, hx⟩ := e.surjective ⟨y, hy⟩
+  exact ⟨x, (he x).symm.trans (congrArg Subtype.val hx)⟩
 
 lemma exists_smul_eq_zero_divisibleQuot (y : DivisibleQuot O) : ∃ d : O, d ≠ 0 ∧ d • y = 0 := by
   induction y using Submodule.Quotient.induction_on with | _ r =>
