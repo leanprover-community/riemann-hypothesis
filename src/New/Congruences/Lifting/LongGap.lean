@@ -215,17 +215,14 @@ lemma exists_expansion_pow_E (hk : k.IsUnramified) (s : k.S) :
     ∃ w : ℕ → WittFq k.f, ∀ N : ℕ, ∃ t : k.S,
       s = ∑ n ∈ range N, k.E ^ n * (w n : k.S) + k.E ^ N * t := by
   -- As `e = 1`, division by `E` leaves a remainder in `W(𝔽_{p^f})`; divide repeatedly.
-  obtain ⟨-, he, -⟩ := hk
-  have h_rem (r : k.S) : ∃ (w : WittFq k.f) (t : k.S), r - w = k.E * t := by
-    obtain ⟨w, hw⟩ := k.exists_dvd_sub_sum_z_pow 0 (N := 1) (by simp [he]) r
-    exact ⟨w 0, by simpa [Algebra.smul_def, Chart.frobE, dvd_def] using hw⟩
-  choose w t h_div using h_rem
+  choose w t h_div using exists_sub_smul_one_eq_E_mul hk
   -- The remainders of the iterated quotients `t^[n] s` are the digits.
   refine ⟨fun n : ℕ ↦ w (t^[n] s), fun N ↦ ⟨t^[N] s, ?_⟩⟩
   induction N with
   | zero => simp
   | succ N ih =>
     rw [sum_range_succ, Function.iterate_succ_apply']
+    simp only [Algebra.smul_def, mul_one] at h_div
     linear_combination ih + k.E ^ N * h_div (t^[N] s)
 
 /-- Expansion in powers of `E` with nearly invariant coefficients, on an unramified chart (`e = 1`).
