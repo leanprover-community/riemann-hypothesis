@@ -327,7 +327,6 @@ lemma framePair_translateByClassReps_mul_classCoord {S : Filling E 𝔰} {ι ρ 
       (S.latticeMiddle (𝔸f E)).splitGram *
         (S.classCoord c * finAdeleMatrix t) =
       finAdeleMatrix (((framePair γ).submatrix id g)ᴴ * S.ratGram * t) := by
-  classical
   -- selecting columns commutes with the change of coordinates
   have h_select : (framePair (S.translateByClassReps c c' γ)).submatrix id g =
       S.classCoord c * finAdeleMatrix ((framePair γ).submatrix id g) :=

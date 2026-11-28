@@ -434,7 +434,6 @@ them, and each element of `K/O` has a nonzero denominator. -/
 lemma exists_smul_eq_zero_of_mem_ribetCocyclesIn [DVR O] [Fintype Y] {r : Type} [Fintype r]
     [DecidableEq r] {ρ : G →* Matrix r r O} {c : G → r → DivisibleQuot O}
     (hc : c ∈ ribetCocyclesIn u ρ (DivisibleQuot O)) : ∃ a : O, a ≠ 0 ∧ a • c = 0 := by
-  classical
   obtain ⟨-, h_rel⟩ := (mem_ribetCocyclesIn_iff u).1 hc
   have exists_d (y : DivisibleQuot O) : ∃ d : O, d ≠ 0 ∧ d • y = 0 :=
     exists_smul_eq_zero_divisibleQuot y

@@ -356,7 +356,6 @@ lemma liftFn_indicator_apply {p : Matrix n' n (P → ZMod N) → Prop} [Decidabl
       p (of fun (i : n') (j : n) ↦ Λ.reduction ⟨T i j, hT i j⟩) ↔ Q) :
     Λ.liftFn (fun T' : Matrix n' n (P → ZMod N) ↦ if p T' then 1 else 0) T =
       if (∀ (i : n') (j : n) (w : P), v (T i j w) ≤ 1) ∧ Q then 1 else 0 := by
-  classical
   simp only [liftFn_apply]
   by_cases h_int : ∀ (i : n') (j : n), T i j ∈ O (F := LocProd P)
   · simp [h_int, hQ h_int, fun i j ↦ mem_O_locProd.1 (h_int i j)]

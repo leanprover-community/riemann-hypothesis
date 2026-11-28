@@ -638,7 +638,6 @@ lemma IsLatticeOfRank.exists_eq_colLattice_sublatticeBasis_mul {L : Submodule (�
       IsIntMatrix (Ô E) A.val ∧
       colLattice (Ô E) ((sublatticeBasis h_left_inv W).val * A.val) = L ∧
       discriminant r L = sublatticeDiscriminant h_left_inv W * genIndex A.val.det := by
-  classical
   -- Let `x a` be a basis of `L`, and `S = y b` the basis of the saturated lattice of the span `W`
   -- of `x`. Then `x = y T` with `T` invertible, and `A = b⁻¹ T a`.
   obtain ⟨x, a, hx, rfl⟩ := hL

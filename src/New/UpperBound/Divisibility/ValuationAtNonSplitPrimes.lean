@@ -195,7 +195,6 @@ lemma IsMarked.exists_eq_mul_neighborDiagonal_mul (hΛ : D.IsMarked Λ) {ι : Ty
       (∀ l : Λ, a l ∈ localIntGL ι l.val) ∧
       (∀ l : Λ, b l ∈ localIntGL ι l.val) ∧
       g = a * neighborDiagonal p Λ J * b := by
-  classical
   choose i hi hg using hg
   have h_subset (l : FinPlace D.E) (hl : l ∈ Λ) : ∃ J ⊆ (univ : Finset ι), #J = i ⟨l, hl⟩ :=
     exists_subset_card_eq (le_card_of_mem_basicDoubleCoset (hg ⟨l, hl⟩))
@@ -997,7 +996,6 @@ theorem IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow (H : IsWeakChainDatum �
     (hv : v ∈ D.integralSourceForms) :
     GaugeLe 1 (p ^ ∑ j ∈ range D.m, (#Λ * D.transferExponent p + liftLoss Λ j))
       (restrictedChain ϑ Ψ (((Λ.attach.toList.map hΛ.scaledHeckeOperator).prod ^ D.m) v)) := by
-  classical
   -- Move one of the `m` copies of `Y` into the datum of each lift, then bound the chain by the
   -- bounds for the new data.
   let Y : Module.End embValRing D.SourceForm := (Λ.attach.toList.map hΛ.scaledHeckeOperator).prod

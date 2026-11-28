@@ -117,7 +117,6 @@ lemma prod_factorial_mul_coeff_linSubst {O σ : Type} [CommRing O] [Fintype σ] 
     (α β : σ →₀ ℕ) :
     (∏ i : σ, (α i)! : ℕ) * (linSubst A (monomial β 1)).coeff α =
       (∏ i : σ, (β i)! : ℕ) * (linSubst Aᵀ (monomial α 1)).coeff β := by
-  classical
   have h_pairing (γ : σ →₀ ℕ) (g : MvPolynomial σ O) :
       fockPairing O (monomial γ 1) g = (∏ i : σ, (γ i)! : ℕ) * g.coeff γ := by
     simp [fockPairing_monomial, prod_fintype]
@@ -141,7 +140,6 @@ lemma exists_isAdjointWeight {O : Type} (σ : Type) [CommRing O] [Fintype σ] [I
     ∃ η : (σ →₀ ℕ) → O,
       (∀ γ : σ →₀ ℕ, γ.degree < p ^ f → (p : O) ^ (Fintype.card σ * f) = γ.multinomial * η γ) ∧
       IsAdjointWeight η := by
-  classical
   -- `η γ` is `p ^ (card σ * f)` over the multinomial coefficient in degree `< p ^ f`, else `0`.
   have h_quot (γ : σ → ℕ) : ∃ c : O,
       (if ∑ i, γ i < p ^ f then (p : O) ^ (card σ * f) else 0) = multinomial univ γ * c := by

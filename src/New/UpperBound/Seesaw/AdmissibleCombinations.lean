@@ -847,7 +847,6 @@ any denominator `e` divisible by `d d'` and any size `C` that is at least `B |B'
 lemma bind {v' : α' → Z} {e : ℕ} {C : ℝ} (hz : IsAdmissibleCombination v A n d p B z) (d' : ℕ)
     (B' : ℝ) (hv : ∀ x ∈ A, IsAdmissibleCombination v' A' n d' p B' (v x)) (hd : d * d' ∣ e)
     (hB : p → B * |B'| ≤ C) : IsAdmissibleCombination v' A' n e p C z := by
-  classical
   -- If `z = ∑ c x • v x` and `v x = ∑ r x y • v' y`, take the coefficients `∑ c x • r x`.
   obtain ⟨c, hc, rfl⟩ := hz
   obtain ⟨k, rfl⟩ := hd

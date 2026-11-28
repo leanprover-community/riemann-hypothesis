@@ -188,7 +188,6 @@ of `V` that `H` makes integral. -/
 lemma coe_mem_saturatedLattice (h_inv : H' * H = 1) {V : Submodule E (κ → E)} {v : κ → E}
     (hv : v ∈ V) (hv_int : ((↑) : E → 𝔸f E) ∘ v ∈ preimageLattice (Ô E) H) :
     ((↑) : E → 𝔸f E) ∘ v ∈ saturatedLattice h_inv V := by
-  classical
   -- The vector has coordinates `s` in the basis `m` of the saturated lattice. They are integral,
   -- since `H m` has an integral left inverse `p`.
   let m : Matrix κ (Fin (finrank E V)) (𝔸f E) := (sublatticeBasis h_inv V).val

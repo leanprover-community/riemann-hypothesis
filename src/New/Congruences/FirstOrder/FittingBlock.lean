@@ -365,7 +365,6 @@ lemma exists_rows_det_eq_pow_mul_det {Λ R E ι₀ ι : Type} [CommRing Λ] [Rin
     ∃ M : Matrix (ι₀ ⊕ ι) (ι₀ ⊕ ι) R,
       (∀ k : ι₀ ⊕ ι, M k ∈ N) ∧
       ∀ e : E, (M.map (χ e)).det = μ e ^ Fintype.card ι * (B e).det := by
-  classical
   -- The rows of `ι₀`: one relation that is the unit vector on every character at once
   -- (`exists_common_unit_row`). The rows of `ι`: `∑ e π e w e l` with `w e l` from `hB`, which is
   -- `μ e` times row `l` of `B e` on `χ e`, and zero on `ι₀`.

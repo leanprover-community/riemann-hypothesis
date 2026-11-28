@@ -658,7 +658,6 @@ lemma HasIntegralLifts.isIntMatrix_linkForm {c c' : S.Classes} {s : S.ResidueGL}
   -- The matrix `k` of `δ = γ γ'⁻¹` in the basis of the lattice is congruent to `1` modulo `M`. The
   -- pairing is `-nᴴ J (k - 1) n' / M` for the integral lifts `n`, `n'` of `w`, `w'` and the Gram
   -- matrix `J` of the lattice.
-  classical
   obtain ⟨ρ, _, t, u, ht_orth, hn_int, rfl⟩ := h_lift
   obtain ⟨ρ', _, t', u', ht'_orth, hn'_int, rfl⟩ := h_lift'
   set n : Matrix 𝔰.BesselIndex τ (𝔸f E) := S.classCoord c * finAdeleMatrix t * u with hn
