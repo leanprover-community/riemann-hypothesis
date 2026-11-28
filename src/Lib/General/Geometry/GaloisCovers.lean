@@ -14,6 +14,7 @@ import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.Localization.Cardinality
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Topology.Baire.BaireMeasurable
+import TauCeti.RingTheory.Smooth.IntegralClosure
 public import Lib.LocalGL.Green.TauFunctions
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 public import Lib.Cohomology.Etale.Basic
@@ -656,21 +657,6 @@ lemma exists_algebraMap_pi_eq {z : ∀ m : MaximalSpectrum N, Ω m}
 
 end ProductOfFields
 
-/-- If `A` is a smooth algebra over a normal domain `P`, then `A` is integrally closed in
-`A ⊗[P] Frac P`. -/
-lemma exists_algebraMap_eq_of_isIntegral_of_smooth {P A : Type} [CommRing P]
-    [IsIntegrallyClosed P] [CommRing A] [Algebra P A] [Algebra.Smooth P A]
-    {v : A ⊗[P] FractionRing P} (hv : IsIntegral A v) :
-    ∃ x : A, algebraMap A (A ⊗[P] FractionRing P) x = v := by
-  -- Integral closure commutes with smooth base change, and `P` is its own integral closure.
-  let F : Type := FractionRing P
-  have h_normal : Function.Surjective (algebraMap P (integralClosure P F)) :=
-    fun z ↦ (isIntegral_iff.mp z.prop).imp fun _ ↦ Subtype.ext
-  obtain ⟨w, hw⟩ : ∃ w : A ⊗[P] integralClosure P F, toIntegralClosure P A F w = ⟨v, hv⟩ :=
-    toIntegralClosure_bijective_of_smooth.surjective _
-  obtain ⟨x, rfl⟩ := includeLeft_surjective A A h_normal w
-  exact ⟨x, congrArg Subtype.val hw⟩
-
 /-- Let `Spec B` be the pull-back of a Galois covering `c : W ⟶ Z` with group `Δ` along
 `u : Spec A ⟶ Z`, where `A` has field-valued points of characteristic zero, `B` is integral over `A`
 and `p : Spec B ⟶ W` is a monomorphism. Let `σ` be the action of `Δ` on `B` compatible with the
@@ -762,11 +748,11 @@ lemma IsGaloisCovering.etale_of_isPullback {R : CommRingCat} {W Z : Over (Spec R
     simpa [hz] using hg z
   obtain ⟨v, hv⟩ : ∃ v : N, algebraMap N (∀ m : MaximalSpectrum N, Ω m) v = χ z :=
     exists_algebraMap_pi_eq h_mem
-  -- `v` is integral over `A`, and `A` is integrally closed in `N`, being smooth over normal `P`.
+  -- `v` is integral over `A`, and `A` is integrally closed in `N`, being smooth over normal `P`
+  -- (`TauCeti.Algebra.Smooth.isIntegrallyClosedIn_tensorProduct`).
   have hχz_int : IsIntegral A (χ z) := .map χ (.of_finite A z)
   have hv_int : IsIntegral A v := .tower_bot hN_inj (by rwa [hv])
-  obtain ⟨x, rfl⟩ : ∃ x : A, algebraMap A N x = v :=
-    exists_algebraMap_eq_of_isIntegral_of_smooth hv_int
+  obtain ⟨x, rfl⟩ : ∃ x : A, algebraMap A N x = v := IsIntegrallyClosedIn.isIntegral_iff.mp hv_int
   -- The invariant `x - z` and its conjugates lie in `ker χ`, so it is nilpotent, hence zero.
   have h_ker (g : Δ) : (σ g).unop (algebraMap A B x - z) ∈ RingHom.ker χ := by
     rw [map_sub, AlgHom.commutes, hz, mem_ker, map_sub, hχ, hv, sub_self]
