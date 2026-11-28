@@ -14,7 +14,7 @@ to `q` its absolute value is at most `(log y) ^ (-B)` for all large `y`, for eve
 `B`; so it tends to `0`, which characterises the constant `c_q` in its definition.
 
 Notions from other files:
-* `lambdaKResidueClass d q n` is `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q`, and `0` for other
+* `primeWeight d q n` is `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q`, and `0` for other
   `n`.
 * `entireL ψ` is `L(s, ψ)`, multiplied by `s - 1` if `ψ` is principal; `quadTwist ψ d` is the
   product of `ψ` and the Legendre symbol `(·/d)`.
@@ -38,6 +38,9 @@ open ArithmeticFunction.vonMangoldt Complex Filter Finset MeasureTheory Nat Real
 
 namespace New
 
+open TauCeti.OneSidedBound (primeWeight primeWeight_def primeWeight_nonneg
+  primeWeight_le_two_mul_vonMangoldt)
+
 variable {d : ℕ} [Fact d.Prime] {q : ℕ} [NeZero q]
 
 /-- Chebyshev's bound with a round constant: `∑_{n ≤ z} Λ(n) ≤ 6 z` for `z ≥ 0`. -/
@@ -48,30 +51,30 @@ lemma sum_Icc_vonMangoldt_le_six_mul {z : ℝ} (hz : 0 ≤ z) : ∑ n ∈ Icc 0 
 
 variable (d q) in
 /-- The error `𝓔_q(t) = ∑_{n ≤ t} λ(n) - t / φ(q)` in the count with the weights
-`λ = lambdaKResidueClass d q`, that is `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q` and `λ(n) = 0`
+`λ = primeWeight d q`, that is `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q` and `λ(n) = 0`
 otherwise. -/
-noncomputable def countError (t : ℝ) : ℝ := ∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n - t / φ q
+noncomputable def countError (t : ℝ) : ℝ := ∑ n ∈ Icc 0 ⌊t⌋₊, primeWeight d q n - t / φ q
 
-/-- Let `d` be a prime and `q ≠ 0`, and let `λ(n) = lambdaKResidueClass d q n` be `Λ(n) (1 - (n/d))`
+/-- Let `d` be a prime and `q ≠ 0`, and let `λ(n) = primeWeight d q n` be `Λ(n) (1 - (n/d))`
 for `n ≡ 1` mod `q` and `0` otherwise. The error `𝓔_q(t) = countError d q t`, that is
 `∑_{n ≤ t} λ(n) - t / φ(q)`, satisfies `|𝓔_q(t)| ≤ 13 t` for `t ≥ 0`, by Chebyshev's bound. -/
 lemma abs_countError_le {t : ℝ} (ht : 0 ≤ t) : |countError d q t| ≤ 13 * t := by
-  have h_sum : ∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n ≤ 2 * (6 * t) := by
-    grw [lambdaKResidueClass_le_two_mul_vonMangoldt, ← mul_sum, sum_Icc_vonMangoldt_le_six_mul ht]
-  grw [countError, abs_sub, abs_of_nonneg (sum_nonneg fun n _ ↦ lambdaKResidueClass_nonneg d q n),
+  have h_sum : ∑ n ∈ Icc 0 ⌊t⌋₊, primeWeight d q n ≤ 2 * (6 * t) := by
+    grw [primeWeight_le_two_mul_vonMangoldt, ← mul_sum, sum_Icc_vonMangoldt_le_six_mul ht]
+  grw [countError, abs_sub, abs_of_nonneg (sum_nonneg fun n _ ↦ primeWeight_nonneg d q n),
     abs_of_nonneg (by positivity), h_sum,
     div_le_self ht (mod_cast totient_pos.2 (NeZero.pos q) : (1 : ℝ) ≤ φ q)]
   linarith
 
 omit [NeZero q] in
-/-- Let `d` be a prime and let `λ(n) = lambdaKResidueClass d q n` be `Λ(n) (1 - (n/d))` for `n ≡ 1`
+/-- Let `d` be a prime and let `λ(n) = primeWeight d q n` be `Λ(n) (1 - (n/d))` for `n ≡ 1`
 mod `q` and `0` otherwise. For the error `𝓔_q(t) = countError d q t`, that is
 `∑_{n ≤ t} λ(n) - t / φ(q)`, the function `𝓔_q(t) t⁻²` is integrable on every interval `[y, z]` with
 `1 ≤ y ≤ z`. -/
 lemma intervalIntegrable_countError_div_sq {y z : ℝ} (hy : 1 ≤ y) (hyz : y ≤ z) :
     IntervalIntegrable (fun t : ℝ ↦ countError d q t / t ^ 2) volume y z := by
   have h_ne (t : ℝ) (ht : t ∈ Set.Icc y z) : t ^ 2 ≠ 0 := by positivity [hy.trans ht.1]
-  have h_sum : IntegrableOn (fun t : ℝ ↦ (t ^ 2)⁻¹ * ∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n)
+  have h_sum : IntegrableOn (fun t : ℝ ↦ (t ^ 2)⁻¹ * ∑ n ∈ Icc 0 ⌊t⌋₊, primeWeight d q n)
       (Set.Icc y z) := integrableOn_mul_sum_Icc _ (zero_le_one.trans hy)
     (ContinuousOn.integrableOn_Icc (by fun_prop (disch := assumption)))
   have h_main : IntegrableOn (fun t : ℝ ↦ t / φ q / t ^ 2) (Set.Icc y z) :=
@@ -85,36 +88,36 @@ lemma intervalIntegrable_countError_div_sq {y z : ℝ} (hy : 1 ≤ y) (hyz : y �
 lemma primeRemainder_eq_integral_countError_sub {y : ℝ} (hy : 1 ≤ y) :
     primeRemainder d q y = (∫ t in 1..y, countError d q t / t ^ 2) - re (logDerivMean d q 1) := by
   have h_sq_ne (t : ℝ) (ht : t ∈ Set.Icc 1 y) : t ^ 2 ≠ 0 := by positivity [ht.1]
-  have h_zero : lambdaKResidueClass d q 0 = 0 := by simp [lambdaKResidueClass, residueClass]
-  have h_abel : ∑ n ∈ Icc 0 ⌊y⌋₊, lambdaKResidueClass d q n / n =
-      (∑ n ∈ Icc 0 ⌊y⌋₊, lambdaKResidueClass d q n) / y +
-        ∫ t in Set.Ioc 1 y, (∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n) / t ^ 2 := by
+  have h_zero : primeWeight d q 0 = 0 := by simp [primeWeight_def]
+  have h_abel : ∑ n ∈ Icc 0 ⌊y⌋₊, primeWeight d q n / n =
+      (∑ n ∈ Icc 0 ⌊y⌋₊, primeWeight d q n) / y +
+        ∫ t in Set.Ioc 1 y, (∑ n ∈ Icc 0 ⌊t⌋₊, primeWeight d q n) / t ^ 2 := by
     have h_int : IntegrableOn (deriv fun t : ℝ ↦ t⁻¹) (Set.Icc 1 y) := by
       rw [deriv_inv']
       exact ContinuousOn.integrableOn_Icc (by fun_prop (disch := assumption))
     simpa only [deriv_inv', neg_mul, integral_neg, sub_neg_eq_add, ← div_eq_inv_mul] using
-      sum_mul_eq_sub_integral_mul₀ (lambdaKResidueClass d q) h_zero y
+      sum_mul_eq_sub_integral_mul₀ (primeWeight d q) h_zero y
         (fun t ht ↦ differentiableAt_inv (by positivity [ht.1])) h_int
   have h_log : ∫ t in 1..y, t / φ q / t ^ 2 = y.log / φ q := by
     rw [← div_one y, ← integral_one_div_of_pos one_pos (by linarith), div_one,
       ← intervalIntegral.integral_div]
     exact intervalIntegral.integral_congr fun t _ ↦ by field
   have h_count : ∫ t in 1..y, countError d q t / t ^ 2 =
-      (∫ t in 1..y, (∑ n ∈ Icc 0 ⌊t⌋₊, lambdaKResidueClass d q n) / t ^ 2) - y.log / φ q := by
+      (∫ t in 1..y, (∑ n ∈ Icc 0 ⌊t⌋₊, primeWeight d q n) / t ^ 2) - y.log / φ q := by
     rw [← h_log, eq_sub_iff_add_eq,
       ← intervalIntegral.integral_add (intervalIntegrable_countError_div_sq le_rfl hy)
         (ContinuousOn.intervalIntegrable_of_Icc hy (by fun_prop (disch := assumption)))]
     simp only [countError, sub_div, sub_add_cancel]
   have h_sum (r : ℕ) : lambdaKSum d q r y =
-      (∑ n ∈ Icc 0 ⌊y⌋₊, lambdaKResidueClass d q n / n * n ^ r) / y ^ r := by
+      (∑ n ∈ Icc 0 ⌊y⌋₊, primeWeight d q n / n * n ^ r) / y ^ r := by
     simp [lambdaKSum, Icc_eq_cons_Ioc (Nat.zero_le _), ← Icc_add_one_left_eq_Ioc]
-  have h_div_mul_cancel (n : ℕ) : lambdaKResidueClass d q n / n * n = lambdaKResidueClass d q n :=
+  have h_div_mul_cancel (n : ℕ) : primeWeight d q n / n * n = primeWeight d q n :=
     div_mul_cancel_of_imp (by simp +contextual [h_zero])
   rw [primeRemainder, h_count, intervalIntegral.integral_of_le hy, h_sum, h_sum]
   simp only [pow_zero, mul_one, div_one, pow_one, h_div_mul_cancel, h_abel]
   ring
 
-/-- Let `d` be a prime and `q ≠ 0`, and let `λ(n) = lambdaKResidueClass d q n` be `Λ(n) (1 - (n/d))`
+/-- Let `d` be a prime and `q ≠ 0`, and let `λ(n) = primeWeight d q n` be `Λ(n) (1 - (n/d))`
 for `n ≡ 1` mod `q` and `0` otherwise. The remainder `R_q = primeRemainder d q`, that is
 `R_q(y) = ∑_{n ≤ y} λ(n) (1/n - 1/y) - log y / φ(q) - c_q`, varies slowly:
 `|R_q(z) - R_q(y)| ≤ 13 (z - y) / y` for `1 ≤ y ≤ z`. -/

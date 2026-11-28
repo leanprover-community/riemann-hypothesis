@@ -173,6 +173,8 @@ structure New.Data (P : Parameters) where
 
 namespace New.Data
 
+open TauCeti.OneSidedBound (primeWeight)
+
 variable {P : Parameters} (D : Data P)
 
 /-- The length `x` of the prime sum, as a real number. -/
@@ -253,10 +255,10 @@ def shiftedWeight (i : ℕ) (σ : D.Φ) : ℕ := D.weight σ + (i + 1) * D.halfG
 def liftWeight (j : ℕ) (σ : D.Φ) : ℕ := D.shiftedWeight (2 * j) σ
 
 /-- The prime sum `s_fin(y, σ) = ∑ Λ_K(ν) (y / ν - κ(-ν σ))₊` over `1 ≤ ν ≤ a`. Here
-`Λ_K(ν) = Λ(ν) (1 - χ_K(ν))` is `lambdaKResidueClass P.d 1 ν`, and `-ν σ` is the product of `σ` with
+`Λ_K(ν) = Λ(ν) (1 - χ_K(ν))` is `primeWeight P.d 1 ν`, and `-ν σ` is the product of `σ` with
 `D.placeOfInt (-ν)`, which is the identity place if `ν` is not prime to `q₁`. -/
 def primeSum (y : ℝ) (σ : D.Φ) : ℝ :=
-  ∑ ν ∈ Finset.Icc 1 D.a, lambdaKResidueClass P.d 1 ν * (y / ν - D.weight (D.placeOfInt (-ν) * σ))⁺
+  ∑ ν ∈ Finset.Icc 1 D.a, primeWeight P.d 1 ν * (y / ν - D.weight (D.placeOfInt (-ν) * σ))⁺
 
 /-- The unit of loss `f a log³ b`, with `f` the number of infinite places and `a = x b`. -/
 abbrev errorUnit : ℝ := D.f * D.a * D.logB ^ 3
