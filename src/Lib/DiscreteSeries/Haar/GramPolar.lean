@@ -51,8 +51,15 @@ namespace New
 
 open Matrix MeasureTheory Measure Complex Fintype ENNReal Norms.L2Operator Filter Topology
 
-variable {ι n : Type} [Fintype ι] [Fintype n] [DecidableEq ι] [DecidableEq n]
-  {J : Matrix ι ι ℂ} [IsHermitianInvolution J]
+variable {ι n : Type} [Fintype ι] [DecidableEq ι] [DecidableEq n] {J : Matrix ι ι ℂ}
+
+theorem gramCoords_U_mul (g : U J) (Y : Matrix ι n ℂ) :
+    gramCoords J ((g : Matrix ι ι ℂ) * Y) = gramCoords J Y := by
+  rw [gramCoords, U.gram_invariant, gramCoords]
+
+section
+
+variable [Fintype n] [IsHermitianInvolution J]
 
 /-- The Haar measure of `U J` is invariant under right translations. -/
 instance : (volume (α := U J)).IsMulRightInvariant :=
@@ -71,11 +78,6 @@ theorem measurePreserving_U_mul (g : U J) :
   rw [lintegral_map hK (by fun_prop), lintegral_eq_det_mul_comp_mul_mul (P := (g : Matrix ι ι ℂ))
     (Q := 1) (norm_pos_iff.1 (by simp)) (by simp) hK]
   simp [← ofReal_norm]
-
-omit [Fintype n] [IsHermitianInvolution J] in
-theorem gramCoords_U_mul (g : U J) (Y : Matrix ι n ℂ) :
-    gramCoords J ((g : Matrix ι ι ℂ) * Y) = gramCoords J Y := by
-  rw [gramCoords, U.gram_invariant, gramCoords]
 
 /-- Almost every element `g` of `U(J)`, for its Haar measure, has no eigenvalue `-1`. -/
 theorem ae_isUnit_add_one : ∀ᵐ g : U J, IsUnit ((g : Matrix ι ι ℂ) + 1) := by
@@ -164,11 +166,12 @@ theorem exists_isGramSection :
       isUnit ht := by simpa only [h_eq ht] using h_unit _ ht },
     h_base, (h_eq h_base).trans hσ_base⟩
 
+end
+
 namespace IsGramSection
 
 variable {V S : Set (Matrix ι ι ℝ)} {σ : Matrix ι ι ℝ → Matrix ι ι ℂ}
 
-omit [IsHermitianInvolution J] in
 /-- The identity `gramCoords J (σ t) = t` of a section, differentiated at `t ∈ V` in the
 direction `v`. -/
 theorem skewCoords_fderiv_gram (hσ : IsGramSection J V σ) {t : Matrix ι ι ℝ} (ht : t ∈ V)
@@ -180,13 +183,11 @@ theorem skewCoords_fderiv_gram (hσ : IsGramSection J V σ) {t : Matrix ι ι �
       (eventually_of_mem (hσ.isOpen.mem_nhds ht) fun _ ↦ hσ.gramCoords_eq))
   rw [← hT_apply, hT_id, ContinuousLinearMap.id_apply]
 
-omit [IsHermitianInvolution J] in
 /-- A section of the Gram map over `V` restricts to a section over each open subset of `V`. -/
 theorem mono (hσ : IsGramSection J V σ) (hS : IsOpen S) (hSV : S ⊆ V) : IsGramSection J S σ :=
   ⟨hS, hσ.measurable, fun ht ↦ hσ.differentiableAt (hSV ht), fun ht ↦ hσ.gramCoords_eq (hSV ht),
     fun ht ↦ hσ.isUnit (hSV ht)⟩
 
-omit [IsHermitianInvolution J] in
 /-- Multiplying the values of a linear map `D` on the left by `P` multiplies its Jacobian, read in
 the coordinates `skewAddHerm.symm`, by `‖det P‖ ^ (2 r)`, where `r` is the size of the matrices. -/
 theorem abs_det_skewAddHerm_mulLeft_comp (P : Matrix ι ι ℂ)
@@ -202,6 +203,8 @@ theorem abs_det_skewAddHerm_mulLeft_comp (P : Matrix ι ι ℂ)
     LinearMap.det_conj L skewAddHerm.symm
   rw [h_factor, map_mul, h_conj, det_mulLeft_mulRight_real]
   simp
+
+variable [IsHermitianInvolution J]
 
 /-- Let `σ` be a differentiable section of the Gram map over the open set `V` (`IsGramSection`), and
 let `γ = cayleyChart J`, with `cayleyDenom J y` invertible. At `t ∈ V`, let

@@ -157,17 +157,18 @@ theorem measurePreserving_conjTranspose [Fintype ι] [Fintype n] [DecidableEq ι
 
 section Hermitian
 
-variable [Fintype ι] [DecidableEq n]
+variable [Fintype ι]
 
 /-! ### Measurability and linear changes of variables -/
 
-omit [DecidableEq n] in
 /-- The product of two measurable families of complex matrices is measurable. -/
 @[fun_prop]
 theorem _root_.Measurable.matrix_mul [Fintype n] {X : Type} [MeasurableSpace X] [Fintype n₁]
     {A : X → Matrix ι n₁ ℂ} {B : X → Matrix n₁ n ℂ} (hA : Measurable A) (hB : Measurable B) :
     Measurable fun x : X ↦ A x * B x :=
   (continuous_fst.matrix_mul continuous_snd).measurable.comp (hA.prodMk hB)
+
+variable [DecidableEq n]
 
 @[fun_prop]
 theorem measurable_matrix_det [Fintype n] : Measurable fun Z : Matrix n n ℂ ↦ Z.det :=

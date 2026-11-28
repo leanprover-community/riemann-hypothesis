@@ -221,6 +221,24 @@ private theorem New.injective_and_lt_of_reverses_order (hg : l.HasGap h) {o : n 
   have h_anti : StrictAnti o := fun i j hij ↦ ho j i hij
   exact ⟨h_anti.injective, fun i j hij ↦ h_anti.lt_iff_gt.1 hij⟩
 
+/-- If ν is `K`-dominant for `-l` and is Λ or has ν − Λ outside `l.rootCone`, there is an injective
+`o`, with ν `K`-dominant for `o` and −λ − ρ = `-paramAddRho l` dominant for `-o`, such that
+N = o · (ν − Λ) is a natural number that vanishes only for ν = Λ. -/
+private theorem New.exists_order_isKDominant_dotProduct_eq_natCast (hg : l.HasGap h) {ν : n → ℤ}
+    (hν : IsKDominant ε (-l) ν) (h_cone : ν ≠ l.lowestKType → ν - l.lowestKType ∉ l.rootCone) :
+    ∃ (o : n → ℤ) (N : ℕ), o.Injective ∧ IsKDominant ε o ν ∧
+      IsKDominant 1 (-o) (-paramAddRho l) ∧ (N : ℤ) = o ⬝ᵥ (ν - l.lowestKType) ∧
+      (N = 0 ↔ ν = l.lowestKType) := by
+  obtain ⟨o, N, ho, hN, hN_zero⟩ :=
+    exists_order_dotProduct_eq_natCast fun h_ne ↦ h_cone (sub_ne_zero.1 h_ne)
+  obtain ⟨ho_inj, h_order⟩ := injective_and_lt_of_reverses_order hg ho
+  -- `o` orders the indices as `-l` does, so dominance carries over.
+  have hν_dom : IsKDominant ε o ν := fun i j h_sign hij ↦
+    hν i j h_sign (neg_lt_neg (h_order i j hij))
+  have hμ_dom : IsKDominant 1 (-o) (-paramAddRho l) := fun i j h_sign hij ↦
+    hg.isKDominant_neg_paramAddRho i j h_sign (h_order j i (neg_lt_neg_iff.1 hij))
+  exact ⟨o, N, ho_inj, hν_dom, hμ_dom, hN, by simpa [sub_eq_zero] using hN_zero⟩
+
 variable [DecidableEq n]
 
 /-- The integral ∫_K conj(m_ν(k)) c_λ(x k z) dk, with m_ν = `weightMinors ν` and
@@ -347,25 +365,6 @@ private theorem New.eventually_forall_accretive_circleFactorization {o μ : n �
   obtain ⟨A, C, hAC, hA_acc⟩ := hb_factor k (by simp)
   exact ⟨fun j ↦ hb_acc k j trivial, hb k, A, C, hAC,
     fun s hs j ↦ hA_acc s (by simpa using hs) j trivial⟩
-
-omit [DecidableEq n] in
-/-- If ν is `K`-dominant for `-l` and is Λ or has ν − Λ outside `l.rootCone`, there is an injective
-`o`, with ν `K`-dominant for `o` and −λ − ρ = `-paramAddRho l` dominant for `-o`, such that
-N = o · (ν − Λ) is a natural number that vanishes only for ν = Λ. -/
-private theorem New.exists_order_isKDominant_dotProduct_eq_natCast (hg : l.HasGap h) {ν : n → ℤ}
-    (hν : IsKDominant ε (-l) ν) (h_cone : ν ≠ l.lowestKType → ν - l.lowestKType ∉ l.rootCone) :
-    ∃ (o : n → ℤ) (N : ℕ), o.Injective ∧ IsKDominant ε o ν ∧
-      IsKDominant 1 (-o) (-paramAddRho l) ∧ (N : ℤ) = o ⬝ᵥ (ν - l.lowestKType) ∧
-      (N = 0 ↔ ν = l.lowestKType) := by
-  obtain ⟨o, N, ho, hN, hN_zero⟩ :=
-    exists_order_dotProduct_eq_natCast fun h_ne ↦ h_cone (sub_ne_zero.1 h_ne)
-  obtain ⟨ho_inj, h_order⟩ := injective_and_lt_of_reverses_order hg ho
-  -- `o` orders the indices as `-l` does, so dominance carries over.
-  have hν_dom : IsKDominant ε o ν := fun i j h_sign hij ↦
-    hν i j h_sign (neg_lt_neg (h_order i j hij))
-  have hμ_dom : IsKDominant 1 (-o) (-paramAddRho l) := fun i j h_sign hij ↦
-    hg.isKDominant_neg_paramAddRho i j h_sign (h_order j i (neg_lt_neg_iff.1 hij))
-  exact ⟨o, N, ho_inj, hν_dom, hμ_dom, hN, by simpa [sub_eq_zero] using hN_zero⟩
 
 /-- The projection formula for `b` near `1`. Let `l = 2λ` have a gap and ν be a weight, `K`-dominant
 for the order `-l`, that is the lowest `K`-type Λ or has ν − Λ outside `l.rootCone`. Then

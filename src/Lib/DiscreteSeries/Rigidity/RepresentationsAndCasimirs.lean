@@ -208,20 +208,21 @@ namespace New.GlModule
 
 open Matrix Finset Submodule SetLike Module
 
-variable {n : Type} [Fintype n] [DecidableEq n]
+variable {n : Type} [Fintype n]
   {M : Type*} [AddCommGroup M] [Module ℂ M]
   {ε : n → ℤˣ} {ρ : GlModule n M} {x y : M} {s : ℕ} {a b : n} {c : ℂ}
+
+theorem apply_apply_eq_swap_add_bracket (X Y : Matrix n n ℂ) :
+    ρ X (ρ Y x) = ρ Y (ρ X x) + ρ (X * Y - Y * X) x := by
+  simp [map_bracket]
+
+variable [DecidableEq n]
 
 theorem map_single_mul_single (c d : n) :
     ρ (single a b 1 * single c d 1) = if b = c then ρ.E a d else 0 := by aesop
 
 theorem apply_eq_sum (X : Matrix n n ℂ) : ρ X = ∑ a : n, ∑ b : n, X a b • ρ.E a b := by
   simp [← map_smul, ← map_sum, ← matrix_eq_sum_single]
-
-omit [DecidableEq n] in
-theorem apply_apply_eq_swap_add_bracket (X Y : Matrix n n ℂ) :
-    ρ X (ρ Y x) = ρ Y (ρ X x) + ρ (X * Y - Y * X) x := by
-  simp [map_bracket]
 
 /-- The commutation relation of the matrix units on a vector: E_ab E_cd v is E_cd E_ab v plus E_ad v
 if b = c, minus E_cb v if d = a. -/

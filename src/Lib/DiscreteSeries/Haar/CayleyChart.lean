@@ -70,8 +70,11 @@ section SkewCoordinates
 
 open Matrix LinearMap Algebra Fintype IsHermitianInvolution Topology
 
-variable {n : Type _} [Fintype n] [DecidableEq n] {J x : Matrix n n ℂ} [IsHermitianInvolution J]
-  (y : Matrix n n ℝ)
+variable {n : Type _} [DecidableEq n] {J x : Matrix n n ℂ} (y : Matrix n n ℝ)
+
+section
+
+variable [Fintype n] [IsHermitianInvolution J]
 
 /-- For complex square matrices P of size m and Q of size n, the real-linear map X ↦ PXQ on
 complex m×n matrices has determinant |det P|^(2n)·|det Q|^(2m). -/
@@ -104,9 +107,7 @@ theorem continuous_U_iff_matrix {X : Type*} [TopologicalSpace X] {f : X → U J}
     Continuous f ↔ Continuous fun x : X ↦ (f x : Matrix n n ℂ) :=
   isClosedEmbedding_U.continuous_iff
 
-section
-
-omit [Fintype n]
+end
 
 /-- `skewCoords` reads the real coordinates y back from the skew-hermitian matrix `skewOfReal y`. -/
 @[simp]
@@ -143,8 +144,6 @@ lemma skewOfReal_skewCoords (hx : xᴴ = -x) : skewOfReal (skewCoords x) = x := 
       simpa [skewCoords, skewOfReal, Complex.ext_iff, hab, hab.symm]
     rw [h_re, h_im, ← sub_div, ← add_div, div_div, div_div, Real.mul_self_sqrt zero_le_two]
     constructor <;> ring
-
-end
 
 end SkewCoordinates
 

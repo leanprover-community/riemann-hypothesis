@@ -359,11 +359,12 @@ section HaarCovering
 
 open New U MeasureTheory ENNReal Fintype Matrix.Norms.L2Operator
 
-variable {n : Type} [Fintype n] [DecidableEq n] {J : Matrix n n ℂ} [IsHermitianInvolution J]
+variable {n : Type} [Fintype n] [DecidableEq n] {J : Matrix n n ℂ}
   {S : Type} [Group S] [MeasurableSpace S]
 
-omit [IsHermitianInvolution J] in
 theorem IsProperMap.monoidHom_id : IsProperMap (MonoidHom.id (U J)) := by simp
+
+variable [IsHermitianInvolution J]
 
 /-- The distance on `U J` is the operator norm of the difference of matrices. -/
 noncomputable instance : MetricSpace (U J) := isClosedEmbedding_U.toIsEmbedding.comapMetricSpace _

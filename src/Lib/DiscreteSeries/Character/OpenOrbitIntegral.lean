@@ -283,7 +283,16 @@ namespace New.Orbital
 open Matrix MeasureTheory Finset Complex DiscreteSeries ComplexOrder Norms.L2Operator Filter
   AddMonoidAlgebra
 
-variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {l : HCParam (n := n) ε} {h : ℕ}
+variable {n : Type} [Fintype n] {ε : n → ℤˣ} {l : HCParam (n := n) ε} {h : ℕ}
+
+/-- For `l = 2λ` with a gap (see `HCParam.HasGap`), the weight
+`-l.compactForm.lowestKType = -(λ - ρ)` is dominant for `U(n)` when the coordinates are listed with
+`l` increasing: it is antitone along `l`, as `IsKDominant` asks with all signs `1`. -/
+lemma isKDominant_neg_compactForm_lowestKType (hg : l.HasGap h) :
+    IsKDominant 1 l (-l.compactForm.lowestKType) := by
+  simpa only [neg_neg, lowestKType_neg hg.signs_one] using hg.signs_one.neg.isKDominant_lowestKType
+
+variable [DecidableEq n]
 
 /-- For `l = 2λ` and `J = diag ε`, the integral of `m_{-(λ-ρ)}(kᴴ J k) / m_{-(λ+ρ)}(kᴴ A k)` over
 the `k` in `U(n)` outside `New.openOrbit ε l` (the open orbit `G B`), for the Haar
@@ -292,14 +301,6 @@ noncomputable def offOrbitIntegral (l : HCParam (n := n) ε) (A : Matrix n n ℂ
   ∫ k : USign (1 : n → ℤˣ) in {k : USign (1 : n → ℤˣ) | (k : Matrix n n ℂ) ∈ openOrbit ε l}ᶜ,
     weightMinors (-l.compactForm.lowestKType) ((k : Matrix n n ℂ)ᴴ * signMatrix ε * k) /
       weightMinors (-paramAddRho l) ((k : Matrix n n ℂ)ᴴ * A * k)
-
-omit [DecidableEq n] in
-/-- For `l = 2λ` with a gap (see `HCParam.HasGap`), the weight
-`-l.compactForm.lowestKType = -(λ - ρ)` is dominant for `U(n)` when the coordinates are listed with
-`l` increasing: it is antitone along `l`, as `IsKDominant` asks with all signs `1`. -/
-lemma isKDominant_neg_compactForm_lowestKType (hg : l.HasGap h) :
-    IsKDominant 1 l (-l.compactForm.lowestKType) := by
-  simpa only [neg_neg, lowestKType_neg hg.signs_one] using hg.signs_one.neg.isKDominant_lowestKType
 
 /-- The orbital integral as an integral over `G = U(diag ε)`: let `l = 2λ` have gap `h` (distinct
 entries congruent to `card n - 1` mod 2, with `|λ i - λ j| ≥ h` whenever `ε i ≠ ε j`), and let `x`
