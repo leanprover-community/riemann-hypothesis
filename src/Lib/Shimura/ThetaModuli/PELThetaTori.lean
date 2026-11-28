@@ -244,10 +244,31 @@ noncomputable def polarisationForm (β : Matrix D.Index D.Index E) :
     RealVectors E D.Index →ₗ[ℝ] RealVectors E D.Index →ₗ[ℝ] ℝ := by
   apply LinearMap.mk₂ ℝ fun y z : RealVectors E D.Index ↦
     ∑ v, 2 * (Φ v D.ξ * star (z · v) ⬝ᵥ β.map (Φ v) *ᵥ (y · v)).re
-  -- Real bilinearity: expand the matrix products into sums and compare term by term.
-  all_goals
-    simp [mulVec, dotProduct, mul_sum, -sum_sub_distrib, ← sum_add_distrib]
-    grind
+  -- Real bilinearity follows termwise from linearity of `mulVec`, `dotProduct`, and `Complex.re`.
+  · intro y₁ y₂ z
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun v _ ↦ ?_
+    have h_add : (fun i ↦ (y₁ + y₂) i v) = (y₁ · v) + (y₂ · v) := rfl
+    rw [h_add, mulVec_add, dotProduct_add, mul_add, Complex.add_re, mul_add]
+  · intro c y z
+    rw [smul_eq_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun v _ ↦ ?_
+    have h_smul : (fun i ↦ (c • y) i v) = (c : ℂ) • (y · v) := by
+      ext i; exact Complex.real_smul
+    rw [h_smul, mulVec_smul, dotProduct_smul, smul_eq_mul, mul_left_comm (Φ v D.ξ),
+      Complex.re_ofReal_mul, mul_left_comm]
+  · intro y z₁ z₂
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun v _ ↦ ?_
+    have h_add : (fun i ↦ (z₁ + z₂) i v) = (z₁ · v) + (z₂ · v) := rfl
+    rw [h_add, star_add, add_dotProduct, mul_add, Complex.add_re, mul_add]
+  · intro c y z
+    rw [smul_eq_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun v _ ↦ ?_
+    have h_smul : (fun i ↦ (c • z) i v) = (c : ℂ) • (z · v) := by
+      ext i; exact Complex.real_smul
+    rw [h_smul, star_smul, Complex.star_def, Complex.conj_ofReal, smul_dotProduct, smul_eq_mul,
+      mul_left_comm (Φ v D.ξ), Complex.re_ofReal_mul, mul_left_comm]
 
 /-- A polarised period map for the frame `g` and the matrix `ℓ`: a period map Q = `realEquiv` onto
 `V`, a matrix β = `formMatrix` over `E` with gᴴ β g a scalar unit of Ẑ, and a form
@@ -301,7 +322,14 @@ lemma ψf_unit_mul_eq_one_iff (ν : (Ô ℚ)ˣ) {a : 𝔸f E} :
 lemma polarisationForm_toRealVectors (y z : D.Index → E) :
     polarisationForm D β (toRealVectors y) (toRealVectors z) =
       Algebra.trace ℚ E (D.ξ * star z ⬝ᵥ β *ᵥ y) := by
-  simp [polarisationForm, trace_eq_sum_Φ, mulVec, dotProduct]
+  rw [polarisationForm, LinearMap.mk₂_apply, trace_eq_sum_Φ]
+  refine Finset.sum_congr rfl fun v _ ↦ ?_
+  have hy : (fun i ↦ toRealVectors y i v) = Φ v ∘ y := rfl
+  have hz : star (fun i ↦ toRealVectors z i v) = Φ v ∘ star z := by
+    ext i; exact (map_star_complex (Φ v) (z i)).symm
+  have h_mv : β.map (Φ v) *ᵥ (Φ v ∘ y) = Φ v ∘ (β *ᵥ y) :=
+    funext fun i ↦ (RingHom.map_mulVec (Φ v) β y i).symm
+  rw [hy, hz, h_mv, ← RingHom.map_dotProduct, ← map_mul]
 
 private lemma frameCoords_eq_mulVec (y : D.Index → E) :
     frameCoords g y = (g⁻¹).val *ᵥ (algebraMap E (𝔸f E) ∘ y) :=
