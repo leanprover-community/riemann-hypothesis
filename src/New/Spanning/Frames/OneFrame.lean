@@ -149,7 +149,8 @@ lemma fixesLeft_weightedSquareSum_and_eq_zero (hk : F.IsPairingKernel j k d) (x 
     · -- For `σ ∈ floorGroup j`, `σ * g` is not near at `j + 1`, so the integrand vanishes.
       by_contra h_ne
       obtain ⟨σ, hσ, h_int⟩ := exists_ne_zero_of_ae F.ae_floorMeasure_mem h_ne
-      have h_far : ¬F.IsNear (j + 1) (σ * g) := fun h_near ↦ hg (h_near.of_floorGroup_mul hσ)
+      have h_far : ¬F.IsNear (j + 1) (σ * g) :=
+        fun h_near ↦ hg (h_near.of_floorGroup_mul hσ j.le_succ)
       exact h_int (by rw [h_square_far _ h_far, h_sum_far _ h_far, add_zero])
 
 /-- Cauchy–Schwarz on floor `l` for a pairing kernel `k`. Suppose that for every point z the
@@ -192,7 +193,9 @@ lemma pivotL1Norm_sq_le_of_floorMassLe_one (hk : F.IsPairingKernel j k d)
     (h_mass : F.FloorMassLe l K 1) :
     F.pivotL1Norm l k g y ^ 2 ≤
       K * ∫⁻ σ : T.G, ‖F.partialCorrelation (l + 1) k (σ * g) (σ * y)‖ₑ ^ 2 ∂F.floorMeasure l :=
-  hk.pivotL1Norm_sq_le h_mass fun _ _ ↦ (one_mul _).ge
+  hk.pivotL1Norm_sq_le h_mass (fun _ _ ↦ (one_mul _).ge) measurable_const
+    ((hk.stronglyMeasurable_partialCorrelation.comp_measurable
+      ((measurable_id.mul_const g).prodMk (measurable_id.mul_const y))).eNorm.pow_const 2)
 
 /-- Let `k` be a pairing kernel at any floor `j`, and let `l ≤ 𝔰.ϱ`. Then
 `F.weightedSquareIntegral l k x`, the integral of `F.weightedSquareSum k x l` against θ_{l−1} ∗ ⋯ ∗
@@ -268,10 +271,9 @@ lemma Gauge.lintegral_invDepthWeight_floorMeasure_le {x : T.G} (Γ : Gauge F) (h
         (fun σ : T.G ↦ F.depth a (σ * g) x ^ F.volumeExponent * F.invDepthWeight a x g) σ := by
     intro σ hσ
     by_cases h_near : F.IsNear (a + 1) (σ * g)
-    · simp [invDepthWeight, h_near, h_near.of_floorGroup_mul hσ, depthWeight_succ, ENNReal.mul_inv,
-        mem_partialUnitriangularGroup_of_mem_floorGroup hσ, depth_ne_zero, depth_ne_top,
-          ENNReal.inv_pow,
-        mul_comm]
+    · simp [invDepthWeight, h_near, h_near.of_floorGroup_mul hσ a.val.le_succ, depthWeight_succ,
+        ENNReal.mul_inv, mem_partialUnitriangularGroup_of_mem_floorGroup hσ, depth_ne_zero,
+        depth_ne_top, ENNReal.inv_pow, mul_comm]
     · simp [invDepthWeight, h_near]
   rw [lintegral_floorMeasure_congr rfl h_eq, lintegral_indicator h_set,
     lintegral_mul_const _ (by fun_prop)]
@@ -423,7 +425,7 @@ lemma Gauge.exists_centre_of_isNear (Γ : Gauge F) (a : Fin 𝔰.ϱ) {g y n₀ �
     exists_floorGroup_mul_unipotentBelow (partialUnitriangularGroup_anti a.val.le_succ hξ)
   have ht_mem : t ∈ partialUnitriangularGroup (a + 1) ⊓ floorGroup a :=
     ⟨(mul_mem_cancel_right (unipotentBelow_le_partialUnitriangularGroup hν)).1 hξ, ht⟩
-  have hν_succ : ν ∈ unipotentBelow (a + 1) := by grind
+  have hν_succ : ν ∈ unipotentBelow (a + 1) := unipotentBelow_le_succ hν
   refine ⟨t, ht_mem, ν, hν_succ, Γ.hasMatrixSize_boxSet h_box, ?_⟩
   rintro n hn ⟨μ, hμ, hy⟩
   -- Put `δ = n n₀⁻¹`; the translating element is `t δ t⁻¹`.
@@ -435,17 +437,20 @@ lemma Gauge.exists_centre_of_isNear (Γ : Gauge F) (a : Fin 𝔰.ϱ) {g y n₀ �
     have h_inner : r * δ * r⁻¹ ∈ floorUnipotent a := mul_mem (mul_mem hr hδ) (inv_mem hr)
     have h_outer : s * (r * δ * r⁻¹) * s⁻¹ ∈ floorUnipotent a :=
       conj_mem_floorUnipotent h_inner s hs
-    simpa [δ, mul_assoc] using h_outer
+    exact (show s * r * n * (s * r * n₀)⁻¹ = s * (r * δ * r⁻¹) * s⁻¹ by
+      dsimp only [δ]; group) ▸ h_outer
   -- The translate is `t δ ν ν₀ n₀ y`, and `κ = t ν μ δ (ν ν₀)⁻¹ δ⁻¹ t⁻¹` moves it to `t ν μ n y`.
   let κ : T.G := t * (ν * μ * (δ * (ν * ν₀)⁻¹ * δ⁻¹)) * t⁻¹
   have h_conj : δ * (ν * ν₀)⁻¹ * δ⁻¹ ∈ unipotentBelow a :=
     conj_mem_unipotentBelow hδ.1 (inv_mem (mul_mem hν hν₀))
   have hκ : κ ∈ unipotentBelow a := conj_mem_unipotentBelow ht (mul_mem (mul_mem hν hμ) h_conj)
   have h_close : t * n * (t * n₀)⁻¹ * (t * ν * (ν₀ * (n₀ * y))) ∈ Γ.closeBelow a (t * ν * g) :=
-    ⟨κ, hκ, by simpa [κ, δ, mul_assoc] using hy⟩
+    ⟨κ, hκ, by convert hy using 1; dsimp only [κ, δ]; group⟩
   have h_start : (t * ν * g)⁻¹ * (t * ν * (ν₀ * (n₀ * y))) ∈ Γ.positionsOfSize := by
-    simpa [mul_assoc] using hy₀
-  simpa [mul_assoc] using Γ.exists_lift_of_mem_closeBelow a h_box h_start h_move h_close
+    convert hy₀ using 1; group
+  have h_inv : (t * n * (t * n₀)⁻¹)⁻¹ = t * n₀ * (t * n)⁻¹ := by group
+  rw [← h_inv]
+  exact Γ.exists_lift_of_mem_closeBelow a h_box h_start h_move h_close
 
 /-- One floor up. Let `Γ` be a gauge (size bounds for the place data `F`), `k` a pairing kernel for
 `F` whose twist `d` commutes with G^(j) = `floorGroup j`, and `j ≤ l ≤ ϱ`. The cut square
@@ -469,8 +474,8 @@ lemma Gauge.lintegral_cutSquare_le (Γ : Gauge F) {k : T.G → T.G → ℂ} {d :
       unfold closeMass
       fun_prop
     have h_zero : ∫⁻ n : T.G, Γ.closeMass l g (n * y) ∂heisenbergMeasure l = 0 := by
-      simpa (disch := fun_prop) [closeMass, ascConv, lintegral_mconv_symm, mul_assoc]
-        using h_closeMass
+      rw [closeMass, ascConv, lintegral_mconv_symm (by fun_prop)] at h_closeMass
+      simpa only [closeMass, mul_assoc] using h_closeMass
     calc ∫⁻ n : T.G, Γ.cutSquare k l g (n * y) ∂heisenbergMeasure l
         ≤ ∫⁻ n : T.G, ∞ * Γ.closeMass l g (n * y) ∂heisenbergMeasure l :=
           lintegral_mono fun n ↦ inf_le_left
@@ -615,7 +620,12 @@ theorem Gauge.lintegral_weightedSquare_le (Γ : Gauge F) [F.groupMeasure.IsHaarM
   -- correlation does not depend on `ν`, and the weight has bounded integral over `ν`.
   have h_positions : MeasurableSet Γ.positionsOfSize := Γ.measurableSet_positionsOfSize
   obtain ⟨ρ, hρ, h_factor, h_mass⟩ := Γ.exists_factor_cutSquare_le hK hjl hl.step
-  grw [← h_mass, lintegral_lintegral_swap (by fun_prop), ← lintegral_const_mul _ (by fun_prop)]
+  have h_ws : Measurable ↿(F.weightedSquare l k) :=
+    (measurable_depthWeight.comp (measurable_snd.prodMk measurable_fst)).mul
+      ((hK.stronglyMeasurable_partialCorrelation (l := l + 1).comp_measurable
+        (measurable_snd.prodMk (measurable_snd.mul measurable_fst))).eNorm.pow_const 2)
+  grw [← h_mass, lintegral_lintegral_swap h_ws.aemeasurable,
+    ← lintegral_const_mul _ (by fun_prop)]
   gcongr with g
   suffices h_inner : ∀ y : T.G,
       ∫⁻ ν, Γ.positionsOfSize.indicator (F.weightedSquare l k · g) (g⁻¹ * (ν * y))
@@ -734,9 +744,9 @@ theorem Gauge.headDensity_mul_lintegral_le_mul_pairingNormSq {p q : ℕ → Aˣ}
           grw [setLIntegral_mono hu_meas hf_le, lintegral_mono_set hS]
       _ ≤ (∫⁻ x in Γ'.positionsOfSize, e ^ 2 * (D * Γ.floorsConst ^ 3 * N₁ x) ∂F.groupMeasure) *
             E₂ :=
-          sq_lintegral_le (by fun_prop) (by fun_prop) hu_sq
+          sq_lintegral_le ((hN₁.const_mul _).const_mul _).aemeasurable hN₂.aemeasurable hu_sq
       _ = e ^ 2 * (D * Γ.floorsConst ^ 3 * E₁) * E₂ := by
-          rw [lintegral_const_mul _ (by fun_prop), lintegral_const_mul _ hN₁]
+          rw [lintegral_const_mul _ (hN₁.const_mul _), lintegral_const_mul _ hN₁]
   have hE₁ : E₁ ≤ 𝔰.n * (V * F.pairingNormSq W) := by
     simpa only [V, PlaceData.pairingNormSq, frameCorrelation, one_mul] using
       Γ'.lintegral_weightedSquareIntegral_le ker₁ zero_le
@@ -764,11 +774,16 @@ theorem Gauge.headDensity_mul_lintegral_le_mul_pairingNormSq {p q : ℕ → Aˣ}
   calc F.headDensity j p q ^ 2 * (∫⁻ x in S, f x ∂F.groupMeasure) ^ 2
       ≤ F.headDensity j p q ^ 2 *
           (e ^ 2 * (D * Γ.floorsConst ^ 3 * (𝔰.n * (V * F.pairingNormSq W))) *
-            (𝔰.n * (V * (J * F.pairingNormSq W)))) := by grw [h_cs, hE₁, hE₂]
+            (𝔰.n * (V * (J * F.pairingNormSq W)))) := by
+        gcongr
+        exact h_cs.trans (by gcongr)
     _ = F.headDensity j p q ^ 2 * D * J * e ^ 2 * Γ.floorsConst ^ 3 * (𝔰.n * V) ^ 2 *
           F.pairingNormSq W ^ 2 := by ring
     _ ≤ Γ.loss ^ 2 * e ^ 2 * Γ.floorsConst ^ 3 * (C * Γ'.loss ^ (25000 * 𝔰.n ^ 2)) ^ 2 *
-          F.pairingNormSq W ^ 2 := by grw [h_mod, h_rank, h_floors]
+          F.pairingNormSq W ^ 2 := by
+        have h_sq : (𝔰.n : ℝ≥0∞) * V ≤ C * Γ'.loss ^ (25000 * 𝔰.n ^ 2) :=
+          le_trans (by gcongr) h_floors
+        gcongr
     _ = _ := by
       simp only [C, floorsConst]
       ring
