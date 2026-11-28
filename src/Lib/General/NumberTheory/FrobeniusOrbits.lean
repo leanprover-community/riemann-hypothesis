@@ -26,9 +26,9 @@ so places of prime norm are split. The file also contains two summation lemmas.
   maximal real subfield, a place with `star w = w` does not lie above `2`;
   `New.HasPrimitiveRoot5040.isSplit_of_two_mem` is the case of the hypothesis
   `New.HasPrimitiveRoot5040 E`.
-* `New.exists_sq_eq_q_of_star_eq`: if moreover `E` contains `√-1`, such a place has norm
-  `w.q = r ^ 2` with `r % 4 = 3`; `New.HasPrimitiveRoot5040.exists_sq_eq_q_of_inert` is the case
-  of the hypothesis `New.HasPrimitiveRoot5040 E`.
+* `New.exists_sq_eq_q_of_star_eq`: if `E` contains `√-1`, a place fixed by conjugation and not above
+  `2` has norm `w.q = r ^ 2` with `r % 4 = 3`; `New.HasPrimitiveRoot5040.exists_sq_eq_q_of_inert`
+  applies this to a field satisfying `New.HasPrimitiveRoot5040 E`.
 * `New.finite_prime_q_star_eq`, `New.isSplit_of_q_prime`: all but finitely many places of prime norm
   are moved by the conjugation, and all of them under the hypothesis `New.HasPrimitiveRoot5040 E`.
 * `New.root_pow_card_pow_eq_self_iff`, `New.root_pow_card_pow_eq_iff_modEq`: `x^(q^n) = x` iff
@@ -105,11 +105,11 @@ lemma New.two_notMem_of_star_eq {β : 𝓞 E} (hβ : β + star β = 1) (h_even :
     (w.isPrime.mem_or_mem (w.asIdeal.mem_of_dvd h_even h_two)).elim id (h_star β).1
   exact w.isPrime.one_notMem (by simpa [hβ] using add_mem h_mem ((h_star β).2 h_mem))
 
-/-- Let the CM field `E` contain an integer `i` with `i² = -1` and `ī = -i`, and an integer `β`
-with `β + β̄ = 1` and `β β̄` even. If the finite place `w` is fixed by conjugation, its norm `w.q`,
-the number of elements of its residue field, is `r²` with `r ≡ 3` modulo `4`. -/
-lemma New.exists_sq_eq_q_of_star_eq {i β : 𝓞 E} (hi_sq : i * i = -1) (hi_star : star i = -i)
-    (hβ : β + star β = 1) (h_even : 2 ∣ β * star β) (hw : star w = w) :
+/-- Let the CM field `E` contain an integer `i` with `i² = -1` and `ī = -i`. If the finite
+place `w` is fixed by conjugation and does not lie above `2`, its norm `w.q`, the number of
+elements of its residue field, is `r²` with `r ≡ 3` modulo `4`. -/
+lemma New.exists_sq_eq_q_of_star_eq {i : 𝓞 E} (hi_sq : i * i = -1) (hi_star : star i = -i)
+    (h_two : 2 ∉ w.asIdeal) (hw : star w = w) :
     ∃ r : ℕ, r ^ 2 = w.q ∧ r % 4 = 3 := by
   -- Conjugation descends to an involution of the residue field. It moves the image of `i`, because
   -- `w` does not lie over `2`; so `New.card_selfAdjoint` applies.
@@ -121,7 +121,7 @@ lemma New.exists_sq_eq_q_of_star_eq {i β : 𝓞 E} (hi_sq : i * i = -1) (hi_sta
     Ideal.Quotient.mk_surjective.forall.2 fun x ↦ congrArg π (star_star x)
   have πi_sq : π i * π i = -1 := by simp [← map_mul, hi_sq]
   have two_ne : (2 : 𝓞 E ⧸ w.asIdeal) ≠ 0 := by
-    simpa [← map_ofNat π 2, π, eq_zero_iff_mem] using two_notMem_of_star_eq hβ h_even hw
+    simpa [← map_ofNat π 2, π, eq_zero_iff_mem] using h_two
   have star_πi : star (π i) = -π i := (congrArg π hi_star).trans (map_neg π i)
   have star_πi_ne : star (π i) ≠ π i := by grind
   rw [FinPlace.q, absNorm_apply, Submodule.cardQuot_apply]
@@ -158,16 +158,15 @@ variable {E : Type*} [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot50
 /-- If the CM field `E` contains a primitive root of unity of order `5040`, a finite place above
 `2` is split, that is, moved by complex conjugation. -/
 lemma New.HasPrimitiveRoot5040.isSplit_of_two_mem (h_two : (2 : 𝓞 E) ∈ w.asIdeal) : w.IsSplit := by
-  obtain ⟨-, ω, -, -, h_trace, h_norm⟩ := exists_mul_self_eq_neg_one_and_mul_star_eq_two (E := E)
+  obtain ⟨ω, h_trace, h_norm⟩ := exists_add_star_eq_one_mul_star_eq_two (E := E)
   exact fun hw : star w = w ↦ two_notMem_of_star_eq h_trace h_norm.symm.dvd hw h_two
 
 /-- If the CM field `E` contains a primitive root of unity of order `5040`, the norm `w.q` of a
 finite place `w` fixed by conjugation is `r²` with `r ≡ 3` modulo `4`. -/
 lemma New.HasPrimitiveRoot5040.exists_sq_eq_q_of_inert (hw : star w = w) :
     ∃ r : ℕ, r ^ 2 = w.q ∧ r % 4 = 3 := by
-  obtain ⟨i, ω, hi_sq, hi_star, h_trace, h_norm⟩ :=
-    exists_mul_self_eq_neg_one_and_mul_star_eq_two (E := E)
-  exact exists_sq_eq_q_of_star_eq hi_sq hi_star h_trace h_norm.symm.dvd hw
+  obtain ⟨i, hi_sq, hi_star⟩ := exists_mul_self_eq_neg_one (E := E)
+  exact exists_sq_eq_q_of_star_eq hi_sq hi_star (fun h_two ↦ isSplit_of_two_mem h_two hw) hw
 
 /-- If the CM field `E` contains a primitive root of unity of order `5040`, a finite place whose
 norm `w.q` (the number of elements of its residue field) is prime is split, that is, moved by
