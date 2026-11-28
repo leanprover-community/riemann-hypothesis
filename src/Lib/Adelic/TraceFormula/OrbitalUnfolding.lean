@@ -2,6 +2,7 @@ module
 
 import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.Dynamics.Ergodic.Action.Regular
+import TauCeti.LinearAlgebra.Matrix.Diagonal
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.TraceFormula.ChangingSigns
@@ -452,16 +453,13 @@ lemma row_mul_eq_smul_of_commute {A t : Matrix n n ℂ} {k : (Matrix n n ℂ)ˣ}
         (diagonal (Pi.single i 1) * (k : Matrix n n ℂ)) := by
   -- `k t k⁻¹` commutes with `diagonal d`, so its `i`-th row vanishes off the diagonal.
   let M : Matrix n n ℂ := k * t * k⁻¹.val
-  have h_comm : diagonal d * M = M * diagonal d := by
-    simpa only [M, mul_assoc] using ((hk.mul_left ht).mul_left hk.units_inv_symm_left).eq.symm
-  have h_off (b : n) (hb : b ≠ i) : M i b = 0 := by
-    have h_entry : d i * M i b = M i b * d b := by simpa using congrFun₂ h_comm i b
-    simpa [mul_comm (d i), d.injective.eq_iff, hb.symm] using h_entry
+  have h_comm : Commute M (diagonal d) := (hk.mul_left ht).mul_left hk.units_inv_symm_left
+  have h_diag := (TauCeti.isDiag_of_commute_diagonal d.injective h_comm.symm).diagonal_diag
   have h_row : diagonal (Pi.single i 1) * M = M i i • diagonal (Pi.single i 1) := by
-    ext a b
-    obtain rfl | ha := eq_or_ne a i
-    · obtain rfl | hb := eq_or_ne b a <;> simp [*, Ne.symm]
-    · simp [ha, diagonal_apply]
+    rw [← h_diag, diagonal_mul_diagonal, ← diagonal_smul]
+    congr 1
+    ext j
+    by_cases hji : j = i <;> simp [hji]
   calc diagonal (Pi.single i 1) * k.val * t = diagonal (Pi.single i 1) * M * k.val := by
         simp only [M, mul_assoc, Units.inv_mul, mul_one]
     _ = M i i • (diagonal (Pi.single i 1) * k.val) := by rw [h_row, smul_mul_assoc]
