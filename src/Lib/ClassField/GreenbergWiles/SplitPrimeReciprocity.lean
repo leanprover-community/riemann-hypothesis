@@ -612,6 +612,8 @@ private lemma IsLargeLevel.SplitPlaces.sum_ord_smul_kummer_frob_eq_zero [Fintype
       ⟨y, y_fix⟩ (y_unit _ (hB.valuation_natCast_eq_one_iff.mpr hu)) hq]
   -- Artin's law: the symbol `(χ, x)` dies on the stabiliser of `r`, which contains the complex
   -- conjugations.
+  have : Fact (IsOpen (MulAction.stabilizer Q r.toMul.val : Set Q)) :=
+    ⟨IsProGalois.isOpen_stabilizer r.toMul.val⟩
   have h_artin : abelianLift χ (artinMap Q (principalIdele x.toMul)) = 1 :=
     artin_reciprocity ⟨_, IsProGalois.isOpen_stabilizer r.toMul.val⟩
       (fun q hq ↦ congrArg (fun z : DiscreteUnits Ω ↦ z.toMul.val) (h_cc q hq))

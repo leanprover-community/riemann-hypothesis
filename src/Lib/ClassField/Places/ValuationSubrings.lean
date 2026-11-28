@@ -68,7 +68,7 @@ lies in the prime `v`. The tool is the centre `New.Cohomology.centerPrime K A`, 
 
 section Places
 
-open New NumberField IsDedekindDomain.HeightOneSpectrum Pointwise Ideal Cohomology WithZero
+open New NumberField IsDedekindDomain.HeightOneSpectrum Pointwise Ideal WithZero
   Valuation Nat IsScalarTower RingOfIntegers IsLocalRing Algebra IsGaloisGroup
 variable {K Ω Γ : Type*} [Field K] [Field Ω] [Algebra K Ω] [Group Γ] [MulSemiringAction Γ Ω]
   {A A' : ValuationSubring Ω} {w : Valuation K ℤᵐ⁰}
@@ -121,6 +121,8 @@ theorem isUniformizer_iff_of_isEquiv (h_equiv : (A.valuation.comap (algebraMap K
   exact le_antisymm h_π_le h_le_π
 
 end Cohomology
+
+open Cohomology
 
 instance : (centerPrime K A).IsPrime := .comap _
 

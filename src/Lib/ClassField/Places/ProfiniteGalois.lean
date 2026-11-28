@@ -66,6 +66,11 @@ instance [IsGalois K Ω] : IsProGalois Gal(Ω/K) K Ω := ⟨stabilizer_isOpen_of
 /-- An open subgroup `U` of a topological group is closed. -/
 instance [ContinuousMul Γ] : IsClosed (X := Γ) U := U.isClosed_of_isOpen out
 
+/-- For `V` closed in `Γ`, `V ⊓ W` is closed in `W`. -/
+instance isClosed_subgroupOf (V W : Subgroup Γ) [hV : IsClosed (X := Γ) V] :
+    IsClosed (X := W) (V.subgroupOf W) :=
+  hV.preimage continuous_subtypeVal
+
 /-- A closed subgroup `H` of a compact group is compact. -/
 instance [CompactSpace Γ] : CompactSpace H := isCompact_iff_compactSpace.mp h.isCompact
 

@@ -762,7 +762,7 @@ lemma Period.IsPotentiallyCrystalline.card_pairingAnnihilator_mul_card_dvd
       simp only [← hqσ, hr]
       exact cup_mem_B2_of_jump_pos (L := M) (L' := M') hU (hσ.comp _) (hσ'.comp _) b
         (fun g ↦ hbσ g) h_pos m hc hw
-    exact (ker_mkQ _).ge h_cup
+    exact (cupProduct_apply ..).trans ((DiscreteModule.π₂_eq_zero_iff _).mpr h_cup)
   -- They reach the bound on the size of an orthogonal pair.
   have h_max (X : AddSubgroup (Z1 (V.restrictTo U).cartierDual.ρ))
       (W : AddSubgroup (Z1 (V.restrictTo U).ρ))
@@ -835,7 +835,8 @@ lemma Period.IsPotentiallyCrystalline.relIndex_dvd_of_orthogonal [IsTopologicalG
         B2 (unitsRep.comp 𝒥.toGp) := by
       simp only [← hrL, hr]
       exact h_cup c hc
-    exact neg_eq_zero.mp ((cupProduct_flip ..).symm.trans ((ker_mkQ _).ge h_mem))
+    exact neg_eq_zero.mp ((cupProduct_flip ..).symm.trans
+      ((cupProduct_apply ..).trans ((DiscreteModule.π₂_eq_zero_iff _).mpr h_mem)))
   have h_sub : A ⊔ S ≤ (pairingAnnihilator V.evalCup Y).map (Z1 V.ρ).toAddSubgroup.subtype := by
     refine sup_le ?_ fun s hs ↦ h_mem_annih (hS_orth s hs)
     rintro _ ⟨z, hz, rfl⟩

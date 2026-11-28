@@ -26,7 +26,7 @@ module `M` and its dual `Hom(M, Ωˣ)`.
   `Γ`.
 
 `New.Z1` is the group of continuous cocycles (not classes), `New.unitsModule` is `Ωˣ` written
-additively, `unitsRep` is the action of `Γ` on this `Ωˣ` (so `H2 unitsRep` is `H²(Γ, Ωˣ)`),
+additively (so `(unitsModule Γ).H 2` is `H²(Γ, Ωˣ)`),
 `New.DiscreteModule.evalCup` is the cup product `Z¹(Hom(M, Ωˣ)) × Z¹(M) → H²(Ωˣ)`, and
 `New.pairingAnnihilator b L` is the annihilator of `L` in the right-hand group of the pairing `b`.
 
@@ -56,14 +56,15 @@ variable {Γ k Ω : Type} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] 
 /-- Over a local field `k`, a continuous character `χ : Γ → ℚ/ℤ` whose cyclic class `δχ ∪ w` in
 `H²(Γ, Ωˣ)` vanishes for every `w` in `kˣ` is zero. -/
 lemma Cohomology.char_eq_zero_of_cyclicClass_eq_zero {χ : QZChar Γ}
-    (h : ∀ w : Additive kˣ, cyclicClass unitsRep χ (DiscreteUnits.ofBase Γ Ω w) = 0) (g : Γ) :
+    (h : ∀ w : Additive kˣ, (unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω w) = 0)
+    (g : Γ) :
     χ.val g = 0 := by
   -- The class with invariant `χ g` dies over the fixed field of `ker χ`, since restriction
   -- multiplies the invariant by the index. So it is a symbol `(χ, w)`, hence zero.
   have h_index : (ker χ).index • χ.val g = 0 :=
     congrArg Multiplicative.toAdd
       (by simpa using (ker χ).pow_index_mem g : toHom χ g ^ (ker χ).index = 1)
-  obtain ⟨w, hw⟩ : ∃ w : kˣ, classOfInvariant Γ k A (χ.val g) = cyclicClass _ χ
+  obtain ⟨w, hw⟩ : ∃ w : kˣ, classOfInvariant Γ k A (χ.val g) = (unitsModule Γ).cyclicClass χ
     (ofBase Γ Ω (.ofMul w)) :=
     ((cyclicClass_spec χ).1 _).mp (resH2_classOfInvariant_eq_zero _ h_index)
   -- `classOfInvariant` is injective
@@ -96,7 +97,7 @@ lemma DiscreteModule.HoldsCorestrictions.pairingAnnihilator_le {U : OpenSubgroup
     -- `y` is the Shapiro image of a cocycle `F` in functions on `Γ ⧸ U` with sum in `Y`.
     obtain ⟨F, rfl, hF : (N.sum U).mapZ1 F ∈ Y⟩ := hY.exists_corestriction y hy
     -- Pair `z` with the Shapiro lift `F` of `y`, in functions on `Γ ⧸ U`.
-    let β : ((unitsModule Γ).funModule (U : Subgroup Γ)).H2 :=
+    let β : ((unitsModule Γ).funModule (U : Subgroup Γ)).H 2 :=
       cupProduct ((unitsModule Γ).funModule (U : Subgroup Γ)) M (N.funModule _)
         (.mk' (fun m ↦ (b m).compLeft _) (by bound)) (by simp [funext_iff, h_equivariant]) z F
     -- Its Shapiro image is the class to be killed; its sum over `Γ ⧸ U` vanishes by `hz`.
@@ -105,15 +106,21 @@ lemma DiscreteModule.HoldsCorestrictions.pairingAnnihilator_le {U : OpenSubgroup
           cupProduct (unitsModule (U : Subgroup Γ)) _ _ b (fun g ↦ h_equivariant g) z'
             (N.shapiroZ1 U F) :=
       -- Both are classes of cocycles that agree pointwise, by evaluating `F` at the trivial coset.
-      congrArg (Quotient.mk _)
-        (Subtype.ext (funext fun _ ↦ congrArg (b _) (N.funModule_apply_one U ..)))
+      by
+        simp only [β, cupProduct_apply]
+        rw [shapiroH2_π₂]
+        exact congrArg _ (Subtype.ext (funext fun _ ↦ congrArg (b _) (N.funModule_apply_one U ..)))
     have h_sum_β :
         ((unitsModule Γ).sum _).mapH2 β =
           cupProduct (unitsModule Γ) M N b h_equivariant z ((N.sum _).mapZ1 F) :=
       -- The cocycles agree pointwise: the sum over the cosets commutes with the action.
-      congrArg (Quotient.mk _) (by
+      by
+        simp only [β, cupProduct_apply]
+        rw [Hom.mapH2_π₂]
+        refine congrArg _ (Subtype.ext (funext fun p ↦ ?_))
+        simp only [pairMapZ2, LinearMap.coe_mk, AddHom.coe_mk]
         simp [← (sum ..).isIntertwining]
-        simp [sum])
+        simp [sum]
     -- The Shapiro image is the restriction of a class of invariant `s`, and the sum has
     -- invariant `U.index • s`; so `U.index • s = 0` and the restriction vanishes.
     obtain ⟨s, hs⟩ : ∃ s : QZ, (unitsModule Γ).resH2 U (classOfInvariant Γ k A s) = shapiroH2 U β :=
@@ -282,13 +289,15 @@ lemma card_mul_card_le_of_le_pairingAnnihilator [Finite M] {d : ℕ} (Q : Subgro
   -- dual are adjoint for the cup products, already on the level of cocycles.
   have orth'' : comap π'.mapZ1 X ≤ pairingAnnihilator M''.evalCup.flip (map π.mapZ1 W) := by
     rintro x hx _ ⟨w, hw, rfl⟩
-    have h_cup : M''.evalCup x (π.mapZ1 w) = M.evalCup (π'.mapZ1 x) w :=
-      congrArg (Quotient.mk _) (by simp [π', π.isIntertwining])
+    have h_cup : M''.evalCup x (π.mapZ1 w) = M.evalCup (π'.mapZ1 x) w := by
+      rw [evalCup, evalCup, cupProduct_apply, cupProduct_apply]
+      exact congrArg _ (by simp [π', π.isIntertwining])
     exact h_cup.trans (h hx w hw)
   have orth' : map ι'.mapZ1 X ≤ pairingAnnihilator M'.evalCup.flip (comap ι.mapZ1 W) := by
     rintro _ ⟨x, hx, rfl⟩ w hw
-    have h_cup : M'.evalCup (ι'.mapZ1 x) w = M.evalCup x (ι.mapZ1 w) :=
-      congrArg (Quotient.mk _) (by simp [ι', ι.isIntertwining])
+    have h_cup : M'.evalCup (ι'.mapZ1 x) w = M.evalCup x (ι.mapZ1 w) := by
+      rw [evalCup, evalCup, cupProduct_apply, cupProduct_apply]
+      exact congrArg _ (by simp [ι', ι.isIntertwining])
     exact h_cup.trans (h hx (ι.mapZ1 w) hw)
   -- Count `X` and `W` by their two parts, pair the parts crosswise, and multiply the bounds.
   calc Nat.card X * Nat.card W
@@ -344,7 +353,7 @@ lemma DiscreteModule.local_duality_card_dvd [Finite M] {U : OpenSubgroup Γ}
   obtain ⟨i, index_inv⟩ : ∃ i : ℤ, ∀ m : M, i • U.index • m = m :=
     ⟨_, (nsmulCoprime h_coprime).left_inv⟩
   -- `classOfInvariant` identifies `ℚ/ℤ` with `H²(Γ, Ωˣ)`.
-  let e : QZ ≃+ New.H2 unitsRep := AddEquiv.ofBijective _ J.classOfInvariant_bijective
+  let e : QZ ≃+ (unitsModule Γ).H 2 := AddEquiv.ofBijective _ J.classOfInvariant_bijective
   have := (of_finite U).isLocalGalois.finite_Z1
   -- The orthogonality of `X'` and `W'`, read from the side of `X'`.
   have h_orth' : X' ≤ pairingAnnihilator (M.restrictTo U).evalCup.flip W' := fun x hx w hw ↦

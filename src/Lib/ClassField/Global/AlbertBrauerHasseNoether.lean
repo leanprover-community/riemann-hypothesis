@@ -64,8 +64,9 @@ See also `Lib.ClassField.Places.LocalFields` and `Lib.ClassField.HeckeL.Continua
 ## Symbols of totally positive elements at the real places
 
 `New.IsComplexConj c` says that `c` acts as complex conjugation under some embedding of `Ω` in `ℂ`.
-`New.cyclicClass _ χ w` is the class in `H²` of the cocycle `(g, h) ↦ carry (χ g) (χ h) • w`, which
-stands for `δχ ∪ w`. For `w` coming from `x : Kˣ` with coefficients `Ωˣ`, it is the symbol `(χ, x)`.
+`(unitsModule Γ).cyclicClass χ w` is the class in `H²` of the cocycle
+`(g, h) ↦ carry (χ g) (χ h) • w`, which stands for `δχ ∪ w`. For `w` coming from `x : Kˣ` with
+coefficients `Ωˣ`, it is the symbol `(χ, x)`.
 -/
 
 namespace New
@@ -124,7 +125,7 @@ lemma IsTotallyPositive.exists_resH2_cyclicClass_eq_zero {χ : ↥(QZChar Γ)} {
     ∃ U : OpenSubgroup Γ,
       (∀ c : Γ, IsComplexConj c → c ∈ U) ∧
       (unitsModule Γ).resH2 U
-        (cyclicClass (unitsModule Γ).ρ χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x))) = 0 := by
+        ((unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x))) = 0 := by
   -- Take a square root `y` of `x` in `Ω`. The symbol `(χ, y ^ 2)` dies on the elements that fix
   -- `y` and lie in the kernel of `χ + χ`, and every complex conjugation is among them.
   obtain ⟨y, hy⟩ : ∃ y : DiscreteUnits Ω, 2 • y = (DiscreteUnits.ofBase Γ Ω (.ofMul x)).val :=
@@ -712,7 +713,7 @@ lemma exists_map_norm_eq_of_abelianLift_artinAt_eq_one [IsGalois K L]
 decomposition group of every place of Ω over a finite place of K (`h_dec`) and on an open subgroup
 U of Γ containing all complex conjugations (`h_conj`, `h_res`: over an extension in which the real
 places stay real), then α = 0. -/
-lemma albert_brauer_hasse_noether (α : (unitsModule Γ).H2)
+lemma albert_brauer_hasse_noether (α : (unitsModule Γ).H 2)
     (h_dec : ∀ {A : ClosurePlace} {v : FinPlace K}, IsPlaceOver A v →
       (unitsModule Γ).resH2 (decompGroup Γ A) α = 0)
     (U : OpenSubgroup Γ) (h_conj : ∀ g : Γ, IsComplexConj g → g ∈ U)
@@ -725,11 +726,14 @@ lemma albert_brauer_hasse_noether (α : (unitsModule Γ).H2)
     have h_finiteIndex : U.toSubgroup.FiniteIndex := U.finiteIndex_of_finite_quotient
     let W : OpenSubgroup Γ :=
       ⟨U.normalCore, isOpen_of_isClosed_of_finiteIndex _ (normalCore_isClosed _ U.isClosed)⟩
+    have : IsClosed (X := Γ) U.normalCore := normalCore_isClosed _ U.isClosed
     -- Restriction to `W` factors through restriction to `U`.
     have h_factor : (unitsModule Γ).resH2 W α =
-        (pairMapH2 (.mk (inclusion U.normalCore_le) (continuous_subtypeVal.subtype_mk _)) .id)
+        (pairMapH2 (B := (unitsModule Γ).restrictTo W)
+          (.mk (inclusion U.normalCore_le) (continuous_subtypeVal.subtype_mk _)) .id)
           ((unitsModule Γ).resH2 U α) := by
-      induction α using QuotientAddGroup.induction_on
+      obtain ⟨z, rfl⟩ := (unitsModule Γ).π₂_surjective α
+      rw [resH2_π₂, resH2_π₂, pairMapH2_π₂]
       rfl
     have hW : (unitsModule Γ).resH2 W α = 0 := by rw [h_factor, h_res, map_zero]
     refine mem_of_prime_step ⊥ hW fun U' V hV _ h_le h_index s hs h_resV ↦ ⟨s, hs, ?_⟩
@@ -752,7 +756,8 @@ lemma albert_brauer_hasse_noether (α : (unitsModule Γ).H2)
   obtain ⟨U, hU_open⟩ := U
   obtain ⟨χ, rfl⟩ : ∃ χ : QZChar Γ, ker χ = U :=
     exists_ker_eq_of_isCyclic ⟨U, hU_open⟩ (isCyclic_of_prime_card (hp := ⟨h_prime⟩) rfl)
-  obtain ⟨x, rfl⟩ : ∃ x : Kˣ, α = cyclicClass unitsRep χ (DiscreteUnits.ofBase Γ Ω (.ofMul x)) :=
+  obtain ⟨x, rfl⟩ :
+      ∃ x : Kˣ, α = (unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω (.ofMul x)) :=
     ((cyclicClass_spec χ).left α).mp h_res
   have h_symbol (v : FinPlace K) :
       abelianLift χ (artinAt Γ v (ideleAt v (principalIdele x))) = 1 :=

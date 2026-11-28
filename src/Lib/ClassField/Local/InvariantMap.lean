@@ -12,6 +12,8 @@ import Lib.ClassField.Places.ProfiniteGalois
 The invariant map of local class field theory, for a henselian local field `k` of characteristic `0`
 with absolute Galois group `Γ` acting on `Ω` (`New.IsLocalGalois`).
 
+* `New.IsClassOfInvariant`, `New.Cohomology.classOfInvariant`: the property of a map from ℚ/ℤ to
+  H²(Γ, Ωˣ) of sending `r` to the class of invariant `r`, and a map chosen with it.
 * `New.IsLocalGalois.isClassOfInvariant_classOfInvariant`: the chosen map
   `New.Cohomology.classOfInvariant` from ℚ/ℤ to H²(Γ, Ωˣ) is injective and computes the cyclic
   classes of unramified characters.
@@ -29,8 +31,8 @@ Notions from other files:
   of `k`.
 * `New.DiscreteModule.resH2`: restriction of a class in `H²(Γ, M)` to a subgroup of `Γ`; a class is
   split by `V` when its restriction to `V` is zero.
-* `New.cyclicClass`: the cyclic class (symbol) `(χ, w) = δχ ∪ w` of a character `χ : Γ → ℚ/ℤ` and
-  an invariant `w`.
+* `New.DiscreteModule.cyclicClass`: the cyclic class (symbol) `(χ, w) = δχ ∪ w` of a character
+  `χ : Γ → ℚ/ℤ` and an invariant `w`.
 
 ## Relation to the literature
 
@@ -50,6 +52,43 @@ private lemma Nat.eq_of_pow_sub_one_mul_eq_mul_pow {R l c : ℕ} (hl : l.Prime)
     rw [h, mul_pow, ← mul_assoc, pow_sub_one_mul hl.ne_zero]
   exact Nat.pow_left_injective (Nat.sub_ne_zero_of_lt hl.one_lt) (by exact_mod_cast h_pow)
 
+namespace New
+
+/-! ### The class of an invariant -/
+
+variable (Γ K : Type) {Ω : Type} [Group Γ] [Field K] [Field Ω] [Algebra K Ω]
+  [MulSemiringAction Γ Ω] (A : ValuationSubring Ω) [TopologicalSpace Γ] [hΓ : IsProGalois Γ K Ω]
+
+/-- The property that a map `b : ℚ/ℤ → H²(Γ, Ωˣ)` sends `r` to the class of invariant `r`. First,
+`b` is injective. Second, let the continuous character `χ : Γ → ℚ/ℤ` vanish on the inertia group
+of `A`, let `φ` be a Frobenius element for `q = residueCard K A`, the number of elements of the
+residue field, and let the invariant `w` of `Ωˣ` have normalised order `ordRat K A w = n`; then
+`cyclicClass χ w = n • b (χ φ)`. -/
+def IsClassOfInvariant (b : QZ →+ (unitsModule Γ (K := K) (Ω := Ω)).H 2) : Prop :=
+  Function.Injective b ∧
+  ∀ χ : QZChar Γ,
+    (∀ g ∈ inertiaGroup Γ A, (χ : Γ → QZ) g = 0) →
+    ∀ φ : Γ, IsFrob A (residueCard K A) φ →
+    ∀ (w : (unitsRep (Γ := Γ) (Ω := Ω)).invariants) (n : ℤ),
+      ordRat K A (w : DiscreteUnits Ω) = n →
+      (unitsModule Γ (K := K) (Ω := Ω)).cyclicClass χ w = n • b ((χ : Γ → QZ) φ)
+
+/-- A chosen additive map `ℚ/ℤ → H²(Γ, Ωˣ)` with the property `New.IsClassOfInvariant`; when such a
+map exists, it sends `r` to the class of invariant `r`. See
+`New.Cohomology.isClassOfInvariant_classOfInvariant_of_exists`, and for local fields
+`New.IsLocalGalois.isClassOfInvariant_classOfInvariant`. -/
+noncomputable def Cohomology.classOfInvariant : QZ →+ (unitsModule Γ (K := K) (Ω := Ω)).H 2 :=
+  Classical.epsilon (IsClassOfInvariant Γ K A)
+
+/-- `New.Cohomology.classOfInvariant` has the property `New.IsClassOfInvariant` as soon as some map
+has it. -/
+lemma Cohomology.isClassOfInvariant_classOfInvariant_of_exists
+    (h_exists : ∃ b : QZ →+ (unitsModule Γ (K := K) (Ω := Ω)).H 2, IsClassOfInvariant Γ K A b) :
+    IsClassOfInvariant Γ K A (Cohomology.classOfInvariant Γ K A) :=
+  Classical.epsilon_spec h_exists
+
+end New
+
 namespace New.IsLocalGalois
 
 open Cohomology Function DiscreteModule Subgroup QZChar QuotientGroup QZ DiscreteUnits AddMonoidHom
@@ -64,7 +103,7 @@ of `β`.
 This is the case of prime index of `mem_zmultiples_of_resH2_eq_zero`: the classes split by `V` are
 the symbols `(ψ, y)` with `ker ψ = V` and `y ∈ kˣ`, and they form a quotient of `kˣ` modulo
 norms, a group of prime order `[Γ : V]`. -/
-lemma mem_zmultiples_of_index_prime [V.Normal] {β x : (unitsModule Γ).H2} (h_prime : V.index.Prime)
+lemma mem_zmultiples_of_index_prime [V.Normal] {β x : (unitsModule Γ).H 2} (h_prime : V.index.Prime)
     (hβ : (unitsModule Γ).resH2 V β = 0) (hβ_ne : β ≠ 0) (hx : (unitsModule Γ).resH2 V x = 0) :
     x ∈ AddSubgroup.zmultiples β := by
   -- Write `V = ker ψ`. The symbol map `y ↦ (ψ, y)` sends `kˣ` onto the classes split by `V` and
@@ -80,9 +119,9 @@ lemma mem_zmultiples_of_index_prime [V.Normal] {β x : (unitsModule Γ).H2} (h_p
   obtain ⟨z, rfl⟩ := ((cyclicClass_spec ψ).1 x).mp hx
   -- The symbol map kills the group `N` of norms.
   let N : Subgroup kˣ := map (Units.map (Algebra.norm k : fixedFieldOf (ker ψ) →* k)) ⊤
-  let f : kˣ ⧸ N →* Multiplicative (unitsModule Γ).H2 :=
-    lift N ((cyclicClass unitsRep ψ).comp (ofBase Γ Ω)).toMultiplicativeRight fun _ ⟨b, _, hb⟩ ↦
-      (cyclicClass_eq_zero_iff_norm _).mpr ⟨b, hb⟩
+  let f : kˣ ⧸ N →* Multiplicative ((unitsModule Γ).H 2) :=
+    lift N (((unitsModule Γ).cyclicClass ψ).comp (ofBase Γ Ω)).toMultiplicativeRight
+      fun _ ⟨b, _, hb⟩ ↦ (cyclicClass_eq_zero_iff_norm _).mpr ⟨b, hb⟩
   -- Tate's formula for the norm from `K = fixedFieldOf (ker ψ)` gives `#(kˣ ⧸ N) = [Γ : ker ψ]`.
   have card_eq : Nat.card (kˣ ⧸ N) = (QZChar.ker ψ).index := by
     set l : ℕ := (QZChar.ker ψ).index
@@ -104,7 +143,7 @@ lemma mem_zmultiples_of_index_prime [V.Normal] {β x : (unitsModule Γ).H2} (h_p
 /-- If the class `β` in `H²(Γ, Ωˣ)` is split by the open normal subgroup `V` (its restriction to
 `V` is zero) and is killed only by multiples of `[Γ : V]`, then every class `x` split by `V` is an
 integer multiple of `β`. -/
-lemma mem_zmultiples_of_resH2_eq_zero [V.Normal] {β x : (unitsModule Γ).H2}
+lemma mem_zmultiples_of_resH2_eq_zero [V.Normal] {β x : (unitsModule Γ).H 2}
     (hβ : (unitsModule Γ).resH2 V β = 0) (hβ_order : ∀ n : ℕ, n • β = 0 → V.index ∣ n)
     (hx : (unitsModule Γ).resH2 V x = 0) : x ∈ AddSubgroup.zmultiples β := by
   -- Reduce via `mem_of_prime_step` to a single step `V ≤ W ≤ U` with `W` of prime index in `U`,
@@ -115,7 +154,7 @@ lemma mem_zmultiples_of_resH2_eq_zero [V.Normal] {β x : (unitsModule Γ).H2}
   -- class split by an open subgroup is killed by its index (`index_smul_eq_zero_of_resH2`).
   let V_U : OpenSubgroup (U : Subgroup Γ) := V.comap (Subgroup.subtype _) continuous_subtypeVal
   let V' : OpenSubgroup (W : Subgroup U) := V_U.comap (Subgroup.subtype _) continuous_subtypeVal
-  let β' : ((unitsModule Γ).restrictTo U).H2 := V'.index • (unitsModule Γ).resH2 U β
+  let β' : ((unitsModule Γ).restrictTo U).H 2 := V'.index • (unitsModule Γ).resH2 U β
   -- `β` restricted to `U` is split by `V_U`, and then by `V'` inside `W`.
   have hβ_U : ((unitsModule Γ).restrictTo U).resH2 V_U ((unitsModule Γ).resH2 U β) = 0 :=
     resH2_subgroupOf_eq_zero_symm (by rw [hβ, map_zero])
@@ -155,7 +194,7 @@ injective, and `b` sends `n • χ(φ)` to the cyclic class of `χ` and `w`, whe
 unramified character `Γ → ℚ/ℤ`, `φ` is a Frobenius element, and `w ∈ Ωˣ` is invariant of normalised
 order `n`. -/
 lemma exists_isClassOfInvariant :
-    ∃ b : QZ →+ H2 (unitsRep (Γ := Γ) (Ω := Ω)), IsClassOfInvariant Γ k A b := by
+    ∃ b : QZ →+ (unitsModule Γ).H 2, IsClassOfInvariant Γ k A b := by
   -- The class of `r` is the cyclic class `(c r, π)`, where `π` is a uniformiser and `c r` is the
   -- unramified character with value `r` at the Frobenius element.
   obtain ⟨π, hπ⟩ : ∃ π : (unitsModule Γ).H0, ordRat k A π.val = 1 :=
@@ -165,7 +204,8 @@ lemma exists_isClassOfInvariant :
   -- If `(χ, w) = 0` then `w` is a norm from the fixed field of `χ`. For unramified `χ`, the order
   -- of a norm is a sum of `[Γ : ker χ]` equal integers.
   have index_dvd {χ : QZChar Γ} (hχ : inertiaGroup Γ A ≤ QZChar.ker χ) (w : (unitsModule Γ).H0)
-      (n : ℤ) (hn : ordRat k A w.val = n) (h : cyclicClass _ χ w = 0) : ↑(ker χ).index ∣ n := by
+      (n : ℤ) (hn : ordRat k A w.val = n) (h : (unitsModule Γ).cyclicClass χ w = 0) :
+      ↑(ker χ).index ∣ n := by
     obtain ⟨y, hy⟩ := ((cyclicClass_spec χ).right w).mp h
     -- `y` is fixed by inertia, so its order is an integer.
     obtain ⟨j, hj⟩ : ∃ j : ℤ, ordRat k A y.val = j :=
@@ -188,7 +228,7 @@ lemma exists_isClassOfInvariant :
       by
         change (c r).val φ₀ + (c s).val φ₀ = r + s
         rw [(hc r).2, (hc s).2]⟩).symm
-  refine ⟨((cyclicClass _).flip π).comp (.mk' c c_add),
+  refine ⟨(((unitsModule Γ).cyclicClass).flip π).comp (.mk' c c_add),
     (injective_iff_map_eq_zero _).mpr fun r h ↦ ?_, fun χ hχ φ hφ w n hn ↦ ?_⟩
   · -- If `(c r, π) = 0`, the kernel of `c r` has index one, so `r = c r φ₀ = 0`.
     have h_index : (ker (c r)).index ∣ 1 := Int.ofNat_dvd.mp (index_dvd (hc r).left π 1 hπ h)
@@ -196,10 +236,10 @@ lemma exists_isClassOfInvariant :
     exact (hc r).right.symm.trans h_frob
   -- All classes `(χ, w)` are split by `ker χ`, and `(χ, π)` generates the split classes.
   have h_split (w : (unitsModule Γ).H0) :
-      (unitsModule Γ).resH2 (ker χ) (cyclicClass _ χ w) = 0 := by
+      (unitsModule Γ).resH2 (ker χ) ((unitsModule Γ).cyclicClass χ w) = 0 := by
     obtain ⟨y, rfl⟩ := (ofBase_bijective Γ).surjective w
     exact ((cyclicClass_spec χ).left _).mpr ⟨y.toMul, rfl⟩
-  obtain ⟨j, hj⟩ : ∃ j : ℤ, j • cyclicClass _ χ π = cyclicClass _ χ w :=
+  obtain ⟨j, hj⟩ : ∃ j : ℤ, j • (unitsModule Γ).cyclicClass χ π = (unitsModule Γ).cyclicClass χ w :=
     mem_zmultiples_of_resH2_eq_zero ⟨_, isOpen_ker χ⟩ (h_split π)
       (fun n hn ↦ Int.ofNat_dvd.mp (index_dvd hχ (n • π) n
         (by rw [AddSubmonoidClass.coe_nsmul, map_nsmul, hπ, nsmul_eq_mul, mul_one,
@@ -210,13 +250,13 @@ lemma exists_isClassOfInvariant :
   have h_ord_diff : ordRat k A (j • π - w).val = (j - n : ℤ) := by
     rw [AddSubgroupClass.coe_sub, AddSubgroupClass.coe_zsmul, map_sub, map_zsmul, hπ, hn,
       zsmul_eq_mul, mul_one, Int.cast_sub]
-  have h_class_diff : cyclicClass _ χ (j • π - w) = 0 := by
+  have h_class_diff : (unitsModule Γ).cyclicClass χ (j • π - w) = 0 := by
     rw [map_sub, map_zsmul, hj, sub_self]
   obtain ⟨i, hi⟩ : ↑(ker χ).index ∣ j - n := index_dvd hχ (j • π - w) _ h_ord_diff h_class_diff
   have χ_eq : χ = c (χ.val φ) := c_unique _ χ
     ⟨hχ, (toHom χ).eq_iff.mpr (hχ _ (hφ.inv_mul_mem_inertiaGroup hφ₀))⟩
   rw [← hj]
-  change (j • cyclicClass _ χ π) = n • cyclicClass _ (c (χ.val φ)) π
+  change (j • (unitsModule Γ).cyclicClass χ π) = n • (unitsModule Γ).cyclicClass (c (χ.val φ)) π
   rw [← χ_eq, eq_add_of_sub_eq hi, add_zsmul, mul_zsmul', natCast_zsmul,
     index_smul_eq_zero_of_resH2 ⟨_, isOpen_ker χ⟩ (h_split π), zsmul_zero, zero_add]
 
@@ -265,18 +305,22 @@ lemma pairMapH2_classOfInvariant_of_ordRat_eq (φ : Γ' →ₜ* Γ) (j : Ω →+
     (hσ.pow f).inv_mul_mem_inertiaGroup (by simpa only [hf] using hτ.map hj)
   have χ'_frob : χ'.val τ = f • χ.val σ :=
     ((toHom χ).eq_iff.mpr (χ_unr _ inertia)).trans (map_pow (toHom χ) σ f)
-  have h_cyc : cyclicClass unitsRep χ w = (1 : ℤ) • classOfInvariant Γ k (A'.comap j) (χ.val σ) :=
+  have h_cyc : (unitsModule Γ).cyclicClass χ w =
+      (1 : ℤ) • classOfInvariant Γ k (A'.comap j) (χ.val σ) :=
     isClassOfInvariant_classOfInvariant.right χ χ_unr σ hσ w 1 hw_ord
-  have h_cyc' : cyclicClass unitsRep χ' w' = (e : ℤ) • classOfInvariant Γ' k' A' (χ'.val τ) :=
+  have h_cyc' :
+      (unitsModule Γ').cyclicClass χ' w' = (e : ℤ) • classOfInvariant Γ' k' A' (χ'.val τ) :=
     isClassOfInvariant_classOfInvariant.right χ' χ'_unr τ hτ w' e he
   have h_eq : ∀ (g : Γ') (m : DiscreteUnits Ω),
       (Units.map (j : Ω →* Ω')).toAdditive.toIntLinearMap (unitsRep (φ g) m) =
         unitsRep g ((Units.map (j : Ω →* Ω')).toAdditive.toIntLinearMap m) :=
     fun g m ↦ Additive.toMul.injective (Units.ext (hj g m.toMul.val))
   -- The cocycles of both classes take the values `n • w` and `n • j w` with the same integers.
-  have h_map : (pairMapH2 φ (Units.map (j : Ω →* Ω')).toAdditive.toIntLinearMap h_eq)
-      (cyclicClass unitsRep χ w) = cyclicClass unitsRep χ' w' :=
-    congrArg (Quotient.mk _) (Subtype.ext (funext fun _ ↦ map_zsmul _ _ _))
+  have h_map : (pairMapH2 (B := unitsModule Γ') φ
+      (Units.map (j : Ω →* Ω')).toAdditive.toIntLinearMap h_eq) ((unitsModule Γ).cyclicClass χ w) =
+        (unitsModule Γ').cyclicClass χ' w' := by
+    rw [cyclicClass_apply, cyclicClass_apply, pairMapH2_π₂]
+    exact congrArg _ (Subtype.ext (funext fun _ ↦ map_zsmul _ _ _))
   rwa [h_cyc, h_cyc', one_zsmul, χ'_frob, natCast_zsmul, ← map_nsmul, ← mul_smul] at h_map
 
 /-- For two local Galois data `Γ, k, A` and `Γ', k', A'`, let `φ : Γ' →ₜ* Γ` be continuous and
@@ -336,7 +380,8 @@ lemma classOfInvariant_bijective : Bijective (classOfInvariant Γ k A) := by
   -- Injectivity is part of `isClassOfInvariant_classOfInvariant`. For surjectivity, a cocycle `x`
   -- is split by an open normal subgroup `W`, and the class of `1 / [Γ : W]` generates the classes
   -- split by `W`.
-  refine ⟨isClassOfInvariant_classOfInvariant.left, Quot.ind fun ⟨x, x_cont, x_cocycle⟩ ↦ ?_⟩
+  refine ⟨isClassOfInvariant_classOfInvariant.left, fun y ↦ ?_⟩
+  obtain ⟨⟨x, x_cont, x_cocycle⟩, rfl⟩ := (unitsModule Γ).π₂_surjective y
   obtain ⟨W, hW⟩ : ∃ W : OpenNormalSubgroup Γ, ∀ h ∈ W, ∀ g : Γ, x (g, h) = x (g, 1) :=
     exists_openNormalSubgroup_apply_eq (x_cont.comp continuous_swap)
   have hW_index : NeZero W.index := ⟨index_ne_zero_of_finite⟩
@@ -353,16 +398,18 @@ lemma classOfInvariant_bijective : Bijective (classOfInvariant Γ k A) := by
   -- On `W`, `x (g, h) = x (g, 1) = g • x (1, 1)` is the coboundary of the constant `x (1, 1)`.
   have x_g_one (g : Γ) : x (g, 1) = unitsRep g (x (1, 1)) - x (1, 1) + x (1, 1) := by
     simpa using x_cocycle g 1 1
-  have x_split : (unitsModule Γ).resH2 W.toOpenSubgroup ⟦⟨x, x_cont, x_cocycle⟩⟧ = 0 :=
-    (Submodule.ker_mkQ _).ge ⟨fun _ ↦ x (1, 1), continuous_const, fun g h ↦
-      (hW h h.property g).trans (x_g_one g)⟩
-  obtain ⟨n, hn⟩ : ∃ n : ℤ, n • classOfInvariant Γ k A r = ⟦⟨x, x_cont, x_cocycle⟩⟧ :=
+  have x_split : (unitsModule Γ).resH2 W.toOpenSubgroup ((unitsModule Γ).π₂ ⟨x, x_cont, x_cocycle⟩)
+      = 0 := by
+    rw [resH2_π₂, π₂_eq_zero_iff]
+    exact ⟨fun _ ↦ x (1, 1), continuous_const, fun g h ↦ (hW h h.property g).trans (x_g_one g)⟩
+  obtain ⟨n, hn⟩ :
+      ∃ n : ℤ, n • classOfInvariant Γ k A r = (unitsModule Γ).π₂ ⟨x, x_cont, x_cocycle⟩ :=
     mem_zmultiples_of_resH2_eq_zero W.toOpenSubgroup r_split r_order x_split
   exact ⟨n • r, (map_zsmul _ n r).trans hn⟩
 
 /-- Restriction to the open subgroup `V` (a finite extension of `k`) is onto on the classes of
 `ℚ/ℤ`: every class `y` in `H²(V, Ωˣ)` is the restriction of the class of some `r`. -/
-lemma exists_resH2_classOfInvariant_eq (y : ((unitsModule Γ).restrictTo V).H2) :
+lemma exists_resH2_classOfInvariant_eq (y : ((unitsModule Γ).restrictTo V).H 2) :
     ∃ r : QZ, (unitsModule Γ).resH2 V (classOfInvariant Γ k A r) = y := by
   -- `y` has an invariant `s` over the fixed field of `V`; divide `s` by the index in `ℚ/ℤ`.
   obtain ⟨s, rfl⟩ : ∃ s : QZ, classOfInvariant V.toSubgroup (fixedFieldOf V.toSubgroup) A s = y :=

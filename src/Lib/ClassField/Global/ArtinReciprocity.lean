@@ -74,9 +74,9 @@ Notions from other files:
 * `New.IsProGalois`: a profinite group acts on the Galois extension Ω/K (Ω the fixed algebraic
   closure of ℚ; `EmbeddedNumberField K` puts the number field `K` inside Ω) as its Galois group,
   with open stabilisers.
-* `New.cyclicClass`: The symbol (χ, w) = δχ ∪ w in H²(Γ, M) of a character χ : Γ → ℚ/ℤ and an
-  invariant w; here M = Ωˣ (`New.unitsModule`), and `DiscreteUnits.ofBase` sends `x ∈ Kˣ` to an
-  invariant of Ωˣ, and `resH2` restricts classes to a subgroup.
+* `New.DiscreteModule.cyclicClass`: The symbol (χ, w) = δχ ∪ w in H²(Γ, M) of a character
+  χ : Γ → ℚ/ℤ and an invariant w; here M = Ωˣ (`New.unitsModule`), and `DiscreteUnits.ofBase`
+  sends `x ∈ Kˣ` to an invariant of Ωˣ, and `resH2` restricts classes to a subgroup.
 * `New.artinAt`: The local Artin map K_v^× → Γ^ab, through the decomposition group of the chosen
   valuation subring `New.placeOver v` over v.
 
@@ -373,7 +373,7 @@ Then `(ξ, x)` dies on the kernel of `χ`. -/
 lemma resH2_ker_cyclicClass_eq_zero {ξ χ : QZChar Γ} {x : Kˣ} (U : OpenSubgroup Γ)
     (hU : ∀ g : Γ, IsComplexConj g → g ∈ U)
     (h_res : (unitsModule Γ).resH2 U
-      (cyclicClass (unitsModule Γ).ρ ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))) = 0)
+      ((unitsModule Γ).cyclicClass ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))) = 0)
     {σ : FinPlace K → Γ} (hσ : ∀ v : FinPlace K, IsFrob (placeOver v) v.q (σ v))
     (hχ : ∀ (v : FinPlace K) (l : ℕ), l.Prime →
       l ∣ orderOf (abelianLift ξ (artinAt Γ v (ideleAt v (principalIdele x)))) →
@@ -381,14 +381,29 @@ lemma resH2_ker_cyclicClass_eq_zero {ξ χ : QZChar Γ} {x : Kˣ} (U : OpenSubgr
         a • orderOf (abelianLift ξ (artinAt Γ v (ideleAt v (principalIdele x)))) •
           χ.val (σ v) = 0) :
     (unitsModule Γ).resH2 (⟨ker χ, isOpen_ker χ⟩ : OpenSubgroup Γ)
-      (cyclicClass (unitsModule Γ).ρ ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))) = 0 := by
+      ((unitsModule Γ).cyclicClass ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))) = 0 := by
   -- Apply `albert_brauer_hasse_noether` over the fixed field of `ker χ`: the class dies locally,
   -- as the local degree at each `v` is divisible by `n v`.
   let s (v : FinPlace K) : Multiplicative QZ :=
     abelianLift ξ (artinAt Γ v (ideleAt v (principalIdele x)))
   refine albert_brauer_hasse_noether _ (fun {A w} hw ↦ ?_)
-    (U.comap _ (subgroupIncl _).continuous_toFun) (fun g ↦ hU g)
-    (DiscreteModule.resH2_subgroupOf_eq_zero_symm (congrArg _ h_res) :)
+    (U.comap _ (subgroupIncl _).continuous_toFun) (fun g ↦ hU g) ?_
+  swap
+  · -- `(ξ, x)` is the coboundary of a cochain on `U`; restricting that cochain to `U ∩ ker χ`
+    -- shows that the restriction to `ker χ` of `(ξ, x)` dies on `U ∩ ker χ`.
+    have hα : (unitsModule Γ).resH2 (⟨ker χ, isOpen_ker χ⟩ : OpenSubgroup Γ)
+        ((unitsModule Γ).cyclicClass ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))) =
+          ((unitsModule Γ).restrictTo (ker χ)).π₂ (pairMapZ2 (subgroupIncl (ker χ)) LinearMap.id
+            (fun _ _ ↦ rfl) ⟨_, carry_smul_mem_Z2 _ ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))⟩) := by
+      rw [DiscreteModule.cyclicClass_apply, DiscreteModule.resH2_π₂]
+    rw [DiscreteModule.cyclicClass_apply, DiscreteModule.resH2_π₂,
+      DiscreteModule.π₂_eq_zero_iff] at h_res
+    obtain ⟨c, hc, hcob⟩ := h_res
+    rw [hα]
+    refine (DiscreteModule.resH2_π₂ (A := (unitsModule Γ).restrictTo (ker χ)) _ _).trans ?_
+    exact (DiscreteModule.π₂_eq_zero_iff _).mpr ⟨fun g ↦ c ⟨g.1.1, g.2⟩,
+      hc.comp ((continuous_subtypeVal.comp continuous_subtypeVal).subtype_mk _),
+      fun g h ↦ hcob ⟨g.1.1, g.2⟩ ⟨h.1.1, h.2⟩⟩
   let v : FinPlace K := w.below K
   have hv : IsPlaceOver A v := hw.isPlaceOver_below
   let V : OpenSubgroup (decompGroup Γ A) := ⟨_, isOpen_ker (comap (subgroupIncl _) χ)⟩
@@ -419,8 +434,8 @@ If the symbols `(ξ, x)` and `(χ, y)` are equal in `H²(Γ, Ωˣ)`, then `ξ` a
 symbol of `x` equals `χ` at that of `y`, at every place `v`: both are minus the local invariant of
 the symbol, and the local invariant map is injective. -/
 lemma abelianLift_artinAt_eq_of_cyclicClass_eq {ξ χ : QZChar Γ} {x y : Kˣ}
-    (h_eq : cyclicClass (unitsModule Γ).ρ ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x)) =
-      cyclicClass (unitsModule Γ).ρ χ (DiscreteUnits.ofBase Γ Ω (.ofMul y)))
+    (h_eq : (unitsModule Γ).cyclicClass ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x)) =
+      (unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω (.ofMul y)))
     (v : FinPlace K) :
     abelianLift ξ (artinAt Γ v (ideleAt v (principalIdele x))) =
       abelianLift χ (artinAt Γ v (ideleAt v (principalIdele y))) := by
@@ -430,7 +445,7 @@ lemma abelianLift_artinAt_eq_of_cyclicClass_eq {ξ χ : QZChar Γ} {x y : Kˣ}
           (fixedFieldOf (K := K) (decompGroup Γ (placeOver v))) (placeOver v)
           (abelianLift ψ (artinAt Γ v (ideleAt v (principalIdele z)))).toAdd =
         -(unitsModule Γ).resH2 (decompGroup Γ (placeOver v))
-          (cyclicClass (unitsModule Γ).ρ ψ (DiscreteUnits.ofBase Γ Ω (.ofMul z))) :=
+          ((unitsModule Γ).cyclicClass ψ (DiscreteUnits.ofBase Γ Ω (.ofMul z))) :=
     v.isPlaceOver_placeOver.abelianLift_artinAt_principal (Γ := Γ) ψ z
   apply Multiplicative.toAdd.injective
   apply (v.isPlaceOver_placeOver.isLocalGalois_and_residueCard_eq_and_isUniformizer
@@ -460,12 +475,12 @@ finite idele of `x`. -/
 lemma artin_reciprocity {ξ : QZChar Γ} {x : Kˣ} (U : OpenSubgroup Γ)
     (hU : ∀ g : Γ, IsComplexConj g → g ∈ U)
     (h_res : (unitsModule Γ).resH2 U
-      (cyclicClass (unitsModule Γ).ρ ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))) = 0) :
+      ((unitsModule Γ).cyclicClass ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))) = 0) :
     abelianLift ξ (artinMap Γ (principalIdele x)) = 1 := by
   -- Artin's lemma and a covering argument give a character `χ` that satisfies the law; then
   -- `(ξ, x)` dies on `ker χ` and is a symbol `(χ, y)` with the same local symbols, of product `1`.
-  set α : H2 (unitsModule Γ).ρ :=
-    cyclicClass (unitsModule Γ).ρ ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))
+  set α : (unitsModule Γ).H 2 :=
+    (unitsModule Γ).cyclicClass ξ (DiscreteUnits.ofBase Γ Ω (.ofMul x))
   have h_frob_exists (v : FinPlace K) : ∃ σ : Γ, IsFrob (placeOver v) v.q σ :=
     v.isPlaceOver_placeOver.exists_isFrob Γ
   choose σ hσ using h_frob_exists
@@ -516,7 +531,8 @@ lemma artin_reciprocity {ξ : QZChar Γ} {x : Kˣ} (U : OpenSubgroup Γ)
     resH2_ker_cyclicClass_eq_zero U hU h_res hσ
       fun v l hl hln h_ex ↦ hχ v l hl hln ((mem_H v l χ).mpr h_ex)
   -- So `α = (χ, y)`, whose local symbols are those of `(ξ, x)`.
-  obtain ⟨y, hy⟩ : ∃ y : Kˣ, α = cyclicClass _ χ.val (DiscreteUnits.ofBase Γ Ω (.ofMul y)) :=
+  obtain ⟨y, hy⟩ :
+      ∃ y : Kˣ, α = (unitsModule Γ).cyclicClass χ.val (DiscreteUnits.ofBase Γ Ω (.ofMul y)) :=
     ((cyclicClass_spec χ.val).left α).mp h_ker
   calc abelianLift ξ (artinMap Γ (principalIdele x))
       = ∏ᶠ v, s v := abelianLift_artinMap_eq_finprod ξ (principalIdele x)

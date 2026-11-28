@@ -3,7 +3,9 @@ module
 import Mathlib.CategoryTheory.Shift.Basic
 import Mathlib.GroupTheory.IndexNormal
 import Mathlib.Topology.Sheaves.Presheaf
+public import Lib.ClassField.GaloisCohomology.Cohomology
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+public import Lib.ClassField.Places.ProfiniteGalois
 import Lib.General.Groups.ProfiniteCharacters
 
 /-!
@@ -34,10 +36,11 @@ symbols `(χ, w)`, and the fact that a class in `H²` that dies on `U` is killed
   corestrictions of a given group of cocycles of an open subgroup `U`; it is used in local duality.
 
 Notions from other files:
-* `New.cyclicClass`: The symbol (χ, w) = δχ ∪ w in H²(G,M) of a continuous character χ: G → ℚ/ℤ
-  (`New.QZChar`) and an invariant w. It is the class of (g,h) ↦ carry(χ(g), χ(h))·w.
-* `New.H2`: Continuous cohomology H²(G,M): continuous 2-cocycles of ρ modulo coboundaries of
-  continuous 1-cochains.
+* `New.DiscreteModule.cyclicClass`: The symbol (χ, w) = δχ ∪ w in H²(Γ, M) of a continuous
+  character χ: Γ → ℚ/ℤ (`New.QZChar`) and an invariant w. It is the class of
+  (g,h) ↦ carry(χ(g), χ(h))·w.
+* `New.DiscreteModule.H`: the continuous cohomology of a discrete module, and
+  `New.DiscreteModule.π₂` the map sending a continuous 2-cocycle to its class.
 
 ## Relation to the literature
 
@@ -106,9 +109,20 @@ abbrev shapiroZ1 : ↥(Z1 (M.funModule U).ρ) →+ ↥(Z1 (M.restrictTo U).ρ) :
 
 /-- The linear map H²(Γ, Fun(Γ/U,M)) → H²(U,M) given by restriction to U followed by evaluation
 at the identity coset. -/
-abbrev shapiroH2 : New.H2 (M.funModule U).ρ →ₗ[R] New.H2 (M.restrictTo U).ρ :=
-  pairMapH2 (ρ := (M.funModule U).ρ) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
-    (M.funModule_apply_one U)
+abbrev shapiroH2 : (M.funModule U).H 2 →ₗ[R] (M.restrictTo U).H 2 :=
+  pairMapH2 (A := M.funModule U) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
+    fun g F ↦ M.funModule_apply_one U g F
+
+/-- The Shapiro map on continuous 2-cocycles, Z²(Γ, Fun(Γ/U, M)) → Z²(U, M): restrict to U and
+evaluate at the trivial coset. -/
+abbrev shapiroZ2 : Z2 (M.funModule U).ρ →ₗ[R] Z2 (M.restrictTo U).ρ :=
+  pairMapZ2 (ρ := (M.funModule U).ρ) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
+    fun g F ↦ M.funModule_apply_one U g F
+
+@[simp]
+lemma shapiroH2_π₂ (z : Z2 (M.funModule U).ρ) :
+    M.shapiroH2 U ((M.funModule U).π₂ z) = (M.restrictTo U).π₂ (M.shapiroZ2 U z) :=
+  pairMapH2_π₂ _ _ _ z
 
 /-- The norm of a U-invariant y of M: the sum of g·y over the cosets gU in Γ/U. -/
 abbrev corestrictH0 (y : (M.restrictTo U).H0) : M.V := M.sum U fun x ↦ M.ρ x.out y
@@ -190,12 +204,13 @@ lemma shapiroH2_injective : Injective (M.shapiroH2 U) := by
   obtain ⟨s, -, hs_inv, hs_mem⟩ := exists_coset_section U
   let t (x : Γ ⧸ U.toSubgroup) (g : Γ) : U := ⟨(s x)⁻¹ * g * s (g⁻¹ • x), hs_mem x g⟩
   rw [injective_iff_map_eq_zero]
-  rintro ⟨F, hF_cont, h_cocycle⟩ h_zero
-  obtain ⟨c, hc_cont, hc : ∀ a b : U, F (a, b) ⟦1⟧ = M.ρ a (c b) - c (a * b) + c a⟩ :=
-    (QuotientAddGroup.eq_zero_iff _).mp h_zero
+  intro y h_zero
+  obtain ⟨⟨F, hF_cont, h_cocycle⟩, rfl⟩ := (M.funModule U).π₂_surjective y
+  rw [shapiroH2_π₂, π₂_eq_zero_iff] at h_zero
+  obtain ⟨c, hc_cont, hc : ∀ a b : U, F (a, b) ⟦1⟧ = M.ρ a (c b) - c (a * b) + c a⟩ := h_zero
   let b (g : Γ) (x : Γ ⧸ U.toSubgroup) : M :=
     M.ρ (s x) (c (t x g)) - F (s x, t x g) x + F (g, s (g⁻¹ • x)) x
-  refine (QuotientAddGroup.eq_zero_iff _).mpr ⟨b, by fun_prop, fun g k ↦ funext fun x ↦ ?_⟩
+  refine ((M.funModule U).π₂_eq_zero_iff).mpr ⟨b, by fun_prop, fun g k ↦ funext fun x ↦ ?_⟩
   change F (g, k) x = M.ρ g (b k (g⁻¹ • x)) - b (g * k) x + b g x
   -- Three instances of the cocycle identity, evaluated at `x`.
   have h_cocycle_at (p q r : Γ) :
@@ -225,26 +240,29 @@ lemma index_smul_eq_sum_const (m : M.V) : U.index • m = M.sum U fun _ : Γ ⧸
 /-- Corestriction after restriction is multiplication by the index. If `β` is a class with values
 in the functions `Γ ⧸ U → M` whose Shapiro image is the restriction of `α` to `U`, then summing
 `β` over the cosets gives `[Γ : U] α`. -/
-lemma mapH2_sum_eq_index_smul (β : New.H2 (M.funModule U).ρ) (α : M.H2) :
+lemma mapH2_sum_eq_index_smul (β : (M.funModule U).H 2) (α : M.H 2) :
     M.resH2 U α = M.shapiroH2 U β → (M.sum U).mapH2 β = U.index • α := by
-  refine α.ind' fun x h_res ↦ ?_
+  obtain ⟨x, rfl⟩ := M.π₂_surjective α
+  intro h_res
   -- The restriction of the class of `x` is the Shapiro image of `x` with values in the constant
   -- functions, so by Shapiro's lemma `β` is that class.
-  have h_shapiro : M.shapiroH2 U ((M.const U).mapH2 ⟦x⟧) = M.shapiroH2 U β := h_res
-  obtain rfl : (M.const U).mapH2 ⟦x⟧ = β := shapiroH2_injective U h_shapiro
+  have h_shapiro : M.shapiroH2 U ((M.const U).mapH2 (M.π₂ x)) = M.shapiroH2 U β := by
+    rw [← h_res, Hom.mapH2_π₂, shapiroH2_π₂, resH2_π₂]
+    rfl
+  obtain rfl : (M.const U).mapH2 (M.π₂ x) = β := shapiroH2_injective U h_shapiro
   -- Summing a constant function multiplies by the index.
-  refine (congrArg (Quotient.mk _) ?_).symm
-  ext p
-  change U.index • x.val p = M.sum U fun _ : Γ ⧸ U.toSubgroup ↦ x.val p
-  exact index_smul_eq_sum_const U (x.val p)
+  rw [Hom.mapH2_π₂, Hom.mapH2_π₂, ← map_nsmul]
+  refine congrArg _ (Subtype.ext (funext fun p ↦ ?_))
+  change M.sum U (fun _ : Γ ⧸ U.toSubgroup ↦ x.val p) = U.index • x.val p
+  exact (index_smul_eq_sum_const U (x.val p)).symm
 
 /-- The projection formula for symbols. Suppose `v` is the norm of the `U`-invariant `w`, and the
 restriction of `α` to `U` is `(χ|U, w)`. Here `χ|U` is `QZChar.comap (subgroupIncl U) χ`, `χ`
 composed with the inclusion `U → Γ`, and `H0` denotes invariants. Then `(χ, v)` is `[Γ : U] α`. -/
 lemma cyclicClass_corestrictH0 (χ : ↥(QZChar Γ))
-    (w : ↥(M.restrictTo U).H0) {v : M.H0} (h_norm : M.corestrictH0 U w = v) (α : M.H2)
-    (h_res : M.resH2 U α = cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupIncl U) χ) w) :
-    cyclicClass M.ρ χ v = U.index • α := by
+    (w : ↥(M.restrictTo U).H0) {v : M.H0} (h_norm : M.corestrictH0 U w = v) (α : M.H 2)
+    (h_res : M.resH2 U α = (M.restrictTo U).cyclicClass (QZChar.comap (subgroupIncl U) χ) w) :
+    M.cyclicClass χ v = U.index • α := by
   -- Since `w` is `U`-invariant, `g w` depends only on the coset `gU`.
   have h_out (g : Γ) : M.ρ (g : Γ ⧸ U.toSubgroup).out w = M.ρ g w := by
     obtain ⟨u, hu⟩ := mk_out_eq_mul U.toSubgroup g
@@ -253,52 +271,56 @@ lemma cyclicClass_corestrictH0 (χ : ↥(QZChar Γ))
   let F : (M.funModule U.toSubgroup).H0 := ⟨fun x : Γ ⧸ U.toSubgroup ↦ M.ρ x.out w,
     by simp [funext_iff, forall_mk, h_out]⟩
   -- The value of `F` at the coset `U` is `w`.
-  have h_value : cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupIncl U) χ) w =
-      M.shapiroH2 U (cyclicClass (M.funModule U).ρ χ F) := by
+  have h_value : (M.restrictTo U).cyclicClass (QZChar.comap (subgroupIncl U) χ) w =
+      M.shapiroH2 U ((M.funModule U).cyclicClass χ F) := by
     have h_F_one : F.val ⟦1⟧ = (w : M.V) := by simpa using h_out 1
-    refine congrArg (Quotient.mk _) (Subtype.ext (funext fun p ↦ ?_))
+    rw [cyclicClass_apply, cyclicClass_apply, shapiroH2_π₂]
+    refine congrArg _ (Subtype.ext (funext fun p ↦ ?_))
     -- Both sides are `carry (χ u, χ u') •` a value: `w` on the left, `F` at the coset `U` on the
     -- right (the Shapiro image evaluates there).
     change (χ.val p.fst).carry (χ.val p.snd) • (w : M.V) =
       (χ.val p.fst).carry (χ.val p.snd) • F.val ⟦1⟧
     rw [h_F_one]
   -- The sum of the values of `F` is the norm of `w`, which is `v`.
-  have h_sum : cyclicClass M.ρ χ v = (M.sum U).mapH2 (cyclicClass (M.funModule U).ρ χ F) := by
-    refine congrArg (Quotient.mk _) (Subtype.ext (funext fun p ↦ ?_))
-    simp [F, show M.sum U.toSubgroup (fun x ↦ M.ρ x.out w) = v from h_norm]
+  have h_sum : M.cyclicClass χ v = (M.sum U).mapH2 ((M.funModule U).cyclicClass χ F) := by
+    rw [cyclicClass_apply, cyclicClass_apply, Hom.mapH2_π₂]
+    refine congrArg _ (Subtype.ext (funext fun p ↦ ?_))
+    simp [F, pairMapZ2, show M.sum U.toSubgroup (fun x ↦ M.ρ x.out w) = v from h_norm]
   rw [h_sum, mapH2_sum_eq_index_smul U _ α (h_res.trans h_value)]
 
 /-- For Γ compact and U an open subgroup, a class in H²(Γ, M) whose restriction to U vanishes is
 killed by the index [Γ : U]. -/
-lemma index_smul_eq_zero_of_resH2 {x : M.H2} : M.resH2 U x = 0 → U.index • x = 0 := by
+lemma index_smul_eq_zero_of_resH2 {x : M.H 2} : M.resH2 U x = 0 → U.index • x = 0 := by
   intro h_res
   rw [← mapH2_sum_eq_index_smul U 0 x (by rw [h_res, map_zero]), map_zero]
 
-omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
 /-- Let `w = k • r` be a `Γ`-invariant element of `M`, and `U` a subgroup of `Γ` that fixes `r`
 and on which `k • χ` vanishes. Then the class `(χ, w) = δχ ∪ w` in `H²(Γ, M)` restricts to zero
 on `U`. -/
 lemma resH2_cyclicClass_eq_zero_of_nsmul_eq {χ : ↥(QZChar Γ)} {k : ℕ} {r : M.V}
-    {U : Subgroup Γ} {w : M.H0} (h_w : k • r = ↑w) (h_fix : ∀ g : U, M.ρ g r = r)
-    (h_kχ : ∀ g : U, k • χ.val g = 0) : M.resH2 U (cyclicClass M.ρ χ w) = 0 := by
+    {U : Subgroup Γ} [LocallyCompactSpace U] {w : M.H0} (h_w : k • r = ↑w)
+    (h_fix : ∀ g : U, M.ρ g r = r) (h_kχ : ∀ g : U, k • χ.val g = 0) :
+    M.resH2 U (M.cyclicClass χ w) = 0 := by
   obtain ⟨w, hw_inv⟩ := w
   obtain rfl : k • r = w := h_w
   -- On `U` the element `r` is itself invariant, and the restricted character is killed by `k`.
   let r' : (M.restrictTo U).H0 := ⟨r, h_fix⟩
   have hχ : k • QZChar.comap (subgroupIncl U) χ = 0 := Subtype.ext (funext h_kχ)
   -- The symbol is additive in both arguments: `(χ, k • r) = (k • χ, r)` on `U`. The first step
-  -- holds by definition: restricting a symbol restricts the character and the invariant.
-  calc _ = cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupIncl U) χ) (k • r') := rfl
-    _ = cyclicClass (M.restrictTo U).ρ (k • QZChar.comap (subgroupIncl U) χ) r' := by
+  -- holds on cocycles: restricting a symbol restricts the character and the invariant.
+  calc _ = (M.restrictTo U).cyclicClass (QZChar.comap (subgroupIncl U) χ) (k • r') := by
+        rw [cyclicClass_apply, cyclicClass_apply, resH2_π₂]
+        rfl
+    _ = (M.restrictTo U).cyclicClass (k • QZChar.comap (subgroupIncl U) χ) r' := by
       simp only [map_nsmul, nsmul_apply]
     _ = 0 := by rw [hχ, map_zero, AddMonoidHom.zero_apply]
 
-omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
 /-- `resH2_cyclicClass_eq_zero_of_nsmul_eq` with its two conditions on `U` (`U` fixes `r`, and
 `k • χ` vanishes on `U`) joined in one hypothesis. -/
-lemma resH2_cyclicClass_eq_zero {χ : ↥(QZChar Γ)} {k : ℕ} {r : M.V} {U : Subgroup Γ} :
+lemma resH2_cyclicClass_eq_zero {χ : ↥(QZChar Γ)} {k : ℕ} {r : M.V} {U : Subgroup Γ}
+    [LocallyCompactSpace U] :
     ∀ {w : M.H0}, (k : ℕ) • r = ↑w →
-      (∀ g : U, M.ρ g r = r ∧ k • χ.val g = 0) → M.resH2 U (cyclicClass M.ρ χ w) = 0 :=
+      (∀ g : U, M.ρ g r = r ∧ k • χ.val g = 0) → M.resH2 U (M.cyclicClass χ w) = 0 :=
   fun h_w h_U ↦
     resH2_cyclicClass_eq_zero_of_nsmul_eq h_w (fun g ↦ (h_U g).left) fun g ↦ (h_U g).right
 
@@ -328,10 +350,10 @@ structure HoldsCorestrictions (U : OpenSubgroup Γ) (Y' : AddSubgroup (Z1 (M.res
   exists_corestriction :
     ∀ y ∈ Y', ∃ F : ↥(Z1 (M.funModule U).ρ), M.shapiroZ1 U F = y ∧ (M.sum U).mapZ1 F ∈ Y
 
-omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
 /-- If the restriction of `α` to `U ⊓ V`, seen as a subgroup of `V`, vanishes, then so does
 its restriction to `U ⊓ V` seen as a subgroup of `U`. -/
-lemma resH2_subgroupOf_eq_zero_symm {U V : Subgroup Γ} {α : M.H2} :
+lemma resH2_subgroupOf_eq_zero_symm {U V : Subgroup Γ} [IsClosed (X := Γ) U]
+    [IsClosed (X := Γ) V] {α : M.H 2} :
     (M.restrictTo V).resH2 (U.subgroupOf V) (M.resH2 V α) = 0 →
     (M.restrictTo U).resH2 (V.subgroupOf U) (M.resH2 U α) = 0 := by
   -- Pull the vanishing class back along the identification of the two copies of `U ⊓ V`.
@@ -342,15 +364,18 @@ lemma resH2_subgroupOf_eq_zero_symm {U V : Subgroup Γ} {α : M.H2} :
   -- By definition, restricting to `U` and then to `U ⊓ V` is the pull-back along `swap` of
   -- restricting to `V` and then to `U ⊓ V`.
   have h_comp : (M.restrictTo U).resH2 (V.subgroupOf U) (M.resH2 U α) =
-      (pairMapH2 swap LinearMap.id) ((M.restrictTo V).resH2 (U.subgroupOf V) (M.resH2 V α)) := by
-    induction α using QuotientAddGroup.induction_on
+      (pairMapH2 (A := (M.restrictTo V).restrictTo (U.subgroupOf V))
+        (B := (M.restrictTo U).restrictTo (V.subgroupOf U)) swap LinearMap.id)
+        ((M.restrictTo V).resH2 (U.subgroupOf V) (M.resH2 V α)) := by
+    obtain ⟨z, rfl⟩ := M.π₂_surjective α
+    rw [resH2_π₂, resH2_π₂, resH2_π₂, resH2_π₂, pairMapH2_π₂]
     rfl
   rw [h_comp, h_zero, map_zero]
 
 /-- Let `S ≤ H²(Γ, M)`, and let `α` vanish on an open normal subgroup `W`. Suppose that for
 all open `W ≤ V ≤ U` with `V` normal of prime index in `U`: if `α - s` vanishes on `V` for
 some `s ∈ S`, then `α - s'` vanishes on `U` for some `s' ∈ S`. Then `α ∈ S`. -/
-lemma mem_of_prime_step (S : AddSubgroup M.H2) {α : M.H2} {W : OpenSubgroup Γ} [W.Normal]
+lemma mem_of_prime_step (S : AddSubgroup (M.H 2)) {α : M.H 2} {W : OpenSubgroup Γ} [W.Normal]
     (hW : M.resH2 W α = 0)
     (h_step : ∀ (U : OpenSubgroup Γ) (V : OpenSubgroup U.toSubgroup) [V.Normal], W ≤ U →
       W.toSubgroup.subgroupOf U ≤ V →
@@ -364,13 +389,15 @@ lemma mem_of_prime_step (S : AddSubgroup M.H2) {α : M.H2} {W : OpenSubgroup Γ}
   have comap_open {L : Subgroup (Γ ⧸ W.1)} : IsOpen (SetLike.coe (comap (mk' W.1) L)) :=
     isOpen_mono (le_comap_mk' _ L) W.isOpen'
   -- Take a maximal `l`-subgroup `K` of `Γ ⧸ W` on whose preimage some `α - s` dies.
-  let Dies (U : Subgroup Γ) : Prop := ∃ s ∈ S, M.resH2 U (α - s) = 0
+  let Dies (U : OpenSubgroup Γ) : Prop := ∃ s ∈ S, M.resH2 U (α - s) = 0
   let Good : Set (Subgroup (Γ ⧸ W.toSubgroup)) :=
-    {L | ∃ n : ℕ, Dies (comap (mk' W.toSubgroup) L) ∧ Nat.card L = l ^ n}
+    {L | ∃ n : ℕ, Dies ⟨comap (mk' W.toSubgroup) L, comap_open⟩ ∧ Nat.card L = l ^ n}
   -- The trivial subgroup is good: its preimage is `W`, on which `α - 0` dies.
-  have hW_dies : M.resH2 (comap (mk' W.toSubgroup) ⊥) (α - 0) = 0 := by
-    rwa [MonoidHom.comap_bot, QuotientGroup.ker_mk', sub_zero]
-  have h_bot : ⊥ ∈ Good := ⟨0, ⟨0, S.zero_mem, hW_dies⟩, by simp⟩
+  have h_comap_bot : (⟨comap (mk' W.toSubgroup) ⊥, comap_open⟩ : OpenSubgroup Γ) = W :=
+    OpenSubgroup.ext fun g ↦ by simp
+  have hW_dies : Dies ⟨comap (mk' W.toSubgroup) ⊥, comap_open⟩ :=
+    ⟨0, S.zero_mem, by rwa [h_comap_bot, sub_zero]⟩
+  have h_bot : ⊥ ∈ Good := ⟨0, hW_dies, by simp⟩
   obtain ⟨K, ⟨n, ⟨s, hs, hK_dies⟩, card_K⟩, K_max⟩ :
       ∃ K : Subgroup (Γ ⧸ W.toSubgroup), Maximal (· ∈ Good) K :=
     Good.toFinite.exists_maximal ⟨⊥, h_bot⟩
@@ -401,15 +428,17 @@ lemma mem_of_prime_step (S : AddSubgroup M.H2) {α : M.H2} {W : OpenSubgroup Γ}
   have hK_normal : (K.subgroupOf L).Normal :=
     normal_of_index_eq_minFac_card (index_eq.trans h_minFac)
   let U : OpenSubgroup Γ := ⟨comap (mk' W.toSubgroup) L, comap_open⟩
+  have : Fact (IsOpen (X := Γ) (comap (mk' W.toSubgroup) L)) := ⟨comap_open⟩
   let V : OpenSubgroup U.toSubgroup :=
     ⟨(comap (mk' W.toSubgroup) K).subgroupOf U, subgroupOf_isOpen _ _ comap_open⟩
   have hV_normal : V.Normal := hK_normal.comap (MonoidHom.subgroupComap (mk' W.toSubgroup) L)
   have V_prime : V.index.Prime := by
     simp [U, V, ← relIndex.eq_1, relIndex_comap, map_comap_eq_self, index_eq, l_prime]
+  have : Fact (IsOpen (X := Γ) (comap (mk' W.toSubgroup) K)) := ⟨comap_open⟩
   have h_dies_V : (M.restrictTo U).resH2 V (M.resH2 U (α - s)) = 0 :=
     resH2_subgroupOf_eq_zero_symm (by rw [hK_dies, map_zero])
   have hW_le_V : W.toSubgroup.subgroupOf U ≤ V := fun _ hg ↦ le_comap_mk' W.toSubgroup K hg
-  have dies_L : Dies (comap (mk' W.toSubgroup) L) :=
+  have dies_L : Dies ⟨comap (mk' W.toSubgroup) L, comap_open⟩ :=
     h_step U V (le_comap_mk' W.toSubgroup L) hW_le_V V_prime s hs h_dies_V
   have L_le : L ≤ K := K_max ⟨n + 1, dies_L, card_L⟩ K_le
   exact l_prime.ne_one (index_eq.symm.trans (relIndex_eq_one.mpr L_le))

@@ -255,7 +255,7 @@ lemma Pairing.isCupCoboundary_of_eq_coboundary [TopologicalSpace Γ]
     · -- `nsmul_eq_mul` would hide the multiples that `nsmul_zmodPowToUnits` removes.
       simp [D, b, map_cyclotomicGp_smul _ nsmul_zmodPowToUnits, apply_mul ha, apply_mul ha',
         modPairing_rho, Units.smul_def, -nsmul_eq_mul]
-  let cls : D.H2 := ⟦⟨zmodPowToUnits P.exponent ∘ b, h_cocycle⟩⟧
+  let cls : D.H 2 := D.π₂ ⟨zmodPowToUnits P.exponent ∘ b, h_cocycle⟩
   -- Near `1` both `κ h` and `b (g, h)` vanish, so `κ` is locally constant.
   have h_cont : Continuous (zmodPowToUnits P.exponent ∘ κ) := by
     refine (isLocallyConstant_of_eventually_mul
@@ -272,16 +272,19 @@ lemma Pairing.isCupCoboundary_of_eq_coboundary [TopologicalSpace Γ]
       congrArg (zmodPowToUnits P.exponent) (h_coboundary g h)
   -- The class restricts to zero on `k.subgroup`, so the index kills it (corestriction).
   have h_index : k.subgroup.index • cls = 0 := by
-    have h_res : D.resH2 k.subgroup cls = 0 :=
-      (Submodule.Quotient.mk_eq_zero _).2 ⟨_, h_cont, h_units⟩
+    have : Fact (IsOpen (k.subgroup : Set Γ)) := ⟨h_open⟩
+    have h_res : D.resH2 k.subgroup cls = 0 := by
+      simp only [cls, DiscreteModule.resH2_π₂]
+      exact (DiscreteModule.π₂_eq_zero_iff _).mpr ⟨_, h_cont, h_units⟩
     exact D.index_smul_eq_zero_of_resH2 ⟨k.subgroup, h_open⟩ h_res
   have h_pow : p ^ P.exponent • cls = 0 := by
     have h_kill : p ^ P.exponent • (⟨_, h_cocycle⟩ : Z2 D.ρ) = 0 := by
       exact Subtype.ext (funext fun q ↦ nsmul_zmodPowToUnits (b q))
-    exact congrArg (Quotient.mk _) h_kill
+    simp only [cls]
+    rw [← map_nsmul, h_kill, map_zero]
   have h_zero : cls = 0 :=
     (nsmul_eq_zero_iff_of_coprime (k.index_coprime.pow_right _)).1 ⟨h_index, h_pow⟩
-  exact Submodule.mem_comap.1 ((Submodule.Quotient.mk_eq_zero _).1 h_zero)
+  exact (DiscreteModule.π₂_eq_zero_iff D).1 h_zero
 
 /-- `smul_comm` oriented for `simp`: an element of `FrobGroup Γ` moves inside any commuting
 scalar `a`. -/

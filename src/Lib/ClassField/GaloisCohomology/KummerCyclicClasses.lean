@@ -16,7 +16,7 @@ import Lib.ClassField.Places.ProfiniteGalois
 This file studies the Galois cohomology of `Ωˣ` for a group Γ acting on a field Ω. The group `Ωˣ` is
 written additively (`New.DiscreteUnits`, with action `New.unitsRep`). In the last two sections Γ is
 the profinite Galois group of Ω/K (`New.IsProGalois`). Take a continuous character χ : Γ → ℚ/ℤ with
-kernel U and a Γ-invariant w in `Ωˣ`. The symbol (χ, w) = `New.cyclicClass ρ χ w` is the class in H²
+kernel U and a Γ-invariant w in `Ωˣ`. The symbol (χ, w) = `A.cyclicClass χ w` is the class in H²
 of (g, h) ↦ carry(χ(g), χ(h))·w. The file first treats cup products of 1-cocycles, annihilators of
 pairings, and a descent lemma for semilinear actions. Finally it shows that the classes vanishing on
 U are the symbols (χ, w), and that (χ, w) = 0 exactly when w is a norm from U, that is, a field norm
@@ -38,9 +38,9 @@ from the field cut out by χ.
 * `New.mk_eq_neg_cyclicClass_ofZModCocycle`: the cup product of `g ↦ g a / a` with `ξ : Γ → ℤ/n` is
   minus the cyclic class of `ξ / n` and `a ^ n`.
 * `New.QZChar.cyclicClass_spec`: the classes in `H²(Γ, Ωˣ)` that die on `U` are the symbols `(χ, w)`
-  of `New.cyclicClass` with `w` in `Kˣ` (embedded in `Ωˣ` by `New.DiscreteUnits.ofBase`), and
-  `(χ, w) = 0` exactly when `w` is a norm from `U`. The two hard directions are
-  `New.QZChar.exists_eq_cyclicClass_of_resH2_eq_zero` and
+  of `New.DiscreteModule.cyclicClass` with `w` in `Kˣ` (embedded in `Ωˣ` by
+  `New.DiscreteUnits.ofBase`), and `(χ, w) = 0` exactly when `w` is a norm from `U`. The two hard
+  directions are `New.QZChar.exists_eq_cyclicClass_of_resH2_eq_zero` and
   `New.QZChar.exists_corestrictH0_eq_of_cyclicClass_eq_zero`.
 
 Notions from other files:
@@ -48,10 +48,11 @@ Notions from other files:
   action `ρ` of Γ; `New.Z1 ρ` and `New.Z2 ρ` are its continuous 1- and 2-cocycles.
 * `New.unitsRep`: the ℤ-linear representation of Γ on Ω^× (written additively) coming from the
   action of Γ on the field Ω by ring automorphisms.
-* `New.DiscreteModule.H2`: The continuous cohomology H²(Γ,A) of a discrete Γ-module A: 2-cocycles
-  modulo the functions (g,h) ↦ g c(h) − c(gh) + c(g) with c continuous.
+* `New.DiscreteModule.H`: the continuous cohomology Hⁿ(Γ,A) of a discrete Γ-module A, and
+  `New.DiscreteModule.π₂` the class of a continuous 2-cocycle in H²(Γ,A); its kernel is the
+  functions (g,h) ↦ g c(h) − c(gh) + c(g) with c continuous.
 * `New.QZ` is ℚ/ℤ. `New.QZ.carry`: for a, b in ℚ/ℤ, the integer part (0 or 1) of the sum of their
-  representatives in [0,1); `New.cyclicClass ρ χ w` is the class of the cocycle (g,h) ↦ carry(χ(g),
+  representatives in [0,1); `A.cyclicClass χ w` is the class of the cocycle (g,h) ↦ carry(χ(g),
   χ(h))·w.
 * `New.IsProGalois`: a profinite group acts on the Galois extension Ω/K as its Galois group, with
   open stabilisers.
@@ -126,7 +127,7 @@ open Function AddSubgroup QuotientAddGroup AddMonoidHom DFunLike Nat DiscreteMod
 variable {R R' S : Type}
   (Γ : Type) [CommRing R] [CommRing R'] [CommRing S] [Group Γ] [TopologicalSpace Γ]
   {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] [MulSemiringAction Γ Ω] [IsAlgClosed Ω]
-  [IsProGalois Γ K Ω] {A B C : Type} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
+  [hΓ : IsProGalois Γ K Ω] {A B C : Type} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
 
 /-- The multiplicative group Ω^×, written additively, as a discrete module with its continuous
 action of Γ. -/
@@ -214,29 +215,45 @@ abbrev DiscreteModule.cartierDual [Finite M] : DiscreteModule ℤ Γ :=
     simp [continuous_prod_of_discrete_right]
     fun_prop
 
-variable (b : M →+ N →+ W)
-  (e : ∀ (g : Γ) (x : M.V) (y : N.V), b (M.ρ g x) (N.ρ g y) = W.ρ g (b x y))
+/-- For an equivariant pairing `b : M × N → W` (`e` says `b (g x) (g y) = g (b x y)`) and 1-cocycles
+`x`, `y`, the function `(g, h) ↦ b (x g) (g (y h))` is a continuous 2-cocycle. -/
+lemma cup_mem_Z2 {R R' S Γ : Type} [CommRing R] [CommRing R'] [CommRing S] [Group Γ]
+    [TopologicalSpace Γ] (W : DiscreteModule S Γ) (M : DiscreteModule R Γ)
+    (N : DiscreteModule R' Γ) (b : M →+ N →+ W)
+    (e : ∀ (g : Γ) (x : M.V) (y : N.V), b (M.ρ g x) (N.ρ g y) = W.ρ g (b x y))
+    (x : Z1 M.ρ) (y : Z1 N.ρ) :
+    (fun p : Γ × Γ ↦ b (x.val p.1) (N.ρ p.1 (y.val p.2))) ∈ Z2 W.ρ := by
+  obtain ⟨hx_cont, hx⟩ := x.property
+  obtain ⟨hy_cont, hy⟩ := y.property
+  -- The cocycle identities and `e` make the terms cancel in pairs.
+  exact ⟨by fun_prop, fun g h k ↦ by simp [hx, hy, ← e]⟩
 
 /-- Let `M`, `N`, `W` be discrete Γ-modules and `b : M × N → W` a biadditive pairing that is
 equivariant: `e` says `b (g x) (g y) = g (b x y)`. The cup product `Z¹(M) × Z¹(N) → H²(W)` sends
 1-cocycles `x`, `y` to the class of the 2-cocycle `(g, h) ↦ b (x g) (g (y h))`. -/
-def cupProduct : Z1 M.ρ →+ Z1 N.ρ →+ W.H2 :=
+def cupProduct {R R' S Γ : Type} [CommRing R] [CommRing R'] [CommRing S] [Group Γ]
+    [TopologicalSpace Γ] [IsTopologicalGroup Γ] [LocallyCompactSpace Γ] (W : DiscreteModule S Γ)
+    (M : DiscreteModule R Γ) (N : DiscreteModule R' Γ) (b : M →+ N →+ W)
+    (e : ∀ (g : Γ) (x : M.V) (y : N.V), b (M.ρ g x) (N.ρ g y) = W.ρ g (b x y)) :
+    Z1 M.ρ →+ Z1 N.ρ →+ W.H 2 :=
   (AddMonoidHom.mk'
       (fun x : Z1 M.ρ ↦
-        AddMonoidHom.mk'
-          (fun y : Z1 N.ρ ↦
-            (⟨fun p ↦ b (x.val p.1) (N.ρ p.1 (y.val p.2)), by
-              obtain ⟨hx_cont, hx⟩ := x.property
-              obtain ⟨hy_cont, hy⟩ := y.property
-              -- The cocycle identities and `e` make the terms cancel in pairs.
-              exact ⟨by fun_prop, fun g h k ↦ by simp [hx, hy, ← e]⟩⟩ : Z2 W.ρ))
+        AddMonoidHom.mk' (fun y : Z1 N.ρ ↦ (⟨_, cup_mem_Z2 W M N b e x y⟩ : Z2 W.ρ))
           (by simp [funext_iff]))
-      (by simp [ext_iff, funext_iff])).compr₂ (QuotientAddGroup.mk' _)
+      (by simp [ext_iff, funext_iff])).compr₂ W.π₂.toAddMonoidHom
+
+lemma cupProduct_apply {R R' S Γ : Type} [CommRing R] [CommRing R'] [CommRing S] [Group Γ]
+    [TopologicalSpace Γ] [IsTopologicalGroup Γ] [LocallyCompactSpace Γ] (W : DiscreteModule S Γ)
+    (M : DiscreteModule R Γ) (N : DiscreteModule R' Γ) (b : M →+ N →+ W)
+    (e : ∀ (g : Γ) (x : M.V) (y : N.V), b (M.ρ g x) (N.ρ g y) = W.ρ g (b x y))
+    (x : Z1 M.ρ) (y : Z1 N.ρ) :
+    cupProduct W M N b e x y = W.π₂ ⟨_, cup_mem_Z2 W M N b e x y⟩ :=
+  rfl
 
 /-- For a finite discrete Γ-module `M`, the cup product `Z¹(Hom(M, Ω^×)) × Z¹(M) → H²(Ω^×)` of the
 evaluation pairing `(f, m) ↦ f m` (`Hom(M, Ω^×)` is `New.DiscreteModule.cartierDual`). -/
 abbrev DiscreteModule.evalCup [Finite M] :
-    ↥(Z1 M.cartierDual.ρ) →+ ↥(Z1 M.ρ) →+ (unitsModule Γ).H2 :=
+    ↥(Z1 M.cartierDual.ρ) →+ ↥(Z1 M.ρ) →+ (unitsModule Γ).H 2 :=
   cupProduct (unitsModule Γ) M.cartierDual M (AddMonoidHom.id M.cartierDual.V) (by simp)
 
 /-- Anticommutativity of the cup product. Let `Γ` be a group with a topology and let `W`, `M`, `N`
@@ -247,7 +264,8 @@ be discrete Γ-modules (`New.DiscreteModule`: a discrete module `V` with a conti
 `(g, h) ↦ b (x g) (g (y h))`. The flipped pairing `b.flip : (n, m) ↦ b m n` is equivariant too,
 and the cup product of `y` and `x` for `b.flip` is minus the cup product of `x` and `y` for `b`. -/
 lemma cupProduct_flip {R R' S Γ : Type} [CommRing R] [CommRing R'] [CommRing S] [Group Γ]
-    [TopologicalSpace Γ] {W : DiscreteModule S Γ} {M : DiscreteModule R Γ}
+    [TopologicalSpace Γ] [IsTopologicalGroup Γ] [LocallyCompactSpace Γ] {W : DiscreteModule S Γ}
+    {M : DiscreteModule R Γ}
     {N : DiscreteModule R' Γ} (b : M →+ N →+ W)
     (h_equivariant : ∀ (g : Γ) (m : M.V) (n : N.V), b (M.ρ g m) (N.ρ g n) = W.ρ g (b m n))
     (x : Z1 M.ρ) (y : Z1 N.ρ) :
@@ -258,7 +276,9 @@ lemma cupProduct_flip {R R' S Γ : Type} [CommRing R] [CommRing R'] [CommRing S]
   obtain ⟨y, hy_cont : Continuous y,
     hy_mul : ∀ g h : Γ, y (g * h) = y g + N.ρ g (y h)⟩ := y
   -- the sum of the two cup products is the coboundary of `g ↦ -b (x g) (y g)`
-  refine (Submodule.Quotient.eq _).mpr ⟨fun g ↦ -b (x g) (y g), by fun_prop, fun g h ↦ ?_⟩
+  change W.π₂ _ = -W.π₂ _
+  rw [← map_neg, π₂_eq_π₂_iff]
+  refine ⟨fun g ↦ -b (x g) (y g), by fun_prop, fun g h ↦ ?_⟩
   -- expand `b (x (g * h)) (y (g * h))` by the cocycle identities and `h_equivariant`
   have h_expand : b (x (g * h)) (y (g * h)) = b (x g) (y g) + b (x g) (N.ρ g (y h))
       + b (M.ρ g (x h)) (y g) + W.ρ g (b (x h) (y h)) := by
@@ -361,18 +381,18 @@ instance isGalois_fixedFieldOf (U : Subgroup Γ) [U.Normal] : IsGalois K (fixedF
 /-- The cup product of a Kummer cocycle with a character mod `n`. Let `w` in `Ωˣ` be `Γ`-invariant
 with `a ^ n = w`, and let `ξ : Γ → ℤ/n` be a continuous homomorphism. If the 2-cocycle `z` is
 `(g, h) ↦ (g a / a) ^ ξ(h)`, then its class is minus the symbol `(ξ / n, w)`. Here
-`New.QZChar.ofZModCocycle n ξ` is the character `ξ / n : Γ → ℚ/ℤ`, and `New.cyclicClass ρ χ w` is
+`New.QZChar.ofZModCocycle n ξ` is the character `ξ / n : Γ → ℚ/ℤ`, and `A.cyclicClass χ w` is
 the class of `(g, h) ↦ carry(χ(g), χ(h)) • w`. -/
 lemma mk_eq_neg_cyclicClass_ofZModCocycle {n : ℕ} [NeZero n]
     {w : ↥(unitsRep (Γ := Γ) (Ω := Ω)).invariants} {a : DiscreteUnits Ω} (ha : n • a = ↑w)
     (ξ : ↥(Z1 (Representation.trivial ℤ Γ (ZMod n)))) (z : Z2 (unitsRep (Γ := Γ) (Ω := Ω)))
     (hz : ∀ g h : Γ, z.val (g, h) = (ξ.val h).val • (unitsRep g a - a)) :
-    ⟦z⟧ = -cyclicClass (unitsRep (Γ := Γ) (Ω := Ω)) (ofZModCocycle n ξ) w := by
+    (unitsModule Γ).π₂ z = -(unitsModule Γ).cyclicClass (ofZModCocycle n ξ) w := by
   -- `z` plus the cocycle `(g, h) ↦ carry (ξ g / n) (ξ h / n) • w` of the cyclic class is the
   -- coboundary of `g ↦ (ξ g).val • a`.
   obtain ⟨hξ_cont, hξ_cocycle⟩ := ξ.property
-  refine (Submodule.Quotient.eq _).mpr
-    ⟨(fun k : ZMod n ↦ k.val • a) ∘ ξ.val, continuous_bot.comp hξ_cont, fun g h ↦ ?_⟩
+  rw [cyclicClass_apply, ← map_neg, π₂_eq_π₂_iff]
+  refine ⟨(fun k : ZMod n ↦ k.val • a) ∘ ξ.val, continuous_bot.comp hξ_cont, fun g h ↦ ?_⟩
   -- `n` times the carry of `x / n` and `y / n` is the carry in the addition of residues mod `n`.
   have carry_eq (x y : ZMod n) :
       (ofZMod n x).carry (ofZMod n y) * n = x.val + y.val - (x + y).val := by
@@ -498,7 +518,7 @@ lemma IsProGalois.of_fixingSubgroup_eq {U : Subgroup Γ}
   · -- Elements of `U` fix `L`, so they commute with multiplication by elements of `L`.
     change ∀ (u : fixingSubgroup Γ (Set.range (algebraMap L Ω))) (l : L) (y : Ω),
       u • l • y = l • u • y
-    simp_all [smul_def, mem_fixingSubgroup_iff]
+    simp_all [Algebra.smul_def, mem_fixingSubgroup_iff]
   · exact (fixedFieldOf_fixingSubgroup (IsScalarTower.toAlgHom K L Ω).fieldRange).le
 
 open LinearMap Mathlib.Tactic.LinearCombination QZ Submodule Group
@@ -543,11 +563,11 @@ private lemma hilbert90_funModule (U : OpenSubgroup Γ)
 Galois group of the extension `Ω/K` (`IsProGalois`), and `H²(Γ, Ωˣ)` the continuous cohomology of
 `Ωˣ`, written additively. Let `χ : Γ → ℚ/ℤ` be a continuous character with kernel `U`, an open
 subgroup of `Γ`. If a class `x` in `H²(Γ, Ωˣ)` restricts to zero on `U`, then `x` is the symbol
-`(χ, w)` (`New.cyclicClass`) of some `w` in `Kˣ`, where `w` is embedded in `Ωˣ` by
+`(χ, w)` (`New.DiscreteModule.cyclicClass`) of some `w` in `Kˣ`, where `w` is embedded in `Ωˣ` by
 `New.DiscreteUnits.ofBase`. -/
-lemma QZChar.exists_eq_cyclicClass_of_resH2_eq_zero (χ : ↥(QZChar Γ)) (x : (unitsModule Γ).H2)
+lemma QZChar.exists_eq_cyclicClass_of_resH2_eq_zero (χ : ↥(QZChar Γ)) (x : (unitsModule Γ).H 2)
     (hx : (unitsModule Γ).resH2 (OpenSubgroup.mk (ker χ) (isOpen_ker χ)) x = 0) :
-    ∃ w : Kˣ, x = cyclicClass unitsRep χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul w)) := by
+    ∃ w : Kˣ, x = (unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul w)) := by
   classical
   -- By Shapiro's lemma a cocycle `z` of the class `x`, with values in the constant functions
   -- `Γ ⧸ U → Ωˣ`, is the coboundary of some `a`. The difference operator `D` along a suitable coset
@@ -572,11 +592,16 @@ lemma QZChar.exists_eq_cyclicClass_of_resH2_eq_zero (χ : ↥(QZChar Γ)) (x : (
   let D : (Γ ⧸ U.toSubgroup → M) →ₗ[ℤ] Γ ⧸ U.toSubgroup → M := funLeft ℤ M (fun q ↦ q * γ) - 1
   have sum_shift (F : Γ ⧸ U.toSubgroup → M) : ∑ q, F (q * γ) = ∑ q, F q :=
     (mulRight_bijective γ).sum_comp F
-  obtain ⟨z, rfl⟩ : ∃ z : Z2 M.ρ, ⟦z⟧ = x := Quot.exists_rep x
+  obtain ⟨z, rfl⟩ := M.π₂_surjective x
   -- The cocycle `z` dies on `U`, so with values in the functions it is the coboundary of some `a`.
+  have h_const : (M.const U).mapH2 (M.π₂ z) = 0 := by
+    refine shapiroH2_injective U ?_
+    rw [map_zero, Hom.mapH2_π₂, shapiroH2_π₂]
+    rw [resH2_π₂] at hx
+    exact hx
+  rw [Hom.mapH2_π₂, π₂_eq_zero_iff] at h_const
   obtain ⟨a, a_cont : Continuous a,
-      ha : ∀ g l : Γ, (fun _ ↦ z.val (g, l)) = N.ρ g (a l) - a (g * l) + a g⟩ :=
-    (ker_mkQ _).le (shapiroH2_injective U (a₁ := (M.const U).mapH2 ⟦z⟧) hx)
+      ha : ∀ g l : Γ, (fun _ ↦ z.val (g, l)) = N.ρ g (a l) - a (g * l) + a g⟩ := h_const
   -- `D` kills the constant left side of `ha`, so `D ∘ a` is a 1-cocycle, hence a coboundary.
   have Da_cocycle (g l : Γ) : D (a (g * l)) = D (a g) + N.ρ g (D (a l)) := by
     funext q
@@ -597,7 +622,8 @@ lemma QZChar.exists_eq_cyclicClass_of_resH2_eq_zero (χ : ↥(QZChar Γ)) (x : (
   let s (g : Γ) : M := M.sum U (c g • ε)
   refine ⟨Additive.toMul w, ?_⟩
   rw [ofMul_toMul, hw]
-  refine (Submodule.Quotient.eq _).mpr ⟨fun g ↦ a g γ - M.ρ g (s g), by fun_prop, fun g l ↦ ?_⟩
+  rw [cyclicClass_apply, π₂_eq_π₂_iff]
+  refine ⟨fun g ↦ a g γ - M.ρ g (s g), by fun_prop, fun g l ↦ ?_⟩
   -- Sum `hε l` against `c g`; summing by parts on the left, only `q = g⁻¹` and `q = 1` survive.
   have h_parts : ∑ q, c g q • D (a l) q = a l (g⁻¹ • γ) - a l γ := by
     linear_combination (norm :=
@@ -621,11 +647,11 @@ include K in
 /-- A symbol that vanishes is a norm. Let `Γ` be the profinite Galois group of the extension `Ω/K`
 (`IsProGalois`), acting on `Ωˣ` (written additively), and let `χ : Γ → ℚ/ℤ` be a continuous
 character with kernel `U`, an open subgroup of `Γ`. Let `w` be a `Γ`-invariant element of `Ωˣ`. If
-the symbol `(χ, w)` (`New.cyclicClass`) is zero in `H²(Γ, Ωˣ)`, then `w` is the norm
+the symbol `(χ, w)` (`New.DiscreteModule.cyclicClass`) is zero in `H²(Γ, Ωˣ)`, then `w` is the norm
 `New.DiscreteModule.corestrictH0 U y` of some `U`-invariant element `y` of `Ωˣ`, that is, the sum of
 `g y` over the cosets `gU`. -/
 lemma QZChar.exists_corestrictH0_eq_of_cyclicClass_eq_zero (χ : ↥(QZChar Γ))
-    (w : (unitsModule Γ).H0) (hw : cyclicClass (unitsModule Γ).ρ χ w = 0) :
+    (w : (unitsModule Γ).H0) (hw : (unitsModule Γ).cyclicClass χ w = 0) :
     ∃ y : ↥((unitsModule Γ).restrictTo (OpenSubgroup.mk (ker χ) (isOpen_ker χ))).H0,
       corestrictH0 (OpenSubgroup.mk (ker χ) (isOpen_ker χ)) y = w.val := by
   classical
@@ -650,9 +676,9 @@ lemma QZChar.exists_corestrictH0_eq_of_cyclicClass_eq_zero (χ : ↥(QZChar Γ))
   have carry_cocycle (p q r : Γ ⧸ U.toSubgroup) :
       c p (q * r) = c p q - (c q r - c (p * q) r) :=
     carry_mul_right (kerLift (toHom χ)) p q r
+  rw [cyclicClass_apply, π₂_eq_zero_iff] at hw
   obtain ⟨a, a_cont : Continuous a,
-      ha : ∀ g l : Γ, c g l • w.val = M.ρ g (a l) - a (g * l) + a g⟩ :=
-    (ker_mkQ _).le hw
+      ha : ∀ g l : Γ, c g l • w.val = M.ρ g (a l) - a (g * l) + a g⟩ := hw
   have hw_fixed (g : Γ) : M.ρ g w.val = w.val := w.property g
   let z (g : Γ) (q : Γ ⧸ U.toSubgroup) : M := c g (g⁻¹ • q) • w.val - a g
   have z_cocycle (g l : Γ) : z (g * l) = z g + N.ρ g (z l) := by
@@ -690,12 +716,12 @@ in `H²(Γ, Ωˣ)` dies on `U` exactly when it is a symbol `(χ, w)` with `w` in
 lemma QZChar.cyclicClass_spec (χ : ↥(QZChar Γ)) :
     let U := OpenSubgroup.mk (ker χ) (isOpen_ker χ)
     -- (a) the classes that die on `U` are the symbols of `χ` with elements of `Kˣ`
-    (∀ x : (unitsModule Γ).H2,
+    (∀ x : (unitsModule Γ).H 2,
       (unitsModule Γ).resH2 U x = 0 ↔
-        ∃ w : Kˣ, x = cyclicClass unitsRep χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul w))) ∧
+        ∃ w : Kˣ, x = (unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul w))) ∧
     -- (b) a symbol of `χ` is zero exactly on the norms from `U`
     ∀ w : (unitsModule Γ).H0,
-      cyclicClass (unitsModule Γ).ρ χ w = 0 ↔
+      (unitsModule Γ).cyclicClass χ w = 0 ↔
         ∃ y : ↥((unitsModule Γ).restrictTo U).H0, corestrictH0 U y = w.val := by
   intro U
   refine ⟨fun x ↦ ⟨exists_eq_cyclicClass_of_resH2_eq_zero χ x, ?_⟩,
@@ -742,10 +768,11 @@ lemma corestrictH0_ofBase_eq_norm (U : OpenSubgroup Γ) [IsProGalois U.toSubgrou
   exact Finset.prod_bijective res res_bij (by simp) fun x _ ↦ rfl
 
 /-- If the kernel of the character `χ : Γ → ℚ/ℤ` is the Galois group of `Ω / L` (`J`), with `L / K`
-finite separable and `Ω` algebraically closed, then the symbol `(χ, x)` (`New.cyclicClass`) of `x`
-in `Kˣ` vanishes exactly when `x` is the norm of a unit of `L`. -/
+finite separable and `Ω` algebraically closed, then the symbol `(χ, x)`
+(`New.DiscreteModule.cyclicClass`) of `x` in `Kˣ` vanishes exactly when `x` is the norm of a unit of
+`L`. -/
 lemma cyclicClass_eq_zero_iff_norm {χ : QZChar Γ} [J : IsProGalois (ker χ) L Ω] (x : Kˣ) :
-    cyclicClass unitsRep χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x)) = 0 ↔
+    (unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x)) = 0 ↔
       ∃ z : Lˣ, z.map (Algebra.norm K) = x := by
   -- By `cyclicClass_spec` the symbol vanishes exactly on norms from the kernel of `χ`, whose
   -- invariants are the units of `L`; `corestrictH0_ofBase_eq_norm` identifies this norm with the

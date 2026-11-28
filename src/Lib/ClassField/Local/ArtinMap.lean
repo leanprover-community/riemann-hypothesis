@@ -11,7 +11,7 @@ public import Lib.Adelic.Adeles.IdeleModulus
 public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
 public import Lib.ClassField.Places.DecompositionCompletion
 import Lib.Adelic.Adeles.StrongApproximation
-import Lib.ClassField.Local.InvariantMap
+public import Lib.ClassField.Local.InvariantMap
 import Lib.ClassField.LocalDuality.DualityInequality
 import Lib.ClassField.Places.LocalFields
 import Lib.ClassField.Places.TameInertia
@@ -38,6 +38,10 @@ Frobenii. At a place of a number field, it proves the main properties of the loc
 * `New.algHeckeChars`, `New.AlgHeckeChar`: algebraic Hecke characters, as characters of the finite
   ideles (`New.AlgHeckeChar.character`) together with their infinity type
   (`New.AlgHeckeChar.infinityType`).
+* `New.IsLocalArtin`, `New.localArtin`: the defining formula `classOfInvariant (χ (f x)) =
+  −(δχ ∪ x)` of a local Artin map, and the local Artin map at a prime of a number field, a chosen
+  homomorphism from `K_w^×` to the abelianised decomposition group of `A` that satisfies it on
+  `K^×`.
 * `New.IsPlaceOver.isLocalArtin_localArtin`: the formula holds; the local theory in `ℚ̄_p` then
   applies.
 * `New.IsTameGenerator`, `New.IsPlaceOver.exists_eq_pow_and_apply_conj_eq_pow`: tame generators of
@@ -47,12 +51,8 @@ Frobenii. At a place of a number field, it proves the main properties of the loc
   whose symbol it is and whose residue generates the units of the residue field.
 
 Notions from other files:
-* `New.localArtin Γ A w`: a chosen homomorphism from `K_w^×` to the topological abelianisation of
-  the decomposition group of `A`, pinned down on `K^×` by `New.IsLocalArtin`.
 * `New.IsCompletionEmb w p Γ A j`: embeddings of `K_w` and of `Ω` (by `j`) in `ℚ̄_p` that induce `A`
   and make the decomposition group of `A` the Galois group of `ℚ̄_p` over `K_w`.
-* `New.IsLocalArtin`: The homomorphism `f : Lˣ → Γ^ab` satisfies `New.Cohomology.classOfInvariant (χ
-  (f x)) = −(δχ ∪ x)` for all continuous characters `χ` and all `x` in `Lˣ`.
 * `New.IsFrob`: `σ` stabilises the valuation subring `A` and `σ • x ≡ x ^ q` modulo the maximal
   ideal for all `x ∈ A`.
 * `New.IsPlaceOver`: The valuation subring `A` of `Ω` lies over the prime `w` of `K`: an integer of
@@ -73,6 +73,53 @@ See also `Lib.ClassField.Avatar.LocalGlobalCompatibility` and `Lib.ClassField.Pl
 @[expose] public section
 
 noncomputable section
+
+/-!
+## The local Artin map, by its defining formula
+-/
+
+namespace New
+
+open NumberField
+
+variable (Γ K : Type) {Ω : Type} [Group Γ] [Field K] [Field Ω] [Algebra K Ω]
+  [MulSemiringAction Γ Ω] (A : ValuationSubring Ω) [TopologicalSpace Γ] [hΓ : IsProGalois Γ K Ω]
+
+/-- The property that the homomorphism `f` from `Lˣ` to the topological abelianisation of `Γ`
+satisfies `classOfInvariant (χ (f x)) = -cyclicClass χ x` for every continuous character
+`χ : Γ → ℚ/ℤ` and every `x` in `Lˣ`, where `x` is viewed as an invariant of `Ωˣ`, and `χ (f x)` is
+the value at `f x` of `QZChar.abelianLift χ`, the map induced by `χ` on the topological
+abelianisation. -/
+def IsLocalArtin {L : Type*} [Field L] [Algebra L Ω] [SMulCommClass Γ L Ω]
+    (f : Lˣ →* TopologicalAbelianization Γ) : Prop :=
+  ∀ (χ : QZChar Γ) (x : Lˣ),
+    Cohomology.classOfInvariant Γ K A (QZChar.abelianLift χ (f x)).toAdd =
+      -(unitsModule Γ (K := K) (Ω := Ω)).cyclicClass χ
+        (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x))
+
+variable {K} [NumberField K] (v : IsDedekindDomain.HeightOneSpectrum (𝓞 K))
+
+/-- The local Artin map at `v`: a chosen homomorphism from the units of the completion
+`v.adicCompletion K` of `K` at `v` to the abelianised decomposition group of `A`, whose
+restriction to `Kˣ` satisfies `New.IsLocalArtin` over the fixed field of the decomposition group;
+unspecified if there is none (see `New.isLocalArtin_localArtin_comp_of_exists` and
+`New.IsPlaceOver.isLocalArtin_localArtin`). -/
+def localArtin : (v.adicCompletion K)ˣ →* TopologicalAbelianization (decompGroup Γ A) :=
+  Classical.epsilon fun f : (v.adicCompletion K)ˣ →* TopologicalAbelianization (decompGroup Γ A) ↦
+    IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
+      (f.comp (Units.map (algebraMap K (v.adicCompletion K)).toMonoidHom))
+
+/-- The restriction of `New.localArtin Γ A v` to `Kˣ` has its defining property as soon as the
+restriction of some homomorphism has it. -/
+lemma isLocalArtin_localArtin_comp_of_exists
+    (h_exists : ∃ f : (v.adicCompletion K)ˣ →* TopologicalAbelianization (decompGroup Γ A),
+      IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
+        (f.comp (Units.map (algebraMap K (v.adicCompletion K)).toMonoidHom))) :
+    IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
+      ((localArtin Γ A v).comp (Units.map (algebraMap K (v.adicCompletion K)).toMonoidHom)) :=
+  Classical.epsilon_spec h_exists
+
+end New
 
 /-!
 ## The global Artin map and algebraic Hecke characters
@@ -211,7 +258,8 @@ pinned down by `New.IsLocalArtin`: writing `Art` for `New.localArtin Γ A w`,
 `χ (Art x) = -inv (χ, x)`, where `inv` is the local invariant (`New.Cohomology.classOfInvariant`
 read backwards); so uniformisers go to inverse Frobenii.
 
-`Γ` is the Galois group of `Ω / K`, and `(χ, x)` is the class `cyclicClass _ χ x` in `H²(D, Ω^×)`.
+`Γ` is the Galois group of `Ω / K`, and `(χ, x)` is the class `(unitsModule D).cyclicClass χ x` in
+`H²(D, Ω^×)`.
 Valuations are multiplicative: `Valued.v x = exp (-n)` says that `x` has order `n` at `w`.
 `New.FinPlace.q w`, written `w.q` or `q`, is the number of elements of the residue field.
 -/
@@ -280,7 +328,7 @@ and so preserves invariants. -/
 lemma isLocalArtin_comp_unitsMap {p : ℕ} [Fact p.Prime] [Algebra (LocField w) (PadicAlgCl p)]
     {j : Ω →+* PadicAlgCl p} (emb : IsCompletionEmb w p Γ A j)
     {f : (LocField w)ˣ →* TopologicalAbelianization (decompGroup Γ A)}
-    (hf : IsLocalArtin (decompGroup Γ A) (LocField w) (intQpBar p) f) :
+    (hf : IsLocalArtin (hΓ := emb.toIsProGalois) (decompGroup Γ A) (LocField w) (intQpBar p) f) :
     IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
       (f.comp (Units.map (algebraMap K (LocField w)).toMonoidHom)) := by
   obtain ⟨L, q_eq, -⟩ := h.isLocalGalois_and_residueCard_eq_and_isUniformizer Γ
@@ -288,7 +336,8 @@ lemma isLocalArtin_comp_unitsMap {p : ℕ} [Fact p.Prime] [Algebra (LocField w) 
   let D := decompGroup Γ A
   intro χ x
   obtain ⟨r, hr⟩ :=
-    L.classOfInvariant_bijective.surjective (-cyclicClass _ χ (DiscreteUnits.ofBase D Ω (.ofMul x)))
+    L.classOfInvariant_bijective.surjective
+      (-(unitsModule D).cyclicClass χ (DiscreteUnits.ofBase D Ω (.ofMul x)))
   -- `π` stays a uniformiser in `K_w`, so its image under `j` has order one.
   have π_unif_w : IsUniformizer (intQpBar p) (algebraMap K (LocField w) π) :=
     emb.isUniformizer_iff.mpr (by rw [v_algebraMap_eq_valuation, hπ])
@@ -310,7 +359,10 @@ lemma isLocalArtin_comp_unitsMap {p : ℕ} [Fact p.Prime] [Algebra (LocField w) 
   -- It remains to see that `j` carries the cocycle of `(χ, x)` over `Ω` to the one over `ℚ̄_p`.
   rw [MonoidHom.comp_apply, hf, ← pair, hr, map_neg, neg_inj]
   -- both are classes of cocycles, which agree as `j` extends the embedding of `K` in `K_w`
-  apply congrArg (Quotient.mk _)
+  rw [DiscreteModule.cyclicClass_apply, DiscreteModule.cyclicClass_apply,
+    DiscreteModule.pairMapH2_π₂]
+  refine congrArg _ (Subtype.ext (funext fun _ ↦ ?_))
+  simp only [pairMapZ2, LinearMap.coe_mk, AddHom.coe_mk]
   ext
   simp [emb.map_algebraMap]
 
@@ -326,7 +378,7 @@ lemma isLocalArtin_localArtin {p : ℕ} [Fact p.Prime] [Algebra (LocField w) (Pa
     {j : Ω →+* PadicAlgCl p} (emb : IsCompletionEmb w p Γ A j) :
     let f := localArtin Γ A w
     -- (a)
-    IsLocalArtin (decompGroup Γ A) (LocField w) (intQpBar p) f ∧
+    IsLocalArtin (hΓ := emb.toIsProGalois) (decompGroup Γ A) (LocField w) (intQpBar p) f ∧
     -- (b)
     IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
       (f.comp (Units.map (algebraMap K (LocField w)).toMonoidHom)) := by
@@ -336,9 +388,10 @@ lemma isLocalArtin_localArtin {p : ℕ} [Fact p.Prime] [Algebra (LocField w) (Pa
   -- Pontryagin duality gives `f` on `K_wˣ` with `χ (f x) = -inv (χ, x)`, the invariant of `K_w`.
   let inv := (AddEquiv.ofBijective _ emb.classOfInvariant_bijective).symm
   obtain ⟨f, hf_lift⟩ := exists_hom_abelianLift_eq
-    (((-cyclicClass _).compr₂ inv.toAddMonoidHom).flip.comp
+    (((-(unitsModule D (hΓ := emb.toIsProGalois)).cyclicClass).compr₂ inv.toAddMonoidHom).flip.comp
       (DiscreteUnits.ofBase D (K := LocField w) _))
-  have hf : IsLocalArtin D (LocField w) (intQpBar p) f := fun χ x ↦ by simp [hf_lift, inv, D]
+  have hf : IsLocalArtin (hΓ := emb.toIsProGalois) D (LocField w) (intQpBar p) f := fun χ x ↦ by
+    simp [hf_lift, inv, D]
   -- On `Kˣ`, `f` obeys the formula `P` for the invariant of the decomposition field.
   let ι : Kˣ →* (LocField w)ˣ := map (algebraMap K (LocField w)).toMonoidHom
   let P (f : (LocField w)ˣ →* TopologicalAbelianization D) :=
@@ -470,9 +523,10 @@ lemma localArtin_localNorm_eq_of_isCompletionEmb {p : ℕ} [Fact p.Prime]
     (hφ : ∀ (g : decompGroup Γ A) (x : PadicAlgCl p), φ g • x = g • x)
     (norm_eq : ∀ y : (LocField w)ˣ,
       localNorm k w y = y.map (Algebra.norm (LocField (w.below k))))
-    (art_u : IsLocalArtin (decompGroup Γ' (A.comap j)) (LocField (w.below k)) (intQpBar p)
-      (localArtin Γ' (A.comap j) (w.below k)))
-    (art_w : IsLocalArtin (decompGroup Γ A) (LocField w) (intQpBar p) (localArtin Γ A w))
+    (art_u : IsLocalArtin (hΓ := emb_u.toIsProGalois) (decompGroup Γ' (A.comap j))
+      (LocField (w.below k)) (intQpBar p) (localArtin Γ' (A.comap j) (w.below k)))
+    (art_w : IsLocalArtin (hΓ := emb_w.toIsProGalois) (decompGroup Γ A) (LocField w) (intQpBar p)
+      (localArtin Γ A w))
     {y : (LocField w)ˣ} {g : decompGroup Γ A} (hy : localArtin Γ A w y = g) :
     localArtin Γ' (A.comap j) (w.below k) (localNorm k w y) =
       ((φ g : decompGroup Γ' (A.comap j)) :
@@ -484,12 +538,12 @@ lemma localArtin_localNorm_eq_of_isCompletionEmb {p : ℕ} [Fact p.Prime]
   let W := LocField w
   let D := decompGroup Γ A
   let D' := decompGroup Γ' (A.comap j)
+  have gal_W : IsProGalois D W (PadicAlgCl p) := emb_w.toIsProGalois
+  have gal_V : IsProGalois D' V (PadicAlgCl p) := emb_u.toIsProGalois
   have inj_u : Function.Injective (classOfInvariant D' V (intQpBar p)) :=
     emb_u.isClassOfInvariant_classOfInvariant.left
   have inj_w : Function.Injective (classOfInvariant D W (intQpBar p)) :=
     emb_w.isClassOfInvariant_classOfInvariant.left
-  have gal_W : IsProGalois D W (PadicAlgCl p) := emb_w.toIsProGalois
-  have gal_V : IsProGalois D' V (PadicAlgCl p) := emb_u.toIsProGalois
   -- The image `U` of `φ` is open, and it is the Galois group of `ℚ̄_p` over `K_w`.
   let U : OpenSubgroup D' :=
     ⟨φ.range, (isOpenEmbedding_galois_restrict (L := W) φ hφ).isOpen_range⟩
@@ -499,8 +553,10 @@ lemma localArtin_localNorm_eq_of_isCompletionEmb {p : ℕ} [Fact p.Prime]
   refine abelianization_ext fun χ ↦ Multiplicative.ext (inj_u ?_)
   let Φ : D →ₜ* D' := ⟨φ, φ_cont⟩
   obtain ⟨r, hr⟩ := emb_u.exists_resH2_classOfInvariant_eq U
-    (cyclicClass _ (comap (subgroupIncl U.toSubgroup) χ) (DiscreteUnits.ofBase _ _ (.ofMul y)))
-  have cor : cyclicClass _ χ (DiscreteUnits.ofBase _ _ (.ofMul (y.map (Algebra.norm V)))) =
+    (((unitsModule D').restrictTo U).cyclicClass (comap (subgroupIncl U.toSubgroup) χ)
+      (DiscreteUnits.ofBase _ _ (.ofMul y)))
+  have cor : (unitsModule D').cyclicClass χ
+      (DiscreteUnits.ofBase _ _ (.ofMul (y.map (Algebra.norm V)))) =
       classOfInvariant D' V (intQpBar p) (U.toSubgroup.index • r) :=
     (DiscreteModule.cyclicClass_corestrictH0 U χ _ (corestrictH0_ofBase_eq_norm U y) _ hr).trans
       (map_nsmul (classOfInvariant D' V (intQpBar p)) U.toSubgroup.index r).symm
@@ -509,16 +565,29 @@ lemma localArtin_localNorm_eq_of_isCompletionEmb {p : ℕ} [Fact p.Prime]
   have unif_ord : ordRat (LocField (w.below k)) (intQpBar p)
       (DiscreteUnits.ofBase D' (PadicAlgCl p) (.ofMul (uniformizer (w.below k)))) = 1 :=
     (emb_u.isUniformizer_iff.mpr (v_uniformizer (w.below k))).ordRat_eq_one emb_u.toIsLocalGalois
-  have res : cyclicClass _ (comap Φ χ) (DiscreteUnits.ofBase _ _ (.ofMul y)) =
+  have res : (unitsModule D).cyclicClass (comap Φ χ) (DiscreteUnits.ofBase _ _ (.ofMul y)) =
       classOfInvariant D W (intQpBar p) (U.toSubgroup.index • r) := by
     rw [← h_data.mul_eq, ← emb_u.pairMapH2_classOfInvariant Φ (.id _) rfl hφ
       ⟨unif_ord, by simp [h_data.ordRat_eq, unif_ord]⟩ h_data.residueCard_eq r]
     -- Pulling back along `φ` is restriction to `U` followed by the isomorphism onto `U`.
     let Φ' : D →ₜ* U.toSubgroup := ⟨φ.rangeRestrict, φ_cont.subtype_mk _⟩
-    refine (congrArg (pairMapH2 (ρ' := unitsRep) Φ' .id fun g _ ↦ DiscreteUnits.ext (hφ g _))
-      hr).symm.trans ?_
-    obtain ⟨z, hz⟩ := Quot.exists_rep (classOfInvariant D' V (intQpBar p) r)
-    rw [← hz]
+    have hΦ' : ∀ (g : D) (m : DiscreteUnits (PadicAlgCl p)),
+        LinearMap.id (R := ℤ) (((unitsModule D').restrictTo U).ρ (Φ' g) m) =
+          (unitsModule D).ρ g (LinearMap.id (R := ℤ) m) :=
+      fun g _ ↦ DiscreteUnits.ext (hφ g _)
+    have h_res : (unitsModule D).cyclicClass (comap Φ χ) (DiscreteUnits.ofBase _ _ (.ofMul y)) =
+        DiscreteModule.pairMapH2 (B := unitsModule D) Φ' .id hΦ'
+          (((unitsModule D').restrictTo U).cyclicClass (comap (subgroupIncl U.toSubgroup) χ)
+            (DiscreteUnits.ofBase _ _ (.ofMul y))) := by
+      have h_cocycle := DiscreteModule.pairMapH2_π₂ (B := unitsModule D) Φ' LinearMap.id hΦ'
+        ⟨_, carry_smul_mem_Z2 ((unitsModule D').restrictTo U).ρ
+          (comap (subgroupIncl U.toSubgroup) χ) (DiscreteUnits.ofBase _ _ (.ofMul y))⟩
+      rw [DiscreteModule.cyclicClass_apply]
+      exact h_cocycle.symm
+    rw [h_res, ← hr]
+    obtain ⟨z, hz⟩ := (unitsModule D').π₂_surjective (classOfInvariant D' V (intQpBar p) r)
+    rw [← hz, DiscreteModule.resH2_π₂, DiscreteModule.pairMapH2_π₂,
+      DiscreteModule.pairMapH2_π₂]
     rfl
   -- So `χ` at the symbol of the norm of `y` and at `φ (Art y)` both have invariant `-n r`, over
   -- `k_u` and over `K_w`.
@@ -593,7 +662,8 @@ lemma isNormCompatible (ψ : Γ →* Γ') (j : Ω →+* Ω)
     have ker_eq : QZChar.ker χ = φ.range := by
       ext g'
       simpa using! hχ g'
-    have cyc_zero : cyclicClass _ χ (DiscreteUnits.ofBase _ (PadicAlgCl p) (.ofMul x)) = 0 := by
+    have cyc_zero :
+        (unitsModule D').cyclicClass χ (DiscreteUnits.ofBase _ (PadicAlgCl p) (.ofMul x)) = 0 := by
       simpa [u, hx] using art_u χ x
     have gal_ker : IsProGalois (QZChar.ker χ) W (PadicAlgCl p) :=
       of_fixingSubgroup_eq (K := V)
@@ -626,7 +696,8 @@ lemma denseRange_localArtin : DenseRange (localArtin Γ A w) := by
     (g : TopologicalAbelianization (decompGroup Γ A)) fun χ hχ ↦ ?_
   -- The formula `classOfInvariant (χ (Art x)) = -(χ, x)` makes all classes `(χ, x)` vanish.
   have h_cyc (x : Additive (LocField w)ˣ) :
-      cyclicClass unitsRep χ (DiscreteUnits.ofBase (decompGroup Γ A) (PadicAlgCl p) x) = 0 := by
+      (unitsModule (decompGroup Γ A) (hΓ := emb.toIsProGalois)).cyclicClass χ
+        (DiscreteUnits.ofBase (decompGroup Γ A) (PadicAlgCl p) x) = 0 := by
     simpa [hχ _ (subset_closure ⟨x.toMul, rfl⟩)] using
       (h.isLocalArtin_localArtin emb).left χ x.toMul
   have h_zero : χ.val g = 0 :=
@@ -796,12 +867,16 @@ lemma abelianLift_artinAt_principal (χ : ↥(QZChar Γ)) (x : Kˣ) :
     classOfInvariant (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
         (abelianLift χ (New.artinAt Γ w (ideleAt w (principalIdele x)))).toAdd =
       -(unitsModule Γ).resH2 (decompGroup Γ A)
-        (cyclicClass (unitsModule Γ).ρ χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x))) := by
+        ((unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x))) := by
   obtain ⟨p, hp_prime, alg, j, ⟨emb⟩⟩ := h.exists_isCompletionEmb Γ
   rw [h.abelianLift_artinAt]
   -- The formula over the decomposition field, for the restriction of `χ`; restricting `(χ, x)` is
   -- the same as pairing the restricted character with `x`.
-  exact (h.isLocalArtin_localArtin emb).right (QZChar.comap (subgroupIncl (decompGroup Γ A)) χ) x
+  refine ((h.isLocalArtin_localArtin emb).right
+    (QZChar.comap (subgroupIncl (decompGroup Γ A)) χ) x).trans ?_
+  rw [DiscreteModule.cyclicClass_apply, DiscreteModule.cyclicClass_apply,
+    DiscreteModule.resH2_π₂]
+  rfl
 
 /-- Let `A` lie over `w`, `χ` a character of `Γ` and `x` in `K^×`. Then `χ` kills
 `New.artinAt Γ w x` if and only if the global class `(χ, x) = δχ ∪ x` restricts to zero on the
@@ -809,7 +884,7 @@ decomposition group of `A`. -/
 lemma abelianLift_artinAt_eq_one_iff {χ : ↥(QZChar Γ)} {x : Kˣ} :
     abelianLift χ (New.artinAt Γ w (ideleAt w (principalIdele x))) = 1 ↔
       (unitsModule Γ).resH2 (decompGroup Γ A)
-        (cyclicClass (unitsModule Γ).ρ χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x))) = 0 := by
+        ((unitsModule Γ).cyclicClass χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x))) = 0 := by
   -- `classOfInvariant` is injective, so the left side says that the class in
   -- `abelianLift_artinAt_principal` vanishes.
   rw [← neg_eq_zero, ← h.abelianLift_artinAt_principal]
@@ -862,10 +937,10 @@ lemma valuation_smul_div_sub_lt_one {G k E : Type} [Group G] [TopologicalSpace G
   let T : DiscreteModule ℤ G := .of (.trivial ℤ G (ZMod n))
   have equiv (g : G) (i j : T) : μ (T.ρ g i * T.ρ g j) = (unitsModule G).ρ g (μ (i * j)) := by
     simp [T, ← map_cyclotomicCharMod_mul, h_cyc]
-  let c : ↥(Z1 T.ρ) →+ ↥(Z1 T.ρ) →+ (unitsModule G).H2 :=
+  let c : ↥(Z1 T.ρ) →+ ↥(Z1 T.ρ) →+ (unitsModule G).H 2 :=
     cupProduct (unitsModule G) T T (.compr₂ .mul μ) equiv
   have h_cup (x : kˣ) (ξ : ↥(Z1 T.ρ)) :
-      c (f x) ξ = -cyclicClass unitsRep (ofZModCocycle n ξ) (ι x) :=
+      c (f x) ξ = -(unitsModule G).cyclicClass (ofZModCocycle n ξ) (ι x) :=
     mk_eq_neg_cyclicClass_ofZModCocycle (ha x) ξ _ fun g₁ g₂ ↦ by
       simp [μ, T, ← hf x (a x) (ha x), ← map_nsmul, mul_comm]
   -- The cup product is anticommutative. Through `h_cup` and the definition of the Artin map this

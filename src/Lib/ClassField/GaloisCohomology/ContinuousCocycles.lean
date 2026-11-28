@@ -8,27 +8,25 @@ import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.ClassField.Places.GaloisDefs
 
 /-!
-# Continuous cohomology of discrete modules: cocycles, H², cyclic classes, local Artin map
+# Continuous cocycles of discrete modules
 
-This file builds the part of continuous group cohomology used in this library, using explicit
-cochains. It works with a representation `ρ` of a topological group `G` on a discrete `R`-module
-`M`, and with discrete modules `New.DiscreteModule R Γ`. It also defines the cyclic class of a
-character into `ℚ/ℤ` and an invariant, and the basic objects of local class field theory, where `Γ`
-is a Galois group of `Ω` over `K`. It then treats restriction and short exact sequences of discrete
-modules, and counts continuous 1-cocycles along exact sequences.
+This file builds explicit continuous cochains for a representation `ρ` of a topological group `G`
+on a discrete `R`-module `M`, and the discrete modules `New.DiscreteModule R Γ`. It also defines the
+cocycle of a character into `ℚ/ℤ` and an invariant, and some objects of local class field theory
+that do not involve cohomology, where `Γ` is a Galois group of `Ω` over `K`. It then treats
+restriction and short exact sequences of discrete modules, and counts continuous 1-cocycles along
+exact sequences. The cohomology groups themselves are `New.DiscreteModule.H`, in
+`Lib.ClassField.GaloisCohomology.Cohomology`.
 
 ## Main definitions and results
 
 * `New.B1`: the 1-coboundaries among the continuous 1-cocycles `New.Z1`.
-* `New.Z2`, `New.B2`, `New.H2`: continuous 2-cocycles, coboundaries and their quotient.
+* `New.Z2`, `New.B2`: continuous 2-cocycles and coboundaries.
 * `New.QZ`, `New.QZ.carry`, `New.QZChar`: the discrete group `ℚ/ℤ`, the carry of two representatives
   in `[0, 1)`, and continuous characters into `ℚ/ℤ`.
-* `New.cyclicClass`: the class of `(g, h) ↦ carry (χ g) (χ h) • w`, additive in `χ` and in `w`.
-* `New.IsClassOfInvariant`, `New.Cohomology.classOfInvariant`: the map from `ℚ/ℤ` to `H²(Γ, Ωˣ)`
-  normalised on unramified cyclic classes.
-* `New.IsLocalArtin`, `New.localArtin`, `New.placeOver`: the local Artin map, defined by duality
-  with the cyclic classes `New.cyclicClass`, its version on the completion of a number field at a
-  prime, and a chosen place over that prime.
+* `New.carry_smul_mem_Z2`: `(g, h) ↦ carry (χ g) (χ h) • w` is a continuous 2-cocycle.
+* `New.ordRat`, `New.placeOver`: the order normalised on `K`, and a chosen place over a prime of a
+  number field.
 * `New.DiscreteModule R Γ`: a discrete `R`-module with a continuous `R`-linear action of `Γ`.
 
 Notions from other files:
@@ -115,17 +113,6 @@ def B2 : Submodule R (G × G → M) :=
       simp only [Pi.add_apply, Pi.smul_apply, hf, hf', map_add, map_smul]
       module⟩
 
-/-- Continuous cohomology `H²(G, M)`: the continuous 2-cocycles of `ρ` modulo the coboundaries of
-continuous 1-cochains `G → M`.
-
-For a discrete module `A`, this explicit quotient is identified with the cohomology `A.H 2`,
-Mathlib's `continuousCohomology 2`, by `New.DiscreteModule.H2EquivH`. It stays a separate definition
-until the class field theory built on it (`cyclicClass`, `IsLocalArtin`, `localArtin`) moves onto Tau
-Ceti's, which waits on Tau Ceti. -/
-@[instance_reducible]
-def H2 : Type _ := Z2 ρ ⧸ (B2 ρ).comap (Z2 ρ).subtype
-  deriving AddCommGroup, Module R
-
 variable {ρ}
 
 /-! ### Maps induced by a compatible pair -/
@@ -139,19 +126,26 @@ abbrev pairMapZ1 (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m) := by b
   map_zero' := by bound
   map_add' := by bound
 
-/-- The linear map `H²(G, M) → H²(H, N)` induced by a continuous homomorphism `φ : H →ₜ* G` and an
-`R`-linear `u : M → N` with `u (ρ (φ g) m) = ρ' g (u m)` (the hypothesis `h`, proved by
-`bound` when it is not given): the class of `f` goes to the class of
-`(g, g') ↦ u (f (φ g, φ g'))`. -/
-def pairMapH2 (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m) := by bound) :
-    H2 ρ →ₗ[R] H2 ρ' :=
-  mapQ (comap (Z2 ρ).subtype (B2 ρ)) (comap (Z2 ρ').subtype (B2 ρ'))
-    { toFun f :=
-        ⟨fun p ↦ u (f.1 (p.map φ φ)), by have := f.2.1; fun_prop, fun g g' g'' ↦ by simp [f.2.2, h]⟩
-      map_add' f f' := Subtype.ext (funext (by simp))
-      map_smul' a f := Subtype.ext (funext (by simp)) }
-    -- The coboundary of `c` goes to the coboundary of `u ∘ c ∘ φ`.
-    fun f ⟨c, hc, hf⟩ ↦ ⟨u ∘ c ∘ φ, by fun_prop, by simp_all⟩
+/-- For a continuous homomorphism `φ : H →ₜ* G` and an `R`-linear `u : M → N` with
+`u (ρ (φ g) m) = ρ' g (u m)` (the hypothesis `h`, proved by `bound` when it is not given), the
+linear map `f ↦ u ∘ f ∘ (φ × φ)` from continuous 2-cocycles of `ρ` to those of `ρ'`. -/
+def pairMapZ2 (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m) := by bound) :
+    Z2 ρ →ₗ[R] Z2 ρ' where
+  toFun f :=
+    ⟨fun p ↦ u (f.1 (p.map φ φ)), by have := f.2.1; fun_prop, fun g g' g'' ↦ by simp [f.2.2, h]⟩
+  map_add' f f' := Subtype.ext (funext (by simp))
+  map_smul' a f := Subtype.ext (funext (by simp))
+
+@[simp]
+lemma coe_pairMapZ2_apply (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m)) (f : Z2 ρ)
+    (p : H × H) : (pairMapZ2 φ u h f : H × H → N) p = u ((f : G × G → M) (φ p.1, φ p.2)) :=
+  rfl
+
+/-- `pairMapZ2` sends coboundaries to coboundaries: that of `c` goes to that of `u ∘ c ∘ φ`. -/
+lemma pairMapZ2_mem_B2 (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m)) {f : Z2 ρ}
+    (hf : (f : G × G → M) ∈ B2 ρ) : (pairMapZ2 φ u h f : H × H → N) ∈ B2 ρ' := by
+  obtain ⟨c, hc, hf⟩ := hf
+  exact ⟨u ∘ c ∘ φ, by fun_prop, by simp_all⟩
 
 /-! ### Representations given by a homomorphism -/
 
@@ -170,12 +164,10 @@ def charRep (M : Type*) [AddCommGroup M] [Module R M] (χ : G →* Rˣ) : Repres
 end New
 
 /-!
-## Characters into ℚ/ℤ and the cyclic class of (χ, w)
+## Characters into ℚ/ℤ and the cocycle of (χ, w)
 
-Symbols in the second cohomology: for a character `χ` and an invariant `w`, the class of the cocycle
-`(g, h) ↦ carry (χ g) (χ h) • w`. This class is defined directly by this cocycle; it is the cup
-product of `w` with the image `δχ` of `χ` under the connecting map of `0 → ℤ → ℚ → ℚ/ℤ → 0`. This
-identification is not proved here, and nothing in this file uses it.
+For a character `χ` and an invariant `w`, the continuous 2-cocycle `(g, h) ↦ carry (χ g) (χ h) • w`.
+Its class is `New.DiscreteModule.cyclicClass`, in `Lib.ClassField.GaloisCohomology.Cohomology`.
 
 * `New.QZ`: the discrete group `ℚ/ℤ`; `New.QZ.fracRep`: the representative in `[0, 1)`.
 * `New.QZ.carry`: the integer `fracRep a + fracRep b - fracRep (a + b)` (`New.QZ.cast_carry`), which
@@ -261,29 +253,6 @@ lemma carry_smul_mem_Z2 (χ : QZChar G) (w : ρ.invariants) :
     linarith only [QZ.carry_add_add_carry a b c]
   have hw_inv : ρ g (w : M) = w := w.prop g
   rw [hf_mul, hf_mul, h_carry, map_zsmul, hw_inv, add_smul, sub_smul]
-
-/-- The class in `H²(G, M)` of the cocycle `(g, h) ↦ carry (χ g) (χ h) • w`, additive in the
-continuous character `χ : G → ℚ/ℤ` and in the invariant `w` of `ρ`. -/
-def cyclicClass : QZChar G →+ ρ.invariants →+ H2 ρ :=
-  AddMonoidHom.mk'
-    (fun χ ↦
-      AddMonoidHom.mk' (fun w ↦ ⟦⟨fun p ↦ (χ.1 p.1).carry (χ.1 p.2) • w, carry_smul_mem_Z2 ρ χ w⟩⟧)
-        (fun w w' ↦ by aesop))
-    (fun ⟨χ, hχ_cont, hχ⟩ ⟨ψ, hψ_cont, hψ⟩ ↦ by
-      -- the cocycle of `χ + ψ` minus those of `χ` and `ψ` is the coboundary of
-      -- `g ↦ -carry (χ g) (ψ g) • w`
-      refine AddMonoidHom.ext fun w ↦ (Submodule.Quotient.eq _).mpr
-        ⟨fun g ↦ (χ g).carry (ψ g) • -w, by fun_prop, fun g h ↦ ?_⟩
-      have hw_inv : ρ g (w : M) = w := w.prop g
-      change (χ g + ψ g).carry (χ h + ψ h) • (w : M) -
-          ((χ g).carry (χ h) • (w : M) + (ψ g).carry (ψ h) • (w : M)) =
-        ρ g ((χ h).carry (ψ h) • -(w : M)) - (χ (g * h)).carry (ψ (g * h)) • -(w : M) +
-          (χ g).carry (ψ g) • -(w : M)
-      simp only [hχ, hψ, Representation.trivial_apply, map_zsmul, map_neg, hw_inv]
-      -- compare the integer coefficients of `w`: add up `χ g + ψ g + χ h + ψ h` in two orders
-      match_scalars
-      qify
-      grind)
 
 end New
 
@@ -372,7 +341,7 @@ section
 
 variable [IsTopologicalGroup Γ]
 
-/-! ### The order, the class of an invariant and the local Artin map -/
+/-! ### The order normalised on `K` -/
 
 /-- The number of elements of the residue field of the valuation ring `A ∩ K` of `K` (zero if it is
 infinite). -/
@@ -398,71 +367,9 @@ lemma valuation_pow_eq_iff_mul_ordRat_eq_of_exists
     A.valuation x.toMul ^ n = valuationVia K A π ^ a ↔ n * ordRat K A x = a :=
   Classical.epsilon_spec h_exists π hπ x n a
 
-/-- The property that a map `b : ℚ/ℤ → H²(Γ, Ωˣ)` sends `r` to the class of invariant `r`. First,
-`b` is injective. Second, let the continuous character `χ : Γ → ℚ/ℤ` vanish on the inertia group
-of `A`, let `φ` be a Frobenius element for `q = residueCard K A`, the number of elements of the
-residue field, and let the invariant `w` of `Ωˣ` have normalised order `ordRat K A w = n`; then
-`cyclicClass unitsRep χ w = n • b (χ φ)`. -/
-def IsClassOfInvariant (b : QZ →+ H2 (unitsRep (Γ := Γ) (Ω := Ω))) : Prop :=
-  Function.Injective b ∧
-  ∀ χ : QZChar Γ,
-    (∀ g ∈ inertiaGroup Γ A, (χ : Γ → QZ) g = 0) →
-    ∀ φ : Γ, IsFrob A (residueCard K A) φ →
-    ∀ (w : (unitsRep (Γ := Γ) (Ω := Ω)).invariants) (n : ℤ),
-      ordRat K A (w : DiscreteUnits Ω) = n →
-      cyclicClass unitsRep χ w = n • b ((χ : Γ → QZ) φ)
-
-/-- A chosen additive map `ℚ/ℤ → H²(Γ, Ωˣ)` with the property `New.IsClassOfInvariant`; when such a
-map exists, it sends `r` to the class of invariant `r`. See
-`New.Cohomology.isClassOfInvariant_classOfInvariant_of_exists`, and for local fields
-`New.IsLocalGalois.isClassOfInvariant_classOfInvariant`. -/
-def Cohomology.classOfInvariant : QZ →+ H2 (unitsRep (Γ := Γ) (Ω := Ω)) :=
-  Classical.epsilon (IsClassOfInvariant Γ K A)
-
-omit [IsTopologicalGroup Γ] in
-/-- `New.Cohomology.classOfInvariant` has the property `New.IsClassOfInvariant` as soon as some map
-has it. -/
-lemma Cohomology.isClassOfInvariant_classOfInvariant_of_exists
-    (h_exists : ∃ b : QZ →+ H2 (unitsRep (Γ := Γ) (Ω := Ω)), IsClassOfInvariant Γ K A b) :
-    IsClassOfInvariant Γ K A (Cohomology.classOfInvariant Γ K A) :=
-  Classical.epsilon_spec h_exists
-
-/-- The property that the homomorphism `f` from `Lˣ` to the topological abelianisation of `Γ`
-satisfies `classOfInvariant (χ (f x)) = -cyclicClass unitsRep χ x` for every continuous character
-`χ : Γ → ℚ/ℤ` and every `x` in `Lˣ`, where `x` is viewed as an invariant of `Ωˣ`, and `χ (f x)` is
-the value at `f x` of `QZChar.abelianLift χ`, the map induced by `χ` on the topological
-abelianisation. -/
-def IsLocalArtin {L : Type*} [Field L] [Algebra L Ω] [SMulCommClass Γ L Ω]
-    (f : Lˣ →* TopologicalAbelianization Γ) : Prop :=
-  ∀ (χ : QZChar Γ) (x : Lˣ),
-    Cohomology.classOfInvariant Γ K A (QZChar.abelianLift χ (f x)).toAdd =
-      -cyclicClass unitsRep χ (DiscreteUnits.ofBase Γ Ω (Additive.ofMul x))
-
 end
 
 variable {K} [IsProGalois Γ K Ω] [NumberField K] (v : IsDedekindDomain.HeightOneSpectrum (𝓞 K))
-
-/-! ### The local Artin map at a prime of a number field -/
-
-/-- The local Artin map at `v`: a chosen homomorphism from the units of the completion
-`v.adicCompletion K` of `K` at `v` to the abelianised decomposition group of `A`, whose
-restriction to `Kˣ` satisfies `New.IsLocalArtin` over the fixed field of the decomposition group;
-unspecified if there is none (see `New.isLocalArtin_localArtin_comp_of_exists` and
-`New.IsPlaceOver.isLocalArtin_localArtin`). -/
-def localArtin : (v.adicCompletion K)ˣ →* TopologicalAbelianization (decompGroup Γ A) :=
-  Classical.epsilon fun f : (v.adicCompletion K)ˣ →* TopologicalAbelianization (decompGroup Γ A) ↦
-    IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
-      (f.comp (map (algebraMap K (v.adicCompletion K)).toMonoidHom))
-
-/-- The restriction of `New.localArtin Γ A v` to `Kˣ` has its defining property as soon as the
-restriction of some homomorphism has it. -/
-lemma isLocalArtin_localArtin_comp_of_exists
-    (h_exists : ∃ f : (v.adicCompletion K)ˣ →* TopologicalAbelianization (decompGroup Γ A),
-      IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
-        (f.comp (map (algebraMap K (v.adicCompletion K)).toMonoidHom))) :
-    IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
-      ((localArtin Γ A v).comp (map (algebraMap K (v.adicCompletion K)).toMonoidHom)) :=
-  Classical.epsilon_spec h_exists
 
 /-- For a finite prime `v` of the number field `K`, a chosen valuation subring of `New.Ω` (the
 algebraic closure of `ℚ`) lying over `v`. It does lie over `v`
@@ -534,7 +441,7 @@ variable {R Γ : Type} {G : Type} [CommRing R] [Group Γ] [TopologicalSpace Γ] 
 /-- A discrete module is read as its underlying type `V`. -/
 instance : CoeSort (DiscreteModule R Γ) Type := ⟨V⟩
 
-/-! ### Morphisms, cohomology and restriction -/
+/-! ### Morphisms and restriction -/
 
 /-- For discrete Γ-modules M and A over R, the R-linear maps M → A commuting with the action of
 Γ. -/
@@ -552,24 +459,12 @@ abbrev coboundary : A.V →ₗ[R] Z1 A.ρ :=
 /-- The R-submodule of elements of a discrete Γ-module A fixed by all of Γ. -/
 abbrev H0 : Submodule R A.V := A.ρ.invariants
 
-/-- The continuous cohomology H²(Γ,A) of a discrete Γ-module A. -/
-abbrev H2 : Type := New.H2 A.ρ
-
 /-- For a continuous homomorphism φ: G → Γ, the discrete Γ-module A viewed as a discrete
 G-module through φ. -/
 abbrev restrictAlong : DiscreteModule R G := of (A.ρ.comp φ.toMonoidHom)
 
 /-- For a subgroup U of Γ, the discrete Γ-module A viewed as a discrete U-module. -/
 abbrev restrictTo (U : Subgroup Γ) : DiscreteModule R U := A.restrictAlong (subgroupIncl U)
-
-/-- For a subgroup U of Γ, the restriction map H²(Γ,A) → H²(U,A). -/
-abbrev resH2 (U : Subgroup Γ) : A.H2 →ₗ[R] (A.restrictTo U).H2 :=
-  pairMapH2 (subgroupIncl U) LinearMap.id
-
-/-- The linear map H²(Γ,M) → H²(Γ,N) induced by composing cocycles with a Γ-equivariant linear
-map M → N. -/
-abbrev Hom.mapH2 : New.H2 M.ρ →ₗ[R] New.H2 N.ρ :=
-  pairMapH2 (ContinuousMonoidHom.id Γ) ι.toLinearMap ι.isIntertwining
 
 /-! ### Short exact sequences -/
 

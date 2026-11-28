@@ -18,9 +18,13 @@ comparisons of explicit cocycles with Mathlib's continuous cohomology.
 * `New.DiscreteModule.zeroEquiv`: `H⁰(Γ, A)` is the module of invariants.
 * `New.DiscreteModule.π₁`, `New.DiscreteModule.ker_π₁`: the `R`-linear map from the continuous
   1-cocycles onto `H¹(Γ, A)`, with kernel the coboundaries.
-* `New.DiscreteModule.π₂`, `New.DiscreteModule.H2EquivH`: the `R`-linear map from the continuous
-  2-cocycles onto `H²(Γ, A)`, for a locally compact `Γ`, and the identification of the explicit
-  `New.DiscreteModule.H2` with `H²(Γ, A)`.
+* `New.DiscreteModule.π₂`, `New.DiscreteModule.ker_π₂`: the `R`-linear map from the continuous
+  2-cocycles onto `H²(Γ, A)`, for a locally compact `Γ`, with kernel the coboundaries.
+* `New.DiscreteModule.pairMapH2`, `New.DiscreteModule.resH2`, `New.DiscreteModule.Hom.mapH2`: the
+  maps on `H²` induced by a compatible pair, by restriction to a subgroup, and by an equivariant
+  map, with their values on classes of cocycles.
+* `New.DiscreteModule.cyclicClass`: the class of `(g, h) ↦ carry (χ g) (χ h) • w` for a character
+  `χ : Γ → ℚ/ℤ` and an invariant `w`, additive in `χ` and in `w`.
 * `New.DiscreteModule.card_eq_card_map_π₁_mul_card_inf_B1`,
   `New.DiscreteModule.length_eq_length_map_π₁_add_length_inf_B1`: the counts of
   `Lib.ClassField.GaloisCohomology.ClassCounts` for the classes in `H¹(Γ, A)`.
@@ -294,11 +298,117 @@ lemma ker_π₂ : LinearMap.ker A.π₂ = (B2 A.ρ).comap (Z2 A.ρ).subtype := b
     AddSubgroup.mem_addSubgroupOf]
   rfl
 
+/-- A continuous 2-cocycle has class `0` in `H²(Γ, A)` exactly when it is a coboundary. -/
+lemma π₂_eq_zero_iff {z : Z2 A.ρ} : A.π₂ z = 0 ↔ (z : Γ × Γ → A) ∈ B2 A.ρ := by
+  rw [← LinearMap.mem_ker, ker_π₂, Submodule.mem_comap, Submodule.coe_subtype]
+
+/-- Two continuous 2-cocycles have the same class in `H²(Γ, A)` exactly when they differ by a
+coboundary. -/
+lemma π₂_eq_π₂_iff {z z' : Z2 A.ρ} : A.π₂ z = A.π₂ z' ↔ (z - z' : Γ × Γ → A) ∈ B2 A.ρ := by
+  rw [← sub_eq_zero, ← map_sub, π₂_eq_zero_iff, Submodule.coe_sub]
+
 /-- The explicit `H²(Γ, A)`, continuous 2-cocycles modulo coboundaries, is the cohomology
-`H²(Γ, A)`. -/
-def H2EquivH : A.H2 ≃ₗ[R] A.H 2 :=
+`H²(Γ, A)`, `R`-linearly. -/
+def quotEquivH2 : (Z2 A.ρ ⧸ (B2 A.ρ).comap (Z2 A.ρ).subtype) ≃ₗ[R] A.H 2 :=
   (Submodule.quotEquivOfEq _ _ A.ker_π₂.symm).trans
     (A.π₂.quotKerEquivOfSurjective A.π₂_surjective)
 
+@[simp]
+lemma quotEquivH2_mk (z : Z2 A.ρ) : A.quotEquivH2 (Submodule.Quotient.mk z) = A.π₂ z := rfl
+
+/-! ### Maps in degree two -/
+
+section PairMap
+
+variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
+  {A} {B : DiscreteModule R G} (φ : G →ₜ* Γ) (u : A.V →ₗ[R] B.V)
+
+/-- The linear map `H²(Γ, A) → H²(G, B)` induced by a continuous homomorphism `φ : G →ₜ* Γ` and an
+`R`-linear `u : A → B` with `u (φ g • m) = g • u m` (the hypothesis `h`, proved by `bound` when it
+is not given): the class of `f` goes to the class of `(g, g') ↦ u (f (φ g, φ g'))`. -/
+def pairMapH2 (h : ∀ (g : G) (m : A), u (A.ρ (φ g) m) = B.ρ g (u m) := by bound) :
+    A.H 2 →ₗ[R] B.H 2 :=
+  B.quotEquivH2.toLinearMap ∘ₗ
+    ((B2 A.ρ).comap (Z2 A.ρ).subtype).mapQ ((B2 B.ρ).comap (Z2 B.ρ).subtype) (pairMapZ2 φ u h)
+      (fun _ hf ↦ pairMapZ2_mem_B2 φ u h hf) ∘ₗ
+    A.quotEquivH2.symm.toLinearMap
+
+@[simp]
+lemma pairMapH2_π₂ (h : ∀ (g : G) (m : A), u (A.ρ (φ g) m) = B.ρ g (u m)) (z : Z2 A.ρ) :
+    pairMapH2 φ u h (A.π₂ z) = B.π₂ (pairMapZ2 φ u h z) := by
+  have hz : A.quotEquivH2.symm (A.π₂ z) = Submodule.Quotient.mk z :=
+    (LinearEquiv.symm_apply_eq _).2 rfl
+  simp only [pairMapH2, LinearMap.coe_comp, LinearEquiv.coe_coe, Function.comp_apply, hz]
+  rfl
+
+end PairMap
+
+variable {A}
+
+/-- For a subgroup `U` of `Γ`, the restriction map `H²(Γ, A) → H²(U, A)`. -/
+abbrev resH2 (U : Subgroup Γ) [LocallyCompactSpace U] : A.H 2 →ₗ[R] (A.restrictTo U).H 2 :=
+  pairMapH2 (subgroupIncl U) LinearMap.id
+
+/-- Restriction sends the class of `z` to the class of its restriction `z ∘ (U × U → Γ × Γ)`. -/
+@[simp]
+lemma resH2_π₂ (U : Subgroup Γ) [LocallyCompactSpace U] (z : Z2 A.ρ) :
+    A.resH2 U (A.π₂ z) =
+      (A.restrictTo U).π₂ (pairMapZ2 (subgroupIncl U) LinearMap.id (fun _ _ ↦ rfl) z) :=
+  pairMapH2_π₂ _ _ _ z
+
+variable {M N : DiscreteModule R Γ} (ι : M.Hom N)
+
+/-- The linear map `H²(Γ, M) → H²(Γ, N)` induced by composing cocycles with a `Γ`-equivariant linear
+map `M → N`. -/
+abbrev Hom.mapH2 : M.H 2 →ₗ[R] N.H 2 :=
+  pairMapH2 (ContinuousMonoidHom.id Γ) ι.toLinearMap
+    fun g m ↦ LinearMap.congr_fun (ι.isIntertwining' g) m
+
+@[simp]
+lemma Hom.mapH2_π₂ (z : Z2 M.ρ) :
+    ι.mapH2 (M.π₂ z) = N.π₂ (pairMapZ2 (ContinuousMonoidHom.id Γ) ι.toLinearMap
+      (fun g m ↦ LinearMap.congr_fun (ι.isIntertwining' g) m) z) :=
+  pairMapH2_π₂ _ _ _ z
+
+/-! ### Cyclic classes -/
+
+variable (A)
+
+/-- The class in `H²(Γ, A)` of the cocycle `(g, h) ↦ carry (χ g) (χ h) • w`, additive in the
+continuous character `χ : Γ → ℚ/ℤ` and in the invariant `w` of `A`. It is the cup product of `w`
+with the image `δχ` of `χ` under the connecting map of `0 → ℤ → ℚ → ℚ/ℤ → 0`; this identification is
+not proved here, and nothing uses it. -/
+def cyclicClass : QZChar Γ →+ A.ρ.invariants →+ A.H 2 :=
+  AddMonoidHom.mk'
+    (fun χ ↦
+      AddMonoidHom.mk'
+        (fun w ↦ A.π₂ ⟨fun p ↦ (χ.1 p.1).carry (χ.1 p.2) • w, carry_smul_mem_Z2 A.ρ χ w⟩)
+        (fun w w' ↦ by
+          rw [← map_add]
+          congr 1
+          ext p
+          simp [smul_add]))
+    (fun ⟨χ, hχ_cont, hχ⟩ ⟨ψ, hψ_cont, hψ⟩ ↦ by
+      -- the cocycle of `χ + ψ` minus those of `χ` and `ψ` is the coboundary of
+      -- `g ↦ -carry (χ g) (ψ g) • w`
+      refine AddMonoidHom.ext fun w ↦ ?_
+      change A.π₂ _ = A.π₂ _ + A.π₂ _
+      rw [← map_add, π₂_eq_π₂_iff]
+      refine ⟨fun g ↦ (χ g).carry (ψ g) • -w, by fun_prop, fun g h ↦ ?_⟩
+      have hw_inv : A.ρ g (w : A) = w := w.prop g
+      change (χ g + ψ g).carry (χ h + ψ h) • (w : A) -
+          ((χ g).carry (χ h) • (w : A) + (ψ g).carry (ψ h) • (w : A)) =
+        A.ρ g ((χ h).carry (ψ h) • -(w : A)) - (χ (g * h)).carry (ψ (g * h)) • -(w : A) +
+          (χ g).carry (ψ g) • -(w : A)
+      simp only [hχ, hψ, Representation.trivial_apply, map_zsmul, map_neg, hw_inv]
+      -- compare the integer coefficients of `w`: add up `χ g + ψ g + χ h + ψ h` in two orders
+      match_scalars
+      qify
+      grind)
+
+lemma cyclicClass_apply (χ : QZChar Γ) (w : A.ρ.invariants) :
+    A.cyclicClass χ w =
+      A.π₂ ⟨fun p ↦ (χ.1 p.1).carry (χ.1 p.2) • w, carry_smul_mem_Z2 A.ρ χ w⟩ :=
+  rfl
 
 end New.DiscreteModule

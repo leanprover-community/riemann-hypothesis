@@ -153,8 +153,8 @@ lemma hasse_norm [IsCyclic Gal(L/K)] (x : Kˣ)
   algebraize [Ω.fieldEmb L, (Ω.fieldEmb L).comp (algebraMap K L)]
   obtain ⟨χ, hχ⟩ := exists_isProGalois_ker_of_isCyclic (K := K) (L := L) inferInstance
   -- `α` is the symbol `(χ, x)` in the Brauer group.
-  set α : (unitsModule Gal(Ω/K)).H2 :=
-    cyclicClass (unitsModule Gal(Ω/K)).ρ χ (DiscreteUnits.ofBase Gal(Ω/K) Ω (Additive.ofMul x))
+  set α : (unitsModule Gal(Ω/K)).H 2 :=
+    (unitsModule Gal(Ω/K)).cyclicClass χ (DiscreteUnits.ofBase Gal(Ω/K) Ω (Additive.ofMul x))
   obtain ⟨U, hU_conj, hU_res⟩ : ∃ U : OpenSubgroup Gal(Ω/K),
       (∀ c : Gal(Ω/K), IsComplexConj c → c ∈ U) ∧ (unitsModule Gal(Ω/K)).resH2 U α = 0 :=
     hx_pos.exists_resH2_cyclicClass_eq_zero (χ := χ)

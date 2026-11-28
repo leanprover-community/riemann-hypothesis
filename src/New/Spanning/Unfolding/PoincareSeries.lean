@@ -458,7 +458,6 @@ theorem integral_typeKernel_mul_besselFn (x : GInf E ε) (i : S.BesselCoord) :
   have h_homeo (z : GInf E ε) (v : NumberField.InfinitePlace E) :
       X.realHomeomorph (x * z) v = X.realHomeomorph x v * DiscreteSeries.frameEquiv.symm (z v) := by
     simp [realHomeomorph, mul_assoc]
-    rfl
   -- The integrand is a product over the places, and the kernel at `v` fixes the local function.
   let F (v : NumberField.InfinitePlace E) (z : USign ε) : ℂ := (l v).dsKernel z *
     (S.besselSystem v).besselFn .full (X.realHomeomorph x v * DiscreteSeries.frameEquiv.symm z)
