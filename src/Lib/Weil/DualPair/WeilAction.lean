@@ -89,12 +89,15 @@ variable {E m m' l l' R : Type*} [Field E] [CMType E]
 
 /-! ### Matrices as vectors on pairs of indices -/
 
+/-- Converting a matrix to a vector and back yields the original matrix. -/
 @[simp]
 lemma vecToMatrix_matrixToVec (x : Matrix m' m R) : vecToMatrix (matrixToVec x) = x := rfl
 
+/-- Converting a vector to a matrix and back yields the original vector. -/
 @[simp]
 lemma matrixToVec_vecToMatrix (y : m' × m → R) : matrixToVec (vecToMatrix y) = y := rfl
 
+/-- Preservation of addition under vectorisation of matrices. -/
 @[simp]
 lemma matrixToVec_add [Add R] (x y : Matrix m' m R) :
   matrixToVec (x + y) = matrixToVec x + matrixToVec y := rfl
