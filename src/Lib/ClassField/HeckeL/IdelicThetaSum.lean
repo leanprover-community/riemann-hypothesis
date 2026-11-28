@@ -391,8 +391,8 @@ lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
     R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹, fun l hl ↦ ?_⟩
   let t : ℝ := ((n : ℝ) * l) ^ (finrank ℚ K : ℝ)⁻¹
   have ht : 0 < t := by positivity
-  refine ⟨integral (ENNReal.ofReal l⁻¹ • volume) (adelicTent ((r - R * t * r) / 3) d),
-    fun b hb ↦ ?_⟩
+  let ρ := (r - R * t * r) / 3
+  refine ⟨integral (ENNReal.ofReal l⁻¹ • volume) (adelicTent ρ d), fun b hb ↦ ?_⟩
   -- Blichfeldt: as `t ^ [K : ℚ] = n * l`, the preimage of the box of radius `t * (r / 6)` under
   -- multiplication by `b` has `n` times the volume of the box of radius `r / 6`, which is more
   -- than the volume of `F`.
@@ -401,10 +401,7 @@ lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
     field_simp
   have h_vol : volume F < volume ((b.map val val * ·) ⁻¹' adelicBox d (t * (r / 6))) := by
     rwa [hF_vol, volume_preimage_idele_mul_adelicBox d ht b, h_scale, ENNReal.ofReal_natCast]
-  obtain ⟨γ, hγ_inf, hγ_fin⟩ : ∃ γ : principalIdeles K,
-      ‖((b * γ.val).map val val).fst‖ < 2 * (t * (r / 6)) ∧
-        d.val * ((b * γ.val).map val val).snd ∈ Ô K :=
-    exists_principal_mul_mem_box d b hF h_vol
+  obtain ⟨γ, hγ_inf, hγ_fin⟩ := exists_principal_mul_mem_box d b hF h_vol
   have hγ_small : ‖((b * γ.val).map val val).fst‖ < t * r / 3 := by linarith
   -- `f ρ` is the tent of radius `ρ` after multiplication by `b * γ`. For `ρ ≤ 1` the term of `0`
   -- vanishes, so `thetaSum d ρ b` is the sum of `f ρ` over `j.range`; and the integral of `f ρ` is
@@ -416,26 +413,18 @@ lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
     have h_int : Integrable (f ρ) := (hasCompactSupport_adelicTent_mul ρ d (b * γ.val)).integrable
     rw [← hF.sum_restrict] at h_int
     simpa only [hF.sum_restrict] using hasSum_integral_measure h_int
-  -- Each cell is within `R * t` times the tent of radius `r` of its term of `thetaSum d (r / 3) b`.
-  have h_bound :
-      ‖(∫ x, f ((r - R * t * r) / 3) x) - thetaSum d (r / 3) b‖ ≤ R * t * thetaSum d r b :=
-    ((h_cells _).sub (h_sum (r / 3) (by linarith))).norm_le_of_bounded
-      ((h_sum r hr.le).mul_left (R * t)) <|
-      norm_setIntegral_vadd_sub_adelicTent_le r d hR ht hr_pos hF_sub hF_meas hF_vol hγ_small hγ_fin
-  -- Change variables by `b * γ`, of module `l`.
-  have h_module : ideleModule (b * γ.val) = l := by
-    rw [map_mul, ideleModule_principal_eq_one, mul_one, hb]
-  have h_change : ∫ x, adelicTent ((r - R * t * r) / 3) d x ∂(ENNReal.ofReal l⁻¹ • volume) =
-      ∫ x, f ((r - R * t * r) / 3) x := by
-    rw [← h_module]
-    exact ((measurePreserving_idele_mul (b * γ.val)).hasLaw.integral_comp (by fun_prop)).symm
-  rw [h_change]
-  calc |(∫ x, f ((r - R * t * r) / 3) x) - thetaSum d (r / 3) b|
-      ≤ R * t * thetaSum d r b := h_bound
-    _ = R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹ * l ^ (finrank ℚ K : ℝ)⁻¹ * thetaSum d r b := by
-        rw [mul_assoc R ((n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹), ← Real.mul_rpow n.cast_nonneg hl.le]
-    _ ≤ R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹ * l ^ (finrank ℚ K : ℝ)⁻¹ * |thetaSum d r b| :=
-        mul_le_mul_of_nonneg_left (le_abs_self _) (by positivity)
+  -- Change variables by the small representative, which still has module `l`.
+  have h_mul := measurePreserving_idele_mul (b * γ.val)
+  rw [map_mul, ideleModule_principal_eq_one, mul_one, hb] at h_mul
+  rw [← h_mul.hasLaw.integral_comp (f := adelicTent ρ d) (by fun_prop),
+    mul_assoc R, ← Real.mul_rpow n.cast_nonneg hl.le]
+  calc |(∫ x, f ρ x) - thetaSum d (r / 3) b|
+      ≤ R * t * thetaSum d r b :=
+      ((h_cells ρ).sub (h_sum (r / 3) (by linarith))).norm_le_of_bounded
+        ((h_sum r hr.le).mul_left (R * t)) <|
+        norm_setIntegral_vadd_sub_adelicTent_le r d hR ht hr_pos hF_sub hF_meas hF_vol
+          hγ_small hγ_fin
+    _ ≤ R * t * |thetaSum d r b| := mul_le_mul_of_nonneg_left (le_abs_self _) (mul_pos hR ht).le
 
 end New.ZetaIntegral
 
