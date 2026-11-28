@@ -75,6 +75,99 @@ section ModelAlongArc
 open CategoryTheory AlgebraicGeometry New.ValuativeArc
 open scoped CategoryTheory.MonoidalCategory
 
+namespace New.ThetaObject.TorusModel
+variable {E : Type} [Field E] [CMBase E] {D : PEL E} {Z : Scheme}
+  {τ : Z ⟶ Spec (CommRingCat.of (NumberField.RingOfIntegers E))} {O : Type}
+  {X : ThetaFamily D Z τ} [CommRing O] [ValuativeArc O]
+  {y : ThetaObject X (Spec (CommRingCat.of O))} {x : ThetaObject X (Spec (CommRingCat.of ℂ))}
+
+/-- Restriction to the generic point is an `𝓞 E`-linear isomorphism from the sections of
+`y.groupScheme` over `O` to those of its generic fibre `x.groupScheme` over `ℂ`. -/
+private def genericPullSectionEquiv (h_pull : x.IsPullbackAlong (genericPt (O := O)) y) :
+    (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme) ≃ₗ[NumberField.RingOfIntegers E]
+      (𝟙_ (Over (Spec (CommRingCat.of ℂ))) ⟶ x.groupScheme) :=
+  LinearEquiv.ofBijective h_pull.isGroupBaseChange.pullSection
+    (h_pull.isGroupBaseChange.pointEquiv.symm.bijective.comp bijective_restrict_genericPt)
+
+/-- For a section `s` of `y.groupScheme` over `O`, its restriction
+`genericPullSectionEquiv h_pull s` to the generic fibre `x.groupScheme`, followed by
+`h_pull.schemeMap`, equals `genericPt ≫ s`. -/
+private lemma genericPullSectionEquiv_comp (h_pull : x.IsPullbackAlong (genericPt (O := O)) y)
+    (s : 𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme) :
+    (genericPullSectionEquiv h_pull s).left ≫ h_pull.schemeMap.left = genericPt ≫ s.left :=
+  h_pull.isGroupBaseChange.pullSection_comp s
+
+variable {V : Type} [FinComplexSpace V] {g : GL D.Index (𝔸f E)} {ℓ : Matrix D.Index D.Index ℂ}
+
+/-- On complex points, transporting `expMap` along `(genericPullSectionEquiv h_pull)⁻¹` simply
+post-composes `atGeneric expMap` with `h_pull.schemeMap.left`. -/
+private lemma atGeneric_symm_comp_expMap {Y : ThetaTori.PeriodMap D g ℓ V} (m : x.TorusModel Y)
+    (h_pull : x.IsPullbackAlong (genericPt (O := O)) y) :
+    atGeneric ((genericPullSectionEquiv h_pull).symm.toAddMonoidHom.comp m.uniformisation.expMap) =
+      fun w : V ↦ atGeneric m.uniformisation.expMap w ≫ h_pull.schemeMap.left := by
+  funext w
+  have h_comp : (m.uniformisation.expMap w).left ≫ h_pull.schemeMap.left =
+      genericPt ≫ ((genericPullSectionEquiv h_pull).symm (m.uniformisation.expMap w)).left := by
+    simp [← genericPullSectionEquiv_comp h_pull]
+  exact h_comp.symm
+
+/-- Universal property of the transported exponential map on `y.groupScheme`: any homomorphism `γ`
+into sections of `y.groupScheme` that is holomorphic at `0` lifts to a continuous `ℂ`-linear map
+`W →L[ℂ] V`, by pulling back its homogeneous coordinates to the generic fibre `x`. -/
+private lemma exists_lift_of_isPullbackAlong {Y : ThetaTori.PeriodMap D g ℓ V} (m : x.TorusModel Y)
+    (h_pull : x.IsPullbackAlong (genericPt (O := O)) y) {W : Type} [FinComplexSpace W]
+    (γ : W →+ (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme))
+    (hγ : HolomorphicAt (atGeneric γ) 0) :
+    ∃ F : W →L[ℂ] V, ∀ z : W,
+      (genericPullSectionEquiv h_pull).symm (m.uniformisation.expMap (F z)) = γ z := by
+  -- Analytic coordinates `q` of `γ` are also coordinates of its restriction to the generic fibre.
+  let j := genericPullSectionEquiv h_pull
+  obtain ⟨q, hq_analytic, hq_coords⟩ :=
+    hγ.exists_isHomogeneousCoords y.isProjEmbedding.isLinearSystem
+  have hq_coords_x : ∀ᶠ w : W in nhds 0,
+      x.lineBundle.IsHomogeneousCoords (atGeneric (j.toAddMonoidHom.comp γ) w) (q w) := by
+    filter_upwards [hq_coords] with w hw
+    rw [h_pull.lineBundle_eq_pull, LineBundle.IsHomogeneousCoords.pull_iff]
+    change y.lineBundle.IsHomogeneousCoords ((j (γ w)).left ≫ h_pull.schemeMap.left) (q w)
+    rwa [genericPullSectionEquiv_comp]
+  obtain ⟨F, hF⟩ : ∃ F : W →L[ℂ] V, ∀ z : W, m.uniformisation.expMap (F z) = j (γ z) :=
+    m.uniformisation.universal (j.toAddMonoidHom.comp γ)
+      (.of_isHomogeneousCoords x.isProjEmbedding hq_analytic hq_coords_x fun _ ↦ Over.w _)
+  exact ⟨F, fun z ↦ by simp [j, hF]⟩
+
+/-- Transporting `m.uniformisation` from the generic fibre `x.groupScheme` along
+`(genericPullSectionEquiv h_pull)⁻¹` gives a uniformisation of `y.groupScheme` over `O`. -/
+private def uniformisationOfIsPullbackAlong {Y : ThetaTori.PeriodMap D g ℓ V} (m : x.TorusModel Y)
+    (h_pull : x.IsPullbackAlong (genericPt (O := O)) y) : Uniformisation y.groupScheme V :=
+  { m.uniformisation with
+    expMap := (genericPullSectionEquiv h_pull).symm.toAddMonoidHom.comp m.uniformisation.expMap
+    surjective :=
+      (genericPullSectionEquiv h_pull).symm.surjective.comp m.uniformisation.surjective
+    eq_zero_iff := by simp [Uniformisation.eq_zero_iff]
+    immersive z := by
+      rw [atGeneric_symm_comp_expMap m h_pull]
+      exact m.uniformisation.isHolomorphicImmersionAt_of_isPullback
+        h_pull.isGroupBaseChange.isPullback z
+    universal := exists_lift_of_isPullbackAlong m h_pull }
+
+/-- The theta coordinates of `m` on the generic fibre `x.lineBundle` remain theta coordinates for
+`y.lineBundle` along the transported uniformisation, since `x.lineBundle` is the pull-back of
+`y.lineBundle` along `h_pull.schemeMap`. -/
+private lemma hasThetaCoords_of_isPullbackAlong {Y : ThetaTori.PeriodMap D g ℓ V}
+    (m : x.TorusModel Y) (h_pull : x.IsPullbackAlong (genericPt (O := O)) y) :
+    HasThetaCoords m.uniformisation.lattice
+      (atGeneric (uniformisationOfIsPullbackAlong m h_pull).expMap)
+      y.lineBundle Y.automorphyForm m.χ m.θ :=
+  { m.hasThetaCoords with
+    isLinearSystem := y.isProjEmbedding.isLinearSystem
+    hasFieldCoords := fun z ↦ by
+      dsimp only [uniformisationOfIsPullbackAlong]
+      rw [atGeneric_symm_comp_expMap m h_pull, ← LineBundle.IsHomogeneousCoords.pull_iff,
+        ← h_pull.lineBundle_eq_pull]
+      exact m.hasThetaCoords.hasFieldCoords z }
+
+end New.ThetaObject.TorusModel
+
 /-- Let `O` be a valuation ring with fraction field `ℂ`, `y` an object over `O` and `x` its
 pull-back `h_pull` to the generic point. A model `m` of `x` on the period map `Y` (an isomorphism
 `Y.realEquiv` of `(E ⊗ ℝ)ⁿ` with `V` and a Hermitian form `Y.automorphyForm`) gives a model `m'` of
@@ -90,73 +183,22 @@ lemma New.ThetaObject.TorusModel.exists_torusModel_of_isPullbackAlong {E V : Typ
     (h_pull : x.IsPullbackAlong (genericPt (O := O)) y) :
     ∃ m' : y.TorusModel Y, ∀ w : Variety.RealVectors E D.Index,
       genericPt ≫ (m'.π w).left = (m.π w).left ≫ h_pull.schemeMap.left := by
-  -- By the valuative criterion, restriction to the generic point is an isomorphism `j` from the
-  -- sections of `y.groupScheme` over `O` to those of `x.groupScheme` over `ℂ`. The uniformisation
-  -- of `x` is carried along `j⁻¹`; the lattice, the theta coordinates and the rest stay the same.
-  let j : (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme) ≃ₗ[NumberField.RingOfIntegers E]
-      (𝟙_ (Over (Spec (CommRingCat.of ℂ))) ⟶ x.groupScheme) :=
-    LinearEquiv.ofBijective h_pull.isGroupBaseChange.pullSection
-      (h_pull.isGroupBaseChange.pointEquiv.symm.bijective.comp bijective_restrict_genericPt)
-  have hj (s : 𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme) :
-      (j s).left ≫ h_pull.schemeMap.left = genericPt ≫ s.left :=
-    h_pull.isGroupBaseChange.pullSection_comp s
-  let e : V →+ (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme) :=
-    j.symm.toAddMonoidHom.comp m.uniformisation.expMap
-  -- on complex points, `e` is the old uniformisation followed by the map of `h_pull`
-  have h_atGeneric_e :
-      atGeneric e = fun w : V ↦ atGeneric m.uniformisation.expMap w ≫ h_pull.schemeMap.left := by
-    funext w
-    have h_comp : (m.uniformisation.expMap w).left ≫ h_pull.schemeMap.left =
-        genericPt ≫ (e w).left := by simp [← hj, e]
-    exact h_comp.symm
-  -- the universal property: restrict `γ` to the generic fibre and use that of `m.uniformisation`
-  have h_universal {W : Type} [FinComplexSpace W]
-      (γ : W →+ (𝟙_ (Over (Spec (CommRingCat.of O))) ⟶ y.groupScheme))
-      (hγ : HolomorphicAt (atGeneric γ) 0) : ∃ F : W →L[ℂ] V, ∀ z : W, e (F z) = γ z := by
-    -- analytic coordinates `q` of `γ` are also coordinates of its restriction to the generic fibre
-    obtain ⟨q, hq_analytic, hq_coords⟩ :=
-      hγ.exists_isHomogeneousCoords y.isProjEmbedding.isLinearSystem
-    have hq_coords_x : ∀ᶠ w : W in nhds 0,
-        x.lineBundle.IsHomogeneousCoords (atGeneric (j.toAddMonoidHom.comp γ) w) (q w) := by
-      filter_upwards [hq_coords] with w hw
-      rw [h_pull.lineBundle_eq_pull, LineBundle.IsHomogeneousCoords.pull_iff]
-      change y.lineBundle.IsHomogeneousCoords ((j (γ w)).left ≫ h_pull.schemeMap.left) (q w)
-      rwa [hj]
-    obtain ⟨F, hF⟩ : ∃ F : W →L[ℂ] V, ∀ z : W, m.uniformisation.expMap (F z) = j (γ z) :=
-      m.uniformisation.universal (j.toAddMonoidHom.comp γ)
-        (.of_isHomogeneousCoords x.isProjEmbedding hq_analytic hq_coords_x fun _ ↦ Over.w _)
-    exact ⟨F, fun z ↦ by simp [e, hF]⟩
-  let u : Uniformisation y.groupScheme V :=
-    { m.uniformisation with
-      expMap := e
-      surjective := j.symm.surjective.comp m.uniformisation.surjective
-      eq_zero_iff := by simp [e, Uniformisation.eq_zero_iff]
-      immersive z := by
-        rw [h_atGeneric_e]
-        exact m.uniformisation.isHolomorphicImmersionAt_of_isPullback
-          h_pull.isGroupBaseChange.isPullback z
-      universal := h_universal }
+  -- Transport `m.uniformisation` and `m.hasThetaCoords` from the generic fibre `x` to `y` along
+  -- the inverse of the restriction isomorphism `genericPullSectionEquiv h_pull`.
   have h_spec : x.IsPullbackAlong (specMap (algebraMap O ℂ)) y := by
     rwa [← ValuativeArc.genericPt_eq]
-  -- `x.lineBundle` is the pull-back of `y.lineBundle` along `h_pull.schemeMap`, so the theta
-  -- coordinates are unchanged
-  have h_theta : HasThetaCoords m.uniformisation.lattice (atGeneric e) y.lineBundle Y.automorphyForm
-    m.χ m.θ :=
-    { m.hasThetaCoords with
-      isLinearSystem := y.isProjEmbedding.isLinearSystem
-      hasFieldCoords := fun z ↦ by
-        rw [h_atGeneric_e, ← LineBundle.IsHomogeneousCoords.pull_iff, ← h_pull.lineBundle_eq_pull]
-        exact m.hasThetaCoords.hasFieldCoords z }
   refine ⟨{ m with
     baseHom_eq c := by simp [← m.baseHom_eq c, IsPullbackAlong.baseHom_eq_comp h_spec]
-    uniformisation := u
-    hasThetaCoords := h_theta
-    equivariant := by simp [u, e, m.equivariant]
-    level_eq l := ?_ }, fun w ↦ congrFun h_atGeneric_e (Y.realEquiv w)⟩
-  -- the level points of `x` are the pull-backs of those of `y`
-  have h_level : j (y.levelPoints l) = m.uniformisation.expMap (Y.torsionLift l) :=
+    uniformisation := uniformisationOfIsPullbackAlong m h_pull
+    hasThetaCoords := hasThetaCoords_of_isPullbackAlong m h_pull
+    equivariant := by simp [uniformisationOfIsPullbackAlong, m.equivariant]
+    level_eq l := ?_ },
+    fun w ↦ congrFun (atGeneric_symm_comp_expMap m h_pull) (Y.realEquiv w)⟩
+  -- The level points of `x` are the pull-backs of those of `y`.
+  have h_level : genericPullSectionEquiv h_pull (y.levelPoints l) =
+      m.uniformisation.expMap (Y.torsionLift l) :=
     (h_pull.levelPoints_eq_pullSection l).symm.trans (m.level_eq l)
-  exact j.eq_symm_apply.mpr h_level
+  exact (genericPullSectionEquiv h_pull).eq_symm_apply.mpr h_level
 
 end ModelAlongArc
 
