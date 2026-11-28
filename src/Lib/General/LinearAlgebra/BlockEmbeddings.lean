@@ -146,8 +146,10 @@ lemma extendGL_mul_inclMatrix [DecidableEq r] (u : r ↪ n) (g : GL r R) :
 /-- The block of diag(g, 1) with rows and columns in the image of u is g. -/
 lemma submatrix_extendGL [DecidableEq r] (u : r ↪ n) (g : GL r R) :
     (extendGL u g).val.submatrix u u = g.val := by
-  ext i j
-  simp [extendGL, inclMatrix, Matrix.mul_apply, Matrix.one_apply]
+  have h := congrArg ((inclMatrix R u)ᵀ * ·) (extendGL_mul_inclMatrix u g)
+  rw [inclMatrix_transpose_mul_cancel_left] at h
+  simpa only [inclMatrix_transpose_mul, mul_inclMatrix, submatrix_submatrix, Function.comp_id,
+    Function.id_comp] using h
 
 /-- Outside the image of u, the rows of diag(g, 1) are those of the identity matrix. -/
 lemma extendGL_apply_of_notMem_range [DecidableEq r]
