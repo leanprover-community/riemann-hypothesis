@@ -235,13 +235,9 @@ noncomputable def pairKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOrCut)
 /-- The passage to the adjoint (conjugate transpose) of a complex matrix indexed by `I × I`, a real
 linear isometry for the Hilbert–Schmidt norm. -/
 noncomputable def adjointIsometry (I : Type) [Fintype I] :
-    EuclideanSpace ℂ (I × I) →ₗᵢ[ℝ] EuclideanSpace ℂ (I × I) where
-  toFun x := WithLp.toLp 2 fun i ↦ conj (x i.swap)
-  map_add' x x' := by ext; simp
-  map_smul' r x := by ext; simp
-  norm_map' x := by
-    simpa [EuclideanSpace.norm_eq] using
-      congrArg (√·) ((Equiv.prodComm I I).sum_comp fun i ↦ ‖x i‖ ^ 2)
+    EuclideanSpace ℂ (I × I) →ₗᵢ[ℝ] EuclideanSpace ℂ (I × I) :=
+  ((LinearIsometryEquiv.piLpCongrLeft 2 ℝ ℂ (Equiv.prodComm I I)).trans
+    (LinearIsometryEquiv.piLpCongrRight 2 fun _ => Complex.conjLIE)).toLinearIsometry
 
 /-- **One pairing.** Let `X v` be Bessel systems with size parameter `b`, one for each place `v`,
 and `W`, `W♭` the tensor products of their Bessel functions and of their cuts. Let the frame Gram
