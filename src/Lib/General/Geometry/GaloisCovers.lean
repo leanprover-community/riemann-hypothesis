@@ -14,6 +14,7 @@ import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.Localization.Cardinality
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Topology.Baire.BaireMeasurable
+import TauCeti.RingTheory.Invariant.Free
 public import Lib.LocalGL.Green.TauFunctions
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 public import Lib.Cohomology.Etale.Basic
@@ -430,73 +431,41 @@ lemma ReducedClosure.exists_lift (C : ReducedClosure F) {J' : Type} [Finite J'] 
   have h_proj (j : J) : g' ≫ C.proj j = f j := by simp [proj, reassoc_of% h_incl]
   exact ⟨g', h_proj, fun a ↦ C.hom_ext fun j ↦ by simp [h_proj, h]⟩
 
-/-- Chase–Harrison–Rosenberg. Let `B` be a finite `A`-algebra with `A → B` injective and `G` a
-finite group. Assume: (a) `σ` is a right action of `G` on `B` by `A`-algebra maps, that is
-`σ 1 = id` and `σ (g * h) = σ h ∘ σ g`; (b) for every field `k` over `A` and any two `A`-algebra
-maps `x y : B → k` there is exactly one `g` with `x ∘ σ g = y`; (c) every element of `B` fixed
-by all `σ g` comes from `A`. Then `B` is étale over `A`. -/
+/-- Chase–Harrison–Rosenberg. Let `A → B` be injective and `G` a finite group. Assume: (a) `σ` is
+a right action of `G` on `B` by `A`-algebra maps, that is `σ 1 = id` and `σ (g * h) = σ h ∘ σ g`;
+(b) for every field `k` over `A` and any two `A`-algebra maps `x y : B → k` there is exactly one `g`
+with `x ∘ σ g = y`; (c) every element of `B` fixed by all `σ g` comes from `A`. Then `B` is étale
+over `A`: by (b), the action `g ↦ σ g⁻¹` is free, so Tau Ceti's `TauCeti.MulSemiringAction.etale`
+applies. -/
 lemma etale_of_simply_transitive {A : Type*} {B : Type} {G : Type*} [CommRing A] [CommRing B]
-    [Algebra A B] [Module.Finite A B] [Group G] [Finite G]
+    [Algebra A B] [Group G] [Finite G]
     (h_inj : Function.Injective (algebraMap A B)) (σ : G →* (B →ₐ[A] B)ᵐᵒᵖ)
     (h_points : ∀ (k : Type) [Field k] [Algebra A k] (x y : B →ₐ[A] k),
       ∃! g : G, ∀ b : B, x ((σ g).unop b) = y b)
     (h_invariant : ∀ s : B, (∀ g : G, (σ g).unop s = s) → ∃ a : A, algebraMap A B a = s) :
     Algebra.Etale A B := by
-  classical
-  -- Find `x i`, `y i` in `B` with `∑ i, σ g (y i) * x i = if g = 1 then 1 else 0`. With the trace
-  -- `t` they form a dual basis, so `B` is projective; and `∑ i, y i ⊗ x i` is a separability
-  -- element, so `B` is unramified.
-  let tr : B →ₗ[A] B := ∑ g : G, (σ g).unop.toLinearMap
-  let t : B →ₗ[A] A := tr.codRestrictOfInjective (Algebra.linearMap A B) h_inj fun s ↦
-    h_invariant (tr s) fun g ↦ by
-      simpa [tr] using Equiv.sum_comp (.mulRight g) fun h ↦ (σ h).unop s
-  have ht (s : B) : algebraMap A B (t s) = ∑ g : G, (σ g).unop s := by
-    simpa [tr] using tr.codRestrictOfInjective_comp_apply (Algebra.linearMap A B) h_inj _ s
-  -- The kernels of the maps `b ⊗ b' ↦ σ g b * b'` are pairwise coprime: a maximal ideal over two
-  -- of them gives two points of `B` in its residue field, related by both group elements.
-  let 𝔞 (g : G) : Ideal (B ⊗[A] B) := ker (productMap (σ g).unop (.id A B))
-  have h_coprime : Pairwise (IsCoprime on 𝔞) := by
-    refine fun g g' h_ne ↦ isCoprime_iff_sup_eq.2 (by_contra fun h_sup ↦ h_ne ?_)
-    obtain ⟨𝔪, h𝔪, h_le⟩ := exists_le_maximal _ h_sup
-    let : Field (B ⊗[A] B ⧸ 𝔪) := Quotient.field 𝔪
-    let left : B →ₐ[A] B ⊗[A] B ⧸ 𝔪 := (mkₐ A 𝔪).comp includeLeft
-    let right : B →ₐ[A] B ⊗[A] B ⧸ 𝔪 := (mkₐ A 𝔪).comp includeRight
-    have h_rel (g : G) (hg : 𝔞 g ≤ 𝔪) (b : B) : right ((σ g).unop b) = left b :=
-      Ideal.Quotient.eq.2 (hg (show 1 ⊗ₜ[A] (σ g).unop b - b ⊗ₜ[A] 1 ∈ 𝔞 g by simp [𝔞]))
-    exact (h_points _ right left).unique (h_rel g (le_sup_left.trans h_le))
-      (h_rel g' (le_sup_right.trans h_le))
-  -- Chinese remainder theorem: `u = ∑ i, y i ⊗ x i` is `1` modulo `𝔞 1` and `0` modulo the others.
-  obtain ⟨u, hu⟩ : ∃ u : B ⊗[A] B, ∀ g : G, u - Pi.single (M := fun _ ↦ B ⊗[A] B) 1 1 g ∈ 𝔞 g :=
-    exists_forall_sub_mem_ideal h_coprime _
-  obtain ⟨r, y, x, rfl⟩ := exists_sum_tmul_eq u
-  have h_delta (g : G) : ∑ i, (σ g).unop (y i) * x i = if g = 1 then 1 else 0 := by
-    simpa [𝔞, sub_eq_zero, single_apply, apply_ite] using hu g
-  have h_dual (z : B) : ∑ i, t (z * y i) • x i = z :=
-    calc ∑ i, t (z * y i) • x i
-      _ = ∑ g : G, (σ g).unop z * ∑ i, (σ g).unop (y i) * x i := by
-        simp [Algebra.smul_def, ht, sum_mul, mul_sum, sum_comm (s := univ (α := G)), mul_assoc]
-      _ = z := by simp [h_delta]
-  -- Expand both sides in the dual basis and move the scalars across `⊗`.
-  have h_swap (s : B) : ∑ i, (s * y i) ⊗ₜ[A] x i = ∑ i, x i ⊗ₜ[A] (s * y i) :=
-    calc ∑ j, (s * y j) ⊗ₜ[A] x j
-      _ = ∑ j, (∑ i, t (s * y j * y i) • x i) ⊗ₜ[A] x j := by simp only [h_dual]
-      _ = ∑ i, x i ⊗ₜ[A] ∑ j, t (s * y i * y j) • x j := by
-        simp only [sum_tmul, tmul_sum, smul_tmul]
-        exact sum_comm.trans (by simp only [mul_right_comm])
-      _ = ∑ i, x i ⊗ₜ[A] (s * y i) := by simp only [h_dual]
-  have h_unramified : FormallyUnramified A B := by
-    refine iff_exists_tensorProduct.2 ⟨∑ i, y i ⊗ₜ x i, fun s ↦ ?_, by simpa using h_delta 1⟩
-    have h_symm : ∑ i, y i ⊗ₜ[A] x i = ∑ i, x i ⊗ₜ[A] y i := by simpa using h_swap 1
-    rw [sub_mul, sub_eq_zero]
-    calc (1 : B) ⊗ₜ[A] s * ∑ i, y i ⊗ₜ[A] x i
-      _ = (1 : B) ⊗ₜ[A] s * ∑ i, x i ⊗ₜ[A] y i := by rw [h_symm]
-      _ = s ⊗ₜ[A] (1 : B) * ∑ i, y i ⊗ₜ[A] x i := by simp [mul_sum, h_swap]
-  have h_projective : Projective A B :=
-    .of_split (.pi fun i ↦ t.comp (.mulRight A (y i))) (Fintype.linearCombination A x)
-      (LinearMap.ext h_dual)
-  -- finite and projective, hence flat and finitely presented
-  have : Module.FinitePresentation A B := finitePresentation_of_projective A B
-  exact .of_formallyUnramified_of_flat
+  -- `G` acts on the left on `B` by `g • b = σ g⁻¹ b`, with invariant ring `A`.
+  let : MulSemiringAction G B :=
+    { smul g b := (σ g⁻¹).unop b
+      one_smul b := show (σ 1⁻¹).unop b = b by simp
+      mul_smul g h b := show (σ (g * h)⁻¹).unop b = (σ g⁻¹).unop ((σ h⁻¹).unop b) by simp
+      smul_zero g := map_zero _
+      smul_add g := map_add _
+      smul_one g := map_one _
+      smul_mul g := map_mul _ }
+  have : SMulCommClass G A B := ⟨fun g a b ↦ map_smul (σ g⁻¹).unop a b⟩
+  have : Algebra.IsInvariant A B G :=
+    ⟨fun b hb ↦ h_invariant b fun g ↦ by simpa using show (σ g⁻¹⁻¹).unop b = b from hb g⁻¹⟩
+  have : FaithfulSMul A B := (faithfulSMul_iff_algebraMap_injective A B).mpr h_inj
+  -- The action is free: if the elements `g • b - b` lie in a maximal ideal `m`, the point
+  -- `B → B ⧸ m` is fixed by `g⁻¹`, so `g⁻¹ = 1` by (b).
+  refine TauCeti.MulSemiringAction.etale (G := G) fun g hg ↦ by_contra fun h_ne ↦ hg ?_
+  obtain ⟨m, hm, h_le⟩ := Ideal.exists_le_maximal _ h_ne
+  let : Field (B ⧸ m) := Ideal.Quotient.field m
+  let x : B →ₐ[A] B ⧸ m := Ideal.Quotient.mkₐ A m
+  have h_fix (b : B) : x ((σ g⁻¹).unop b) = x b :=
+    Ideal.Quotient.eq.2 (h_le (Ideal.subset_span ⟨b, rfl⟩))
+  exact inv_eq_one.mp ((h_points _ x x).unique h_fix fun b ↦ by simp)
 
 /-- Let `R` be a countable domain, with a given map to `ℂ`, all of whose ring maps to fields of
 characteristic 0 are injective. Let `W` be proper over `R`, `Z` separated, and `c : W ⟶ Z`
