@@ -232,6 +232,81 @@ noncomputable def cayleyMap (c : unitary E) (A : Matrix n n E) : G E s :=
       (V.smul_cayleyTransform_isometry c (V.conjTranspose_formSkewPart_mul _) h)
   else 1)
 
+/-- For a ring map `φ : E →+* K` to a field and a matrix `M` over `K`, `1 + φ c • M` is
+invertible for all but finitely many `c : unitary E`, as `-(φ c)⁻¹` avoids the finite spectrum of
+`M`. -/
+private lemma eventually_det_one_add_smul_ne_zero {K : Type*} [Field K] (φ : E →+* K)
+    (M : Matrix n n K) :
+    ∀ᶠ c : unitary E in cofinite, (1 + φ c • M).det ≠ 0 := by
+  have off_spectrum : ∀ᶠ c : unitary E in cofinite, -(φ c)⁻¹ ∉ spectrum K M :=
+    ((neg_injective.comp inv_injective).comp
+      (φ.injective.comp Subtype.val_injective)).tendsto_cofinite.eventually
+      M.finite_spectrum.eventually_cofinite_notMem
+  filter_upwards [off_spectrum] with c hc
+  have h_norm : φ (star c.val) * φ c = 1 := by rw [← map_mul, c.prop.left, map_one]
+  have hc_ne : φ c ≠ 0 := right_ne_zero_of_mul_eq_one h_norm
+  have h_eq : 1 + φ c • M = -φ c • (algebraMap K _ (-(φ c)⁻¹) - M) := by
+    simp [algebraMap_eq_smul_one, smul_sub, smul_smul, hc_ne]
+  rw [h_eq, det_smul]
+  simpa [hc_ne, isUnit_iff_isUnit_det] using spectrum.notMem_iff.1 hc
+
+/-- Under a ring map `φ : E →+* K`, the skew part of the Cayley transform of `c • A` depends only
+on the images of `A` and `Aᴴ`. -/
+private lemma map_formSkewPart_cayleyTransform {K : Type*} [Field K] (φ : E →+* K)
+    (c : unitary E) (A : Matrix n n E) :
+    (V.formSkewPart (cayleyTransform (c.val • A))).map φ =
+      (2 : K)⁻¹ • (cayleyTransform (φ c • A.map φ) -
+        (V.J.map φ)⁻¹ * cayleyTransform (φ (star c.val) • Aᴴ.map φ) * V.J.map φ) := by
+  have h_star : (cayleyTransform (c.val • A))ᴴ = cayleyTransform (star c.val • Aᴴ) := by
+    rw [cayleyTransform_eq_inv_mul (star c.val • Aᴴ)]
+    simp [cayleyTransform, conjTranspose_nonsing_inv]
+  simp [formSkewPart, h_star, map_nonsing_inv, map_smul', Matrix.map_sub, Matrix.map_mul,
+    cayleyTransform_map, map_ofNat]
+
+/-- For `c : unitary E` with `1 + φ c • γ.map f` invertible (where `φ = f ∘ toAdele` and
+`γ = V.toRatCoords g`), the images of the rational skew matrices
+`V.formSkewPart (cayleyTransform (c • A))` tend to `cayleyTransform (φ c • γ.map f)` as `A + e • B`
+tends to `γ`, provided `f` kills `e` and `star e`. -/
+private lemma tendsto_map_formSkewPart_cayleyTransform (g : G E s) (e : 𝔸 E) {K : Type*}
+    [NormedField K] (f : 𝔸 E →+* K) (hf : Continuous f) (hf_zero : f e = 0 ∧ f (star e) = 0)
+    (c : unitary E)
+    (h_det : (1 + (f.comp toAdele) c • (V.toRatCoords g : Matrix n n (𝔸 E)).map f).det ≠ 0) :
+    Tendsto (fun p : Matrix n n E × Matrix n n (𝔸 E) ↦
+        (V.formSkewPart (cayleyTransform (c.val • p.1))).map (f.comp toAdele))
+      (comap (fun p : Matrix n n E × Matrix n n (𝔸 E) ↦ p.1.map toAdele + e • p.2)
+        (𝓝 (V.toRatCoords g)))
+      (𝓝 (cayleyTransform ((f.comp toAdele) c •
+        (V.toRatCoords g : Matrix n n (𝔸 E)).map f))) := by
+  let φ : E →+* K := f.comp toAdele
+  let γ : Matrix n n (𝔸 E) := V.toRatCoords g
+  have h_norm : φ (star c.val) * φ c = 1 := by rw [← map_mul, c.prop.left, map_one]
+  have h_two : (2 : K) ≠ 0 := by simpa only [map_ofNat] using (map_ne_zero φ).2 two_ne_zero
+  let J : Matrix n n K := V.J.map φ
+  have hJ : J.det ≠ 0 := ((isUnit_iff_isUnit_det _).1 (V.isUnit_J.map φ.mapMatrix)).ne_zero
+  let C : Matrix n n K := cayleyTransform (φ c • γ.map f)
+  -- As `f` need not respect conjugation, the images of `A` and `Aᴴ` are two variables `x`, `y`.
+  let u (x y : Matrix n n K) : Matrix n n K :=
+    (2 : K)⁻¹ • (cayleyTransform (φ c • x) - J⁻¹ * cayleyTransform (φ (star c.val) • y) * J)
+  have gram : φ (star c.val) • γᴴ.map f * J * φ c • γ.map f = J := by
+    have h_gram : γᴴ.map f * J * γ.map f = J := by
+      simpa [J, φ, γ, coe_comp, star_eq_conjTranspose] using
+        congrArg (map · f) (mem_unitaryGroupOf_iff.1 (V.toRatCoords g).prop)
+    simp [smul_smul, mul_comm (φ c), h_norm, h_gram]
+  obtain ⟨h_det_star, skew⟩ := cayleyTransform_mul_eq_neg gram hJ h_det
+  have u_value : u (γ.map f) (γᴴ.map f) = C := by
+    simp [u, C, Matrix.mul_assoc, skew, hJ, ← two_smul K, smul_smul, h_two]
+  have h_cont (A : Matrix n n K) (hA : (1 + A).det ≠ 0) : ContinuousAt cayleyTransform A :=
+    continuousAt_cayleyTransform hA
+  have u_cont : ContinuousAt (fun x : Matrix n n (𝔸 E) ↦ u (x.map f) (xᴴ.map f)) γ := by
+    fun_prop (disch := assumption)
+  change Tendsto (fun p : Matrix n n E × Matrix n n (𝔸 E) ↦
+      (V.formSkewPart (cayleyTransform (c.val • p.1))).map φ)
+    (comap (fun p ↦ p.1.map toAdele + e • p.2) (𝓝 γ)) (𝓝 C)
+  rw [← u_value]
+  refine (u_cont.tendsto.comp tendsto_comap).congr fun p ↦ ?_
+  rw [V.map_formSkewPart_cayleyTransform φ c p.1]
+  simp [u, J, φ, conjTranspose_map_toAdele, map_smul', Matrix.map_add, hf_zero, coe_comp]
+
 /-- Let `V` be a hermitian space over the CM field `E`: a matrix `J` with a point `x` in `GL_n(𝔸)`
 such that `xᴴ J x` is `diag s` at the infinite places and `1` at the finite places. Let `f` be a
 continuous ring map from the adeles to a normed field that kills both the adele `e` and `star e`.
@@ -248,63 +323,27 @@ lemma eventually_tendsto_cayleyMap (g : G E s) (e : 𝔸 E) {K : Type*} [NormedF
           (𝓝 (V.toRatCoords g)))
         (𝓝 (g.adeleMatrix.map f)) := by
   -- Let `γ = V.toRatCoords g`, read through `f`, and take `c` with `1 + c γ` invertible. The Cayley
-  -- transform `C` of `c γ` is skew, so the rational skew matrices `u` of `cayleyMap` tend to `C`,
-  -- and `c⁻¹ (1 - u) (1 + u)⁻¹` tends to `γ`.
+  -- transform `C` of `c γ` is skew, so the rational skew matrices `v A` tend to `C`, and
+  -- `c⁻¹ (1 - v A) (1 + v A)⁻¹` tends to `γ`.
   let φ : E →+* K := f.comp toAdele
   let γ : Matrix n n (𝔸 E) := V.toRatCoords g
-  have off_spectrum : ∀ᶠ c : unitary E in cofinite, -(φ c)⁻¹ ∉ spectrum K (γ.map f) :=
-    ((neg_injective.comp inv_injective).comp
-      (φ.injective.comp Subtype.val_injective)).tendsto_cofinite.eventually
-      (γ.map f).finite_spectrum.eventually_cofinite_notMem
-  filter_upwards [off_spectrum] with c hc
+  filter_upwards [eventually_det_one_add_smul_ne_zero φ (γ.map f)] with c h_det
   have h_norm : φ (star c.val) * φ c = 1 := by rw [← map_mul, c.prop.left, map_one]
   have hc_ne : φ c ≠ 0 := right_ne_zero_of_mul_eq_one h_norm
   have h_two : (2 : K) ≠ 0 := by simpa only [map_ofNat] using (map_ne_zero φ).2 two_ne_zero
-  let J : Matrix n n K := V.J.map φ
-  have hJ : J.det ≠ 0 := ((isUnit_iff_isUnit_det _).1 (V.isUnit_J.map φ.mapMatrix)).ne_zero
-  have h_det : (1 + φ c • γ.map f).det ≠ 0 := by
-    have h_eq : 1 + φ c • γ.map f = -φ c • (algebraMap K _ (-(φ c)⁻¹) - γ.map f) := by
-      simp [algebraMap_eq_smul_one, smul_sub, smul_smul, hc_ne]
-    rw [h_eq, det_smul]
-    simpa [hc_ne, isUnit_iff_isUnit_det] using spectrum.notMem_iff.1 hc
   let C : Matrix n n K := cayleyTransform (φ c • γ.map f)
-  -- `v A` is the rational skew matrix in the definition of `V.cayleyMap c A`.
   let v (A : Matrix n n E) : Matrix n n E := V.formSkewPart (cayleyTransform (c.val • A))
-  -- As `f` need not respect conjugation, the images of `A` and `Aᴴ` are two variables `x`, `y`.
-  let u (x y : Matrix n n K) : Matrix n n K :=
-    (2 : K)⁻¹ • (cayleyTransform (φ c • x) - J⁻¹ * cayleyTransform (φ (star c.val) • y) * J)
-  have h_u (A : Matrix n n E) : (v A).map φ = u (A.map φ) (Aᴴ.map φ) := by
-    have h_star : (cayleyTransform (c.val • A))ᴴ = cayleyTransform (star c.val • Aᴴ) := by
-      rw [cayleyTransform_eq_inv_mul (star c.val • Aᴴ)]
-      simp [cayleyTransform, conjTranspose_nonsing_inv]
-    simp [u, v, J, formSkewPart, h_star, map_nonsing_inv, map_smul', Matrix.map_sub, Matrix.map_mul,
-      cayleyTransform_map, map_ofNat]
-  have gram : φ (star c.val) • γᴴ.map f * J * φ c • γ.map f = J := by
-    have h_gram : γᴴ.map f * J * γ.map f = J := by
-      simpa [J, φ, γ, coe_comp, star_eq_conjTranspose] using
-        congrArg (map · f) (mem_unitaryGroupOf_iff.1 (V.toRatCoords g).prop)
-    simp [smul_smul, mul_comm (φ c), h_norm, h_gram]
-  obtain ⟨h_det_star, skew⟩ := cayleyTransform_mul_eq_neg gram hJ h_det
-  have u_value : u (γ.map f) (γᴴ.map f) = C := by
-    simp [u, C, Matrix.mul_assoc, skew, hJ, ← two_smul K, smul_smul, h_two]
   obtain ⟨h_back, h_invol⟩ : (1 + C).det ≠ 0 ∧ cayleyTransform C = φ c • γ.map f :=
     cayleyTransform_cayleyTransform h_two h_det
-  have h_cont (A : Matrix n n K) (hA : (1 + A).det ≠ 0) : ContinuousAt cayleyTransform A :=
-    continuousAt_cayleyTransform hA
-  -- The rational skew matrices tend to `C`; `f` kills `e` and `star e`, so it does not see `B`.
-  have u_cont : ContinuousAt (fun x : Matrix n n (𝔸 E) ↦ u (x.map f) (xᴴ.map f)) γ := by
-    fun_prop (disch := assumption)
   have u_tendsto : Tendsto (fun p : Matrix n n E × Matrix n n (𝔸 E) ↦ (v p.1).map φ)
-      (comap (fun p ↦ p.1.map toAdele + e • p.2) (𝓝 γ)) (𝓝 C) := by
-    rw [← u_value]
-    refine (u_cont.tendsto.comp tendsto_comap).congr fun p ↦ ?_
-    rw [h_u]
-    simp [φ, conjTranspose_map_toAdele, map_smul', Matrix.map_add, hf_zero, coe_comp]
+      (comap (fun p ↦ p.1.map toAdele + e • p.2) (𝓝 γ)) (𝓝 C) :=
+    V.tendsto_map_formSkewPart_cayleyTransform g e f hf hf_zero c h_det
   -- Near `C` the matrix `1 + u` is invertible and the Cayley transform is continuous.
   let Ψ (x : Matrix n n K) : Matrix n n K :=
     V.x⁻¹.val.map f * (φ c)⁻¹ • cayleyTransform x * V.x.val.map f
   have value : Ψ C = g.adeleMatrix.map f := by
     simp [Ψ, h_invol, hc_ne, γ, mul_assoc, ← Matrix.map_mul, toRatCoords, adeleMatrix]
+  have h_cont : ContinuousAt cayleyTransform C := continuousAt_cayleyTransform h_back
   have Ψ_cont : ContinuousAt Ψ C := by fun_prop (disch := assumption)
   have h_near : ∀ᶠ x in 𝓝 C, (1 + x).det ≠ 0 := ContinuousAt.eventually_ne (by fun_prop) h_back
   rw [← value]
