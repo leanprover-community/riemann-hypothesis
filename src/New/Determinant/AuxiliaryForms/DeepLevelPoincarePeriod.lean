@@ -297,6 +297,20 @@ lemma New.Exchange.integrable_translatedCoeff_and_integral_norm_le {E : Type*} {
   gcongr with w
   simpa [← fromBlocks_one, sub_eq_add_neg, fromBlocks_neg, fromBlocks_add] using (decay w).2
 
+/-- Let each parameter `l w` have a large gap for `2 A`, and let `A > 8 N²` for `N = card n + 1`.
+Then for every `g` the slice `r ↦ translatedCoeff l α ω (g * inl s 1 ∘ r)` is integrable on the
+real group `GInf E s`. -/
+lemma New.Exchange.integrable_translatedCoeff_mul_inl {E : Type*} {n : Type} {s : n → ℤˣ}
+    [Field E] [CMType E] [Fintype n] [DecidableEq n] {A : ℕ}
+    {l : NumberField.InfinitePlace E → HCParam (s ⊕ᵥ (1 : Unit → ℤˣ))}
+    (hA_sq : 8 * (card n + 1) ^ 2 < A)
+    (h_gap : ∀ w : NumberField.InfinitePlace E, (l w).HasLargeGap (2 * A))
+    (ω α g : GInf E (s ⊕ᵥ (1 : Unit → ℤˣ))) :
+    Integrable fun r : GInf E s ↦ translatedCoeff l α ω (g * inl s 1 ∘ r) :=
+  -- the product of the operator norms at the infinite places is at least `1`
+  (integrable_translatedCoeff_and_integral_norm_le hA_sq h_gap ω α g one_pos
+    fun r ↦ (le_prod_opNorm fun w ↦ g w * inl s 1 (r w)).1).1
+
 end RealSlices
 
 /-- The embedding `h ↦ h ⊕ 1` of the unitary group of signs `s` in that of signs `s ⊕ 1`. Its
@@ -361,6 +375,18 @@ lemma New.Space.IsLastColumn.inv_mul_mem_range {E n : Type} {s : n → ℤˣ} [F
       fromBlocks (G.toUnitary.symm g).adeleMatrix 0 0 1 :=
     (adeleMatrix_sum _).trans (by simp)
   exact Subtype.ext (Units.ext h_blocks)
+
+/-- Distinct representatives of the cosets of the image of `inlLine E s` in the rational points of
+`V ⊕ ⟨1⟩` have distinct last columns: if `γ` and `γ'` in a set `C` of representatives have the same
+last column `y`, then `γ = γ'`. -/
+lemma New.Space.IsLastColumn.eq_of_isComplement {E n : Type} {s : n → ℤˣ} [Field E] [CMType E]
+    [Fintype n] [DecidableEq n] [HasPrimitiveRoot5040 E] {V : Space E n s}
+    {C : Set (V.sum (signedSpace (n := Unit) E 1)).Γ}
+    (hC : Subgroup.IsComplement C
+      ((inlLine E s).range.subgroupOf (V.sum (signedSpace (n := Unit) E 1)).Γ))
+    {γ γ' : C} {y : n ⊕ Unit → E} (hγ : V.IsLastColumn γ y) (hγ' : V.IsLastColumn γ' y) :
+    γ = γ' :=
+  hC.leftQuotientEquiv.symm.injective (QuotientGroup.eq.2 (hγ.inv_mul_mem_range hγ'))
 
 /-- Separation of last columns, for `E` with a primitive root of unity of order `5040`. Let
 `y ≠ y'` be the last columns of `γ` and `γ'`, and let `(x ⊕ 1)⁻¹ γ (k ⊕ 1)` and
@@ -610,6 +636,106 @@ lemma New.Exchange.integral_norm_poincareKernel_le {E n : Type} {s : n → ℤˣ
     _ ≤ volume.real (principalLevel n a : Set (Gf E n)) * sliceConst A α ω * t⁻¹ ^ A := by
       grw [ψ_le, mul_comm, mul_assoc]
 
+/-- Decay of one term of the period of a Poincaré series against a function `F` bounded by `S`.
+Under the hypotheses of `integral_norm_poincareKernel_le`, for `F` almost everywhere strongly
+measurable, the kernel at `g (h ⊕ 1)` times `F h` is integrable in `h`. Its `L¹` norm is at most
+the volume of the principal level `a` in `Gf E n` times `sliceConst A α ω * S * t⁻¹ ^ A`. -/
+lemma New.Exchange.integral_norm_poincareKernel_mul_le {E n : Type} {s : n → ℤˣ} [Field E]
+    [CMType E] [Fintype n] [DecidableEq n] {a : NumberField.RingOfIntegers E} (ha : a ≠ 0)
+    {A : ℕ} {l : NumberField.InfinitePlace E → HCParam (s ⊕ᵥ (1 : Unit → ℤˣ))}
+    (hA_sq : 8 * (card n + 1) ^ 2 < A)
+    (h_gap : ∀ w : NumberField.InfinitePlace E, (l w).HasLargeGap (2 * A))
+    (ω α : GInf E (s ⊕ᵥ (1 : Unit → ℤˣ))) {g : G E (s ⊕ᵥ (1 : Unit → ℤˣ))} {k : G E s}
+    (hk : (g * inlLine E s k).2 ∈ principalLevel (n ⊕ Unit) a) {F : G E s → ℂ} {S : ℝ}
+    (hF : AEStronglyMeasurable F) (hS : ∀ h : G E s, ‖F h‖ ≤ S) {t : ℝ} (ht : 0 < t)
+    (ht_le : ∀ h : G E s, t ≤ ∏ w : NumberField.InfinitePlace E,
+      ‖((g * inlLine E s h).1 w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖) :
+    Integrable (fun h : G E s ↦
+      poincareKernel (translatedCoeff l α ω) (principalLevel (n ⊕ Unit) a) (g * inlLine E s h) *
+        F h) ∧
+    ∫ h : G E s, ‖poincareKernel (translatedCoeff l α ω) (principalLevel (n ⊕ Unit) a)
+        (g * inlLine E s h) * F h‖ ≤
+      volume.real (principalLevel n a : Set (Gf E n)) * sliceConst A α ω * S * t⁻¹ ^ A := by
+  let kernel (h : G E s) : ℂ :=
+    poincareKernel (translatedCoeff l α ω) (principalLevel (n ⊕ Unit) a) (g * inlLine E s h)
+  obtain ⟨kernel_int, kernel_le⟩ : Integrable kernel ∧ ∫ h, ‖kernel h‖ ≤
+      volume.real (principalLevel n a : Set (Gf E n)) * sliceConst A α ω * t⁻¹ ^ A :=
+    integral_norm_poincareKernel_le ha hA_sq h_gap ω α hk ht ht_le
+  have S_nonneg : 0 ≤ S := (norm_nonneg _).trans (hS 1)
+  have term_int : Integrable fun h ↦ kernel h * F h := kernel_int.mul_bdd hF (.of_forall hS)
+  refine ⟨term_int, ?_⟩
+  calc
+    ∫ h, ‖kernel h * F h‖ ≤ ∫ h, ‖kernel h‖ * S :=
+      integral_mono term_int.norm (kernel_int.norm.mul_const S) fun h ↦ by grw [norm_mul, hS]
+    _ ≤ volume.real (principalLevel n a : Set (Gf E n)) * sliceConst A α ω * S * t⁻¹ ^ A := by
+      grw [integral_mul_const, kernel_le, mul_right_comm]
+
+/-- The term of the identity coset in the period of a Poincaré series. For `F` of level `a ≠ 0`,
+the integral of the kernel of level `a` at `(x ⊕ 1)⁻¹ (h ⊕ 1)` times `F h` is the volume of the
+level times `realConv ψ F x`, for the slice `ψ : r ↦ φ (r ⊕ 1)` of `φ`. -/
+lemma New.Exchange.integral_poincareKernel_inlLine_mul_eq_smul_realConv {E n : Type}
+    {s : n → ℤˣ} [Field E] [CMType E] [Fintype n] [DecidableEq n] {F : G E s → ℂ}
+    {a : NumberField.RingOfIntegers E} (ha : a ≠ 0) (hF_level : HasLevel F (principalLevel n a))
+    (φ : GInf E (s ⊕ᵥ (1 : Unit → ℤˣ)) → ℂ) (x : G E s) :
+    ∫ h : G E s,
+        poincareKernel φ (principalLevel (n ⊕ Unit) a) ((inlLine E s x)⁻¹ * inlLine E s h) * F h =
+      volume.real (principalLevel n a : Set (Gf E n)) •
+        realConv (fun r : GInf E s ↦ φ (inl s 1 ∘ r)) F x := by
+  -- translate by `x`
+  have kernel_eq (h : G E s) :
+      poincareKernel φ (principalLevel (n ⊕ Unit) a) ((inlLine E s x)⁻¹ * inlLine E s (x * h)) =
+        φ (inl s 1 ∘ h.1) * indicator (principalLevel n a) 1 h.2 := by
+    simpa using poincareKernel_mul_inlLine φ (g := 1) (Subgroup.one_mem _) h
+  rw [← integral_mul_left_eq_self _ x, ← integral_mul_indicator_mul_eq_smul_realConv ha hF_level]
+  simp only [kernel_eq]
+
+/-- Unfolding of the period of a Poincaré series over the cosets of the image of `inlLine E s`.
+Let `F` be automorphic on `V`, let `C` be a set of representatives of these cosets in the rational
+points of `V ⊕ ⟨1⟩`, and let `W ⊆ C` contain every `σ` for which `(x ⊕ 1)⁻¹ σ (k ⊕ 1)` has finite
+part of level `a` for some `k`. Let the functions `h ↦ K ((x ⊕ 1)⁻¹ σ (h ⊕ 1)) * F h`, for the
+kernel `K` of `φ` of level `a`, be integrable, with `L¹` norms summable over `σ ∈ W`. Then their
+integrals sum to the period against `F` of the Poincaré series of `K` with centre `x ⊕ 1`. -/
+lemma New.Exchange.hasSum_integral_poincareKernel_mul {E n : Type} {s : n → ℤˣ} [Field E]
+    [CMType E] [Fintype n] [DecidableEq n] [HasPrimitiveRoot5040 E] {V : Space E n s}
+    {F : G E s → ℂ} (hF : V.IsAutomorphic F) (φ : GInf E (s ⊕ᵥ (1 : Unit → ℤˣ)) → ℂ)
+    {a : NumberField.RingOfIntegers E} (x : G E s)
+    {C : Set (V.sum (signedSpace (n := Unit) E 1)).Γ}
+    (hC : Subgroup.IsComplement C
+      ((inlLine E s).range.subgroupOf (V.sum (signedSpace (n := Unit) E 1)).Γ))
+    {W : Set C} (hW : ∀ (σ : C) (k : G E s),
+      ((inlLine E s x)⁻¹ * σ * inlLine E s k).2 ∈ principalLevel (n ⊕ Unit) a → σ ∈ W)
+    (h_int : ∀ σ : W, Integrable fun h : G E s ↦
+      poincareKernel φ (principalLevel (n ⊕ Unit) a) ((inlLine E s x)⁻¹ * σ * inlLine E s h) * F h)
+    (h_sum : Summable fun σ : W ↦ ∫ h : G E s,
+      ‖poincareKernel φ (principalLevel (n ⊕ Unit) a) ((inlLine E s x)⁻¹ * σ * inlLine E s h) *
+        F h‖) :
+    HasSum (fun σ : W ↦ ∫ h : G E s,
+        poincareKernel φ (principalLevel (n ⊕ Unit) a) ((inlLine E s x)⁻¹ * σ * inlLine E s h) *
+          F h)
+      (∫ h : G E s, ∑' γ : (V.sum (signedSpace (n := Unit) E 1)).Γ,
+        poincareKernel φ (principalLevel (n ⊕ Unit) a) ((inlLine E s x)⁻¹ * γ * inlLine E s h) *
+          F h ∂V.quotMeasure) := by
+  have : Countable C := C.to_countable.to_subtype
+  let term (γ : (V.sum (signedSpace (n := Unit) E 1)).Γ) (h : G E s) : ℂ :=
+    poincareKernel φ (principalLevel (n ⊕ Unit) a) ((inlLine E s x)⁻¹ * γ * inlLine E s h) * F h
+  -- the sum over the rational points is a sum over cosets in `W` and elements of `V.Γ`
+  have tsum_eq (h : G E s) : ∑' γ, term γ h = ∑' q : W × V.Γ, term q.1 (q.2 * h) := by
+    let p (g : G E (s ⊕ᵥ 1)) : ℂ :=
+      poincareKernel φ (principalLevel (n ⊕ Unit) a) ((inlLine E s x)⁻¹ * g * inlLine E s h) * F h
+    have p_supp (σ : C) (δ : G E s) (h_ne : p (σ * inlLine E s δ) ≠ 0) : σ ∈ W := by
+      have level : ((inlLine E s x)⁻¹ * (σ * inlLine E s δ) * inlLine E s h).2 ∈
+          principalLevel (n ⊕ Unit) a :=
+        mem_of_indicator_ne_zero (right_ne_zero_of_mul (left_ne_zero_of_mul h_ne))
+      exact hW σ (δ * h) (by simpa [mul_assoc] using level)
+    have cosets : ∑' γ : (V.sum (signedSpace (n := Unit) E 1)).Γ, p γ =
+        ∑' q : W × V.Γ, p (q.1 * inlLine E s q.2) :=
+      V.tsum_eq_tsum_cosets hC p_supp
+    simpa [hF.rat_mul, p, term, mul_assoc] using cosets
+  -- unfolding over `V.Γ` turns the period into the sum of the integrals over the group
+  change HasSum (fun σ : W ↦ ∫ h, term σ h) (∫ h, ∑' γ, term γ h ∂V.quotMeasure)
+  simp_rw [tsum_eq]
+  exact V.hasSum_integral_of_summable_integral_norm h_int h_sum
+
 /-- The packing bound. Let the points `col i` of a real normed space of finite dimension at most
 `A - 2` have mutual distances at least `d²`, and let `‖col base‖ ≤ d` with `d ≥ 10`. Then the sum
 of `(d / ‖col i‖) ^ A` over `i ≠ base` converges and is at most `10 / d`. -/
@@ -672,19 +798,13 @@ lemma New.Exchange.norm_poincare_period_sub_le {E n : Type} {s : n → ℤˣ} [F
   set Z : Space E (n ⊕ Unit) (s ⊕ᵥ 1) := V.sum (signedSpace (n := Unit) E 1)
   set vol : ℝ := volume.real (principalLevel n a : Set (Gf E n))
   let transl (γ : Z.Γ) (h : G E s) : G E (s ⊕ᵥ 1) := (inlLine E s x)⁻¹ * γ.val * inlLine E s h
-  let kernel (g : G E (s ⊕ᵥ 1)) : ℂ :=
-    poincareKernel (translatedCoeff l α ω) (principalLevel (n ⊕ Unit) a) g
-  let term (γ : Z.Γ) (h : G E s) : ℂ := kernel (transl γ h) * F h
-  have slice_int (g : GInf E (s ⊕ᵥ 1)) :
-      Integrable fun r : GInf E s ↦ translatedCoeff l α ω (g * inl s 1 ∘ r) :=
-    (integrable_translatedCoeff_and_integral_norm_le hA_sq h_gap ω α g one_pos
-      fun r ↦ (le_prod_opNorm fun w ↦ g w * inl s 1 (r w)).1).1
-  refine ⟨by simpa only [one_mul] using slice_int 1, ?_⟩
+  let term (γ : Z.Γ) (h : G E s) : ℂ :=
+    poincareKernel (translatedCoeff l α ω) (principalLevel (n ⊕ Unit) a) (transl γ h) * F h
+  refine ⟨by simpa only [one_mul] using integrable_translatedCoeff_mul_inl hA_sq h_gap ω α 1, ?_⟩
   have d_pos : 0 < d := by linarith
   have S_nonneg : 0 ≤ S := (norm_nonneg _).trans (hS x)
   -- `reps` represents the cosets, `supp` those meeting the level condition, `base` is that of `1`
   obtain ⟨reps, hC, one_mem⟩ := ((inlLine E s).range.subgroupOf Z.Γ).exists_isComplement_left 1
-  have : Countable reps := reps.to_countable.to_subtype
   let supp : Set reps := {γ : reps | ∃ k : G E s, (transl γ k).2 ∈ principalLevel (n ⊕ Unit) a}
   obtain ⟨k, hk⟩ :
       ∃ k : supp → G E s, ∀ γ : supp, (transl γ (k γ)).2 ∈ principalLevel (n ⊕ Unit) a :=
@@ -697,12 +817,9 @@ lemma New.Exchange.norm_poincare_period_sub_le {E n : Type} {s : n → ℤˣ} [F
     (Z.move (inlLine E s x)).archCoords (y γ)
   have separated : Pairwise fun γ γ' : supp ↦ d ^ 2 ≤ ‖col γ - col γ'‖ := by
     intro γ γ' h_ne
-    -- if the columns agreed, `γ⁻¹ * γ'` would lie in the image of `inlLine E s`, so `γ = γ'`
-    have y_ne : y γ ≠ y γ' := by
-      intro y_eq
-      have hγ' : V.IsLastColumn γ' (y γ) := by simpa only [y_eq] using hy γ'
-      exact h_ne (Subtype.ext (hC.leftQuotientEquiv.symm.injective
-        (QuotientGroup.eq.2 ((hy γ).inv_mul_mem_range hγ'))))
+    -- distinct representatives have distinct last columns
+    have y_ne : y γ ≠ y γ' := fun y_eq ↦
+      h_ne (Subtype.ext ((hy γ).eq_of_isComplement hC (by simpa only [y_eq] using hy γ')))
     rw [← map_sub]
     exact h_sep.trans
       ((hy γ).le_norm_archCoords_sub (hy γ') y_ne ha (hk γ) (hk γ') hR_nonneg hR_le)
@@ -711,11 +828,9 @@ lemma New.Exchange.norm_poincare_period_sub_le {E n : Type} {s : n → ℤˣ} [F
       ∑' γ : Elem {base}ᶜ, (d / ‖col γ‖) ^ A ≤ 10 / d :=
     tsum_div_norm_pow_le_of_separated hd_ten_le separated norm_base_le
       (by simpa [← mul_assoc, finrank_real_of_complex])
-  have kernel_int (γ : supp) : Integrable fun h : G E s ↦ kernel (transl γ h) :=
-    (integral_norm_poincareKernel_le ha hA_sq h_gap ω α (hk γ) one_pos fun h ↦
-      (le_prod_opNorm (transl γ h).1).1).1
   have term_int (γ : supp) : Integrable (term γ) :=
-    (kernel_int γ).mul_bdd hF.continuous.aestronglyMeasurable (.of_forall hS)
+    (integral_norm_poincareKernel_mul_le ha hA_sq h_gap ω α (hk γ)
+      hF.continuous.aestronglyMeasurable hS one_pos fun h ↦ (le_prod_opNorm (transl γ h).1).1).1
   -- the decay: the product of the local operator norms of `transl γ h` is at least `‖col γ‖ / d`
   have term_le (γ : Elem {base}ᶜ) :
       ∫ h, ‖term γ h‖ ≤ vol * sliceConst A α ω * S * (d / ‖col γ‖) ^ A := by
@@ -727,43 +842,20 @@ lemma New.Exchange.norm_poincare_period_sub_le {E n : Type} {s : n → ℤˣ} [F
           (∏ w, ‖((transl γ h).1 w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ)‖) * Core.numInfPlaces E :=
         (hy γ).norm_archCoords_le x h
       grw [div_le_iff₀ d_pos, column_le, hd]
-    have kernel_le : ∫ h, ‖kernel (transl γ h)‖ ≤ vol * sliceConst A α ω * (‖col γ‖ / d)⁻¹ ^ A :=
-      (integral_norm_poincareKernel_le ha hA_sq h_gap ω α (hk γ) (div_pos col_pos d_pos)
-        norm_transl_ge).2
-    calc
-      ∫ h, ‖term γ h‖ ≤ ∫ h, ‖kernel (transl γ h)‖ * S :=
-        integral_mono (term_int γ).norm ((kernel_int γ).norm.mul_const S) fun h ↦ by
-          grw [norm_mul, hS]
-      _ ≤ vol * sliceConst A α ω * S * (d / ‖col γ‖) ^ A := by
-        grw [integral_mul_const, kernel_le, inv_div, mul_right_comm]
-  -- the sum over `Z.Γ` is a sum over cosets in `supp` and elements of `V.Γ`
-  have tsum_eq (h : G E s) : ∑' γ : Z.Γ, term γ h = ∑' q : supp × V.Γ, term q.1 (q.2 * h) := by
-    let p (g : G E (s ⊕ᵥ 1)) : ℂ := kernel ((inlLine E s x)⁻¹ * g * inlLine E s h) * F h
-    have p_supp (σ : reps) (δ : G E s) (h_ne : p (σ * inlLine E s δ) ≠ 0) : σ ∈ supp := by
-      have level : ((inlLine E s x)⁻¹ * (σ * inlLine E s δ) * inlLine E s h).2 ∈
-          principalLevel (n ⊕ Unit) a :=
-        mem_of_indicator_ne_zero (right_ne_zero_of_mul (left_ne_zero_of_mul h_ne))
-      exact ⟨δ * h, by simpa [transl, mul_assoc] using level⟩
-    have cosets : ∑' γ : Z.Γ, p γ = ∑' q : supp × V.Γ, p (q.1 * inlLine E s q.2) :=
-      V.tsum_eq_tsum_cosets hC p_supp
-    simpa [hF.rat_mul, p, term, transl, mul_assoc] using cosets
+    simpa only [inv_div] using (integral_norm_poincareKernel_mul_le ha hA_sq h_gap ω α (hk γ)
+      hF.continuous.aestronglyMeasurable hS (div_pos col_pos d_pos) norm_transl_ge).2
   -- unfolding over `V.Γ` turns the period into the sum of the integrals of `term γ` over the group
   have summable_norm : Summable fun γ : supp ↦ ∫ h, ‖term γ h‖ :=
     .compl_add (s := {base}) (.of_nonneg_of_le (fun _ ↦ integral_nonneg fun _ ↦ norm_nonneg _)
       term_le (summable.mul_left _)) .of_finite
   have period : HasSum (fun γ : supp ↦ ∫ h, term γ h)
-      (∫ h, ∑' γ : Z.Γ, term γ h ∂V.quotMeasure) := by
-    simp_rw [tsum_eq]
-    exact V.hasSum_integral_of_summable_integral_norm term_int summable_norm
+      (∫ h, ∑' γ : Z.Γ, term γ h ∂V.quotMeasure) :=
+    hasSum_integral_poincareKernel_mul hF _ x hC (fun _ k hk ↦ ⟨k, hk⟩) term_int summable_norm
   -- at `base`, translate by `x`: as `F` has level `a`, the integral is `vol` times the convolution
   have main_term : ∫ h, term base h =
       vol • realConv (fun r : GInf E s ↦ translatedCoeff l α ω (inl s 1 ∘ r)) F x := by
-    have kernel_base (h : G E s) : kernel (transl base (x * h)) =
-        translatedCoeff l α ω (inl s 1 ∘ h.1) * indicator (principalLevel n a) 1 h.2 := by
-      simpa [kernel, transl, base] using
-        poincareKernel_mul_inlLine (translatedCoeff l α ω) (g := 1) (Subgroup.one_mem _) h
-    rw [← integral_mul_left_eq_self _ x, ← integral_mul_indicator_mul_eq_smul_realConv ha hF_level]
-    simp only [term, kernel_base]
+    simpa [term, transl, base] using
+      integral_poincareKernel_inlLine_mul_eq_smul_realConv ha hF_level (translatedCoeff l α ω) x
   have rest : HasSum (fun γ : Elem {base}ᶜ ↦ ∫ h, term γ h)
       (∫ h, ∑' γ : Z.Γ, term γ h ∂V.quotMeasure - ∫ h, term base h) :=
     (hasSum_singleton ..).hasSum_iff_compl.1 period
