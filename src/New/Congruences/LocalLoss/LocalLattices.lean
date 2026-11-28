@@ -67,10 +67,10 @@ lemma isTameType_of_roots {N r : ℕ} {K : O[X] → Prop} {M : Multiset (PadicAl
   have h_minpoly (y : PadicAlgCl ℓ) (hy : y ∈ M) :
       (minpoly ℤ_[ℓ] y).Monic ∧ (minpoly ℤ_[ℓ] y).natDegree ≤ r := by
     obtain ⟨a, ⟨ha_pos, ha_le⟩, hya⟩ := h_root y hy
-    obtain ⟨x, hx⟩ : ∃ x : flatFq (a.toPNat ha_pos),
+    obtain ⟨x, rfl⟩ : ∃ x : flatFq (a.toPNat ha_pos),
         wittToQpBar (WittVector.teichmuller ℓ x) = y :=
       exists_flatFq_teichmuller_eq (f := a.toPNat ha_pos) wittToQpBar.toRingHom y fun _ ↦ hya
-    rw [← hx, minpoly.algHom_eq _ wittToQpBar_injective]
+    rw [minpoly.algHom_eq _ wittToQpBar_injective]
     refine ⟨minpoly.monic (.of_finite ℤ_[ℓ] _), ?_⟩
     calc
       _ ≤ Module.finrank ℤ_[ℓ] (WittFq (a.toPNat ha_pos)) := minpoly.natDegree_le _
@@ -253,11 +253,8 @@ lemma IsConjSelfDualOfLevel.inClass_localLattice {τ : (D.E →+* ℂ) → Multi
     · obtain ⟨-, h_crys⟩ := h_good hw
       simp [crystallinityFilter, hw, h_crys]
   · -- a jump of nonzero multiplicity at `γ` is a member of `τ` at any `g` that induces `γ`
-    let g : Gp ℓ := surjInv coefficientEmbedding_surjective γ
-    have hg : coefficientEmbedding O g = γ := surjInv_eq coefficientEmbedding_surjective γ
-    have h_count : jump (localLattice u w).ρ γ i = count i (τ (complexEmbeddingAt w g)) := by
-      simpa only [hg] using h_selfDual.hasJumps_localLattice hu w g i
-    rwa [jumpSetAt, mem_toFinset, ← count_ne_zero, ← h_count]
+    rwa [jumpSetAt, mem_toFinset, ← count_ne_zero, ← h_selfDual.hasJumps_localLattice hu w _ i,
+      surjInv_eq coefficientEmbedding_surjective γ]
   · -- `Q` kills `s` on every member of `𝓡`, in particular on `R`
     exact hu.isKilledBy_localLattice hs (h_kills R hR)
 
