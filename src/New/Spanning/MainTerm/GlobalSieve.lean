@@ -6,7 +6,7 @@ import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import TauCeti.NumberTheory.NumberField.Countable
-public import New.Spanning.MainTerm.Frequencies
+public import TauCeti.NumberTheory.NumberField.FrequencySum
 public import New.Spanning.Unfolding.BesselLevelStructure
 public import Lib.Adelic.Adeles.SemilocalProducts
 import Lib.Cohomology.Etale.Basic
@@ -122,25 +122,28 @@ noncomputable def ratPoint (l : InfinitePlace E → ℂ) (t : E) : (InfinitePlac
 
 /-- For `y` integral off `T`, the norm of the denominator ideal `{a ∈ 𝓞 E | a y ∈ 𝓞 E}` is at most
 the index `[O : O ∩ y⁻¹ O]`, where `O` is the ring of integers of the completions at `T`. -/
-lemma absNorm_denominator_le {y : E} (hy : y ∈ ratIntegralOff T) :
-    Ideal.absNorm (denominator y) ≤ denomIndex O (ratToPlaces T y) := by
+lemma absNorm_denIdeal_le {y : E} (hy : y ∈ ratIntegralOff T) :
+    Ideal.absNorm (Algebra.denIdeal (R := 𝓞 E) E y) ≤ denomIndex O (ratToPlaces T y) := by
   -- The denominator of `y` is the preimage of the local one under `𝓞 E → O`.
   let f : 𝓞 E →+ LocProd T := ((ratToPlaces T).comp (algebraMap (𝓞 E) E)).toAddMonoidHom
   let D : AddSubgroup (LocProd T) := O.toAddSubgroup.comap (.mulLeft (ratToPlaces T y))
   have h_integral (a : 𝓞 E) : algebraMap E (𝔸f E) (algebraMap (𝓞 E) E a) ∈ Ô E :=
     algebraMap_mem_Ô.2 a.isIntegral_coe
-  have h_comap : (denominator y).toAddSubgroup = D.comap f := by
+  have h_comap : (Algebra.denIdeal (R := 𝓞 E) E y).toAddSubgroup = D.comap f := by
     ext a
     have h_off : algebraMap E (𝔸f E) (algebraMap (𝓞 E) E a * y) ∈ integralOff T := by
       simpa only [map_mul] using mul_mem ((mem_Ô_iff T).1 (h_integral a)).right hy
-    rw [Submodule.mem_toAddSubgroup, mem_denominator, ← algebraMap_mem_Ô, mem_Ô_iff T,
+    have h_mem : a ∈ Algebra.denIdeal (R := 𝓞 E) E y ↔
+        IsIntegral ℤ (algebraMap (𝓞 E) E a * y) := by
+      simp [IsIntegralClosure.isIntegral_iff (A := 𝓞 E), eq_comm]
+    rw [Submodule.mem_toAddSubgroup, h_mem, ← algebraMap_mem_Ô, mem_Ô_iff T,
       and_iff_left h_off]
     simp [D, f, mul_comm]
   have h_range : f.range ≤ O.toAddSubgroup := by
     rintro _ ⟨a, rfl⟩
     exact ((mem_Ô_iff T).1 (h_integral a)).left
   calc
-    _ = (denominator y).toAddSubgroup.index := Ideal.absNorm_eq_natCard _
+    _ = (Algebra.denIdeal (R := 𝓞 E) E y).toAddSubgroup.index := Ideal.absNorm_eq_natCard _
     _ = D.relIndex f.range := by rw [h_comap, index_comap]
     _ ≤ _ := relIndex_le_of_le_right h_range (denomIndex_ne_zero T _)
 
@@ -157,7 +160,7 @@ lemma frequency_term_le {B : ℝ} (k : ℕ) {c : InfinitePlace E → ℂ} {x : I
         (√(genIndex (ratToPlaces T y)) ^ k / denomIndex O (ratToPlaces T y) ^ 3) ≤
       (∏ v : InfinitePlace E, |x v| ^ k * B ^ 6) *
         ((∏ v : InfinitePlace E, (max 1 ‖Φ v y‖)⁻¹ ^ 6) *
-          (Ideal.absNorm (denominator y) : ℝ)⁻¹ ^ 3) := by
+          (Ideal.absNorm (Algebra.denIdeal (R := 𝓞 E) E y) : ℝ)⁻¹ ^ 3) := by
   have h_inf (v : InfinitePlace E) : dampedPower k ‖c v * Φ v y‖⁻¹ * ‖Φ v y‖ ^ k ≤
       |x v| ^ k * B ^ 6 * (max 1 ‖Φ v y‖)⁻¹ ^ 6 := by
     have h_min : min 1 (‖c v‖⁻¹ * ‖Φ v y‖⁻¹) ≤ B * (max 1 ‖Φ v y‖)⁻¹ := by
@@ -169,11 +172,12 @@ lemma frequency_term_le {B : ℝ} (k : ℕ) {c : InfinitePlace E → ℂ} {x : I
     rw [dampedPower, norm_mul, mul_inv, mul_right_comm, h_cancel, mul_assoc, ← mul_pow]
     gcongr
     exact h_lower v
-  set d : ℝ := (Ideal.absNorm (denominator y) : ℝ)
+  set d : ℝ := (Ideal.absNorm (Algebra.denIdeal (R := 𝓞 E) E y) : ℝ)
   have h_one_le : 1 ≤ d := by
-    simpa [d, Nat.one_le_iff_ne_zero, Ideal.absNorm_eq_zero_iff] using denominator_ne_bot y
+    simpa [d, Nat.one_le_iff_ne_zero, Ideal.absNorm_eq_zero_iff] using
+      Algebra.denIdeal_ne_bot E (nonZeroDivisors (𝓞 E)) y
   have h_finite : ((denomIndex O (ratToPlaces T y) : ℝ) ^ 3)⁻¹ ≤ d⁻¹ ^ 3 := by
-    grw [← absNorm_denominator_le T hyT, inv_pow]
+    grw [← absNorm_denIdeal_le T hyT, inv_pow]
   unfold dampedPower at h_inf ⊢
   calc
     _ ≤ (∏ v, ‖c v * Φ v y‖⁻¹ ^ k * min 1 ‖c v * Φ v y‖⁻¹ ^ 6) *
@@ -200,10 +204,14 @@ theorem sum_frequencies_le (B : ℝ) (k : ℕ) (X : Finset E) (c : InfinitePlace
     norm_num
   calc
     _ ≤ ∑ y ∈ X, (∏ v, |x v| ^ k * B ^ 6) *
-        ((∏ v, (max 1 ‖Φ v y‖)⁻¹ ^ 6) * (Ideal.absNorm (denominator y) : ℝ)⁻¹ ^ 3) :=
+        ((∏ v, (max 1 ‖Φ v y‖)⁻¹ ^ 6) *
+          (Ideal.absNorm (Algebra.denIdeal (R := 𝓞 E) E y) : ℝ)⁻¹ ^ 3) :=
       sum_le_sum fun y hy ↦ frequency_term_le T k hB h_lower h_upper (hX₀ y hy) (hXT y hy)
     _ ≤ (∏ v, |x v| ^ k * B ^ 6) * (64 * 38 * Real.exp 4) ^ numInfPlaces E := by
-      grw [← mul_sum, sum_height_inv_cube_le]
+      have h_norm (v : InfinitePlace E) (y : E) : ‖Φ v y‖ = v y := by
+        rw [← InfinitePlace.apply, mk_Φ]
+      simp_rw [h_norm]
+      grw [← mul_sum, sum_prod_inv_max_one_pow_six_mul_inv_absNorm_denIdeal_pow_three_le]
     _ ≤ ∏ v, |x v| ^ k * B ^ 6 * S.b ^ 3 := by
       grw [h_const, prod_mul_distrib (g := fun _ ↦ S.b ^ 3), prod_const, card_univ]
     _ = _ := prod_congr rfl fun v _ ↦ by ring

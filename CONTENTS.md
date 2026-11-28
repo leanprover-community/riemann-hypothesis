@@ -231,7 +231,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 - `New/Spanning/MainTerm/SieveSystem` (202): Sieve systems over places: products, positivity and lower semicontinuity
 - `New/Spanning/MainTerm/KloostermanSum` (148): The orbital integral at the finite places is a Kloosterman sum
-- `New/Spanning/MainTerm/Frequencies` (197): Sums over frequencies
 - `New/Spanning/MainTerm/GlobalSieve` (811): One-sided Poisson summation, sums over frequencies, and the sieve over all places
 - `New/Spanning/MainTerm/FillingLevel` (380): The place and level of a set of primes, orbit sums and the set of entries
 - `New/Spanning/MainTerm/GlobalToLocal` (599): Class sums as orbit sums, and unfolding at a set of primes
