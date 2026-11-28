@@ -372,6 +372,8 @@ lemma isShort_deltaForm {K : Subgroup (Gf E n)} [IsLevel K]
       _ = weylNormSq (σ ∘ v) := by rw [h_card, Nat.cast_one, one_pow, one_mul]
       _ ≤ B := h_norm σ
 
+-- Keeps definitional checks from unfolding the finite sums.
+seal Finset.sum in
 /-- Consider algebraic forms on the finite adelic unitary group G_f of rank n over E, of weight (κ,
 e): at the infinite place τ the Young diagram has κ τ h columns of height h, and e τ is the power of
 the determinant. Let K be a level that is free: Γ ∩ gKg⁻¹ is trivial for every g, where Γ is the

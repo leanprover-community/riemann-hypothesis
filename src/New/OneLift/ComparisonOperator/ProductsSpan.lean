@@ -774,6 +774,8 @@ lemma isAdelicHol_star_goodForms (F : D.goodForms (D.spaceW j)) :
     using!
     fun g ↦ .sum _ fun _ ↦ isAdelicHol_pairTheta (hol _) g
 
+-- Keeps definitional checks from unfolding the finite sums.
+seal Finset.sum in
 /-- Let `1 ≤ j ≤ m`, let `F` be a good form on `W_j = D.spaceW j`, and write `F_i = choiceFn j i`
 for the functions on the adelic group of `W_j` attached to the choices `i`. Let `V°` be the definite
 space with index set `D.SecondFactorIndex`. A form `ζ` on `V°` assigns to each class at level `ϖ²` a

@@ -229,6 +229,8 @@ noncomputable def New.Exchange.typeKernelMajorant (l : NumberField.InfinitePlace
     (A : ℕ) (u : GInf D.E s) : ℝ :=
   ∏ w : NumberField.InfinitePlace D.E, (l w).formalDegree * (2 / ‖(u w).val.val‖) ^ (2 * A)
 
+-- Keeps definitional checks from unfolding the finite sums.
+seal Finset.univ in
 /-- Let the parameters `l w` have large gaps for `4 A` and entries bounded by `L`. Then
 `typeKernelMajorant l A`, the product over the infinite places `w` of the formal degree of `l w`
 times `(2 / ‖u w‖) ^ (2 A)`, is integrable over the real points `u`. Under the size conditions for

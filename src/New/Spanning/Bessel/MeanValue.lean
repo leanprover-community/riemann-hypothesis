@@ -499,6 +499,8 @@ theorem setLIntegral_openCell_frame_coords_le
   rw [← h_vol.lintegral_comp hK, volume_eq_prod, lintegral_prod _ (by fun_prop)]
   exact setLIntegral_le_lintegral _ _
 
+-- Keeps definitional checks from unfolding the finite sums.
+seal Finset.sum in
 /-- Let `e = 𝔰.frameCols` be the matrix with the columns `e₁, …, e_ϱ, z` of the frame and `𝔰.J₁` the
 matrix of the hermitian form that defines `G₁`. The measure `gramSectionMeasure 𝔰` is the law of
 `s γ_Z` under `2 ^ (-ϱ) π ^ k / (k - 1)! · 𝗀(Z) ^ (k - 1) dZ ds`, where `Z` runs over the open cell,

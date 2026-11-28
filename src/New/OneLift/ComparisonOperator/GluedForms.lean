@@ -689,6 +689,8 @@ lemma norm_schur_inv_cols_le_weylGauge [DecidableEq l]
     _ ≤ _ * ‖w‖ := norm_mulVec_le (norm_schur_diagonal_piecewise_inv_le (M := M) S κ) w
     _ = _ := by simp [weylGauge, weylRep, w, φ, -map_inv]
 
+-- Keeps definitional checks from unfolding the finite sums.
+seal Finset.univ in
 /-- Let `V.ε : N ⊕ m ≃ n` split the indices, let `ι` be a p-adic place, and let `M ≠ 0` lie in the
 ideal of `O.levelModulus 1 false`, the product of the chosen places of `O`. Let the lattice `L` with
 point `γ = L.point` be glued for `s`. The diagrams `O.colsPlus` and `O.colsMinus` count the columns
