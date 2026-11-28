@@ -31,7 +31,7 @@ noncomputable section
 
 namespace New
 
-variable {E : Type} [Field E] [NumberField E]
+variable {E : Type} [Field E]
 
 /-- The denominator of `ν`: the ideal of the integers `a` such that `a ν` is integral. -/
 def denominator (ν : E) : Ideal (𝓞 E) where
@@ -40,10 +40,11 @@ def denominator (ν : E) : Ideal (𝓞 E) where
   add_mem' ha hb := by simpa [add_mul] using IsIntegral.add ha hb
   smul_mem' c a ha := by simpa [mul_assoc] using IsIntegral.mul c.isIntegral_coe ha
 
-omit [NumberField E] in
 lemma mem_denominator {ν : E} {a : 𝓞 E} :
     a ∈ denominator ν ↔ IsIntegral ℤ (algebraMap (𝓞 E) E a * ν) :=
   Iff.rfl
+
+variable [NumberField E]
 
 lemma denominator_ne_bot (ν : E) : denominator ν ≠ ⊥ := by
   obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 E) ν

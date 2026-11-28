@@ -151,11 +151,11 @@ theorem exists_places_integralOff (T₀ : Finset Eˣ) :
 
 end
 
-variable [WeilData E] {S : Filling E 𝔰} {T : Finset (FinPlace E)} [T.StarStable] {x : S.GFin}
+variable {S : Filling E 𝔰} {T : Finset (FinPlace E)}
 
 section
 
-omit [WeilData E]
+variable [T.StarStable] {x : S.GFin}
 
 /-- Let `w_p = weylElem 𝔰.ϱ p` be the Weyl element with `e_a ↦ p_a e*_a` and `e*_a ↦ e_a / p̄_a` on
 the `𝔰.ϱ` hyperbolic pairs of the hermitian space of `S`. At an infinite place `v` with chosen
@@ -292,8 +292,8 @@ end
 /-- Let `i` and `τ` be integral at `T`, with `i² = -1`, `star i = -i` and `τ + star τ = 1`. There is
 a Haar measure `ν` on the skew elements, of mass one on the integral ones, such that
 `(a, b) ↦ τ i a + b` takes `ν.prod ν` to the volume. -/
-lemma exists_isAddHaarMeasure_skewAdjoint {i τ : LocProd T} (hi : i ∈ O) (hτ : τ ∈ O)
-    (h_sq : -i * i = 1) (h_skew : star i = -i) (h_tr : τ + star τ = 1) :
+lemma exists_isAddHaarMeasure_skewAdjoint [WeilData E] [T.StarStable] {i τ : LocProd T}
+    (hi : i ∈ O) (hτ : τ ∈ O) (h_sq : -i * i = 1) (h_skew : star i = -i) (h_tr : τ + star τ = 1) :
     ∃ ν : Measure (skewAdjoint (LocProd T)),
       ν.IsAddHaarMeasure ∧
       ν {b : skewAdjoint (LocProd T) | b.val ∈ O} = 1 ∧
@@ -335,7 +335,7 @@ lemma exists_isAddHaarMeasure_skewAdjoint {i τ : LocProd T} (hi : i ∈ O) (hτ
 /-- If the integers at `T` are self-dual for the character `ψ`, then there is a kernel `G` for
 Plancherel's inequality. It is continuous, integrable and nonnegative, with `G 0 = 1`, and its
 transform has mass at most one. -/
-lemma exists_plancherel_kernel {ψ : AddChar (LocProd T) ℂ}
+lemma exists_plancherel_kernel [WeilData E] [T.StarStable] {ψ : AddChar (LocProd T) ℂ}
     (h_dual : ∀ a : LocProd T, (∀ r ∈ O, ψ (r * a) = 1) ↔ a ∈ O) :
     ∃ G : LocProd T → ℝ,
       Continuous G ∧ Integrable G ∧ 0 ≤ G ∧ G 0 = 1 ∧
@@ -363,10 +363,6 @@ lemma exists_plancherel_kernel {ψ : AddChar (LocProd T) ℂ}
         simp_rw [h_transform]
         simp [G, indicator_apply, apply_ite eNorm, apply_ite Complex.ofReal]
       _ ≤ 1 := (lintegral_indicator_one_le _).trans_eq volume_O
-
-section
-
-omit [WeilData E] [T.StarStable]
 
 /-- The integers at `T` are self-dual for the character `charOnPlaces`: `a` is integral if and only
 if the character is trivial on the integral multiples of `a`. -/
@@ -407,7 +403,7 @@ lemma ofReal_genIndex_le_enorm_prod_sq (x : LocProd T) :
     _ ≤ ‖∏ w : T, (1 + √(‖x w‖⁻¹ - 1)) ^ 2‖ₑ := Real.ofReal_le_eNorm _
     _ = _ := by rw [Finset.prod_pow, eNorm_pow]
 
-end
+variable [T.StarStable]
 
 variable (S T) in
 open Valued Finset in
@@ -415,7 +411,8 @@ open Valued Finset in
 additive character is `S.charOnPlaces T`. This is `x ↦ ψ_f(-x / ϖ)` read at `T` through extension by
 zero, where `ψ_f = ψf E` is the standard character of the finite adeles and `ϖ = S.deltaE` is the
 generator of the different of `E` in the data `S`. -/
-theorem exists_integralPlace : ∃ P : IntegralPlace (LocProd T), P.ψ = S.charOnPlaces T := by
+theorem exists_integralPlace [WeilData E] :
+    ∃ P : IntegralPlace (LocProd T), P.ψ = S.charOnPlaces T := by
   obtain ⟨i, hi, τ, hτ, h_sq, h_skew, h_tr⟩ :
       ∃ i ∈ O, ∃ τ ∈ O, -i * i = 1 ∧ star i = -i ∧ τ + star τ = 1 :=
     IsAdelic.exists_skew_unit (A := LocProd T)
@@ -475,7 +472,7 @@ variable (S T) in
 at `T`, of `ϱ` hyperbolic planes plus the space `X₀ ⊕ E z` with its Gram matrix `S.latticeMiddle` in
 the lattice basis. This group is unimodular: the inverse of a left Haar measure is left invariant.
 Here `P` is any structure of a finite place on that product; its character plays no part. -/
-theorem isMulLeftInvariant_haar_inv [P : IntegralPlace (LocProd T)] :
+theorem isMulLeftInvariant_haar_inv [WeilData E] [P : IntegralPlace (LocProd T)] :
     (haar (G := (S.latticeMiddle (LocProd T)).G)).inv.IsMulLeftInvariant := by
   -- An orthonormal basis `k` over `Ô E` identifies the adelic group with `Gf E _`, whose measure is
   -- bi-invariant; push this measure forward from the points integral off `T`
@@ -512,10 +509,6 @@ theorem isMulLeftInvariant_haar_inv [P : IntegralPlace (LocProd T)] :
       h_lift P.measurableSet_unitaryLevel
   simpa using h_inv
 
-section
-
-omit [WeilData E]
-
 /-- The image in the finite adeles `𝔸f E` of `-ϖ⁻¹`, where `ϖ = S.deltaE`, is skew: its conjugate
 under `star` is its negative. -/
 lemma star_neg_inv_deltaE :
@@ -539,8 +532,6 @@ lemma charOnPlaces_add_star (x : LocProd T) : S.charOnPlaces T (x + star x) = 1 
   rw [charOnPlaces_apply_eq_ψf, map_add, adeleOfLocal_star, mul_add, AddChar.map_add_eq_mul, h_neg,
     ← AddChar.map_add_eq_mul, add_neg_cancel, AddChar.map_zero_eq_one, Circle.coe_one]
 
-end
-
 variable (T) in
 open Valued Finset in
 /-- Let `ϱ = 𝔰.ϱ` be the number of hyperbolic planes, `k = 𝔰.k` the dimension of the definite
@@ -548,7 +539,7 @@ summand `X₀`, and `S.latticeMiddle` the Gram matrix of `X₀ ⊕ E z` in the l
 of the completions at a conjugation-stable finite set `T` is a finite place `P` with a place datum
 `F`, with 3ϱ + 6 further hyperbolic pairs and an orthonormal part of size `k - (6ϱ + 13)`, that
 satisfies `New.Filling.IsFillingData`. -/
-theorem exists_isFillingData :
+theorem exists_isFillingData [WeilData E] :
     ∃ _ : IntegralPlace (LocProd T),
       ∃ F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T))
         (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5),

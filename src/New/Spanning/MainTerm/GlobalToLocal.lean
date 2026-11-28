@@ -646,7 +646,6 @@ theorem IsFillingData.card_reducedImage_mul_measure_congruenceSubgroup_eq [hF : 
 
 /-! ### Double cosets and the Kloosterman sum -/
 
-omit P in
 /-- Let `γ = w_p σ` with `σ` fixing the `ϱ` hyperbolic pairs of the basis. Let 𝖴 = `besselU` be the
 unipotent group and `𝖴_c(M) = S.classUnipotent c` the group of its rational points `u` with
 `h_c⁻¹ u h_c ≡ 1` modulo `M`. Let `r` and `r'` list rational points of 𝖴 without repetition, with
@@ -817,7 +816,6 @@ lemma IsFillingData.extendedBesselChar_toPlaces_translateByClassReps [hF : S.IsF
     unipotentChar_eq_of_mem_principalLevel hu' (ratToFin_mem_besselU_iff.mpr hu) c.out
       (by simp [translateByClassReps, mul_assoc])]
 
-omit P in
 /-- Phases at the infinite places. Let `W = S.besselFn side` be the full or the cut Bessel function
 at infinity (`side : FullOrCut`), and `J(γ) = ∫ W(y) ⊗ W(γ⁻¹ y)^* dy` the orbital integral
 `besselOrbitalIntegral`. Let `u`, `u'` be rational points of the group 𝖴 = `besselU` of block upper

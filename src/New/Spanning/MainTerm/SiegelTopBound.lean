@@ -313,9 +313,6 @@ lemma IsFillingData.exists_scaledSiegelConst_eq_and_massRatio_le
       push_cast
       ring
 
-variable [ok : S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)]
-
-omit [S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] in
 /-- Let `N⁻¹` be integral off `T`, for the prime `N = S.N`. Let `β = (t t̄ - N²) / N` be positive
 under the embeddings `Φ v` of the CM type, and let `C` be the constant of Siegel's formula in rank
 `k = card 𝔰.κ` at `β`; its first factor `classSum stdRatPoints S.sourceLevel 1` is the mass of the
@@ -354,12 +351,6 @@ lemma siegel_constant_eq (hT_N : (S.N : E)⁻¹ ∈ ratIntegralOff T)
   simp [siegelConst, β, mul_conj', sq, div_pow, ← h_rank, mul_add, Finset.prod_pow]
   field
 
-section Level
-
-variable [P : IntegralPlace (LocProd T)]
-  {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)}
-
-omit [IntegralPlace (LocProd T)] in
 /-- Let `Ψ` be a function of compact support on the vectors of the whole space over the product
 `LocProd T` of the completions at `T`. For `x` in the definite part `X₀` (basis `𝔰.κ`) let
 `vectorOfLastEntry π τ x` be `x - (π π̄)⁻¹ τ z` in the basis `besselLatticeBasis 𝔰 π`, with `z` the
@@ -383,13 +374,19 @@ lemma hasCompactSupport_testFunction {Ψ : (𝔰.BesselIndex → LocProd T) → 
     simpa [e, part, vectorOfLastEntry, sub_adeleOfLocal_mem_iff] using hy_int i
   exact ⟨part e, ⟨e, subset_closure hy_supp, rfl⟩, y - part e, h_int, add_sub_cancel ..⟩
 
+section Level
+
+variable [P : IntegralPlace (LocProd T)]
+  {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)}
+
 /-- Let the inverse of the level `M = S.ideleM` be integral off `T`, and let `F` be a filling datum
 at `T`: a large lattice datum of modulus `M` for the place structure `P`, whose character is that of
 `S`. Let `f` be the function on adelic vectors `x` of `X₀` that is `Ψ (x - N⁻¹ t z)` at `T`
 (`vectorOfLastEntry`, for `N = π π̄`, `π = S.piN` and a rational `t`) times the indicator of the
 vectors integral off `T`. If `Ψ` is invariant under `besselH ⊓ F.congruenceSubgroup`, then `f` is
 invariant under the level `S.sourceLevel` of the finite adelic unitary group `Gf E 𝔰.κ` of `X₀`. -/
-lemma IsFillingData.testFunction_mulVec (hF : S.IsFillingData T F)
+lemma IsFillingData.testFunction_mulVec [ok : S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)]
+    (hF : S.IsFillingData T F)
     {Ψ : (𝔰.BesselIndex → LocProd T) → ℝ≥0}
     (hΨ : ∀ k ∈ besselH ⊓ F.congruenceSubgroup, ∀ x : 𝔰.BesselIndex → LocProd T,
       Ψ (k.val.val *ᵥ x) = Ψ x)
@@ -418,7 +415,6 @@ lemma IsFillingData.testFunction_mulVec (hF : S.IsFillingData T F)
       mulVec_mulVec _ (besselLatticeBasis ..).val, toBesselH, fromBlocks_mulVec]
   exact if_congr (mulVec_mem_intVectors_iff h_int) ((congrArg Ψ h_tail).trans (hΨ k' hk' _)) rfl
 
-omit [S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] in
 /-- Let `M = S.ideleM` be the level, and let `F` be a filling datum at `T`: a large lattice datum of
 modulus `M` for the place structure `P`, whose character is that of `S`. Let `Ψ ≥ 0` be continuous
 of compact support on the vectors of rank `k = card 𝔰.κ` over the product `LocProd T` of the
@@ -458,7 +454,6 @@ lemma IsFillingData.enorm_normDensity_le_mul_lintegral_normFiberMeasure
       (P.isDisintegration_normFiberMeasure F.two_le_card) conjTranspose_one hF.psi_add_star hΨ
         h_supp δβ
 
-omit [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] ok in
 /-- Let `t` be in `E`, read at `T` as `ratToPlaces T t`, and let `π = S.piNAt T` be the unit at `T`
 with `π π̄ = N = S.N`. Then the index `lastEntrySphereIndex π t` of the sphere
 `ω* ω = t t̄ / N - N`, divided by `P.skewUnit`, is the value at `T` of `β = (t t̄ - N²) / N`. -/
@@ -483,7 +478,8 @@ and a vector `z`; `floorGroup 𝔰.ϱ` is the group of isometries that fix the h
 of the double coset `c`, and let the left classes `c₁`, `c₂` be equal. If the translates
 `h_c⁻¹ γ h_c'` (`S.translateByClassReps`) are integral off `T` and lie in one coset of
 `F.congruenceSubgroup` at `T`, then `γ₁ = γ₂` and the right classes `c₁'`, `c₂'` are equal. -/
-lemma IsFillingData.classes_eq_and_eq_of_inv_mul_mem_congruenceSubgroup (hF : S.IsFillingData T F)
+lemma IsFillingData.classes_eq_and_eq_of_inv_mul_mem_congruenceSubgroup [S.IsAdmissible]
+    [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] (hF : S.IsFillingData T F)
     {c₁ c₂ c₁' c₂' : S.Classes} {γ₁ γ₂ : S.G E} (h_leftClass : c₁ = c₂)
     (hγ₁ : γ₁ ∈ floorGroup 𝔰.ϱ) (hγ₂ : γ₂ ∈ floorGroup 𝔰.ϱ)
     (h_tail : S.frameProducts γ₁ 𝔰.top 𝔰.top = S.frameProducts γ₂ 𝔰.top 𝔰.top)
@@ -515,7 +511,6 @@ lemma IsFillingData.classes_eq_and_eq_of_inv_mul_mem_congruenceSubgroup (hF : S.
   exact ⟨hc', inv_mul_eq_one.mp <|
     eq_one_of_mem_floorGroup_inf ⟨fixes, (unipotentBelow_eq_besselU le_rfl).ge hU⟩ (by simp)⟩
 
-omit [S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] in
 /-- Let `Z` be a group between the congruence group `F.congruenceSubgroup` and the integral
 isometries, `R` a matrix and `ω p` finitely many heads. The fiber pairing
 `F.fiberPairing Z (ω p) (ω q)` is the pairing of the orbital integrals `F.scaledOrbitalIntegral Z`
@@ -558,7 +553,8 @@ density be the same number `w` for all `p`. Let the integral elements `n i` (`i 
 `F.headSumNormSq` at `g⁻¹`, where `g = S.toPlaces T (S.translateByClassReps c c' γ)` for
 `γ ∈ floorGroup 𝔰.ϱ` whose translate is integral off `T`: the pairings of the orbital integrals
 `F.scaledOrbitalIntegral` at `T` of two heads, summed against `R`. -/
-lemma IsFillingData.sum_sq_norm_sum_cosetAmplitude_le_headSumNormSq [WeilData E]
+lemma IsFillingData.sum_sq_norm_sum_cosetAmplitude_le_headSumNormSq [S.IsAdmissible]
+    [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] [WeilData E]
     (hF : S.IsFillingData T F) {side : FullOrCut} {Z : F.IntermediateGroup}
     {ι J : Type} [Fintype ι] [Fintype J] {c c' : S.Classes} {γ : S.G E} (hγ : γ ∈ floorGroup 𝔰.ϱ)
     {n : ι → S.latticeStabilizer} (h_inj : (fun i : ι ↦ S.reduction (n i)).Injective)
@@ -644,7 +640,8 @@ most the real part of `∑ p q, R p q * F.fiberPairing Z (ω p) (ω q) e`. Here 
 `besselH`, and `S.cosetAmplitude side c s c' γ` is the sum of the amplitudes of the rational
 `u γ u'⁻¹`, with `u`, `u'` unipotent, whose translate by the class representatives is integral with
 reduction `s`. -/
-lemma IsFillingData.mul_sum_norm_sum_cosetAmplitude_sq_le_fiberPairing [WeilData E]
+lemma IsFillingData.mul_sum_norm_sum_cosetAmplitude_sq_le_fiberPairing [S.IsAdmissible]
+    [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] [WeilData E]
     (hF : S.IsFillingData T F) {side : FullOrCut}
     {Z : F.IntermediateGroup} {ι J : Type} [Fintype ι] [Fintype J] {c c' : ι → S.Classes}
     {γ : ι → S.G E} {n : ι → S.latticeStabilizer}
@@ -707,8 +704,8 @@ lemma IsFillingData.mul_sum_norm_sum_cosetAmplitude_sq_le_fiberPairing [WeilData
   rw [sum_subtype (F := inferInstance) (p := (pair · = pair k)) _ (by simp [Subtype.ext_iff])]
   simp only [h_same, pair]
 
-omit [S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)]
-  [IntegralPlace (LocProd T)] in
+end Level
+
 /-- The space has the hyperbolic pairs `e_a, e*_a` (`a < ϱ`), a definite part `X₀` with basis `𝔰.κ`
 and a vector `z`; `floorGroup 𝔰.ϱ` is the group of isometries that fix the hyperbolic pairs. Let `γ`
 be an element of this group over `E` with `⟨z, γ z⟩ = t`, and `x` the `X₀`-part of `γ z`, moved by
@@ -724,10 +721,6 @@ lemma orbitPoint_toPlaces_translateByClassReps {c c' : S.Classes} {γ : S.G E}
       (S.translateByClassReps c c' γ).val.val.map (evalPlaces T) := rfl
   ext l
   simp [orbitPoint, h_map]
-
-end Level
-
-variable [WeilData E]
 
 /-- Siegel's formula as an upper bound. Let `S` be admissible, with the inverse of the level
 `M = S.ideleM` integral off `T`, let `N⁻¹` be integral off `T`, where `N = S.N`, and let `F` be a
@@ -745,7 +738,8 @@ N^k))^f |disc E|^(1/4) (volÔ E)^k`, `(∏ v, (|t|_v² - N²)) ^ (k - 1)`, the i
 `y* y = (t t̄ - N²) / N`, for the fiber measure `P.normFiberMeasure` with index
 `lastEntrySphereIndex`. Here `S.b` is the size parameter of `S`, `k` the rank of `X₀` and `f` the
 number of infinite places. -/
-theorem IsFillingData.siegel_sum_le_lintegral_sphere (hT_N : (S.N : E)⁻¹ ∈ ratIntegralOff T)
+theorem IsFillingData.siegel_sum_le_lintegral_sphere [S.IsAdmissible]
+    [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] [WeilData E] (hT_N : (S.N : E)⁻¹ ∈ ratIntegralOff T)
     [P : IntegralPlace (LocProd T)]
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
@@ -821,7 +815,7 @@ theorem IsFillingData.siegel_sum_le_lintegral_sphere (hT_N : (S.N : E)⁻¹ ∈ 
       rw [mul_assoc _ (P.modulus π), ENNReal.mul_inv_cancel_left (by simp) (by simp), ← mul_assoc]
     _ = _ := by rw [siegel_constant_eq hT_N piNAt_mul_star hβ_pos (C := C) rfl]
 
-omit [WeilData E] [T.StarStable] [S.IsAdmissible] [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] in
+omit [T.StarStable] in
 /-- If the lattice basis and the translate `h_c⁻¹ γ h_c'` (`S.translateByClassReps`) of a rational
 element `γ` of `floorGroup 𝔰.ϱ` are integral off `T`, then so is the `X₀`-part of the column of `γ`
 at `z`, moved by the inverse of the representative of `c`. -/
@@ -853,7 +847,8 @@ every `i`, the Gram matrix of the tensors `ρ p • ∫ W(y) ⊗ W((w_p γ i)⁻
 `S.cosetAmplitude` at `w_p γ i`, times `r ^ 2`, add up to at most
 `(1 + S.b⁻⁶) * S.scaledSiegelConst` times the real part of
 `∑ p q, R p q * F.lastEntryDensity / Z.massRatio`. -/
-theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
+theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity [S.IsAdmissible]
+    [Fact (↑S.ideleM⁻¹ ∈ integralOff T)] [WeilData E]
     (hT_basis : S.latticeBasis ∈ intGL 𝔰.BesselIndex (integralOff T))
     (hT_N : (S.N : E)⁻¹ ∈ ratIntegralOff T)
     [P : IntegralPlace (LocProd T)]

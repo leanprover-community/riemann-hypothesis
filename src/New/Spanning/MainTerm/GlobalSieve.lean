@@ -77,18 +77,13 @@ character of the finite adeles and `ϖ = S.deltaE` generates the different of `E
 lemma selfDualChar_apply {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
     (x : 𝔸f E) : S.selfDualChar x = ψf E (algebraMap E (𝔸f E) (-(S.deltaE : E)⁻¹) * x) := rfl
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {𝔰 : Shape} (S : Filling E 𝔰)
-  (T : Finset (FinPlace E)) [T.StarStable]
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰) (T : Finset (FinPlace E))
 
 /-- The character `S.selfDualChar` of the finite adeles, `x ↦ ψ_f(-x / ϖ)`, read on the product of
 the completions at `T` through extension by zero (`adeleOfLocal`). Here `ψ_f = ψf E` is the standard
 character of the finite adeles, and `ϖ = S.deltaE` generates the different of `E`. -/
 noncomputable def charOnPlaces : AddChar (LocProd T) ℂ :=
   S.selfDualChar.compAddMonoidHom (adeleOfLocal T)
-
-section
-
-omit [WeilData E] [T.StarStable]
 
 /-- At a finite adele that is integral off `T`, the character `S.selfDualChar` depends only on the
 components at `T`: it equals `S.charOnPlaces T` there. -/
@@ -232,8 +227,6 @@ lemma measurePreserving_scale_evalPlaces {r : InfinitePlace E → ℝ}
   simpa [volume_eq_prod, ← prod_restrict, prod_smul_left, prod_smul_right, div_eq_mul_inv,
     mul_smul] using h_inf.prod h_fin
 
-end
-
 /-- The standard character of the adeles at `x` is `exp (-2πi ∑ v, 2 Re x_v)`, with `x_v = x.1 v`
 the components at the infinite places, times the standard character `ψf E` of the finite adeles at
 the finite part `x.2`. -/
@@ -246,7 +239,6 @@ lemma wave_two_pi_I_mul (w : ℂ) : wave (2 * π * .I * w) = fourierChar (2 * w.
   have h_im : (2 * π * .I * w : ℂ).im = 2 * π * w.re := by simp
   rw [wave, sub_conj, h_im, fourierChar_apply, mul_left_comm (2 * π)]
 
-omit [WeilData E] [T.StarStable] in
 /-- Let `ϖ = S.deltaE` be the generator of the different of `E` in the filling data `S`. For `y ∈ E`
 and an adele `z`, both integral off `T`, the standard adelic character at `-y z / ϖ` is the product
 of the characters `wave c = exp (c - conj c)` at the infinite places and of `S.charOnPlaces T`, the
@@ -274,7 +266,6 @@ lemma stdAddChar_div_deltaE {y : E} (hy : y ∈ ratIntegralOff T) {z : 𝔸 E}
     simp [div_eq_mul_inv, mul_assoc, mul_left_comm]
   rw [coe_stdAddChar_apply, h_inf, h_fin, map_mul (evalPlaces T), ratToPlaces, RingHom.comp_apply]
 
-omit [WeilData E] [T.StarStable] in
 /-- Let `G` be a function on the adeles that is invariant under the integral finite adeles that
 vanish at `T`, written `a - adeleOfLocal T (evalPlaces T a)` (`a ∈ Ô E` integral, with its
 components at `T` removed). If the Fourier transform of `G` at `y / ϖ` is not zero, then `y` is
@@ -307,10 +298,6 @@ noncomputable def extendToAdeles (r : InfinitePlace E → ℝ)
 section ExtendToAdeles
 
 variable {r : InfinitePlace E → ℝ} {F : (InfinitePlace E → ℂ) × LocProd T → ℝ}
-
-section
-
-omit [WeilData E] [T.StarStable]
 
 lemma extendToAdeles_of_mem {z : 𝔸 E} (hz : z.2 ∈ integralOff T) :
     extendToAdeles T r F z = F (fun v : InfinitePlace E ↦ r v * z.1 v, evalPlaces T z.2) := by
@@ -402,11 +389,8 @@ lemma integral_stdAddChar_mul_extendToAdeles (hr : ∀ v : InfinitePlace E, 0 < 
       ((hψ_cont.aestronglyMeasurable.mul hF.ofReal.aestronglyMeasurable).smul_measure _)
     _ = c • ∫ x, ψ x * F x := by rw [integral_smul_measure, toReal_ofReal (by positivity)]
 
-end
-
 end ExtendToAdeles
 
-omit [WeilData E] [T.StarStable] in
 /-- One-sided Poisson summation over the infinite places and a finite set `T` of finite places. Let
 the elements of `V` be integral off `T`, read as points (`ratPoint`) scaled by `r > 0` at infinity.
 Let `F ≥ 0` be integrable and lower semicontinuous at these points. Let its Fourier transform at
@@ -532,7 +516,6 @@ divided by the Jacobian of the scaling at the infinite places. -/
 noncomputable def poissonConst (a : ℕ) : ℝ :=
   volÔ E / ∏ v : InfinitePlace E, S.frameScaleSq v a ^ 2
 
-omit [WeilData E] in
 lemma poissonConst_nonneg (a : ℕ) : 0 ≤ S.poissonConst a :=
   div_nonneg (by positivity) (by positivity)
 
@@ -555,8 +538,6 @@ section OneEntryFewer
 
 variable {A : Finset Eˣ} {n : ℕ} {J : ℕ → GlobalHead T → GlobalHead T → ℂ} {massBound ε : ℝ}
   {Λ : ℕ → GlobalHead T → ℝ} {β : (InfinitePlace E → ℂ) × LocProd T → ℝ}
-
-omit [WeilData E] [T.StarStable]
 
 /-- At the point `scaledEntry T i t` (the unit `t` as entry `i`, scaled at each infinite place `v`
 by `frameScaleSq v i` and read at `T`), the entry density `entryDensity T A J i` is the sum of
@@ -764,10 +745,6 @@ lemma densitySum_le [S.IsAdmissible]
 
 end OneEntryFewer
 
-section
-
-omit [WeilData E]
-
 /-- Under the standing hypotheses `IsAdmissible`, each scale
 `frameScaleSq v a = κ_v ^ (2 (ϱ - a)) / N`, where κ_v is the real number `realM v`, is at most
 `|realM v| ^ (2 ϱ) / N`. -/
@@ -807,7 +784,6 @@ lemma decayConst_nonneg : 0 ≤ S.decayConst := by
   unfold decayConst
   positivity
 
-omit [T.StarStable] in
 /-- Let `κ_v = S.realM v` be the real number `M Φ v ϖ / (2πi)`, with `ϖ` the generator of the
 different. Let `S` satisfy the standing hypotheses (`IsAdmissible`), among them
 `1 ≤ |κ_v| ≤ b ^ 23`. For a frequency `ξ`, with components `ξ.1 v` at the infinite places `v` and
@@ -857,22 +833,19 @@ lemma boundsDecay_prod [S.IsAdmissible] :
   simp only [decayConst, abs_x, prod_mul_distrib, prod_const, card_univ]
   exact le_of_eq (by ring)
 
-end
-
 /-- The product of the first `j` entries of a head `p` with entries in `A`. -/
 noncomputable def headProduct {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) (j : ℕ) : E :=
   ∏ a ∈ range j, (padTuple (fun l : Fin i ↦ (p l : Eˣ)) 1 a : Eˣ)
 
-omit [CMType E] [WeilData E] in
+omit [CMType E] in
 lemma headProduct_ne_zero {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) (j : ℕ) : headProduct p j ≠ 0 :=
   prod_ne_zero_iff.2 fun _ _ ↦ Units.ne_zero _
 
-omit [WeilData E] [T.StarStable] in
 lemma headProduct_mem_ratIntegralOff {A : Finset Eˣ} (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T)
     {i : ℕ} (p : Fin i → A) (j : ℕ) : headProduct p j ∈ ratIntegralOff T := by
   simp [headProduct, hA, padTuple, prod_mem, apply_dite, -Subring.mem_comap]
 
-omit [CMType E] [WeilData E] in
+omit [CMType E] in
 /-- A head `p : Fin i → A` (a tuple of `i` units from `A`) is determined by the products
 `headProduct p (j + 1)` of its first `j + 1` entries, for `j < i`. -/
 lemma headProduct_injective {A : Finset Eˣ} {i : ℕ} :
@@ -887,7 +860,6 @@ lemma headProduct_injective {A : Finset Eˣ} {i : ℕ} :
       headProduct q (j + 1) / headProduct q j := by rw [h_all (j + 1) j.isLt, h_all j j.isLt.le]
   simpa [headProduct, prod_range_succ, padTuple, prod_eq_zero_iff, Units.val_inj] using h_quot
 
-omit [WeilData E] [T.StarStable] in
 /-- The product formula for the weights. Let `δ ≠ 0` be integral off `T`, and let `r` bound
 `‖Φ v δ‖` and `‖c v‖⁻¹` at all infinite places. Then the product of the numbers
 `max 1 ‖c v * Φ v δ‖⁻¹` and of the square root of the index `[O : δ O]` at `T` is at most `r ^ f`,
@@ -902,10 +874,6 @@ lemma prod_max_inv_norm_mul_sqrt_genIndex_le {δ : E} (hδ₀ : δ ≠ 0) (hδT 
       inv_mul_cancel_right₀ (by simpa using hδ₀)]
     exact max_le (hδ v) (hc v)
   grw [sqrt_genIndex_le_prod_norm T hδ₀ hδT, ← prod_mul_distrib, h_place, prod_const, card_univ]
-
-section
-
-omit [WeilData E]
 
 /-- Let `S` satisfy the standing hypotheses (`IsAdmissible`), among them `1 ≤ |κ_v|` and
 `N ≤ b ^ (60 n)` for the prime `N = S.N`, the size parameter `b = S.b` and `n = ϱ + 1`. For `j ≤ ϱ`,
@@ -929,13 +897,11 @@ noncomputable def globalWeight (i : ℕ) (p : GlobalHead T) : ℝ :=
   (∏ v : InfinitePlace E, headWeight (S.b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6) i ((·.1 v) ∘ p)) *
     finHeadWeight (𝔰.n ^ 6) i ((·.2) ∘ p)
 
-omit [T.StarStable] in
 lemma globalWeight_nonneg (i : ℕ) (p : GlobalHead T) : 0 ≤ S.globalWeight T i p := by
   unfold globalWeight headWeight finHeadWeight
   positivity
 
 open scoped Classical in
-omit [T.StarStable] in
 /-- Let `S` satisfy the standing hypotheses (`IsAdmissible`), with size parameter `b = S.b` and
 `n = ϱ + 1`. The head `scaledHead T p 1` has first entries `p` and later entries `1`. The entry `a`
 is scaled at the infinite place `v` by `frameScaleSq v a = κ_v ^ (2 (ϱ - a)) / N`, where
@@ -966,7 +932,6 @@ lemma globalWeight_scaledHead {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) :
     h_inf, h_fin]
   rw [Finset.prod_comm, ← prod_mul_distrib]
 
-omit [T.StarStable] in
 /-- Let `S` satisfy the standing hypotheses (`IsAdmissible`), and let `p` be a head of length
 `i ≤ ϱ` with entries in a finite set `A` of numbers integral off `T`. Suppose the weight
 (`globalWeight`) of `scaledHead T p 1`, the head with first entries `p` and later entries `1` read
@@ -995,7 +960,6 @@ lemma isIntegral_headProduct_and_norm_le [S.IsAdmissible] {A : Finset Eˣ}
         grw [h_small, S.inv_norm_prod_frameScaleSq_le v (j.isLt.trans_le hi)]
       _ = _ := by ring
 
-omit [T.StarStable] in
 /-- The largest weight. Let `S` satisfy the standing hypotheses (`IsAdmissible`), and let `p` be a
 tuple of length `i ≤ ϱ` with entries integral off `T`. The head `scaledHead T p 1` has first entries
 `p` and later entries `1`, with the entry `a` scaled at the infinite place `v` by
@@ -1035,7 +999,6 @@ lemma globalWeight_scaledHead_le [S.IsAdmissible] {A : Finset Eˣ}
       rw [prod_const, card_univ, Fintype.card_fin]
       ring
 
-omit [T.StarStable] in
 /-- The sum of the weights of the heads of length `i ≤ ϱ` with entries in a finite set `A` of
 numbers integral off `T` is at most `b ^ (130 n⁹ f)`: the number of heads whose products are small
 integers, times the largest weight. Here `b = S.b` is the size parameter of the admissible filling
@@ -1093,7 +1056,6 @@ lemma one_le_pow_mul_prod_poissonConst [S.IsAdmissible] {i : ℕ} (hi : i ≤ �
       grw [volÔ_eq, scale_le, half_le_self (by bound), S.rootDiscr_le_b]
       exacts [(S.frameScaleSq_pos _ _).le, prod_pos fun v _ ↦ pow_pos (S.frameScaleSq_pos v _) 2]
 
-omit [T.StarStable] in
 /-- Let `S` satisfy the standing hypotheses `IsAdmissible`. Let `b = S.b`, `ϱ = 𝔰.ϱ`, `n = ϱ + 1`,
 and let `f` be the number of infinite places. Let `A` be a finite set of units of `E` integral off
 `T`, and let `i ≤ ϱ`. Sum, over heads `p` of length `i` with entries in `A`, the weight
@@ -1118,9 +1080,6 @@ lemma sq_sum_globalWeight_le [S.IsAdmissible] {A : Finset Eˣ}
       exact Finset.sum_nonneg fun p _ ↦ S.globalWeight_nonneg T i _
     _ ≤ _ := by grw [← mul_assoc, ← pow_mul, ← pow_add, h_exp]
 
-end
-
-omit [WeilData E] [T.StarStable] in
 /-- The sieve. Let `b = S.b`, `M = S.M` and `N = S.N` be the size parameter, the level and the prime
 of the admissible filling data `S`, let `k`, `ϱ`, `n = ϱ + 1` be the parameters of its shape `𝔰`,
 and let `f` be the number of infinite places. Let `U ⊆ A`, and let `1 / M` and `t`, `1 / t` for
