@@ -90,9 +90,11 @@ variable {P : Parameters} {s : ℕ} {z : 𝓞 (E P s)}
 abbrev zetaInt (P : Parameters) (s : ℕ) : 𝓞 (P.E s) :=
   (isPrimitiveRoot_zeta (P := P) (s := s)).toInteger
 
+/-- The integer primitive root `zetaInt` coerces to `ζ`. -/
 @[simp]
 lemma coe_zetaInt : P.zetaInt s = P.ζ s := rfl
 
+/-- The element `zetaInt` is a primitive root of unity of order `q₁`. -/
 lemma isPrimitiveRoot_zetaInt : IsPrimitiveRoot (P.zetaInt s) (P.q₁ s) :=
   isPrimitiveRoot_zeta.toInteger_isPrimitiveRoot
 
