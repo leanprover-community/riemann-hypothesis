@@ -21,7 +21,7 @@ the residue field, which on vectors fixed by the kernel of the reduction modulo 
 (`inner_lineRaise`), and `T⁺ T⁻ = q ^ (n - 2) (1 + (q ^ n - 1) e_sph)` (`lineRaise_lineLower`). The
 positive powers of `lineHecke`, the element of the group algebra that acts as `T⁺`, are supported on
 integral matrices whose characteristic polynomial has the simple root `0` modulo `w`
-(`lineHecke_pow_mem_spanOn`).
+(`lineHecke_pow_mem_supported`).
 
 Notions from other files:
 * `localIntGL n w` is `GL_n(𝒪)`, and `reduceGL` is its reduction to `GL_n` of the residue field
@@ -68,14 +68,13 @@ lemma doubleCosetSum_eq_sum
 
 /-- If finitely many cosets of `J` meet `J t J`, the sum of their representatives in the group
 algebra is supported on `J t J`. -/
-lemma doubleCosetSum_mem_spanOn
+lemma doubleCosetSum_mem_supported
     (h_fin : HasFiniteCosets J ((doubleCoset t J J).indicator (1 : G → ℂ))) :
-    doubleCosetSum J t ∈ spanOn ℂ (doubleCoset t J J) := by
+    doubleCosetSum J t ∈ supported ℂ ℂ (doubleCoset t J J) := by
   rw [doubleCosetSum_eq_sum h_fin]
   refine sum_mem fun q hq ↦ ?_
   have h_mem : q.out ∈ doubleCoset t J J := Set.mem_of_indicator_ne_zero (h_fin.mem_toFinset.1 hq)
-  rw [Set.indicator_of_mem h_mem]
-  exact Submodule.subset_span ⟨q.out, h_mem, rfl⟩
+  exact single_mem_supported _ h_mem
 
 section Module
 
@@ -824,32 +823,28 @@ lemma keepsLineMod_of_mem_doubleCoset
     keepsLineMod_lineElement (.inr h_corner)
   exact h_left.mul_residue_eq_zero (keepsLineMod_of_mem hj') (.inl h_zero)
 
-lemma spanOn_mono {G : Type} [Group G] {D D' : Set G} (h_sub : D ⊆ D') :
-    spanOn ℂ D ≤ spanOn ℂ D' :=
-  Submodule.span_mono (Set.image_mono h_sub)
-
 variable (w i) in
 /-- For `m > 0`, the `m`-th power of the element `lineHecke w i` of the group algebra, which acts as
 `T⁺`, is supported on the matrices `g` such that every element of `g J_line` is integral, with `0` a
 simple root of its characteristic polynomial modulo `w`. Here `J_line` is the stabiliser of the line
 of `e_i` modulo `w`. -/
-theorem lineHecke_pow_mem_spanOn {m : ℕ} (hm : 0 < m) : lineHecke w i ^ m ∈
-    spanOn ℂ {g : GL n (LocField w) | ∀ k ∈ lineStabilizer w i, HasSimpleZero (g * k)} := by
+theorem lineHecke_pow_mem_supported {m : ℕ} (hm : 0 < m) : lineHecke w i ^ m ∈
+    supported ℂ ℂ {g : GL n (LocField w) | ∀ k ∈ lineStabilizer w i, HasSimpleZero (g * k)} := by
   -- The shape `(0 ∗; 0 g')` modulo `w` is kept by products and by right translation by `J_line`.
   let D : Set (GL n (LocField w)) := {g | KeepsLineMod i g ∧ residueOrZero (g i i) = 0}
-  have h_mem : lineHecke w i ∈ spanOn ℂ D :=
-    spanOn_mono (fun _ ↦ keepsLineMod_of_mem_doubleCoset)
-      (doubleCosetSum_mem_spanOn (isHeckeFunction_indicator_doubleCoset w i _).1)
+  have h_mem : lineHecke w i ∈ supported ℂ ℂ D :=
+    supported_mono (fun _ ↦ keepsLineMod_of_mem_doubleCoset)
+      (doubleCosetSum_mem_supported (isHeckeFunction_indicator_doubleCoset w i _).1)
   have h_mul : ∀ g ∈ D, ∀ h : GL n (LocField w), KeepsLineMod i h → g * h ∈ D :=
     fun g ⟨hg, hg_zero⟩ h hh ↦
       hg.mul_residue_eq_zero hh (.inl hg_zero)
-  have h_pow : lineHecke w i ^ m ∈ spanOn ℂ D := by
+  have h_pow : lineHecke w i ^ m ∈ supported ℂ ℂ D := by
     induction hm with
     | refl => rwa [pow_one]
     | step _ ih =>
       rw [pow_succ]
-      exact spanOn.mul ih h_mem fun g hg h ⟨hh_keeps, _⟩ ↦ h_mul g hg h hh_keeps
-  refine spanOn_mono ?_ h_pow
+      exact mul_mem_supported ih h_mem fun g hg h ⟨hh_keeps, _⟩ ↦ h_mul g hg h hh_keeps
+  refine supported_mono ?_ h_pow
   intro g hg k hk
   obtain ⟨h_keeps, h_zero⟩ : g * k ∈ D := h_mul g hg k (keepsLineMod_of_mem hk)
   exact ⟨h_keeps.v_le_one, h_keeps.keepsLine.rootMultiplicity_charpoly h_zero⟩

@@ -20,8 +20,8 @@ Notions from other files:
 * For a split place `v` (one that differs from its conjugate), `ofSplitPlace hv k` is the element
   with component `k` at `v`, the inverse conjugate transpose of `k` at the conjugate of `v`, and `1`
   at all other places.
-* `spanOn ℂ S` is the space of the group algebra elements that are combinations of the elements
-  of the set `S`.
+* `MonoidAlgebra.supported ℂ ℂ S` is the space of the group algebra elements that are combinations
+  of the elements of the set `S`.
 * `convIndicator` sends a group algebra element `a` to the test function `a ⋆ 1_K` of level `K`.
 * `maxCompactAt n v` is the group of integral elements supported at `v` and its conjugate, and
   `localIntGL n v` is `GL_n(O_v)`.
@@ -64,9 +64,9 @@ variable {K : Subgroup (Gf E n)} {J : Subgroup (GL n (LocField v))}
 open scoped Classical in
 /-- Let `v` be a split place, let `K` be a compact open subgroup of the adelic unitary group
 `Gf E n` that contains the maximal compact group at `v`, let `J` be a subgroup of `GL_n(E_v)`
-such that `K ⊓ J.comap (Gf.atPlace v)` is compact open, and let `a` be a combination (`spanOn`)
-of elements with component at `v` in `localIntGL n v = GL_n(O_v)`. Removing (`offPlace`)
-the components of `a` at `v` and its conjugate and deepening the level to
+such that `K ⊓ J.comap (Gf.atPlace v)` is compact open, and let `a` be a combination
+(`MonoidAlgebra.supported`) of elements with component at `v` in `localIntGL n v = GL_n(O_v)`.
+Removing (`offPlace`) the components of `a` at `v` and its conjugate and deepening the level to
 `K ⊓ J.comap (Gf.atPlace v)` gives the function of `a` of level `K`, cut off outside the points
 with component at `v` in `J`. Here `convIndicator` sends a group algebra element to its
 convolution with the characteristic function of the level. -/
@@ -75,14 +75,15 @@ lemma convIndicator_mapDomain_offPlace {hK_open : IsOpen (K : Set (Gf E n))}
     {hK'_open : IsOpen (↑(K ⊓ J.comap (Gf.atPlace v)) : Set (Gf E n))}
     {hK'_compact : IsCompact (↑(K ⊓ J.comap (Gf.atPlace v)) : Set (Gf E n))}
     (hv : v.IsSplit) (hK_max : maxCompactAt n v ≤ K) {a : ℂ[Gf E n]}
-    (ha : a ∈ spanOn ℂ {x : Gf E n | x.atPlace v ∈ localIntGL n v}) (g : Gf E n) :
+    (ha : a ∈ supported ℂ ℂ {x : Gf E n | x.atPlace v ∈ localIntGL n v}) (g : Gf E n) :
     (convIndicator hK'_open hK'_compact (mapDomain (offPlace hv) a)).val g =
       if g.atPlace v ∈ J then (convIndicator hK_open hK_compact a).val g else 0 := by
   -- By linearity we may take `a` to be a single element `x` that is integral at `v`. Its part at
   -- `v` then lies in `K`, so removing that part changes only the condition at `v`.
+  rw [supported_eq_span_single] at ha
   induction ha using Submodule.span_induction with
   | mem a ha =>
-    obtain ⟨x, hx, rfl⟩ : ∃ x : Gf E n, x.atPlace v ∈ localIntGL n v ∧ of ℂ (Gf E n) x = a := ha
+    obtain ⟨x, hx, rfl⟩ : ∃ x : Gf E n, x.atPlace v ∈ localIntGL n v ∧ single x 1 = a := ha
     have h_mem : ofSplitPlace hv (x.atPlace v) ∈ K :=
       hK_max ⟨(ofSplitPlace_mem_stdLevel hv _).2 hx, ofSplitPlace_mem_supportedOn hv _⟩
     have h_coset : (offPlace hv x)⁻¹ * g ∈ K ⊓ J.comap (Gf.atPlace v) ↔
@@ -95,18 +96,19 @@ lemma convIndicator_mapDomain_offPlace {hK_open : IsOpen (K : Set (Gf E n))}
 
 /-- Let `v` be a split place, let `K` be a compact open subgroup of the adelic unitary group
 `Gf E n` that contains the maximal compact group at `v`, let `J` be a subgroup of `GL_n(E_v)`,
-let `a` be a combination (`spanOn`) of elements that are integral at `v` (component in
-`localIntGL n v`), and let `w` be a split place other than `v` and its conjugate. If the function
-`a ⋆ 1_K` (`convIndicator`) is cuspidal at `w` (its sums of translates over the cosets of each
-unipotent radical at `w` vanish), then so is the function of level `K ⊓ J.comap (Gf.atPlace v)`
-of `a` with the components at `v` and its conjugate removed (`offPlace`). -/
+let `a` be a combination (`MonoidAlgebra.supported`) of elements that are integral at `v`
+(component in `localIntGL n v`), and let `w` be a split place other than `v` and its conjugate.
+If the function `a ⋆ 1_K` (`convIndicator`) is cuspidal at `w` (its sums of translates over the
+cosets of each unipotent radical at `w` vanish), then so is the function of level
+`K ⊓ J.comap (Gf.atPlace v)` of `a` with the components at `v` and its conjugate removed
+(`offPlace`). -/
 lemma IsCuspidalAt.convIndicator_offPlace {hK_open : IsOpen (K : Set (Gf E n))}
     {hK_compact : IsCompact (K : Set (Gf E n))}
     {hK'_open : IsOpen (↑(K ⊓ J.comap (Gf.atPlace v)) : Set (Gf E n))}
     {hK'_compact : IsCompact (↑(K ⊓ J.comap (Gf.atPlace v)) : Set (Gf E n))}
     {hw : w.IsSplit} (hv : v.IsSplit) (h_ne : v ≠ w) (h_star_ne : star v ≠ w)
     (hK_max : maxCompactAt n v ≤ K) {a : ℂ[Gf E n]}
-    (ha : a ∈ spanOn ℂ {x : Gf E n | x.atPlace v ∈ localIntGL n v})
+    (ha : a ∈ supported ℂ ℂ {x : Gf E n | x.atPlace v ∈ localIntGL n v})
     (h_cusp : IsCuspidalAt hw (convIndicator hK_open hK_compact a)) :
     IsCuspidalAt hw (convIndicator hK'_open hK'_compact (mapDomain (offPlace hv) a)) := by
   classical
@@ -119,21 +121,22 @@ lemma IsCuspidalAt.convIndicator_offPlace {hK_open : IsOpen (K : Set (Gf E n))}
   split_ifs
   exacts [h_cusp T hT_empty hT_univ t lift h_lift g, finsum_zero]
 
-/-- Let `u` be a combination (`spanOn`) of elements of a set `S` of `GL_n(E_v)`, let `J` be a
-subgroup of `GL_n(E_v)`, and let `b` be any element of the group algebra of the adelic unitary
-group `Gf E n`. Form the product of `u`, placed at `v` by `ofSplitPlace`, with `b` after removing
-(`offPlace`) its components at `v` and its conjugate, and take the function (`convIndicator`) of
-level `K ⊓ J.comap (Gf.atPlace v)` of this product. Where it is not zero, the component at `v`
-lies in `S J`. -/
+/-- Let `u` be a combination (`MonoidAlgebra.supported`) of elements of a set `S` of `GL_n(E_v)`,
+let `J` be a subgroup of `GL_n(E_v)`, and let `b` be any element of the group algebra of the
+adelic unitary group `Gf E n`. Form the product of `u`, placed at `v` by `ofSplitPlace`, with `b`
+after removing (`offPlace`) its components at `v` and its conjugate, and take the function
+(`convIndicator`) of level `K ⊓ J.comap (Gf.atPlace v)` of this product. Where it is not zero,
+the component at `v` lies in `S J`. -/
 lemma exists_atPlace_eq_of_convIndicator_ne_zero
     {hK'_open : IsOpen (↑(K ⊓ J.comap (Gf.atPlace v)) : Set (Gf E n))}
     {hK'_compact : IsCompact (↑(K ⊓ J.comap (Gf.atPlace v)) : Set (Gf E n))}
     (hv : v.IsSplit) {S : Set (GL n (LocField v))}
-    {u : ℂ[GL n (LocField v)]} (hu : u ∈ spanOn ℂ S) (b : ℂ[Gf E n]) {g : Gf E n}
+    {u : ℂ[GL n (LocField v)]} (hu : u ∈ supported ℂ ℂ S) (b : ℂ[Gf E n]) {g : Gf E n}
     (hg : (convIndicator hK'_open hK'_compact
       (mapDomain (ofSplitPlace hv) u * mapDomain (offPlace hv) b)).val g ≠ 0) :
     ∃ x ∈ S, ∃ k ∈ J, g.atPlace v = x * k := by
   contrapose! hg
+  rw [supported_eq_span_single] at hu
   induction hu using Submodule.span_induction with
   | mem u hu =>
     obtain ⟨x, hx, rfl⟩ := hu

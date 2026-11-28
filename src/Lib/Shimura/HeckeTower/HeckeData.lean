@@ -74,14 +74,31 @@ section GroupRingOperators
 
 open MonoidAlgebra Submodule QuotientGroup Representation
 
+namespace MonoidAlgebra
+
+variable {G k : Type*} [Semiring k] {D D' D'' : Set G}
+
+/-- A multiple of the basis element `[g]` is supported on every set that contains `g`. -/
+lemma single_mem_supported {g : G} (r : k) (hg : g ∈ D) : single g r ∈ supported k k D :=
+  mem_supported'.2 fun _ hm ↦ by simp [ne_of_mem_of_not_mem hg hm]
+
+/-- If `a` is supported on `D`, `b` on `D'`, and `D * D' ⊆ D''`, then `a * b` is supported on
+`D''`. -/
+lemma mul_mem_supported [Mul G] {a b : k[G]} (ha : a ∈ supported k k D)
+    (hb : b ∈ supported k k D') (h_mul : ∀ g ∈ D, ∀ g' ∈ D', g * g' ∈ D'') :
+    a * b ∈ supported k k D'' := by
+  classical
+  refine mem_supported.2 fun g hg ↦ ?_
+  -- every element of the support of `a * b` is a product `x * y` of elements of the supports
+  obtain ⟨x, hx, y, hy, rfl⟩ := Finset.mem_mul.1 (support_coeff_mul_subset a b hg)
+  exact h_mul x (ha hx) y (hb hy)
+
+end MonoidAlgebra
+
 namespace New.Variety
 
-variable {G : Type*} (k : Type*) [Group G] [CommRing k] (K : Subgroup G)
-
-/-- The submodule of the group ring k[G] spanned by the basis elements [g] for g in D. -/
-def spanOn (D : Set G) : Submodule k k[G] := span k (of k G '' D)
-
-variable {k} {a b : k[G]} {W : Type*} [AddCommGroup W] [Module k W]
+variable {G : Type*} {k : Type*} [Group G] [CommRing k] (K : Subgroup G) {a : k[G]} {W : Type*}
+  [AddCommGroup W] [Module k W]
 
 lemma asAlgebraHom_eq_sum_support (π : Representation k G W) :
     π.asAlgebraHom a = ∑ g ∈ a.coeff.support, a.coeff g • π g :=
@@ -117,7 +134,7 @@ def fixedToEigen {H : Type*} [Group H] (ι : H →* G) (J : Subgroup H := K.coma
     rw [map_smul, LinearMap.smul_apply]
     exact Submodule.smul_mem _ c (ha hv)
 
-variable {K} {D D' D'' : Set G}
+variable {K} {D : Set G}
 
 /-- For ψ from G/K to a k-module W, the linear map sending a = ∑ a_g [g] in k[G] to ∑ a_g ψ(gK). -/
 def Model.cosetSum (ψ : G ⧸ K → W) (a : k[G]) : W := (cosetFn K a).linearCombination k ψ
@@ -132,12 +149,13 @@ lemma single_one_mem_levelSpace :
 
 /-- If `a` is supported on `D`, its image in `k[G / K]` is supported on the cosets of elements of
 `D`. -/
-lemma spanOn.exists_mem_of_cosetFn_ne_zero (ha : a ∈ spanOn k D) {q : G ⧸ K} :
+lemma exists_mem_of_cosetFn_ne_zero (ha : a ∈ supported k k D) {q : G ⧸ K} :
     cosetFn K a q ≠ 0 → ∃ d ∈ D, (d : G ⧸ K) = q := by
-  -- The elements whose function vanishes at `q` form a submodule, which contains `of k G d`
+  -- The elements whose function vanishes at `q` form a submodule, which contains `single d 1`
   -- whenever the coset of `d` is not `q`.
   contrapose!
   intro hq
+  rw [supported_eq_span_single] at ha
   induction ha using span_induction with
   | mem x hx =>
     obtain ⟨d, hd, rfl⟩ := hx
@@ -145,18 +163,6 @@ lemma spanOn.exists_mem_of_cosetFn_ne_zero (ha : a ∈ spanOn k D) {q : G ⧸ K}
   | zero => simp
   | add x y hx_mem hy_mem hx hy => simp_all
   | smul r x hx_mem hx => simp_all
-
-/-- If `a` is supported on `D`, `b` on `D'`, and `D * D' ⊆ D''`, then `a * b` is supported on
-`D''`. -/
-lemma spanOn.mul (ha : a ∈ spanOn k D) (hb : b ∈ spanOn k D')
-    (h_mul : ∀ g ∈ D, ∀ g' ∈ D', g * g' ∈ D'') :
-    a * b ∈ spanOn k D'' := by
-  have h_prod : a * b ∈ spanOn k D * spanOn k D' := mul_mem_mul ha hb
-  rw [spanOn, spanOn, span_mul_span] at h_prod
-  -- `[g] [g'] = [g g']`, and `g g' ∈ D''`
-  refine span_mono (Set.mul_subset_iff.mpr ?_) h_prod
-  rintro _ ⟨g, hg, rfl⟩ _ ⟨g', hg', rfl⟩
-  exact ⟨g * g', h_mul g hg g' hg', map_mul (of k G) g g'⟩
 
 end New.Variety
 
@@ -385,13 +391,13 @@ def heckeSum (j : ℕ) : MonoidAlgebra k (GL n (𝔸f E)) :=
 ∑ a_g [g] of k[GL_n(𝔸_f)] that are supported on `GUPlus E n` and whose function ∑ a_g 1_{gK} is
 left K-invariant. -/
 def heckeAlgebra : Subalgebra k (MonoidAlgebra k (GL n (𝔸f E))) :=
-  (spanOn k (GUPlus E n) ⊓
+  (MonoidAlgebra.supported k k (GUPlus E n) ⊓
     fixedToEigen (levelGU n 𝔑) (MonoidHom.id (GL n (𝔸f E))) (levelGU n 𝔑)).toSubalgebra
-    ⟨Submodule.subset_span ⟨1, by simp, rfl⟩, fun _ _ _ π v hv ↦ by
+    ⟨MonoidAlgebra.single_mem_supported 1 (one_mem _), fun _ _ _ π v hv ↦ by
       rw [map_one, one_apply_eq_self]
       exact hv⟩ fun a b ha hb ↦
       -- `GUPlus E n` is closed under products, and `a * b` acts as `b` followed by `a`
-      ⟨spanOn.mul ha.1 hb.1 fun _ hg _ ↦ mul_mem hg, fun _ _ _ π v hv ↦ by
+      ⟨MonoidAlgebra.mul_mem_supported ha.1 hb.1 fun _ hg _ ↦ mul_mem hg, fun _ _ _ π v hv ↦ by
         rw [map_mul, mul_apply_eq_comp]
         exact ha.2 (hb.2 hv)⟩
 

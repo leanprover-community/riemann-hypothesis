@@ -339,20 +339,22 @@ representation b sends K(𝔑)-fixed vectors to vectors fixed by the preimage of
 combinations of elements of `GUPlus E n` that in every representation send K(𝔑)-fixed vectors to
 K(𝔑)-fixed vectors. -/
 lemma mem_heckeAlgebra_of_mem_fixedToEigen (h_notMem : 𝔑 ∉ (star w.val).asIdeal)
-    {D : Set (GL n (𝔸f E))} {b : MonoidAlgebra k (GL n (𝔸f E))} (hb : b ∈ spanOn k D)
+    {D : Set (GL n (𝔸f E))} {b : MonoidAlgebra k (GL n (𝔸f E))}
+    (hb : b ∈ MonoidAlgebra.supported k k D)
     (hD_GUPlus_comm : ∀ g ∈ D, g ∈ GUPlus E n ∧
       ∀ d : GL n (𝔸f E), (∀ m : GL n (LocField (w : FinPlace E)), Commute d (conjAtSplit w m)) →
         Commute d g)
     (h_fixed : b ∈ fixedToEigen (levelGU n 𝔑) (conjAtSplit w)) :
     b ∈ heckeAlgebra n k 𝔑 := by
   have hD_GUPlus : D ⊆ GUPlus E n := fun g hg ↦ (hD_GUPlus_comm g hg).left
-  refine ⟨Submodule.span_mono (Set.image_mono hD_GUPlus) hb, fun W' _ _ π y hy κ ↦ ?_⟩
+  refine ⟨MonoidAlgebra.supported_mono hD_GUPlus hb, fun W' _ _ π y hy κ ↦ ?_⟩
   -- Write `κ = c * (c⁻¹ * κ)` with `c = conjAtSplit w (dualComponent w κ)`: the second factor
   -- commutes with `b` and fixes `y`, and `c` fixes `b y` by `h_fixed`.
   have hκ_GU : κ.val ∈ GU E n := (Subgroup.mem_inf.mp κ.prop).left
   set c : GL n (𝔸f E) := conjAtSplit w (dualComponent w κ.val)
   have hc : c ∈ levelGU n 𝔑 := conjAtSplit_dualComponent_mem_levelGU h_notMem κ.prop
   have hb_comm : Commute (MonoidAlgebra.of k _ (c⁻¹ * κ.val)) b := by
+    rw [MonoidAlgebra.supported_eq_span_single] at hb
     refine .span_right ?_ _ hb
     rintro _ ⟨g, hg, rfl⟩
     obtain ⟨-, hg_comm⟩ := hD_GUPlus_comm g hg
@@ -400,8 +402,9 @@ lemma isScalarFrame_centralScalar (x : (𝔸f (QuadField d₀))ˣ) {c : ℚ}
 
 /-- The Hecke element `τ_{w,j} = heckeSum n k w j` is a combination of the elements
 `invHeckeIsogeny w U`. -/
-lemma heckeSum_mem_spanOn {j : ℕ} : heckeSum n k w j ∈ spanOn k (range (invHeckeIsogeny w)) :=
-  sum_mem fun U _ ↦ Submodule.subset_span ⟨invHeckeIsogeny w U, ⟨U, rfl⟩, rfl⟩
+lemma heckeSum_mem_supported {j : ℕ} :
+    heckeSum n k w j ∈ MonoidAlgebra.supported k k (range (invHeckeIsogeny w)) :=
+  sum_mem fun U _ ↦ MonoidAlgebra.single_mem_supported 1 ⟨U, rfl⟩
 
 /-- Let `x` be a unit of the completion at `w`, and let `u` be a place whose restriction to `K₀` is
 not the conjugate of that of `w`. Then the `u`-component of the scalar matrix `centralScalar` of
@@ -513,7 +516,7 @@ lemma asAlgebraHom_heckeSum (h : x ∈ levelSpace π (levelGU n 𝔑)) :
 
 /-- For `s = (w, j)` with `w` a safe place, τ_{w,j} lies in the Hecke algebra of the level K(𝔑). -/
 lemma heckeSum_mem_heckeAlgebra : heckeSum n k s.1 s.2 ∈ heckeAlgebra n k 𝔑 := by
-  refine mem_heckeAlgebra_of_mem_fixedToEigen (s.1.prop.2.2 _ (below_star _)) heckeSum_mem_spanOn
+  refine mem_heckeAlgebra_of_mem_fixedToEigen (s.1.prop.2.2 _ (below_star _)) heckeSum_mem_supported
     ?_ fun W _ _ π y hy a ↦ ?_
   · -- Each term of `τ` is a central element times an element in the image of `conjAtSplit`.
     rintro _ ⟨U, rfl⟩
@@ -602,7 +605,7 @@ structure Model.IsHeckeAction (I : SafePlace 𝔑 → Finset (nonZeroDivisors (�
   ring k', b ∈ k'[G] supported on `GUPlus E n` and Ψ additive, the sum of Ψ of the legs over
   b · L(τ) is the sum over b of Ψ of the legs composed with L(t). -/
   eventually_cosetSum_mul_prod (k' : Type) [CommRing k'] (L : List (SafePlace 𝔑 × ℕ))
-      {b : MonoidAlgebra k' (GL n (𝔸f E))} (hb : b ∈ spanOn k' (GUPlus E n)) :
+      {b : MonoidAlgebra k' (GL n (𝔸f E))} (hb : b ∈ MonoidAlgebra.supported k' k' (GUPlus E n)) :
     ∀ᶠ i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n) in Filter.atTop,
       ∀ {N : Type 2} [AddCommGroup N] [Module k' N]
       (Ψ : (F.obj (Opposite.op T.base) →ₗ[k] F.obj (Opposite.op (T.cover i))) →+ N),
@@ -625,7 +628,7 @@ lemma Model.eventually_cosetSum_mul_prod_of_legPullback_comp
     (ht : ∀ (w : SafePlace 𝔑) (j : ℕ),
       T.legPullback F (I w) ⟦1⟧ ∘ₗ t (w, j) = cosetSum (T.legPullback F (I w)) (heckeSum n k w j))
     (k' : Type) [CommRing k'] (L : List (SafePlace 𝔑 × ℕ))
-    {b : MonoidAlgebra k' (GL n (𝔸f E))} (hb : b ∈ spanOn k' (GUPlus E n)) :
+    {b : MonoidAlgebra k' (GL n (𝔸f E))} (hb : b ∈ MonoidAlgebra.supported k' k' (GUPlus E n)) :
     ∀ᶠ i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n) in Filter.atTop,
       ∀ {N : Type 2} [AddCommGroup N] [Module k' N]
       (Ψ : (F.obj (Opposite.op T.base) →ₗ[k] F.obj (Opposite.op (T.cover i))) →+ N),
@@ -639,6 +642,7 @@ lemma Model.eventually_cosetSum_mul_prod_of_legPullback_comp
   | nil => simp [End.one_eq_id]
   | cons s L ih =>
     obtain ⟨w, j⟩ := s
+    rw [MonoidAlgebra.supported_eq_span_single] at hb
     induction hb using span_induction with
     | zero => simp [cosetSum, cosetFn]
     | add b b' _ _ hb hb' =>
@@ -650,10 +654,11 @@ lemma Model.eventually_cosetSum_mul_prod_of_legPullback_comp
       -- both sides are linear in `b`: scale the case of `b` by `c`
       simpa [cosetSum, cosetFn] using congrArg (c • ·) (h_b Ψ)
     | mem b hb =>
-      have h_supp : b * (tauHecke (w, j)).val ∈ spanOn k' (GUPlus E n) :=
-        spanOn.mul (subset_span hb) (heckeSum_mem_heckeAlgebra (w, j)).left
-          fun g₁ hg₁ g₂ hg₂ ↦ mul_mem hg₁ hg₂
       obtain ⟨g, hg, rfl⟩ := hb
+      have h_supp : MonoidAlgebra.single g 1 * (tauHecke (w, j)).val ∈
+          MonoidAlgebra.supported k' k' (GUPlus E n) :=
+        MonoidAlgebra.mul_mem_supported (MonoidAlgebra.single_mem_supported 1 hg)
+          (heckeSum_mem_heckeAlgebra (w, j)).left fun g₁ hg₁ g₂ hg₂ ↦ mul_mem hg₁ hg₂
       filter_upwards [ih h_supp, T.eventually_translate (I w) hg] with i h_ih ⟨hg_s, f, hf⟩ N _ _ Ψ
       -- On a deep level, `f` translates the legs by `g`; pull `ht w j` back along `f`.
       have h_leg :
@@ -722,7 +727,8 @@ lemma Model.exists_isHeckeAction
   -- and the two products of `tauHecke` act alike on the trivial coset.
   have h_deep (a b : SafePlace 𝔑 × ℕ) : ∀ᶠ i in Filter.atTop, T.legPullback F i ⟦1⟧ ∘ₗ (t a * t b) =
       cosetSum (T.legPullback F i) (tauHecke a * tauHecke b : heckeAlgebra n k 𝔑).val := by
-    filter_upwards [h_word k [a, b] (b := 1) (subset_span ⟨1, (GUPlus E n).one_mem, rfl⟩)]
+    filter_upwards
+      [h_word k [a, b] (b := 1) (MonoidAlgebra.single_mem_supported 1 (GUPlus E n).one_mem)]
       with i hi
     simpa [cosetSum, cosetFn] using (hi (AddMonoidHom.id _)).symm
   obtain ⟨i, h_left, h_right⟩ := ((h_deep s s').and (h_deep s' s)).exists

@@ -68,15 +68,16 @@ things, `𝔑 ∉ w` and `𝔑` lies in no place over the conjugate of the place
 of the group elements `[g]` with `g` a unitary similitude (`gᴴ g` a scalar finite idele of ℚ) whose
 component at `w₁` is trivial. Here the component is taken via `dualComponent w₁`, the inverse
 transpose of the `w₁`-component in `GL_a(E_{w₁})`. -/
-lemma New.Variety.prod_map_tauHecke_mem_spanOn {E : Type} [Field E] [NumberField E] [IsCMField E]
+lemma New.Variety.prod_map_tauHecke_mem_supported {E : Type} [Field E] [NumberField E] [IsCMField E]
     {a d₀ : ℕ} [HasQuadSubfield d₀ E] {𝔑 : 𝓞 E} {w₁ : SplitFinPlace E} (hw₁ : 𝔑 ∈ w₁.val.asIdeal)
     (L : List (SafePlace 𝔑 × ℕ)) :
-    (L.map tauHecke).prod.val ∈ spanOn ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier := by
+    (L.map tauHecke).prod.val ∈
+      MonoidAlgebra.supported ℂ ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier := by
   induction L with
-  | nil => exact subset_span ⟨1, Subgroup.one_mem _, by simp [MonoidAlgebra.one_def]⟩
+  | nil => exact MonoidAlgebra.single_mem_supported 1 (Subgroup.one_mem _)
   | cons s L ih =>
     obtain ⟨⟨v, -, h_notMem, h_notMem_conj⟩, j⟩ := s
-    refine spanOn.mul heckeSum_mem_spanOn ih ?_
+    refine MonoidAlgebra.mul_mem_supported heckeSum_mem_supported ih ?_
     rintro _ ⟨U, rfl⟩ g
     refine Subgroup.mul_mem _ ⟨(invHeckeIsogeny_mem_GUPlus _ U).1, ?_⟩
     -- Both factors of `invHeckeIsogeny` are trivial at `w₁` since `w₁ ∣ 𝔑` and `v` is safe.
@@ -306,8 +307,9 @@ lemma New.Variety.occursInWeight_of_isTestEigenform {E : Type} [Field E] [CMBase
   set p : heckeAlgebra (Fin a) ℂ 𝔑 := ∑ L ∈ s, c L • (L.map tauHecke).prod with hp
   -- `coe_list_prod` is left out of the two `simp` calls: it would rewrite the coerced products to
   -- `List.map (Subtype.val ∘ tauHecke)`, which the lemmas on words no longer match
-  have h_supp : p.val ∈ spanOn ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier := by
-    simp [hp, prod_map_tauHecke_mem_spanOn h_test.mem_snd, sum_mem, smul_mem,
+  have h_supp :
+      p.val ∈ MonoidAlgebra.supported ℂ ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier := by
+    simp [hp, prod_map_tauHecke_mem_supported h_test.mem_snd, sum_mem, smul_mem,
       -SubmonoidClass.coe_list_prod]
   have h_fix : (rightRegular ℂ (GL (Fin a) (𝔸f E)) W).asAlgebraHom p.val φ = φ := by
     simp [hp, asAlgebraHom_prod_map_tauHecke_apply h_form.heckeSum_apply, hc, smul_smul,

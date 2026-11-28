@@ -468,7 +468,7 @@ lemma New.Variety.Model.isNullHecke_mul_of_kills_weight {E : Type} [Field E] [CM
     (T : ∀ n : Set.Iic (X.dimension + X.dimension),
       SafePlace 𝔑 × ℕ → End ℚ_[ℓ] ((ellAdicCohom (.of R) Ω n).obj (.op X.base)))
     (hT_word : ∀ (n : Set.Iic (X.dimension + X.dimension)) (L : List (SafePlace 𝔑 × ℕ)),
-      ∀ b ∈ spanOn ℂ (GUPlus E (Fin a)),
+      ∀ b ∈ MonoidAlgebra.supported ℂ ℂ (GUPlus E (Fin a)),
         ∀ᶠ i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E (Fin a)) in atTop,
         ∀ {N : Type 2} [AddCommGroup N] [Module ℂ N]
           (Ψ : ((ellAdicCohom (.of R) Ω n).obj (.op X.base) →ₗ[ℚ_[ℓ]]

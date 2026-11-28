@@ -198,7 +198,7 @@ entries. -/
 lemma heckeAlgebra.mem_GUPlus_of_ne_zero (hg_ne : heckeCosetFn f g ≠ 0) : g ∈ GUPlus E n := by
   -- `g` lies in the coset of some `d` in `GUPlus E n`, and the level is contained in `GUPlus E n`.
   obtain ⟨d, hd_mem, hd_coset⟩ : ∃ d ∈ GUPlus E n, (d : GL n (𝔸f E) ⧸ levelGU n 𝔑) = g :=
-    spanOn.exists_mem_of_cosetFn_ne_zero f.property.1 hg_ne
+    exists_mem_of_cosetFn_ne_zero f.property.1 hg_ne
   simpa using mul_mem hd_mem (mem_GUPlus_of_mem_levelGU (QuotientGroup.eq.mp hd_coset))
 
 open scoped Classical in

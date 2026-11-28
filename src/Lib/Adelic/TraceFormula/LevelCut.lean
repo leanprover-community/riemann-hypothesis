@@ -40,8 +40,6 @@ namespace New
 
 open NumberField Module LinearMap MonoidAlgebra InnerProductSpace
 
-open Variety (spanOn)
-
 variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
   {w : FinPlace E}
 
@@ -102,15 +100,16 @@ lemma commute_localRep_offRep (x : GL n (LocField w)) (a : ℂ[Gf E n]) :
 `GL_n(𝒪_w)`. On vectors that are spherical at `w` (fixed by the maximal compact subgroup there),
 `a` acts through its part off `w`. -/
 lemma asAlgebraHom_offRep_apply {a : ℂ[Gf E n]}
-    (ha : a ∈ spanOn ℂ {g : Gf E n | g.atPlace w ∈ localIntGL n w}) {y : M}
+    (ha : a ∈ supported ℂ ℂ {g : Gf E n | g.atPlace w ∈ localIntGL n w}) {y : M}
       (hy : y ∈ sphericalAt ρ w) :
     (offRep hw ρ).asAlgebraHom a y = ρ.asAlgebraHom a y := by
+  rw [supported_eq_span_single] at ha
   induction ha using Submodule.span_induction with
   | mem a ha =>
     obtain ⟨g, hg, rfl⟩ := ha
     have h_fixed : localRep hw ρ (g.atPlace w) y = y :=
       ((mem_sphericalAt_iff hw).1 hy ⟨g.atPlace w, hg⟩).trans (one_smul ℂ y)
-    simp only [Representation.asAlgebraHom_of, apply_eq_offRep_localRep hw ρ g, h_fixed]
+    simp only [Representation.asAlgebraHom_single_one, apply_eq_offRep_localRep hw ρ g, h_fixed]
   | zero => simp
   | add a b _ _ ha hb => simp [ha, hb]
   | smul c a _ ha => simp [ha]
@@ -359,7 +358,7 @@ theorem trace_eq_of_trace_cutLevel_eq (hw : w.IsSplit) (hK : maxCompactAt n w �
     [Module.Finite ℂ (levelSpace ρ (cutLevel K w (lineStabilizer w i)))]
     [Module.Finite ℂ (levelSpace ρ' (cutLevel K w (lineStabilizer w i)))]
     {a : ℂ[Gf E n]} (ha : a ∈ universalLevelAlgebra K)
-    (h_int : a ∈ spanOn ℂ {g : Gf E n | g.atPlace w ∈ localIntGL n w})
+    (h_int : a ∈ supported ℂ ℂ {g : Gf E n | g.atPlace w ∈ localIntGL n w})
     (h_trace : ∀ (l m : ℕ) (S : End ℂ (levelSpace ρ (cutLevel K w (lineStabilizer w i))))
       (S' : End ℂ (levelSpace ρ' (cutLevel K w (lineStabilizer w i)))),
       let K' : Subgroup (Gf E n) := cutLevel K w (lineStabilizer w i)

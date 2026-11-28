@@ -95,7 +95,8 @@ lemma exists_local_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E))
     (hw : 𝔑 ∉ (star w.val).asIdeal) (t : GL (Fin a) (LocField w.val))
     (hz : ∀ g : GL (Fin a) (𝔸f E), Commute g z) (hzt : z * conjAtSplit w t ∈ GUPlus E (Fin a)) :
     ∃ b : heckeAlgebra (Fin a) ℂ 𝔑,
-      b.val ∈ spanOn ℂ (range fun j : J ↦ conjAtSplit w j * (z * conjAtSplit w t)) ∧
+      b.val ∈ MonoidAlgebra.supported ℂ ℂ
+        (range fun j : J ↦ conjAtSplit w j * (z * conjAtSplit w t)) ∧
       b.val ∈ fixedToEigen (levelGU (Fin a) 𝔑) (conjAtSplit w) J χ ∧
       ∀ {x : W} (T : Module.End ℂ W) (y : W),
         (∀ j : J, T (π (conjAtSplit w (j.val * t)) x) = χ j • y) →
@@ -115,8 +116,8 @@ lemma exists_local_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E))
     (isCompact_localIntGL _).relIndex_ne_zero L'.isOpen' (relIndex_eq_zero_of_le_right hJ h_index)
   let f (j : J) : ℂ := (χ j * Fintype.card (J ⧸ U))⁻¹
   let b : MonoidAlgebra ℂ (GL (Fin a) (𝔸f E)) := ∑ q : J ⧸ U, f q.out • .single (r q.out) 1
-  have h_supp : b ∈ spanOn ℂ (range r) :=
-    sum_smul_mem _ _ fun q _ ↦ subset_span ⟨r q.out, mem_range_self q.out, rfl⟩
+  have h_supp : b ∈ MonoidAlgebra.supported ℂ ℂ (range r) :=
+    sum_smul_mem _ _ fun q _ ↦ MonoidAlgebra.single_mem_supported 1 (mem_range_self q.out)
   -- On a vector `x` of level `𝔑` of any representation `ρ`, `b` acts as the operator `heckeFun`
   -- of `f` on `J` applied to `ρ (r 1) x`, which `U` fixes because `z` is central and `t⁻¹ U t`
   -- has level `𝔑`.
@@ -205,10 +206,10 @@ regular: for `y ∈ GL_a(E)` and adelic `x`, if f(x⁻¹y⁻¹x) ≠ 0 then the 
 `y` is separable. -/
 lemma isRegularHecke_of_strictlyDominantAt {w : SplitFinPlace E} (hw : 𝔑 ∉ (star w.val).asIdeal)
     (h_lev : (levelGU (Fin a) 𝔑).comap (conjAtSplit w) ≤ proIwahori) {f : heckeAlgebra (Fin a) ℂ 𝔑}
-    (hf : f.val ∈ spanOn ℂ (strictlyDominantAt w)) :
+    (hf : f.val ∈ MonoidAlgebra.supported ℂ ℂ (strictlyDominantAt w)) :
     IsRegularHecke f := by
   intro y x hy
-  obtain ⟨g, ⟨s, hs, k, l, hg⟩, h_coset⟩ := spanOn.exists_mem_of_cosetFn_ne_zero hf hy
+  obtain ⟨g, ⟨s, hs, k, l, hg⟩, h_coset⟩ := exists_mem_of_cosetFn_ne_zero hf hy
   -- `x⁻¹ y⁻¹ x` differs from `g` by an element of the level, so at `w` it lies in the same double
   -- coset of `proIwahori` as `s`.
   obtain ⟨h_loc, -⟩ := conjAtSplit_dualComponent hw (QuotientGroup.eq.mp h_coset)
@@ -244,13 +245,14 @@ the level at `w` lies in `proIwahori` and `𝔑` does not lie in the conjugate o
 lemma isRegularHecke_pow_succ_of_strictlyDominantAt {w : SplitFinPlace E}
     (hw : 𝔑 ∉ (star w.val).asIdeal)
     (h_lev : (levelGU (Fin a) 𝔑).comap (conjAtSplit w) ≤ proIwahori) {f : heckeAlgebra (Fin a) ℂ 𝔑}
-    (hf : f.val ∈ spanOn ℂ (strictlyDominantAt w)) (m : ℕ) :
+    (hf : f.val ∈ MonoidAlgebra.supported ℂ ℂ (strictlyDominantAt w)) (m : ℕ) :
     IsRegularHecke (f ^ (m + 1)) := by
   refine isRegularHecke_of_strictlyDominantAt hw h_lev ?_
   rw [SubmonoidClass.coe_pow]
   induction m with
   | zero => rwa [zero_add, pow_one]
-  | succ m ih => exact spanOn.mul ih hf fun _ hg _ hg' ↦ mul_mem_strictlyDominantAt hg hg'
+  | succ m ih =>
+    exact MonoidAlgebra.mul_mem_supported ih hf fun _ hg _ hg' ↦ mul_mem_strictlyDominantAt hg hg'
 
 /-- Let the level at `w` lie in `proIwahori` and let `𝔑` not lie in the conjugate of `w`. Then some
 Hecke element `b` sends vectors of level `𝔑` to vectors fixed by `proIwahori`, kills no nonzero
@@ -262,8 +264,8 @@ lemma exists_iwahori_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E
     ∃ b : heckeAlgebra (Fin a) ℂ 𝔑,
       b.val ∈ fixedToEigen (levelGU (Fin a) 𝔑) (conjAtSplit w) proIwahori 1 ∧
       (∀ x ∈ levelSpace (π.comp (conjAtSplit w)) proIwahori, x ≠ 0 → π.asAlgebraHom b x ≠ 0) ∧
-      ∀ c ∈ spanOn ℂ (GU E (Fin a) ⊓ (dualComponent w).ker).carrier,
-        Commute c b.val ∧ b.val * c ∈ spanOn ℂ (strictlyDominantAt w) := by
+      ∀ c ∈ MonoidAlgebra.supported ℂ ℂ (GU E (Fin a) ⊓ (dualComponent w).ker).carrier,
+        Commute c b.val ∧ b.val * c ∈ MonoidAlgebra.supported ℂ ℂ (strictlyDominantAt w) := by
   -- On `proIwahori`-fixed vectors `b` is a central translate of an injective operator `U_t`.
   -- `ρ` is the local group at `w` on the smooth vectors of `π`; `t` is strictly dominant (`ht`).
   let ρ : Rep ℂ (GL (Fin a) (LocField w.val)) := Rep.of (smoothVectorRep (π.comp (conjAtSplit w)))
@@ -306,12 +308,13 @@ lemma exists_iwahori_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E
     have hx'_zero : x' = 0 := (injective_iff_map_eq_zero _).mp hU_inj x' hU
     -- `x` is the vector underlying `x'`
     exact hx_ne (congrArg (fun u : levelSpace ρ.ρ proIwahori ↦ ((u : ρ) : W)) hx'_zero)
-  · refine Commute.span_left (forall_mem_image.mpr fun g hg ↦ .span_right ?_ _ hb_supp) _ hc
+  · rw [MonoidAlgebra.supported_eq_span_single] at hb_supp hc
+    refine Commute.span_left (forall_mem_image.mpr fun g hg ↦ .span_right ?_ _ hb_supp) _ hc
     rintro _ ⟨_, ⟨j, rfl⟩, rfl⟩
     have h_comm : Commute g (conjAtSplit w j * (z * conjAtSplit w (diagGL t))) := by
       simp [commute_conjAtSplit hg, z_central]
-    exact h_comm.map _
-  · refine spanOn.mul hb_supp hc (forall_mem_range.mpr fun j g hg ↦ ?_)
+    exact h_comm.map (MonoidAlgebra.of ℂ _)
+  · refine MonoidAlgebra.mul_mem_supported hb_supp hc (forall_mem_range.mpr fun j g hg ↦ ?_)
     have hg_one : dualComponent w g = 1 := MonoidHom.mem_ker.mp hg.2
     -- `dualComponent w (j z t g)` is `j · N t`, since `dualComponent` inverts the scalar `z`; `N t`
     -- is strictly dominant like `t`
@@ -341,7 +344,7 @@ theorem exists_test_function {w₀ w₁ : SplitFinPlace E}
     {π : Representation ℂ (GL (Fin a) (𝔸f E)) W} {φ : W}
     (hφ_lev : φ ∈ levelSpace π (levelGU (Fin a) 𝔑)) (hφ_test : IsTestVector 𝔑 π φ w₀ w₁ χ)
     {c : heckeAlgebra (Fin a) ℂ 𝔑}
-    (hc : c.val ∈ spanOn ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier)
+    (hc : c.val ∈ MonoidAlgebra.supported ℂ ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier)
     (hcφ : π.asAlgebraHom c φ = φ) :
     ∃ b : heckeAlgebra (Fin a) ℂ 𝔑, ∀ m : ℕ,
       π.asAlgebraHom ((b * c) ^ m).val φ ≠ 0 ∧
@@ -366,8 +369,10 @@ theorem exists_test_function {w₀ w₁ : SplitFinPlace E}
   have h_term_mem (j : J) :
       conjAtSplit w₀ j * (1 * conjAtSplit w₀ 1) ∈ GU E (Fin a) ⊓ (dualComponent w₁).ker := by
     simp [dualComponent, evalAt_conjAtSplit_of_ne _ hφ_test.place_ne.symm hw_star]
-  have hb₀c : b₀.val * c.val ∈ spanOn ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier :=
-    spanOn.mul hb₀_supp hc (forall_mem_range.mpr fun j g hg ↦ Subgroup.mul_mem _ (h_term_mem j) hg)
+  have hb₀c : b₀.val * c.val ∈
+      MonoidAlgebra.supported ℂ ℂ (GU E (Fin a) ⊓ (dualComponent w₁).ker).carrier :=
+    MonoidAlgebra.mul_mem_supported hb₀_supp hc
+      (forall_mem_range.mpr fun j g hg ↦ Subgroup.mul_mem _ (h_term_mem j) hg)
   obtain ⟨h_comm_val, h_supp⟩ := hb₁ _ hb₀c
   have h_comm : Commute (b₀ * c) b₁ := Subtype.ext h_comm_val
   have hb₀φ : π.asAlgebraHom b₀ φ = φ := by

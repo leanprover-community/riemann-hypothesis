@@ -447,13 +447,14 @@ def definiteForms.rep : Representation ℂ (heckeAlgebra n ℂ 𝔑) (definiteFo
       refine ⟨?_, ?_⟩
       · -- Equivariance and support are preserved by each right translation by an element of
         -- `GUPlus`, hence by their linear combinations.
+        rw [MonoidAlgebra.supported_eq_span_single] at ha_span
         refine (comap ((rightRegular ℂ (GL n (𝔸f E)) W).asAlgebraHom.toLinearMap.flip φ)
           (ξ.coindV toFinGL ⊓ Submodule.pi {x : GL n (𝔸f E) | ¬IsSignedFrame x 1} ⊥)).span_le.mpr
           ?_ ha_span
         rintro _ ⟨g, hg, rfl⟩
         have h_act (x : GL n (𝔸f E)) :
             ((rightRegular ℂ (GL n (𝔸f E)) W).asAlgebraHom.toLinearMap.flip φ)
-              (MonoidAlgebra.of ℂ _ g) x = φ (x * g) := by
+              (MonoidAlgebra.single g 1) x = φ (x * g) := by
           change (rightRegular ℂ (GL n (𝔸f E)) W).asAlgebraHom (MonoidAlgebra.single g 1) φ x = _
           rw [Representation.asAlgebraHom_single_one]
           rfl

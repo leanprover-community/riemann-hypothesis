@@ -37,13 +37,14 @@ variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
 /-- An element `a` of the group algebra of the finite adelic group is integral at almost all places
 `v`: it is a combination of group elements whose component at `v` lies in
 `localIntGL n v = GL_n(O_v)`. -/
-lemma eventually_mem_spanOn_atPlace_mem_localIntGL (a : ℂ[Gf E n]) :
-    ∀ᶠ v : FinPlace E in cofinite, a ∈ spanOn ℂ {g : Gf E n | g.atPlace v ∈ localIntGL n v} := by
+lemma eventually_mem_supported_atPlace_mem_localIntGL (a : ℂ[Gf E n]) :
+    ∀ᶠ v : FinPlace E in cofinite,
+      a ∈ supported ℂ ℂ {g : Gf E n | g.atPlace v ∈ localIntGL n v} := by
   have h_support : ∀ᶠ v : FinPlace E in cofinite,
       ∀ g ∈ a.coeff.support, g.atPlace v ∈ localIntGL n v :=
     a.coeff.support.eventually_all.2 fun g _ ↦ g.eventually_atPlace_mem_localIntGL
   filter_upwards [h_support] with v hv
-  exact Submodule.span_mono (Set.image_mono fun g hg ↦ hv g hg) a.mem_span_support_coeff
+  exact mem_supported.2 fun g hg ↦ hv g hg
 
 variable [HasPrimitiveRoot5040 E]
 
@@ -56,14 +57,14 @@ lemma exists_auxiliary_place {K : Subgroup (Gf E n)} (hK : K.IsOpen) (a : ℂ[Gf
     ∃ v : FinPlace E, v.IsSplit ∧
       v ∉ Set.conjClosure {w} ∧
       maxCompactAt n v ≤ K ∧
-      a ∈ spanOn ℂ {g : Gf E n | g.atPlace v ∈ localIntGL n v} := by
+      a ∈ supported ℂ ℂ {g : Gf E n | g.atPlace v ∈ localIntGL n v} := by
   -- There are infinitely many split places, and the other conditions hold at almost all places.
   have h_split : ∃ᶠ v : FinPlace E in cofinite, v.IsSplit :=
     frequently_prime_q.mono fun _ ↦ isSplit_of_q_prime
   have h_ne : ∀ᶠ v : FinPlace E in cofinite, v ∉ Set.conjClosure {w} :=
     (Set.finite_singleton w).conjClosure.eventually_cofinite_notMem
   exact (h_split.and_eventually (h_ne.and ((eventually_maxCompactAt_le hK).and
-    (eventually_mem_spanOn_atPlace_mem_localIntGL a)))).exists
+    (eventually_mem_supported_atPlace_mem_localIntGL a)))).exists
 
 variable [Nonempty n] {s s' : n → ℤˣ}
 
@@ -115,7 +116,7 @@ theorem trace_eq_of_isCuspidalAt (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ c
         ∀ k ∈ lineStabilizer v i, HasSimpleZero (x * k)},
         ∃ k ∈ lineStabilizer v i, g.atPlace v = x * k :=
       exists_atPlace_eq_of_convIndicator_ne_zero hv
-        (lineHecke_pow_mem_spanOn v i m.succ_pos) (a ^ (j + 1)) hg
+        (lineHecke_pow_mem_supported v i m.succ_pos) (a ^ (j + 1)) hg
     rw [h_eq]
     exact hx k hk
 
