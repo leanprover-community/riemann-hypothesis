@@ -811,40 +811,17 @@ lemma ramification_in_tower (h : IsPlaceOver A v) (U : Subgroup Γ) [hU_open : F
   obtain ⟨-, ⟨e, f, ⟨h_ef, hq, h_ord⟩, h_unram⟩, -⟩ :=
     (h.isLocalGalois_decompGroup Γ).of_finite V
   -- The fixed field of `V` is the decomposition field of `A` over `L`.
-  have h_same_set (x : Ω) :
-      x ∈ fixedFieldOf (decompGroup U A) ↔ x ∈ fixedFieldOf (V : Subgroup (decompGroup Γ A)) :=
-    ⟨fun hx ⟨⟨g, hgA⟩, hgU⟩ ↦ hx ⟨⟨g, hgU⟩, hgA⟩,
-     fun hx ⟨⟨g, hgU⟩, hgA⟩ ↦ hx ⟨⟨g, hgA⟩, hgU⟩⟩
-  let e_field :
-      fixedFieldOf (decompGroup U A) ≃+* fixedFieldOf (V : Subgroup (decompGroup Γ A)) :=
-    { toFun := fun x ↦ ⟨x.val, (h_same_set x.val).mp x.property⟩
-      invFun := fun x ↦ ⟨x.val, (h_same_set x.val).mpr x.property⟩
-      left_inv := fun _ ↦ rfl
-      right_inv := fun _ ↦ rfl
-      map_mul' := fun _ _ ↦ rfl
-      map_add' := fun _ _ ↦ rfl }
-  let e_ring :
-      valRingBelow (fixedFieldOf (decompGroup U A)) A ≃+*
-        valRingBelow (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A :=
-    { toFun := fun x ↦ ⟨e_field x.val, x.property⟩
-      invFun := fun x ↦ ⟨e_field.symm x.val, x.property⟩
-      left_inv := fun _ ↦ rfl
-      right_inv := fun _ ↦ rfl
-      map_mul' := fun _ _ ↦ rfl
-      map_add' := fun _ _ ↦ rfl }
-  have h_res_eq :
-      residueCard (fixedFieldOf (decompGroup U A)) A =
-        residueCard (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A :=
-    Nat.card_congr (IsLocalRing.ResidueField.mapEquiv e_ring).toEquiv
-  have h_ord_eq :
-      ordRat (fixedFieldOf (decompGroup U A)) A =
-        ordRat (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A := by
-    unfold ordRat
-    congr 1
-    funext f
-    exact propext
-      ⟨fun hf π hπ ↦ hf (π.map e_field.symm.toMonoidHom) fun x ↦ hπ (e_field x),
-       fun hf π hπ ↦ hf (π.map e_field.toMonoidHom) fun x ↦ hπ (e_field.symm x)⟩
+  have h_field : (fixedFieldOf (decompGroup U A)).toSubfield =
+      (fixedFieldOf (V : Subgroup (decompGroup Γ A))).toSubfield := by
+    ext x
+    exact ⟨fun hx ⟨⟨g, hgA⟩, hgU⟩ ↦ hx ⟨⟨g, hgU⟩, hgA⟩,
+      fun hx ⟨⟨g, hgU⟩, hgA⟩ ↦ hx ⟨⟨g, hgA⟩, hgU⟩⟩
+  have h_res_eq : residueCard (fixedFieldOf (decompGroup U A)) A =
+      residueCard (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A :=
+    congrArg (fun F : Subfield Ω ↦ residueCard F A) h_field
+  have h_ord_eq : ordRat (fixedFieldOf (decompGroup U A)) A =
+      ordRat (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A :=
+    congrArg (fun F : Subfield Ω ↦ ordRat F A) h_field
   have h_q : w.q = v.q ^ f := by
     rw [← hw.residueCard_fixedFieldOf_decompGroup U, h_res_eq, hq,
       h.residueCard_fixedFieldOf_decompGroup Γ]
