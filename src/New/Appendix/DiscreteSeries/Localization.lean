@@ -376,26 +376,24 @@ lemma weightMinors_mul_eq_of_zero_weight_block {w : n → ℤ} {x : Matrix n n �
   · rw [det_mul, mul_div_mul_left _ _ hx_det]
   · rw [one_mul]
 
-omit [Fintype n] [DecidableEq X] in
-/-- A matrix `u` on `X`, placed by `inclMatrix` in the rows and columns in the image of `σ`,
-vanishes in the other rows and in the other columns. -/
-lemma inclMatrix_mul_mul_conjTranspose_apply_eq_zero {σ : X → n} (u : Matrix X X ℂ) {i j : n}
-    (hij : i ∉ range σ ∨ j ∉ range σ) : (inclMatrix ℂ σ * (u * (inclMatrix ℂ σ)ᴴ)) i j = 0 := by
-  simp only [Set.mem_range, not_exists] at hij
-  rcases hij with hi | hj
-  · simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply, fun x ↦ Ne.symm (hi x)]
-  · simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply, hj]
-
-omit [Fintype n] [DecidableEq X] in
-/-- Let `A - 1` be a matrix `u` on `X` placed, by `inclMatrix`, in the rows and columns in the image
-of `σ`. If a function `f` is constant on the image of `σ`, then `A i j = 0` for `f i ≠ f j`. -/
-lemma apply_eq_zero_of_sub_one_eq_inclMatrix {α : Type*} {f : n → α} {c : α} {σ : X → n}
-    (hσ : ∀ x : X, f (σ x) = c) {u : Matrix X X ℂ} {A : Matrix n n ℂ}
-    (hA : A - 1 = inclMatrix ℂ σ * (u * (inclMatrix ℂ σ)ᴴ)) {i j : n} (hij : f i ≠ f j) :
-    A i j = 0 := by
-  have h_outside : i ∉ range σ ∨ j ∉ range σ := by grind
-  calc A i j = (A - 1) i j := by simp [show i ≠ j by grind]
-    _ = 0 := by rw [hA, inclMatrix_mul_mul_conjTranspose_apply_eq_zero u h_outside]
+/-- Let `A - 1` be a matrix `u` on `ι` placed, by `inclMatrix`, in the rows and columns in the image
+of `σ`. If `f` takes the constant value `c` on the image of `σ`, then `diagonal f` acts by `c` on
+the left of `A - 1` and commutes with `A`. -/
+lemma diagonal_mul_sub_one_and_commute {ι : Type*} [Fintype ι] {f : n → ℂ} {c : ℂ} {σ : ι → n}
+    (hσ : ∀ x : ι, f (σ x) = c) {u : Matrix ι ι ℂ} {A : Matrix n n ℂ}
+    (hA : A - 1 = inclMatrix ℂ σ * (u * (inclMatrix ℂ σ)ᴴ)) :
+    diagonal f * (A - 1) = c • (A - 1) ∧ Commute (diagonal f) A := by
+  have h_left : diagonal f * inclMatrix ℂ σ = c • inclMatrix ℂ σ := by
+    ext i x
+    by_cases h : i = σ x <;> simp [inclMatrix, Matrix.one_apply, diagonal_mul, h, hσ]
+  have h_right : (inclMatrix ℂ σ)ᴴ * diagonal f = c • (inclMatrix ℂ σ)ᴴ := by
+    ext x j
+    by_cases h : j = σ x <;> simp [inclMatrix, Matrix.one_apply, mul_diagonal, h, hσ, eq_comm]
+  have h_mul_left : diagonal f * (A - 1) = c • (A - 1) := by
+    simp only [hA, ← Matrix.mul_assoc, h_left, Matrix.smul_mul]
+  have h_sub : Commute (diagonal f) (A - 1) := (commute_iff_eq _ _).2 <|
+    h_mul_left.trans (by simp only [hA, Matrix.mul_assoc, h_right, Matrix.mul_smul])
+  exact ⟨h_mul_left, by simpa using h_sub.add_right (.one_right _)⟩
 
 omit [DecidableEq X] in
 /-- Let `A - 1` be a matrix `u` on `X` placed, by `inclMatrix`, in the rows and columns in the image
@@ -403,17 +401,8 @@ of `σ`, where the sign is `+1`. Then `A` is block diagonal for the signs `ε`. 
 lemma mem_blockDiagAlg_of_sub_one_eq_inclMatrix {σ : X → n} (hσ_sign : ∀ x : X, ε (σ x) = 1)
     {u : Matrix X X ℂ} {A : Matrix n n ℂ} (hA : A - 1 = inclMatrix ℂ σ * (u * (inclMatrix ℂ σ)ᴴ)) :
     A ∈ blockDiagAlg ε :=
-  mem_blockDiagAlg.2 fun _ _ hij ↦ apply_eq_zero_of_sub_one_eq_inclMatrix hσ_sign hA hij
-
-omit [Fintype n] [DecidableEq X] in
-/-- Let `A - 1` be a matrix `u` on `X` placed, by `inclMatrix`, in the rows and columns in the image
-of `σ`, where the weight `w` is `0`. Then `A - 1` vanishes in the rows `i` with `w i ≠ 0`. -/
-lemma sub_one_apply_eq_zero_of_weight_ne_zero {w : n → ℤ} {σ : X → n}
-    (hσ_weight : ∀ x : X, w (σ x) = 0) {u : Matrix X X ℂ} {A : Matrix n n ℂ}
-    (hA : A - 1 = inclMatrix ℂ σ * (u * (inclMatrix ℂ σ)ᴴ)) (i j : n) (hi : w i ≠ 0) :
-    (A - 1) i j = 0 := by
-  have h_outside : i ∉ range σ := by grind
-  rw [hA, inclMatrix_mul_mul_conjTranspose_apply_eq_zero u (.inl h_outside)]
+  DiscreteSeries.mem_blockDiagAlg_iff_commute.2
+    (diagonal_mul_sub_one_and_commute (c := 1) (fun x ↦ by simp [hσ_sign x]) hA).2
 
 omit [DecidableEq X] in
 /-- Let `A - 1` be a matrix `u` on `X` placed, by `inclMatrix`, in the rows and columns in the image
@@ -421,10 +410,8 @@ of `σ`, where the weight `w` is `0`. Then the diagonal matrix of `w` kills `A -
 lemma intDiagonal_mul_sub_one_eq_zero {w : n → ℤ} {σ : X → n} (hσ_weight : ∀ x : X, w (σ x) = 0)
     {u : Matrix X X ℂ} {A : Matrix n n ℂ} (hA : A - 1 = inclMatrix ℂ σ * (u * (inclMatrix ℂ σ)ᴴ)) :
     intDiagonal w * (A - 1) = 0 := by
-  ext i j
-  by_cases hi : w i = 0
-  · simp [diagonal_mul, hi]
-  · simp [diagonal_mul, sub_one_apply_eq_zero_of_weight_ne_zero hσ_weight hA i j hi]
+  simpa using (diagonal_mul_sub_one_and_commute (f := fun i ↦ (w i : ℂ)) (c := 0)
+    (fun x ↦ by simp [hσ_weight x]) hA).1
 
 omit [DecidableEq X] in
 /-- Let `g₀ ∈ U(ε)` be such that `g₀ - 1` is a matrix `x` on `X` placed, by `inclMatrix`, in the
@@ -437,11 +424,15 @@ lemma dsCoeff_mul_eq_of_sub_one_eq_inclMatrix {σ : X → n} (hσ_sign : ∀ i :
     l.dsCoeff (g₀ * g : USign ε) = l.dsCoeff g := by
   -- The matrix `g₀` is block diagonal both for the signs and for the weight.
   have hg₀_det : (g₀ : Matrix n n ℂ).det ≠ 0 := (g₀ : GL n ℂ).det_ne_zero
+  obtain ⟨h_zero, h_comm⟩ := diagonal_mul_sub_one_and_commute
+    (f := fun i ↦ (l.lowestKType i : ℂ)) (c := 0) (fun i ↦ by simp [hσ_weight i]) hg₀
   have h_minors (y : Matrix n n ℂ) :
       weightMinors l.lowestKType (g₀ * y) = weightMinors l.lowestKType y :=
     weightMinors_mul_eq_of_zero_weight_block hg₀_det
-      (fun i j hij ↦ apply_eq_zero_of_sub_one_eq_inclMatrix hσ_weight hg₀ hij)
-      (sub_one_apply_eq_zero_of_weight_ne_zero hσ_weight hg₀) y
+      (fun i j hij ↦ by
+        simpa [diagonal_mul, mul_diagonal, mul_comm ((g₀ : Matrix n n ℂ) i j), ← sub_mul,
+          sub_eq_zero, hij] using sub_eq_zero.2 (congrFun₂ h_comm.eq i j))
+      (fun i j hi ↦ by simpa [diagonal_mul, hi] using congrFun₂ h_zero i j) y
   have h_compact : blockDiagPart ε ((g₀ : Matrix n n ℂ) * g) = g₀ * blockDiagPart ε g :=
     blockDiagPart_mul_left (mem_blockDiagAlg_of_sub_one_eq_inclMatrix hσ_sign hg₀) _
   have h_quot : (blockDiagPart ε ((g₀ : Matrix n n ℂ) * g))⁻¹ * ((g₀ : Matrix n n ℂ) * g) =
