@@ -324,11 +324,7 @@ lemma cast_card_pos [NeZero N] : (0 : ℝ) < D.card :=
 @[simp] lemma varX_ne_varY (s t : ZMod N) : D.varX s ≠ D.varY t := by
   intro h
   obtain rfl : s = t := congrArg Prod.snd h
-  have h1 := congrArg Prod.fst h
-  simp only [varX, varY, rootVar] at h1
-  split_ifs at h1
-  · exact D.ne h1
-  · exact D.ne h1.symm
+  by_cases hs : T.isEven s <;> simp [varX, varY, rootVar, hs, D.ne, D.ne.symm] at h
 
 @[simp] lemma varY_ne_varX (s t : ZMod N) : D.varY s ≠ D.varX t := (D.varX_ne_varY t s).symm
 
@@ -337,36 +333,29 @@ lemma cast_card_pos [NeZero N] : (0 : ℝ) < D.card :=
 
 @[simp] lemma swapVar_snd : (D.swapVar z).2 = z.2 := rfl
 
+/-- Swapping the two root variables is an involution. -/
+@[simp] lemma swapVar_swapVar : D.swapVar (D.swapVar z) = z :=
+  Prod.ext (Equiv.swap_apply_self ..) rfl
+
 @[simp] lemma swapVar_varX : D.swapVar (D.varX s) = D.varY s := by
-  simp only [swapVar, varX, varY, rootVar]
-  split_ifs
-  · exact Prod.ext (Equiv.swap_apply_left _ _) rfl
-  · exact Prod.ext (Equiv.swap_apply_right _ _) rfl
+  by_cases hs : T.isEven s <;> simp [swapVar, varX, varY, rootVar, hs]
 
 @[simp] lemma swapVar_varY : D.swapVar (D.varY s) = D.varX s := by
-  simp only [swapVar, varX, varY, rootVar]
-  split_ifs
-  · exact Prod.ext (Equiv.swap_apply_right _ _) rfl
-  · exact Prod.ext (Equiv.swap_apply_left _ _) rfl
+  rw [← D.swapVar_varX (s := s), swapVar_swapVar]
 
 /-- Every variable is `Y_i`, `X_i`, some `Y_s` or `X_s` with `s ≠ i`, or lies off the root. -/
 lemma var_cases (z : Fin k × ZMod N) : z = D.varY D.letter ∨ z = D.varX D.letter ∨
     (∃ s : ZMod N, s ≠ D.letter ∧ (z = D.varY s ∨ z = D.varX s)) ∨ D.IsFixed z := by
   by_cases hz : D.IsFixed z
   · exact .inr (.inr (.inr hz))
-  · have h_fst : z.1 = D.fst ∨ z.1 = D.snd := by
-      by_contra h
-      exact hz ⟨fun h1 ↦ h (.inl h1), fun h2 ↦ h (.inr h2)⟩
-    have h_letter : z = D.varY z.2 ∨ z = D.varX z.2 := by
-      simp only [varX, varY, rootVar, Prod.ext_iff, and_true]
-      split_ifs
-      · exact h_fst.symm
-      · exact h_fst
-    by_cases hs : z.2 = D.letter
-    · rcases h_letter with h | h
-      · exact .inl (by rwa [← hs])
-      · exact .inr (.inl (by rwa [← hs]))
-    · exact .inr (.inr (.inl ⟨z.2, hs, h_letter⟩))
+  have h_letter : z = D.varY z.2 ∨ z = D.varX z.2 := by
+    -- The parity of this letter determines which of the two root coordinates is `varX`.
+    unfold IsFixed at hz
+    by_cases hs : T.isEven z.2 <;> simp [varX, varY, rootVar, hs, Prod.ext_iff] <;> tauto
+  by_cases hs : z.2 = D.letter
+  · rw [hs] at h_letter
+    tauto
+  · exact .inr (.inr (.inl ⟨z.2, hs, h_letter⟩))
 
 @[simp] lemma sign_varX : D.sign (D.varX s) = 0 := by
   simp only [sign, varX_snd, varX_ne_varY, ↓reduceIte]
@@ -415,16 +404,17 @@ namespace IsFixed
 
 variable {D}
 
-lemma ne_varX (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varX s := by
-  intro h; have h1 := congrArg Prod.fst h
-  simp only [varX, rootVar] at h1; split_ifs at h1; exact hz.1 h1; exact hz.2 h1
-
-lemma ne_varY (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varY s := by
-  intro h; have h1 := congrArg Prod.fst h
-  simp only [varY, rootVar] at h1; split_ifs at h1; exact hz.2 h1; exact hz.1 h1
-
 lemma swapVar_eq (hz : D.IsFixed z) : D.swapVar z = z := by
   rw [swapVar, Equiv.swap_apply_of_ne_of_ne hz.1 hz.2]
+
+lemma ne_varX (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varX s := by
+  rintro rfl
+  exact D.varY_ne_varX s s (D.swapVar_varX.symm.trans hz.swapVar_eq)
+
+lemma ne_varY (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varY s := by
+  intro h
+  apply hz.ne_varX s
+  simpa only [hz.swapVar_eq, swapVar_varY] using congrArg D.swapVar h
 
 lemma merge_eq (hz : D.IsFixed z) : D.merge z = z := ite_eq_right (hz.ne_varY D.letter)
 
@@ -473,17 +463,7 @@ lemma defectWeight_eq [NeZero N] {T : FrobeniusCycle N W R} (D : T.RootAt k) (z 
     if z = D.varX z.2 then (T.P : ℝ) ^ (z.2 - D.letter).val else 0) / (D.card - 1) = _
   rw [one_add_val_sub_one_sub, zeroOrder, poleOrder]
   congr 1
-  split_ifs
-  · simp only [cast_pow, card, frobPower, cast_mul, ne_eq, pow_eq_zero_iff', cast_eq_zero,
-      T.prime.ne_zero, false_and, not_false_eq_true, mul_div_cancel_left₀]
-  · simp only [cast_pow, sub_zero, card, cast_zero, zero_div]
-  · simp only [cast_pow, sub_self, frobPower, card, cast_mul, ne_eq, pow_eq_zero_iff',
-      cast_eq_zero, T.prime.ne_zero, false_and, not_false_eq_true, mul_div_cancel_left₀]
-  · simp only [cast_pow, sub_zero, frobPower, cast_zero, zero_div]
-  · simp only [cast_pow, zero_sub, cast_zero, card, frobPower, cast_mul, ne_eq,
-      pow_eq_zero_iff', cast_eq_zero, T.prime.ne_zero, false_and, not_false_eq_true,
-      mul_div_cancel_left₀]
-  · simp only [sub_self, cast_zero, card, cast_pow, zero_div]
+  split_ifs <;> simp [card, frobPower, T.prime.ne_zero]
 
 /-- The matrix `!![0, 1; -1, x]` in the rows and columns `a`, `a'`, with `x = -r` if `i` is even and
 `x = r` otherwise, written as a transposition times a transvection times the diagonal matrix with
@@ -573,25 +553,9 @@ lemma polyAction_swapTransvection_X [NeZero N] {T : FrobeniusCycle N W R} (D : T
   -- Off the diagonal, the column of `z` has only the entry `D.sign z * r`, in the row of `X_s`.
   have h_entry (b : Fin k) : M b z.1 =
       (if b = z.1 then 1 else 0) + if (b, z.2) = D.varX z.2 then D.sign z * r else 0 := by
-    cases h_letter : T.isEven D.letter <;> cases h_z : T.isEven z.2
-    · simp only [h_z, Bool.false_eq_true, ↓reduceIte, transvection, Matrix.single, eq_comm,
-        hx, h_letter, transpose_add, transpose_one, transpose_of, Matrix.add_apply,
-        Matrix.one_apply, of_apply, Function.swap, and_comm, varX, rootVar, Prod.ext_iff,
-        true_and, sign, varY, Int.reduceNeg, Int.cast_ite, Int.cast_neg, Int.cast_one,
-        Int.cast_zero, ite_mul, neg_mul, one_mul, zero_mul, ← ite_and, M]
-    · simp only [h_z, ↓reduceIte, transvection, Matrix.single, eq_comm, hx, h_letter,
-        Bool.false_eq_true, Matrix.add_apply, Matrix.one_apply, of_apply, varX, rootVar,
-        Prod.ext_iff, and_comm, true_and, sign, varY, Int.cast_ite, Int.cast_one,
-        Int.cast_zero, ite_mul, one_mul, zero_mul, ← ite_and, M]
-    · simp only [h_z, Bool.false_eq_true, ↓reduceIte, transvection, Matrix.single, eq_comm,
-        hx, h_letter, neg_neg, transpose_add, transpose_one, transpose_of, Matrix.add_apply,
-        Matrix.one_apply, of_apply, Function.swap, and_comm, varX, rootVar, Prod.ext_iff,
-        true_and, sign, varY, Int.cast_ite, Int.cast_one, Int.cast_zero, ite_mul, one_mul,
-        zero_mul, ← ite_and, M]
-    · simp only [h_z, ↓reduceIte, transvection, Matrix.single, eq_comm, hx, h_letter,
-        Matrix.add_apply, Matrix.one_apply, of_apply, varX, rootVar, Prod.ext_iff, and_comm,
-        true_and, sign, varY, Int.reduceNeg, Int.cast_ite, Int.cast_neg, Int.cast_one,
-        Int.cast_zero, ite_mul, neg_mul, one_mul, zero_mul, ← ite_and, M]
+    cases h_letter : T.isEven D.letter <;> cases h_z : T.isEven z.2 <;>
+      simp [M, transvection, Matrix.single, Matrix.one_apply, hx, h_letter, h_z, varX, varY,
+        rootVar, sign, Function.swap, Prod.ext_iff, eq_comm, and_comm, ← ite_and, ite_mul]
   rw [swapTransvection, map_mul, AlgHom.mul_apply, h_diag, map_zsmul, h_column,
     ← swapVar_varX, swapVar, swapVar]
   simp only [h_entry, Prod.ext_iff, varX_snd, and_true, map_add, apply_ite (T.embedding _),
