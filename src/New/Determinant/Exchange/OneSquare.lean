@@ -728,6 +728,25 @@ structure IsSquare (t : ℕ) (μ : InfinitePlace E → ℤ) (𝔪 : I → Modulu
   spaceChar_mul_second (i : I) :
     (b₂ i).spaceChar (card n') * (b₂' i).spaceChar (card n) = (ν i).baseChange⁻¹
 
+variable {t : ℕ} {μ : InfinitePlace E → ℤ} {𝔪 : I → Modulus E} {ν : I → AutChar E}
+  {χ : ∀ i : I, MulChar (𝔪 i).ResidueRing ℂ}
+
+/-- The path from `U₁` through `A` to `U₂`, using the indicators of the two column blocks of `x`. -/
+noncomputable abbrev IsSquare.columnLift
+    (_square : IsSquare e e' e₁ e₂ a₁ a₂ b₁ b₂ a₁' a₂' b₁' b₂' P₁ P₂ P₁' P₂' t μ 𝔪 ν χ)
+    (A : Space E n' s') (U₁ : Space E n₁ s₁) (U₂ : Space E n₂ s₂)
+    (i : I) (x : Matrix n' (n₁ ⊕ n₂) (𝔪 i).ResidueRing) : U₁.Form e₁ →ₗ[ℂ] U₂.Form e₂ :=
+  pairTransposedLift U₂ A (a₂ i) (b₂ i) P₂ (Pi.single x.toCols₂ 1) e e₂ ∘ₗ
+    pairLift U₁ A (a₁ i) (b₁ i) P₁ (Pi.single x.toCols₁ 1) e₁ e
+
+/-- The path from `U₁` through `A'` to `U₂`, using the indicators of the two row blocks of `y`. -/
+noncomputable abbrev IsSquare.rowLift
+    (_square : IsSquare e e' e₁ e₂ a₁ a₂ b₁ b₂ a₁' a₂' b₁' b₂' P₁ P₂ P₁' P₂' t μ 𝔪 ν χ)
+    (A' : Space E n s) (U₁ : Space E n₁ s₁) (U₂ : Space E n₂ s₂)
+    (i : I) (y : Matrix (n₁ ⊕ n₂) n (𝔪 i).ResidueRing) : U₁.Form e₁ →ₗ[ℂ] U₂.Form e₂ :=
+  pairLift A' U₂ (b₂' i) (a₂' i) P₂' (Pi.single y.toRows₂ 1) e' e₂ ∘ₗ
+    pairTransposedLift A' U₁ (b₁' i) (a₁' i) P₁' (Pi.single y.toRows₁ 1) e₁ e'
+
 end Edges
 
 private lemma two_dvd_of_rank_difference {a b c t : ℕ}
@@ -766,12 +785,8 @@ theorem exists_sum_pairLift_comp_pairTransposedLift_eq_smul
     {μ : InfinitePlace E → ℤ} {𝔪 : I → Modulus E} {ν : I → AutChar E}
     {χ : ∀ i : I, MulChar (𝔪 i).ResidueRing ℂ}
     (h_square : IsSquare e e' e₁ e₂ a₁ a₂ b₁ b₂ a₁' a₂' b₁' b₂' P₁ P₂ P₁' P₂' t μ 𝔪 ν χ) :
-    let Θ (i : I) (x : Matrix n' (n₁ ⊕ n₂) (𝔪 i).ResidueRing) : U₁.Form e₁ →ₗ[ℂ] U₂.Form e₂ :=
-      pairTransposedLift U₂ A (a₂ i) (b₂ i) P₂ (Pi.single x.toCols₂ 1) e e₂ ∘ₗ
-        pairLift U₁ A (a₁ i) (b₁ i) P₁ (Pi.single x.toCols₁ 1) e₁ e
-    let Θ' (i : I) (y : Matrix (n₁ ⊕ n₂) n (𝔪 i).ResidueRing) : U₁.Form e₁ →ₗ[ℂ] U₂.Form e₂ :=
-      pairLift A' U₂ (b₂' i) (a₂' i) P₂' (Pi.single y.toRows₂ 1) e' e₂ ∘ₗ
-        pairTransposedLift A' U₁ (b₁' i) (a₁' i) P₁' (Pi.single y.toRows₁ 1) e₁ e'
+    let Θ := h_square.columnLift A U₁ U₂
+    let Θ' := h_square.rowLift A' U₁ U₂
     ∃ C : ℝ, 0 < C ∧ ∃ κ : ℂ, ∀ i : I, ∃ c : ℂ,
       ‖c‖ ^ 2 = C * lValueProd (𝔪 i).places (ν i) t ∧
       C * lValueProd (𝔪 i).places (ν i) t ≠ 0 ∧
@@ -918,12 +933,8 @@ theorem equivariant_and_exists_sum_eq_of_areMatched {E n n' n₁ n₂ : Type} [F
     {μ : InfinitePlace E → ℤ} {𝔪 : I → Modulus E} {ν : I → AutChar E}
     {χ : ∀ i : I, MulChar (𝔪 i).ResidueRing ℂ}
     (h_square : IsSquare e e' e₁ e₂ a₁ a₂ b₁ b₂ a₁' a₂' b₁' b₂' P₁ P₂ P₁' P₂' t μ 𝔪 ν χ) :
-    let Θ (i : I) (x : Matrix n' (n₁ ⊕ n₂) (𝔪 i).ResidueRing) : U₁.Form e₁ →ₗ[ℂ] U₂.Form e₂ :=
-      pairTransposedLift U₂ A (a₂ i) (b₂ i) P₂ (Pi.single x.toCols₂ 1) e e₂ ∘ₗ
-        pairLift U₁ A (a₁ i) (b₁ i) P₁ (Pi.single x.toCols₁ 1) e₁ e
-    let Θ' (i : I) (y : Matrix (n₁ ⊕ n₂) n (𝔪 i).ResidueRing) : U₁.Form e₁ →ₗ[ℂ] U₂.Form e₂ :=
-      pairLift A' U₂ (b₂' i) (a₂' i) P₂' (Pi.single y.toRows₂ 1) e' e₂ ∘ₗ
-        pairTransposedLift A' U₁ (b₁' i) (a₁' i) P₁' (Pi.single y.toRows₁ 1) e₁ e'
+    let Θ := h_square.columnLift A U₁ U₂
+    let Θ' := h_square.rowLift A' U₁ U₂
     -- (a)
     (∀ (i : I) (g : GL n' (𝔪 i).ResidueRing) (x : Matrix n' (n₁ ⊕ n₂) (𝔪 i).ResidueRing),
       Θ i (g.val * x) = χ i g.val.det • Θ i x) ∧
