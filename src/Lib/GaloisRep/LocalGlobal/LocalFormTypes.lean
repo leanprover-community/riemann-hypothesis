@@ -3,7 +3,7 @@ module
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.NumberTheory.MulChar.Lemmas
 public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
-public import Lib.General.Geometry.GaloisCovers
+public import Lib.LocalGL.Green.TauFunctions
 public import Lib.LocalGL.Iwahori.ParahoricStructure
 import Lib.General.LinearAlgebra.BlockEmbeddings
 import Lib.LocalGL.Green.LabelCharacters

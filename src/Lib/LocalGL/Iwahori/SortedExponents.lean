@@ -4,7 +4,6 @@ import Mathlib.NumberTheory.MulChar.Lemmas
 public import Lib.Adelic.Unitary.ComponentsAndBlockSums
 public import Lib.LocalGL.Green.TauFunctions
 public import Lib.LocalGL.Iwahori.ParahoricStructure
-import Lib.General.Geometry.GaloisCovers
 import Lib.General.LinearAlgebra.Eigenvalues
 import Lib.LocalGL.Iwahori.QuadraticRelation
 import Lib.LocalGL.Shintani.LiftingGreenCharacters

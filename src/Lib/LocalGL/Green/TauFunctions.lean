@@ -5,6 +5,7 @@ import Mathlib.FieldTheory.Finite.Extension
 import Mathlib.NumberTheory.MulChar.Duality
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.Style
+public import Lib.LocalGL.Green.FaithfulCharacter
 public import Lib.LocalGL.Green.HallAlgebra
 import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.LocalGL.Green.CuspidalFunctions
@@ -22,8 +23,8 @@ orthonormal and do not depend on the chosen root.
 
 ## Main definitions and results
 
-* `New.faithfulChar`, `New.thetaChar`: a faithful character `T` of the algebraic closure, and the
-  power `θ_x` of `T` attached to an element `x` of the subfield with `Q` elements.
+* `New.thetaChar` raises a faithful character `T` of the algebraic closure to the power attached
+  to an element `x` of the subfield with `Q` elements.
 * `New.greenTau`, `New.labelChar`: the function `τ_P` of an irreducible `P`, and the product `Ξ_c`
   of the `τ_P` over the irreducible factors of `c`.
 * `New.IsLabel`: labels of degree `r`, which are monic squarefree polynomials with nonzero constant
@@ -87,19 +88,6 @@ variable (k : Type*) [Field k] [Finite k]
 def monicsOfDegree : Finset k[X] :=
   @Set.toFinset k[X] {c : k[X] | c.Monic ∧ c.natDegree = r}
     (Fintype.ofEquiv (Fin r → k) ((monicEquivDegreeLT r).trans (degreeLTEquiv k r).toEquiv).symm)
-
-/-- A chosen injective multiplicative character from the algebraic closure of `k` to `ℂ`
-(arbitrary if there is none). For finite `k` one exists (`New.exists_injective_mulChar`), so the
-chosen character is injective (the instance `New.faithfulChar_injective`). -/
-def faithfulChar : MulChar (AlgebraicClosure k) ℂ :=
-  Classical.epsilon fun T : MulChar (AlgebraicClosure k) ℂ ↦ Injective T
-
-/-- The field K is algebraically closed and the multiplicative character T : K → ℂ is injective,
-so it embeds K^× in ℂ^×. -/
-class IsFaithfulMulChar (K : Type*) [Field K] (T : outParam (MulChar K ℂ)) :
-    Prop extends IsAlgClosed K where
-  /-- The character T is injective. -/
-  injective : Injective T
 
 variable {k}
 

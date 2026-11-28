@@ -14,13 +14,12 @@ import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.Localization.Cardinality
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Topology.Baire.BaireMeasurable
-public import Lib.LocalGL.Green.TauFunctions
+public import Lib.LocalGL.Green.FaithfulCharacter
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.Geometry.DenseComplexPoints
 import Lib.General.Geometry.GeometricPoints
 import Lib.General.Geometry.PointsOfProperSchemes
-import Lib.LocalGL.Green.CuspidalFunctions
 import Lib.PadicComparison.Descent.TestCategory
 
 /-!
@@ -28,9 +27,8 @@ import Lib.PadicComparison.Descent.TestCategory
 
 This file collects tools for passing between points of schemes over a countable ring and complex
 points, and for building Galois coverings from complex points: extensions of embeddings of countable
-rings into ℂ, an injective character of the algebraic closure of a finite field, Zariski generic
-members of holomorphic families, reduced closures of families of complex points, and criteria for
-coverings to be étale or smooth.
+rings into ℂ, Zariski generic members of holomorphic families, reduced closures of families of
+complex points, and criteria for coverings to be étale or smooth.
 
 ## Main definitions and results
 
@@ -151,64 +149,6 @@ lemma New.exists_ringHom_complex_extend {D : Type*} {K : Type} [CommRing D] [Cou
     RingHom.ext fun a ↦ σ.symm_apply_eq.2 (hσ a).symm⟩
 
 end ComplexExtension
-
-/-!
-## A faithful character of the units of the algebraic closure of a finite field
-
-`New.faithfulChar k` is chosen among the injective multiplicative characters from the algebraic
-closure of the finite field `k` to `ℂ`. `New.exists_injective_mulChar` shows that such a character
-exists, using Teichmüller lifts to Witt vectors, so the chosen character is injective
-(`New.faithfulChar_injective`).
--/
-
-section FaithfulChar
-
-open WittVector Algebra IsIntegral Function RingHom
-
-/-- The algebraic closure of a finite field has an injective multiplicative character to `ℂ`. -/
-theorem New.exists_injective_mulChar (k : Type*) [Field k] [Finite k] :
-    ∃ T : MulChar (AlgebraicClosure k) ℂ, Injective T := by
-  -- Teichmüller lifts are integral over `ℤ`, and the ring `R` of Witt vectors integral over
-  -- `ℤ` is a domain of characteristic zero, so it embeds in `ℂ`.
-  have : CharZero (WittVector (ringChar k) (AlgebraicClosure k)) :=
-    -- it contains the Witt vectors of the prime field, which are the `p`-adic integers
-    (charZero_iff (map_injective _ (ZMod.castHom_injective (AlgebraicClosure k)))).1
-      (toPadicInt (ringChar k)).charZero
-  let R := integralClosure ℤ (WittVector (ringChar k) (AlgebraicClosure k))
-  have h_int (x : AlgebraicClosure k) : teichmuller (ringChar k) x ∈ R := by
-    -- `k[x]` is finite, so its monoid algebra is integral over `ℤ`; map it to the Witt vectors.
-    have : Finite k[x] :=
-      Module.finite_iff_finite.1 (finite_adjoin_simple_of_isIntegral (R := k) (isIntegral x))
-    let x' : k[x] := ⟨x, self_mem_adjoin_singleton k x⟩
-    let toWitt : MonoidAlgebra ℤ k[x] →ₐ[ℤ] WittVector (ringChar k) (AlgebraicClosure k) :=
-      MonoidAlgebra.lift ℤ _ _ ((teichmuller (ringChar k)).domRestrict k[x])
-    have h_apply : toWitt (MonoidAlgebra.single x' 1) = teichmuller (ringChar k) x := by
-      simp [toWitt, x']
-    have h_single : _root_.IsIntegral ℤ (MonoidAlgebra.single x' (1 : ℤ)) := isIntegral _
-    rw [← h_apply]
-    exact h_single.map toWitt
-  let lift : MulChar (AlgebraicClosure k) R :=
-    { (teichmuller (ringChar k)).codRestrict R h_int with
-      map_nonunit' := by simp [Subtype.ext_iff] }
-  let emb : R →ₐ[ℤ] ℂ := IsAlgClosed.lift
-  -- The kernel of `emb` is a prime of `R` lying over `(0)`, and `R` is integral over `ℤ`.
-  have h_emb : Injective emb :=
-    (injective_iff_ker_eq_bot emb).2 (Ideal.eq_bot_of_liesOver_bot ℤ (Ideal.comap emb ⊥))
-  refine ⟨lift.ringHomComp emb.toRingHom, fun x y h ↦ ?_⟩
-  -- The coefficient `0` of the Teichmüller lift of `x` is `x`.
-  have h_lift : lift x = lift y := h_emb h
-  have h_coeff : (teichmuller (ringChar k) x).coeff 0 = (teichmuller (ringChar k) y).coeff 0 :=
-    congrArg (fun w : R ↦ (w : WittVector (ringChar k) (AlgebraicClosure k)).coeff 0) h_lift
-  simpa only [teichmuller_coeff_zero] using h_coeff
-
-/-- For a finite field `k` the character `faithfulChar k`, chosen among the multiplicative
-characters from the algebraic closure of `k` to `ℂ`, is injective, so it is faithful
-(`IsFaithfulMulChar`). -/
-instance New.faithfulChar_injective {k : Type*} [Field k] [Finite k] :
-    IsFaithfulMulChar (AlgebraicClosure k) (faithfulChar k) where
-  injective := Classical.epsilon_spec (exists_injective_mulChar k)
-
-end FaithfulChar
 
 namespace New.Variety
 

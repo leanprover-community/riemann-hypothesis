@@ -7,7 +7,7 @@ import Mathlib.RingTheory.Artinian.Instances
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.PicardGroup
 import TauCeti.RepresentationTheory.Character.Basic
-public import Lib.General.Geometry.GaloisCovers
+public import Lib.LocalGL.Green.TauFunctions
 public import Lib.LocalGL.Shintani.CosetDescent
 import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.LocalGL.Green.CuspidalFunctions

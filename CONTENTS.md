@@ -939,6 +939,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 **Green**: Green's characters of general linear groups over finite fields
 
+- `Lib/LocalGL/Green/FaithfulCharacter` (56): A faithful complex character over a finite field
 - `Lib/LocalGL/Green/HallAlgebra` (659): Hall algebra of class functions: induction product, Mackey formula, Frobenius reciprocity
 - `Lib/LocalGL/Green/CuspidalFunctions` (473): Cuspidal class functions on GL_n over a finite field: μ, supports, values, inner products
 - `Lib/LocalGL/Green/TauFunctions` (474): Green's characters of GL_n over a finite field: θ_x, τ_P, labels and their degrees
