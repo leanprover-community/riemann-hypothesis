@@ -342,6 +342,38 @@ lemma conjTranspose_realMatrix_mul_self (hA : IsOrthoIntegral A) :
     show (fun w ↦ (A.map (evalInf w))ᴴ * A.map (evalInf w)) = 1 from funext h_orth,
     blockDiagonal_one, submatrix_one _ Prod.swap_injective]
 
+omit [WeilData E] [DecidableEq n] in
+/-- If `A` has orthonormal columns at the infinite places, then multiplication by `realMatrix A`
+keeps the Gaussian `realVac`. -/
+lemma realVac_realMatrix_mulVec (hA : IsOrthoIntegral A) (y : InfinitePlace E × p → ℂ) :
+    realVac (realMatrix A *ᵥ y) = realVac y := by
+  rw [realVac, realVac, star_mulVec_dotProduct, mulVec_mulVec,
+    conjTranspose_realMatrix_mul_self A hA, one_mulVec]
+
+omit [WeilData E] in
+/-- If `A` has orthonormal columns at the infinite places and as many rows as columns, then
+multiplication by `realMatrix A` preserves the measure `normalizedVolume`. -/
+lemma measurePreserving_realMatrix_mulVec (hA : IsOrthoIntegral A) (h_card : card n = card p) :
+    MeasurePreserving (realMatrix A *ᵥ ·) (normalizedVolume (InfinitePlace E × p))
+      (normalizedVolume (InfinitePlace E × n)) := by
+  -- `realMatrix A` is a unitary matrix, so it keeps the Gaussian and hence
+  -- (`measurePreserving_equiv`) the measure.
+  have h_orth := conjTranspose_realMatrix_mul_self A hA
+  have h_orth' : realMatrix A * (realMatrix A)ᴴ = 1 :=
+    (mul_eq_one_comm_of_card_eq _ _ _ (by rw [card_prod, card_prod, h_card])).1 h_orth
+  let φ : (InfinitePlace E × p → ℂ) ≃ₜ+ (InfinitePlace E × n → ℂ) :=
+    { toFun := (realMatrix A *ᵥ ·)
+      invFun := ((realMatrix A)ᴴ *ᵥ ·)
+      left_inv y := by dsimp only; rw [mulVec_mulVec, h_orth, one_mulVec]
+      right_inv y := by dsimp only; rw [mulVec_mulVec, h_orth', one_mulVec]
+      map_add' := mulVec_add _
+      continuous_toFun := continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
+        continuous_const.mul (continuous_apply j)
+      continuous_invFun := continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
+        continuous_const.mul (continuous_apply j) }
+  exact measurePreserving_equiv (realHeisenberg 1) (realHeisenberg 1) (φ := φ)
+    (realVac_realMatrix_mulVec A hA)
+
 /-- For a splitting of V over V₀, write y = la + ιw + kb and y' = la' + ιw' + kb'. Then
 β(y,y') = ψ(½ȷ(a'*b + b'*a)) β₀(w,w'), with β₀ the bicharacter for the signs of V₀. -/
 lemma beta_eq_coords (y y' : n → 𝔸 E) :
@@ -441,6 +473,133 @@ lemma integral_beta_mul_realVac {ι : Type*} [Fintype ι] [DecidableEq ι] (x c 
     ring
   simp_rw [h_square, integral_const_mul, h_gauss, h_parallelogram, mul_assoc]
 
+/-- Let `g` be adapted to `t`, and let `S` be a bounded linear map from `𝒮 V` to a Banach space.
+Then the integral `S (P f) = ∫ e(y) S (ϱ(y) f) dy` over real vectors `y`, with `P` the real vacuum
+projection and `e` the Gaussian, can be taken in the coordinates `(c, b, w)` of the frame
+`D.frameAt g t`, where `e` is the product `e(c) e(b) e(w)`. -/
+lemma IsAdapted.map_projReal_eq_integral_frameAt {g : G E s} {t : GL p (𝔸 E)}
+    (hg : D.IsAdapted g t) {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y] [CompleteSpace Y]
+    (S : 𝒮 V →L[ℂ] Y) (f : 𝒮 V) :
+    S (V.projReal f) = ∫ c : InfinitePlace E × p → ℂ, ∫ b : InfinitePlace E × p → ℂ,
+      ∫ w : InfinitePlace E × n₀ → ℂ, (realVac c * realVac b * realVac w) •
+        S (V.ϱ (D.frameAt g t *ᵥ ((realVec c ⊕ᵥ realVec b) ⊕ᵥ realVec w)) f)
+          ∂normalizedVolume _ ∂normalizedVolume _ ∂normalizedVolume _ := by
+  have h_int : Integrable (fun y ↦ realVac y • S (V.ϱ (realVec y) f)) (normalizedVolume _) :=
+    (Fock.vacVector (ε := realSigns E s)).integrable.smul_bdd (‖S‖ * ‖f‖)
+      (S.continuous.comp
+        (V.heisenbergRep.cont.comp
+          (continuous_realVec.prodMk continuous_const))).aestronglyMeasurable
+      (.of_forall fun y ↦ (S.le_opNorm (V.ϱ (realVec y) f)).trans_eq (by rw [Rep.norm_map]))
+  -- The frame preserves the measure, and so does splitting the coordinates as ((c, b), w), and
+  -- then as (c, b).
+  have h_card : card n = card ((p ⊕ p) ⊕ n₀) := by
+    simp only [card_sum, D.card_eq]
+    ring
+  let outer : (realHeisenberg (realSigns E ((1 : p ⊕ p → ℤˣ) ⊕ᵥ s₀))).OrthogonalSum
+      (realHeisenberg (realSigns E (1 : p ⊕ p → ℤˣ))) (realHeisenberg (realSigns E s₀)) realVac :=
+    realCoordSum (realSigns_comp_split signs_comp_refl)
+  let inner : (realHeisenberg (realSigns E ((1 : p → ℤˣ) ⊕ᵥ (1 : p → ℤˣ)))).OrthogonalSum
+      (realHeisenberg (realSigns E (1 : p → ℤˣ))) (realHeisenberg (realSigns E (1 : p → ℤˣ)))
+        realVac :=
+    realCoordSum (realSigns_comp_split signs_comp_refl)
+  obtain ⟨h_int', h_outer⟩ :=
+    ((measurePreserving_realMatrix_mulVec _ hg h_card).comp outer.measurePreserving_equiv).fubini
+      h_int
+  rw [show S (V.projReal f) = ∫ y, realVac y • S (V.ϱ (realVec y) f) ∂normalizedVolume _ from
+    V.map_integrated_eq_integral_realVec Fock.vacVector f S]
+  refine h_outer.symm.trans ((inner.measurePreserving_equiv.integral_integral_comp
+    h_int'.integral_prod_left).symm.trans ?_)
+  -- In these coordinates the Gaussian factors, and `y` is the frame applied to `(c, b, w)`.
+  simp only [Function.comp_apply, realVac_realMatrix_mulVec _ hg, OrthogonalSum.vac_equiv,
+    realVec_realMatrix_mulVec, outer, inner, realVec_realCoordSum]
+
+/-- The character of the law of a mixed model at real vectors is the real bicharacter: the
+bicharacter of `adelicHeisenberg E 1` at `realVec y` and `realVec b` is that of
+`realHeisenberg 1` at `y` and `b`. -/
+lemma adelicHeisenberg_beta_realVec (y b : InfinitePlace E × p → ℂ) :
+    (adelicHeisenberg E 1).β (realVec y) (realVec b) = (realHeisenberg 1).β y b := by
+  have h := (adelicSum E (n := p) 1).beta_equiv (y, 0) (b, 0)
+  rw [adelicSum_real_eq_realVec, adelicSum_real_eq_realVec, beta_zero_left, mul_one] at h
+  exact h
+
+/-- Let `T` obey the law of a mixed model (`IsMixedLaw`) for the splitting `D`. Then the maps
+`x ↦ T ((t⁻¹)ᴴ x) ∘ ω(g)` obey the law of a mixed model in the coordinates `(a, b, w)` of the frame
+`D.frameAt g t`: for `y` the frame applied to `(a, b, w)`,
+`T ((t⁻¹)ᴴ x) (ω(g) ϱ(y) f) = β(2x + a, b) ϱ(w) (T ((t⁻¹)ᴴ (x + a)) (ω(g) f))`. -/
+lemma IsMixedLaw.apply_omega_rho_frameAt_mulVec (hT : D.IsMixedLaw T) (g : G E s)
+    (t : GL p (𝔸 E)) (x a b : p → 𝔸 E) (w : n₀ → 𝔸 E) (f : 𝒮 V) :
+    T (t.val⁻¹ᴴ *ᵥ x) (V.ω g (V.ϱ (D.frameAt g t *ᵥ ((a ⊕ᵥ b) ⊕ᵥ w)) f)) =
+      (adelicHeisenberg E 1).β (x + (x + a)) b • V₀.ϱ w (T (t.val⁻¹ᴴ *ᵥ (x + a)) (V.ω g f)) := by
+  -- `g` maps the frame vector to `l ((t⁻¹)ᴴ a) + k (t b) + ι w`, which has the coordinates
+  -- `((t⁻¹)ᴴ a, t b, w)`.
+  have h_vec : g.adeleMatrix *ᵥ (D.frameAt g t *ᵥ ((a ⊕ᵥ b) ⊕ᵥ w)) =
+      D.lAdelic *ᵥ (t.val⁻¹ᴴ *ᵥ a) + D.kAdelic *ᵥ (t.val *ᵥ b) + D.iAdelic *ᵥ w := by
+    rw [mulVec_mulVec, frameAt, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, mul_inv_cancel,
+      G.adeleMatrix_one, Matrix.one_mul, fromCols_mulVec, Sum.elim_comp_inl, Sum.elim_comp_inr,
+      fromCols_mulVec, Sum.elim_comp_inl, Sum.elim_comp_inr, ← mulVec_mulVec, ← mulVec_mulVec,
+      coe_units_inv]
+  -- The bicharacter is invariant under `((t⁻¹)ᴴ, t)`.
+  have h_beta (u v : p → 𝔸 E) :
+      (adelicHeisenberg E 1).β (t.val⁻¹ᴴ *ᵥ u) (t.val *ᵥ v) = (adelicHeisenberg E 1).β u v := by
+    dsimp only [adelicHeisenberg]
+    congr 2
+    rw [stdForm_one, one_mulVec, one_mulVec, star_mulVec_dotProduct, mulVec_mulVec,
+      ← conjTranspose_mul, ← coe_units_inv, ← Units.val_mul, inv_mul_cancel, Units.val_one,
+      conjTranspose_one, one_mulVec]
+  rw [omega_rho, h_vec, hT]
+  simp only [mulVec_add, mulVec_mulVec _ D.lCoord, mulVec_mulVec _ D.kCoord,
+    mulVec_mulVec _ D.iCoord, coord_mul_frame, one_mulVec, zero_mulVec, add_zero, zero_add]
+  rw [← mulVec_add, ← mulVec_add, h_beta]
+
+/-- Let `T` obey the law of a mixed model (`IsMixedLaw`) for the splitting `D`, let `g` be adapted
+to `t` (`IsAdapted`), and let `M` be a bounded operator on `𝒮 V₀`. With `P`, `P₀` the real vacuum
+projections of `V`, `V₀` and `e` the Gaussian, `M (T ((t⁻¹)ᴴ (realVec x)) (ω(g) P f))` is
+`exp(−|x|²)` times the integral over `c` of `e(c)² 2^N M (P₀ (T ((t⁻¹)ᴴ (realVec c)) (ω(g) f)))`,
+where `N` is the number of coordinates of `c`. This integral does not depend on `x`. -/
+lemma IsAdapted.map_apply_omega_projReal_eq_integral (hT : D.IsMixedLaw T) {g : G E s}
+    {t : GL p (𝔸 E)} (hg : D.IsAdapted g t) (x : InfinitePlace E × p → ℂ)
+    (M : 𝒮 V₀ →L[ℂ] 𝒮 V₀) (f : 𝒮 V) :
+    M (T (t.val⁻¹ᴴ *ᵥ realVec x) (V.ω g (V.projReal f))) = exp (-(star x ⬝ᵥ x)) •
+      ∫ c, (realVac c ^ 2 * 2 ^ card (InfinitePlace E × p)) •
+        M (V₀.projReal (T (t.val⁻¹ᴴ *ᵥ realVec c) (V.ω g f))) ∂normalizedVolume _ := by
+  -- Take `P f` in the coordinates `(c, b, w)` of the frame. By the law of `T` in these
+  -- coordinates the `b`-integral is a Gaussian integral (`integral_beta_mul_realVac`).
+  -- The w-integral is the projection on the real vacuum of `V₀`.
+  have h_proj (u : 𝒮 V₀) :
+      ∫ w, realVac w • M (V₀.ϱ (realVec w) u) ∂normalizedVolume _ = M (V₀.projReal u) :=
+    (V₀.map_integrated_eq_integral_realVec Fock.vacVector u M).symm
+  have h_step (c : InfinitePlace E × p → ℂ) :
+      ∫ b : InfinitePlace E × p → ℂ, ∫ w : InfinitePlace E × n₀ → ℂ,
+        (realVac c * realVac b * realVac w) • M (T (t.val⁻¹ᴴ *ᵥ realVec x)
+          (V.ω g (V.ϱ (D.frameAt g t *ᵥ ((realVec c ⊕ᵥ realVec b) ⊕ᵥ realVec w)) f)))
+          ∂normalizedVolume _ ∂normalizedVolume _ =
+        exp (-(star x ⬝ᵥ x)) • (realVac (x + c) ^ 2 * 2 ^ card (InfinitePlace E × p)) •
+          M (V₀.projReal (T (t.val⁻¹ᴴ *ᵥ realVec (x + c)) (V.ω g f))) := by
+    have h_inner (b : InfinitePlace E × p → ℂ) :
+        ∫ w : InfinitePlace E × n₀ → ℂ, (realVac c * realVac b * realVac w) •
+          M (T (t.val⁻¹ᴴ *ᵥ realVec x)
+            (V.ω g (V.ϱ (D.frameAt g t *ᵥ ((realVec c ⊕ᵥ realVec b) ⊕ᵥ realVec w)) f)))
+            ∂normalizedVolume _ =
+          ((realHeisenberg 1).β (x + (x + c)) b * (realVac c * realVac b)) •
+            M (V₀.projReal (T (t.val⁻¹ᴴ *ᵥ realVec (x + c)) (V.ω g f))) := by
+      rw [← h_proj, ← integral_smul]
+      congr 1; funext w
+      rw [hT.apply_omega_rho_frameAt_mulVec, ← realVec.map_add, ← realVec.map_add,
+        adelicHeisenberg_beta_realVec, M.map_smul, smul_smul, smul_smul]
+      congr 1
+      ring
+    simp_rw [h_inner]
+    rw [integral_smul_const, integral_beta_mul_realVac, mul_smul]
+  have h_frame :=
+    hg.map_projReal_eq_integral_frameAt (M ∘L T (t.val⁻¹ᴴ *ᵥ realVec x) ∘L V.ω g) f
+  simp only [ContinuousLinearMap.comp_apply] at h_frame
+  rw [h_frame]
+  simp_rw [h_step]
+  rw [integral_smul]
+  exact congrArg _ (integral_add_left_eq_self (fun c ↦
+    (realVac c ^ 2 * 2 ^ card (InfinitePlace E × p)) •
+      M (V₀.projReal (T (t.val⁻¹ᴴ *ᵥ realVec c) (V.ω g f)))) x)
+
 /-- The real vacuum is a Gaussian in the mixed model. Let `T` obey the law of a mixed model
 (`IsMixedLaw`) for the splitting `D`, and let `g` be adapted to `t` (`IsAdapted`). With `P`, `P₀`
 the real vacuum projections of `V`, `V₀`, we have
@@ -452,164 +611,16 @@ lemma IsAdapted.omega_projReal_of_isMixedLaw (hT : D.IsMixedLaw T) {g : G E s}
   -- Write P f = ∫ e(y) ϱ(y) f dy, e the Gaussian, in the coordinates y = (c, b, w) of the adapted
   -- frame. Under T the b-integral is a Gaussian integral and the w-integral is P₀. This gives
   -- T((t⁻¹)ᴴ realVec x) ω(g) P f = exp(-|x|²) C with C independent of x; compare with x = 0.
-  have h_orth : (realMatrix (D.frameAt g t))ᴴ * realMatrix (D.frameAt g t) = 1 :=
-    conjTranspose_realMatrix_mul_self _ hg
-  have h_card : card (InfinitePlace E × ((p ⊕ p) ⊕ n₀)) = card (InfinitePlace E × n) := by
-    simp only [card_prod, card_sum, D.card_eq]
-    ring
-  have h_orth' : realMatrix (D.frameAt g t) * (realMatrix (D.frameAt g t))ᴴ = 1 :=
-    (mul_eq_one_comm_of_card_eq _ _ _ h_card).1 h_orth
-  -- The frame is a unitary matrix, so it keeps the Gaussian and hence (`measurePreserving_equiv`)
-  -- the measure.
-  have h_vac (y : InfinitePlace E × ((p ⊕ p) ⊕ n₀) → ℂ) :
-      realVac (realMatrix (D.frameAt g t) *ᵥ y) = realVac y := by
-    rw [realVac, realVac, star_mulVec_dotProduct, mulVec_mulVec, h_orth, one_mulVec]
-  let φ : (InfinitePlace E × ((p ⊕ p) ⊕ n₀) → ℂ) ≃ₜ+ (InfinitePlace E × n → ℂ) :=
-    { toFun := (realMatrix (D.frameAt g t) *ᵥ ·)
-      invFun := ((realMatrix (D.frameAt g t))ᴴ *ᵥ ·)
-      left_inv y := by dsimp only; rw [mulVec_mulVec, h_orth, one_mulVec]
-      right_inv y := by dsimp only; rw [mulVec_mulVec, h_orth', one_mulVec]
-      map_add' := mulVec_add _
-      continuous_toFun := continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
-        continuous_const.mul (continuous_apply j)
-      continuous_invFun := continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
-        continuous_const.mul (continuous_apply j) }
-  have h_frame : MeasurePreserving (realMatrix (D.frameAt g t) *ᵥ ·) (normalizedVolume _)
-      (normalizedVolume _) :=
-    measurePreserving_equiv (realHeisenberg 1) (realHeisenberg 1) (φ := φ) h_vac
-  -- Splitting the coordinates as ((c, b), w), and then as (c, b), preserves the measure too.
-  let outer : (realHeisenberg (realSigns E ((1 : p ⊕ p → ℤˣ) ⊕ᵥ s₀))).OrthogonalSum
-      (realHeisenberg (realSigns E (1 : p ⊕ p → ℤˣ))) (realHeisenberg (realSigns E s₀)) realVac :=
-    realCoordSum (realSigns_comp_split signs_comp_refl)
-  let inner : (realHeisenberg (realSigns E ((1 : p → ℤˣ) ⊕ᵥ (1 : p → ℤˣ)))).OrthogonalSum
-      (realHeisenberg (realSigns E (1 : p → ℤˣ))) (realHeisenberg (realSigns E (1 : p → ℤˣ)))
-        realVac :=
-    realCoordSum (realSigns_comp_split signs_comp_refl)
-  let coord (c b : InfinitePlace E × p → ℂ) (w : InfinitePlace E × n₀ → ℂ) :
-      InfinitePlace E × n → ℂ :=
-    realMatrix (D.frameAt g t) *ᵥ outer.equiv (inner.equiv (c, b), w)
-  have h_fubini (F : (InfinitePlace E × n → ℂ) → 𝒮 V₀) (hF : Integrable F (normalizedVolume _)) :
-      ∫ y, F y ∂normalizedVolume _ =
-        ∫ c, ∫ b, ∫ w, F (coord c b w) ∂normalizedVolume _ ∂normalizedVolume _ ∂normalizedVolume
-          _ := by
-    obtain ⟨h_int, h_outer⟩ := (h_frame.comp outer.measurePreserving_equiv).fubini hF
-    exact h_outer.symm.trans
-      (inner.measurePreserving_equiv.integral_integral_comp h_int.integral_prod_left).symm
-  -- The character of the law at real vectors is the real bicharacter.
-  have h_char (y b : InfinitePlace E × p → ℂ) :
-      (adelicHeisenberg E 1).β (realVec y) (realVec b) = (realHeisenberg 1).β y b := by
-    have h := (adelicSum E (n := p) 1).beta_equiv (y, 0) (b, 0)
-    rw [adelicSum_real_eq_realVec, adelicSum_real_eq_realVec, beta_zero_left, mul_one] at h
-    exact h
-  let N (x : InfinitePlace E × p → ℂ) : 𝒮 V →L[ℂ] 𝒮 V₀ := T (t.val⁻¹ᴴ *ᵥ realVec x) ∘L V.ω g
-  -- The law of T in the coordinates (c, b, w).
-  have h_law (x c b : InfinitePlace E × p → ℂ) (w : InfinitePlace E × n₀ → ℂ) :
-      N x (V.ϱ (realVec (coord c b w)) f) =
-        (realHeisenberg 1).β (x + (x + c)) b • V₀.ϱ (realVec w) (N (x + c) f) := by
-    have h_vec : realVec (outer.equiv (inner.equiv (c, b), w)) =
-        (realVec c ⊕ᵥ realVec b) ⊕ᵥ realVec w := by
-      simp only [outer, inner, realVec_realCoordSum]
-    have h_g_coord : g.adeleMatrix *ᵥ realVec (coord c b w) =
-        D.lAdelic *ᵥ (t.val⁻¹ᴴ *ᵥ realVec c) + D.kAdelic *ᵥ (t.val *ᵥ realVec b) +
-          D.iAdelic *ᵥ realVec w := by
-      dsimp only [coord]
-      rw [realVec_realMatrix_mulVec, h_vec, mulVec_mulVec, frameAt, ← Matrix.mul_assoc,
-        ← G.adeleMatrix_mul, mul_inv_cancel, G.adeleMatrix_one, Matrix.one_mul,
-        fromCols_mulVec, Sum.elim_comp_inl, Sum.elim_comp_inr,
-        fromCols_mulVec, Sum.elim_comp_inl, Sum.elim_comp_inr,
-        ← mulVec_mulVec, ← mulVec_mulVec, coe_units_inv]
-    have h_l : D.lCoord *ᵥ (g.adeleMatrix *ᵥ realVec (coord c b w)) = t.val⁻¹ᴴ *ᵥ realVec c := by
-      rw [h_g_coord, mulVec_add, mulVec_add, mulVec_mulVec _ D.lCoord D.lAdelic,
-        D.lCoord_mul_lAdelic, one_mulVec, mulVec_mulVec _ D.lCoord D.kAdelic, D.lCoord_mul_kAdelic,
-        zero_mulVec, mulVec_mulVec _ D.lCoord D.iAdelic, D.lCoord_mul_iAdelic, zero_mulVec,
-        add_zero, add_zero]
-    have h_k : D.kCoord *ᵥ (g.adeleMatrix *ᵥ realVec (coord c b w)) = t.val *ᵥ realVec b := by
-      rw [h_g_coord, mulVec_add, mulVec_add, mulVec_mulVec _ D.kCoord D.lAdelic,
-        D.kCoord_mul_lAdelic, zero_mulVec, mulVec_mulVec _ D.kCoord D.kAdelic, D.kCoord_mul_kAdelic,
-        one_mulVec, mulVec_mulVec _ D.kCoord D.iAdelic, D.kCoord_mul_iAdelic, zero_mulVec,
-        zero_add, add_zero]
-    have h_i : D.iCoord *ᵥ (g.adeleMatrix *ᵥ realVec (coord c b w)) = realVec w := by
-      rw [h_g_coord, mulVec_add, mulVec_add, mulVec_mulVec _ D.iCoord D.lAdelic,
-        D.iCoord_mul_lAdelic, zero_mulVec, mulVec_mulVec _ D.iCoord D.kAdelic, D.iCoord_mul_kAdelic,
-        zero_mulVec, mulVec_mulVec _ D.iCoord D.iAdelic, D.iCoord_mul_iAdelic, one_mulVec,
-        zero_add, zero_add]
-    have h_sum : t.val⁻¹ᴴ *ᵥ realVec x + t.val⁻¹ᴴ *ᵥ realVec c = t.val⁻¹ᴴ *ᵥ realVec (x + c) := by
-      rw [← mulVec_add, ← realVec.map_add]
-    have h_beta :
-        (adelicHeisenberg E 1).β (t.val⁻¹ᴴ *ᵥ realVec x + t.val⁻¹ᴴ *ᵥ realVec (x + c))
-          (t.val *ᵥ realVec b) = (adelicHeisenberg E 1).β (realVec (x + (x + c))) (realVec b) := by
-      rw [← mulVec_add, ← realVec.map_add]
-      dsimp only [adelicHeisenberg]
-      congr 2
-      rw [stdForm_one, one_mulVec, one_mulVec, star_mulVec_dotProduct, mulVec_mulVec,
-        ← conjTranspose_mul, ← coe_units_inv, ← Units.val_mul, inv_mul_cancel, Units.val_one,
-        conjTranspose_one, one_mulVec]
-    dsimp only [N]
-    rw [ContinuousLinearMap.comp_apply, omega_rho, hT, h_l, h_k, h_i, h_sum, h_beta, h_char]
-    rfl
-  have h_vac_coord (c b : InfinitePlace E × p → ℂ) (w : InfinitePlace E × n₀ → ℂ) :
-      realVac (coord c b w) = realVac c * realVac b * realVac w := by
-    simp only [coord, h_vac, OrthogonalSum.vac_equiv]
-  -- The main formula, after any bounded operator M.
-  have key (x : InfinitePlace E × p → ℂ) (M : 𝒮 V₀ →L[ℂ] 𝒮 V₀) :
-      M (N x (V.projReal f)) = exp (-(star x ⬝ᵥ x)) •
-        ∫ c, (realVac c ^ 2 * 2 ^ Fintype.card (InfinitePlace E × p)) •
-          M (V₀.projReal (N c f)) ∂normalizedVolume _ := by
-    have h_int : Integrable (fun y ↦ realVac y • M (N x (V.ϱ (realVec y) f)))
-        (normalizedVolume _) :=
-      (Fock.vacVector (ε := realSigns E s)).integrable.smul_bdd (‖M ∘L N x‖ * ‖f‖)
-        ((M ∘L N x).continuous.comp
-          (V.heisenbergRep.cont.comp
-            (continuous_realVec.prodMk continuous_const))).aestronglyMeasurable
-        (.of_forall fun y ↦
-          ((M ∘L N x).le_opNorm (V.ϱ (realVec y) f)).trans_eq (by rw [Rep.norm_map]))
-    -- The w-integral is the projection on the real vacuum of `V₀`.
-    have h_proj (u : 𝒮 V₀) :
-        ∫ w, realVac w • M (V₀.ϱ (realVec w) u) ∂normalizedVolume _ = M (V₀.projReal u) :=
-      (V₀.map_integrated_eq_integral_realVec Fock.vacVector u M).symm
-    have h_step (c : InfinitePlace E × p → ℂ) :
-        (∫ b, ∫ w, realVac (coord c b w) • M (N x (V.ϱ (realVec (coord c b w)) f))
-          ∂normalizedVolume _ ∂normalizedVolume _) =
-        exp (-(star x ⬝ᵥ x)) •
-          (realVac (x + c) ^ 2 * 2 ^ Fintype.card (InfinitePlace E × p)) •
-            M (V₀.projReal (N (x + c) f)) := by
-      have h_inner (b : InfinitePlace E × p → ℂ) :
-          (∫ w, realVac (coord c b w) • M (N x (V.ϱ (realVec (coord c b w)) f))
-            ∂normalizedVolume _) =
-          ((realHeisenberg 1).β (x + (x + c)) b * (realVac c * realVac b)) •
-            M (V₀.projReal (N (x + c) f)) := by
-        rw [← h_proj (N (x + c) f), ← integral_smul]
-        congr 1; funext w
-        rw [h_law, h_vac_coord, M.map_smul, smul_smul, smul_smul]
-        congr 1
-        ring
-      simp_rw [h_inner]
-      rw [integral_smul_const, integral_beta_mul_realVac, mul_smul]
-    rw [show M (N x (V.projReal f)) =
-        ∫ y, realVac y • M (N x (V.ϱ (realVec y) f)) ∂normalizedVolume _ from
-      V.map_integrated_eq_integral_realVec Fock.vacVector f (M ∘L N x), h_fubini _ h_int]
-    simp_rw [h_step]
-    rw [integral_smul]
-    exact congrArg _ (integral_add_left_eq_self (fun c ↦
-      (realVac c ^ 2 * 2 ^ Fintype.card (InfinitePlace E × p)) • M (V₀.projReal (N c f))) x)
   -- At x = 0 the formula with M = P₀ identifies the integral with P₀ T₀ ω(g) P f.
   have h_proj_idem (u : 𝒮 V₀) : V₀.projReal (V₀.projReal u) = V₀.projReal u := by
     rw [projReal, integrated_integrated,
       IsVacuum.vacElem_apply (H := realHeisenberg (realSigns E s₀)),
       IsVacuum.apply_zero (H := realHeisenberg (realSigns E s₀)), one_smul]
-  have h_zero : V₀.projReal (T 0 (V.ω g (V.projReal f))) =
-      ∫ c, (realVac c ^ 2 * 2 ^ Fintype.card (InfinitePlace E × p)) •
-        V₀.projReal (N c f) ∂normalizedVolume _ := by
-    have h0 := key 0 V₀.projReal
-    simp only [star_zero, zero_dotProduct, neg_zero, Complex.exp_zero, one_smul,
-      h_proj_idem] at h0
-    have hN0 : N 0 = T 0 ∘L V.ω g := by
-      dsimp only [N]
-      rw [realVec.map_zero, mulVec_zero]
-    rw [hN0, ContinuousLinearMap.comp_apply] at h0
-    exact h0
+  have h_zero := hg.map_apply_omega_projReal_eq_integral hT 0 V₀.projReal f
+  simp only [map_zero, mulVec_zero, star_zero, zero_dotProduct, neg_zero, Complex.exp_zero,
+    one_smul, h_proj_idem] at h_zero
   rw [h_zero]
-  exact key a 1
+  exact hg.map_apply_omega_projReal_eq_integral hT a 1 f
 
 /-- Let `T` obey the law of a mixed model (`IsMixedLaw`) for the splitting `D`, and let `g` be
 adapted to `t` (`IsAdapted`). Then there is a bounded map `L` between the Fock spaces of `V` and
