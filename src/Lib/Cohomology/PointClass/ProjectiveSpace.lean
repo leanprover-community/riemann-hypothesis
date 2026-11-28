@@ -1,6 +1,7 @@
 module
 
 import Mathlib.RingTheory.PicardGroup
+import TauCeti.LinearAlgebra.Unimodular
 public import Lib.Cohomology.PointClass.NoetherNormalization
 public import Lib.PadicComparison.HodgeTate.GenericFibre
 import Lib.PadicComparison.Descent.TestCovers
@@ -103,20 +104,8 @@ lemma mk_eq_mk_iff_exists_unit {hv : span (Set.range v) = ⊤} {hw : span (Set.r
 lemma mk_eq_mk_iff_cross_mul {hv : span (Set.range v) = ⊤} {hw : span (Set.range w) = ⊤} :
     mk v hv = mk w hw ↔ ∀ a b : Fin (d + 1), v a * w b = w a * v b := by
   rw [mk_eq_mk_iff_exists_unit]
-  refine ⟨fun ⟨u, hu⟩ a b ↦ ?_, fun h_minor ↦ ?_⟩
-  · simp [← hu, Units.smul_def, mul_assoc, mul_left_comm]
-  · -- Write `1 = ∑ i, a i * v i`; the factor of proportionality is `c = ∑ i, a i * w i`.
-    obtain ⟨a, ha⟩ : ∃ a : Fin (d + 1) → A, ∑ i, a i * v i = 1 :=
-      mem_span_range_iff_exists_fun.mp ((eq_top_iff_one _).mp hv)
-    set c : A := ∑ i, a i * w i with hc
-    have h_prop (l : Fin (d + 1)) : c * v l = w l :=
-      calc c * v l = (∑ i, a i * v i) * w l := by simp only [hc, Finset.sum_mul, mul_assoc, h_minor]
-        _ = w l := by rw [ha, one_mul]
-    -- `c` divides every entry of the unimodular vector `w`, so it is a unit.
-    have h_le : span (Set.range w) ≤ span {c} :=
-      span_le.mpr (range_subset_iff.mpr fun l ↦ mem_span_singleton.mpr (Dvd.intro _ (h_prop l)))
-    have hc_unit : IsUnit c := span_singleton_eq_top.mp (eq_top_mono h_le hw)
-    exact ⟨hc_unit.unit, funext h_prop⟩
+  simpa only [funext_iff, Pi.smul_apply, Units.smul_def, smul_eq_mul, eq_comm, mul_comm] using
+    (TauCeti.forall_mul_eq_mul_iff_exists_units hv hw).symm
 
 /-- For `v` in `A ^ d`, the point of projective `d`-space with coordinate `1` in place `i` and the
 entries of `v` in the other places. -/
