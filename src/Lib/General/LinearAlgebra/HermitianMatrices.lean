@@ -176,6 +176,7 @@ theorem jacobi_complementary_minor (hx : x.det ≠ 0) :
   rw [eq_div_iff hx, mul_comm]
   simpa [principalMinor, toSquareBlockProp, toBlock, Function.comp_def] using h.symm
 
+/-- The principal minor map on complex matrices is continuous. -/
 @[fun_prop]
 theorem continuous_principalMinor : Continuous fun y : Matrix n n ℂ ↦ principalMinor y p := by
   simp only [principalMinor_eq_det]
@@ -183,9 +184,11 @@ theorem continuous_principalMinor : Continuous fun y : Matrix n n ℂ ↦ princi
 
 /-! ### Special cases, products and reindexing -/
 
+/-- When the predicate `p` holds for all indices, the principal minor equals the determinant. -/
 theorem principalMinor_of_forall (hp : ∀ i : n, p i) : principalMinor x p = x.det := by
   simp [principalMinor_eq_det, hp]
 
+/-- When the predicate `p` holds for no indices, the principal minor equals 1. -/
 theorem DiscreteSeries.principalMinor_of_forall_not (hp : ∀ i : n, ¬p i) :
     principalMinor x p = 1 := by
   simp [principalMinor_eq_det, hp]
