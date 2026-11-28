@@ -496,7 +496,8 @@ theorem Space.isCocompact_radical (W : Space E n s) {X : Matrix n n E} (hX : X�
     simp [mul_sub, ← mul_assoc (stdForm E s), ← mul_assoc aᴴ _ c, ← mul_assoc aᴴ _ d, y_orth, a_iso]
   let φ (p : Matrix n n (𝔸 E) × Matrix n n (𝔸 E)) : G E s :=
     ofMatrix (radicalElem (stdForm E s) ((y * p.fst - a * p.snd) * aᴴ))
-      (Reduction.gram_radicalElem conjTranspose_stdForm a_iso (h_orth p.fst p.snd))
+      (Reduction.gram_radicalElem (J := stdForm E s) conjTranspose_stdForm a_iso
+        (h_orth p.fst p.snd))
   have hφ : Continuous φ := by
     simp only [G.continuous_iff, φ, adeleMatrix_ofMatrix, radicalElem]
     fun_prop
