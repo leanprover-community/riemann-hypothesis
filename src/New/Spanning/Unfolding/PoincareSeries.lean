@@ -180,10 +180,12 @@ theorem realHomeomorph_mul (g' : New.G E ε) :
   refine Subtype.ext ?_
   have h_comp : (g.1 v).val = GeneralLinearGroup.map (evalInf v) (G.toUnitary g).val := rfl
   -- `X.adelicEquiv` is conjugation by the point of `V`, and `X.realHomeomorph` multiplies by `x`.
+  -- (By `rfl`: unfolding `adelicEquiv` in the `simp` below is slow to check in a kernel replay.)
+  have h_conj : (X.adelicEquiv g).val = V.x * (G.toUnitary g).val * V.x⁻¹ := rfl
   let x : GL 𝔰.BesselIndex ℂ := (S.basisScaleGL v)⁻¹ * GeneralLinearGroup.map (evalInf v) V.x
   change x * p.matrix⁻¹ * (p.matrix * (g * g').1 v * p.matrix⁻¹) =
     S.adelicToInf (X.adelicEquiv g) v * (x * p.matrix⁻¹ * (p.matrix * g'.1 v * p.matrix⁻¹))
-  simp [x, adelicToInf, adelicEquiv, U.map, Space.toRatCoords, mul_assoc, h_comp]
+  simp [x, adelicToInf, U.map, h_conj, mul_assoc, h_comp]
 
 /-- The isomorphism from the standard finite adelic unitary group onto that of S in the lattice
 basis: conjugate by the finite point of V, change to the lattice basis, then conjugate by the
