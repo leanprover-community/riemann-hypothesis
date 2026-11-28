@@ -3,6 +3,8 @@ module
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
 import Mathlib.Data.Rat.Cast.OfScientific
+import TauCeti.Analysis.Normed.Field.RootsOfUnity
+import TauCeti.NumberTheory.Padics.Complex.Basic
 public import New.Congruences.Selmer.AuxiliaryPrimes
 public import New.Congruences.GaloisRepresentations.SelmerHypotheses
 import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
@@ -72,21 +74,27 @@ variable {ℓ : ℕ} [hp : ThePrime ℓ] {P : Parameters} {D : Data P}
 `x ^ a - x ^ b` has norm `1`. -/
 lemma norm_pow_sub_pow_eq_one {x : PadicAlgCl ℓ} (hx : IsOfFinOrder x) (a b : ℕ)
     (h_ne : ∀ u : ℕ, (x ^ a) ^ ℓ ^ u ≠ (x ^ b) ^ ℓ ^ u) : ‖x ^ a - x ^ b‖ = 1 := by
-  -- Write the order of `x` as `ℓ ^ u * k` with `¬ℓ ∣ k`. The `ℓ ^ u`-th powers of `x ^ a` and
-  -- `x ^ b` are distinct `k`-th roots of unity, so their difference has norm at least `‖k‖ ≥ 1`;
-  -- and it is an integral multiple of `x ^ a - x ^ b`.
-  obtain ⟨u, k, hk, h_ord⟩ := WfDvdMonoid.max_power_factor hx.orderOf_pos.ne' (out : ℓ.Prime)
-  have h_root (c : ℕ) : ((x ^ c) ^ ℓ ^ u) ^ k = 1 := by
-    rw [← pow_mul, ← h_ord, pow_right_comm, pow_orderOf_eq_one, one_pow]
-  let z : NormedField.valuation.integer := ⟨x, hx.norm_eq_one.le⟩
-  refine le_antisymm (z ^ a - z ^ b).prop ?_
-  calc 1 ≤ ‖(k : PadicAlgCl ℓ)‖ := by
-        simpa only [← Padic.norm_natCast_lt_one_iff, ← PadicAlgCl.norm_extends, map_natCast,
-          not_lt] using hk
-    _ ≤ ‖(x ^ a) ^ ℓ ^ u - (x ^ b) ^ ℓ ^ u‖ :=
-      norm_natCast_le_norm_sub_of_pow_eq_one (h_root a) (h_root b) (h_ne u)
-    _ ≤ ‖x ^ a - x ^ b‖ :=
-      (Valuation.integer.integers _).le_of_dvd (sub_dvd_pow_sub_pow (z ^ a) (z ^ b) _)
+  -- Both powers have norm one, so their distance is the distance of their quotient from one.
+  let z := x ^ a / x ^ b
+  have hx_ne : x ≠ 0 := norm_pos_iff.1 (by simp [hx.norm_eq_one])
+  have hb : x ^ b ≠ 0 := pow_ne_zero _ hx_ne
+  have hxb : IsOfFinOrder (x ^ b) := hx.pow
+  have hz : IsOfFinOrder z := by
+    refine isOfFinOrder_iff_pow_eq_one.mpr ⟨orderOf x, hx.orderOf_pos, ?_⟩
+    change (x ^ a / x ^ b) ^ orderOf x = 1
+    rw [div_pow, pow_right_comm x a, pow_right_comm x b, pow_orderOf_eq_one]
+    simp
+  have h_order (u : ℕ) : orderOf z ≠ ℓ ^ u := by
+    intro h
+    have h_pow : z ^ ℓ ^ u = 1 := h ▸ pow_orderOf_eq_one z
+    change (x ^ a / x ^ b) ^ ℓ ^ u = 1 at h_pow
+    rw [div_pow, div_eq_one_iff_eq (pow_ne_zero _ hb)] at h_pow
+    exact h_ne u h_pow
+  let : NeZero (orderOf z) := ⟨hz.orderOf_pos.ne'⟩
+  have h_dist := (IsPrimitiveRoot.orderOf z).norm_sub_one_eq_one_of_ne_pow
+    hp.out (PadicAlgCl.norm_p_lt_one ℓ) h_order
+  change ‖x ^ a / x ^ b - 1‖ = 1 at h_dist
+  rwa [div_sub_one hb, norm_div, hxb.norm_eq_one, div_one] at h_dist
 
 /-- Let the matrix `Z` be killed by the polynomial with roots `μ`, where each member `y` of `μ` is
 different from `1` and satisfies `y ^ (D.levelPrime i ^ d - 1) = 1` for some `1 ≤ d ≤ D.r`. Then the
