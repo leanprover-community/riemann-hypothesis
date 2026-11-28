@@ -4,6 +4,7 @@ public import New.Derivatives.Divisibility.NullFrames
 public import New.Derivatives.FormalGroup.ThetaProducts
 import Lib.GLn.SchurModule.SchurMatrix
 import Lib.General.Algebra.SeriesCongruences
+import TauCeti.NumberTheory.Padics.Factorial
 
 /-!
 # Divisibility of the jets of a series with the normal form along products of minors
@@ -75,16 +76,15 @@ lemma norm_prod_factorial_le (d : σ →₀ ℕ) :
     ‖d.prod fun (_ : σ) (k : ℕ) ↦ (k.factorial : ℂ_[p])‖ ≤
       p ^ (card σ * (p.log d.degree + 1) - d.degree / (p - 1) : ℝ) := by
   have hp : 1 < p := Nat.Prime.one_lt Fact.out
-  have h_sum : (∑ x : σ, (d x / (p - 1) - (p.log d.degree + 1 : ℕ) : ℝ)) ≤
-      ∑ x : σ, (padicValNat p (d x).factorial : ℝ) :=
-    sum_le_sum fun x _ ↦ (padicValNat_factorial_mem_Icc
-      ((d.le_degree x).trans_lt (p.lt_pow_succ_log_self hp _))).1
-  rw [sum_sub_distrib, ← sum_div, ← Nat.cast_sum, ← d.degree_eq_sum,
-    sum_const, Finset.card_univ, nsmul_eq_mul] at h_sum
-  push_cast at h_sum
-  rw [d.prod_fintype _ (by simp),
-    norm_prod_natCast_eq_rpow_neg_sum (p := p) (fun x : σ ↦ (d x).factorial_ne_zero)]
-  exact Real.rpow_le_rpow_of_exponent_le (mod_cast hp.le) (by linarith)
+  have h_prod : d.prod (fun _ k ↦ k.factorial) ≠ 0 :=
+    (Finset.prod_pos fun x _ ↦ (d x).factorial_pos).ne'
+  rw [← Nat.cast_finsuppProd, norm_natCast_eq_inv_pow_padicValNat h_prod, inv_pow,
+    ← Real.rpow_natCast, ← Real.rpow_neg p.cast_nonneg, Nat.padicValNat_def]
+  refine Real.rpow_le_rpow_of_exponent_le (mod_cast hp.le) ?_
+  have h_card : (d.support.card : ℝ) ≤ card σ := mod_cast Finset.card_le_univ d.support
+  refine (neg_le_neg (TauCeti.div_sub_log_le_multiplicity_prod_factorial p d)).trans ?_
+  rw [neg_sub]
+  gcongr
 
 /-- If the coefficients of degree `l` of the series `G` are integral and `Q` is a homogeneous
 polynomial of degree `l` with integral coefficients, then the jet `(Q(∂) G)(0)` has valuation at
