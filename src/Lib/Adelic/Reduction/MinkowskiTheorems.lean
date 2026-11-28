@@ -4,11 +4,12 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Data.Int.Log
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-import Mathlib.RingTheory.PicardGroup
+import TauCeti.Algebra.Module.ZLattice.Basic
+import TauCeti.LinearAlgebra.LinearIndependent.Extraction.Estimates
+import TauCeti.NumberTheory.GeometryOfNumbers.MinkowskiSecond
 public import Lib.Adelic.Adeles.IdeleModulus
 public import Lib.Adelic.Unitary.Defs
 import Lib.Adelic.Adeles.StrongApproximation
-import Lib.General.LinearAlgebra.PolarDecomposition
 import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
@@ -32,8 +33,9 @@ ring of integral finite adeles, and the unit box is `ball 0 1 ×ˢ Ô E` (sup no
   `y⁻¹ ξ` at infinity.
 * `New.Core.minkowski_second_theorem`: the second theorem. The lattice contains a basis of `E ^ n`
   for which `|det y|` times the product of the `2 f`-th powers of the lengths is bounded in terms of
-  `f`, `n` and the discriminant. The proof takes successive minima and applies the first theorem to
-  a box without nonzero lattice vectors.
+  `f`, `n` and the discriminant. The proof embeds `frameLattice y` as a `ℤ`-lattice in
+  `n → InfinitePlace E → ℂ`, bounds its covolume by unfolding over `𝔸 ^ n / E ^ n`, and extracts an
+  `E`-basis from Tau Ceti's real successive minima.
 * `New.exists_basis_frameLength_le_two_zpow`: a bound of the same kind, with a larger constant, for
   the lengths rounded up to powers `2 ^ x j`.
 * `New.Core.encard_le_of_dyadic_box`: at most `C * 4 ^ (f * ∑ i, (x i)⁺)` rational vectors `ξ` have
@@ -261,42 +263,6 @@ lemma exists_min_of_finite_le {V : Type*} {S : Set V} (len : V → ℝ)
     Set.exists_min_image {u ∈ S | len u ≤ len v₀} len (h_finite _) ⟨v₀, hv₀, le_rfl⟩
   exact ⟨v, hv.1, by grind⟩
 
-/-- Successive minima. Let `L` be a spanning set of a vector space `V` with finitely many vectors
-below each bound for the length `len`. For `k` at most the dimension of `V` there are `k`
-independent vectors in `L`, each of least length among the vectors of `L` outside the span of the
-earlier ones. -/
-lemma exists_successive_minima {K V : Type*} [Field K] [AddCommGroup V] [Module K V] {L : Set V}
-    (h_span : Submodule.span K L = ⊤) (len : V → ℝ)
-    (h_finite : ∀ r : ℝ, {v ∈ L | len v ≤ r}.Finite) {k : ℕ} (hk : k ≤ Module.finrank K V) :
-    ∃ y : Fin k → V,
-      (∀ j : Fin k, y j ∈ L) ∧
-      LinearIndependent K y ∧
-      ∀ j : Fin k, ∀ v ∈ L, v ∉ Submodule.span K (y '' Set.Iio j) → len (y j) ≤ len v := by
-  induction k with
-  | zero => exact ⟨Fin.elim0, by simp, linearIndependent_empty_type, by simp⟩
-  | succ k ih =>
-    obtain ⟨y, hy_mem, hy_indep, hy_least⟩ := ih (Nat.le_of_succ_le hk)
-    -- Fewer vectors than the dimension do not span, so part of `L` lies outside their span.
-    have h_lt : Submodule.span K (Set.range y) < ⊤ :=
-      Submodule.lt_top_of_finrank_lt_finrank (by simpa [finrank_span_eq_card hy_indep] using hk)
-    have h_nonempty : (L \ Submodule.span K (Set.range y)).Nonempty :=
-      Set.sdiff_nonempty.2 fun h_le ↦ h_lt.not_ge (h_span.ge.trans (Submodule.span_le.2 h_le))
-    -- Take `v` of least length among such vectors.
-    obtain ⟨v, ⟨hv_mem, hv_out⟩, hv_least⟩ :=
-      exists_min_of_finite_le len (fun r ↦ (h_finite r).subset (by grind)) h_nonempty
-    have h_image (S : Set (Fin k)) :
-        (Fin.snoc y v : Fin (k + 1) → V) '' (Fin.castSucc '' S) = y '' S := by
-      simp [Set.image_image]
-    refine ⟨Fin.snoc y v, by simp [Fin.forall_fin_succ', hy_mem, hv_mem],
-      linearIndependent_finSnoc.2 ⟨hy_indep, hv_out⟩, fun j ↦ ?_⟩
-    induction j using Fin.lastCases with
-    | last =>
-      have h_last : Set.Iio (Fin.last k) = Fin.castSucc '' Set.univ := by
-        simp [Set.ext_iff, Fin.lt_def]
-      rw [h_last, h_image, Set.image_univ, Fin.snoc_last]
-      exact fun u hu_mem hu_out ↦ hv_least u ⟨hu_mem, hu_out⟩
-    | cast j => simpa [← Fin.image_castSucc_Iio, h_image] using hy_least j
-
 /-- The lattice `E ^ n ∩ z_f Ô ^ n` of an adelic frame `z`: the rational vectors `ξ` such that
 `z⁻¹ ξ` is integral at the finite places. -/
 def frameLattice (z : GL n (𝔸 E)) : Set (n → E) :=
@@ -314,32 +280,6 @@ lemma norm_apply_le_frameLength (z : GL n (𝔸 E)) (ξ : n → E) (w : Infinite
   PiLp.norm_apply_le
     (WithLp.toLp 2 fun p : InfinitePlace E × n ↦ ((z⁻¹.val *ᵥ toAdele ∘ ξ) p.2).1 p.1) (w, i)
 
-/-- The lattice `frameLattice z` of the rational `ξ` with `z⁻¹ ξ` integral at the finite places
-spans `E ^ n` over `E`. -/
-lemma span_frameLattice (z : GL n (𝔸 E)) : Submodule.span E (frameLattice z) = ⊤ := by
-  -- A multiple `N • ξ` that clears the denominators of `z⁻¹ ξ` lies in the lattice.
-  refine top_unique fun ξ _ ↦ ?_
-  obtain ⟨N, hN, h_integral⟩ :=
-    exists_forall_mul_mem_Ô fun i : n ↦ ((z⁻¹.val *ᵥ toAdele ∘ ξ) i).2
-  have h_mem : (N : E) • ξ ∈ frameLattice z := fun i ↦ by
-    simpa [show toAdele ∘ ((N : E) • ξ) = (N : 𝔸 E) • toAdele ∘ ξ from funext fun j ↦ by simp,
-      mulVec_smul] using h_integral i
-  exact (Submodule.smul_mem_iff _ (Nat.cast_ne_zero.2 hN)).1 (Submodule.subset_span h_mem)
-
-/-- Only finitely many vectors of the lattice `frameLattice z` have length `frameLength z` at most
-`r`, that length being the Euclidean norm of `z⁻¹ ξ` at all infinite places together. -/
-lemma finite_frameLattice_of_frameLength_le (z : GL n (𝔸 E)) (r : ℝ) :
-    {ξ ∈ frameLattice z | frameLength z ξ ≤ r}.Finite := by
-  -- These vectors lie in `z` times a compact box, and `E ^ n` is a lattice in the adelic vectors.
-  have h_finite : {ξ : n → E | toAdele ∘ ξ ∈
-      z.val.mulVec '' Set.univ.pi fun _ ↦ closedBall 0 r ×ˢ Ô E}.Finite :=
-    isCovolOneLattice_ratVectors.finite_preimage
-      ((isCompact_univ_pi fun _ ↦ isCompact_closedBall_prod_integral r).image (by fun_prop))
-  refine h_finite.subset fun ξ ⟨h_integral, h_le⟩ ↦
-    ⟨z⁻¹.val *ᵥ toAdele ∘ ξ, fun i _ ↦ ⟨?_, h_integral i⟩, by simp⟩
-  exact mem_closedBall_zero_iff.2 ((pi_norm_le_iff_of_nonempty _).2 fun w ↦
-    (norm_apply_le_frameLength z ξ w i).trans h_le)
-
 /-- A nonzero rational vector `ξ` has positive length `frameLength z ξ`, the Euclidean norm of
 `z⁻¹ ξ` at all infinite places together. -/
 lemma frameLength_pos (z : GL n (𝔸 E)) {ξ : n → E} (hξ : ξ ≠ 0) : 0 < frameLength z ξ := by
@@ -353,181 +293,125 @@ lemma frameLength_pos (z : GL n (𝔸 E)) {ξ : n → E} (hξ : ξ ≠ 0) : 0 < 
     exact Finset.sum_eq_zero fun j _ ↦ by simp [-coe_units_inv, h_coord j]
   simpa using h_frame
 
-/-- Let `b` be triangular for the weight `wt` (`b k l = 0` if `wt l < wt k`) and `X * b` unitary, so
-that `b⁻¹ c` gives the coordinates of `X c` in the orthonormal basis formed by the columns of
-`X * b`. If `c` vanishes at the weights above `wt j` and the coordinates of weight at most `wt j`
-have absolute value below `ρ > 0`, then the squared Euclidean norm of `X c` is below
-`card n * ρ ^ 2`. -/
-lemma sum_norm_sq_mulVec_lt_of_blockTriangular [Nonempty n] {ι : Type*} [LinearOrder ι]
-    {wt : n → ι} {X : Matrix n n ℂ} {b : GL n ℂ} (b_tri : b.val.BlockTriangular wt)
-    (b_orth : (X * b.val)ᴴ * (X * b.val) = 1) {c : n → ℂ} {j : n}
-    (h_last : ∀ k : n, c k ≠ 0 → wt k ≤ wt j) {ρ : ℝ} (hρ : 0 < ρ)
-    (h_box : ∀ l : n, wt l ≤ wt j → ‖(b⁻¹.val *ᵥ c) l‖ < ρ) :
-    ∑ i : n, ‖(X *ᵥ c) i‖ ^ 2 < Fintype.card n * ρ ^ 2 := by
-  -- The coordinates after `j` vanish, because `b⁻¹` is triangular.
-  have coord_lt (l : n) : ‖(b⁻¹.val *ᵥ c) l‖ < ρ := by
-    rcases le_or_gt (wt l) (wt j) with h_le | h_gt
-    · exact h_box l h_le
-    have h_zero : (b⁻¹.val *ᵥ c) l = 0 := Finset.sum_eq_zero fun k _ ↦ by
-      by_cases hk : c k = 0
-      · simp [hk]
-      · simp [blockTriangular_inv_of_blockTriangular b_tri ((h_last k hk).trans_lt h_gt)]
-    rwa [h_zero, norm_zero]
-  calc ∑ i : n, ‖(X *ᵥ c) i‖ ^ 2 = ∑ i : n, ‖((X * b.val) *ᵥ b⁻¹.val *ᵥ c) i‖ ^ 2 := by
-        rw [mulVec_mulVec, Units.mul_inv_cancel_right]
-    _ = ∑ l : n, ‖(b⁻¹.val *ᵥ c) l‖ ^ 2 := sum_norm_sq_mulVec_of_isometry b_orth _
-    _ < ∑ _ : n, ρ ^ 2 := sum_lt_sum_of_nonempty univ_nonempty fun l _ ↦
-        pow_lt_pow_left₀ (coord_lt l) (norm_nonneg _) two_ne_zero
-    _ = Fintype.card n * ρ ^ 2 := by simp
+/-- The archimedean space `(E ⊗_ℚ ℝ) ^ n ≅ n → InfinitePlace E → ℂ`. -/
+private abbrev ArchSpace (E n : Type*) [Field E] [CMType E] := n → InfinitePlace E → ℂ
 
-/-- The square of the length `frameLength z ξ` is the sum over the infinite places `w` of the
-squared Euclidean norm of `z_w⁻¹ ξ_w`, where `z_w` is the component of `z` at `w` and `ξ_w` the
-image of `ξ` under the embedding `Φ w`. -/
-lemma frameLength_sq (z : GL n (𝔸 E)) (ξ : n → E) :
-    frameLength z ξ ^ 2 = ∑ w : InfinitePlace E, ∑ i : n,
-      ‖((z.map (evalInf w))⁻¹.val *ᵥ fun k : n ↦ Φ w (ξ k)) i‖ ^ 2 := by
-  -- the component at `w` of `z⁻¹ ξ` is `z_w⁻¹ ξ_w`, as `evalInf w` is a ring homomorphism
-  have h_coord (w : InfinitePlace E) (i : n) : ((z⁻¹.val *ᵥ toAdele ∘ ξ) i).1 w =
-      ((z.map (evalInf w))⁻¹.val *ᵥ fun k : n ↦ Φ w (ξ k)) i := by
-    rw [← map_inv]
-    exact RingHom.map_mulVec (evalInf w) z⁻¹.val (toAdele ∘ ξ) i
-  simp only [frameLength, PiLp.norm_sq_eq_of_L2, sum_prod_type, h_coord]
+/-- Action of the infinite component of `z⁻¹` on `ArchSpace E n`. -/
+private def archEquiv (z : GL n (𝔸 E)) : ArchSpace E n ≃ₗ[InfinitePlace E → ℂ] ArchSpace E n :=
+  (GeneralLinearGroup.toLin (z.map (RingHom.fst _ (𝔸f E)))⁻¹).toLinearEquiv
 
-/-- At each infinite place `w` let `b w` be triangular for the weight `wt` and make the columns of
-`g_w⁻¹ * b w` orthonormal, with `g_w` the component of `g` at `w`. Let the rational vector `c`
-vanish at the weights above `wt j`. If at every `w` the coordinates of `(b w)⁻¹ c` of weight at
-most `wt j` have absolute value below `ρ > 0`, then the length `frameLength g c` (the Euclidean norm
-of `g⁻¹ c` at infinity) has square below `f * card n * ρ ^ 2`, with `f` the number of infinite
-places. -/
-lemma frameLength_sq_lt_of_blockTriangular [Nonempty n] (g : GL n (𝔸 E)) {ι : Type*}
-    [LinearOrder ι] {wt : n → ι} {b : InfinitePlace E → GL n ℂ}
-    (b_tri : ∀ w : InfinitePlace E, (b w).val.BlockTriangular wt)
-    (b_orth : ∀ w : InfinitePlace E,
-      ((g.map (evalInf w))⁻¹.val * (b w).val)ᴴ * ((g.map (evalInf w))⁻¹.val * (b w).val) = 1)
-    {c : n → E} {j : n} (h_last : ∀ k : n, c k ≠ 0 → wt k ≤ wt j) {ρ : ℝ} (hρ : 0 < ρ)
-    (h_box : ∀ (w : InfinitePlace E) (l : n), wt l ≤ wt j →
-      ‖((b w)⁻¹.val *ᵥ fun k : n ↦ Φ w (c k)) l‖ < ρ) :
-    frameLength g c ^ 2 < numInfPlaces E * Fintype.card n * ρ ^ 2 :=
-  calc frameLength g c ^ 2
-      = ∑ w : InfinitePlace E, ∑ i : n,
-          ‖((g.map (evalInf w))⁻¹.val *ᵥ fun k : n ↦ Φ w (c k)) i‖ ^ 2 := frameLength_sq g c
-    _ < ∑ _ : InfinitePlace E, card n * ρ ^ 2 :=
-        sum_lt_sum_of_nonempty univ_nonempty fun w _ ↦
-          sum_norm_sq_mulVec_lt_of_blockTriangular (b_tri w) (b_orth w)
-            (fun k hk ↦ h_last k (by simpa using hk)) hρ (h_box w)
-    _ = numInfPlaces E * Fintype.card n * ρ ^ 2 := by simp [numInfPlaces, mul_assoc]
+/-- Archimedean coordinates `ξ ↦ (z⁻¹ ξ)_∞`, viewed as a `ℚ`-linear map into `ℂ ^ (f × n)`. -/
+private def archMap (z : GL n (𝔸 E)) : (n → E) →ₗ[ℚ] ArchSpace E n :=
+  (archEquiv z).toLinearMap.restrictScalars ℚ ∘ₗ
+    (RingHom.pi Φ).toAddMonoidHom.toRatLinearMap.compLeft n
 
-/-- If the columns of `A⁻¹ * b` are orthonormal, then `det A` and `det b` have the same absolute
-value. -/
-lemma norm_det_eq_of_orthonormal_inv_mul {A b : GL n ℂ}
-    (h_orth : (A⁻¹.val * b.val)ᴴ * (A⁻¹.val * b.val) = 1) : ‖A.val.det‖ = ‖b.val.det‖ := by
-  have h_norm : ‖(A⁻¹.val * b.val).det‖ = 1 :=
-    CStarRing.norm_of_mem_unitary (det_of_mem_unitary (mem_unitaryGroup_iff'.2 h_orth))
-  rw [← A.mul_inv_cancel_left b.val, det_mul, norm_mul, h_norm, mul_one]
+private lemma archMap_apply (z : GL n (𝔸 E)) (ξ : n → E) (i : n) :
+    archMap z ξ i = ((z⁻¹.val *ᵥ toAdele ∘ ξ) i).1 :=
+  funext fun w ↦ by
+    simp [archMap, archEquiv, GeneralLinearGroup.toLin, mulVec, dotProduct, fst_sum, ← map_inv,
+      -Units.val_inv_eq_inv_val]
 
-/-- If the columns of `A⁻¹ * b` are orthonormal, then `det A` and `det b` have the same squared
-absolute value. -/
-lemma norm_det_sq_eq_of_orthonormal_inv_mul {A b : GL n ℂ}
-    (h_orth : (A⁻¹.val * b.val)ᴴ * (A⁻¹.val * b.val) = 1) :
-    ‖A.val.det‖ ^ 2 = ‖b.val.det‖ ^ 2 := by
-  rw [norm_det_eq_of_orthonormal_inv_mul h_orth]
+private lemma archMap_injective (z : GL n (𝔸 E)) : Injective (archMap z) :=
+  (archEquiv z).injective.comp fun _ _ h ↦ funext fun i ↦ (RingHom.pi Φ).injective (congrFun h i)
 
-/-- Let `b w` make the columns of `g_w⁻¹ * b w` orthonormal at each infinite place `w`, with `g_w`
-the component of `g` at `w`, and let `c ^ n * ‖det D‖ ^ 2 = ∏ j, α j ^ 2`. Then
-`|det g| * ∏ j, α j ^ (2 f)` is `c ^ (f n)` times the adelic absolute value of the determinant of
-the adelic matrix with the components `b w * D` at infinity and the finite part of `g`. Here `f` is
-the number of infinite places and `n` stands for `card n`. -/
-lemma ideleAbs_det_mul_prod_eq (g : GL n (𝔸 E)) {b : InfinitePlace E → GL n ℂ} (D : GL n ℂ)
-    {c : ℝ} {α : n → ℝ}
-    (h_orth : ∀ w : InfinitePlace E,
-      ((g.map (evalInf w))⁻¹.val * (b w).val)ᴴ * ((g.map (evalInf w))⁻¹.val * (b w).val) = 1)
-    (h_det : c ^ card n * ‖D.val.det‖ ^ 2 = ∏ j : n, α j ^ 2) :
-    ideleAbs g.det * ∏ j : n, α j ^ (2 * numInfPlaces E) = c ^ (numInfPlaces E * card n) *
-      ideleAbs (mkAdelicGL (fun w : InfinitePlace E ↦ b w * D,
-        g.map (RingHom.snd (InfinitePlace E → ℂ) (𝔸f E)))).det := by
-  let g_inf (w : InfinitePlace E) : GL n ℂ := g.map (evalInf w)
-  let g_fin : GL n (𝔸f E) := g.map (RingHom.snd (InfinitePlace E → ℂ) (𝔸f E))
-  have g_eq_mk : g = mkAdelicGL (g_inf, g_fin) := Units.ext (Matrix.ext fun i j ↦ rfl)
-  have abs_det_g : ideleAbs g.det =
-      (∏ w : InfinitePlace E, ‖(b w).val.det‖ ^ 2) * finIdeleAbs g_fin.det := by
-    rw [← prod_congr rfl fun w _ ↦ norm_det_sq_eq_of_orthonormal_inv_mul (h_orth w),
-      ← ideleAbs_det_mkAdelicGL g_inf g_fin, ← g_eq_mk]
-  have abs_det_mul_D : ideleAbs (mkAdelicGL (fun w ↦ b w * D, g_fin)).det =
-      (∏ w : InfinitePlace E, ‖(b w).val.det‖ ^ 2) *
-        (‖D.val.det‖ ^ 2) ^ numInfPlaces E * finIdeleAbs g_fin.det := by
-    simp [ideleAbs_det_mkAdelicGL, mul_pow, prod_mul_distrib, numInfPlaces]
-  rw [abs_det_g, abs_det_mul_D]
-  simp only [pow_mul, prod_pow, ← h_det]
-  ring
+/-- The additive map `ξ ↦ z⁻¹ ξ` from `n → E` to `n → 𝔸 E`. -/
+private def frameMap (z : GL n (𝔸 E)) : (n → E) →+ (n → 𝔸 E) :=
+  z⁻¹.val.mulVecLin.toAddMonoidHom.comp (toAdele.toAddMonoidHom.compLeft n)
 
-/-- The volume bound from a box without nonzero lattice vectors. Let the numbers `α j > 0` increase
-with the weight `wt j`. Suppose that every rational `c` in `frameLattice g` (that is, with `g⁻¹ c`
-integral at the finite places) has length `frameLength g c` (the Euclidean norm of `g⁻¹ c` at
-infinity) at least `α j` whenever `j` has the largest weight among the indices with `c j ≠ 0`. Then
-`|det g| * ∏ j, α j ^ (2 f) ≤ (2 f n rd) ^ (f n)`, where `|det g|` is the adelic absolute value,
-`f` the number of infinite places, `n` stands for `card n` and `rd` is the root discriminant. -/
-lemma ideleAbs_det_mul_prod_le_of_le_frameLength (g : GL n (𝔸 E)) {ι : Type*} [LinearOrder ι]
-    (wt : n → ι) {α : n → ℝ} (α_pos : ∀ j : n, 0 < α j)
-    (α_mono : ∀ l j : n, wt l ≤ wt j → α l ≤ α j)
-    (h_long : ∀ c ∈ frameLattice g, ∀ j : n, c j ≠ 0 → (∀ k : n, c k ≠ 0 → wt k ≤ wt j) →
-      α j ≤ frameLength g c) :
-    ideleAbs g.det * ∏ j : n, α j ^ (2 * numInfPlaces E) ≤
-      (2 * (numInfPlaces E * Fintype.card n) * rootDiscr E) ^
-        (numInfPlaces E * Fintype.card n) := by
-  -- Orthonormalise the columns of `g⁻¹` in the order of `wt` at each infinite place. The box of
-  -- radii `α j / √(f n)` in these bases holds no nonzero lattice vector, so Minkowski's first
-  -- theorem bounds its volume.
-  obtain _ | _ := isEmpty_or_nonempty n
-  · simp [univ_eq_empty, ideleAbs]
-  let g_fin : GL n (𝔸f E) := g.map (RingHom.snd (InfinitePlace E → ℂ) (𝔸f E))
-  have h_gram (w : InfinitePlace E) : ∃ b : GL n ℂ, b.val.BlockTriangular wt ∧
-      ((g.map (evalInf w))⁻¹.val * b.val)ᴴ * ((g.map (evalInf w))⁻¹.val * b.val) = 1 :=
-    exists_orthonormal_mul wt ⟨_, (g.map (evalInf w))⁻¹.inv_val⟩
-  choose b b_tri b_orth using h_gram
-  let R : ℝ := √(numInfPlaces E * card n)
-  have R_pos : 0 < R := by simp [R, Fintype.card_pos]
-  have R_sq : R ^ 2 = numInfPlaces E * card n := sq_sqrt (by positivity)
-  let D : GL n ℂ := diagGL fun l ↦ .mk0 (α l / R : ℝ) (by simp [(α_pos l).ne', R_pos.ne'])
-  let box : GL n (𝔸 E) := mkAdelicGL (fun w ↦ b w * D, g_fin)
-  have box_empty (c : n → E) (hc : ∀ i : n, (box⁻¹.val *ᵥ toAdele ∘ c) i ∈ ball 0 1 ×ˢ Ô E) :
-      c = 0 := by
-    by_contra c_ne
-    have c_box (w : InfinitePlace E) (l : n) :
-        ‖((b w)⁻¹.val *ᵥ fun k ↦ Φ w (c k)) l‖ < α l / R := by
-      have h_scale : ((box⁻¹.val *ᵥ toAdele ∘ c) l).1 w =
-          (R / α l : ℝ) * ((b w)⁻¹.val *ᵥ fun k ↦ Φ w (c k)) l := by
-        simp [box, D, ← map_inv, mkAdelicGL, mulVec, dotProduct, fst_sum, mul_sum, mul_assoc,
-          -coe_units_inv]
-      have h_ball : ‖((box⁻¹.val *ᵥ toAdele ∘ c) l).1 w‖ < 1 :=
-        (norm_le_pi_norm _ w).trans_lt (mem_ball_zero_iff.1 (hc l).1)
-      rwa [h_scale, norm_mul, Complex.norm_of_nonneg (div_pos R_pos (α_pos l)).le,
-        ← lt_inv_mul_iff₀ (div_pos R_pos (α_pos l)), mul_one, inv_div] at h_ball
-    have c_mem : c ∈ frameLattice g := fun i ↦ by
-      simpa [box, g_fin, ← map_inv, mkAdelicGL, mulVec, dotProduct, snd_sum, -coe_units_inv]
-        using (hc i).2
-    -- If `j` is the last index with `c j ≠ 0`, then `c` would be shorter than `α j`.
-    obtain ⟨j, hj, j_last⟩ : ∃ j : n, c j ≠ 0 ∧ ∀ k : n, c k ≠ 0 → wt k ≤ wt j :=
-      c.support.exists_max_image wt Subtype.finite (by simpa using c_ne)
-    have c_short : frameLength g c ^ 2 < α j ^ 2 :=
-      calc frameLength g c ^ 2 < numInfPlaces E * card n * (α j / R) ^ 2 :=
-            frameLength_sq_lt_of_blockTriangular g b_tri b_orth j_last (div_pos (α_pos j) R_pos)
-              fun w l hl ↦ (c_box w l).trans_le (by grw [α_mono l j hl])
-        _ = α j ^ 2 := by rw [← R_sq, div_pow, mul_div_cancel₀ _ (pow_pos R_pos 2).ne']
-    exact (h_long c c_mem j hj j_last).not_gt (lt_of_pow_lt_pow_left₀ 2 (α_pos j).le c_short)
-  have box_le : ideleAbs box.det ≤ ((2 * rootDiscr E) ^ numInfPlaces E) ^ card n :=
-    le_of_not_gt fun h_large ↦
-      have ⟨c, hc, c_ne⟩ := exists_ne_zero_inv_mulVec_mem box h_large
-      c_ne (box_empty c hc)
-  have det_D : (numInfPlaces E * card n) ^ card n * ‖D.val.det‖ ^ 2 = ∏ j : n, α j ^ 2 := by
-    simp [D, ← R_sq, prod_pow, div_pow, abs_of_pos (α_pos _), abs_of_pos R_pos, ← pow_mul, field,
-      mul_comm]
-  calc ideleAbs g.det * ∏ j : n, α j ^ (2 * numInfPlaces E)
-      = (numInfPlaces E * card n) ^ (numInfPlaces E * card n) * ideleAbs box.det :=
-        ideleAbs_det_mul_prod_eq g D b_orth det_D
-    _ ≤ (numInfPlaces E * card n) ^ (numInfPlaces E * card n) *
-          ((2 * rootDiscr E) ^ numInfPlaces E) ^ card n := by gcongr
-    _ = (2 * (numInfPlaces E * card n) * rootDiscr E) ^ (numInfPlaces E * card n) := by ring
+/-- The lattice `frameLattice z` viewed as a `ℤ`-submodule of `n → E`. -/
+private def frameLatticeSubmodule (z : GL n (𝔸 E)) : Submodule ℤ (n → E) :=
+  ((AddSubgroup.pi Set.univ fun _ : n ↦
+    (Ô E).toAddSubgroup.comap (AddMonoidHom.snd _ _)).comap (frameMap z)).toIntSubmodule
 
+/-- The archimedean image of `frameLattice z` as a `ℤ`-submodule of `ArchSpace E n`. -/
+private abbrev archLattice (z : GL n (𝔸 E)) : Submodule ℤ (ArchSpace E n) :=
+  (frameLatticeSubmodule z).map ((archMap z).restrictScalars ℤ)
+
+private instance (z : GL n (𝔸 E)) : DiscreteTopology (archLattice z) := by
+  refine continuous_subtypeVal.discrete_of_tendsto_cofinite_cocompact
+    (tendsto_cofinite_cocompact_iff.mpr fun C hC ↦ ?_)
+  let K : Set (n → 𝔸 E) :=
+    (fun p : ArchSpace E n × (n → 𝔸f E) ↦ z.val *ᵥ fun i ↦ (p.1 i, p.2 i)) ''
+      (C ×ˢ Set.univ.pi fun _ : n ↦ (Ô E : Set (𝔸f E)))
+  have hK : IsCompact K := (hC.prod (isCompact_univ_pi fun _ ↦ isCompact_Ô)).image (by fun_prop)
+  have h_fin : (Subtype.val ⁻¹' (archMap z '' {ξ : n → E | toAdele ∘ ξ ∈ K}) :
+      Set (archLattice z)).Finite :=
+    ((isCovolOneLattice_ratVectors.finite_preimage hK).image (archMap z)).preimage
+      Subtype.val_injective.injOn
+  refine h_fin.subset ?_
+  rintro ⟨_, ξ, hξ, rfl⟩ hCξ
+  exact ⟨ξ, ⟨(archMap z ξ, fun i ↦ (frameMap z ξ i).2), ⟨hCξ, fun i _ ↦ hξ i trivial⟩,
+    by simp [frameMap, AddMonoidHom.compLeft, archMap_apply]⟩, rfl⟩
+
+private instance (z : GL n (𝔸 E)) : IsZLattice ℝ (archLattice z) := by
+  have h_dense : DenseRange (archMap z) :=
+    (archEquiv z).surjective.denseRange.comp (.piMap fun _ ↦ denseRange_Φ)
+      ((archEquiv z).toLinearMap.restrictScalars ℝ).continuous_of_finiteDimensional
+  refine ⟨Submodule.eq_top_iff'.mpr (isClosed_property h_dense
+    (Submodule.isClosed_of_finiteDimensional _) fun ξ ↦ ?_)⟩
+  obtain ⟨N, hN, h_int⟩ := exists_forall_mul_mem_Ô fun i : n ↦ (frameMap z ξ i).2
+  have h_lat : N • ξ ∈ frameLatticeSubmodule z := fun i _ ↦ by
+    change (frameMap z (N • ξ) i).2 ∈ Ô E
+    rw [map_nsmul]
+    simpa [← Nat.cast_smul_eq_nsmul (𝔸f E)] using h_int i
+  have h_mem : (N : ℝ) • archMap z ξ ∈ archLattice z :=
+    ⟨N • ξ, h_lat, by rw [LinearMap.restrictScalars_apply, map_nsmul, Nat.cast_smul_eq_nsmul]⟩
+  exact (Submodule.smul_mem_iff _ (Nat.cast_ne_zero.2 hN)).1 (Submodule.subset_span h_mem)
+
+open MeasureTheory MeasurableEquiv in
+/-- The covolume of `archLattice z` satisfies `|det z| * covolume (archLattice z) ≤
+(rd / 2) ^ (f n)`, obtained by unfolding `F × Ô ^ n` over `𝔸 ^ n / E ^ n` for a fundamental domain
+`F` of `archLattice z`. -/
+private lemma ideleAbs_det_mul_covolume_le (z : GL n (𝔸 E)) :
+    ideleAbs z.det * ZLattice.covolume (archLattice z) ≤
+      ((rootDiscr E / 2) ^ numInfPlaces E) ^ card n := by
+  -- A fundamental domain `F` of `archLattice z` times `Ô ^ n` contains `z⁻¹ (ξ + x)` for at most
+  -- one rational `ξ`, so `lintegral_encard_rat_points` bounds `|det z| * covolume * volÔ ^ n ≤ 1`.
+  let b := Module.finBasis ℤ (archLattice z)
+  let β := b.ofZLatticeBasis ℝ (archLattice z)
+  let F : Set (ArchSpace E n) := ZSpan.fundamentalDomain β
+  let S : Set (n → 𝔸 E) :=
+    arrowProdEquivProdArrow _ _ n ⁻¹' (F ×ˢ Set.univ.pi fun _ : n ↦ (Ô E : Set (𝔸f E)))
+  have hS : MeasurableSet S := (arrowProdEquivProdArrow ..).measurable
+    ((ZSpan.fundamentalDomain_measurableSet _).prod (.univ_pi fun _ ↦ isOpen_Ô.measurableSet))
+  have h_sub (x : n → 𝔸 E) : {ξ : n → E | z⁻¹.val *ᵥ (toAdele ∘ ξ + x) ∈ S}.Subsingleton := by
+    intro ξ₁ h₁ ξ₂ h₂
+    let y (ξ : n → E) : n → 𝔸 E := z⁻¹.val *ᵥ (toAdele ∘ ξ + x)
+    have h_diff : y ξ₁ - y ξ₂ = frameMap z (ξ₁ - ξ₂) := by
+      simp [y, frameMap, map_sub, AddMonoidHom.compLeft, mulVec_add]
+    have h_fin : ξ₁ - ξ₂ ∈ frameLatticeSubmodule z := fun i _ ↦ by
+      change (frameMap z (ξ₁ - ξ₂) i).2 ∈ Ô E
+      rw [← h_diff]
+      exact (Ô E).sub_mem (h₁.2 i trivial) (h₂.2 i trivial)
+    have h_lat : archMap z (ξ₁ - ξ₂) ∈ Submodule.span ℤ (Set.range β) := by
+      rw [b.ofZLatticeBasis_span ℝ]
+      exact ⟨ξ₁ - ξ₂, h_fin, rfl⟩
+    have h_mem₁ : (fun i ↦ (y ξ₁ i).1) - 0 ∈ F := by
+      rw [sub_zero]
+      exact h₁.1
+    have h_mem₂ : (fun i ↦ (y ξ₁ i).1) - archMap z (ξ₁ - ξ₂) ∈ F := by
+      have h_eq : (fun i ↦ (y ξ₁ i).1) - archMap z (ξ₁ - ξ₂) = fun i ↦ (y ξ₂ i).1 := by
+        funext i
+        rw [Pi.sub_apply, archMap_apply]
+        change (y ξ₁ i).1 - (frameMap z (ξ₁ - ξ₂) i).1 = (y ξ₂ i).1
+        rw [← h_diff]
+        simp
+      rw [h_eq]
+      exact h₂.1
+    have h_zero : 0 = archMap z (ξ₁ - ξ₂) :=
+      ZSpan.eq_of_sub_mem_fundamentalDomain β (zero_mem _) h_lat h_mem₁ h_mem₂
+    exact sub_eq_zero.1 ((map_eq_zero_iff (archMap z) (archMap_injective z)).1 h_zero.symm)
+  have h_vol : (ENNReal.ofReal (ideleAbs z.det) * volume S).toReal ≤ 1 :=
+    ENNReal.toReal_mono ENNReal.one_ne_top <|
+      (lintegral_encard_rat_points z hS).trans_le <| lintegral_le_const <|
+        .of_forall fun x ↦ mod_cast Set.encard_le_one_iff_subsingleton.2 (h_sub x)
+  rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal ideleAbs_pos.le,
+    (volume_measurePreserving_arrowProdEquivProdArrow ..).measure_preimage_equiv] at h_vol
+  rw [ZLattice.covolume_eq_measure_fundamentalDomain _ volume (ZLattice.isAddFundamentalDomain b _)]
+  simp [F, β, volume_pi_pi, Measure.volume_eq_prod, volÔ_eq, inv_pow, ← mul_assoc] at h_vol
+  simpa [Measure.real] using (mul_inv_le_iff₀ (by positivity [rootDiscr_pos E])).1 h_vol
+
+open MeasureTheory in
 /-- Minkowski's second theorem over `E`. For `z` in `GL n (𝔸 E)` the lattice `frameLattice z`, of
 the rational `ξ` with `z⁻¹ ξ` integral at the finite places, contains a basis `y 0, …, y (n - 1)`
 of `E ^ n`, ordered by length, with `|det z| * ∏ j, ‖y j‖ ^ (2 f) ≤ (2 f n rd) ^ (f n)`. Here
@@ -542,47 +426,79 @@ theorem minkowski_second_theorem (z : GL n (𝔸 E)) :
       ideleAbs z.det * ∏ j : Fin (Fintype.card n), frameLength z (y j) ^ (2 * numInfPlaces E) ≤
         (2 * (numInfPlaces E * Fintype.card n) * rootDiscr E) ^
           (numInfPlaces E * Fintype.card n) := by
-  -- Choose the `y j` in turn, each of least length outside the span of the earlier ones.
-  obtain ⟨y, hy_mem, hy_indep, hy_least⟩ : ∃ y : Fin (card n) → n → E,
-      (∀ j : Fin (card n), y j ∈ frameLattice z) ∧ LinearIndependent E y ∧
-        ∀ j : Fin (card n), ∀ v ∈ frameLattice z, v ∉ Submodule.span E (y '' Set.Iio j) →
-          frameLength z (y j) ≤ frameLength z v :=
-    exists_successive_minima (span_frameLattice z) (frameLength z)
-      (finite_frameLattice_of_frameLength_le z) (Module.finrank_fintype_fun_eq_card E).ge
-  have h_mono : Monotone fun j : Fin (card n) ↦ frameLength z (y j) := fun i j hij ↦
-    hy_least i (y j) (hy_mem j) (hy_indep.notMem_span_image (by simpa using hij))
-  refine ⟨y, hy_indep, hy_mem, h_mono, ?_⟩
-  -- Pass to coordinates in this basis: `Y` has the columns `y (e a)`, and `g = Y⁻¹ z`.
-  let e : n ≃ Fin (card n) := equivFin n
-  obtain ⟨Y, hY⟩ : IsUnit (of fun i a : n ↦ y (e a) i) :=
-    linearIndependent_col_iff_isUnit.1 (hy_indep.comp e e.injective)
-  let g : GL n (𝔸 E) := (GeneralLinearGroup.map toAdele Y)⁻¹ * z
-  have h_map (c : n → E) : toAdele ∘ (Y.val *ᵥ c) = Y.val.map toAdele *ᵥ toAdele ∘ c :=
-    funext fun i ↦ RingHom.map_mulVec toAdele Y.val c i
-  have h_coord (c : n → E) : g⁻¹.val *ᵥ toAdele ∘ c = z⁻¹.val *ᵥ toAdele ∘ (Y.val *ᵥ c) := by
-    simp [g, h_map]
-  have h_abs : ideleAbs z.det = ideleAbs g.det := by simp [g]
-  rw [h_abs, ← e.prod_comp]
-  refine ideleAbs_det_mul_prod_le_of_le_frameLength g e
-    (fun a ↦ frameLength_pos z (hy_indep.ne_zero (e a))) (fun _ _ h_le ↦ h_mono h_le)
-    fun c hc j hj j_last ↦ ?_
-  -- The lattice vector `Y c` lies outside the span of the `y i` with `i < e j`, as `c j ≠ 0`.
-  have h_mem : Y.val *ᵥ c ∈ frameLattice z := by
-    simpa only [frameLattice, Set.mem_ofPred_eq, h_coord] using hc
-  have h_out : Y.val *ᵥ c ∉ Submodule.span E (y '' Set.Iio (e j)) := by
-    have h_earlier : ∑ k ∈ univ.erase j, c k • y (e k) ∈ Submodule.span E (y '' Set.Iio (e j)) := by
-      refine Submodule.sum_mem _ fun k hk ↦ ?_
-      obtain h_zero | h_ne := eq_or_ne (c k) 0
-      · simp [h_zero]
-      have h_lt : e k < e j := (j_last k h_ne).lt_of_ne (by simpa using hk)
-      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨e k, h_lt, rfl⟩)
-    have h_sum : Y.val *ᵥ c = c j • y (e j) + ∑ k ∈ univ.erase j, c k • y (e k) := by
-      rw [add_sum_erase _ (fun k ↦ c k • y (e k)) (mem_univ j)]
-      ext i
-      simp [hY, mulVec, dotProduct, mul_comm]
-    rw [h_sum, Submodule.add_mem_iff_left _ h_earlier, Submodule.smul_mem_iff _ hj]
-    exact hy_indep.notMem_span_image (by simp)
-  simpa only [frameLength, h_coord] using hy_least (e j) _ h_mem h_out
+  -- Take a real basis of `archLattice z` attaining the successive minima of the sup-norm unit ball.
+  let K : ConvexBody (ArchSpace E n) := .closedUnitBall _
+  have hK0 : (0 : ArchSpace E n) ∈ interior (K : Set (ArchSpace E n)) :=
+    ConvexBody.zero_mem_interior_of_coe_eq_closedBall ConvexBody.coe_closedUnitBall
+  have h_dim : Module.finrank ℝ (ArchSpace E n) = Module.finrank ℚ E * card n := by
+    simp [ArchSpace, Module.finrank_pi_fintype, Complex.finrank_real_complex,
+      finrank_eq_two_mul_card_infinitePlace, numInfPlaces, mul_comm]
+  let e_dim := Fin.castOrderIso h_dim.symm
+  obtain ⟨w, hwL, -, hwK, -⟩ := ZLattice.exists_basis_gauge_eq_successiveMin (archLattice z) hK0
+  choose u hu_mem hu_eq using fun r ↦ Submodule.mem_map.1 (hwL (e_dim r))
+  simp only [LinearMap.restrictScalars_apply] at hu_eq
+  -- Extract `card n` vectors independent over `E` with sup-norm product controlled by the minima.
+  have h_indep : LinearIndependent ℝ (archMap z ∘ u) := by
+    simpa [Function.comp_def, hu_eq] using w.linearIndependent.comp e_dim e_dim.injective
+  have h_norm (r : Fin (Module.finrank ℚ E * card n)) :
+      ‖archMap z (u r)‖ ≤ ZLattice.successiveMin (archLattice z) K (e_dim r) := by
+    rw [hu_eq r]
+    exact (ConvexBody.mem_smul_iff_norm_le_of_coe_eq_closedBall ConvexBody.coe_closedUnitBall
+      (ZLattice.successiveMin_nonneg _ _ _)).1 (hwK (e_dim r))
+  obtain ⟨s, hs_indep, -, hs_prod⟩ :=
+    TauCeti.exists_linearIndependent_comp_finrank_mul_prod_pow_le (F := ℚ) (K := E) (E := ℝ)
+      (f := archMap z) (u := u) h_indep (fun _ ↦ norm_nonneg _) h_norm
+      ((ZLattice.monotone_successiveMin (archLattice z) hK0).comp e_dim.monotone)
+  let σ := Tuple.sort fun j ↦ frameLength z (u (s j))
+  refine ⟨u ∘ s ∘ σ, hs_indep.comp σ σ.injective, fun j i ↦ hu_mem (s (σ j)) i trivial,
+    Tuple.monotone_sort fun k ↦ frameLength z (u (s k)), ?_⟩
+  -- Compare `frameLength` with the sup norm and apply Minkowski's 2nd theorem to `archLattice z`.
+  set f := numInfPlaces E with hf
+  have h_l2 (ξ : n → E) : frameLength z ξ ^ 2 ≤ (f * card n : ℝ) * ‖archMap z ξ‖ ^ 2 := by
+    rw [frameLength, PiLp.norm_sq_eq_of_L2]
+    exact (Finset.sum_le_sum fun p _ ↦ pow_le_pow_left₀ (norm_nonneg _)
+      (by simpa [archMap_apply] using
+        (norm_le_pi_norm _ p.1).trans (norm_le_pi_norm (archMap z ξ) p.2))
+      2).trans_eq (by simp [f, mul_assoc])
+  have h_volK : 1 ≤ volume.real (K : Set (ArchSpace E n)) := by
+    simp [K, Measure.real, ArchSpace, volume_pi, closedBall_pi _ zero_le_one, NNReal.coe_real_pi]
+    exact one_le_pow₀ (one_le_pow₀ (by linarith [Real.two_le_pi]))
+  have h_two_pow : (2 : ℝ) ^ Module.finrank ℝ (ArchSpace E n) = 4 ^ (f * card n) := by
+    rw [h_dim, finrank_eq_two_mul_card_infinitePlace, ← hf, mul_assoc 2, pow_mul]
+    norm_num
+  have h_symm : ∀ x ∈ K, -x ∈ K := fun x hx ↦ by
+    simpa [← SetLike.mem_coe, K] using hx
+  have h_min : ∏ i, ZLattice.successiveMin (archLattice z) K i ≤
+      4 ^ (f * card n) * ZLattice.covolume (archLattice z) :=
+    (le_mul_of_one_le_right (Finset.prod_nonneg fun i _ ↦ ZLattice.successiveMin_nonneg _ _ i)
+      h_volK).trans ((ZLattice.prod_successiveMin_mul_measureReal_le_two_pow_mul_covolume
+      (archLattice z) volume h_symm).trans_eq (by rw [h_two_pow]))
+  dsimp only [Function.comp_apply]
+  rw [Equiv.prod_comp σ fun j ↦ frameLength z (u (s j)) ^ (2 * f)]
+  have h_det_nonneg : 0 ≤ ideleAbs z.det := ideleAbs_pos.le
+  calc ideleAbs z.det * ∏ j, frameLength z (u (s j)) ^ (2 * f)
+      ≤ ideleAbs z.det * ∏ j, ((f * card n : ℝ) * ‖archMap z (u (s j))‖ ^ 2) ^ f :=
+        mul_le_mul_of_nonneg_left (Finset.prod_le_prod₀
+          (fun _ _ ↦ pow_nonneg (norm_nonneg _) _) fun j _ ↦ by
+            rw [pow_mul]
+            exact pow_le_pow_left₀ (sq_nonneg _) (h_l2 _) f) h_det_nonneg
+    _ = (f * card n : ℝ) ^ (f * card n) *
+          (ideleAbs z.det * (∏ j, ‖archMap z (u (s j))‖) ^ (2 * f)) := by
+        simp [mul_pow, prod_mul_distrib, ← pow_mul, mul_comm f, prod_pow]
+        ring
+    _ ≤ (f * card n : ℝ) ^ (f * card n) *
+          (4 ^ (f * card n) * (ideleAbs z.det * ZLattice.covolume (archLattice z))) := by
+        rw [hf, ← finrank_eq_two_mul_card_infinitePlace]
+        grw [hs_prod]
+        have h_reindex : (∏ l, ZLattice.successiveMin (archLattice z) K (e_dim l)) =
+            ∏ i, ZLattice.successiveMin (archLattice z) K i := e_dim.toEquiv.prod_comp _
+        rw [h_reindex]
+        grw [h_min]
+        exact le_of_eq (by ring)
+    _ ≤ (2 * (f * card n) * rootDiscr E) ^ (f * card n) := by
+        grw [ideleAbs_det_mul_covolume_le]
+        rw [← hf, ← pow_mul, ← mul_pow, ← mul_pow]
+        exact le_of_eq (by ring)
 
 /-- Minkowski's second theorem with dyadic bounds. For `y` in `GL n (𝔸 E)` there are an invertible
 matrix `Y` over `E` and integers `x j` such that each row `Y j` lies in `frameLattice y` (the
