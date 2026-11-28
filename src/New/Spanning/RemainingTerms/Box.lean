@@ -3,9 +3,9 @@ module
 import Mathlib.MeasureTheory.Constructions.Polish.EmbeddingReal
 import Mathlib.Tactic.Linter.Style
 import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.NumberTheory.NumberField.RingOfIntegers.BoundedConjugates
 public import New.Spanning.Unfolding.Setup
 import Lib.Adelic.Adeles.SemilocalProducts
-import Lib.General.Analysis.PackingAndSobolev
 import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
@@ -84,29 +84,28 @@ every infinite place `v` (chosen by the instance `PlaceEmbedding E`), then `A` h
 `(1 + 2 r) ^ (2 |ι| m)` elements, where `m = Core.numInfPlaces E` is the number of infinite
 places. -/
 lemma encard_le_of_isIntegral_norm_le {α ι E : Type*} [Fintype ι] {A : Set α} [Field E]
-    [NumberField E] [PlaceEmbedding E] {r : ℝ} (f : α → ι → E) (hr : 0 ≤ r)
+    [NumberField E] [PlaceEmbedding E] {r : ℝ} (f : α → ι → E) (_hr : 0 ≤ r)
     (hf : ∀ a ∈ A, ∀ i : ι, IsIntegral ℤ (f a i) ∧ ∀ v : InfinitePlace E, ‖Φ v (f a i)‖ ≤ r)
     (h_inj : InjOn f A) :
     A.encard ≤ ENNReal.ofReal ((1 + 2 * r) ^ (Fintype.card ι * Core.numInfPlaces E * 2)) := by
-  -- Embed `A` in `ℂ ^ (ι × places)`, a real space of dimension `card ι * Core.numInfPlaces E * 2`.
-  -- The image lies in the ball of radius `r` and its points are at distance at least `1`.
-  let F (a : α) (p : ι × InfinitePlace E) : ℂ := Φ p.2 (f a p.1)
-  have h_separated : ∀ a ∈ A, ∀ b ∈ A, a ≠ b → 1 ≤ ‖F a - F b‖ := by
-    -- An algebraic integer whose conjugates all have absolute value below `1` is zero.
-    intro a ha b hb hab
-    by_contra! h_close
-    have h_ne : f a ≠ f b := fun h_eq ↦ hab (h_inj ha hb h_eq)
-    refine h_ne (funext fun i ↦ eq_of_sub_eq_zero ?_)
-    have h_integral : IsIntegral ℤ (f a i - f b i) := (hf a ha i).left.sub (hf b hb i).left
-    refine eq_zero_of_forall_norm_lt_one h_integral fun v ↦ ?_
-    have h_lt : ‖(F a - F b) (i, v)‖ < 1 := (norm_le_pi_norm _ (i, v)).trans_lt h_close
-    simpa [F] using h_lt
-  have h_bounded : ∀ a ∈ A, ‖F a‖ ≤ r := fun a ha ↦
-    (pi_norm_le_iff_of_nonneg hr).2 fun p ↦ (hf a ha p.1).right p.2
-  -- The packing bound: `1`-separated points in a ball of radius `r` number at most
-  -- `(1 + 2 r) ^ dim`.
-  grw [encard_le_of_separated one_pos hr h_separated h_bounded]
-  simp [Module.finrank_pi_fintype]
+  classical
+  let S : Set (ι → 𝓞 E) := {v | ∀ i (w : InfinitePlace E), w (v i) ≤ r}
+  have hS : ∀ v ∈ S, ∀ i (w : InfinitePlace E), w (v i) ≤ r := fun _ hv ↦ hv
+  let g : α → ι → 𝓞 E := fun a i ↦ if ha : a ∈ A then ⟨f a i, (hf a ha i).1⟩ else 0
+  have h_maps : MapsTo g A S := fun a ha i w ↦ by
+    simp only [g, ha, ↓reduceDIte]
+    rw [← PlaceEmbedding.mk_Φ w, InfinitePlace.apply]
+    exact (hf a ha i).2 w
+  have h_inj_g : InjOn g A := fun a ha b hb h_eq ↦ h_inj ha hb <| funext fun i ↦ by
+    simpa [g, ha, hb] using congrArg Subtype.val (congrFun h_eq i)
+  have hfin : S.Finite := NumberField.RingOfIntegers.finite_of_forall_infinitePlace_le hS
+  have h_enc : A.encard ≤ S.ncard :=
+    (Set.encard_le_encard_of_injOn h_maps h_inj_g).trans_eq hfin.cast_ncard_eq.symm
+  have h_real : (S.ncard : ℝ) ≤ (1 + 2 * r) ^ (Fintype.card ι * Core.numInfPlaces E * 2) := by
+    simpa only [Nat.card_eq_fintype_card, Core.numInfPlaces, mul_comm, mul_left_comm, mul_assoc]
+      using NumberField.RingOfIntegers.ncard_le_one_add_two_mul_pow hS
+  exact (ENat.toENNReal_le.mpr h_enc).trans <| by
+    simpa [ENat.toENNReal_coe, ENNReal.ofReal_natCast] using ENNReal.ofReal_le_ofReal h_real
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
   {D : Set (InfinitePlace E → ℂ)}
