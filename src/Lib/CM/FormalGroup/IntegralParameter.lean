@@ -70,12 +70,15 @@ namespace New
 
 variable {p : ℕ} [Fact p.Prime]
 
+/-- The embedding `seriesToCp` coincides with `PowerSeries.map` along the inclusion. -/
 lemma seriesToCp_eq_map (g : (valRingCp p)⟦X⟧) :
     seriesToCp g = PowerSeries.map (valRingCp p).subtype g := rfl
 
+/-- The `n`-th power series coefficient commutes with the embedding `seriesToCp`. -/
 lemma coeff_seriesToCp (n : ℕ) (g : (valRingCp p)⟦X⟧) :
     coeff n (seriesToCp g) = (coeff n g : valRingCp p) := rfl
 
+/-- The constant coefficient of `seriesToCp g` is the coercion of `constantCoeff g`. -/
 lemma constantCoeff_seriesToCp (g : (valRingCp p)⟦X⟧) :
     constantCoeff (seriesToCp g) = (constantCoeff g : valRingCp p) := rfl
 
