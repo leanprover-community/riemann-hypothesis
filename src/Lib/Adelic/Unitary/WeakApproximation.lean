@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Algebra.Ring.Invertible
 import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Algebra.Group.Units
@@ -156,11 +157,10 @@ lemma _root_.New.cayleyTransform_cayleyTransform {K : Type*} [Field K] (h_two : 
 /-- The two factors of the Cayley transform commute. -/
 lemma _root_.New.cayleyTransform_eq_inv_mul {K : Type*} [Field K] (A : Matrix n n K) :
     cayleyTransform A = (1 + A)⁻¹ * (1 - A) := by
-  have h_comm : (1 + A) * (1 - A) = (1 - A) * (1 + A) := by noncomm_ring
-  obtain hA | hA := eq_or_ne (1 + A).det 0
-  · simp [cayleyTransform, inv_def, hA]
-  · calc _ = (1 + A)⁻¹ * ((1 + A) * (1 - A)) * (1 + A)⁻¹ := by simp [cayleyTransform, hA]
-      _ = (1 + A)⁻¹ * (1 - A) := by simp [h_comm, Matrix.mul_assoc, hA]
+  have h_comm : Commute (1 - A) (1 + A) :=
+    (Commute.one_left _).sub_left ((Commute.one_right A).add_right (Commute.refl A))
+  rw [cayleyTransform, nonsing_inv_eq_ringInverse]
+  exact h_comm.ringInverse_right.eq
 
 /-- The Cayley transform of an isometry is skew. Here `B` stands for the conjugate transpose of
 `A`: if `B J A = J` with `J` and `1 + A` invertible, then `1 + B` is invertible and the
