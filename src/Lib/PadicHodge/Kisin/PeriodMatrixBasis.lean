@@ -5,6 +5,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.ZMod.UnitsCyclic
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Basic
 public import Lib.PadicHodge.Crystalline.HodgeTateJumps
 public import Lib.General.NumberTheory.CoefficientRings
 public import Lib.PadicHodge.Kisin.Bicommutant
@@ -347,14 +348,14 @@ structure IsPeriodBasis (c : Chart) (U : Matrix d d BPlus) (h : ℕ) (Q : Matrix
 
 namespace IsPeriodMatrix
 
-/-- A period matrix acts injectively on vectors over `B⁺`, since `U W` is a nonzero scalar
-matrix. -/
+/-- A period matrix acts injectively on vectors over `B⁺`, since it has a right inverse up to a
+nonzero scalar. -/
 lemma mulVec_injective (hU : c.IsPeriodMatrix U h v) : Injective U.mulVec := by
   obtain ⟨W, hW⟩ := hU.exists_mul_eq_smul_one
-  refine mulVec_injective_of_det_ne_zero fun h_det ↦ ?_
-  have h_det_eq : ((c.E * tau) ^ h • (1 : Matrix d d BPlus)).det = 0 := by
-    rw [← hW, det_mul, h_det, zero_mul]
-  simp [smul_def (A := BPlus), c.E_ne_zero'] at h_det_eq
+  have h_scalar : ainfToBPlus ((c.E.val * tau) ^ h) ≠ 0 := by
+    simp [c.E_ne_zero, tau_ne_zero]
+  rw [← algebraMap_smul BPlus ((c.E.val * tau) ^ h)] at hW
+  exact Matrix.mulVec_injective_of_mul_eq_smul_one (IsRegular.of_ne_zero h_scalar).left hW
 
 /-- The field `exists_mul_eq_smul_one` read on vectors: there is a matrix `W` over `B⁺` with
 `U (W x) = (E τ) ^ h x` for every vector `x`. -/
