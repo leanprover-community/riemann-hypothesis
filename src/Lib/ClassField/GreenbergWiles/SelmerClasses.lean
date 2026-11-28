@@ -276,11 +276,7 @@ theorem card_relations_ge {S : Finset (FinPlace K)}
     (fun v _ ↦ card_B1_mul_card_invariants (M.restrictTo _).continuous_orbit) Nat.card_pos
     h_cocycles
   refine Nat.le_of_mul_le_mul_left ?_ (Nat.card_pos (α := M))
-  calc Nat.card M * (Nat.card (selmerH1 M S A L ∅) * Nat.card M ^ Fintype.card (InfinitePlace K) *
-        ∏ v ∈ S, Nat.card (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ.invariants)
-      = _ := by ring
-    _ ≤ _ := h
-    _ = _ := by ring
+  simpa only [pow_succ, mul_assoc, mul_comm, mul_left_comm] using h
 
 end selmerH1
 

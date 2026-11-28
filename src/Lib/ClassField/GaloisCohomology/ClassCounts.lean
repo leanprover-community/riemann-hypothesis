@@ -75,14 +75,8 @@ lemma coe_coboundaryZ1_apply (hρ : ∀ m : M, Continuous fun g : G ↦ ρ g m) 
 
 /-- When the orbit maps of `ρ` are continuous, the coboundaries `B¹` are the image of `M`. -/
 lemma range_coboundaryZ1 (hρ : ∀ m : M, Continuous fun g : G ↦ ρ g m) :
-    LinearMap.range (coboundaryZ1 hρ) = B1 ρ := by
-  ext z
-  rw [mem_B1_iff, LinearMap.mem_range]
-  constructor
-  · rintro ⟨m, rfl⟩
-    exact ⟨m, fun _ ↦ rfl⟩
-  · rintro ⟨m, hm⟩
-    exact ⟨m, Subtype.ext (funext hm)⟩
+    LinearMap.range (coboundaryZ1 hρ) = B1 ρ :=
+  LinearMap.range_codRestrict _ _ _
 
 /-- For a finite module `M` on which `G` acts with continuous orbit maps, the coboundaries number
 `|M| / |H⁰|`: `|B¹| · |M^G| = |M|`. -/
@@ -92,9 +86,8 @@ theorem card_B1_mul_card_invariants (hρ : ∀ m : M, Continuous fun g : G ↦ �
     ext m
     rw [LinearMap.mem_ker, Representation.mem_invariants, Subtype.ext_iff, funext_iff]
     exact forall_congr' fun g ↦ sub_eq_zero
-  rw [← range_coboundaryZ1 hρ, ← h_ker,
-    Submodule.card_eq_card_quotient_mul_card (LinearMap.ker (coboundaryZ1 hρ)),
-    Nat.card_congr (coboundaryZ1 hρ).quotKerEquivRange.toEquiv, mul_comm]
+  rw [← range_coboundaryZ1 hρ, ← h_ker, mul_comm]
+  exact AddSubgroup.card_ker_mul_card_range (coboundaryZ1 hρ).toAddMonoidHom
 
 /-! ### Normalised cocycles -/
 

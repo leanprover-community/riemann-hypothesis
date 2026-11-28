@@ -66,12 +66,6 @@ theorem exists_card_classes_le {ℓ r : ℕ} [Fact ℓ.Prime] [IsTotallyComplex 
     h_cocycles
   rw [h_inv, mul_one] at h
   refine Nat.le_of_mul_le_mul_left ?_ (Nat.card_pos (α := M))
-  calc Nat.card M * (Nat.card (selmerH1 M D.localPrimes D.place D.allowed ∅) *
-          Nat.card M ^ card (InfinitePlace K) *
-          ∏ v ∈ D.localPrimes,
-            Nat.card (M.restrictTo (decompGroup Gal(Ω/K) (D.place v))).ρ.invariants)
-      = _ := by ring
-    _ ≤ _ := h
-    _ = _ := by ring
+  simpa only [pow_succ, mul_assoc, mul_comm, mul_left_comm] using h
 
 end New.RelationSetting
