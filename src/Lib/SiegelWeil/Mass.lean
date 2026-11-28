@@ -71,10 +71,8 @@ lemma mem_stdRatPoints_iff {g : Gf E κ} :
   refine ⟨?_, fun h_entries ↦ ?_⟩
   · rintro ⟨γ, rfl⟩ i j
     simp [stdSpace_embFin]
-  · -- The matrix `M` of rational preimages of the entries is unitary, as its image `g` is.
-    choose M hM using h_entries
-    obtain ⟨γ, -, hγ⟩ := mem_range_map (J := 1) (g := g) (by simp)
-      (algebraMap E (𝔸f E)).injective isUnit_one (by simp) (M := .of M) (ext hM)
+  · obtain ⟨γ, hγ⟩ := exists_map_eq_of_entries (by simp) (algebraMap E (𝔸f E)).injective
+      isUnit_one (by simp) g h_entries
     exact ⟨γ, (Subtype.ext (stdSpace_embFin γ)).trans hγ⟩
 
 variable (E κ)

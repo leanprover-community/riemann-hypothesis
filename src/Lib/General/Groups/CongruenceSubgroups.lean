@@ -357,6 +357,15 @@ lemma mem_range_map {f : R →+* S} (hf_star : ∀ x : R, f (star x) = star (f x
       mem_unitaryGroupOf_iff.mp g.prop]
   exact ⟨of hJ M (map_injective hf_inj h_form), rfl, Subtype.ext (Units.ext hM_map)⟩
 
+/-- A unitary matrix descends along an injective star-preserving map when each entry descends. -/
+lemma exists_map_eq_of_entries {f : R →+* S} (hf : ∀ x : R, f (star x) = star (f x))
+    (hinj : Injective f) {J : Matrix n n R} (hJ : IsUnit J) {J' : Matrix n n S}
+    (hJJ : J.map f = J') (g : U J') (h : ∀ i j, (g : Matrix n n S) i j ∈ f.range) :
+    ∃ k : U J, map f hf hJJ k = g := by
+  choose M hM using h
+  obtain ⟨k, -, hk⟩ := mem_range_map hf hinj hJ hJJ (M := .of M) (ext hM)
+  exact ⟨k, hk⟩
+
 /-- For x in GL_n(R) with xᴴJx = J', the isomorphism U(J') ≅ U(J), g ↦ x g x⁻¹. -/
 @[simps! apply_coe symm_apply_coe]
 def conj (x : GL n R) {J} {J' : Matrix n n R} (h : x.valᴴ * J * x = J') : U J' ≃* U J where

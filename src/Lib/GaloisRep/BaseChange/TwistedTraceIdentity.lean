@@ -733,21 +733,13 @@ private lemma New.isBaseChangeMaps (μ : (𝔸f E)ˣ →* ℂˣ) [IsStep (E := E
     have h_entry (a b : n) : adeleMap (σ : E' →+* E') ((g : Matrix n n (𝔸f E')) a b) =
         (g : Matrix n n (𝔸f E')) a b :=
       congr_fun₂ (congrArg (fun h : Gf E' n ↦ (h : Matrix n n (𝔸f E'))) hg) a b
-    have h_desc (a b : n) : (g : Matrix n n (𝔸f E')) a b ∈ (finAdeleIncl E E').range :=
-      mem_range_finAdeleIncl_of_adeleMap_eq hσ (h_entry a b)
-    choose M hM using h_desc
-    obtain ⟨k, -, hk⟩ := mem_range_map (adeleMap_star (algebraMap E E')) (adeleMap_injective _)
-      isUnit_one _ (M := M) (ext hM)
-    exact ⟨k, hk⟩
+    exact exists_map_eq_of_entries (adeleMap_star (algebraMap E E')) (adeleMap_injective _)
+      isUnit_one _ g fun a b ↦ mem_range_finAdeleIncl_of_adeleMap_eq hσ (h_entry a b)
   · -- Galois descent for rational points, entry by entry.
     have h_entry (a b : n) : σ ((δ : Matrix n n E') a b) = (δ : Matrix n n E') a b :=
       congr_fun₂ (congrArg (fun h : U (1 : Matrix n n E') ↦ (h : Matrix n n E')) hδ) a b
-    have h_desc (a b : n) : (δ : Matrix n n E') a b ∈ (algebraMap E E').range :=
-      mem_range_algebraMap_of_fixed_of_prime hσ (h_entry a b)
-    choose M hM using h_desc
-    obtain ⟨γ, -, hγ⟩ :=
-      mem_range_map _ (algebraMap E E').injective isUnit_one _ (M := M) (ext hM)
-    exact ⟨γ, hγ⟩
+    exact exists_map_eq_of_entries _ (algebraMap E E').injective isUnit_one _ δ
+      fun a b ↦ mem_range_algebraMap_of_fixed_of_prime hσ (h_entry a b)
 
 /-- The twisted norm for `galoisGf σ` of a twisted conjugate `x⁻¹ * e δ * σ x` of a rational point
 `δ` over `E'` is the conjugate by `x` of `e` applied to the twisted norm of `δ` for `ω`. -/

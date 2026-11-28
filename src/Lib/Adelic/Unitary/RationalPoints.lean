@@ -151,15 +151,8 @@ lemma mem_Gamma_iff_range {g : G E s} :
     have h_conj : V.x * (V.ratEmbed γ).adeleMatrix * V.x⁻¹ = γ.val.val.map toAdele := by
       simp [adeleMatrix_ratEmbed, mul_assoc]
     exact ⟨γ.val.val i j, by rw [h_conj, map_apply]⟩
-  -- The entries give a rational matrix, which is unitary for `V.J` because `toAdele` is
-  -- injective (`U.mem_range_map`).
-  choose M hM using show ∀ i j : n, ∃ a : E,
-    toAdele a = (V.x * g.adeleMatrix * V.x⁻¹) i j from h_rat
-  have h_coords : (V.toRatCoords g).val.val = V.x * g.adeleMatrix * V.x⁻¹ := rfl
-  have hM_map : (of M).map toAdele = (V.toRatCoords g).val.val := by
-    rwa [h_coords, ← Matrix.ext_iff]
-  obtain ⟨γ, -, hγ⟩ :=
-    U.mem_range_map (by simp) (toAdele (E := E)).injective V.isUnit_J rfl hM_map
+  obtain ⟨γ, hγ⟩ := U.exists_map_eq_of_entries (by simp) (toAdele (E := E)).injective
+    V.isUnit_J rfl (V.toRatCoords g) h_rat
   exact ⟨γ, V.toRatCoords.symm_apply_eq.2 hγ⟩
 
 /-- Witt's theorem. Let `J` be the matrix of `V`, and let `X` and `Y` be left invertible `n × m`
