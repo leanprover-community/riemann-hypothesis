@@ -90,6 +90,17 @@ the map `k ⊕ M → k` (so `k[ε] → k`) and `New.Variety.structureMap` the st
 `k`-algebra.
 -/
 
+open CategoryTheory in
+/-- In a separated target, the coincidences of two natural transformations at a point after
+base change are cut out by an ideal of its coefficient ring. -/
+lemma IsSeparatedFunctor.exists_ideal_coincidence {k : Type} [CommRing k]
+    {W X : CommAlg k ⥤ Type 1} [IsSeparatedFunctor X] (u c : W ⟶ X)
+    {A : CommAlg k} (x : W.obj A) :
+    ∃ J : Ideal A, ∀ (B : CommAlg k) (φ : A ⟶ B),
+      u.app B (W.map φ x) = c.app B (W.map φ x) ↔ J ≤ RingHom.ker φ.hom := by
+  simpa only [u.naturality_apply, c.naturality_apply] using
+    (IsSeparatedFunctor.exists_ideal A (u.app A x) (c.app A x))
+
 section IsolatedCoincidences
 
 open CategoryTheory Ideal CommAlgCat Algebra TrivSqZeroExt Matrix Set SqZeroExt NatTrans DualNumber
@@ -126,12 +137,7 @@ lemma exists_isCoincidenceSet (u c : W ⟶ X) [IsAlgClosed k] [hX : IsSeparatedF
   -- In each chart the coincidences are cut out by an ideal `J i`. Choose a rational point on each
   -- of its finitely many components; as the coincidences have no nonzero tangent vectors
   -- (`h_red`), a component is that point.
-  have h_ideal (i : ι) : ∃ J : Ideal (a i).coordRing, ∀ (B : CommAlg k) (φ : (a i).coordRing ⟶ B),
-      c.app B (W.map φ (a i).point) = u.app B (W.map φ (a i).point) ↔ J ≤ RingHom.ker φ.hom := by
-    simpa [← naturality_apply] using
-      hX.exists_ideal (a i).coordRing (c.app (a i).coordRing (a i).point)
-        (u.app (a i).coordRing (a i).point)
-  choose J hJ using h_ideal
+  choose J hJ using fun i : ι ↦ IsSeparatedFunctor.exists_ideal_coincidence c u (a i).point
   have h_point ⦃i : ι⦄ ⦃p : Ideal (a i).coordRing⦄ (hp : p ∈ (J i).minimalPrimes) :
       ∃ o : (a i).coordRing →ₐ[k] k, p ≤ RingHom.ker o :=
         nullstellensatz_exists_le_ker hp.isPrime.ne_top

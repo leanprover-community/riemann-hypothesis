@@ -414,20 +414,15 @@ lemma New.Variety.isOpenSubfunctor_fieldLocus_eq_imp_mem {k : Type} [CommRing k]
     IsOpenSubfunctor
       (fieldLocus fun (K : CommAlg k) (x : W.obj K) ↦ u.app K x = u'.app K x → x ∈ V.obj K) := by
   refine isOpenSubfunctor_fieldLocus fun A x ↦ ?_
-  obtain ⟨J, hJ⟩ : ∃ J : Ideal A, ∀ (B : CommAlg k) (φ : A ⟶ B),
-      X.map φ (u.app A x) = X.map φ (u'.app A x) ↔ J ≤ ker φ.hom :=
-    IsSeparatedFunctor.exists_ideal A (u.app A x) (u'.app A x)
+  obtain ⟨J, hJ⟩ := IsSeparatedFunctor.exists_ideal_coincidence u u' x
   obtain ⟨I, hI⟩ : ∃ I : Ideal A, ∀ (B : CommAlg k) (φ : A ⟶ B),
       W.map φ x ∈ V.obj B ↔ I.map φ.hom = ⊤ := hV A x
   -- Over a field: `φ` kills `J` exactly at a coincidence, and does not kill `I` exactly on `V`.
   refine ⟨I ⊔ J, fun K φ hK ↦ ?_⟩
   let h_field : Field K := hK.toField
-  have h_coin : u.app K (W.map φ x) = u'.app K (W.map φ x) ↔ J ≤ ker φ.hom := by
-    rw [u.naturality_apply, u'.naturality_apply]
-    exact hJ K φ
   have h_mem : W.map φ x ∈ V.obj K ↔ ¬I ≤ ker φ.hom := by
     rw [hI K φ, ← isAtom_top.ne_bot_iff_eq le_top, Ne, I.map_eq_bot_iff_le_ker]
-  rw [h_coin, h_mem, sup_le_iff, not_and]
+  rw [hJ K φ, h_mem, sup_le_iff, not_and]
   exact imp_not_comm
 
 /-- A point `x` with coordinates `v` on the cone of `g`, the coordinates of a field point `η`,
