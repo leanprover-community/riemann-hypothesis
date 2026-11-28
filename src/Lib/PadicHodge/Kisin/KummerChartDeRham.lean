@@ -413,9 +413,8 @@ lemma sum_phiInvToBdR_map_mul_mem_of_mem_valueField (f : Ainf →ₗ[k.S] k.S) {
     -not_isEmpty_of_nonempty] at hu
   have h_mul : ∑ l, w l * phiInvToBdR a (f (r l)) =
       (∑ l, w l * phiInvToBdR a (r l)) * algebraMap BdRPlus BdR u := by
-    with_unfolding_all
-      simpa [← hc, prod, sum_mul, sum_sigma', smul_def', mul_assoc,
-        -not_isEmpty_of_nonempty] using! congr(algebraMap BdRPlus BdR $hu)
+    simpa [← hc, prod, sum_mul, sum_sigma', smul_def', mul_assoc,
+      -not_isEmpty_of_nonempty] using! congr(algebraMap BdRPlus BdR $hu)
   -- Multiply by `d⁻¹`: the new sum is `u` times the old one.
   have h_scale (z : ι → BdR) : ∑ l, z l * v l = ((d : A) : BdR)⁻¹ * ∑ l, w l * z l := by
     simp only [← hw, mul_sum, mul_assoc, mul_comm (z _)]
