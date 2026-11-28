@@ -104,8 +104,7 @@ lemma conj_mem_range_radicalHom (hε : IsIdempotentElem ε) {h u : GL n k}
 lemma diagonal_blocks_mul_radical (hε : IsIdempotentElem ε) {h u : GL n k}
     (hh : h ∈ blockDiagonalGroup ε) (hu : u ∈ (radicalHom hε).range) :
     ε * (h * u).val * ε + (1 - ε) * (h * u).val * (1 - ε) = h.val := by
-  obtain ⟨h_left, h_right⟩ : ε * (u.val - 1) = u.val - 1 ∧ (u.val - 1) * ε = 0 :=
-    (mem_range_radicalHom hε).1 hu
+  obtain ⟨h_left, h_right⟩ := mem_upperBlocks_iff.mp ((mem_range_radicalHom hε).1 hu)
   have h_comm : h.val * ε = ε * h.val := mem_blockDiagonalGroup.1 hh
   have h_fix : u.val * ε = ε := by linear_combination (norm := noncomm_ring) h_right
   have h_first : ε * (h.val * u.val) * ε = h.val * ε := by
@@ -163,7 +162,7 @@ the radical conjugates `ε` to `e`. -/
 lemma semiconjBy_radicalHom_sub (hε : IsIdempotentElem ε) {e : Matrix n n k}
     (h_range : ε * e = e) (h_fix : e * ε = ε) :
     SemiconjBy (radicalHom hε (ofAdd (ε - e))).val ε e := by
-  have h_mem : ε - e ∈ upperBlocks ε :=
+  have h_mem : ε - e ∈ upperBlocks ε := mem_upperBlocks_iff.mpr
     ⟨by rw [mul_sub, hε.eq, h_range], by rw [sub_mul, hε.eq, h_fix, sub_self]⟩
   have h_idem : e * e = e := by rw [← h_range, mul_assoc, ← mul_assoc e, h_fix, ← mul_assoc, hε.eq]
   rw [SemiconjBy, coe_radicalHom_mul_idempotent, coe_radicalHom_of_mem hε h_mem, mul_add, mul_sub,
@@ -174,13 +173,13 @@ lemma semiconjBy_radicalHom_sub (hε : IsIdempotentElem ε) {e : Matrix n n k}
 `1 + (ε - e)`. -/
 lemma radicalHom_sub_eq (hε : IsIdempotentElem ε) {u : GL n k} (hu : u ∈ (radicalHom hε).range)
     {e : Matrix n n k} (he : SemiconjBy u.val ε e) : radicalHom hε (ofAdd (ε - e)) = u := by
-  obtain ⟨h_left, h_right⟩ : ε * (u.val - 1) = u.val - 1 ∧ (u.val - 1) * ε = 0 :=
-    (mem_range_radicalHom hε).1 hu
+  have h_mem : u.val - 1 ∈ upperBlocks ε := (mem_range_radicalHom hε).1 hu
+  obtain ⟨h_left, h_right⟩ := mem_upperBlocks_iff.mp h_mem
   have h_fix : u.val * ε = ε := by linear_combination (norm := noncomm_ring) h_right
-  have h_sq : (u.1 - 1) * (u.1 - 1) = 0 := mul_eq_zero_of_mem_upperBlocks ⟨h_left, h_right⟩ h_left
+  have h_sq : (u.1 - 1) * (u.1 - 1) = 0 := mul_eq_zero_of_mem_upperBlocks h_mem h_left
   have h_sub : ε - e = u.val - 1 := u.isUnit.mul_right_cancel <| by
     linear_combination (norm := noncomm_ring) he.eq - h_fix + h_left - h_sq
-  exact Units.ext (by rw [h_sub, coe_radicalHom_of_mem hε ⟨h_left, h_right⟩, add_sub_cancel])
+  exact Units.ext (by rw [h_sub, coe_radicalHom_of_mem hε h_mem, add_sub_cancel])
 
 end Levi
 
@@ -233,9 +232,9 @@ lemma isConj_mul_self_of_mem_range_radicalHom [CharZero F] {ε : Matrix n n F}
     (hε : IsIdempotentElem ε) {m : GL n F} (hm : m ∈ (radicalHom hε).range) : IsConj m (m * m) := by
   have h_inv : (1 + ε) * (1 - (2⁻¹ : F) • ε) = 1 := by
     simp [mul_sub, add_mul, hε.eq, ← two_smul F, smul_smul]
-  obtain ⟨h_left, h_right⟩ : ε * (m.val - 1) = m.val - 1 ∧ (m.val - 1) * ε = 0 :=
-    (mem_range_radicalHom hε).1 hm
-  have h_sq : (m.1 - 1) * (m.1 - 1) = 0 := mul_eq_zero_of_mem_upperBlocks ⟨h_left, h_right⟩ h_left
+  have h_mem : m.val - 1 ∈ upperBlocks ε := (mem_range_radicalHom hε).1 hm
+  obtain ⟨h_left, h_right⟩ := mem_upperBlocks_iff.mp h_mem
+  have h_sq : (m.1 - 1) * (m.1 - 1) = 0 := mul_eq_zero_of_mem_upperBlocks h_mem h_left
   -- With `m = 1 + z`, both sides equal `1 + ε + 2 z`.
   have h_semiconj : (1 + ε) * m.val = m.val * m.val * (1 + ε) := by
     linear_combination (norm := noncomm_ring) h_left - h_sq - (m.val + 1) * h_right

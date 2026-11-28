@@ -25,15 +25,8 @@ variable {n k : Type*} [Fintype n] [DecidableEq n] [CommRing k] {ε : Matrix n n
 variable (ε) in
 /-- The upper right blocks with respect to `ε`: the matrices `Z` with `ε Z = Z` and `Z ε = 0`. For
 an idempotent `ε` these are the maps that kill the image of `ε` and send everything into it. -/
-def upperBlocks : Submodule k (Matrix n n k) where
-  carrier := {Z : Matrix n n k | ε * Z = Z ∧ Z * ε = 0}
-  add_mem' := by
-    rintro Y Z ⟨hεY, hYε⟩ ⟨hεZ, hZε⟩
-    exact ⟨by rw [mul_add, hεY, hεZ], by rw [add_mul, hYε, hZε, add_zero]⟩
-  zero_mem' := ⟨mul_zero ε, zero_mul ε⟩
-  smul_mem' := by
-    rintro c Z ⟨hεZ, hZε⟩
-    exact ⟨by rw [mul_smul_comm, hεZ], by rw [smul_mul_assoc, hZε, smul_zero]⟩
+def upperBlocks : Submodule k (Matrix n n k) :=
+  LinearMap.eqLocus (LinearMap.mulLeft k ε) .id ⊓ LinearMap.ker (LinearMap.mulRight k ε)
 
 lemma mem_upperBlocks_iff {Z : Matrix n n k} :
     Z ∈ upperBlocks ε ↔ ε * Z = Z ∧ Z * ε = 0 :=
