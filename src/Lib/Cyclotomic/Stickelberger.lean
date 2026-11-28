@@ -5,11 +5,11 @@ import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.NumberTheory.MulChar.Lemmas
 import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
-import Mathlib.RingTheory.Valuation.LocalSubring
 import TauCeti.Algebra.Group.AddChar.Basic
 public import Lib.GaloisRep.Main.SelmerModules
 import Lib.Adelic.Adeles.LocalFactors
 import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.General.Algebra.ValuativeIntegrality
 import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
@@ -90,9 +90,8 @@ has absolute value one in every complex embedding is a root of unity. -/
 lemma isOfFinOrder_of_norm_eq_one {x : Ω} (h_mem : ∀ A : ClosurePlace, x ∈ A)
     (h_norm : ∀ τ : Ω →+* ℂ, ‖τ x‖ = 1) : IsOfFinOrder x := by
   -- Apply Mathlib's Kronecker theorem to the generator of the number field `ℚ⟮x⟯`.
-  -- The integral closure of `ℤ` is the intersection of the valuation subrings.
   have h_int : IsIntegral ℤ x :=
-    (integralClosure ℤ Ω).toSubring.eq_iInf_of_isIntegrallyClosedIn.ge (by simp [h_mem])
+    ((algebraMap ℤ Ω).isIntegralElem_iff_forall_valuationSubring x).2 fun A _ ↦ h_mem A
   have : NumberField ℚ⟮x⟯ := { to_finiteDimensional := adjoin.finiteDimensional h_int.tower_top }
   -- Every embedding of `ℚ⟮x⟯` into `ℂ` extends to `Ω`.
   have h_gen (φ : ℚ⟮x⟯ →+* ℂ) : ‖φ (AdjoinSimple.gen ℚ x)‖ = 1 := by

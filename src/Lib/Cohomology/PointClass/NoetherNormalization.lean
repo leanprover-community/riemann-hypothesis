@@ -7,11 +7,11 @@ import Mathlib.GroupTheory.CosetCover
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Invariant.Galois
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Valuation.LocalSubring
 import TauCeti.RingTheory.MvPolynomial.Homogeneous
 public import Lib.General.Geometry.ProjectiveSpace
 public import Lib.General.Geometry.EtaleCharts
 import Lib.General.Algebra.MultivariatePolynomials
+import Lib.General.Algebra.ValuativeIntegrality
 import Lib.General.Geometry.PointsOfProperSchemes
 import Lib.PadicComparison.Descent.TestCategory
 
@@ -137,17 +137,6 @@ lemma IsHomogeneousSolution.aeval_eq_zero_of_transcendental [Algebra B L] [IsSca
 
 lemma IsHomogeneousSolution.refl : IsHomogeneousSolution k v v := by tauto
 
-/-- An element of a field `L` that lies in every valuation ring containing the image of `f` is
-integral over that image. -/
-@[stacks 090P "part (1), for the integral closure of the image of a ring map"]
-lemma isIntegralElem_of_valuationSubring {f : A →+* L} {x : L}
-    (h : ∀ V : ValuationSubring L, (∀ a : A, f a ∈ V) → x ∈ V) :
-    f.IsIntegralElem x := by
-  -- The integral closure of `A` in `L` is the intersection of the valuation rings that contain it.
-  let algebraL : Algebra A L := f.toAlgebra
-  refine (integralClosure A L).toSubring.eq_iInf_of_isIntegrallyClosedIn.ge ?_
-  simpa using fun V hV ↦ h V fun a ↦ hV isIntegral_algebraMap
-
 /-! ### Noether normalisation -/
 
 /-- Λ is a Noether normalisation of g: the Λ_0, …, Λ_d are linear forms, the values Λ_j(g) have no
@@ -249,7 +238,7 @@ lemma isIntegralElem_of_no_common_zero [Finite ι]
   -- Show `v i ∈ V` for each valuation ring `V` that contains the image of `φ`. Divide `v` by a
   -- coordinate `v j` of largest valuation. If `v j ∉ V`, the quotient reduces to a common zero
   -- of `Λ` over the residue field whose `j`-th coordinate is `1`, against `h_no_common_zero`.
-  refine isIntegralElem_of_valuationSubring fun V hV ↦ ?_
+  refine (RingHom.isIntegralElem_iff_forall_valuationSubring _ _).2 fun V hV ↦ ?_
   -- largest valuation says that each `v l` is a multiple of `v j` by some `x l ∈ V`
   have h_nonempty : Nonempty ι := ⟨i⟩
   obtain ⟨j, hj⟩ : ∃ j : ι, ∀ l : ι, ∃ x : V, x • v j = v l := exists_max (V.valuation ∘ v)
@@ -775,7 +764,7 @@ lemma IsCoordsWithUnit.exists_app_eq_algebraMap_of_isHomogeneousSolution
   -- The value at `ξ` lies in every valuation ring `V` over `k`: dividing by the coordinate of
   -- largest valuation shows that `ξ` comes from a point over `V`. So it is integral over `k`.
   have h_integral : (algebraMap k F).IsIntegralElem ((f.app _ ξ).down 0) := by
-    refine isIntegralElem_of_valuationSubring fun V hV ↦ ?_
+    refine (RingHom.isIntegralElem_iff_forall_valuationSubring _ _).2 fun V hV ↦ ?_
     have h_max : ∃ i : ι, ∀ l : ι, ∃ x : V, x • g i = g l := Finite.exists_max (V.valuation ∘ g)
     choose i w hw using h_max
     -- the inclusion of `V`, as a subalgebra of `F`
