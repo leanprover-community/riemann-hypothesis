@@ -206,8 +206,8 @@ lemma HasNoSmallRelations.inv_scalar_on_blocks {c : N → Fin n} (he : HasNoSmal
     simp [ite_apply, apply_ite]
   set Φ : (MvPolynomial (Fin n) k)[X] ≃ₐ[k] MvPolynomial (Option (Fin n)) k :=
     (optionEquivLeft k (Fin n)).symm with hΦ
-  have hp_ne : Φ p ≠ 0 := by aesop
-  have hq_ne : Φ q ≠ 0 := by aesop
+  have hp_ne : Φ p ≠ 0 := (map_ne_zero_iff Φ Φ.injective).2 fun h ↦ hp_const (by simp [h])
+  have hq_ne : Φ q ≠ 0 := (map_ne_zero_iff Φ Φ.injective).2 fun h ↦ hq_const (by simp [h])
   -- Total degrees add, that of `α` is at most that of `p`, and that of `q` is at least
   -- `q.natDegree`; so `α` has degree at most `p.natDegree`.
   have hα_p : ∑ i, α i ≤ (Φ p).totalDegree := calc
