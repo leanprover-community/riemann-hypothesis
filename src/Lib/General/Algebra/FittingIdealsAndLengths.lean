@@ -3,6 +3,7 @@ module
 public import Mathlib.LinearAlgebra.Matrix.Module
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 import TauCeti.LinearAlgebra.Determinant.Basic
+import TauCeti.RingTheory.Valuation.AddValuation
 public import Aesop.BuiltinRules
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Order.CompletePartialOrder
@@ -262,11 +263,6 @@ lemma length_obeying_relationsOn_le [Nonempty n] [Module.Finite O Z] :
 @[simp]
 lemma length_quot_span_eq_addVal : length O (QuotSpan a) = addVal O a := Ring.ord_eq_addVal a
 
-lemma addVal_prod (f : m → O) : addVal O (∏ i : m, f i) = ∑ i : m, addVal O (f i) := by
-  induction (Finset.univ : Finset m) using Finset.cons_induction with
-  | empty => simp
-  | cons i s hi ih => simp [ih]
-
 /-- For a square matrix M over a discrete valuation ring O and p in O, the kernel of M acting on
 (O/p)^n (the endomorphism `M • 1`) has O-length at most the valuation of det M, normalised so that a
 uniformiser has valuation 1. It is a consequence of the theorem on elementary divisors. -/
@@ -292,7 +288,7 @@ lemma length_ker_le_addVal_det (M : Matrix n n O) (p : O) :
       exact ⟨fun i ↦ mkQ _ (t i), mem_top, ((smul_eq_iff_eq_inv_smul P).1 (funext ht).symm).symm⟩
   calc length O (ker ((Q.val * diagonal a * P.val) • 1 : End O (n → QuotSpan p)))
     _ ≤ length O (⊤ : Submodule O (∀ i : n, QuotSpan (a i))) := length_le_of_le_map _ ⊤ h_ker
-    _ = addVal O (∏ i : n, a i) := by simp [addVal_prod]
+    _ = addVal O (∏ i : n, a i) := by simp
     -- `det M = det Q * (∏ i, a i) * det P`, so its valuation is no smaller than that of the
     -- product.
     _ ≤ addVal O (Q.val * diagonal a * P.val).det := by simp [le_add_right]

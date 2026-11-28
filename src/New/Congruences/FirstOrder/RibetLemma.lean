@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Azumaya.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
+import TauCeti.RingTheory.Valuation.AddValuation
 public import New.Congruences.FirstOrder.RibetMatrices
 import New.Congruences.FirstOrder.RibetMethod
 
@@ -383,7 +384,7 @@ lemma CharacterRows.addVal_constantCoeff_prod_le
       ∑ e : Fin t, b e + (Fintype.card J + t * #s) * addVal O C := by
   have h_card : ∑ e : Fin t, (#{j : J | ty j = e} : ℕ∞) = Fintype.card J := by
     rw [← Nat.cast_sum, ← card_eq_sum_card_fiberwise fun _ _ ↦ mem_univ _, card_univ]
-  rw [map_prod, addVal_prod]
+  rw [map_prod, AddValuation.map_prod]
   calc _ ≤ ∑ e : Fin t, (b e + (#{j : J | ty j = e} + #s) * addVal O C) :=
         sum_le_sum fun e _ ↦ R.addVal_constantCoeff_le e
     _ = _ := by simp [sum_add_distrib, ← sum_mul, h_card]
@@ -666,7 +667,7 @@ lemma exists_isCommonRibetElement_addVal_le (u : Y → G →* Matrix σ σ O)
       simp [D, polyActionAtZero, det_apply']
     have hD : addVal O (constantCoeff (D π)) ≤ b₀ := by rwa [hD_eq]
     have hc₀ : addVal O c₀ = ∑ v, addVal O (eval 1 (o v)) + #s * addVal O C := by
-      simp [c₀, addVal_prod]
+      simp [c₀]
     calc addVal O (constantCoeff (F π * ∏ e, R.multiplier e))
         = addVal O (constantCoeff (D π)) + (addVal O C + t * addVal O c₀) +
             addVal O (constantCoeff (∏ e, R.multiplier e)) := by
