@@ -362,7 +362,7 @@ lemma pairingBoundConst_le [S.IsAdmissible] :
         nlinarith only [S.thousand_le_b]
       rw [div_pow, mul_pow, pow_right_comm]
       gcongr
-      nlinarith [mul_le_mul_of_nonneg_left h_eight
+      linarith [mul_le_mul_of_nonneg_left h_eight
         (by positivity : 0 ≤ S.tailScale ^ 2 * S.unipotentCovolume ^ 2)]
 
 /-- Let the data be admissible (`S.IsAdmissible`), let `γ` be rational, and let `x = termDiscNorm γ`
