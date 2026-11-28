@@ -192,7 +192,7 @@ lemma exists_mk_reduceGL_pow_eq_mk_reduceGL_twistedNorm {σ : Gal(E'/E)} (hσ_u 
   | succ m ih =>
     obtain ⟨hN_int, h_pow⟩ := ih
     set N : GL n (LocField u) := (twistedNorm (galoisGf σ) m a).atPlace u
-    let σN : GL n (LocField u) := Matrix.GeneralLinearGroup.map (locMap σ hσ_u) N
+    let σN : GL n (LocField u) := Matrix.GeneralLinearGroup.map (locMap (σ : E' →+* E') hσ_u) N
     have hσN_int : σN ∈ intGL n Valued.v.integer := (map_locMap_mem_intGL_iff hσ_u).2 hN_int
     have hσN_reduce : reduceGL ⟨σN, hσN_int⟩ = (reduceGL ⟨N, hN_int⟩).map φ :=
       reduceGL_map_locMap hσ_u φ hσ N hσN_int
