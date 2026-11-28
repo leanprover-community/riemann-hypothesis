@@ -4,6 +4,7 @@ import TauCeti.Analysis.Complex.CauchyIntegralPolydisc
 import TauCeti.Analysis.Complex.WeaklyHolomorphic
 import TauCeti.MeasureTheory.Function.StronglyMeasurable.FiniteDimensional
 public import Mathlib.Analysis.CStarAlgebra.ContinuousMap
+import TauCeti.Analysis.SpecialFunctions.Pow.Bounds
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
@@ -359,14 +360,8 @@ lemma New.analyticOnNhd_integral_mul_rpow {T : X → ℂ} {N : X → ℝ} {s t :
       DifferentiableAt ℂ (fun w ↦ T a * N a ^ w) z ∧ ‖T a * N a ^ z‖ ≤ bound a := by
     have ha : 0 < N a := hN_pos a
     refine ⟨by fun_prop (disch := simp [h_ne]), ?_⟩
-    suffices h_real : ‖T a‖ * N a ^ z.re ≤ ‖T a‖ * N a ^ s + ‖T a‖ * N a ^ t by
-      simpa only [bound, norm_mul, norm_cpow_eq_rpow_re_of_pos ha, ofReal_re] using h_real
-    -- `N a ^ re z` increases or decreases in `re z`, according as `1 ≤ N a` or `N a ≤ 1`
-    obtain h_one | h_one := le_total 1 (N a)
-    · exact le_add_of_nonneg_of_le (by positivity)
-        (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le h_one hz.2) (norm_nonneg _))
-    · exact le_add_of_le_of_nonneg (mul_le_mul_of_nonneg_left
-        (Real.rpow_le_rpow_of_exponent_ge ha h_one hz.1) (norm_nonneg _)) (by positivity)
+    simpa only [bound, norm_mul, norm_cpow_eq_rpow_re_of_pos ha, ofReal_re, ← mul_add] using
+      mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_add_rpow_of_mem_Icc ha hz) (norm_nonneg (T a))
   have h_dom (z : ℝ) (hz : z ∈ Icc s t) : ∀ᵐ a ∂μ, ‖T a * N a ^ (z : ℂ)‖ ≤ bound a :=
     ae_of_all μ fun a ↦ (h_strip z hz a).2
   refine ⟨fun z hz ↦ h_bound.mono' (h_meas z) (h_dom z hz), ?_, fun z hz ↦ ?_⟩

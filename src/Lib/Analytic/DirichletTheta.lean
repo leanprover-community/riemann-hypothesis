@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Analysis.CStarAlgebra.Classes
+import TauCeti.Analysis.SpecialFunctions.Pow.Bounds
 public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.HalfPlane
@@ -91,14 +92,9 @@ lemma mellin_differentiableOn_and_bounded {D : ℝ} {f : ℝ → ℂ}
   have h_integrand (z : ℂ) (hz : z.re ∈ Icc (2⁻¹ : ℝ) 2) (t : ℝ) (ht : 0 < t) :
       ‖(t : ℂ) ^ (z - 1) • f t‖ ≤
         ‖(t : ℂ) ^ ((2⁻¹ : ℂ) - 1) • f t‖ + ‖(t : ℂ) ^ ((2 : ℂ) - 1) • f t‖ := by
-    have h_pow : t ^ (z.re - 1) ≤ t ^ ((2⁻¹ : ℝ) - 1) + t ^ ((2 : ℝ) - 1) := by
-      obtain h | h := le_total t 1
-      · exact le_add_of_le_of_nonneg
-          (rpow_le_rpow_of_exponent_ge ht h (by linarith [hz.1])) (by positivity)
-      · exact le_add_of_nonneg_of_le (by positivity)
-          (rpow_le_rpow_of_exponent_le h (by linarith [hz.2]))
-    simpa [norm_cpow_eq_rpow_re_of_pos ht, ← add_mul] using
-      mul_le_mul_of_nonneg_right h_pow (norm_nonneg (f t))
+    simpa [norm_cpow_eq_rpow_re_of_pos ht, ← add_mul] using mul_le_mul_of_nonneg_right
+      (Real.rpow_le_rpow_add_rpow_of_mem_Icc ht ⟨sub_le_sub_right hz.1 1, sub_le_sub_right hz.2 1⟩)
+      (norm_nonneg (f t))
   exact ⟨fun z hz ↦
       (mellinConvergent_and_differentiableAt h_bound h_meas hz).2.differentiableWithinAt,
     _, fun z hz ↦ norm_integral_le_of_norm_le (h_half.norm.add h_two.norm)
