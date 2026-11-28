@@ -391,24 +391,81 @@ lemma IsCompleteTorsionFree.bijective_one_sub_smul {E : Type} [CommRing E] [Alge
     exact hE.isDerivedComplete.exists_apply_eq_of_approx hE.isDerivedComplete (1 - (p : B) • W)
       (fun x ↦ x) (fun x ↦ ⟨x, W x, by simp⟩) x
 
-/-- Let `B → E` be `p`-torsion-free, `p`-complete `A`-algebras, where `E` has the topological
-`B`-basis `u a * y n` (via `j`), `y n = (t - v) ^ n / n !`, `v` a unit, `u 0 = 1`. Let `p ^ 3 ∣ q`
-with `q` a unit in `K`, and let `γ` scale `v` by `q + 1` and each `u a` (`a ≠ 0`) by `η + 1` with
-`p η ∣ q`. Then `K ⊗ B → K ⊗ E` and `γ` are Koszul-exact: injective, fixed points in the image,
-`γ - 1` onto. `ULift` only moves the modules to universe `1`. -/
-lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A) [Algebra B E]
-    [IsScalarTower A B E] [Zero I] {b : Basis (I × ℕ) B T} {j : T →ₗ[B] E}
-    (hj : IsCompletionBijective p j) {u : I → E} {y : ℕ → E} {v : E.obj} {t : B.obj} {q : A}
-    (hb : ∀ (a : I) (n : ℕ), j (b (a, n)) = u a * y n)
-    (hy : ∀ n : ℕ, (algebraMap B E t - v) ^ n = n ! * y n) (hv_unit : IsUnit v) (hu_zero : u 0 = 1)
-    (hq_dvd : (p : A) ^ 3 ∣ q) (hq_unit : IsUnit (algebraMap A K q)) (γ : E →ₐ[B] E)
-    (hγv : γ v = (q + 1) • v)
+/-- A criterion for Koszul exactness (`New.Variety.KoszulExact`) of a linear map `i` and an
+endomorphism `g` with `g ∘ i = i`: it suffices that `i` has a left inverse, that `g ∘ S - S` is
+bijective for some `S`, and that `i ∘ ρ - V = S ∘ G` for some `ρ`, `G` and some bijective `V`. -/
+lemma koszulExact_of_bijective_comp_sub {R M N : Type*} [Semiring R] [AddCommGroup M]
+    [Module R M] [AddCommGroup N] [Module R N] {i : M →ₗ[R] N} {g : N →ₗ[R] N} {κ ρ : N →ₗ[R] M}
+    {S G V : N →ₗ[R] N} (hκ : κ ∘ₗ i = .id) (hg : g ∘ₗ i = i) (hS : Bijective (g ∘ₗ S - S))
+    (hV : Bijective V) (hG : i ∘ₗ ρ - V = S ∘ₗ G) : KoszulExact i g := by
+  refine ⟨LeftInverse.injective (g := κ) fun x ↦ LinearMap.congr_fun hκ x,
+    fun z hz ↦ ?_, fun z ↦ ?_⟩
+  · obtain ⟨x, rfl⟩ := hV.surjective z
+    have hx : S (G x) = i (ρ x) - V x := (LinearMap.congr_fun hG x).symm
+    have hm : g (i (ρ x)) = i (ρ x) := LinearMap.congr_fun hg _
+    have hG_zero : G x = 0 := hS.injective (by simp [hx, hm, hz.eq])
+    exact ⟨ρ x, sub_eq_zero.mp (by simpa [hG_zero] using hx.symm)⟩
+  · obtain ⟨x, hx⟩ := hS.surjective z
+    exact ⟨S x, hx⟩
+
+/-- Let `y n = (t - v) ^ n / n !` in `E`, and let the `B`-algebra map `γ` scale `v` by `q + 1`,
+where `p ^ 3 ∣ q`. Then Taylor expansion of the divided powers gives
+`γ (y (n + 1)) = y (n + 1) - q v (y n + p w)` for some `w`. -/
+private lemma exists_algHom_dividedPower_succ_eq (E : CrysTest A) [Algebra B E] {y : ℕ → E}
+    {v : E.obj} {t : B.obj} {q : A} (hy : ∀ n : ℕ, (algebraMap B E t - v) ^ n = n ! * y n)
+    (hq_dvd : (p : A) ^ 3 ∣ q) (γ : E →ₐ[B] E) (hγv : γ v = (q + 1) • v) (n : ℕ) :
+    ∃ w : E, γ (y n.succ) = y n.succ - q • v * (y n + p • w) := by
+  obtain ⟨d, hd⟩ := hq_dvd
+  -- `γ` moves `t - v` by `-q • v`, a multiple of `p ^ 3`; Taylor expansion of
+  -- `P = (x + p X) ^ (n + 1) / (n + 1)!` at `p ^ 2 * (-d • v)` gives `γ (y (n + 1))`.
+  let x : E := algebraMap B E t - v
+  let z : E := -d • v
+  have h_mem_pd : C x + X • C (p : E) ∈ pdIdeal E[X] :=
+    (pdIdeal _).add_mem (pdIdeal_le_comap C fun k ↦ ⟨_, hy k⟩)
+      (smul_mem _ X (pdIdeal_le_comap C E.property.p_mem_pdIdeal))
+  obtain ⟨P, hP⟩ : ((n + 1)! : E[X]) ∣ (C x + X * C (p : E)) ^ (n + 1) := h_mem_pd (n + 1)
+  have h_reg : Function.Injective fun a : E.obj ↦ (n + 1)! • a :=
+    nsmul_right_injective (M := E) (n + 1).factorial_ne_zero
+  have h_eval_zero : P.eval 0 = y (n + 1) :=
+    h_reg (by simpa [x, hy] using (congrArg (Polynomial.eval 0) hP).symm)
+  have h_deriv_zero : (derivative P).eval 0 = p * y n := by
+    have h_deriv : (n + 1) * (n ! * y n) * p = (n + 1)! * (derivative P).eval 0 := by
+      simpa [derivative_pow, x, hy] using congrArg (fun Q : E[X] ↦ (derivative Q).eval 0) hP
+    apply h_reg
+    push_cast [nsmul_eq_mul, factorial_succ] at h_deriv ⊢
+    linear_combination -h_deriv
+  have h_eval_pt : P.eval (p ^ 2 * z) = γ (y (n + 1)) := by
+    have h₁ : (x + p ^ 2 * z * p) ^ (n + 1) = (n + 1)! * P.eval (p ^ 2 * z) := by
+      simpa using congrArg (Polynomial.eval (p ^ 2 * z)) hP
+    have hγx : γ (algebraMap B E t - v) = x + p ^ 3 * z := by
+      simp [x, z, hγv, hd, smul_def']
+      ring
+    have h₂ : (x + p ^ 3 * z) ^ (n + 1) = (n + 1)! * γ (y (n + 1)) := by
+      simpa [hγx] using congrArg γ (hy (n + 1))
+    apply h_reg
+    linear_combination h₂ - h₁
+  obtain ⟨k, hk⟩ := P.binomExpansion 0 (p ^ 2 * z)
+  rw [zero_add, h_eval_pt, h_eval_zero, h_deriv_zero] at hk
+  refine ⟨z * k, ?_⟩
+  simp only [Nat.succ_eq_add_one, hd, z, smul_def', map_mul, map_pow,
+    map_natCast, map_neg] at hk ⊢
+  linear_combination hk
+
+/-- In the setting of `New.Variety.koszulExact_pd_line`, there are a shift `S` of the topological
+basis `u a * y n` and endomorphisms `W`, `G` of `E` with `γ ∘ S - S = q v (1 - p W)` and
+`m ∘ (q t κ) - q v = S ∘ G`, where `m : B → E` is the structure map and `κ` is a left inverse
+of `m`. -/
+private lemma exists_shift_pd_line (E : CrysTest A) [Algebra B E] [IsScalarTower A B E] [Zero I]
+    {b : Basis (I × ℕ) B T} {j : T →ₗ[B] E} (hj : IsCompletionBijective p j) {u : I → E}
+    {y : ℕ → E} {v : E.obj} {t : B.obj} {q : A} (hb : ∀ (a : I) (n : ℕ), j (b (a, n)) = u a * y n)
+    (hy : ∀ n : ℕ, (algebraMap B E t - v) ^ n = n ! * y n) (hu_zero : u 0 = 1)
+    (hq_dvd : (p : A) ^ 3 ∣ q) (γ : E →ₐ[B] E) (hγv : γ v = (q + 1) • v)
     (hγu : ∀ a : I, a ≠ 0 → ∃ η : A, γ (u a) = (η + 1) • u a ∧ p * η ∣ q) :
-    KoszulExact (ULift.map.{0, _, 1, 1} (((Algebra.linearMap B E).restrictScalars A).baseChange K))
-      (ULift.map ((γ.toLinearMap.restrictScalars A).baseChange K)) := by
+    ∃ (κ : E →ₗ[B] B) (S W G : End B E), κ ∘ₗ Algebra.linearMap B E = .id ∧
+      γ.toLinearMap ∘ₗ S - S = q • v • (1 - (p : B) • W) ∧
+      Algebra.linearMap B E ∘ₗ (q • t • κ) - q • v • (1 : End B E) = S ∘ₗ G := by
   classical
-  -- A shift `S` of the topological basis makes `(γ - 1) S = q v (1 - p W)`, which is bijective
-  -- on `K ⊗ E`; and `q v x` lies in `B` plus the image of `S` for every `x`.
+  choose w hw using exists_algHom_dividedPower_succ_eq B E hy hq_dvd γ hγv
   -- For `a ≠ 0`: `γ (u a) = (η a + 1) * u a` and `q = p * η a * c a`.
   choose! η hγu c hη using hγu
   obtain ⟨d, hd⟩ := hq_dvd
@@ -417,42 +474,6 @@ lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A)
     isAdicComplete_over_base E.property.complete
   have hB_complete : IsAdicComplete (Ideal.span {(p : B)}) B := B.property.complete
   have hy_zero : y 0 = 1 := by simpa using (hy 0).symm
-  -- `γ` moves `t - v` by `-q • v`, a multiple of `p ^ 3`; Taylor expansion of
-  -- `P = (x + p X) ^ (n + 1) / (n + 1)!` at `p ^ 2 * (-d • v)` gives `γ (y (n + 1))`.
-  have h_taylor (n : ℕ) : ∃ w : E, γ (y n.succ) = y n.succ - q • v * (y n + p • w) := by
-    let x : E := algebraMap B E t - v
-    let z : E := -d • v
-    have h_mem_pd : C x + X • C (p : E) ∈ pdIdeal E[X] :=
-      (pdIdeal _).add_mem (pdIdeal_le_comap C fun k ↦ ⟨_, hy k⟩)
-        (smul_mem _ X (pdIdeal_le_comap C E.property.p_mem_pdIdeal))
-    obtain ⟨P, hP⟩ : ((n + 1)! : E[X]) ∣ (C x + X * C (p : E)) ^ (n + 1) := h_mem_pd (n + 1)
-    have h_reg : Function.Injective fun a : E.obj ↦ (n + 1)! • a :=
-      nsmul_right_injective (M := E) (n + 1).factorial_ne_zero
-    have h_eval_zero : P.eval 0 = y (n + 1) :=
-      h_reg (by simpa [x, hy] using (congrArg (Polynomial.eval 0) hP).symm)
-    have h_deriv_zero : (derivative P).eval 0 = p * y n := by
-      have h_deriv : (n + 1) * (n ! * y n) * p = (n + 1)! * (derivative P).eval 0 := by
-        simpa [derivative_pow, x, hy] using congrArg (fun Q : E[X] ↦ (derivative Q).eval 0) hP
-      apply h_reg
-      push_cast [nsmul_eq_mul, factorial_succ] at h_deriv ⊢
-      linear_combination -h_deriv
-    have h_eval_pt : P.eval (p ^ 2 * z) = γ (y (n + 1)) := by
-      have h₁ : (x + p ^ 2 * z * p) ^ (n + 1) = (n + 1)! * P.eval (p ^ 2 * z) := by
-        simpa using congrArg (Polynomial.eval (p ^ 2 * z)) hP
-      have hγx : γ (algebraMap B E t - v) = x + p ^ 3 * z := by
-        simp [x, z, hγv, hd, smul_def']
-        ring
-      have h₂ : (x + p ^ 3 * z) ^ (n + 1) = (n + 1)! * γ (y (n + 1)) := by
-        simpa [hγx] using congrArg γ (hy (n + 1))
-      apply h_reg
-      linear_combination h₂ - h₁
-    obtain ⟨k, hk⟩ := P.binomExpansion 0 (p ^ 2 * z)
-    rw [zero_add, h_eval_pt, h_eval_zero, h_deriv_zero] at hk
-    refine ⟨z * k, ?_⟩
-    simp only [Nat.succ_eq_add_one, hd, z, smul_def', map_mul, map_pow,
-      map_natCast, map_neg] at hk ⊢
-    linear_combination hk
-  choose w hw using h_taylor
   -- Linear maps from `T` to a complete module extend uniquely along `j`. `F g` is the endomorphism
   -- of `E` with the values `g` on the basis; `κ` is the coefficient of `u 0 * y 0 = 1`.
   have h_extend (g : I × ℕ → E) : ∃ f : E →ₗ[B] E, ∀ x, f (j x) = b.constr B g x := by
@@ -476,7 +497,6 @@ lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A)
         | 0 => 0
         | k + 1 => t • b (a, k))
     else -η a • j (b (a, n))
-  have hγ_comp : γ.toLinearMap ∘ₗ m = m := by simp [m, LinearMap.ext_ring_iff]
   have hκ_comp : κ ∘ₗ m = .id := by
     simpa [hb, hu_zero, hy_zero, m, LinearMap.ext_ring_iff] using hκ (b (0, 0))
   -- Both identities below are checked on the basis. The first uses `hw`, and
@@ -510,6 +530,30 @@ lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A)
       grind
     · simp [smul_def', hη a, ha, hb]
       ring
+  exact ⟨κ, S, W, G, hκ_comp, hS, hG⟩
+
+/-- Let `B → E` be `p`-torsion-free, `p`-complete `A`-algebras, where `E` has the topological
+`B`-basis `u a * y n` (via `j`), `y n = (t - v) ^ n / n !`, `v` a unit, `u 0 = 1`. Let `p ^ 3 ∣ q`
+with `q` a unit in `K`, and let `γ` scale `v` by `q + 1` and each `u a` (`a ≠ 0`) by `η + 1` with
+`p η ∣ q`. Then `K ⊗ B → K ⊗ E` and `γ` are Koszul-exact: injective, fixed points in the image,
+`γ - 1` onto. `ULift` only moves the modules to universe `1`. -/
+lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A) [Algebra B E]
+    [IsScalarTower A B E] [Zero I] {b : Basis (I × ℕ) B T} {j : T →ₗ[B] E}
+    (hj : IsCompletionBijective p j) {u : I → E} {y : ℕ → E} {v : E.obj} {t : B.obj} {q : A}
+    (hb : ∀ (a : I) (n : ℕ), j (b (a, n)) = u a * y n)
+    (hy : ∀ n : ℕ, (algebraMap B E t - v) ^ n = n ! * y n) (hv_unit : IsUnit v) (hu_zero : u 0 = 1)
+    (hq_dvd : (p : A) ^ 3 ∣ q) (hq_unit : IsUnit (algebraMap A K q)) (γ : E →ₐ[B] E)
+    (hγv : γ v = (q + 1) • v)
+    (hγu : ∀ a : I, a ≠ 0 → ∃ η : A, γ (u a) = (η + 1) • u a ∧ p * η ∣ q) :
+    KoszulExact (ULift.map.{0, _, 1, 1} (((Algebra.linearMap B E).restrictScalars A).baseChange K))
+      (ULift.map ((γ.toLinearMap.restrictScalars A).baseChange K)) := by
+  classical
+  -- A shift `S` of the topological basis makes `(γ - 1) S = q v (1 - p W)`, which is bijective
+  -- on `K ⊗ E`; and `q v x` lies in `B` plus the image of `S` for every `x`.
+  obtain ⟨κ, S, W, G, hκ_comp, hS, hG⟩ :=
+    exists_shift_pd_line B E hj hb hy hu_zero hq_dvd γ hγv hγu
+  let m : B →ₗ[B] E := Algebra.linearMap B E
+  have hγ_comp : γ.toLinearMap ∘ₗ m = m := by simp [m, LinearMap.ext_ring_iff]
   -- After base change `bc` to `K`, where `q` is a unit, the maps `q v (1 - p W')` are bijective,
   -- giving Koszul exactness of `m` and `γ`.
   let bc {M N : Type} [AddCommGroup M] [Module A M] [Module B M] [IsScalarTower A B M]
@@ -532,18 +576,8 @@ lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A)
   have hV_bij : Bijective (bc (q • v • (1 : End B E))) := by simpa using h_bij 0
   have hG' : bc m ∘ₗ bc (q • t • κ) - bc (q • v • (1 : End B E)) = bc S ∘ₗ bc G := by
     simpa [bc, baseChange_comp, sub_eq_add_neg] using congrArg bc hG
-  have h_koszul : KoszulExact (bc m) (bc γ.toLinearMap) := by
-    refine ⟨LeftInverse.injective (g := bc κ) fun x ↦ LinearMap.congr_fun hκ' x,
-      fun z hz ↦ ?_, fun z ↦ ?_⟩
-    · obtain ⟨x, rfl⟩ := hV_bij.surjective z
-      have hx : bc S (bc G x) = bc m (bc (q • t • κ) x) - bc (q • v • (1 : End B E)) x :=
-        (LinearMap.congr_fun hG' x).symm
-      have hm : bc γ.toLinearMap (bc m (bc (q • t • κ) x)) = bc m (bc (q • t • κ) x) :=
-        LinearMap.congr_fun hγ' _
-      have hG_zero : bc G x = 0 := hS_bij.injective (by simp [hx, hm, hz.eq])
-      exact ⟨bc (q • t • κ) x, sub_eq_zero.mp (by simpa [hG_zero] using hx.symm)⟩
-    · obtain ⟨x, hx⟩ := hS_bij.surjective z
-      exact ⟨bc S x, hx⟩
+  have h_koszul : KoszulExact (bc m) (bc γ.toLinearMap) :=
+    koszulExact_of_bijective_comp_sub hκ' hγ' hS_bij hV_bij hG'
   simpa [bc, m, KoszulExact, subset_def, IsFixedPt, Function.Injective, Surjective,
     ← ULift.down_inj] using h_koszul
 
