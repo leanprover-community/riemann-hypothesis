@@ -226,6 +226,18 @@ lemma exists_eq_pow_of_monic_of_map_eq_pow {R K : Type} [CommRing R]
   refine ⟨P, Polynomial.map_injective _ (IsFractionRing.injective R K) ?_⟩
   rw [h_map, ← hP, mul_pow, ← C_pow, h_lead, C_1, mul_one, Polynomial.map_pow]
 
+/-- If a monic polynomial is a positive power over the fraction field, the exponent divides
+each root multiplicity after mapping the polynomial's coefficients to a field. -/
+lemma dvd_rootMultiplicity_map_of_monic_map_eq_pow {R K S : Type} [CommRing R]
+    [IsIntegrallyClosed R] [Field K] [Algebra R K] [IsFractionRing R K] [Field S]
+    {p : R[X]} (hp : p.Monic) {Q : K[X]} {j : ℕ} (hj : j ≠ 0)
+    (h_map : p.map (algebraMap R K) = Q ^ j) (f : R →+* S) (x : S) :
+    j ∣ (p.map f).rootMultiplicity x := by
+  classical
+  obtain ⟨P, hP⟩ := exists_eq_pow_of_monic_of_map_eq_pow hp hj h_map
+  exact ⟨(P.map f).roots.count x, by
+    rw [← count_roots, hP, Polynomial.map_pow, roots_pow, Multiset.count_nsmul]⟩
+
 omit [IsCMField E] in
 /-- If the matrix `g` has entries in `O_w` and `0` is a simple root of its characteristic polynomial
 modulo `w` (`HasSimpleZero g`), then the characteristic polynomial of `g` over `E_w` itself is no
@@ -241,12 +253,10 @@ lemma HasSimpleZero.charpoly_ne_pow {g : GL n (LocField w)} (hg : HasSimpleZero 
     Matrix.ext fun a b : n ↦ residueOrZero_coe (M a b)
   have h_map : M.charpoly.map (algebraMap (LocInt w) (LocField w)) = Q ^ j := by
     rw [← charpoly_map, show M.map (algebraMap (LocInt w) (LocField w)) = g.val from rfl, h_pow]
-  obtain ⟨P, h_pow_int⟩ : ∃ P : (LocInt w)[X], M.charpoly = P ^ j :=
-    exists_eq_pow_of_monic_of_map_eq_pow M.charpoly_monic (by omega) h_map
-  -- Modulo `w` every root of `P ^ j` has multiplicity divisible by `j`.
-  have h_count : j * (P.map (residue (LocInt w))).roots.count 0 = 1 := by
-    rw [← Multiset.count_nsmul, ← roots_pow, ← Polynomial.map_pow, ← h_pow_int, count_roots,
-      ← charpoly_map, ← h_red, h_simple]
-  exact hj.ne' (Nat.eq_one_of_mul_eq_one_right h_count)
+  have h_multiplicity : (M.charpoly.map (residue (LocInt w))).rootMultiplicity 0 = 1 := by
+    rw [← charpoly_map, ← h_red, h_simple]
+  have h_dvd := dvd_rootMultiplicity_map_of_monic_map_eq_pow M.charpoly_monic
+    (by omega) h_map (residue (LocInt w)) 0
+  exact hj.ne' (Nat.dvd_one.1 (h_multiplicity ▸ h_dvd))
 
 end New
