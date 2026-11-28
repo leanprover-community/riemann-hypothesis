@@ -62,7 +62,7 @@ to X_i with the twist ϑ. Applying `New.rankTwist` for X_j and then `New.AutChar
 lemma spaceChar_rankTwist (i : ℕ) :
     (rankTwist (D.chainChar ϑ i) (D.X j)).spaceChar (Fintype.card (D.X j)) =
       (D.chainChar ϑ i).baseChange := by
-  have h_even : Even (Fintype.card (D.X j)) := by grind [card_X, n]
+  have h_even : Even (Fintype.card (D.X j)) := by simpa only [card_X] using D.n_even j
   exact Exchange.spaceChar_rankTwist h_even.two_dvd
 
 section Scalings
