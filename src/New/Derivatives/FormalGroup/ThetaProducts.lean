@@ -189,7 +189,9 @@ lemma norm_conj_pow_sub_partner_le {P : Parameters} {s p : ℕ} [Fact p.Prime] [
     ‖ιₚ (conj (Φ τ y)) ^ p ^ e - ιₚ (Φ (P.partner s p e τ) y)‖ ≤ ‖ιₚ (piPrime P.d p)‖ := by
   -- Write `y = α / N` with `N` prime to `p`, use the congruence for `conj α`, and cancel the unit
   -- `N ^ p ^ e ≡ N`.
-  obtain ⟨N, α, hN, hα⟩ : ∃ (N : ℕ) (α : 𝓞 (P.E s)), p.Coprime N ∧ N * y = α := hy.exists_mul_eq
+  obtain ⟨N, hN, h_integral⟩ := isIntegralAbove_iff_exists_coprime_denominator.mp hy
+  let α : 𝓞 (P.E s) := ⟨(N : P.E s) * y, h_integral⟩
+  have hα : N * y = (α : P.E s) := rfl
   let a : valRingCp p := ⟨ιₚ (conj (Φ τ y)), hy.norm_conj_le_one _⟩
   let b : valRingCp p := ⟨ιₚ (Φ (P.partner s p e τ) y), hy.norm_le_one (ιₚ.comp _)⟩
   have h_int : piPrimeInt P.d ∣ (N * a) ^ p ^ e - N * b := by

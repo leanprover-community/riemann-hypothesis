@@ -28,7 +28,7 @@ The following imported notions occur in the statements.
   `z = ∑ m j (u j† z) u j` (Parseval frames).
 * `New.IsIntegralAbove`: elements of `E` that are integral at all places above `p`; they are
   quotients of elements of `𝓞 E` by natural numbers prime to `p`
-  (`New.IsIntegralAbove.exists_mul_eq`).
+  (`New.isIntegralAbove_iff_exists_coprime_denominator`).
 * `New.CMLattice.thetaProd`: the product of copies of `θ` along linear forms.
 * `New.CMLattice.rescale_thetaProd`, `New.CMLattice.rescale_mem_multiSeriesRing`: scaling the
   variables scales the linear forms in a product of copies of `θ` and in an integral series in
@@ -74,32 +74,40 @@ def IsIntegralAbove (p : ℕ) (y : E) : Prop :=
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- Let `E` be a CM number field with a CM type (`CMType E`) and `p` a prime number. An element `y`
-of `E` that is integral at all primes of `𝓞 E` above `p` is the quotient of an integer `α` of `E`
-by a natural number `N` prime to `p`. -/
-lemma IsIntegralAbove.exists_mul_eq {p : ℕ} [Fact p.Prime] {y : E} (hy : IsIntegralAbove p y) :
-    ∃ (N : ℕ) (α : 𝓞 E), p.Coprime N ∧ (N : E) * y = (α : E) := by
+/-- An element of a CM number field is integral at every prime above `p` exactly when it
+has an algebraic integer numerator and a natural denominator coprime to `p`. -/
+lemma isIntegralAbove_iff_exists_coprime_denominator {y : E} :
+    IsIntegralAbove p y ↔ ∃ N : ℕ, p.Coprime N ∧ IsIntegral ℤ ((N : E) * y) := by
   have hp : p.Prime := Fact.out
-  -- Write a denominator of `y` as `p ^ k * N` with `N` prime to `p`.
-  obtain ⟨D, β, hD, hβ⟩ : ∃ (D : ℕ) (β : 𝓞 E), D ≠ 0 ∧ D • y = (β : E) :=
-    ((IsFractionRing.isAlgebraic_iff ℤ ℚ E).2
-      (Algebra.IsAlgebraic.isAlgebraic y)).exists_nsmul_eq (𝓞 E)
-  obtain ⟨k, N, hN, rfl⟩ : ∃ k N : ℕ, ¬p ∣ N ∧ D = p ^ k * N :=
-    Nat.exists_eq_pow_mul_and_not_dvd hD p hp.ne_one
-  have h_mul_denom (w : FinPlace E) : w.valuation E ((p : E) ^ k * (N * y)) ≤ 1 := by
-    rw [← mul_assoc, ← Nat.cast_pow, ← Nat.cast_mul, ← nsmul_eq_mul, hβ]
-    exact w.valuation_le_one β
-  -- `N y` is integral above `p` because `y` is, and elsewhere because `p ^ k N y` is and `p` is a
-  -- unit there.
-  have h_val (w : FinPlace E) : w.valuation E (N * y) ≤ 1 := by
-    by_cases hw : ↑p ∈ w.asIdeal
-    · simpa only [map_mul] using
-        mul_le_one' (by simpa using w.valuation_le_one (N : 𝓞 E)) (hy w hw)
-    · have h_unit : w.valuation E (p : E) = 1 := (w.valuation_eq_one_iff_notMem (K := E)).2 hw
-      simpa only [map_mul, map_pow, h_unit, one_pow, one_mul] using h_mul_denom w
-  obtain ⟨α, hα⟩ : ∃ α : 𝓞 E, (α : E) = N * y :=
-    HeightOneSpectrum.mem_integers_of_valuation_le_one E (N * y : E) h_val
-  exact ⟨N, α, hp.coprime_iff_not_dvd.2 hN, hα.symm⟩
+  constructor
+  · intro hy
+    -- Write a denominator of `y` as `p ^ k * N` with `N` prime to `p`.
+    obtain ⟨D, β, hD, hβ⟩ : ∃ (D : ℕ) (β : 𝓞 E), D ≠ 0 ∧ D • y = (β : E) :=
+      ((IsFractionRing.isAlgebraic_iff ℤ ℚ E).2
+        (Algebra.IsAlgebraic.isAlgebraic y)).exists_nsmul_eq (𝓞 E)
+    obtain ⟨k, N, hN, rfl⟩ : ∃ k N : ℕ, ¬p ∣ N ∧ D = p ^ k * N :=
+      Nat.exists_eq_pow_mul_and_not_dvd hD p hp.ne_one
+    have h_mul_denom (w : FinPlace E) : w.valuation E ((p : E) ^ k * (N * y)) ≤ 1 := by
+      rw [← mul_assoc, ← Nat.cast_pow, ← Nat.cast_mul, ← nsmul_eq_mul, hβ]
+      exact w.valuation_le_one β
+    -- `N y` is integral above `p` because `y` is, and elsewhere because `p ^ k N y` is and `p` is a
+    -- unit there.
+    have h_val (w : FinPlace E) : w.valuation E (N * y) ≤ 1 := by
+      by_cases hw : ↑p ∈ w.asIdeal
+      · simpa only [map_mul] using
+          mul_le_one' (by simpa using w.valuation_le_one (N : 𝓞 E)) (hy w hw)
+      · have h_unit : w.valuation E (p : E) = 1 := (w.valuation_eq_one_iff_notMem (K := E)).2 hw
+        simpa only [map_mul, map_pow, h_unit, one_pow, one_mul] using h_mul_denom w
+    obtain ⟨α, hα⟩ : ∃ α : 𝓞 E, (α : E) = N * y :=
+      HeightOneSpectrum.mem_integers_of_valuation_le_one E (N * y : E) h_val
+    exact ⟨N, hp.coprime_iff_not_dvd.2 hN, hα ▸ α.prop⟩
+  · rintro ⟨N, hN, hy⟩ w hw
+    -- A denominator coprime to `p` has valuation one at every prime above `p`.
+    have hN_val : w.valuation E (N : E) = 1 := by
+      rw [← map_natCast (algebraMap (𝓞 E) E), w.valuation_eq_one_iff_notMem]
+      exact mt (w.natCast_mem_iff_dvd hw).1 (hp.coprime_iff_not_dvd.1 hN)
+    have h_val : w.valuation E (N * y) ≤ 1 := w.valuation_le_one (⟨N * y, hy⟩ : 𝓞 E)
+    rwa [map_mul, hN_val, one_mul] at h_val
 
 /-- An element integral above `p` is integral under every embedding into `ℂ_p`. -/
 lemma IsIntegralAbove.norm_le_one {y : E} (hy : IsIntegralAbove p y) (σ : E →+* ℂ_[p]) :

@@ -56,17 +56,6 @@ open MvPowerSeries Finset Nat ComplexConjugate NumberField
 namespace New
 variable {p : ℕ} [Fact p.Prime]
 
-/-- If `N y` is an algebraic integer for a natural number `N` prime to `p`, then `y` is integral at
-all places above `p`. -/
-lemma isIntegralAbove_of_isIntegral_mul {E : Type} [Field E] [CMType E] {N : ℕ} {y : E}
-    (hN : ¬p ∣ N) (hy : IsIntegral ℤ (N * y)) : IsIntegralAbove p y := by
-  intro v hv
-  have hN_val : v.valuation E (N : E) = 1 := by
-    rw [← map_natCast (algebraMap (𝓞 E) E), v.valuation_eq_one_iff_notMem]
-    exact mt (v.natCast_mem_iff_dvd hv).1 hN
-  have h_val : v.valuation E (N * y) ≤ 1 := v.valuation_le_one (⟨N * y, hy⟩ : 𝓞 E)
-  rwa [map_mul, hN_val, one_mul] at h_val
-
 variable [PadicPlace p] {J : Type} [Fintype J]
 
 /-- For a family `w` in the field `E = P.E s`, the linear forms `μ_i z = ∑ μ_(i τ) z_τ` with the
@@ -157,7 +146,8 @@ lemma isIntegralAbove_resolutionVectors (D : Data P) {w : J → D.E} {c : J → 
     IsIntegralAbove p (D.resolutionVectors w i x) := by
   cases x
   -- `q₁ M u = (q₁ w) π_M`, and `q₁ w` is an integer because `q₁ 𝔞₀ ⊆ 𝓞 E`
-  refine isIntegralAbove_of_isIntegral_mul (D.not_dvd_q₁_mul_M h_nonsplit) ?_
+  refine isIntegralAbove_iff_exists_coprime_denominator.mpr
+    ⟨D.q₁ * D.M, (Fact.out : p.Prime).coprime_iff_not_dvd.2 (D.not_dvd_q₁_mul_M h_nonsplit), ?_⟩
   have h_int : IsIntegral ℤ (D.q₁ * w i) := by
     refine algebraMap_mem_Ô.1 ?_
     have h_mem_Ô : (D.q₁ : 𝔸f D.E) * P.α D.towerExp * finiteImage w i ∈ Ô D.E :=
