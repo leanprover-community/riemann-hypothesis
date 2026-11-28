@@ -2,9 +2,10 @@ module
 
 public import Aesop.BuiltinRules
 public import TauCeti.Analysis.Normed.Ring.Ultra
-import Mathlib.Algebra.Order.Star.Real
 public import Lib.General.Algebra.AdicCompletion
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
+import TauCeti.Data.Nat.GCD
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.Basic
 import Lib.General.NumberTheory.PadicLimitsValuation
 import Lib.General.NumberTheory.SUnitsAndClassNumber
 
@@ -71,8 +72,7 @@ lemma one_lt_primeNorm (d p : ℕ) [Fact d.Prime] [Fact p.Prime] : 1 < primeNorm
 lemma coprime_primeNorm_sub_one (d p : ℕ) [Fact d.Prime] [Fact p.Prime] :
     p.Coprime (primeNorm d p - 1) := by
   obtain ⟨e, he, h_eq⟩ := exists_primeNorm_eq_pow d p
-  have h_dvd : p ∣ primeNorm d p := by simp [h_eq, dvd_pow_self p he]
-  exact ((Nat.coprime_self_sub_right (one_lt_primeNorm d p).le).2 (by simp)).coprime_dvd_left h_dvd
+  exact h_eq ▸ Nat.coprime_pow_sub_one (Fact.out : p.Prime).ne_zero he
 
 instance (d p : ℕ) [Fact d.Prime] [Fact p.Prime] : NeZero (primeNorm d p - 1) :=
   ⟨Nat.sub_ne_zero_of_lt (one_lt_primeNorm d p)⟩
@@ -400,11 +400,10 @@ lemma exists_mul_conj_eq_pow {d p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] [
   have hq : w.asIdeal.absNorm = p := (QuadField.q_eq_iff_chiK_ne_neg_one w hw).2 (by simp [hp])
   have h_norm : a * star a = p ^ h := by
     rw [← QuadField.absNorm_span_eq_mul_star, ← ha, map_pow, hq, Nat.cast_pow]
-  -- If `ā` were in `w`, the conjugate prime would contain `w ^ h` and so be equal to `w`.
-  have h_notMem : star a ∉ w.asIdeal := fun h_mem ↦ by
-    have h_le : w.asIdeal ^ h ≤ (star w).asIdeal := by simpa [ha] using mem_star_place.2 h_mem
-    exact QuadField.star_ne_of_chiK_eq_one hp w hw (IsDedekindDomain.HeightOneSpectrum.ext
-      (w.isMaximal.eq_of_le (star w).isPrime.ne_top ((star w).isPrime.le_of_pow_le h_le)).symm)
+  -- Since `star w ≠ w`, the generator `a` of `w ^ h` is a unit at `star w`, so `ā ∉ w`.
+  have h_notMem : star a ∉ w.asIdeal := (star w).intValuation_eq_one_iff.1 <|
+    (star w).intValuation_eq_one_of_span_singleton_eq_pow
+      (QuadField.star_ne_of_chiK_eq_one hp w hw) ha.symm
   have h_unit : ‖σ (star a : 𝓞 (QuadField d))‖ = 1 :=
     (norm_ringOfIntegers_le σ _).eq_of_not_lt (mt (mem_placeOfEmb σ _).2 h_notMem)
   refine ⟨h, (a : QuadField d), h_ne, ⟨a, rfl⟩, ?_, by simpa [σ] using h_unit⟩
