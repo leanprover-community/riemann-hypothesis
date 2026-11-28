@@ -367,29 +367,19 @@ lemma exists_isVacuumExpansion {P : Parameters} {s : ℕ} {n : Type} (p : ℕ) [
     ∃ (b : ℕ) (I : Type) (_ : Fintype I) (w : I → P.E s) (F : 𝒮 V)
       (J : Type) (_ : Fintype J) (y : J → n → 𝔸f (P.E s)) (a : J → embValRing),
       IsVacuumExpansion p V b w F y a := by
-  obtain ⟨b, hb, I, _, w, hw⟩ : ∃ b : ℕ, p.Coprime b ∧
-      ∃ (I : Type) (_ : Fintype I) (w : I → P.E s), IsTightFrame w 1 (b * b) :=
-    exists_coprime_isTightFrame_sq P s p
+  obtain ⟨b, hb, I, _, w, hw⟩ := exists_coprime_isTightFrame_sq P s p
   have hb_ne : b ≠ 0 := ne_zero_of_prime_coprime hb
   have h_area : P.cmCurve.area = ‖(P.cmPeriod : ℂ)‖ ^ 2 / (b * b : ℕ) * (b * b : ℕ) * √P.d / 2 := by
     simp [area_eq_of_eq_scaledIdeal latticeModule_cmCurve, hb_ne]
   have hb_norm : (b : 𝓞 P.K) * conj ((b : 𝓞 P.K) : ℂ) = (b * b : ℕ) := by simp
   -- All factors of `F` are `θ`, the monomial with exponents `(1, 0, 0)`.
-  obtain ⟨F, hF, hF_theta⟩ : ∃ F : 𝒮 V,
-      IsResolutionProduct V P.cmCurve (P.cmPeriod / conj ((b : 𝓞 P.K) : ℂ)) w 1
-        (fun _ : I × n ↦ P.cmCurve.monomialSection (1, 0, 0)) F ∧
-      IsThetaFunction ((b : P.E s) • idealLattice (P.E s) n) (entireTheta F) := by
-    obtain ⟨F, hF, -, h_periods⟩ := exists_isResolutionProduct_of_isTightFrame V b
-      (mul_ne_zero hb_ne hb_ne) hb_norm hw (fun _ ↦ (1, 0, 0)) (by simp)
-      cmPeriod_mem_cmCurve_lattice h_area
-    exact ⟨F, hF, by simpa using h_periods⟩
+  obtain ⟨F, hF, -, h_periods⟩ := exists_isResolutionProduct_of_isTightFrame V b
+    (mul_ne_zero hb_ne hb_ne) hb_norm hw (fun _ ↦ (1, 0, 0)) (by simp)
+    cmPeriod_mem_cmCurve_lattice h_area
   have hF_value : V.θ F = 1 := by
     simpa [monomialSection, resolutionShift] using hF.theta_translate 0
-  obtain ⟨J, _, y, a, hy, h_vacuum⟩ :
-      ∃ (J : Type) (_ : Fintype J) (y : J → n → 𝔸f (P.E s)) (a : J → embValRing),
-        (∀ j : J, b • y j ∈ stdLattice (P.E s) n) ∧
-        intVacuum V = ∑ j : J, a j • V.ϱ (finVec (y j)) F :=
-    exists_intVacuum_eq_sum_of_isThetaFunction hb hF_value hF_theta
+  obtain ⟨J, _, y, a, hy, h_vacuum⟩ :=
+    exists_intVacuum_eq_sum_of_isThetaFunction hb hF_value (by simpa using h_periods)
   refine ⟨b, I, inferInstance, w, F, J, inferInstance, y, a,
     { coprime := hb, isTightFrame := hw, mem_finitePart := hF.mem_finitePart,
       nsmul_mem_stdLattice := hy, intVacuum_eq_sum := h_vacuum,
@@ -489,10 +479,7 @@ lemma exists_jetSeries_map_eq_thetaProd_pow_mul {δ : 𝓞 P.K} {N : ℕ} (hδ_n
       ∃ H ∈ P.cmCurve.multiSeriesRing (daggerForms u),
         (V.jetSeries (conj (δ : ℂ) * (P.areaScale / P.cmPeriod)) f).map ιₚ =
           P.cmCurve.thetaProd (daggerForms u) m ^ N * H := by
-  obtain ⟨b, I, _, w, F, J, _, y, a, h_exp⟩ :
-      ∃ (b : ℕ) (I : Type) (_ : Fintype I) (w : I → P.E s) (F : 𝒮 V) (J : Type) (_ : Fintype J)
-        (y : J → n → 𝔸f (P.E s)) (a : J → embValRing), IsVacuumExpansion p V b w F y a :=
-    exists_isVacuumExpansion p V
+  obtain ⟨b, I, _, w, F, J, _, y, a, h_exp⟩ := exists_isVacuumExpansion p V
   have hb : p.Coprime b := h_exp.coprime
   have hw_int : ∀ i : I, finiteImage w i ∈ Ô (P.E s) := h_exp.isTightFrame.finiteImage_mem
   -- `M k` consists of the vectors for which the claim holds with the resolution `w / (b k)`.

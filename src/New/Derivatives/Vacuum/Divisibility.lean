@@ -182,20 +182,16 @@ theorem exists_hasNormalForm_jetSeries [Fintype n] [DecidableEq n] {ε : n → �
         ((V.jetSeries (c * P.jetScale s) f).map ιₚ) := by
   -- A resolution writes the series as a theta product times an integral series; such series have
   -- the normal form, and scaling by a `p`-integral number keeps it.
-  have hp_not_dvd : ¬p ∣ P.q₁ s := fun h_dvd ↦
-    hp_nonsplit (P.chiK_eq_one_of_dvd Fact.out h_dvd)
+  have hp_not_dvd : ¬p ∣ P.q₁ s := fun h ↦ hp_nonsplit (P.chiK_eq_one_of_dvd Fact.out h)
   obtain ⟨ϖ, l, hϖ, -, h_normalForm_thetaProd⟩ := P.exists_hasNormalForm s hp_nonsplit
   obtain ⟨J, _, u, m, h_resolution, hu, H, hH, h_theta⟩ :=
     exists_jetSeries_map_eq_thetaProd_pow_mul (N := 1) one_ne_zero (by simp) hf
-  have h_integral (j : J) : ∀ i : n, IsIntegralAbove p (u j i) :=
-    isIntegralAbove_of_finiteImage_mem hp_not_dvd (hu j)
-  have h_series : (V.jetSeries (P.areaScale / P.cmPeriod) f).map ιₚ =
-      P.cmCurve.thetaProd (daggerForms u) m * H := by simpa using h_theta
+  have h_integral (j : J) := isIntegralAbove_of_finiteImage_mem hp_not_dvd (hu j)
   have h_scale : ‖ιₚ (c * P.periodFactor s)‖ ≤ 1 := by
     rwa [map_mul, norm_mul, P.norm_iota_periodFactor_eq_one s hp_not_dvd, mul_one]
-  have h_factor : c * P.jetScale s = c * P.periodFactor s * (P.areaScale / P.cmPeriod) := by
-    rw [jetScale, mul_assoc, mul_div_assoc]
-  rw [h_factor, V.jetSeries_mul_eq_rescale, map_rescale, h_series]
+  rw [jetScale, mul_div_assoc, ← mul_assoc, V.jetSeries_mul_eq_rescale, map_rescale,
+    show (V.jetSeries (P.areaScale / P.cmPeriod) f).map ιₚ =
+      P.cmCurve.thetaProd (daggerForms u) m * H by simpa using h_theta]
   exact ⟨ϖ, _, hϖ,
     (h_normalForm_thetaProd u m h_resolution h_integral H hH).rescale ⟨_, h_scale⟩⟩
 
@@ -229,7 +225,7 @@ theorem norm_jet_minorProd_jetSeries_le
           (c * P.jetScale s) f).map ιₚ)‖ ≤
       p ^ (-(predictedDivisibility P.d p (P.partner s p) κ N -
         card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max (boxes κ N) 1 : ℕ))) : ℝ) := by
-  obtain ⟨ϖ, l, hϖ, h_form⟩ := exists_hasNormalForm_jetSeries hp_nonsplit hf hc
+  obtain ⟨_, _, hϖ, h_form⟩ := exists_hasNormalForm_jetSeries hp_nonsplit hf hc
   exact P.norm_jet_minorProd_le_of_hasNormalForm s hp_nonsplit hϖ h_form i' y
 
 /-- **Divisibility of Schur entries at a non-split prime `p`.** Let `f` be standard data of level
@@ -267,11 +263,9 @@ theorem norm_schurJet_jetSeries_le_of_charges
           gammaPrime P.d p * (B - boxes (eraseHeightOne κ erasedPlaces) N) -
           card (P.Φ s) * N ^ 3 * (1 + Real.logb p (max B 1 : ℕ))) : ℝ) := by
   -- Bound the Schur entry by a derivative along a product of minors, then use the normal form.
-  obtain ⟨ϖ, l, hϖ, h_form⟩ := exists_hasNormalForm_jetSeries hp_nonsplit hf hc
-  set F : MvPowerSeries (P.Φ s × n' × n) ℂ :=
-    ((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries (c * P.jetScale s) f
-  obtain ⟨y, h_le_minorProd⟩ :=
-    exists_norm_schurJet_le_norm_jet_minorProd hκ (F.map ιₚ) i' i
+  obtain ⟨_, _, hϖ, h_form⟩ := exists_hasNormalForm_jetSeries hp_nonsplit hf hc
+  set F := ((stdSpace (E P s) n).hom (stdSpace (E P s) n')).jetSeries (c * P.jetScale s) f
+  obtain ⟨y, h_le_minorProd⟩ := exists_norm_schurJet_le_norm_jet_minorProd hκ (F.map ιₚ) i' i
   rw [show ιₚ (schurJet κ F i' i) = schurJet κ (F.map ιₚ) i' i by
     simp [schurJet, map_jet, map_schur hκ]]
   exact h_le_minorProd.trans (P.norm_jet_minorProd_le_of_charges s hp_nonsplit hϖ h_form
