@@ -1,8 +1,5 @@
 module
 
-import Mathlib.Algebra.CharP.Pi
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Topology.Algebra.Group.Units
 public import Lib.Weil.Periods.Grading
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
@@ -41,7 +38,7 @@ Known; see `Lib.Weil.Periods.Unfolding` for sources.
 
 @[expose] public section
 
-open MeasureTheory Matrix
+open Matrix
 noncomputable section
 namespace New.Grading
 variable {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
@@ -49,37 +46,30 @@ variable {E ι X : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fin
 
 /-! ### The factor in `H` of an element of `R = U ⋊ H` -/
 
-/-- The factor `h ∈ H` of an element `u h` of `R = U ⋊ H`: the continuous homomorphism `R → H`
-given by `New.Grading.exists_besselGroup_proj`, a retraction of `New.Grading.inclX` with kernel
-`U`. -/
-def leviPart : Y.besselGroup →* G E (1 : X → ℤˣ) := Y.exists_besselGroup_proj.choose
+/-- The factor `h ∈ H` of an element `u h` of `R = U ⋊ H`: the continuous homomorphism
+`New.Grading.besselProj : R → H`, a retraction of `New.Grading.inclX` with kernel `U`. -/
+def leviPart : Y.besselGroup →* G E (1 : X → ℤˣ) := Y.besselProj
 
 @[fun_prop]
-lemma continuous_leviPart : Continuous Y.leviPart := by
-  obtain ⟨h_cont, -⟩ := Y.exists_besselGroup_proj.choose_spec
-  exact h_cont
+lemma continuous_leviPart : Continuous Y.leviPart := Y.continuous_besselProj
 
 lemma mul_inv_inclX_leviPart_mem (r : Y.besselGroup) :
-    r * (Y.inclX (Y.leviPart r))⁻¹ ∈ Y.unipotent := by
-  obtain ⟨-, h_mem, -⟩ := Y.exists_besselGroup_proj.choose_spec
-  exact h_mem r
+    r * (Y.inclX (Y.leviPart r))⁻¹ ∈ Y.unipotent :=
+  Y.mul_inv_inclX_besselProj_mem_unipotent r
 
 /-- The projection `R → H` is a retraction of the inclusion of `H`. -/
 lemma leviPart_inclX (a : G E (1 : X → ℤˣ)) :
-    Y.leviPart ⟨Y.inclX a, Y.inclX_mem_besselGroup a⟩ = a := by
-  obtain ⟨-, -, h_inclX, -⟩ := Y.exists_besselGroup_proj.choose_spec
-  exact h_inclX a
+    Y.leviPart ⟨Y.inclX a, Y.inclX_mem_besselGroup a⟩ = a :=
+  Y.besselProj_inclX a
 
 /-- The kernel of the projection `R → H` is `U`. -/
-lemma leviPart_eq_one_iff {r : Y.besselGroup} : Y.leviPart r = 1 ↔ (r : G E ε) ∈ Y.unipotent := by
-  obtain ⟨-, -, -, h_ker, -⟩ := Y.exists_besselGroup_proj.choose_spec
-  exact (h_ker r).symm
+lemma leviPart_eq_one_iff {r : Y.besselGroup} : Y.leviPart r = 1 ↔ (r : G E ε) ∈ Y.unipotent :=
+  (Y.mem_unipotent_iff_besselProj_eq_one r).symm
 
 /-- The projection `R → H` sends rational points to rational points. -/
 lemma leviPart_mem_Gamma {r : Y.besselGroup} (hr : (r : G E ε) ∈ V.Γ) :
-    Y.leviPart r ∈ (stdSpace E X).Γ := by
-  obtain ⟨-, -, -, -, h_rat⟩ := Y.exists_besselGroup_proj.choose_spec
-  exact h_rat r ⟨hr, r.property⟩
+    Y.leviPart r ∈ (stdSpace E X).Γ :=
+  Y.besselProj_mem_Gamma hr
 
 /-- For `u ∈ U` and `a ∈ H`, the factor in `H` of `u a` is `a`. -/
 lemma leviPart_mul_inclX {u : G E ε} (hu : u ∈ Y.unipotent) (a : G E (1 : X → ℤˣ)) :
@@ -114,18 +104,12 @@ lemma inclX_mk_one_snd (a : G E (1 : X → ℤˣ)) : Y.inclX (1, a.2) = (1, (Y.i
 /-- The factor in `H` of a real point of `R` (a point with finite part `1`) is a real point. -/
 lemma leviPart_snd_eq_one {r : Y.besselGroup} (hr : (r : G E ε).2 = 1) :
     (Y.leviPart r).2 = 1 := by
-  -- With `a` the factor in `H`, `(1, (a r⁻¹)_fin)` lies in `U`; since `r_fin = 1` it is
-  -- `(1, (inclX a)_fin)`, the inclusion of `(1, a_fin)` (`inclX_mk_one_snd`).
-  have h_inv_mem : ((r : G E ε) * (Y.inclX (Y.leviPart r))⁻¹)⁻¹ ∈ Y.unipotent :=
-    inv_mem (Y.mul_inv_inclX_leviPart_mem r)
-  have h_snd : ((r : G E ε) * (Y.inclX (Y.leviPart r))⁻¹)⁻¹.2 = (Y.inclX (Y.leviPart r)).2 := by
-    rw [_root_.mul_inv_rev, inv_inv, Prod.snd_mul, Prod.snd_inv, hr, inv_one, mul_one]
-  have h_mem : Y.inclX (1, (Y.leviPart r).2) ∈ Y.unipotent := by
-    rw [inclX_mk_one_snd, ← h_snd]
-    exact Y.mk_one_snd_mem_unipotent h_inv_mem
-  have h_one : Y.leviPart ⟨Y.inclX (1, (Y.leviPart r).2), Y.inclX_mem_besselGroup _⟩ = 1 :=
-    Y.leviPart_eq_one_iff.mpr h_mem
-  exact congrArg Prod.snd ((Y.leviPart_inclX _).symm.trans h_one)
+  -- The finite matrix of `besselProj r` is the `X`-block of `V.ratCoordMatrixFin r.2 = 1`.
+  refine Subtype.ext (Units.ext (Matrix.ext fun x y ↦ ?_))
+  have h_fin := congr_arg (fun M ↦ M (Y.indexEquiv (.inl x)) (Y.indexEquiv (.inl y)))
+    (V.ratCoordMatrixFin_snd r)
+  have h_proj := congr_arg (fun M ↦ (M x y).2) (Y.adeleMatrix_besselProj r)
+  simpa [leviPart, Space.ratCoordMatrixFin, hr, Matrix.one_apply] using h_proj.trans h_fin.symm
 
 /-! ### The character `ψ_U` -/
 
@@ -179,14 +163,10 @@ omit [Fintype X] in
 lemma shift_apply_eq_zero {a b : ι} (hab : Y.gradeOf b ≠ Y.gradeOf a + 2) : Y.shift a b = 0 := by
   -- The shift vanishes outside the string; on the string its entry `(i, k)` needs `i = k + 1`.
   obtain ⟨x | i, rfl⟩ := Y.indexEquiv.surjective a <;>
-    obtain ⟨y | k, rfl⟩ := Y.indexEquiv.surjective b
-  · simp [shift]
-  · simp [shift]
-  · simp [shift]
-  · have h_ne : (i : ℕ) ≠ k + 1 := by
-      rw [gradeOf_inr, gradeOf_inr] at hab
-      omega
-    simp [shift, h_ne]
+    obtain ⟨y | k, rfl⟩ := Y.indexEquiv.surjective b <;> simp [shift]
+  intro h_eq
+  rw [gradeOf_inr, gradeOf_inr] at hab
+  omega
 
 omit [Fintype X] in
 /-- Let `𝔢 = Y.shift` be the matrix that kills `X` and the last string vector and sends each string
@@ -267,14 +247,10 @@ lemma unipotentChar_of_mem_Gamma {u : G E ε} (hu : u ∈ V.Γ) : Y.unipotentCha
 lemma unipotentChar_conj (a : G E (1 : X → ℤˣ)) (u : G E ε) :
     Y.unipotentChar (Y.inclX a * u * (Y.inclX a)⁻¹) = Y.unipotentChar u := by
   have h_trace : (Y.shift * V.ratCoordMatrix (Y.inclX a * u * (Y.inclX a)⁻¹)).trace =
-      (Y.shift * V.ratCoordMatrix u).trace :=
-    calc (Y.shift * V.ratCoordMatrix (Y.inclX a * u * (Y.inclX a)⁻¹)).trace
-        = (V.ratCoordMatrix (Y.inclX a) *
-            (Y.shift * V.ratCoordMatrix u * V.ratCoordMatrix (Y.inclX a)⁻¹)).trace := by
-          rw [map_mul, map_mul, ← mul_assoc, ← mul_assoc,
-            (Y.commute_shift_ratCoordMatrix_inclX a).eq, mul_assoc, mul_assoc, mul_assoc]
-      _ = (Y.shift * V.ratCoordMatrix u).trace := by
-          rw [trace_mul_comm, mul_assoc, ← map_mul, inv_mul_cancel, map_one, mul_one]
+      (Y.shift * V.ratCoordMatrix u).trace := by
+    rw [map_mul, map_mul, ← mul_assoc, ← mul_assoc, (Y.commute_shift_ratCoordMatrix_inclX a).eq,
+      mul_assoc (V.ratCoordMatrix (Y.inclX a))]
+    exact Matrix.trace_units_conj (V.ratCoordMatrix.toHomUnits (Y.inclX a)) _
   rw [unipotentChar, h_trace, unipotentChar]
 
 /-! ### Equivariant functions and the function `𝒲_φ` -/
@@ -324,9 +300,7 @@ lemma sourceFn_mul_inclX (r : Y.besselGroup) (a : Gf E X) :
     Y.sourceFn t φ (r * ⟨Y.inclX (1, a), Y.inclX_mem_besselGroup (1, a)⟩) =
       Y.sourceFn t (algFormRep κ e a φ) r := by
   rw [sourceFn, sourceFn, map_mul, leviPart_inclX, map_mul, Subgroup.coe_mul, _root_.mul_inv_rev,
-    mul_assoc, mul_inv_cancel_left, algFormCoeff_apply, algFormCoeff_apply, Prod.fst_mul, mul_one,
-    Prod.snd_mul]
-  rfl
+    mul_assoc, mul_inv_cancel_left, Space.algFormCoeff_algFormRep]
 
 lemma sourceFn_add (ψ : AlgForm (E := E) X κ e) (r : Y.besselGroup) :
     Y.sourceFn t (φ + ψ) r = Y.sourceFn t φ r + Y.sourceFn t ψ r := by
