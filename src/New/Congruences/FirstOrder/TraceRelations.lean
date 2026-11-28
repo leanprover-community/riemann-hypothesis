@@ -492,11 +492,8 @@ lemma exists_blockDiagonal_lattices {u : Y → GalRep ℓ D.E n}
       ∀ (x : 𝓧) (g : AbsGal D), u' x g = reindex ϵ ϵ (blockDiagonal'
         fun i : Option (Fin t) ↦ summandRep (twistRep (.id O) (ψ' x) (R₀ x)) i g) := by
   classical
-  have h_block (x : 𝓧) : ∃ v : AbsGal D →* Matrix n n O, IsLatticeIn (u x) v ∧
-      ∀ g : AbsGal D, v g = reindex ϵ ϵ (blockDiagonal'
-        fun i : Option (Fin t) ↦ summandRep (twistRep (.id O) (ψ' x) (R₀ x)) i g) :=
+  choose v hv hv_block using fun x : 𝓧 ↦
     exists_blockDiagonal_lattice (hu x) (h_trace x) (hR₀ x) (hψ' x) (h_span x) ϵ
-  choose v hv hv_block using h_block
   choose v' hv' using h_lat
   refine ⟨fun x ↦ if hx : x ∈ 𝓧 then v ⟨x, hx⟩ else v' x, fun x ↦ ?_, by simpa using hv_block⟩
   by_cases hx : x ∈ 𝓧
@@ -890,21 +887,18 @@ lemma pow_chosenGroupOrder_eq_one_of_mem_inertiaAbove {V : DescentPair D.E r n}
   obtain ⟨v, ⟨⟨i, hvi⟩, hvℓ⟩, A, hA : IsPlaceOver A v, hgA⟩ := hg
   -- `R g` is killed by `∏ (X - y)`, `y ∈ μ`, and the order of each `y` divides some
   -- `D.levelPrime i ^ d - 1`, which divides `chosenGroupOrder`
-  obtain ⟨μ, h_roots, h_kill⟩ : ∃ μ : Multiset (PadicAlgCl ℓ),
-      (∀ y ∈ μ, ∃ d ∈ Set.Icc 1 D.r, y ^ (D.levelPrime i ^ d - 1) = 1) ∧
-      PolyKillsAt R A g (μ.map fun y ↦ X - C y).prod := by
-    obtain ⟨γ, -, hγ⟩ := exists_inertiaGroup_isInertiaSpectrum n hc hvi hA t
-    obtain ⟨μ, hμ, -⟩ := hγ g hgA
-    exact ⟨μ, hμ.exists_pow_eq_one, hμ.polyKillsAt hR⟩
+  obtain ⟨γ, -, hγ⟩ := exists_inertiaGroup_isInertiaSpectrum n hc hvi hA t
+  obtain ⟨μ, hμ, -⟩ := hγ g hgA
   have h_root (y : PadicAlgCl ℓ) (hy : y ∈ μ) : y ^ D.chosenGroupOrder = 1 := by
-    obtain ⟨d, ⟨hd_pos, hd_le⟩, hyd⟩ := h_roots y hy
+    obtain ⟨d, ⟨hd_pos, hd_le⟩, hyd⟩ := hμ.exists_pow_eq_one y hy
     obtain ⟨m, hm⟩ : D.levelPrime i ^ d - 1 ∣ D.chosenGroupOrder :=
       levelPrime_pow_sub_one_dvd_chosenGroupOrder D ⟨hd_pos, hd_le.trans D.nat_le_of_hasLogBound⟩
     rw [hm, pow_mul, hyd, one_pow]
   -- inertia acts through a finite group, so a polynomial that vanishes on `μ` kills `R g`
   have h_finite : IsFiniteTypeAt R A := (hR.local_conditions v (·.2 (.inr ⟨i, hvi⟩)) hA).1
   have h_aeval : aeval (R g).val (X ^ D.chosenGroupOrder - 1 : (PadicAlgCl ℓ)[X]) = 0 :=
-    h_finite.aeval_eq_zero_of_roots (hA.valuation_natCast_eq_one_iff.2 hvℓ) hgA h_kill _
+    h_finite.aeval_eq_zero_of_roots (hA.valuation_natCast_eq_one_iff.2 hvℓ) hgA
+      (hμ.polyKillsAt hR) _
       (by simpa [eval_multiset_prod, sub_eq_zero] using h_root)
   simpa [sub_eq_zero] using h_aeval
 
