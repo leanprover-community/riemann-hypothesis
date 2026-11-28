@@ -227,6 +227,34 @@ theorem DiscreteSeries.polarization_one_eq_of_lt [DecidableEq R] [DecidableEq C]
   rw [h_prim a b hab h_lt, ite_eq_right h_ne, zero_smul, add_zero] at h_E
   exact sub_eq_zero.1 h_E.symm
 
+omit [Fintype C] in
+/-- If `P` is harmonic for the columns, then the sum over rows of the same sign as `a` of
+its mixed derivatives in columns `c` and `d` vanishes when those variables in row `a` have
+signs `1` and `-1`, respectively. This sum is the negative of the column Laplacian applied to
+`P`. -/
+private theorem DiscreteSeries.sum_pderiv_pderiv_eq_zero
+    {P : MvPolynomial ι ℂ} (h_harm : T.swap.IsLaplaceHarmonic P) (a : R) (c d : C)
+    (hc : T.varSign (a, c) = 1) (hd : T.varSign (a, d) = -1) :
+    ∑ b with ε b = ε a, pderiv (T.varEquiv (b, c)) (pderiv (T.varEquiv (b, d)) P) = 0 := by
+  have sign_c {b : R} (hb : ε b = ε a) : T.varSign (b, c) = 1 := by
+    simpa only [pairSign, hb] using hc
+  have sign_d {b : R} (hb : ε b = ε a) : T.varSign (b, d) = -1 := by
+    simpa only [pairSign, hb] using hd
+  have hcd : ε' c ≠ ε' d := by grind [pairSign, neg_units_ne_self]
+  have block (b : R) : T.swap.varSign (c, b) = -1 ↔ ε b = ε a := by
+    have sign_a : T.globalSign * ε' c * ε a = 1 := (mul_right_comm ..).trans (sign_c rfl)
+    simp only [pairSign, neg_mul, neg_inj]
+    rw [← sign_a, _root_.mul_right_inj]
+  have laplacian : T.swap.fockLaplacian c d P =
+      -∑ b with ε b = ε a, pderiv (T.varEquiv (b, c)) (pderiv (T.varEquiv (b, d)) P) := by
+    rw [fockLaplacian, LinearMap.sum_apply, filter_congr fun b _ ↦ block b, ← sum_neg_distrib]
+    refine sum_congr rfl fun b hb ↦ ?_
+    have swap_d : T.swap.varSign (d, b) = 1 := by
+      simpa [mul_right_comm T.globalSign, neg_eq_iff_eq_neg, pairSign] using sign_d
+        (mem_filter.1 hb).2
+    simp [(block b).2 (mem_filter.1 hb).2, swap_d, glOp, raiseOp, lowerOp]
+  exact neg_eq_zero.1 (laplacian.symm.trans (h_harm c d hcd))
+
 /-- Let the entries of `l` be distinct, let `P` be killed by the compact raising operators of the
 rows for `l` and by the Laplacians of the columns. For rows `a`, `b` of equal sign, the
 polarisations `∑ X_bc ∂_ac P` over the columns `c` where `(a, c)` has sign `-s` and `∑ X_ac ∂_bc P`
@@ -274,23 +302,9 @@ theorem DiscreteSeries.inner_polarization_eq_zero [DecidableEq R] [DecidableEq C
   have N_sum (a : R) : ∑ b with ε b = ε a, N 1 a b = 0 := by
     simp only [N]
     refine sum_comm.trans <| sum_eq_zero fun d hd ↦ sum_comm.trans <| sum_eq_zero fun c hc ↦ ?_
-    have sign_c {b : R} (hb : ε b = ε a) : T.varSign (b, c) = 1 := by
-      simpa only [pairSign, hb] using (mem_filter.1 hc).2
-    have sign_d {b : R} (hb : ε b = ε a) : T.varSign (b, d) = -1 := by
-      simpa only [pairSign, hb] using (mem_filter.1 hd).2
-    have hcd : ε' c ≠ ε' d := by grind [pairSign, neg_units_ne_self]
-    have block (b : R) : T.swap.varSign (c, b) = -1 ↔ ε b = ε a := by
-      have sign_a : T.globalSign * ε' c * ε a = 1 := (mul_right_comm ..).trans (sign_c rfl)
-      simp only [pairSign, neg_mul, neg_inj]
-      rw [← sign_a, _root_.mul_right_inj]
-    have laplacian : T.swap.fockLaplacian c d P = -∑ b with ε b = ε a, u b c d := by
-      rw [fockLaplacian, LinearMap.sum_apply, filter_congr fun b _ ↦ block b, ← sum_neg_distrib]
-      refine sum_congr rfl fun b hb ↦ ?_
-      have swap_d : T.swap.varSign (d, b) = 1 := by
-        simpa [mul_right_comm T.globalSign, neg_eq_iff_eq_neg, pairSign] using sign_d
-          (mem_filter.1 hb).2
-      simp [u, (block b).2 (mem_filter.1 hb).2, swap_d, glOp, raiseOp, lowerOp]
-    rw [← inner_sum, neg_eq_zero.1 (laplacian.symm.trans (h_harm c d hcd)), inner_zero_right]
+    rw [← inner_sum, show (∑ b with ε b = ε a, u b c d) = 0 from
+      sum_pderiv_pderiv_eq_zero h_harm a c d (mem_filter.1 hc).2 (mem_filter.1 hd).2,
+      inner_zero_right]
   have N_zero : N 1 a b = 0 :=
     (sum_eq_zero_iff_of_nonneg (N_nonneg a)).1 (N_sum a) b (mem_filter.2 ⟨mem_univ b, hab.symm⟩)
   rw [inner_pol s hab]
