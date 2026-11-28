@@ -509,6 +509,16 @@ close position for some ν in U_(<l). -/
 def closeBelow (l : ℕ) (g : T.G) : Set T.G :=
   {z : T.G | ∃ ν ∈ unipotentBelow l, g⁻¹ * (ν * z) ∈ Γ.positionsOfSize}
 
+/-- If the weighted integral over the lower floors is nonzero, some translate of the point
+lies in the position ball. -/
+lemma lintegral_eq_zero_or_mem_closeBelow (f : T.G → ℝ≥0∞) (j : ℕ) (g z : T.G) :
+    (∫⁻ ν : T.G, Γ.positionsOfSize.indicator f (g⁻¹ * (ν * z)) ∂ascConv heisenbergMeasure j) = 0 ∨
+      z ∈ Γ.closeBelow j g := by
+  apply or_iff_not_imp_left.mpr
+  intro h
+  obtain ⟨ν, hν, hx⟩ := exists_ne_zero_of_ae ae_ascConv_mem_unipotentBelow h
+  exact ⟨ν, hν, mem_of_indicator_ne_zero hx⟩
+
 /-- Two points of the position ball: if g lies in the box K = `F.boxSet` and x, y lie in the
 position ball (`Γ.positionsOfSize`), then all entries of (g x (g y)⁻¹ - 1) / M have size 14, where
 M = `F.levelUnit` is the level. -/
@@ -632,26 +642,16 @@ lemma lintegral_depthWeight_succ_le {g : T.G} {C : ℝ≥0∞} (hg : g ∈ F.box
     ∫⁻ ν : T.G, Γ.positionsOfSize.indicator (F.depthWeight (a + 1) g) (g⁻¹ * (ν * y))
       ∂ascConv heisenbergMeasure (a + 1) ≤ C * (F.floorModulus a * Γ.loss ^ (4600 * 𝔰.n)) := by
   have h_meas : MeasurableSet Γ.positionsOfSize := Γ.measurableSet_positionsOfSize
-  -- Unless the integral is zero, some `g⁻¹ * (τ * y)` is a close position. Translate by `τ`.
-  by_cases h_zero : ∫⁻ ν : T.G, Γ.positionsOfSize.indicator (F.depthWeight (a + 1) g)
-      (g⁻¹ * (ν * y)) ∂ascConv heisenbergMeasure (a + 1) = 0
+  obtain h_zero | ⟨τ, hτ, hy⟩ :=
+    Γ.lintegral_eq_zero_or_mem_closeBelow (F.depthWeight (a + 1) g) (a + 1) g y
   · exact h_zero.trans_le zero_le
-  obtain ⟨τ, hτ, h_ne⟩ : ∃ τ ∈ unipotentBelow (a + 1),
-      Γ.positionsOfSize.indicator (F.depthWeight (a + 1) g) (g⁻¹ * (τ * y)) ≠ 0 :=
-    exists_ne_zero_of_ae ae_ascConv_mem_unipotentBelow h_zero
-  have hy : g⁻¹ * (τ * y) ∈ Γ.positionsOfSize := mem_of_indicator_ne_zero h_ne
   -- On a coset `U_(<a) z` the depth of `e_a` is constant, so it leaves the integral.
   have h_coset (z : T.G) :
       ∫⁻ ν : T.G, Γ.positionsOfSize.indicator (F.depthWeight (a + 1) g) (g⁻¹ * (ν * z))
         ∂ascConv heisenbergMeasure a ≤ C * (Γ.closeBelow a g).indicator
           (fun z : T.G ↦ (F.depth a g (g⁻¹ * z))⁻¹ ^ F.volumeExponent) z := by
-    by_cases hz_zero : ∫⁻ ν : T.G, Γ.positionsOfSize.indicator (F.depthWeight (a + 1) g)
-        (g⁻¹ * (ν * z)) ∂ascConv heisenbergMeasure a = 0
+    obtain hz_zero | hz := Γ.lintegral_eq_zero_or_mem_closeBelow (F.depthWeight (a + 1) g) a g z
     · exact hz_zero.trans_le zero_le
-    obtain ⟨ν₀, hν₀, h_ne⟩ : ∃ ν₀ ∈ unipotentBelow a,
-        Γ.positionsOfSize.indicator (F.depthWeight (a + 1) g) (g⁻¹ * (ν₀ * z)) ≠ 0 :=
-      exists_ne_zero_of_ae ae_ascConv_mem_unipotentBelow hz_zero
-    have hz : z ∈ Γ.closeBelow a g := ⟨ν₀, hν₀, mem_of_indicator_ne_zero h_ne⟩
     grw [indicator_of_mem hz, ← hC z, ← lintegral_mul_const _ (by fun_prop)]
     refine lintegral_le_of_ae_imp ae_ascConv_mem_unipotentBelow fun ν hν ↦ ?_
     rw [← indicator_mul_const, ← depth_unipotentBelow_mul hν]

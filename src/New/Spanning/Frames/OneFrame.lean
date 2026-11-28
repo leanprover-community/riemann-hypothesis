@@ -503,10 +503,7 @@ lemma Gauge.lintegral_cutSquare_le (Γ : Gauge F) {k : T.G → T.G → ℂ} {d :
       obtain ⟨h_mass, h_up⟩ : Γ.closeMass l g (n * y) ≠ 0 ∧
           F.partialCorrelation (l + 1) k g (n * y) ≠ 0 := by
         simpa [cutSquare] using h_ne
-      obtain ⟨ν, hν, h_pos⟩ : ∃ ν ∈ unipotentBelow l,
-          Γ.positionsOfSize.indicator (1 : T.G → ℝ≥0∞) (g⁻¹ * (ν * (n * y))) ≠ 0 :=
-        exists_ne_zero_of_ae ae_ascConv_mem_unipotentBelow h_mass
-      exact ⟨hn, ⟨ν, hν, Set.mem_of_indicator_ne_zero h_pos⟩,
+      exact ⟨hn, (Γ.lintegral_eq_zero_or_mem_closeBelow 1 l g (n * y)).resolve_left h_mass,
         hK.isNear_of_partialCorrelation_ne_zero h_up⟩
     have h_centre : ∀ n₀ ∈ S, ∃ t ∈ partialUnitriangularGroup (a + 1) ⊓ floorGroup a,
         ∃ ν ∈ unipotentBelow (a + 1), Γ.HasMatrixSize 1 (t * ν * g).val.val ∧
