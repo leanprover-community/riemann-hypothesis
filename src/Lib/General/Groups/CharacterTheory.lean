@@ -112,13 +112,16 @@ attribute [local instance low] Fintype.ofFinite
 variable {α β : Type*} {ι : Type*} [Finite α] [Finite β] {f : α → ℂ} {g : β → ℂ}
 
 omit [Finite α] in
+/-- The finite average `finMean f` equals the sum over `α` divided by the cardinality `#α`. -/
 lemma finMean_eq [Fintype α] : finMean f = (∑ x : α, f x) / Fintype.card α := by
   rw [finMean, finsum_eq_sum_of_fintype, Nat.card_eq_fintype_card]
 
+/-- Factoring out a scalar constant `c` from the finite average `finMean`. -/
 @[simp]
 lemma finMean_const_mul (c : ℂ) : finMean (fun x : α ↦ c * f x) = c * finMean f := by
   simp [finMean_eq, mul_div, mul_sum]
 
+/-- The finite average distributes over finite sums of functions. -/
 lemma finMean_sum (s : Finset ι) (f : ι → α → ℂ) :
     finMean (fun x : α ↦ ∑ i ∈ s, f i x) = ∑ i ∈ s, finMean (f i) := by
   simp [finMean_eq, s.sum_comm, sum_div]
