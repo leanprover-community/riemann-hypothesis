@@ -4,6 +4,7 @@ public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.Analysis.Complex.UpperHalfPlane.PeriodPair
 public import Lib.CM.Sigma.Basic
 import Lib.CM.Sigma.ThetaSections
 import Lib.General.NumberTheory.SUnitsAndClassNumber
@@ -137,23 +138,6 @@ lemma QuadField.not_lattice_le_comap_half (L : PeriodPair) {a : ℂ} (ha : a.re 
   norm_cast at h_parity
   lia
 
-/-- If `L' = c L` for lattices `L`, `L'` and `c ≠ 0`, then `℘_{L'}(c z) = c⁻² ℘_L(z)`. -/
-lemma weierstrassP_mul_eq_of_mul_mem_iff {L L' : PeriodPair} {c : ℂ} (hc : c ≠ 0)
-    (hL' : ∀ x : ℂ, c * x ∈ L'.lattice ↔ x ∈ L.lattice) (z : ℂ) :
-    ℘[L'] (c * z) = ℘[L] z * (c ^ 2)⁻¹ := by
-  let e : L.lattice ≃ L'.lattice := (Equiv.mulLeft₀ c hc).subtypeEquiv fun x ↦ (hL' x).symm
-  have he (l : L.lattice) : (e l : ℂ) = c * l := rfl
-  rw [weierstrassP, weierstrassP, ← e.tsum_eq, ← tsum_mul_right]
-  exact tsum_congr fun l ↦ by simp [he, ← mul_sub, mul_pow, field]
-
-/-- If `L' = c L` for lattices `L`, `L'` and `c ≠ 0`, then `g₂(L') = c⁻⁴ g₂(L)`. -/
-lemma g₂_eq_of_mul_mem_iff {L L' : PeriodPair} {c : ℂ} (hc : c ≠ 0)
-    (hL' : ∀ x : ℂ, c * x ∈ L'.lattice ↔ x ∈ L.lattice) : L'.g₂ = L.g₂ * (c ^ 4)⁻¹ := by
-  let e : L.lattice ≃ L'.lattice := (Equiv.mulLeft₀ c hc).subtypeEquiv fun x ↦ (hL' x).symm
-  have he (l : L.lattice) : (e l : ℂ) = c * l := rfl
-  rw [g₂, g₂, PeriodPair.G, PeriodPair.G, ← e.tsum_eq, mul_assoc, ← tsum_mul_right]
-  simp [he, mul_pow, mul_comm]
-
 /-- Every lattice `L` has a point `l` such that neither `ω l / 2` nor `ω̄ l / 2` lies in `L`, where
 `ω = (1 + √-d) / 2` is `quadGen d`. -/
 lemma exists_mem_lattice_quadGen_mul_half_notMem (L : PeriodPair) :
@@ -205,7 +189,7 @@ lemma QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal [PrimeSevenModEigh
   have h_mem (z : ℂ) : c * z ∈ (L c).lattice ↔ z ∈ (L 1).lattice := by
     simp [mem_iff, mem_scaledIdeal]
   have h_g₂_eq : (L c).g₂ = 12 * ℘[L c] (c * (l / 2)) ^ 2 - 4 := by
-    rw [g₂_eq_of_mul_mem_iff c.ne_zero h_mem, weierstrassP_mul_eq_of_mul_mem_iff c.ne_zero h_mem]
+    rw [show L c = c • L 1 by ext <;> simp [L], g₂_smul, weierstrassP_smul]
     grind [c.ne_zero]
   let C : CMLattice d :=
     { periodPair := L c
