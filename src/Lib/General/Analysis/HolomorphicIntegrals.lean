@@ -19,7 +19,7 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import TauCeti.Analysis.MvPolynomial.Jacobian
+public import TauCeti.Analysis.MvPolynomial.Jacobian
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Speed
 import Lib.General.Analysis.GaussianIntegral
@@ -249,12 +249,7 @@ lemma analyticAt_of_eventually_differentiableAt [FiniteDimensional ℂ F] {f : E
   DifferentiableOn.analyticAt_of_finiteDimensional
     (s := {z | DifferentiableAt ℂ f z}) (fun _ hz ↦ hz.differentiableWithinAt) hf
 
-/-- A complex polynomial P in finitely many variables is differentiable at every x, with
-derivative v ↦ ∑ᵢ (∂P/∂Xᵢ)(x)·vᵢ, given by the formal partial derivatives. -/
-@[fun_prop]
-lemma hasFDerivAt_mvPolynomial_eval {ι : Type*} [Fintype ι] (P : MvPolynomial ι ℂ) (x : ι → ℂ) :
-    HasFDerivAt (𝕜 := ℂ) (P.eval ·) (∑ i : ι, (P.pderiv i).eval x • .proj i) x :=
-  P.hasFDerivAt_eval x
+attribute [fun_prop] MvPolynomial.hasFDerivAt_eval
 
 end New
 

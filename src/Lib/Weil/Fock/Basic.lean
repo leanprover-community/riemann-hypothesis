@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.MvPolynomial.Jacobian
 import TauCeti.Analysis.SpecialFunctions.Gaussian.Reproducing
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -709,7 +710,7 @@ lemma exists_hasDerivAt_realHeisenbergOp {P : MvPolynomial ι ℂ} (v : ι → �
     -- The argument of `P` moves along a line in the direction `-holomorphicCoord ε v`.
     have h_poly : HasDerivAt (fun t : ℂ ↦ eval (f t (1, w)).1 P)
         (-∑ i : ι, holomorphicCoord ε v i * eval (holomorphicCoord ε w) (pderiv i P)) 0 := by
-      simpa [f, HasLineDerivAt, mul_comm] using (hasFDerivAt_mvPolynomial_eval P
+      simpa [f, HasLineDerivAt, mul_comm] using (P.hasFDerivAt_eval
         (holomorphicCoord ε w)).hasLineDerivAt (-holomorphicCoord ε v)
     -- The exponent is a constant plus `t` times a differentiable function of `t`.
     have h_exp : HasDerivAt (fun t : ℂ ↦ (f t (1, w)).2)

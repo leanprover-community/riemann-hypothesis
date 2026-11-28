@@ -12,6 +12,7 @@ import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Group.SubmonoidClosure
+import TauCeti.Analysis.MvPolynomial.Jacobian
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.General.Analysis.HolomorphicIntegrals
 import Lib.General.Geometry.GeometricPoints
@@ -488,7 +489,7 @@ private lemma surjective_fderiv_relations {V : (Spec (CommRingCat.of ℂ)).Opens
     (LinearMap.isUnit_toMatrix'_iff.mpr h_jac).map (evalSection x.left hx).hom.mapMatrix
   refine (vecMul_surjective_iff_isUnit.mpr h_unit).forall.mpr fun v ↦
     ⟨∑ j, v j • Pi.single (P.map j) 1, ?_⟩
-  rw [(hasFDerivAt_pi.mpr fun _ ↦ hasFDerivAt_mvPolynomial_eval ..).fderiv]
+  rw [(hasFDerivAt_pi.mpr fun _ ↦ MvPolynomial.hasFDerivAt_eval ..).fderiv]
   ext
   simp [h_eval, ← ofSection_eq hx, vecMul_eq_sum, Pi.single_apply, pderiv_map]
 
