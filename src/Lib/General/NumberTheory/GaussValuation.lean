@@ -295,21 +295,24 @@ lemma exists_ellVal_eval_eq_gaussVal (ρ : ℚ≥0) (f : (intQpBar ℓ)[X]) :
     ∃ y : intQpBar ℓ, (ρ : ℝ≥0) ≤ ellVal y.val ∧ ellVal (f.eval y).val = gaussVal ρ f := by
   simpa using exists_forall_ellVal_eval_eq_gaussVal ρ fun _ : Unit ↦ f
 
-/-- For an integral element `α` the Gauss valuation of radius `ρ` of the linear polynomial `Y - α`
-is `min(v(α), ρ)`, where `v = ellVal`: evaluation at `0` and the leading coefficient
-give `≤`, and a generic point gives `≥`. -/
+/-- The Gauss valuation of `Y - α` is `min(v(α), ρ)`, by inspecting its coefficients. -/
 lemma gaussVal_X_sub_C (α : intQpBar ℓ) :
     gaussVal ρ (X - C α : (intQpBar ℓ)[X]) = min (ellVal α.val) (ρ : ℝ≥0) := by
+  have h_const : (X - C α : (intQpBar ℓ)[X]).coeff 0 = -α := by simp
   refine le_antisymm (le_min ?_ ?_) ?_
-  · have h_eval : (X - C α : (intQpBar ℓ)[X]).eval 0 = -α := by simp
-    rw [← ellVal_neg α, ← h_eval]
-    exact gaussVal_le_eval_zero (X - C α)
+  · simpa only [h_const, ellVal_neg, Nat.cast_zero, mul_zero, add_zero] using
+      gaussVal_le_coeff (ρ := ρ) (X - C α) 0
   · simpa using gaussVal_le_of_isUnit_coeff (ρ := ρ) (g := X - C α) (d := 1) (by simp)
-  · obtain ⟨y, hy, h_eq⟩ := exists_ellVal_eval_eq_gaussVal ρ (X - C α : (intQpBar ℓ)[X])
-    calc min (ellVal α.val) (ρ : ℝ≥0) ≤ min (ellVal y.val) (ellVal α.val) :=
-          (min_comm _ _).trans_le (min_le_min_right _ hy)
-      _ ≤ ellVal (y - α).val := min_ellVal_le_ellVal_sub y α
-      _ = gaussVal ρ (X - C α) := by rw [← h_eq, eval_sub, eval_X, eval_C]
+  · unfold gaussVal
+    refine le_iInf fun i ↦ ?_
+    rcases i with _ | (_ | i)
+    · rw [h_const, ellVal_neg]
+      simpa using min_le_left (ellVal α.val) ((ρ : ℝ≥0) : ℝ≥0∞)
+    · rw [show (X - C α : (intQpBar ℓ)[X]).coeff 1 = 1 by simp,
+        ellVal_eq_zero_iff_isUnit.2 isUnit_one]
+      simpa using min_le_right (ellVal α.val) ((ρ : ℝ≥0) : ℝ≥0∞)
+    · have h_zero : (X - C α : (intQpBar ℓ)[X]).coeff (i + 2) = 0 := by simp [coeff_X]
+      simp only [h_zero, show (0 : intQpBar ℓ).val = 0 from rfl, ellVal_zero, top_add, le_top]
 
 /-- For a prime `ℓ`, a radius `ρ ≥ 0` and a multiset `R` of integral elements (elements of the
 valuation ring `intQpBar ℓ` of ℚ̄_ℓ), the Gauss valuation `gaussVal ρ` of `∏ (Y - α)` is
