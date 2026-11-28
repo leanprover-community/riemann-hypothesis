@@ -40,8 +40,7 @@ lemma New.zeros_on_line : DirichletLZerosOnLine := by
 for Re s > 1/2, the pole excepted. Then `RiemannZetaZerosOnLine` holds: every zero s of ζ outside
 {1, −2, −4, …} has Re s = 1/2. -/
 lemma New.zeta_zeros_on_line : RiemannZetaZerosOnLine := by
-  apply TauCeti.riemannHypothesis_iff_riemannZeta_ne_zero.mpr
-  intro s hs
-  obtain rfl | hs₁ := eq_or_ne s 1
-  · exact riemannZeta_one_ne_zero
-  · simpa only [LFunction_modOne_eq] using h 1 1 s hs (Or.inr hs₁)
+  apply TauCeti.riemannHypothesis_iff_mem_Ioo.mpr
+  intro s hz hs
+  apply New.zeros_on_line h 1 1 s hs.1 hs.2
+  simpa only [LFunction_modOne_eq] using hz
