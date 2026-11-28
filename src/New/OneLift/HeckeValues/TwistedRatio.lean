@@ -334,19 +334,19 @@ variable {P : Parameters} {D : Data P}
 (`New.Data.MFoldTwist`: a twist whose tame part has nontrivial powers of exponent `1, …, m` at the
 places of its modulus, for the number `m = D.m` fixed by the data `D`). Assume that the
 family is regular (`New.Data.IsRegularFamily`: small ratios and bounded denominators), so that the
-norm of the modulus of `θ ι` is prime to `ℓ`. Height at most `c` (`New.HeightLe`) means that there
-are `H ≠ 0`, a real `α` and reals `h ℓ ≥ 0` with `‖σ H‖ ≤ exp α` for every automorphism `σ` of `ℂ`,
-with `ℓ`-adic absolute value of `H * y ι` at most `ℓ ^ h ℓ` for every `ι`, and with
-`α + ∑ ℓ ∈ T, h ℓ * log ℓ ≤ c` for every finite set `T` of primes. If the family `y` has height at
-most `c ≤ c'`, and each `y' ι` is zero or is `y ι` times an integer power of that norm, then `y'`
-has height at most `c'`. -/
+norm of the modulus of `θ ι` is prime to `ℓ`. Height at most `c` (`TauCeti.PrimePadicIso.HeightLe`)
+means that there are `H ≠ 0`, a real `α` and reals `h ℓ ≥ 0` with `‖σ H‖ ≤ exp α` for every
+automorphism `σ` of `ℂ`, with `ℓ`-adic absolute value of `H * y ι` at most `ℓ ^ h ℓ` for every `ι`,
+and with `α + ∑ ℓ ∈ T, h ℓ * log ℓ ≤ c` for every finite set `T` of primes. If the family `y` has
+height at most `c ≤ c'`, and each `y' ι` is zero or is `y ι` times an integer power of that norm,
+then `y'` has height at most `c'`. -/
 lemma IsRegularFamily.heightLe_of_eq_zpow_mul {c c' : ℝ} {y y' : PrimePadicIso → ℂ}
-    {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegularFamily θ) (h_height : HeightLe c y)
+    {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegularFamily θ) (h_height : HeightLe y c)
     (hc : c ≤ c') (hy : ∀ ι : PrimePadicIso, y' ι ≠ 0 → ∃ k : ℤ, y' ι = (θ ι).normQ ^ k * y ι) :
-    HeightLe c' y' := by
+    HeightLe y' c' := by
   choose! k hk using hy
   -- Multiplying by powers of numbers prime to `ℓ` keeps the bound on the height.
-  refine (h_height.rpow_mul hc hθ.coprime fun ι ↦ k ι).mono le_rfl fun ι ↦ ?_
+  refine (h_height.rpow_mul _ (fun ι ↦ k ι) hθ.coprime).mono hc fun ι ↦ ?_
   by_cases h_zero : y' ι = 0
   · simp only [h_zero, map_zero, norm_zero, norm_nonneg]
   · rw [hk ι h_zero, Rat.cast_intCast, Real.rpow_intCast, Complex.ofReal_zpow,

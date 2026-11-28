@@ -22,7 +22,7 @@ also bounds the conjugates of `New.Data.CriticalPair.integralAlgebraicPart` for 
 squared norm of the lift for the conjugate character, and this is an `L`-value times explicit
 factors. The file shows that flat pairs exist over a given character of weight zero and bounds the
 range of the jet degrees of a main pair (`New.Data.CriticalPair.IsMainPair`). It bounds the height
-(`New.HeightLe`) of the squared norm of the untwisted lift of a main pair.
+(`TauCeti.PrimePadicIso.HeightLe`) of the squared norm of the untwisted lift of a main pair.
 
 ## Main definitions and results
 
@@ -473,14 +473,14 @@ lemma CriticalPair.IsMainPair.negWeight_sub_z_mem_Icc {p : D.CriticalPair} {j : 
 /-- Let `p = (ν, z)` be a main pair for `j`, with `m = D.m` the number of lifts, `r = D.r` the rank
 of the target and `t = 5 r`. Take the squared norm `‖φ‖²` of the untwisted lift of `ν` to `U(2 z)`
 as a constant family, indexed by the primes `l` with an isomorphism `ℂ ≃ ℚ̄_l`. Then it has height
-(`New.HeightLe`) at most `denominatorBudget - ∑ τ, jetSize (κ τ)`. Here
+(`TauCeti.PrimePadicIso.HeightLe`) at most `denominatorBudget - ∑ τ, jetSize (κ τ)`. Here
 `denominatorBudget = f a log³ b / (m k)`, with `f` the number of infinite places `τ`, `b = D.b` the
 weight scale, `a = x b` for the length `x` of the prime sum and `k = r + 1 - m`; further
 `κ τ = D.weight τ`, and `jetSize i = log i! + i log (M / Ω)` is the size of a derivative of order
 `i`, with `M = D.M` and `Ω = P.bigOmega D.towerExp`. -/
 lemma heightLe_norm_trivialLift_sq {j : ℕ} {p : D.CriticalPair} (hp : p.IsMainPair j) :
-    HeightLe (D.denominatorBudget - ∑ τ : D.Φ, D.jetSize (D.weight τ)) fun _ : PrimePadicIso ↦
-      ‖trivialLift hp.hasLiftRank TameChar.one‖ ^ 2 := by
+    HeightLe (fun _ : PrimePadicIso ↦ ‖trivialLift hp.hasLiftRank TameChar.one‖ ^ 2)
+      (D.denominatorBudget - ∑ τ : D.Φ, D.jetSize (D.weight τ)) := by
   -- Compare with the critical pair with an empty row `q = (υ ^ (-z), z)` of the same rank. The
   -- multiplier is `q.integralAlgebraicPart / ‖φ‖²`: its product with `‖φ‖²` is
   -- `q.integralAlgebraicPart`, integral at every prime, and in its conjugates the unknown constant

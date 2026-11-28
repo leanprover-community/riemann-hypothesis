@@ -33,8 +33,8 @@ Notions from other files:
   the `m`-fold twists `ξ`; the modulus `Q(ξ)` has norm `ξ.normQ`.
 * `D.chainDeterminant ξ` is `Z(ξ) = det (Θ_ξ* Θ_ξ)`, and `D.liftDeterminant ξ j` is `Z_j(ξ ^ j)`,
   the same determinant for the `j`-th single lift.
-* `HeightLe c y`: the family `y` of complex numbers, one for each pair `ι` of a prime `l` and an
-  isomorphism `ℂ ≃ ℚ̄_l` (`PrimePadicIso`), has height at most `c`.
+* `HeightLe y c`: the family `y` of complex numbers, one for each pair `ι` of a prime `l` and an
+  isomorphism `ℂ ≃ ℚ̄_l` (`PrimePadicIso`), has height at most `c`. Both are Tau Ceti's.
 * `D.HasSmallRatios θ`: the `m`-fold twists `ξ_ι = θ ι` have `Nm Q(ξ_ι)` prime to the prime of `ι`
   and inverse ratios of Hecke values of height at most `x₁`.
 -/
@@ -120,9 +120,10 @@ L-values have height at most `x₁`. Let `e` be an integer. Then the inverse of 
 `m² t x₁`. -/
 lemma HasSmallRatios.heightLe_inv_rpow_mul_prod_turnRatio {θ : PrimePadicIso → D.MFoldTwist}
     (hθ : D.HasSmallRatios θ) (e : ℤ) :
-    HeightLe (D.m * D.m * (D.t * D.x₁)) fun ι : PrimePadicIso ↦
+    HeightLe (fun ι : PrimePadicIso ↦
       ((((θ ι).normQ : ℝ) ^ (e / 2 : ℝ) *
-        ∏ i ∈ Finset.range D.m, ∏ j ∈ Finset.range D.m, D.turnRatio i j (θ ι) : ℝ) : ℂ)⁻¹ := by
+        ∏ i ∈ Finset.range D.m, ∏ j ∈ Finset.range D.m, D.turnRatio i j (θ ι) : ℝ) : ℂ)⁻¹)
+      (D.m * D.m * (D.t * D.x₁)) := by
   refine (hθ.heightLe_inv_rpow_mul_prod e isRamifiedRatio_turnRatio_of_mem).mono
     (le_of_eq (by simp)) fun ι ↦ le_of_eq ?_
   rw [prod_product]
@@ -150,8 +151,8 @@ prime `l` and `ι : ℂ ≃ ℚ̄_l`, with small ratios such that for `1 ≤ j �
 `Z_j(1) / Z_j(ξ_ι ^ j)` has height at most `d (f a log⁴ b / m - k D.directionAmount)`. -/
 theorem exists_hasSmallRatios_heightLe_liftDeterminant_div :
     ∃ θ : PrimePadicIso → D.MFoldTwist, D.HasSmallRatios θ ∧ ∀ j ∈ Icc 1 D.m,
-      HeightLe (D.targetDim * (D.f * D.a * D.logB ^ 4 / D.m - D.k * D.directionAmount))
-        fun ι : PrimePadicIso ↦ D.liftDeterminant 1 j / D.liftDeterminant (θ ι) j := by
+      HeightLe (fun ι : PrimePadicIso ↦ D.liftDeterminant 1 j / D.liftDeterminant (θ ι) j)
+        (D.targetDim * (D.f * D.a * D.logB ^ 4 / D.m - D.k * D.directionAmount)) := by
   -- Every regular family serves.
   obtain ⟨θ, hθ⟩ := exists_isRegularFamily D
   refine ⟨θ, hθ.toHasSmallRatios, fun j hj ↦ ?_⟩
@@ -191,25 +192,26 @@ single lift has height at most `d (f a log⁴ b / m - k D.directionAmount)`. The
 `D.mainAmount = m k D.directionAmount`. -/
 lemma heightLe_chainDeterminant_one_div {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.HasSmallRatios θ)
     (h_single : ∀ j ∈ Icc 1 D.m,
-      HeightLe (D.targetDim * (D.f * D.a * D.logB ^ 4 / D.m - D.k * D.directionAmount))
-        fun ι : PrimePadicIso ↦ D.liftDeterminant 1 j / D.liftDeterminant (θ ι) j) :
-    HeightLe (D.targetDim * (D.b + D.f * D.a * D.logB ^ 4 - D.mainAmount))
-      fun ι : PrimePadicIso ↦ D.chainDeterminant (1 : D.MFoldTwist) / D.chainDeterminant (θ ι) := by
+      HeightLe (fun ι : PrimePadicIso ↦ D.liftDeterminant 1 j / D.liftDeterminant (θ ι) j)
+        (D.targetDim * (D.f * D.a * D.logB ^ 4 / D.m - D.k * D.directionAmount))) :
+    HeightLe
+      (fun ι : PrimePadicIso ↦ D.chainDeterminant (1 : D.MFoldTwist) / D.chainDeterminant (θ ι))
+      (D.targetDim * (D.b + D.f * D.a * D.logB ^ 4 - D.mainAmount)) := by
   -- Add the heights of the factors of `Z(1) / Z(ξ_ι)`.
   obtain ⟨e, h_factor⟩ := D.exists_chainDeterminant_one_div_eq
   let scalar (ϑ : D.MFoldTwist) : ℝ := (ϑ.normQ : ℝ) ^ (e / 2 : ℝ) *
     ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ
   -- The power of `Nm Q` costs nothing, and each of the at most `m² t` inverse ratios of Hecke
   -- values costs `x₁`.
-  have h_scalar : HeightLe D.b fun ι : PrimePadicIso ↦ (scalar (θ ι) : ℂ)⁻¹ := by
+  have h_scalar : HeightLe (fun ι : PrimePadicIso ↦ (scalar (θ ι) : ℂ)⁻¹) D.b := by
     have h_cost : D.m * D.m * (D.t * D.x₁) ≤ D.b := D.le_of_hasLogBound
     exact (hθ.heightLe_inv_rpow_mul_prod_quotientRatio e).mono h_cost fun _ ↦ le_rfl
   -- The `m` bounds for the single lifts add up, as `m k D.directionAmount = D.mainAmount`.
-  have h_lifts : HeightLe (D.targetDim * (D.f * D.a * D.logB ^ 4 - D.mainAmount))
-      (∏ j ∈ Icc 1 D.m, fun ι : PrimePadicIso ↦
-        D.liftDeterminant 1 j / D.liftDeterminant (θ ι) j) := by
+  have h_lifts : HeightLe
+      (∏ j ∈ Icc 1 D.m, fun ι : PrimePadicIso ↦ D.liftDeterminant 1 j / D.liftDeterminant (θ ι) j)
+      (D.targetDim * (D.f * D.a * D.logB ^ 4 - D.mainAmount)) := by
     have hm : (D.m : ℝ) ≠ 0 := (HasLogBound.pos D).ne'
-    refine (HeightLe.prod h_single).mono (le_of_eq ?_) fun _ ↦ le_rfl
+    refine (TauCeti.PrimePadicIso.HeightLe.prod h_single).mono (le_of_eq ?_) fun _ ↦ le_rfl
     rw [sum_const, Nat.card_Icc, add_tsub_cancel_right, nsmul_eq_mul, mainAmount]
     field_simp
   refine ((h_scalar.pow D.targetDim).mul h_lifts).mono (le_of_eq (by ring)) fun ι ↦ le_of_eq ?_
@@ -241,13 +243,14 @@ theorem integral_forms_long_with_completion_cost {n : ℕ} {y : Fin n → D.targ
     (normSqAt_targetLattice (z i) σ).trans_le ((hz_aux i).normSqAt_lift_le σ)
   -- `|γ| ^ (-2)` is a power of `Nm Q` times `2 m² t` inverse ratios of Hecke values.
   have h_auxiliary_scalar_height :
-      HeightLe D.b fun ι : PrimePadicIso ↦ ((‖γ (θ ι)‖ : ℂ) ^ 2)⁻¹ := by
+      HeightLe (fun ι : PrimePadicIso ↦ ((‖γ (θ ι)‖ : ℂ) ^ 2)⁻¹) D.b := by
     have h_cost : 2 * (D.m * D.m * (D.t * D.x₁)) ≤ D.b := D.le_of_hasLogBound
     refine ((h_small_ratios.heightLe_inv_rpow_mul_prod_turnRatio e).pow 2).mono (mod_cast h_cost)
       fun ι ↦ le_of_eq ?_
     rw [hγ_norm, Pi.pow_apply, inv_pow]
-  have h_chain_ratio_height : HeightLe (D.targetDim * (D.b + D.f * D.a * D.logB ^ 4 - D.mainAmount))
-      fun ι : PrimePadicIso ↦ D.targetLattice.volume 1 / D.targetLattice.volume (θ ι) :=
+  have h_chain_ratio_height : HeightLe
+      (fun ι : PrimePadicIso ↦ D.targetLattice.volume 1 / D.targetLattice.volume (θ ι))
+      (D.targetDim * (D.b + D.f * D.a * D.logB ^ 4 - D.mainAmount)) :=
     heightLe_chainDeterminant_one_div h_small_ratios h_single_lift_heights
   -- Compare the Gram determinants for the local twists with the untwisted determinant.
   -- The product formula gives one inequality, including the cost of the completion.

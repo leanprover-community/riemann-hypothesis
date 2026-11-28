@@ -545,6 +545,6 @@ lemma New.exists_isRegularFamily {P : Parameters} (D : Data P) :
     ((isNegligible_twistError D).sum_mul_log_le T hT).trans D.le_of_hasLogBound
   exact ⟨θ,
     { coprime := h_coprime
-      height_le j p s hp := HeightLe.of_le h_ratio_height_budget fun κ ↦ h_ratio κ j p s hp
+      height_le j p s hp := .of_le h_ratio_height_budget fun κ ↦ h_ratio κ j p s hp
       exists_denominator_bound j := ⟨_, sum_clearingBound_add_padicValNat_le D, fun κ ↦
         h_denominators κ j⟩ }⟩

@@ -11,7 +11,7 @@ Consider a pair `(ν, z)`, a tame character `ϑ` with set of places `Q` and a si
 default `1`). For these, `New.Data.CriticalPair.ratio` is the quotient
 `|L(z, (ν ϑ^s)⁻¹)| / |L(z, ν⁻¹)|`, as a complex number. The remaining definitions record what the
 congruence arguments need to know about a family of twists `θ ι`. The family has one twist for each
-prime `ℓ` and isomorphism `ι : ℂ ≃ ℚ̄_ℓ` (`New.PrimePadicIso`).
+prime `ℓ` and isomorphism `ι : ℂ ≃ ℚ̄_ℓ` (`TauCeti.PrimePadicIso`).
 
 For a fixed lift index, the denominator budget is a sum over primes, not embeddings. The
 bound at a prime must work for every embedding above it, even though the chosen twists and
@@ -39,7 +39,7 @@ Notions from other files:
   z ≤ c(v) ≤ 4 `D.b` at every infinite place v and tame part ψ supported on the chosen places.
 * `New.Data.Twist`, `New.Data.MFoldTwist`: A tame character whose tame part ψ_w (for an m-fold
   twist: each ψ_wⁿ, 1 ≤ n ≤ m) is non-trivial at every place w of its finite set Q.
-* `New.HeightLe`: A bound for the height of a family of complex numbers indexed by the ι.
+* `TauCeti.PrimePadicIso.HeightLe`: A bound for the height of a family of complex numbers over ι.
 
 ## Relation to the literature
 
@@ -229,7 +229,7 @@ structure HasSmallRatios (θ : PrimePadicIso → D.MFoldTwist) : Prop where
   /-- For a ramified pair, the inverse ratios of L-values at the `j`-th powers of the twists
   (`s = 1`) or at their inverses (`s = -1`) form a family of height at most `D.x₁`. -/
   height_le (j : D.LiftIndex) (p : D.CriticalPair) (s : ℤˣ) (hp : p.IsRamified) :
-    HeightLe (D.x₁) fun ι : PrimePadicIso ↦ (p.ratio ((θ ι).powTwist j) s)⁻¹
+    HeightLe (fun ι : PrimePadicIso ↦ (p.ratio ((θ ι).powTwist j) s)⁻¹) D.x₁
 
 /-- A family of `m`-fold twists `θ ι`, one for each prime `ℓ` and `ι : ℂ ≃ ℚ̄_ℓ`, is regular if it
 has small ratios (`HasSmallRatios`) and, for `1 ≤ j ≤ m`, the `j`-th powers `(θ ι).powTwist j`

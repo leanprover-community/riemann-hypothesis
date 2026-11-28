@@ -32,11 +32,11 @@ from the definition of the number `Z(ξ)` on.
   and the sizes and denominators of vectors that complete the family to a basis.
 
 Notions from other files:
-* `New.PrimePadicIso`: pairs `ι` of a prime `l = ι.prime` and an isomorphism `ι.iso : ℂ ≃ ℚ̄_l`,
+* `TauCeti.PrimePadicIso`: pairs `ι` of a prime `l = ι.prime` and an isomorphism `ι.iso : ℂ ≃ ℚ̄_l`,
   written `ι ∣ l`. A number `x` is integral at `ι` if `‖ι.iso x‖ ≤ 1`.
-* `New.HeightLe c y`: the family `y`, with one complex number for each `ι`, has height at most `c`:
-  for some `H ≠ 0`, bounds for all `log |σ H|` and for `log ‖ι (H y_ι)‖` at each prime add up to at
-  most `c`.
+* `TauCeti.PrimePadicIso.HeightLe y c`: the family `y`, with one complex number for each `ι`, has
+  height at most `c`: for some `H ≠ 0`, bounds for all `log |σ H|` and for `log ‖ι (H y_ι)‖` at
+  each prime add up to at most `c`.
 * `New.formGram G v`: the matrix of the products `v_i* G v_k`.
 
 ## Relation to the literature
@@ -50,11 +50,10 @@ logarithms and interpolation determinants, 1994.
 
 noncomputable section
 
-namespace New
-
 open Finset Matrix Module Real Submodule InnerProductSpace ComplexOrder
+open New
 
-namespace PrimePadicIso
+namespace TauCeti.PrimePadicIso
 
 variable (ι : PrimePadicIso)
 
@@ -100,14 +99,16 @@ lemma Carries.fromBlocks {ι : PrimePadicIso} {S S' W : Type} [Fintype S] [Finty
     (hu : ι.Carries u y M a) (hu' : ι.Carries u' y' M a') :
     ι.Carries (fromBlocks u 0 0 u') (Sum.elim y y') M (a + a') := by
   constructor
-  · rw [det_fromBlocks_zero₂₁, neg_add, rpow_add (mod_cast ι.prime.prop.pos), MulMemClass.coe_mul,
-      map_mul, norm_mul]
+  · rw [det_fromBlocks_zero₂₁, neg_add, rpow_add (mod_cast ι.fact_prime.out.pos),
+      MulMemClass.coe_mul, map_mul, norm_mul]
     exact mul_le_mul hu.le_norm_det hu'.le_norm_det (by positivity) (norm_nonneg _)
   · rintro (i | i)
     · simpa using hu.sum_smul_mem i
     · simpa using hu'.sum_smul_mem i
 
-end PrimePadicIso
+end TauCeti.PrimePadicIso
+
+namespace New
 
 /-- The automorphism `σ'` of `ℂ`, with `σ' z = conj (σ (conj z))`. -/
 abbrev conjAut (σ : ℂ ≃+* ℂ) : ℂ ≃+* ℂ := (starRingAut.trans σ).trans starRingAut
@@ -208,7 +209,7 @@ lemma indexLe_of_colengthDvd {n : ℕ} {y : Fin n → V} {δ : ℝ} {e : ℕ →
   set l : ℕ := (ι.prime : ℕ)
   refine ⟨u, ?_, hu_mem⟩
   calc (l : ℝ) ^ (-e l) ≤ (l : ℝ) ^ (-(j : ℝ)) :=
-        rpow_le_rpow_of_exponent_le (mod_cast ι.prime.prop.one_le) (neg_le_neg hj)
+        rpow_le_rpow_of_exponent_le (mod_cast ι.fact_prime.out.one_le) (neg_le_neg hj)
     _ = ((l : ℝ) ^ j)⁻¹ := by rw [rpow_neg l.cast_nonneg, rpow_natCast]
     _ ≤ ‖ι.iso (u.det : ℂ)‖ := ι.inv_pow_le_norm_of_dvd hu_dvd
 
@@ -411,7 +412,7 @@ lemma norm_pow_mul_det_gram_le {n n' : ℕ} {y : Fin n → V}
   -- The two determinant lower bounds turn local integrality into the loss `2 a log l`.
   set β : ℝ := a * log ι.prime with hβ
   have h_exp_loss : exp (-β) = ((ι.prime : ℕ) : ℝ) ^ (-a) := by
-    rw [rpow_def_of_pos (mod_cast ι.prime.prop.pos), mul_neg, mul_comm, hβ]
+    rw [rpow_def_of_pos (mod_cast ι.fact_prime.out.pos), mul_neg, mul_comm, hβ]
   have h_det_lower : exp (-β) ≤ ‖ι.iso (u.det : ℂ)‖ := h_exp_loss.trans_le hu.le_norm_det
   have hu'_det : exp (-β) ≤ ‖ι.conj.iso (u'.det : ℂ)‖ := h_exp_loss.trans_le hu'.le_norm_det
   calc ‖ι.iso (((‖γ‖ : ℂ) ^ 2) ^ n' * Gram)‖
@@ -430,15 +431,16 @@ lemma norm_pow_mul_det_gram_le {n n' : ℕ} {y : Fin n → V}
 `ξ_ι = θ ι` be allowed at the prime of `ι`, and let the vectors `γ_ι Θ_{ξ_ι} z_i` be integral both
 at `ι` and at `ῑ`, where `ῑ z = ι z̄`. Let `Gram(ξ)` be the Gram determinant of the images of
 `y_1, …, y_n, z_1, …, z_n'` under `Θ_ξ`. Then the family `x_ι = |γ_ι| ^ (2 n') Gram(ξ_ι)` has height
-at most `2 δ` (`New.HeightLe`): for some common `H ≠ 0`, the bounds for `log |σ H|` over
-automorphisms `σ` of `ℂ` and for `log ‖ι (H x_ι)‖` at the primes add up to at most `2 δ`. -/
+at most `2 δ` (`TauCeti.PrimePadicIso.HeightLe`): for some common `H ≠ 0`, the bounds for
+`log |σ H|` over automorphisms `σ` of `ℂ` and for `log ‖ι (H x_ι)‖` at the primes add up to at most
+`2 δ`. -/
 lemma heightLe_pow_mul_det_gram {n n' : ℕ} {y : Fin n → V} {z : Fin n' → V} {δ : ℝ}
     (hδ : L.IndexLe y δ) {θ : PrimePadicIso → T}
     (hθ : ∀ ι : PrimePadicIso, L.IsAllowed ι.prime (θ ι)) {γ : PrimePadicIso → ℂ}
     (hz : ∀ (ι : PrimePadicIso) (i : Fin n'), γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι)
     (hz' : ∀ (ι : PrimePadicIso) (i : Fin n'), γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι.conj) :
-    HeightLe (2 * δ) fun ι : PrimePadicIso ↦
-      ((‖γ ι‖ : ℂ) ^ 2) ^ n' * (gram ℂ (L.lift (θ ι) ∘ Sum.elim y z)).det := by
+    HeightLe (fun ι : PrimePadicIso ↦
+      ((‖γ ι‖ : ℂ) ^ 2) ^ n' * (gram ℂ (L.lift (θ ι) ∘ Sum.elim y z)).det) (2 * δ) := by
   obtain ⟨e, -, he_sum, h_carries⟩ := hδ
   refine .of_le (e := fun l ↦ 2 * (e l * log l)) (fun U hU ↦ ?_) fun ι ↦ ?_
   · simpa [← mul_sum] using he_sum U hU
@@ -461,15 +463,15 @@ lemma heightLe_volume_div {n n' : ℕ} {y : Fin n → V} {z : Fin n' → V}
     {γ : PrimePadicIso → ℂ} (hγ_ne : ∀ ι, γ ι ≠ 0)
     (hz_int : ∀ ι i, γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι)
     (hz_conj : ∀ ι i, γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι.conj)
-    (hγ : HeightLe b_denom fun ι : PrimePadicIso ↦ ((‖γ ι‖ : ℂ) ^ 2)⁻¹) :
-    HeightLe (a + (2 * δ + n' * b_denom)) fun ι ↦ L.volume (θ ι) / L.volume 1 := by
+    (hγ : HeightLe (fun ι : PrimePadicIso ↦ ((‖γ ι‖ : ℂ) ^ 2)⁻¹) b_denom) :
+    HeightLe (fun ι ↦ L.volume (θ ι) / L.volume 1) (a + (2 * δ + n' * b_denom)) := by
   let G (ξ : T) := (gram ℂ (L.lift ξ ∘ Sum.elim y z)).det
   have hG (ξ : T) : G ξ = L.volume ξ * (gram ℂ (Sum.elim y z)).det :=
     det_gram_comp (L.lift ξ) _ (by simpa using h_card)
   have h_one : G 1 ≠ 0 :=
     det_gram_ne_zero_iff_linearIndependent.2 (h_indep.map_injOn _ h_inj.injOn)
-  have h_inv := HeightLe.inv_const h_one ha.norm_map_det_gram_le
-  have h_fin : HeightLe (2 * δ) fun ι ↦ ((‖γ ι‖ : ℂ) ^ 2) ^ n' * G (θ ι) :=
+  have h_inv : HeightLe (fun _ ↦ (G 1)⁻¹) a := .inv_const ha.norm_map_det_gram_le
+  have h_fin : HeightLe (fun ι ↦ ((‖γ ι‖ : ℂ) ^ 2) ^ n' * G (θ ι)) (2 * δ) :=
     heightLe_pow_mul_det_gram hδ hθ hz_int hz_conj
   -- The common basis determinant and the powers of the clearing scalar cancel in the ratio.
   convert h_inv.mul (h_fin.mul (hγ.pow n')) using 1
@@ -500,13 +502,13 @@ theorem covolume_add_index_nonneg {n n' : ℕ} {y : Fin n → V} {z : Fin n' →
     (hz_conj : ∀ (ι : PrimePadicIso) (i : Fin n'),
       γ ι • L.lift (θ ι) (z i) ∈ L.lattice (θ ι) ι.conj)
     (hz_short : ∀ (i : Fin n') (σ : ℂ ≃+* ℂ), L.normSqAt (z i) σ ≤ exp b_short)
-    (hγ : HeightLe b_denom fun ι : PrimePadicIso ↦ ((‖γ ι‖ : ℂ) ^ 2)⁻¹)
-    (hZ : HeightLe b_volume fun ι : PrimePadicIso ↦ L.volume 1 / L.volume (θ ι)) :
+    (hγ : HeightLe (fun ι : PrimePadicIso ↦ ((‖γ ι‖ : ℂ) ^ 2)⁻¹) b_denom)
+    (hZ : HeightLe (fun ι : PrimePadicIso ↦ L.volume 1 / L.volume (θ ι)) b_volume) :
     0 ≤ c + 2 * δ + n' * (b_short + b_denom) + b_volume := by
   have h_forward := heightLe_volume_div h_inj h_indep h_card hθ
     (hc.sumElim (covolumeLe_of_normSqAt_le hz_short)) hδ hγ_ne hz_int hz_conj hγ
   -- The forward and inverse ratios use the same twist at each place, so their product is one.
-  have h_one : HeightLe ((c + n' * b_short) + (2 * δ + n' * b_denom) + b_volume) 1 := by
+  have h_one : HeightLe 1 ((c + n' * b_short) + (2 * δ + n' * b_denom) + b_volume) := by
     convert h_forward.mul hZ using 1
     funext ι
     simp [field, volume_ne_zero h_inj, h_volume_ne ι]

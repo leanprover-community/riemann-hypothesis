@@ -730,8 +730,8 @@ weight `κ = D.weight σ`, of `D.jetSize κ = log κ! + κ log (M / Ω)`, the si
 order `κ`, less the prime sum `D.primeSum κ σ` that measures its divisibility. -/
 lemma heightLe_liftDeterminant_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegularFamily θ)
     (j : D.LiftIndex) :
-    HeightLe (D.targetDim * (D.k * (D.logB * D.denominatorBudget - D.directionAmount)))
-      fun ι : PrimePadicIso ↦ D.liftDeterminant 1 j / D.liftDeterminant (θ ι) j := by
+    HeightLe (fun ι : PrimePadicIso ↦ D.liftDeterminant 1 j / D.liftDeterminant (θ ι) j)
+      (D.targetDim * (D.k * (D.logB * D.denominatorBudget - D.directionAmount))) := by
   -- The ratio is `det (pr U_ξ) / det (pr U_1)` times the `d`-th power of the inverse ratio of
   -- Hecke values.
   obtain ⟨β, hβ_sum, hβ_denom⟩ : ∃ β : ℕ → ℝ, D.IsDenominatorBound θ j β :=
@@ -754,8 +754,8 @@ lemma heightLe_liftDeterminant_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ 
     hU.norm_padic_det_liftCompression_le ((θ ι).powTwist j) ι (hθ.coprime ι)
       (hβ_denom ι).clearsProjection
   -- Take `Δ 1` as the denominator; its conjugates and the norms of `Δ ξ` at `ι` bound the height.
-  have h_height : HeightLe (d * (3 * A) + d * (D.r * D.denominatorBudget))
-      fun ι : PrimePadicIso ↦ Δ ((θ ι).powTwist j) / Δ 1 := by
+  have h_height : HeightLe (fun ι : PrimePadicIso ↦ Δ ((θ ι).powTwist j) / Δ 1)
+      (d * (3 * A) + d * (D.r * D.denominatorBudget)) := by
     refine .of_mul_le (e := fun l : ℕ ↦ d * (D.r * β l)) (hΔ_ne 1) h_arch (fun ι ↦ ?_)
       fun T hT ↦ ?_
     · simpa only [mul_div_cancel₀ _ (hΔ_ne 1)] using h_padic ι

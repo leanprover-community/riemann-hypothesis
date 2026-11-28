@@ -20,9 +20,9 @@ This file builds a test form (`New.DescentPair.IsTestForm`: integral above `ℓ`
 false lifts) from class sums on four blocks of indices. Its pairing with the lift of a main pair has
 small valuation at `ℓ`. With the bound for the denominators of the projections to the line of the
 lift, this bounds the valuation of the squared norm of the twisted lift from above. Here
-`New.HeightLe c y` says that the family `y ι`, one number for each `ι : ℂ ≃ ℚ̄_ℓ`, has height at
-most `c`; the file bounds the heights of inverse ratios of twisted to untwisted Hecke values, with
-twists along a family `θ` with `New.Data.IsRegularFamily`.
+`TauCeti.PrimePadicIso.HeightLe y c` says that the family `y ι`, one number for each
+`ι : ℂ ≃ ℚ̄_ℓ`, has height at most `c`; the file bounds the heights of inverse ratios of twisted
+to untwisted Hecke values, with twists along a family `θ` with `New.Data.IsRegularFamily`.
 
 ## Main definitions and results
 
@@ -1010,12 +1010,12 @@ ramified pairs have height at most the second cut-off `x₁ = D.x₁`, and the l
 of projections to lifts add up over `l` to at most `denominatorBudget`. Let `p = (ν, z)` be a main
 pair for `j` (`IsMainPair`) and `p.ratio ϑ = |L(z, (ν ϑ)⁻¹)| / |L(z, ν⁻¹)|`, without the Euler
 factors at the level. Then the family over `ι` of the inverse ratios at `ϑ = (θ ι) ^ j` has height
-(`New.HeightLe`) at most `6 denominatorBudget - directionAmount`. Here
+(`TauCeti.PrimePadicIso.HeightLe`) at most `6 denominatorBudget - directionAmount`. Here
 `denominatorBudget = f a log³ b / (m k)`. -/
 theorem heightLe_inv_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegularFamily θ)
     (j : D.LiftIndex) (p : D.CriticalPair) (hp : p.IsMainPair j) :
-    HeightLe (6 * D.denominatorBudget - D.directionAmount) fun ι : PrimePadicIso ↦
-      (p.ratio ((θ ι).powTwist j))⁻¹ := by
+    HeightLe (fun ι : PrimePadicIso ↦ (p.ratio ((θ ι).powTwist j))⁻¹)
+      (6 * D.denominatorBudget - D.directionAmount) := by
   -- Up to a power of `N(Q)`, the inverse ratio is `‖φ₁‖² / ‖φ‖²` for the untwisted lift `φ₁` and
   -- the twisted lift `φ`. With test forms `Ξ`, `Ξ'` at `ι` and at its conjugate it is the product
   -- of four factors: `‖φ₁‖²`, `⟪pr Ξ, pr Ξ'⟫`, `1 / ρ²` and `ρ² / (⟪Ξ, φ⟫ ⟪φ, Ξ'⟫)`, where `pr`
@@ -1058,11 +1058,12 @@ theorem heightLe_inv_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegu
   have hρ (ι : PrimePadicIso) : ρ ι ≠ 0 := q₂.ratio_ne_zero ((θ ι).powTwist j) 1
   have h_pos (ι : PrimePadicIso) : 0 < ‖ι.iso (inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι))‖ := by
     have h_ne : ι.iso (c₀ * star c₀ * ρ ι ^ 2) ≠ 0 := by simp [hc₀_ne, hρ]
-    exact lt_of_lt_of_le (by have := ι.prime.property.pos; positivity) (h_both ι)
+    exact lt_of_lt_of_le (by have := ι.fact_prime.out.pos; positivity) (h_both ι)
   -- The second factor: few congruences.
   obtain ⟨γ, hγ⟩ := hθ.exists_denominator_bound j
-  have h_proj : HeightLe D.denominatorBudget fun ι ↦
-      inner ℂ ((ℂ ∙ φ ι).starProjection (Ξ ι)) ((ℂ ∙ φ ι).starProjection (Ξ' ι)) := by
+  have h_proj : HeightLe (fun ι ↦
+      inner ℂ ((ℂ ∙ φ ι).starProjection (Ξ ι)) ((ℂ ∙ φ ι).starProjection (Ξ' ι)))
+      D.denominatorBudget := by
     refine .of_le hγ.sum_le fun ι ↦ ?_
     have h_line : (ℂ ∙ (lValueData h_rank ((θ ι).powTwist j)).trivialLift) = ℂ ∙ φ ι :=
       (span_singleton_smul_eq
@@ -1079,8 +1080,8 @@ theorem heightLe_inv_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegu
     rw [← h_proj_eq]
     exact (hγ.hasDenominatorsLe ι).mainPair p hp (hΞ ι) (hΞ' ι)
   -- The fourth factor: small pairings, with the multiplier `c₀ * star c₀`.
-  have h_pair : HeightLe (2 * D.denominatorBudget + ∑ τ, D.primeSum (D.weight τ) τ) fun ι ↦
-      ρ ι ^ 2 / (inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι)) := by
+  have h_pair : HeightLe (fun ι ↦ ρ ι ^ 2 / (inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι)))
+      (2 * D.denominatorBudget + ∑ τ, D.primeSum (D.weight τ) τ) := by
     refine .of_mul_le (H := c₀ * star c₀) (α := D.denominatorBudget + D.denominatorBudget)
       (e := fun l ↦ 2 • (D.localPrimeSumTotal l * log l))
         (mul_ne_zero hc₀_ne (star_ne_zero.2 hc₀_ne))
@@ -1089,7 +1090,7 @@ theorem heightLe_inv_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegu
       exact norm_mul_le_of_le (hc₀_le σ) (hc₀_le (.trans starRingAut σ))
     · have h_exp : ((ι.prime : ℝ) ^ (-D.localPrimeSumTotal ι.prime)) ^ 2 =
           (exp (2 • (D.localPrimeSumTotal ι.prime * log ι.prime)))⁻¹ := by
-        rw [rpow_def_of_pos (mod_cast ι.prime.property.pos), Real.exp_nsmul, ← inv_pow,
+        rw [rpow_def_of_pos (mod_cast ι.fact_prime.out.pos), Real.exp_nsmul, ← inv_pow,
           ← Real.exp_neg, mul_neg, mul_comm]
       rw [← mul_div_assoc, map_div₀, norm_div, div_le_iff₀' (h_pos ι), ← div_le_iff₀ (exp_pos _),
         div_eq_mul_inv, ← h_exp]
@@ -1229,21 +1230,22 @@ denominators of projections to lifts add up over `l` to at most `denominatorBudg
 three pairs `exchangePair j i`, twisted by `ϑ` or its inverse: the pair made from the character of
 the `j`-th lift, and two flat pairs of tame parts `D.chiMLocal ^ (± j)` at the points `m` and
 `m / 2`. Then the family over `ι` of the inverse ratios of its value at `(θ ι) ^ j` to its value at
-`1` has height (`New.HeightLe`) at most `10 m x₁ + k (6 denominatorBudget - directionAmount)`. -/
+`1` has height (`TauCeti.PrimePadicIso.HeightLe`) at most
+`10 m x₁ + k (6 denominatorBudget - directionAmount)`. -/
 theorem heightLe_inv_heckeValueProd_div {θ : PrimePadicIso → D.MFoldTwist}
     (hθ : D.IsRegularFamily θ) (j : D.LiftIndex) :
-    HeightLe (10 * D.m * D.x₁ + D.k * (6 * D.denominatorBudget - D.directionAmount))
-      fun ι : PrimePadicIso ↦ (heckeValueProd j ((θ ι).powTwist j) / heckeValueProd j 1)⁻¹ := by
+    HeightLe (fun ι : PrimePadicIso ↦ (heckeValueProd j ((θ ι).powTwist j) / heckeValueProd j 1)⁻¹)
+      (10 * D.m * D.x₁ + D.k * (6 * D.denominatorBudget - D.directionAmount)) := by
   -- A main pair costs `6 denominatorBudget - directionAmount`, and a ramified pair costs `x₁`.
   obtain ⟨e, A, B, p, q, s, hA : 2 * #A = D.k, hB : #B = 5 * D.m,
       h_main : ∀ a ∈ A, (p a).IsMainPair j, h_ram : ∀ b, (q b).IsRamified, h_eq⟩ :=
     exists_heckeValueProd_eq_mul_prod_ratio j
-  have h_height_main : HeightLe (∑ _a ∈ A, (6 * D.denominatorBudget - D.directionAmount))
-      (∏ a ∈ A, fun ι ↦ ((p a).ratio ((θ ι).powTwist j))⁻¹) :=
-    HeightLe.prod fun a ha ↦ heightLe_inv_ratio hθ j _ (h_main a ha)
-  have h_height_ram : HeightLe (∑ _b ∈ B, D.x₁)
-      (∏ b ∈ B, fun ι ↦ ((q b).ratio ((θ ι).powTwist j) (s b))⁻¹) :=
-    HeightLe.prod fun b _ ↦ hθ.height_le j _ _ (h_ram b)
+  have h_height_main : HeightLe (∏ a ∈ A, fun ι ↦ ((p a).ratio ((θ ι).powTwist j))⁻¹)
+      (∑ _a ∈ A, (6 * D.denominatorBudget - D.directionAmount)) :=
+    .prod fun a ha ↦ heightLe_inv_ratio hθ j _ (h_main a ha)
+  have h_height_ram : HeightLe (∏ b ∈ B, fun ι ↦ ((q b).ratio ((θ ι).powTwist j) (s b))⁻¹)
+      (∑ _b ∈ B, D.x₁) :=
+    .prod fun b _ ↦ hθ.height_le j _ _ (h_ram b)
   refine hθ.heightLe_of_eq_zpow_mul ((h_height_main.mul h_height_ram).pow 2) (le_of_eq ?_)
     fun ι h_ne ↦ ⟨-e, ?_⟩
   · simp [← hA, hB]

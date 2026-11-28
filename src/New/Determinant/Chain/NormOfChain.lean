@@ -446,9 +446,10 @@ and for every ramified pair the inverse ratios of L-values at the powers `(θ ι
 `m² * D.t * D.x₁`. -/
 lemma HasSmallRatios.heightLe_inv_rpow_mul_prod_quotientRatio {D : Data P}
     {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.HasSmallRatios θ) (e : ℤ) :
-    HeightLe (D.m * D.m * (D.t * D.x₁)) fun ι : PrimePadicIso ↦
+    HeightLe (fun ι : PrimePadicIso ↦
       ((((θ ι).normQ : ℝ) ^ (e / 2 : ℝ) *
-        ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j (θ ι) : ℝ) : ℂ)⁻¹ := by
+        ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j (θ ι) : ℝ) : ℂ)⁻¹)
+      (D.m * D.m * (D.t * D.x₁)) := by
   have h_height := hθ.heightLe_inv_rpow_mul_prod e
     (s := (Ioc 0 D.m).sigma fun i : ℕ ↦ Ioc i D.m) fun x hx ↦ D.isRamifiedRatio_of_mem_sigma hx
   simp only [prod_sigma']

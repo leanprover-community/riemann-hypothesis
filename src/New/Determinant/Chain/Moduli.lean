@@ -12,7 +12,8 @@ This file treats functions of an `m`-fold twist `ϑ` with modulus Q. Here `ϖ` g
 of the chosen places, and `D.twistModulus ϑ e` is the modulus `ϖ ^ e Q`, with exponent e at the
 chosen places and 1 at the places of Q. It defines the ratios of Hecke values and the absolute
 value of a function of the twist up to a constant and a power of the norm of Q. Heights are
-stated with `New.HeightLe c y`: the family y, indexed by the ι : ℂ ≅ ℚ̄_l, has height at most c.
+stated with `TauCeti.PrimePadicIso.HeightLe y c`: the family y, indexed by the ι : ℂ ≅ ℚ̄_l, has
+height at most c.
 
 ## Main definitions and results
 
@@ -213,26 +214,26 @@ the family `((N ι) ^ (e / 2) ∏_{a ∈ s} F a (θ ι))⁻¹` has height at mos
 theorem HasSmallRatios.heightLe_inv_rpow_mul_prod {A : Type} {s : Finset A}
     {F : A → D.MFoldTwist → ℝ} {θ : PrimePadicIso → D.MFoldTwist}
     (hθ : D.HasSmallRatios θ) (e : ℤ) (hF : ∀ a ∈ s, D.IsRamifiedRatio (F a)) :
-    HeightLe (#s * (D.t * D.x₁)) fun ι : PrimePadicIso ↦
-      ((((θ ι).normQ : ℝ) ^ (e / 2 : ℝ) * ∏ a ∈ s, F a (θ ι) : ℝ) : ℂ)⁻¹ := by
+    HeightLe (fun ι : PrimePadicIso ↦
+      ((((θ ι).normQ : ℝ) ^ (e / 2 : ℝ) * ∏ a ∈ s, F a (θ ι) : ℝ) : ℂ)⁻¹) (#s * (D.t * D.x₁)) := by
   -- Each factor is a product of at most `t` ratios, whose inverses have height at most `x₁`.
   have h_factor (a : A) (ha : a ∈ s) :
-      HeightLe (D.t * D.x₁) fun ι : PrimePadicIso ↦ ((F a (θ ι) : ℝ) : ℂ)⁻¹ := by
+      HeightLe (fun ι : PrimePadicIso ↦ ((F a (θ ι) : ℝ) : ℂ)⁻¹) (D.t * D.x₁) := by
     obtain ⟨p, n, hp, h_eq⟩ := hF a ha
-    have h_ratios : HeightLe (∑ _z ∈ Icc 1 p.z, D.x₁)
-        (∏ z ∈ Icc 1 p.z,
-          fun ι : PrimePadicIso ↦ ((p.lowerPoint z).ratio ((θ ι).powTwist n) 1)⁻¹) :=
+    have h_ratios : HeightLe
+        (∏ z ∈ Icc 1 p.z, fun ι : PrimePadicIso ↦ ((p.lowerPoint z).ratio ((θ ι).powTwist n) 1)⁻¹)
+        (∑ _z ∈ Icc 1 p.z, D.x₁) :=
       .prod fun z _ ↦ hθ.height_le n (p.lowerPoint z) 1 hp
     refine h_ratios.mono ?_ fun ι ↦ le_of_eq ?_
     · rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
       grw [p.z_mem.2]
     · rw [h_eq, p.ofReal_lRatioProd, Finset.prod_apply, prod_inv_distrib]
       rfl
-  have h_prod : HeightLe (#s * (D.t * D.x₁))
-      (∏ a ∈ s, fun ι : PrimePadicIso ↦ ((F a (θ ι) : ℝ) : ℂ)⁻¹) :=
-    (HeightLe.prod h_factor).mono (by simp) fun _ ↦ le_rfl
+  have h_prod : HeightLe (∏ a ∈ s, fun ι : PrimePadicIso ↦ ((F a (θ ι) : ℝ) : ℂ)⁻¹)
+      (#s * (D.t * D.x₁)) :=
+    (TauCeti.PrimePadicIso.HeightLe.prod h_factor).mono (by simp) fun _ ↦ le_rfl
   -- The norm of the modulus is prime to the prime of `ι`, so its power does not raise the height.
-  refine (h_prod.rpow_mul le_rfl hθ.coprime fun _ ↦ -(e / 2)).mono le_rfl fun ι ↦ le_of_eq ?_
+  refine (h_prod.rpow_mul _ (fun _ ↦ -(e / 2)) hθ.coprime).mono le_rfl fun ι ↦ le_of_eq ?_
   rw [Rat.cast_neg, Real.rpow_neg (Nat.cast_nonneg _), Complex.ofReal_inv, Finset.prod_apply,
     prod_inv_distrib, ← mul_inv, Complex.ofReal_mul, Complex.ofReal_prod]
   norm_cast

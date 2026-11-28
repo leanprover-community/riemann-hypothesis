@@ -153,7 +153,7 @@ def normalizedPoincare (s : D.chosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.ta
   (D.invGainFactor : ℂ) • D.projectedPoincare s
 
 /-- The ramified source forms that are integral at every `ι`, where `ι` runs over the pairs of a
-prime `l` and an `l`-adic place of `ℂ` (`PrimePadicIso`). -/
+prime `l` and an `l`-adic place of `ℂ` (`TauCeti.PrimePadicIso`). -/
 def integralRamified : Set D.ramifiedSourceForms :=
   {φ : D.ramifiedSourceForms |
     ∀ ι : PrimePadicIso, letI := ι.place; (φ : D.SourceForm) ∈ D.integralSourceForms}
