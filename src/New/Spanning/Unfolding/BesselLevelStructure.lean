@@ -659,7 +659,7 @@ section Density
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {𝔰 : Shape}
 
 /-- The element `1 / 2` of the finite adeles has trace one. -/
-noncomputable instance : TraceOne (𝔸f E) where
+noncomputable instance New.instTraceOneFinAdele : TraceOne (𝔸f E) where
   element := (2⁻¹ : E)
   element_add_star := by norm_num [← map_add]
 

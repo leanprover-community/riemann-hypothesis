@@ -810,7 +810,7 @@ instance : RingHomCompTriple (algebraMap (ℤ_[p]) R) (toRingHom γ) (toRingHom 
 variable [Module.Finite ℤ_[p] R]
 
 /-- The ℤ_p-algebra maps R → ℂ_p, finitely many as R is finite over ℤ_p, form a `Fintype`. -/
-instance : Fintype (R →ₐ[ℤ_[p]] ℂ_[p]) := ofFinite _
+instance instFintypeAlgHomPadicComplex : Fintype (R →ₐ[ℤ_[p]] ℂ_[p]) := ofFinite _
 
 /-- A domain R that is finite free over ℤ_p has rank_{ℤ_p} R embeddings into ℂ_p over ℤ_p. -/
 @[simp]

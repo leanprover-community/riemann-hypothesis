@@ -633,10 +633,11 @@ class IsSmoothRep (ρ : Representation ℂ G V) : Prop where
   eventually_fixed (x : V) : ∀ᶠ g : G in 𝓝 1, ρ g x = x
 
 /-- A complex vector space is a rational vector space, so class integrals can take values in it. -/
-local instance : Module ℚ V := .restrictScalars ℚ ℂ V
+local instance instModuleRatOfComplex : Module ℚ V := .restrictScalars ℚ ℂ V
 
 /-- There is one double coset `{1} \ G / G`. -/
-instance : Unique (DoubleCoset.Quotient ({1} : Set G) (Set.univ : Set G)) where
+instance instUniqueDoubleCosetQuotientOneUniv :
+    Unique (DoubleCoset.Quotient ({1} : Set G) (Set.univ : Set G)) where
   default := ⟦1⟧
   uniq q := q.out_eq.symm.trans ((eq (H := ⊥) (K := ⊤)).2 (by simp)).symm
 

@@ -56,7 +56,7 @@ open DoubleCoset MeasureTheory Subgroup IsLocallyConstant
 variable (A G W : Type*) [Group G] [CommSemiring A] [AddCommMonoid W] [Module A W]
 
 /-- A representation in `Rep A G` may be applied to a group element as a function. -/
-scoped instance : CoeFun (Rep A G) (G → Module.End A ·) := ⟨(·.ρ)⟩
+scoped instance instCoeFunRep : CoeFun (Rep A G) (G → Module.End A ·) := ⟨(·.ρ)⟩
 
 /-- The right regular representation of G on functions G → W: (g·F)(x) = F(xg). -/
 @[simps! apply_apply]

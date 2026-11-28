@@ -463,7 +463,7 @@ variable {E k M : Type} [Field E] [CMBase E] {D : PEL E} [Field k] {Z : Scheme}
   (hp : IsPullbackAlong (sqZeroReduction k (M →ₗ[k] k)) x₀ x) ⦃C : Type⦄ {C' : Type _} [CommRing C]
   [Algebra k C] [CommRing C'] [Algebra k C'] (φ : C →ₐ[k] C')
 
-instance : CommRing (TrivSqZeroExt C (M →ₗ[k] C)) := inferInstance
+instance instCommRingTrivSqZeroExt : CommRing (TrivSqZeroExt C (M →ₗ[k] C)) := inferInstance
 
 /-! ### The rings `C ⊕ Hom(M, C)` and lifts of points -/
 

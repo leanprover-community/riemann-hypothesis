@@ -58,7 +58,8 @@ variable {p : ℕ} [ThePrime p] {S : Type} [CommRing S] [Algebra Ainf S] [Algebr
   (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorWith K K ≅ Ψ)
 
 /-- An `𝔽_p`-algebra `b` is a `ℤ_[p]`-algebra through reduction modulo `p`. -/
-noncomputable local instance : Algebra ℤ_[p] b := .compHom _ (constantCoeff.comp (fromPadicInt p))
+noncomputable local instance instAlgebraPadicIntOfZMod : Algebra ℤ_[p] b :=
+  .compHom _ (constantCoeff.comp (fromPadicInt p))
 
 local instance : IsScalarTower ℤ_[p] (ZMod p) b := .of_compHom ..
 

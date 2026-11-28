@@ -157,7 +157,7 @@ def torsionClass {E : Type} [Field E] [NumberField E] : (n → 𝔸f E) →ₗ[�
   Submodule.mkQ _
 
 /-- `E` is a subfield of `ℂ` through the embedding `Φ v₀` at the base place. -/
-instance : Algebra E ℂ := (Φ v₀).toAlgebra
+instance instAlgebraComplex : Algebra E ℂ := (Φ v₀).toAlgebra
 
 /-! ### Reflections and the signature condition -/
 

@@ -327,12 +327,13 @@ paired with the identity of G_p, the Frobenius φ. -/
 def frobEnd : A →+* A := toRingHom FrobGal A (Multiplicative.ofAdd 1, 1)
 
 /-- `W(R)` is a `ℤ_p = W(𝔽_p)`-algebra for every ring `R` of characteristic `p`. -/
-instance : Algebra ℤ_[p] (WittVector p R) :=
+instance instAlgebraPadicIntWittVector : Algebra ℤ_[p] (WittVector p R) :=
   ((WittVector.map (castHom dvd_rfl R)).comp (equiv p).symm).toAlgebra
 
 /-- For an `A`-algebra `S`, the Witt vectors `W(S)` are a `W(A)`-algebra through `W` of the
 structure map. -/
-instance (priority := low) [Algebra A S] : Algebra (WittVector p A) (WittVector p S) :=
+instance (priority := low) instAlgebraWittVector [Algebra A S] :
+    Algebra (WittVector p A) (WittVector p S) :=
   (WittVector.map (algebraMap ..)).toAlgebra
 
 /-- Frobenius and `G_p` act on `O^♭`. -/

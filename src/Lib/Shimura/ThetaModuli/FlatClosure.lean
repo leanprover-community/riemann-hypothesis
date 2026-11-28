@@ -81,7 +81,8 @@ variable {ι κ J A k K : Type} [CommRing A] [Field k] (φ : A →+* k) {d : ℕ
 
 variable [Finite J] in
 /-- In finitely many variables there are finitely many exponents of total degree `d`. -/
-instance : Fintype (degree ⁻¹' {d} : Set (J →₀ ℕ)) := (finite_of_degree_eq d).fintype
+instance instFintypeDegreePreimage : Fintype (degree ⁻¹' {d} : Set (J →₀ ℕ)) :=
+  (finite_of_degree_eq d).fintype
 
 /-! ### A degree bound for monomial ideals -/
 

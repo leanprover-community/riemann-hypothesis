@@ -93,13 +93,15 @@ variable (C : Type 1)
   {D T : Type*} [Category* D] [Category* T]
 
 /-- A functor is applied to an object. -/
-scoped instance : CoeFun (D ⥤ T) fun _ ↦ D → T := ⟨obj⟩
+scoped instance instCoeFunFunctor : CoeFun (D ⥤ T) fun _ ↦ D → T := ⟨obj⟩
 
 /-- A map of functors is applied to an object. -/
-scoped instance {F G : D ⥤ T} : CoeFun (F ⟶ G) fun _ ↦ ∀ A : D, F A ⟶ G A := ⟨(·.app)⟩
+scoped instance instCoeFunNatTrans {F G : D ⥤ T} :
+    CoeFun (F ⟶ G) fun _ ↦ ∀ A : D, F A ⟶ G A := ⟨(·.app)⟩
 
 /-- A subfunctor is applied to an object. -/
-scoped instance {F : D ⥤ Type _} : CoeFun (Subfunctor F) fun _ ↦ ∀ A : D, Set (F A) := ⟨(·.obj)⟩
+scoped instance instCoeFunSubfunctor {F : D ⥤ Type _} :
+    CoeFun (Subfunctor F) fun _ ↦ ∀ A : D, Set (F A) := ⟨(·.obj)⟩
 
 /-- The category of covariant functors from `D` to abelian groups. -/
 abbrev AbFunctor (D : Type*) [Category* D] := D ⥤ AddCommGrpCat.{1}

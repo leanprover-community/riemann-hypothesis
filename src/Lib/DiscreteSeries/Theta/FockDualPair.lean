@@ -525,7 +525,7 @@ theorem oscRows_E_eq_polarization_sub {a b : R} {P : MvPolynomial ι ℂ} (hab :
 
 /-- The inner product `⟪P, Q⟫ = fockPairing (conj P) Q` on polynomials, the Fischer inner product,
 makes them a normed group. -/
-scoped instance : NormedAddCommGroup (MvPolynomial ι ℂ) :=
+scoped instance instNormedAddCommGroupMvPolynomial : NormedAddCommGroup (MvPolynomial ι ℂ) :=
   Core.toNormedAddCommGroup
     (cd :=
       ⟨⟨⟨(fockPairing ℂ <| map (starRingEnd ℂ) ·)⟩,
@@ -544,7 +544,8 @@ scoped instance : NormedAddCommGroup (MvPolynomial ι ℂ) :=
 
 /-- The Fischer inner product `⟪P, Q⟫ = fockPairing (conj P) Q` makes the complex polynomials an
 inner product space. -/
-scoped instance : InnerProductSpace ℂ (MvPolynomial ι ℂ) := .ofCore _
+scoped instance instInnerProductSpaceMvPolynomial : InnerProductSpace ℂ (MvPolynomial ι ℂ) :=
+  .ofCore _
 
 /-- For the Fischer inner product on complex polynomials, multiplication by `X b` is adjoint to the
 partial derivative `pderiv b`, on either side of the inner product. -/

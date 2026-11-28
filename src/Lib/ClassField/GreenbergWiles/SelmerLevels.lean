@@ -113,7 +113,8 @@ instance : MulAction G (PlaceAboveLevel N) :=
     -- on the infinite places `G` acts through the automorphisms of `Ω` over `ℚ`
     (.compHom _ (toAlgAut G ℚ Ω))
 
-instance (Q : Subgroup G) [Q.Normal] : MulAction (G ⧸ Q) (MulAction.orbitRel.Quotient Q X) where
+instance instMulActionQuotientOrbitRel (Q : Subgroup G) [Q.Normal] :
+    MulAction (G ⧸ Q) (MulAction.orbitRel.Quotient Q X) where
   -- if `a` and `b` are in one coset and `q • y = x`, then `a * q * b⁻¹` lies in `Q` and carries
   -- `b • y` to `a • x`
   smul :=

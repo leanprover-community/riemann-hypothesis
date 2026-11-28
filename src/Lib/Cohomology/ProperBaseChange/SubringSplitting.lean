@@ -103,7 +103,7 @@ lemma absIntegrallyClosedSubrings.isUnit_natCast_of_isUnit {γ : D →+* K} {ℓ
 
 /-- For subrings `S ≤ T` of `K` (the instance `Fact (S ≤ T)`), `T` is an `S`-algebra through the
 inclusion. -/
-instance : Algebra S T := (inclusion h.out).toAlgebra
+instance instAlgebraSubring : Algebra S T := (inclusion h.out).toAlgebra
 
 /-- The inclusions of subrings `S ≤ T ≤ U` of `K` form a scalar tower. -/
 instance [Fact (T ≤ U)] [Fact (S ≤ U)] : IsScalarTower S T U := .of_algebraMap_eq' rfl

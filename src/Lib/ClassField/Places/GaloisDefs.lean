@@ -81,7 +81,8 @@ class IsProGalois [TopologicalSpace Γ] extends IsGaloisGroup Γ K Ω, IsGalois 
   isOpen_stabilizer (x : Ω) : IsOpen (stabilizer Γ x : Set Γ)
 
 /-- A place `A` of `Ω` is read as its valuation: `A x`. -/
-scoped instance : CoeFun (ValuationSubring Ω) (Ω → ·.ValueGroup) := ⟨(·.valuation)⟩
+scoped instance instCoeFunValuationSubring : CoeFun (ValuationSubring Ω) (Ω → ·.ValueGroup) :=
+  ⟨(·.valuation)⟩
 
 variable {Ω} (A : ValuationSubring Ω)
 

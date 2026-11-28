@@ -325,7 +325,7 @@ end
 variable {p : ℕ} {k : Type} [Field k] [EmbeddedInQpBar p k] (c : PadicTest)
 
 /-- `ℂ_p` is a `k`-algebra through `k → ℚ̄_p → ℂ_p`. -/
-instance : Algebra k ℂ_[p] := .restrictScalars k (PadicAlgCl p) _
+instance instAlgebraPadicComplex : Algebra k ℂ_[p] := .restrictScalars k (PadicAlgCl p) _
 
 /-- `k` acts on `R[1/p]` through `k → ℂ_p`. -/
 instance : CoeffAction k genericCoeff := ⟨CoeffAction.act.comp (algebraMap k ℂ_[p])⟩

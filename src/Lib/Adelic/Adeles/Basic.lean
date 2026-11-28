@@ -399,7 +399,8 @@ lemma adeleMap_apply {u : FinPlace K} {w : FinPlace L} (hw : w.comap f = u) (x :
 
 variable [IsCMField E]
 
-instance : StarRing (𝓞 E) := starRingOfInvolution (ringOfIntegersComplexConj E) (by aesop_cat)
+instance instStarRingRingOfIntegers : StarRing (𝓞 E) :=
+  starRingOfInvolution (ringOfIntegersComplexConj E) (by aesop_cat)
 
 @[simp, norm_cast] lemma coe_star_ringOfIntegers (x : 𝓞 E) : star x = star x.val := rfl
 
