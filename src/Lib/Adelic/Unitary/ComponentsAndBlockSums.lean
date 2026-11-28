@@ -211,6 +211,10 @@ lemma Gf.atPlace_componentOn :
 
 lemma Gf.componentOn_mem_supportedOn : componentOn n S g ∈ supportedOn n S := by simp_all
 
+/-- Projecting onto a set of places fixes every element supported there and at their conjugates. -/
+lemma Gf.componentOn_eq_self (hg : g ∈ supportedOn n S) : componentOn n S g = g :=
+  eq_of_supportedOn componentOn_mem_supportedOn hg (by simp +contextual)
+
 lemma Gf.componentOn_mem_stdLevel (hg : g ∈ stdLevel E n) : componentOn n S g ∈ stdLevel E n := by
   grind [atPlace_componentOn, mem_stdLevel_iff, one_mem]
 

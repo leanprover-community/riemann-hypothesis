@@ -199,9 +199,7 @@ action through the components off `D.places` and its conjugates, as the plain tr
 lemma repOff_eq_of_mem_trivialOn (k : Gf E n) (hk : k ∈ trivialOn n D.places) :
     D.repOff k = V.formTranslation κ k := by
   -- Cutting off the components at `D.places` and its conjugates leaves `k` unchanged.
-  have h_cut : componentOn n (.conjClosure D.places)ᶜ k = k :=
-    Gf.ext fun w ↦ by simp_all [← supportedOn_compl]
-  rw [repOff, MonoidHom.comp_apply, h_cut]
+  exact congrArg (V.formTranslation κ) (componentOn_eq_self (supportedOn_compl.ge hk))
 
 /-- The `New.Patching.EllAdicIntegers`-algebra of ℂ-linear endomorphisms of the space of forms
 `New.Patching.BaseLevel.formsOfLevel` attached to the base data D and the family of finite places

@@ -167,19 +167,6 @@ lemma coe_asAlgebraHom_chosenGLRep_apply {W : Type*} [AddCommGroup W] [Module �
     AddSubmonoidClass.coe_finsetSum, SetLike.val_smul, LinearMap.coe_restrict_apply]
 
 open scoped Classical in
-/-- An element of the finite adelic group that is supported at the places of `O` and their
-conjugates equals its components there (`componentOn`). -/
-lemma componentOn_places_eq_self {k : Gf D.E n} (hk : k ∈ supportedOn n O.places) :
-    componentOn n O.places.toFinset k = k := by
-  refine Gf.ext fun w ↦ ?_
-  rw [atPlace_componentOn]
-  split_ifs with hw
-  · rfl
-  · simp only [Set.conjClosure, Set.mem_union, Set.mem_preimage, Finset.mem_coe,
-      Set.mem_toFinset, not_or] at hw
-    exact (mem_supportedOn.1 hk w hw.1 hw.2).symm
-
-open scoped Classical in
 /-- Let `π` be right translation (`formTranslation`) of forms of weight `(O.columnCount, O.detExp)`
 by the components at the places of `O` and their conjugates (`componentOn`, which puts `1` at all
 other places). A form `y` of `O` (`O.FormV`: a form of this weight with the level group and
@@ -222,7 +209,7 @@ lemma toSmoothForm_typeProjection (c : (i : O.ChosenIndex) → (ResField (O.chos
         (stdSpace D.E n).formTranslation (O.columnCount, O.detExp)
           (liftResidue (firstBlockHom O.toLevelPlaces O.incl g)) y.toSmoothForm := rfl
   -- The chosen lift is supported at the places of `O`, so it equals its components there.
-  simp only [componentOn_places_eq_self, liftResidue_mem_supportedOn, ← h_action]
+  simp only [Set.coe_toFinset, Gf.componentOn_eq_self, liftResidue_mem_supportedOn, ← h_action]
   simp only [typeProjection, DescentPair.groupAlgAction, asAlgebraHom_def, lift_apply, Finsupp.sum,
     LinearMap.coe_sum, LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply, map_sum, map_smul]
 
@@ -512,6 +499,13 @@ noncomputable abbrev translationAtPlaces :
     (componentOn n O.places.toFinset)
 
 open scoped Classical in
+/-- Translation at the chosen places agrees with full translation on elements supported there. -/
+lemma translationAtPlaces_apply_of_mem_supportedOn (k : Gf D.E n)
+    (hk : k ∈ supportedOn n O.places) :
+    translationAtPlaces O k = (stdSpace D.E n).formTranslation (O.columnCount, O.detExp) k := by
+  simp only [translationAtPlaces, MonoidHom.comp_apply, Set.coe_toFinset, Gf.componentOn_eq_self hk]
+
+open scoped Classical in
 variable (O) in
 /-- A `(c, S)`-form, for labels `c` at the chosen places of the descent pair `O` and a set `S` of
 places: an eigenform `f` on the larger space of `O`, of the weight `(O.columnCount, O.detExp)` of
@@ -553,16 +547,15 @@ theorem IsFormOfType.isRepOfType_normalizedRep [Nonempty n] {ϑ : D.Twist}
       (fun i : O.ChosenIndex ↦ scaledTypePoly O c i * (X - 1) ^ O.rankDiff)
       (Set.conjClosure ϑ.Q ∪ S.conjClosure) (normalizedRep O R) := by
   classical
-  have h_transl (k : Gf D.E n) (hk : k ∈ supportedOn n O.places) : translationAtPlaces O k =
-      (stdSpace D.E n).formTranslation (O.columnCount, O.detExp) k :=
-    congrArg (formTranslation _ _) (componentOn_places_eq_self hk)
   -- The idempotent fixes `f ≠ 0`, so it does not kill `f`, and `f` has the labels made from `c`.
   have h_ne : (O.chosenGLRep (translationAtPlaces O)).asAlgebraHom (tupleIdem r c)
       ⟨f, hf.mem_levelSpace⟩ ≠ 0 := by
     simpa only [hf.tupleIdem_apply, ne_eq, Submodule.mk_eq_zero,
       ZeroMemClass.coe_eq_zero] using hf.isEigenform.left
   refine Selmer.isRepOfType_normalizedRep h_lift hf.isEigenform h_att
-    (fun v h_exc h_chosen ↦ ?_) (hasProductLabel_of_tupleIdem_apply_ne_zero h_lift h_transl h_ne)
+    (fun v h_exc h_chosen ↦ ?_)
+    (hasProductLabel_of_tupleIdem_apply_ne_zero h_lift
+      translationAtPlaces_apply_of_mem_supportedOn h_ne)
   -- A place neither chosen nor exceptional avoids `S` and `O.places`, as does its conjugate.
   obtain ⟨hv, hv_star⟩ : v ∉ S ∪ O.places ∧ star v ∉ S ∪ O.places := by
     simpa only [Subtype.range_coe] using notMem_and_star_notMem_range_union_places h_lift hQ
@@ -619,12 +612,7 @@ lemma exists_baseLevel [Nonempty n] {ϑ : D.Twist}
   -- the labels `c` fixes.
   let F : Submodule ℂ (Gf D.E n → WeylIndex n O.columnCount → ℂ) :=
     (stdSpace D.E n).forms (O.columnCount, O.detExp)
-  let π : Representation ℂ (Gf D.E n) F :=
-    ((stdSpace D.E n).formTranslation (O.columnCount, O.detExp)).comp
-      (componentOn n O.places.toFinset)
-  have hπ (k : Gf D.E n) (hk : k ∈ supportedOn n O.places) :
-      π k = (stdSpace D.E n).formTranslation (O.columnCount, O.detExp) k :=
-    congrArg (formTranslation _ _) (componentOn_places_eq_self hk)
+  let π := translationAtPlaces O
   let V : Submodule ℂ F :=
     levelSpace π (levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl)) O.levelChar
   let ρ : Module.End ℂ V := (O.chosenGLRep π).asAlgebraHom (tupleIdem r c)
@@ -647,7 +635,7 @@ lemma exists_baseLevel [Nonempty n] {ϑ : D.Twist}
     let u : V := ⟨y.toSmoothForm, toSmoothForm_mem_levelSpace_componentOn y⟩
     have h_proj : (ρ u).val = (typeProjection O c y).toSmoothForm := by
       rw [coe_asAlgebraHom_chosenGLRep_apply, toSmoothForm_typeProjection]
-      simp only [π, u, MonoidHom.comp_apply]
+      simp only [π, translationAtPlaces, u, MonoidHom.comp_apply]
     rw [IsLiftSetting.typeProjection_eq_self_of_mem_range hy] at h_proj
     exact ⟨⟨u, Subtype.ext h_proj, rfl⟩, toSmoothForm_mem_levelSpace_repOff B rfl y⟩
   · -- The system `x` contains a nonzero form `u` in `Y`, an eigenform to which `x.galRep` is
@@ -666,6 +654,6 @@ lemma exists_baseLevel [Nonempty n] {ϑ : D.Twist}
         (BaseLevel.formsOfLevel_le_levelSpace hf) g)
     exact ⟨h_form.isRepOfType_normalizedRep h_lift hQ (forall_mem_range.2 hU) h_att,
       normalizedRep_quadratic_on_inertia h_lift hQ h_eig h_att
-        (hasTwistParahoricType_levelSpace hπ u)⟩
+        (hasTwistParahoricType_levelSpace translationAtPlaces_apply_of_mem_supportedOn u)⟩
 
 end New.Selmer

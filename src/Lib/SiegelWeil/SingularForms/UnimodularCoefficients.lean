@@ -404,9 +404,7 @@ lemma AgreesOnClosure.closurePart_self (g : G E s) : AgreesOnClosure S D (closur
 /-- A point supported on `S ∪ S̄` fixes the frame of `D` off `S ∪ S̄`. -/
 lemma mem_frameStabilizer_of_mem_supportedOn {g : Gf E n} (hg : g ∈ supportedOn n S) :
     ((1, g) : G E s) ∈ D.frameStabilizer (1 - idemAdele S.conjClosure) := by
-  have hg_on : componentOn n S g = g :=
-    eq_of_supportedOn componentOn_mem_supportedOn hg (by simp +contextual)
-  simpa [closurePart, Prod.map, hg_on] using
+  simpa [closurePart, Prod.map, componentOn_eq_self hg] using
     (AgreesOnClosure.closurePart_self (S := S) (D := D) (1, g)).mem_frameStabilizer
 
 /-- If `X`, `Y` agree with `g`, `k` on `S ∪ S̄` and fix the frame of `D` elsewhere, then `X * Y`
