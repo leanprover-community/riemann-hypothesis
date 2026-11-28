@@ -50,9 +50,7 @@ lemma CoeffRing.toIntQpBar_comp_inclusion {O O' : CoeffRing ℓ} (hO : O ≤ O')
 
 lemma CoeffRing.dvd_iff_ellVal_le {O : CoeffRing ℓ} {x y : O.val} :
     x ∣ y ↔ ellVal x.val ≤ ellVal y.val := by
-  have h_norm : ellVal x.val ≤ ellVal y.val ↔ ‖y.val‖ ≤ ‖x.val‖ := by
-    simpa using ellVal_le_add_iff (c := 0) (norm_le_one y)
-  rw [dvd_iff_norm_le, h_norm]
+  rw [dvd_iff_norm_le, ellVal_le_ellVal_iff, min_eq_left (norm_le_one y)]
 
 /-- The inclusion `toIntQpBar` of a coefficient ring (the integers of a finite Galois extension of
 `ℚ_ℓ`) into the ring `ℤ̄_ℓ` of integral elements of `ℚ̄_ℓ` reflects divisibility. -/
