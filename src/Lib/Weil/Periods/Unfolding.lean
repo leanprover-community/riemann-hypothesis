@@ -92,8 +92,7 @@ open Subgroup MeasureTheory Set MulAction ProbabilityTheory Space QuotientAddGro
 variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X']
   {s : ℕ} {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
-  {Y : Grading V N X s} (Y' : Grading V' N X' (s - 1)) [WeilData E]
-  (α : ∀ (n : Type) [Fintype n], AutChar E) (Φ : 𝒮 (V.hom V')) {W : Y.besselGroup → ℂ} {d : ι' → ℤ}
+  {Y : Grading V N X s} (Y' : Grading V' N X' (s - 1)) {d : ι' → ℤ}
 
 /-- For a pair `p = (γ, δ)` of rational points, the substitution `w ↦ δ w γ⁻¹` on rational maps
 `V → V'`, with `γ` and `δ` in rational coordinates. -/
@@ -102,10 +101,6 @@ noncomputable def ratSubst (p : Y.ratBessel × V'.ratParabolic d) :
   .mk' (fun w ↦ ⟨V'.ratCoordMatrix p.2 * (w.val * V.ratCoordMatrix p⁻¹.1),
     mul_mem_ratMatrices p⁻¹.1.property.1 p.2.property.1 w.property⟩) (by simp [Matrix.add_mul,
       Matrix.mul_add])
-
-section
-
-omit [WeilData E]
 
 /-- The substitution `w ↦ δ w γ⁻¹` keeps the maps of degree `≥ 0`. -/
 lemma nonnegMaps_le_comap_ratSubst (p : Y.ratBessel × V'.ratParabolic d) :
@@ -139,7 +134,8 @@ lemma agreesWithStringMap_out_smul (hd_le : d ≤ Y'.gradeOf ⊔ 0)
       Y.AgreesWithStringMap Y' (V'.ratCoordMatrix p.2 * (w.out.val * V.ratCoordMatrix p⁻¹.1)) :=
   agreesWithStringMap_congr_rat hd_le (mk_out_smul p w)
 
-end
+variable [WeilData E] (α : ∀ (n : Type) [Fintype n], AutChar E) (Φ : 𝒮 (V.hom V'))
+  {W : Y.besselGroup → ℂ}
 
 variable (W) in
 /-- The term of the class `w`: the value `W r` times the constant term, at the chosen

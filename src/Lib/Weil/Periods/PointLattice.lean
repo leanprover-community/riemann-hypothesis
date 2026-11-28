@@ -49,14 +49,15 @@ namespace New
 
 section
 
-variable {E ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι]
+variable {E ι : Type} [Field E] [CMType E]
 
-omit [Fintype ι] [DecidableEq ι] in
 /-- An inclusion `c • A ≤ B` of lattices of finite adelic vectors can be checked on the vectors of
 `A`. -/
 lemma smul_le_iff_forall {c : 𝔸f E} {A B : Submodule (Ô E) (ι → 𝔸f E)} :
     c • A ≤ B ↔ ∀ y ∈ A, c • y ∈ B :=
   Submodule.map_le_iff_le_comap
+
+variable [Fintype ι] [DecidableEq ι]
 
 /-- A matrix `P` over the finite adeles with a left inverse (`HasLeftInv P`) is primitive (integral
 with an integral left inverse) if, for every vector `c`, the vector `P c` is integral if and only

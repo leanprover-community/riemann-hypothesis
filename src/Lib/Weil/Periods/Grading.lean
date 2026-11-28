@@ -764,7 +764,7 @@ class DiscreteSeries.SignFrame (J : outParam (Matrix n n ℂ)) (ε : outParam (n
   gram_eq : matrix.valᴴ * J * matrix.val = signMatrix ε
 
 variable {ε : n → ℤˣ} {A : ℕ} {J : Matrix n n ℂ}
-  {l : HCParam (n := n) ε} [p : SignFrame J ε] [IsHermitianInvolution J]
+  {l : HCParam (n := n) ε} [p : SignFrame J ε]
 
 /-- The isomorphism of topological groups U(J) → U(diag ε), g ↦ p⁻¹gp, for the frame p of
 `New.DiscreteSeries.SignFrame J ε`, so that pᴴJp = diag(ε). -/
@@ -777,10 +777,11 @@ def DiscreteSeries.frameEquiv : U J ≃ₜ* USign ε :=
 `New.DiscreteSeries.SignFrame J ε`, so that pᴴJp = diag(ε). -/
 def HCParam.dsCoeffInFrame (l : HCParam ε) (g : U J) : ℂ := l.dsCoeff (frameEquiv g)
 
-omit [IsHermitianInvolution J] in
 @[fun_prop]
 theorem continuous_dsCoeffInFrame : Continuous l.dsCoeffInFrame := by
   fun_prop [HCParam.dsCoeffInFrame]
+
+variable [IsHermitianInvolution J]
 
 /-- The isomorphism g ↦ P⁻¹gP from U(J) to U(diag ε), for the matrix P of a frame, carries the
 measure `New.haarU` of U(J), which is the `volume` there, to that of U(diag ε). -/

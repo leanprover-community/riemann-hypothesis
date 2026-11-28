@@ -252,15 +252,12 @@ open Matrix Seesaw QuotientAddGroup Subtype WeilData Function Space Splitting Ci
 variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
   [DecidableEq ι'] [Fintype X] [DecidableEq X] [Fintype X'] [DecidableEq X'] {s s' : ℕ} {N : E}
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {V : Space E ι ε} {V' : Space E ι' ε'} (Y : Grading V N X s)
-  (Y' : Grading V' N X' s') (d : ι' → ℤ) [WeilData E]
-  (α : (n : Type) → [Fintype n] → AutChar E) (f : 𝒮 (V.hom V'))
+  (Y' : Grading V' N X' s') (d : ι' → ℤ)
 
-omit [WeilData E] in
 lemma Space.ratCoordMatrix_mem_ratMatrices {γ : G E ε} (hγ : γ ∈ V.Γ) :
     V.ratCoordMatrix γ ∈ ratMatrices E ι ι :=
   mem_ratMatrices.2 (mem_Gamma_iff_ratCoordMatrix.1 hγ)
 
-omit [WeilData E] in
 /-- If `γ` and `δ` are rational points of U(V) and U(V′) and `w` is a rational map `V → V'`, then
 `δ w γ`, in rational coordinates, is again a rational map. -/
 lemma Space.mul_mem_ratMatrices {γ : G E ε} {δ : G E ε'} {w : Matrix ι' ι (𝔸 E)}
@@ -270,6 +267,8 @@ lemma Space.mul_mem_ratMatrices {γ : G E ε} {δ : G E ε'} {w : Matrix ι' ι 
   obtain ⟨δ₀, hδ₀⟩ := ratCoordMatrix_mem_ratMatrices hδ
   obtain ⟨w₀, rfl⟩ := hw
   exact ⟨δ₀ * (w₀ * γ₀), by simp [← hγ₀, ← hδ₀]⟩
+
+variable [WeilData E] (α : (n : Type) → [Fintype n] → AutChar E) (f : 𝒮 (V.hom V'))
 
 /-- The rational points of the parabolic subgroup of U(V) of elements that, in rational
 coordinates, do not lower the grading d of the basis. -/
