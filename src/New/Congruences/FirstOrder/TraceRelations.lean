@@ -633,12 +633,12 @@ lemma hasTriangleCost_of_isCharacterCocycle [Fintype Y] [Fintype K] [LinearOrder
       (placesDividing D.E ℓ ∪ (Set.range w).conjClosure) ∅ (QuotSpan (ℓ ^ ν : ↑O)) :=
     fun z hz ↦ hq.mem_selmerModule_of_tame_eq_zero
       (ribetCocycles.mem_selmerModule hu_cont hu_unr (h_obey hz) (by simp [obeying]))
-      (h_tame z hz) h_cover (by simp +contextual [tateTwist, cyclotomicInv])
+      (h_tame z hz) h_cover (fun _ _ ↦ tateTwist_eq_one_of_cyclotomicChar_eq_one)
   refine ⟨hasTriangleCost_tateTwist h_tri h_unr h_g₀ ?_, fun z hz hzs ↦ hs z ?_ ?_⟩
   · exact add_le_add (relLength_mono h_obey le_rfl) le_rfl
   · -- `z` kills the tame generators at the new places, so it is unramified off `ℓ`
     exact h_tri.isTameGeneratorFamily.mem_selmerModule_of_tame_eq_zero (h_unr hz)
-      (fun k ↦ hzs _ (by simp)) .rfl (by simp +contextual [tateTwist, cyclotomicInv])
+      (fun k ↦ hzs _ (by simp)) .rfl (fun _ _ ↦ tateTwist_eq_one_of_cyclotomicChar_eq_one)
   · exact fun g hg ↦ hzs g (mem_union_left _ hg)
 
 variable [PadicIso ℓ]
