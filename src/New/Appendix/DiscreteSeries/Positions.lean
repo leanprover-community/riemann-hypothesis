@@ -1,5 +1,7 @@
 module
 
+import Mathlib.LinearAlgebra.Matrix.Rank
+import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
@@ -7,7 +9,6 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Sheaves.Presheaf
 public import New.Appendix.DiscreteSeries.SteepParameters
 public import Lib.General.LinearAlgebra.IntegralLattices
-import Lib.Adelic.Witt.WittTheorem
 
 /-!
 # Positions of a smaller unitary group, and the two traces
@@ -186,8 +187,7 @@ forms with signs `η` and `ε`. Then some matrix `Z` gives coordinates along all
 vanishes on the image of `i₀`: it satisfies `Z i₀ = 0` and `Z v = 1`. -/
 lemma exists_mul_eq_zero_and_mul_eq_one (hP : IsPosition ε η d v i₀) :
     ∃ Z : Matrix (Fin (d + 1)) n ℂ, Z * i₀ = 0 ∧ Z * v = 1 := by
-  obtain ⟨T, hT⟩ : HasLeftInv v := .of_ker_le_bot
-    (LinearMap.ker_eq_bot.2 (mulVec_injective_iff.2 hP.independent) : v.mulVecLin.ker = ⊥).le
+  obtain ⟨T, hT⟩ := vecMul_surjective_iff_exists_left_inverse.mp hP.independent.vecMul_surjective
   -- Project away from the image of `i₀` first.
   refine ⟨T * (1 - i₀ * formAdjoint ε η i₀), ?_, ?_⟩
   · simp [Matrix.mul_assoc, Matrix.sub_mul, hP.formAdjoint_mul_self]
