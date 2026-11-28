@@ -210,30 +210,24 @@ theorem Gauge.IsShell.setLIntegral_le_inv_height {S : Set T.G} {height : ℝ≥0
           exact le_of_eq (by ring)
       _ ≤ height⁻¹ * (V * e ^ r * Γ.loss ^ (3 * 10 ^ 8 * 𝔰.n ^ 4) * F.shellNormalization W) := by
           grw [h_pay, h_scale]
-  obtain h_close | h_remote := le_or_gt height (Γ.loss ^ (2400 * 𝔰.n ^ 2))
-  · -- Up to the height `Γ.loss ^ (2400 n²)` take `g = e`.
-    refine ⟨e, le_rfl, ?_, hS.setLIntegral_le hW hj hq h_gain⟩
-    grw [he, one_pow, one_mul, h_close, ← pow_mul]
-    exact pow_le_pow_right₀ Γ.one_le_loss (by lia)
-  -- Beyond it take the smaller of `e` and `τ = height ^ (-1 / (800 n²))`.
-  obtain ⟨τ, hτ⟩ : ∃ τ : ℝ≥0∞, τ ^ (800 * 𝔰.n ^ 2) = height⁻¹ :=
-    ⟨height⁻¹ ^ ((800 * 𝔰.n ^ 2 : ℕ) : ℝ)⁻¹, rpow_inv_natCast_pow (by positivity) _⟩
-  refine ⟨min e τ, min_le_left e τ, ?_, ?_⟩
-  · have h_exp : 800 * 𝔰.n ^ 2 * (112500 * 𝔰.n ^ 2) = 9 * 10 ^ 7 * 𝔰.n ^ 4 := by ring
-    calc min e τ ^ (9 * 10 ^ 7 * 𝔰.n ^ 4) * height ^ (1 + 10 ^ 5 * 𝔰.n ^ 2)
-        ≤ (τ ^ (800 * 𝔰.n ^ 2)) ^ (112500 * 𝔰.n ^ 2) * height ^ (112500 * 𝔰.n ^ 2) := by
-          rw [← pow_mul, h_exp]
-          gcongr
-          · exact min_le_right e τ
-          · exact hS.one_le_height
-          · lia
-      _ = 1 := by rw [hτ, ← mul_pow, h_cancel, one_pow]
-      _ ≤ Γ.loss ^ (29 * 10 ^ 7 * 𝔰.n ^ 4) := one_le_pow₀ Γ.one_le_loss
-  · obtain h_le | h_le := le_total e τ
-    · rw [min_eq_left h_le]
-      exact hS.setLIntegral_le hW hj hq h_gain
-    · grw [min_eq_right h_le, lintegral_mono hf]
-      exact hS.setLIntegral_formMajorant_le hW hj hp hq h_mass hV h_remote hτ
+  let τ : ℝ≥0∞ := height⁻¹ ^ ((800 * 𝔰.n ^ 2 : ℕ) : ℝ)⁻¹
+  have hτ : τ ^ (800 * 𝔰.n ^ 2) = height⁻¹ := rpow_inv_natCast_pow (by positivity) _
+  have hτ_pay : τ ^ (9 * 10 ^ 7 * 𝔰.n ^ 4) * height ^ (1 + 10 ^ 5 * 𝔰.n ^ 2) ≤ 1 := by
+    have h_exp : 1 + 10 ^ 5 * 𝔰.n ^ 2 ≤ 112500 * 𝔰.n ^ 2 := by lia
+    rw [show 9 * 10 ^ 7 * 𝔰.n ^ 4 = 800 * 𝔰.n ^ 2 * (112500 * 𝔰.n ^ 2) by ring, pow_mul]
+    grw [pow_le_pow_right₀ hS.one_le_height h_exp, hτ, ← mul_pow, h_cancel, one_pow]
+  -- If the height is beyond `Γ.loss ^ (2400 n²)` and `τ < e`, take `g = τ`; otherwise take
+  -- `g = e`, which pays either because the height is small or because `e ≤ τ`.
+  by_cases h_remote : Γ.loss ^ (2400 * 𝔰.n ^ 2) < height ∧ τ < e
+  · refine ⟨τ, h_remote.2.le, hτ_pay.trans (one_le_pow₀ Γ.one_le_loss), ?_⟩
+    grw [lintegral_mono hf]
+    exact hS.setLIntegral_formMajorant_le hW hj hp hq h_mass hV h_remote.1 hτ
+  · refine ⟨e, le_rfl, ?_, hS.setLIntegral_le hW hj hq h_gain⟩
+    rcases not_and_or.1 h_remote with h_close | h_le
+    · grw [he, one_pow, one_mul, le_of_not_gt h_close, ← pow_mul]
+      exact pow_le_pow_right₀ Γ.one_le_loss (by lia)
+    · grw [le_of_not_gt h_le, hτ_pay]
+      exact one_le_pow₀ Γ.one_le_loss
 
 /-- **The sum over the shells.** Let each `S i` be a shell of height `2 ^ i` for the gauge `Γ` and
 `p`, `q`. Let the `S i` cover the support of `f`. Let `j ≤ 𝔰.ϱ`, and let `p`, `q` be heads of length
