@@ -499,7 +499,7 @@ lemma scaledSiegelConst_le : D.filling.scaledSiegelConst ≤
   have h_covolume : D.filling.unipotentCovolume * D.filling.frameScaleProd =
       D.filling.unipotentOrder / (D.N ^ D.k) ^ D.f / volÔ D.E ^ (D.ϱ * (D.ϱ + D.k)) *
         √√|NumberField.discr D.E| ^ D.ϱ := by
-    have h_order : ((D.filling.M : ℝ) ^ (2 * (D.ϱ * (D.ϱ + D.k)) + D.ϱ)) ^ D.f =
+    have h_order : ((D.filling.level : ℝ) ^ (2 * (D.ϱ * (D.ϱ + D.k)) + D.ϱ)) ^ D.f =
         D.filling.unipotentOrder := by
       rw [← pow_mul, unipotentOrder, Shape.k, card_X₀, Nat.cast_pow]
       ring

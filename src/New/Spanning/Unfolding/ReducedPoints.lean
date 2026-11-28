@@ -37,7 +37,7 @@ Notions from other files:
 * `New.Filling.IsAdmissible`: the standing hypotheses, among them `|ϖ| ≤ b` and `1 ≤ |κ_v|` at
   every infinite place.
 
-Here and below `M = S.M` is the level of the filling data `S`.
+Here and below `M = S.level` is the level of the filling data `S`.
 -/
 
 @[expose] public section
@@ -49,7 +49,7 @@ namespace New.Filling
 
 Indices `𝔰.BesselIndex` come in three blocks: `.inl a` for `e_a`, a middle block, and
 `.inr (.inr a)` for the dual vector `e*_a`. The middle block has the indices of the vector `z` and
-those of the space `X₀`, given by `𝔰.indexX₀`. `S.ratGram` is the Gram matrix, `S.M` the level,
+those of the space `X₀`, given by `𝔰.indexX₀`. `S.ratGram` is the Gram matrix, `S.level` the level,
 `New.Filling.finAdeleMatrix` maps a rational matrix to the finite adeles, and `S.classCoord c`
 passes to coordinates in the basis `New.Filling.classBasis c` of the lattice of the class `c`.
 -/
@@ -95,17 +95,18 @@ lemma eichler_apply_eq_zero_of_level_le {m : Type} [Fintype m] {p : m → Fin �
     Matrix.add_mul, Matrix.sub_mul, Matrix.one_apply, Matrix.mul_apply, sub_eq_zero]
   grind [Finset.sum_eq_zero, star_zero]
 
-/-- Eichler maps have level `M = S.M`. Let `J = S.ratGram` be the Gram matrix. Let the columns of
-`x` and `u` lie in the lattice of the class `c`, let the matrix `s` and the number `τ` be integral,
-and let the rational isometry `γ` have the matrix `1 + M (x uᴴ J - (u + x (τ uᴴ J u - s)) xᴴ J)`.
-Then `M⁻¹ (γ' - 1)` has entries in `Ô`, where `γ' = S.translateByClassReps c c γ` is `γ` written in
-the basis of the lattice and `S.ideleM` is `M` as a unit of the finite adeles. -/
+/-- Eichler maps have level `M = S.level`. Let `J = S.ratGram` be the Gram matrix. Let the columns
+of `x` and `u` lie in the lattice of the class `c`, let the matrix `s` and the number `τ` be
+integral, and let the rational isometry `γ` have the matrix
+`1 + M (x uᴴ J - (u + x (τ uᴴ J u - s)) xᴴ J)`. Then `M⁻¹ (γ' - 1)` has entries in `Ô`, where
+`γ' = S.translateByClassReps c c γ` is `γ` written in the basis of the lattice and `S.ideleM` is `M`
+as a unit of the finite adeles. -/
 lemma isIntMatrix_ideleM_inv_smul_eichler (c : S.Classes) {m : Type} [Fintype m]
     {x u : Matrix 𝔰.BesselIndex m E} {s : Matrix m m E}
     (hx : IsIntMatrix (Ô E) (S.classCoord c * finAdeleMatrix x))
     (hu : IsIntMatrix (Ô E) (S.classCoord c * finAdeleMatrix u))
     (hs : IsIntMatrix (Ô E) (finAdeleMatrix s)) {τ : E} (hτ : algebraMap E (𝔸f E) τ ∈ Ô E)
-    {γ : S.G E} (h_val : γ.val.val = 1 + (S.M : E) •
+    {γ : S.G E} (h_val : γ.val.val = 1 + (S.level : E) •
       (x * (uᴴ * S.ratGram) - (u + x * (τ • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram))) :
     IsIntMatrix (Ô E) (S.ideleM⁻¹ • ((S.translateByClassReps c c γ).val.val - 1)) := by
   -- In the basis of the lattice this is the same expression in integral matrices, as
@@ -132,7 +133,7 @@ lemma isIntMatrix_ideleM_inv_smul_eichler (c : S.Classes) {m : Type} [Fintype m]
 root of unity. Let `J = S.ratGram`. Let `x` have the columns `e_{p b}`. Let the columns of `u` lie
 in the lattice of the class `c`. Let `u` also have coordinate `0` at the dual vector `e*_a` (index
 `eStar a`) for all `b, b'` and every `a ≤ p b'`. Let `s` be integral and skew-hermitian. Then there
-is `γ` in the group `𝖴_c(M)` of rational unipotent elements of level `M = S.M` at `c` with two
+is `γ` in the group `𝖴_c(M)` of rational unipotent elements of level `M = S.level` at `c` with two
 properties. (a) `γ` fixes the frame `e₁, …, e_ϱ, z`, that is, it lies in `S.classUnipotent₀ c`, if
 the columns of `u` are orthogonal to the frame. (b) `γ` has the matrix
 `1 + M (x uᴴ J - (u + x (τ uᴴ J u - s)) xᴴ J)` for some `τ : E`. -/
@@ -150,10 +151,10 @@ lemma exists_mem_classUnipotent_eq_one_add_smul [HasPrimitiveRoot5040 E] (c : S.
       -- (b) the matrix of `γ`
       ∃ τ : E,
         γ.val.val = 1 +
-            (S.M : E) •
+            (S.level : E) •
               (x * (uᴴ * S.ratGram) -
                 (u + x * (τ • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram)) := by
-  -- The matrix is an Eichler map along the isotropic columns `x`; take `τ = S.M * τ₀` with an
+  -- The matrix is an Eichler map along the isotropic columns `x`; take `τ = S.level * τ₀` with an
   -- integer `τ₀` such that `τ₀ + star τ₀ = 1`.
   obtain ⟨-, τ₀, -, -, hτ₀, -⟩ :=
     HasPrimitiveRoot5040.exists_mul_self_eq_neg_one_and_mul_star_eq_two (E := E)
@@ -172,39 +173,40 @@ lemma exists_mem_classUnipotent_eq_one_add_smul [HasPrimitiveRoot5040 E] (c : S.
     simp [← hx_eq, IsIntMatrix, ↓classCoord_eq_fromBlocks, ite_mem, inclMatrix, Matrix.mul_apply,
       Matrix.one_apply]
   let A : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E :=
-    x * (uᴴ * S.ratGram) - (u + x * ((S.M * τ₀ : E) • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram)
-  have h_unitary : (1 + (S.M : E) • A)ᴴ * S.ratGram * (1 + (S.M : E) • A) = S.ratGram := by
-    have h_star : star (S.M : E) = S.M := star_natCast _
-    have h_trace : (S.M * τ₀ : E) + star (S.M * τ₀ : E) = S.M := by
+    x * (uᴴ * S.ratGram) -
+      (u + x * ((S.level * τ₀ : E) • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram)
+  have h_unitary : (1 + (S.level : E) • A)ᴴ * S.ratGram * (1 + (S.level : E) • A) = S.ratGram := by
+    have h_star : star (S.level : E) = S.level := star_natCast _
+    have h_trace : (S.level * τ₀ : E) + star (S.level * τ₀ : E) = S.level := by
       simp [← coe_star_ringOfIntegers, eq_sub_of_add_eq' hτ₀]
       ring
     exact conjTranspose_eichler_mul_mul IsHermitianUnit.conjTranspose_eq hxu hxx h_skew h_star
       h_trace
   let γ : S.G E := U.of IsHermitianUnit.isUnit _ h_unitary
   have hγ : γ ∈ S.classUnipotent c := by
-    -- `γ` is unitriangular, and it has level `S.M` since `(S.M)⁻¹ (γ - 1) = A` is integral in the
-    -- basis of the unimodular lattice (`IsUnimodular.mem_unitaryLevel`)
+    -- `γ` is unitriangular, and it has level `S.level` since `(S.level)⁻¹ (γ - 1) = A` is integral
+    -- in the basis of the unimodular lattice (`IsUnimodular.mem_unitaryLevel`)
     have h_unitri : ∀ i j : 𝔰.BesselIndex, BesselIndex.level j ≤ BesselIndex.level i →
         γ.val.val i j = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) i j := by
       intro i j hij
       have h_A : A i j = 0 := eichler_apply_eq_zero_of_level_le s _ hu_zero hx_eq i j hij
       simp [γ, ↓U.val_of_coe, h_A]
     have h_level : IsIntMatrix (Ô E) (S.ideleM⁻¹ • ((S.translateByClassReps c c γ).val.val - 1)) :=
-      isIntMatrix_ideleM_inv_smul_eichler c hx_int hu_int hs_int (coe_mem_Ô (S.M * τ₀ : 𝓞 E))
+      isIntMatrix_ideleM_inv_smul_eichler c hx_int hu_int hs_int (coe_mem_Ô (S.level * τ₀ : 𝓞 E))
         (by simp [γ, A])
     exact ⟨mem_besselU.2 h_unitri, S.principalLevel_eq_unitaryLevel.ge
       (S.isUnimodular_latticeMiddle.splitGram.mem_unitaryLevel S.ideleM_mem h_level)⟩
   refine ⟨γ, hγ, fun hu_frame ↦ ⟨hγ, hγ.left, fun i ↦ forall_mem_range.2 fun a ↦ ?_⟩,
-    S.M * τ₀, rfl⟩
+    S.level * τ₀, rfl⟩
   -- the columns of `γ - 1` at the frame vanish, as `u` and `x` are orthogonal to the frame
   change γ.val.val i (𝔰.besselFrame a) =
     (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) i (𝔰.besselFrame a)
   simp [γ, A, hu_frame, hx_frame, Matrix.mul_assoc, Matrix.mul_sub, Matrix.add_mul, Matrix.sub_mul,
     Matrix.one_apply, Matrix.mul_apply]
 
-/-- An element of `𝖴_c(M) = S.classUnipotent c` with given rows at the `e_b`; here `M = S.M` is the
-level and `E` contains a primitive 5040th root of unity. Let the row vector `l` vanish at `e_b` and
-at the dual vector `e*_b` for all `b ≤ a`; these are exactly the indices `j` for which
+/-- An element of `𝖴_c(M) = S.classUnipotent c` with given rows at the `e_b`; here `M = S.level` is
+the level and `E` contains a primitive 5040th root of unity. Let the row vector `l` vanish at `e_b`
+and at the dual vector `e*_b` for all `b ≤ a`; these are exactly the indices `j` for which
 `RealPlace.IsFreeEntry (a, j)` fails. Let `l` be integral on the lattice of the class `c`, spanned
 over `Ô` by the columns of `classBasis c`, and let `s` be an integer of `E` with `star s = -s`. Then
 some `γ` in `𝖴_c(M)` has, in `γ - 1` and outside the column `e*_a` (index `eStar a`), the row `M l`
@@ -221,7 +223,7 @@ lemma exists_eichler_classUnipotent [HasPrimitiveRoot5040 E] (c : S.Classes) (a 
       j ≠ eStar a ∨ l = 0 →
       γ.val.val (Sum.inl b) j =
         (if Sum.inl b = j then 1 else 0) +
-          S.M * if b = a then l j + (if j = eStar a then (s.val : E) else 0) else 0 := by
+          S.level * if b = a then l j + (if j = eStar a then (s.val : E) else 0) else 0 := by
   -- write `l = u ᵥ* J` and apply `exists_mem_classUnipotent_eq_one_add_smul` to the single columns
   -- `e_a` and `uᴴ`
   obtain ⟨u, rfl⟩ := S.ratGram.vecMul_surjective_iff_isUnit.2 IsHermitianUnit.isUnit l
@@ -308,10 +310,10 @@ lemma exists_integral_form_besselFrame (c : S.Classes) (b : Fin (𝔰.ϱ + 1)) :
 /-- Let `E` contain a primitive 5040th root of unity. For `a < b` and `x` an integer of `E`, the
 matrix `1 + Matrix.single a b (M x)` is `frameMatrix u` for some `u` in the congruence subgroup
 `𝖴_c(M) = S.classUnipotent c` of the class `c`. Here `frameMatrix u` is the matrix of `u` on the
-frame `e_1, …, e_ϱ, z`, and `M = S.M` is the level. -/
+frame `e_1, …, e_ϱ, z`, and `M = S.level` is the level. -/
 lemma exists_classUnipotent_frameMatrix_eq [HasPrimitiveRoot5040 E] (c : S.Classes)
     {a b : Fin (𝔰.ϱ + 1)} (hab : a < b) (x : 𝓞 E) :
-    ∃ u : S.classUnipotent c, frameMatrix u.val = 1 + Matrix.single a b (S.M * (x : E)) := by
+    ∃ u : S.classUnipotent c, frameMatrix u.val = 1 + Matrix.single a b (S.level * (x : E)) := by
   -- Take the element whose row at `e_a` is `M x` times an integral form dual to `f_b`.
   obtain ⟨a, rfl⟩ : ∃ a' : Fin 𝔰.ϱ, a'.castSucc = a :=
     Fin.exists_castSucc_eq.2 (Fin.ne_last_of_lt hab)
@@ -355,9 +357,9 @@ lemma exists_classUnipotent_frameMatrix_eq [HasPrimitiveRoot5040 E] (c : S.Class
 
 /-- An element `u` of the congruence subgroup `𝖴_c(M) = S.classUnipotent c` acts on the frame
 `e_1, …, e_ϱ, z` by a matrix `frameMatrix u` whose entries above the diagonal are multiples of the
-level `M = S.M` by integers of `E`. -/
+level `M = S.level` by integers of `E`. -/
 lemma exists_frameMatrix_classUnipotent_eq_mul (c : S.Classes) (u : S.classUnipotent c)
-    {a b : Fin (𝔰.ϱ + 1)} (hab : a < b) : ∃ x : 𝓞 E, frameMatrix u.val a b = S.M * (x : E) := by
+    {a b : Fin (𝔰.ϱ + 1)} (hab : a < b) : ∃ x : 𝓞 E, frameMatrix u.val a b = S.level * (x : E) := by
   -- In the basis of the lattice `M⁻¹ (u - 1)` is integral, and the frame belongs to this basis.
   obtain ⟨a, rfl⟩ : ∃ a' : Fin 𝔰.ϱ, a'.castSucc = a :=
     Fin.exists_castSucc_eq.2 (Fin.ne_last_of_lt hab)
@@ -372,11 +374,11 @@ lemma exists_frameMatrix_classUnipotent_eq_mul (c : S.Classes) (u : S.classUnipo
   have h_ne : (Sum.inl a : 𝔰.BesselIndex) ≠ 𝔰.besselFrame b := by
     rw [← besselFrame_castSucc]
     exact besselFrame_injective.ne hab.ne
-  have h_int : IsIntegral ℤ ((S.M : E)⁻¹ * frameMatrix u.val a.castSucc b) := by
+  have h_int : IsIntegral ℤ ((S.level : E)⁻¹ * frameMatrix u.val a.castSucc b) := by
     rw [← algebraMap_mem_Ô]
     simpa [h_entry, one_apply_ne h_ne, ideleM, Units.smul_def] using
       h_cong (.inl a) (𝔰.besselFrame b)
-  have hM : (S.M : E) ≠ 0 := by simp [Nat.Prime.ne_zero]
+  have hM : (S.level : E) ≠ 0 := by simp [Nat.Prime.ne_zero]
   exact ⟨⟨_, h_int⟩, (mul_inv_cancel_left₀ hM _).symm⟩
 
 end UnipotentElements
@@ -555,8 +557,8 @@ lemma ratTriangle_eq_sum {u : S.G E} (hu : u ∈ besselU) (y : InfinitePlace E �
   field
 
 /-- Let `S` be filling data over `E`, where `E` contains a primitive 5040th root of unity, and let
-`D` be a set of representatives modulo `S.M 𝓞_E` as in `New.Filling.IsResidueDomain`. For each class
-`c` in `S.Classes` and each point `y`, the `u` in `S.classUnipotent c` with `S.ratToInf u * y`
+`D` be a set of representatives modulo `S.level 𝓞_E` as in `New.Filling.IsResidueDomain`. For each
+class `c` in `S.Classes` and each point `y`, the `u` in `S.classUnipotent c` with `S.ratToInf u * y`
 reduced for `D` form exactly one right coset of `S.classUnipotent₀ c`. -/
 theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset [HasPrimitiveRoot5040 E]
     (hD : S.IsResidueDomain D) (c : S.Classes) (y : InfinitePlace E → 𝔰.G₁) :
@@ -600,21 +602,23 @@ theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset [HasPrimitiv
       simpa [φ, Matrix.mul_apply] using ratTriangle_eq_sum u.property.left y a b v
     rw [map_inv, mul_inv_eq_iff_eq_mul]
     exact Subtype.ext (Units.ext h_sum)
-  have hφ (x : 𝓞 E) : φ (S.M * (x : E)) = fun v : InfinitePlace E ↦ Φ v (S.M * (x : E)) := rfl
+  have hφ (x : 𝓞 E) :
+      φ (S.level * (x : E)) = fun v : InfinitePlace E ↦ Φ v (S.level * (x : E)) := rfl
   have h_elementary : ∀ a b : Fin (𝔰.ϱ + 1), a < b → ∀ l ∈ S.levelMultiples,
       ∃ γ : θ.range, (γ : GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)).val = 1 + single a b l := by
     intro a b hab l hl
-    obtain ⟨x, rfl⟩ : ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.M * (x : E))) = l :=
+    obtain ⟨x, rfl⟩ : ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.level * (x : E))) = l :=
       mem_levelMultiples.1 hl
-    obtain ⟨u, hu⟩ : ∃ u : S.classUnipotent c, frameMatrix u.val = 1 + single a b (S.M * (x : E)) :=
+    obtain ⟨u, hu⟩ :
+        ∃ u : S.classUnipotent c, frameMatrix u.val = 1 + single a b (S.level * (x : E)) :=
       exists_classUnipotent_frameMatrix_eq c hab x
     refine ⟨⟨θ u, u, rfl⟩, ?_⟩
     rw [hθ, hu, ← hφ, Matrix.map_add φ φ.map_add, Matrix.map_one φ φ.map_zero φ.map_one,
-      map_single a b (S.M * (x : E)) φ]
+      map_single a b (S.level * (x : E)) φ]
   have h_level : ∀ (γ : θ.range) (a b : Fin (𝔰.ϱ + 1)), a < b →
       (γ : GL (Fin (𝔰.ϱ + 1)) (InfinitePlace E → ℂ)) a b ∈ S.levelMultiples := by
     rintro ⟨_, u, rfl⟩ a b hab
-    obtain ⟨x, hx⟩ : ∃ x : 𝓞 E, frameMatrix u.val a b = S.M * (x : E) :=
+    obtain ⟨x, hx⟩ : ∃ x : 𝓞 E, frameMatrix u.val a b = S.level * (x : E) :=
       exists_frameMatrix_classUnipotent_eq_mul c u hab
     rw [hθ, map_apply, hx, hφ]
     exact mem_levelMultiples.2 ⟨x, rfl⟩
@@ -635,7 +639,7 @@ theorem IsResidueDomain.exists_mul_mem_reducedPoints_iff_rightCoset [HasPrimitiv
     exact h_mem
 
 /-- Let `S` satisfy the standing hypotheses `New.Filling.IsAdmissible`, let `E` contain a primitive
-5040th root of unity, and let `D` be a set of representatives modulo `S.M 𝓞_E` as in
+5040th root of unity, and let `D` be a set of representatives modulo `S.level 𝓞_E` as in
 `New.Filling.IsResidueDomain`. For every class `c`, the indicator `ω` of the points reduced for `D`
 is a partition of unity in boxes. -/
 theorem IsResidueDomain.isBoxPartitionOfUnity [S.IsAdmissible] [HasPrimitiveRoot5040 E]

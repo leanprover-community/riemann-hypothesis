@@ -693,7 +693,7 @@ lemma pairOccursAt_succ (h_agree : S.CharsAgree γ) {μ μ' : E} (j : Fin 𝔰.�
     simp
   -- The Eichler maps `u` along `r • x` and `w` along `r • y` lie in `besselU`; the factor `r`
   -- cancels the constants in the character. As `x`, `y` give the same vector, `u * γ = γ * w`.
-  let r : E := S.M * S.deltaE * -t
+  let r : E := S.level * S.deltaE * -t
   obtain ⟨u, hu, hu_sum, hu_eichler⟩ := exists_mem_besselU_eq_eichlerMap j.succ x r hγv hx hm
   obtain ⟨w, hw, hw_sum, hw_eichler⟩ := exists_mem_besselU_eq_eichlerMap j.succ y r hv hy hm'
   have h_comm : u * γ = γ * w := by

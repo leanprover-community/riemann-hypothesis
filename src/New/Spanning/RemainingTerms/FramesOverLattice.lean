@@ -367,7 +367,7 @@ lemma IsFrameSet.encard_le_of_conjTranspose_mul_eq (hB : S.IsFrameSet c B)
     {p₀ : S.Classes × S.G E} (hp₀ : p₀ ∈ B) (hy : HasLeftInv y) (h_rank : r + l = 𝔰.k)
     {u : S.Classes × S.G E → S.G E} (hu : ∀ p ∈ B, u p ∈ S.classUnipotent₀ c)
     (h_orth : ∀ p ∈ B, (framePartX₀ (u p * p.2))ᴴ * y = (framePartX₀ (u p₀ * p₀.2))ᴴ * y)
-    {d d' : (𝔸f E)ˣ} (hd : d.val = ((S.M * leadingMinor Z j : E) : 𝔸f E))
+    {d d' : (𝔸f E)ˣ} (hd : d.val = ((S.level * leadingMinor Z j : E) : 𝔸f E))
     (hd' : d'.val = ((S.frameModulus j Z : E) : 𝔸f E)) :
     B.encard ≤ ENNReal.ofReal ((genIndex d.val ^ l) ^ 𝔰.n) *
       (ENNReal.ofReal (S.b ^ (366 * 𝔰.n ^ 4 * numInfPlaces E)) *
@@ -383,7 +383,7 @@ lemma IsFrameSet.encard_le_of_conjTranspose_mul_eq (hB : S.IsFrameSet c B)
     by simpa [hZ p₀ hp₀] using hB.isIntegral_frameProducts hp₀ a b
   have hd_int : d.val ∈ Ô E := by
     rw [hd, ← det_paddedLeading]
-    exact mul_mem (natCast_mem ((Ô E).comap (algebraMap E (𝔸f E))) S.M)
+    exact mul_mem (natCast_mem ((Ô E).comap (algebraMap E (𝔸f E))) S.level)
       (isIntMatrix_paddedLeading hZ_int).det_mem
   have h_mem (p : S.Classes × S.G E) (hp : p ∈ B) (i : Fin (𝔰.ϱ + 1)) :
       ((↑) : E → 𝔸f E) ∘ (x p - x p₀).col i ∈ P := by
@@ -443,7 +443,7 @@ lemma IsFrameSet.encard_le_of_le_termLattice (hB : S.IsFrameSet c B)
     (h_le_classLattice : colLattice (Ô E) (finAdeleMatrix y * a.val) ≤ S.classLatticeX₀ c)
     (h_le_termLattice :
       ∀ p ∈ B, colLattice (Ô E) (finAdeleMatrix y * a.val) ≤ S.termLattice c p.1 p.2)
-    {d d' : (𝔸f E)ˣ} (hd : d.val = ((S.M * leadingMinor Z j : E) : 𝔸f E))
+    {d d' : (𝔸f E)ˣ} (hd : d.val = ((S.level * leadingMinor Z j : E) : 𝔸f E))
     (hd' : d'.val = ((S.frameModulus j Z : E) : 𝔸f E)) :
     B.encard ≤
       ENNReal.ofReal ((discriminant r (colLattice (Ô E) (finAdeleMatrix y * a.val)) ^ 2) ^ 𝔰.ϱ) *
@@ -472,7 +472,7 @@ lemma IsFrameSet.encard_le_of_le_termLattice (hB : S.IsFrameSet c B)
     (fun p hp i ↦ (hw p hp).isIntMatrix i) fun D hD p₁ hp₁ h_congr ↦ ?_
   -- In one class `D` a move gives every frame the lift of `p₁`.
   have h_join : ∀ p ∈ D, ∃ u ∈ S.classUnipotent₀ c,
-      (framePartX₀ (u * p.2))ᴴ * y = -((S.M : E) • ((isotropicRows Z)ᴴ * w p₁)) := by
+      (framePartX₀ (u * p.2))ᴴ * y = -((S.level : E) • ((isotropicRows Z)ᴴ * w p₁)) := by
     intro p hp
     rw [← hZ p (hD hp)]
     exact (hw p (hD hp)).exists_conjTranspose_framePartX₀_mul_eq_neg hy h_le_classLattice
@@ -506,14 +506,14 @@ private lemma IsFrameSet.encard_le_of_frameProducts_eq (hB : S.IsFrameSet c B)
     exact pow_le_pow_right₀ hb (by lia)
   have h_minor : leadingMinor (S.frameProducts p₀.2) j ≠ 0 :=
     (h_cellRank p₀ hp₀).leadingMinor_ne_zero
-  have hM_ne : (S.M : E) ≠ 0 := by simp [S.levelPrime_prime_and_ne, Nat.Prime.ne_zero]
+  have hM_ne : (S.level : E) ≠ 0 := by simp [S.levelPrime_prime_and_ne, Nat.Prime.ne_zero]
   let d : (𝔸f E)ˣ := principalIdele
-    (Units.mk0 (S.M * leadingMinor (S.frameProducts p₀.2) j) (mul_ne_zero hM_ne h_minor))
+    (Units.mk0 (S.level * leadingMinor (S.frameProducts p₀.2) j) (mul_ne_zero hM_ne h_minor))
   let d' : (𝔸f E)ˣ := principalIdele
     (Units.mk0 (S.frameModulus j (S.frameProducts p₀.2)) (S.frameModulus_ne_zero h_minor))
   have hd_pos : 0 < genIndex d.val := genIndex_pos d
   have hd'_pos : 0 < genIndex d'.val := genIndex_pos d'
-  have hd_le : genIndex d.val ≤ N := (hB.near p₀ hp₀).genIndex_M_mul_leadingMinor_le j
+  have hd_le : genIndex d.val ≤ N := (hB.near p₀ hp₀).genIndex_level_mul_leadingMinor_le j
   have hd'_le : genIndex d'.val ≤ N := (hB.near p₀ hp₀).genIndex_frameModulus_le
   -- The three rounds, with every index replaced by the common bound `N = b ^ (2 n³ f)`.
   grw [hB.encard_le_of_le_termLattice (d := d) (d' := d') h_cellRank hZ hy h_rank h_le_classLattice
@@ -576,17 +576,17 @@ theorem IsFrameSet.encard_le (hB : S.IsFrameSet c B)
 end Rounds
 
 /-- Let `E` be a CM field with a primitive 5040-th root of unity and `S` admissible filling data
-over `E`, of level `M = p₀ p₁` (`S.M`) and size parameter `b = S.b`. Let `Λ` be the lattice of the
-class `c`, `X₀` the anisotropic space (of dimension `𝔰.k`), `X` the isotropic space, `n` the length
-of the frame and `f` the number of infinite places. Let `L ⊆ Λ ∩ X₀` be a lattice of rank `r`, with
-`r + l = 𝔰.k`, and discriminant at most `b ^ (n³ f)`. Then at most `b ^ (2000 n⁶ (l + 1) f)` pairs
-`p = (c', γ)` with `S.IsNearTermAt c t p` have `L ⊆ S.termLattice c c' γ`. The condition
-`S.IsNearTermAt c t p` says three things. First, `γ` is a near term from `c'` to `c` and is the
-representative picked in its double coset. Second, `γ` has some cell rank `j`: from the index `j`
-on, the flags of the standard frame and of `γ`'s frame share vectors, and the leading minor of order
-`j` of their matrix of products is nonzero. Third, `γ` has label `t`, the position of its reduction
-in its coset of `S.reducedImage besselS`, the image in `S.ResidueGL` of the integral points of the
-Bessel group. -/
+over `E`, of level `M = p₀ p₁` (`S.level`) and size parameter `b = S.b`. Let `Λ` be the lattice of
+the class `c`, `X₀` the anisotropic space (of dimension `𝔰.k`), `X` the isotropic space, `n` the
+length of the frame and `f` the number of infinite places. Let `L ⊆ Λ ∩ X₀` be a lattice of rank
+`r`, with `r + l = 𝔰.k`, and discriminant at most `b ^ (n³ f)`. Then at most
+`b ^ (2000 n⁶ (l + 1) f)` pairs `p = (c', γ)` with `S.IsNearTermAt c t p` have
+`L ⊆ S.termLattice c c' γ`. The condition `S.IsNearTermAt c t p` says three things. First, `γ` is a
+near term from `c'` to `c` and is the representative picked in its double coset. Second, `γ` has
+some cell rank `j`: from the index `j` on, the flags of the standard frame and of `γ`'s frame share
+vectors, and the leading minor of order `j` of their matrix of products is nonzero. Third, `γ` has
+label `t`, the position of its reduction in its coset of `S.reducedImage besselS`, the image in
+`S.ResidueGL` of the integral points of the Bessel group. -/
 theorem encard_setOf_isNearTermAt_and_le_termLattice_le {c : S.Classes} {r l : ℕ}
     (t : S.reducedImage besselS)
     (h_rank : r + l = 𝔰.k) {L : Submodule (Ô E) (𝔰.κ → 𝔸f E)} (hL : IsLatticeOfRank r L)

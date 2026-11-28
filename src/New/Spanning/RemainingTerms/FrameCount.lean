@@ -48,10 +48,9 @@ See `New.Spanning.RemainingTerms.Sum` for related work.
 /-!
 ## Short vectors of terms with a cell rank, and near terms with equal frames
 
-Throughout, "`γ` has cell rank `j`" means `S.HasCellRank j γ` (this is not the level `M = S.M`). In
-this section only `IsNearTermAt.eq_of_frameImage_eq` assumes `S.IsAdmissible`, and no lemma assumes
-a primitive 5040th root of unity in `E`.
--/
+Throughout, "`γ` has cell rank `j`" means `S.HasCellRank j γ` (this is not the level `M = S.level`).
+In this section only `IsNearTermAt.eq_of_frameImage_eq` assumes `S.IsAdmissible`, and no lemma
+assumes a primitive 5040th root of unity in `E`. -/
 
 section MiddleRelation
 
@@ -124,7 +123,7 @@ lemma col_eq_zero_of_norm_lt_one {n : Type} {l : Matrix 𝔰.κ n E}
   exact funext fun a ↦ congrFun hw (.inl a)
 
 /-- Let `S` satisfy the standing hypotheses `S.IsAdmissible` on the level and the sizes. Let `u` and
-`u'` be in `U⁰_c = S.classUnipotent₀ c`, the rational unipotent elements of level `S.M` for the
+`u'` be in `U⁰_c = S.classUnipotent₀ c`, the rational unipotent elements of level `S.level` for the
 class `c` that fix the standard frame. Let `p = (c', γ)` and `p' = (c'', γ')` be near terms for `c`
 at the same position `t` (`IsNearTermAt`). If `u γ` and `u' γ'` have the same frame image
 (`frameImage`), then `p = p'`. -/
@@ -514,11 +513,12 @@ end Skew
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape}
 
-/-- The modulus `M * det (Y * Yᴴ)` for frames with the products `Z`, where `M = S.M` is the product
-of the two level primes and `Y` consists of the first `j` rows of `Z` completed by rows of `1`. -/
+/-- The modulus `M * det (Y * Yᴴ)` for frames with the products `Z`, where `M = S.level` is the
+product of the two level primes and `Y` consists of the first `j` rows of `Z` completed by rows of
+`1`. -/
 noncomputable def frameModulus (S : Filling E 𝔰) (j : Fin (𝔰.ϱ + 2))
     (Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E) : E :=
-  S.M • (paddedLeading j Z * (paddedLeading j Z)ᴴ).det
+  S.level • (paddedLeading j Z * (paddedLeading j Z)ᴴ).det
 
 variable {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E}
 
@@ -528,9 +528,9 @@ lemma isStarStable_comap_Ô :
     IsStarStable ((Ô E).comap (algebraMap E (𝔸f E))) :=
   ⟨fun hx ↦ by simpa using star_mem_Ô hx⟩
 
-/-- The modulus `S.frameModulus j Z`, which is `M * det (Y * Yᴴ)` with `M = S.M` and `Y` the first
-`j` rows of `Z` completed by rows of `1`, is nonzero if `leadingMinor Z j`, which is `det Y`, is
-nonzero. -/
+/-- The modulus `S.frameModulus j Z`, which is `M * det (Y * Yᴴ)` with `M = S.level` and `Y` the
+first `j` rows of `Z` completed by rows of `1`, is nonzero if `leadingMinor Z j`, which is `det Y`,
+is nonzero. -/
 lemma frameModulus_ne_zero (h_minor : leadingMinor Z j ≠ 0) : S.frameModulus j Z ≠ 0 := by
   simp [frameModulus, h_minor, S.levelPrime_prime_and_ne, Nat.Prime.ne_zero]
 
@@ -657,17 +657,17 @@ lemma frameImage_sub_mul_adjugate_apply_eq_zero {γ γ' : S.G E}
 a skew-hermitian matrix over `E` that is integral at every finite place, and let `P` be the first
 `ϱ` rows of `S.frameProducts γ`. Then an element of `S.classUnipotent₀ c`, the unipotent group of
 level `M` fixing the standard frame `f`, adds `M σ P` to the first block of rows of
-`γ f = frameImage γ`. Here `M = S.M` is the product of the two level primes. -/
+`γ f = frameImage γ`. Here `M = S.level` is the product of the two level primes. -/
 lemma exists_frameImage_mul_eq_add_fromRows [HasPrimitiveRoot5040 E]
     (c : S.Classes) (γ : S.G E) {σ : Matrix (Fin 𝔰.ϱ) (Fin 𝔰.ϱ) E} (h_skew : σᴴ = -σ)
     (h_int : IsIntMatrix (Ô E) (finAdeleMatrix σ)) :
     ∃ r ∈ S.classUnipotent₀ c, frameImage (r * γ).val.val =
-      frameImage γ.val.val + fromRows (S.M • (σ * isotropicRows (S.frameProducts γ))) 0 := by
+      frameImage γ.val.val + fromRows (S.level • (σ * isotropicRows (S.frameProducts γ))) 0 := by
   let x : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ) E := inclMatrix E Sum.inl
   -- Take the Eichler map of `exists_mem_classUnipotent_eq_one_add_smul` whose part `u` in the
   -- lattice of `c` is zero.
   obtain ⟨r, hr_mem, hr_eq⟩ :
-      ∃ r ∈ S.classUnipotent₀ c, r.val.val = 1 + S.M • (x * σ * (xᴴ * S.ratGram)) := by
+      ∃ r ∈ S.classUnipotent₀ c, r.val.val = 1 + S.level • (x * σ * (xᴴ * S.ratGram)) := by
     obtain ⟨r, -, hr_mem, τ, hr_eq⟩ := S.exists_mem_classUnipotent_eq_one_add_smul c id 0 σ
       (x := x) (by simp) h_skew
       (by simp [IsIntMatrix]) h_int rfl
@@ -683,7 +683,7 @@ lemma exists_frameImage_mul_eq_add_fromRows [HasPrimitiveRoot5040 E]
 order `j`, and the same shared vectors `S.sharedVectors j`. Let `Y` be the first `j` rows of `Z`
 completed by rows of `1`. If the two frames agree outside the isotropic space and differ there by
 `S.frameModulus j Z = M det (Y Yᴴ)` times an integral matrix `X`, then a move, an element of the
-unipotent group `S.classUnipotent₀ c` of level `M = S.M` fixing the standard frame, carries the
+unipotent group `S.classUnipotent₀ c` of level `M = S.level` fixing the standard frame, carries the
 frame of `γ` to that of `γ'`. -/
 lemma exists_mem_classUnipotent₀_frameImage_mul_eq [HasPrimitiveRoot5040 E] {𝔰 : Shape}
     {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ γ' : S.G E} (c : S.Classes)
@@ -733,11 +733,11 @@ lemma exists_mem_classUnipotent₀_frameImage_mul_eq [HasPrimitiveRoot5040 E] {�
   have hP : IsIntMatrix O P := fun a b ↦ algebraMap_mem_Ô.2 (hZ_int a.castSucc b)
   have hσ_int : IsIntMatrix O (skewSolution P X α Y.det) :=
     isIntMatrix_skewSolution hP hX (fun a b ↦ hY.adjugate a b.castSucc) hY.det_mem
-  have hσ_solves : S.M • (skewSolution P X α Y.det * P) =
+  have hσ_solves : S.level • (skewSolution P X α Y.det * P) =
       S.frameModulus j (S.frameProducts γ) • X := by
     rw [skewSolution_mul h_gram h_solve, frameModulus, det_mul, det_conjTranspose, smul_assoc]
   obtain ⟨r, hr_mem, hr_move⟩ : ∃ r ∈ S.classUnipotent₀ c, frameImage (r * γ).val.val =
-      frameImage γ.val.val + fromRows (S.M • (skewSolution P X α Y.det * P)) 0 :=
+      frameImage γ.val.val + fromRows (S.level • (skewSolution P X α Y.det * P)) 0 :=
     exists_frameImage_mul_eq_add_fromRows c γ (conjTranspose_skewSolution h_gram) hσ_int
   exact ⟨r, hr_mem, by rw [hr_move, hσ_solves, h_add]⟩
 

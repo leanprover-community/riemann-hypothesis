@@ -271,7 +271,7 @@ lemma IsFillingData.exists_scaledSiegelConst_eq_and_massRatio_le
   -- `S.unipotentOrder * F.unipotentMass = 1`. Here `D = card (reducedImage besselS) *
   -- S.unipotentOrder = card (reducedImage besselH) * S.unipotentOrder ^ 2`.
   refine ⟨Nat.card (S.reducedImage besselS) * S.unipotentOrder, ?_, rfl, div_le_of_le_mul ?_⟩
-  · have hM : 0 < S.M := two_pos.trans_le two_le_M
+  · have hM : 0 < S.level := two_pos.trans_le two_le_level
     have h_card : 0 < Nat.card (S.reducedImage besselS) := Nat.card_pos
     positivity
   -- for `F.measureH`, the group `F.congruenceSubgroup` has index `card (reducedImage besselH)` in

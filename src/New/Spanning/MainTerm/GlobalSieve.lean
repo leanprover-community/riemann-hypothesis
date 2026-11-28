@@ -36,7 +36,7 @@ Conventions: `𝔰.k` and `𝔰.n = 𝔰.ϱ + 1` are parameters of the shape `�
 `Φ v` is the chosen embedding of `E` at the infinite place `v`.
 
 Notions from other files:
-* `New.Filling`: the data `S`, among them the size parameter `b = S.b`, the level `M = S.M`, the
+* `New.Filling`: the data `S`, among them the size parameter `b = S.b`, the level `M = S.level`, the
   prime `N = S.N` and a generator `ϖ = S.deltaE` of the different of `E`.
 * `New.Filling.IsAdmissible`: the standing hypotheses on `S`, among them `1 ≤ |S.realM v| ≤ b ^ 23`
   and `N ≤ b ^ (60 n)`.
@@ -499,12 +499,12 @@ positive semidefinite on heads with a common entry at position `n`; the mass `J 
 most `En`. The transform of `J (i + 1)` in the common entry at a unit `ξ` has modulus at most the
 decay `β ξ` times the weights `Λ i` of the two heads. For `i < n`, the same bound with weights
 `Λ (i + 1)` holds for `J (i + 1)` at two heads with entries `t`, `s` at position `i`, if
-`ξ = 1 / t - 1 / s` (divided by the level `M = S.M` at `T`) is a unit. -/
+`ξ = 1 / t - 1 / s` (divided by the level `M = S.level` at `T`) is a unit. -/
 abbrev IsGlobalSieveSystem (n : ℕ) (J : ℕ → GlobalHead T → GlobalHead T → ℂ) (En : ℝ)
     (Λ : ℕ → GlobalHead T → ℝ) (β : (InfinitePlace E → ℂ) × LocProd T → ℝ) : Prop :=
   SieveSystem (unitOrOneAtPlaces T)
     (Prod.map (fun z : InfinitePlace E → ℂˣ ↦ (fun w : ℂˣ ↦ ((w⁻¹ : ℂˣ) : ℂ)) ∘ z)
-      fun w : (LocProd T)ˣ ↦ ratToPlaces T (S.M : E)⁻¹ * ((w⁻¹ : (LocProd T)ˣ) : LocProd T))
+      fun w : (LocProd T)ˣ ↦ ratToPlaces T (S.level : E)⁻¹ * ((w⁻¹ : (LocProd T)ˣ) : LocProd T))
     n J (S.globalChar T) En Λ β
 
 /-- `ε` bounds the sums of the decay `β` over nonzero frequencies that are integral off `T`, at all
@@ -513,7 +513,7 @@ Poisson summation (`c v = 2πi / Φ v ϖ`) and, when `1 ≤ |realM v|`, of two h
 entries (`c v = M`). Here `M` is the level, `realM v` is the real number `M * Φ v ϖ / (2πi)`, and
 `frameScaleSq v a = realM v ^ (2 (ϱ - a)) / N` scales the entry `a`. -/
 def BoundsDecay (β : (InfinitePlace E → ℂ) × LocProd T → ℝ) (ε : ℝ) : Prop :=
-  ∀ (a : ℕ) (c : InfinitePlace E → ℂ), (∀ v : InfinitePlace E, ‖c v‖⁻¹ ≤ |S.realM v| / S.M) →
+  ∀ (a : ℕ) (c : InfinitePlace E → ℂ), (∀ v : InfinitePlace E, ‖c v‖⁻¹ ≤ |S.realM v| / S.level) →
     ∀ X : Finset E, (∀ y ∈ X, y ≠ 0) → (∀ y ∈ X, y ∈ ratIntegralOff T) →
       ∑ y ∈ X, β (ratPoint T (fun v : InfinitePlace E ↦ c v / S.frameScaleSq v a) y) ≤ ε
 
@@ -636,7 +636,7 @@ lemma densitySum_succ_le (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T)
     -- The density is real.
     simp only [← eq_re_of_ofReal_le (h_nonneg _)]
     exact K.norm_integral_mul_sum_update_le hi (S.scaledHead T · 1) hξ
-  have h_scale (v : InfinitePlace E) : ‖2 * π * .I / Φ v S.deltaE‖⁻¹ ≤ |S.realM v| / S.M := by
+  have h_scale (v : InfinitePlace E) : ‖2 * π * .I / Φ v S.deltaE‖⁻¹ ≤ |S.realM v| / S.level := by
     simp [abs_realM_eq, div_right_comm _ (2 * π), abs_of_pos pi_pos, Nat.Prime.ne_zero]
   rw [← h_integral]
   exact S.sum_ratPoint_le_mul_add_integral_of_fourier_le T (F := fun x ↦ (density x).re)
@@ -646,30 +646,31 @@ lemma densitySum_succ_le (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T)
 
 /-- Let `J`, `Λ ≥ 0`, `β` be the densities, weights and decay of a sieve system of length `n`: for
 `i < n`, the modulus of `J (i + 1)` at two heads is at most `β ξ` times their weights `Λ (i + 1)` if
-the difference `ξ` of the inverses of their entries at position `i` (divided by the level `M = S.M`
-at `T`) is a unit. Let `β` sum to at most `ε` over nonzero frequencies (`BoundsDecay`), and let the
-inverses of `M` and of the elements of `A` be integral off `T`. At two heads with different entries
-`t`, `s` at position `i < n`, the frequency comes from the nonzero `T`-integer
-`(1 / t - 1 / s) / M`, so the real part of `J (i + 1)` is at most `ε` times the two weights. -/
+the difference `ξ` of the inverses of their entries at position `i` (divided by the level
+`M = S.level` at `T`) is a unit. Let `β` sum to at most `ε` over nonzero frequencies
+(`BoundsDecay`), and let the inverses of `M` and of the elements of `A` be integral off `T`. At two
+heads with different entries `t`, `s` at position `i < n`, the frequency comes from the nonzero
+`T`-integer `(1 / t - 1 / s) / M`, so the real part of `J (i + 1)` is at most `ε` times the two
+weights. -/
 lemma re_le_of_last_entries_ne [S.IsAdmissible]
     (hA : ∀ t ∈ A, ((t⁻¹ : Eˣ) : E) ∈ ratIntegralOff T)
-    (hM_inv : (S.M : E)⁻¹ ∈ ratIntegralOff T) (K : S.IsGlobalSieveSystem T n J massBound Λ β)
+    (hM_inv : (S.level : E)⁻¹ ∈ ratIntegralOff T) (K : S.IsGlobalSieveSystem T n J massBound Λ β)
     (hβ : S.BoundsDecay T β ε) (hΛ : ∀ (i : ℕ) (p : GlobalHead T), 0 ≤ Λ i p) {i : ℕ} (hi : i < n)
     {t s : A} (hts : t ≠ s) (p q : Fin i → A) :
     (J (i + 1) (S.scaledHead T p t) (S.scaledHead T q s)).re ≤
       ε * (Λ (i + 1) (S.scaledHead T p t) * Λ (i + 1) (S.scaledHead T q s)) := by
-  let y : E := (S.M : E)⁻¹ * (t.val⁻¹.val - s.val⁻¹.val)
-  let ξ : (InfinitePlace E → ℂ) × LocProd T := ratPoint T (fun v ↦ S.M / S.frameScaleSq v i) y
+  let y : E := (S.level : E)⁻¹ * (t.val⁻¹.val - s.val⁻¹.val)
+  let ξ : (InfinitePlace E → ℂ) × LocProd T := ratPoint T (fun v ↦ S.level / S.frameScaleSq v i) y
   have y_ne : y ≠ 0 := by
     simp [y, sub_eq_zero, Units.val_inj, hts, Nat.Prime.ne_zero]
   have y_mem : y ∈ ratIntegralOff T := mul_mem hM_inv (sub_mem (hA t t.property) (hA s s.property))
   have ξ_unit : IsUnit ξ := by
     simp [ξ, y_ne, ratPoint, Prod.isUnit_iff, Pi.isUnit_iff, IsUnit.map,
       (S.frameScaleSq_pos _ i).ne', Nat.Prime.ne_zero]
-  have h_scale (v : InfinitePlace E) : ‖(S.M : ℂ)‖⁻¹ ≤ |S.realM v| / S.M := by
+  have h_scale (v : InfinitePlace E) : ‖(S.level : ℂ)‖⁻¹ ≤ |S.realM v| / S.level := by
     grw [← one_le_abs_realM, Complex.norm_natCast, one_div]
   have hβ_le : β ξ ≤ ε := by
-    simpa [ξ] using hβ i (fun _ ↦ S.M) h_scale {y} (by simpa using y_ne) (by simpa using y_mem)
+    simpa [ξ] using hβ i (fun _ ↦ S.level) h_scale {y} (by simpa using y_ne) (by simpa using y_mem)
   have h_off : ‖J (i + 1) (S.scaledHead T p t) (S.scaledHead T q s)‖ ≤
       β ξ * (Λ (i + 1) (S.scaledHead T p t) * Λ (i + 1) (S.scaledHead T q s)) := by
     have h_raw := K.norm_le_of_isUnit_sub i (S.scaledHead T p t) (S.scaledHead T q s) hi
@@ -687,13 +688,13 @@ lemma re_le_of_last_entries_ne [S.IsAdmissible]
 
 /-- Let `J`, `Λ ≥ 0`, `β` be the densities, weights and decay of a sieve system of length `n`. Let
 `β` sum to at most `ε ≥ 0` over nonzero frequencies (`BoundsDecay`), and let the inverses of the
-level `M = S.M` and of the elements of `A` be integral off `T`. For `i ≤ n`, sum the real part of
-`J i` over the pairs of heads of length `i` with entries in `A`. The pairs with equal last entries
-give `densitySum T A J i`, by definition, and the others give at most `ε` times the squared sum of
-the weights. -/
+level `M = S.level` and of the elements of `A` be integral off `T`. For `i ≤ n`, sum the real part
+of `J i` over the pairs of heads of length `i` with entries in `A`. The pairs with equal last
+entries give `densitySum T A J i`, by definition, and the others give at most `ε` times the squared
+sum of the weights. -/
 lemma re_sum_sum_le_densitySum_add [S.IsAdmissible]
     (hA : ∀ t ∈ A, ((t⁻¹ : Eˣ) : E) ∈ ratIntegralOff T)
-    (hM_inv : (S.M : E)⁻¹ ∈ ratIntegralOff T) (K : S.IsGlobalSieveSystem T n J massBound Λ β)
+    (hM_inv : (S.level : E)⁻¹ ∈ ratIntegralOff T) (K : S.IsGlobalSieveSystem T n J massBound Λ β)
     (hβ : S.BoundsDecay T β ε) (hε : 0 ≤ ε) (hΛ : ∀ (i : ℕ) (p : GlobalHead T), 0 ≤ Λ i p) {i : ℕ}
     (hi : i ≤ n) :
     (∑ p : Fin i → A, ∑ q : Fin i → A, J i (S.scaledHead T p 1) (S.scaledHead T q 1)).re ≤
@@ -731,7 +732,7 @@ frequencies and from the pairs of heads with different last entries; each part o
 most `ε` times the squared sum of the weights. -/
 lemma densitySum_succ_le_mul_densitySum_add [S.IsAdmissible]
     (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T ∧ ((t⁻¹ : Eˣ) : E) ∈ ratIntegralOff T)
-    (hM_inv : (S.M : E)⁻¹ ∈ ratIntegralOff T) (K : S.IsGlobalSieveSystem T n J massBound Λ β)
+    (hM_inv : (S.level : E)⁻¹ ∈ ratIntegralOff T) (K : S.IsGlobalSieveSystem T n J massBound Λ β)
     (hβ : S.BoundsDecay T β ε) (hε : 0 ≤ ε) (hΛ : ∀ (i : ℕ) (p : GlobalHead T), 0 ≤ Λ i p) {i : ℕ}
     (hi : i ≤ n) :
     S.densitySum T A J (i + 1) ≤ S.poissonConst i *
@@ -748,7 +749,7 @@ relative to the constants of Poisson summation. Then the `i`-th sum of densities
 product of the first `i` constants times `massBound + 2 i Γ ε`. -/
 lemma densitySum_le [S.IsAdmissible]
     (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T ∧ ((t⁻¹ : Eˣ) : E) ∈ ratIntegralOff T)
-    (hM_inv : (S.M : E)⁻¹ ∈ ratIntegralOff T) (K : S.IsGlobalSieveSystem T n J massBound Λ β)
+    (hM_inv : (S.level : E)⁻¹ ∈ ratIntegralOff T) (K : S.IsGlobalSieveSystem T n J massBound Λ β)
     (hβ : S.BoundsDecay T β ε) (hε : 0 ≤ ε) (hΛ : ∀ (i : ℕ) (p : GlobalHead T), 0 ≤ Λ i p) {Γ : ℝ}
     (hΓ : ∀ i ≤ n, (∑ p : Fin i → A, Λ i (S.scaledHead T p 1)) ^ 2 ≤
       Γ * ∏ a ∈ range i, S.poissonConst a) {i : ℕ} (hi : i ≤ n + 1) :
@@ -781,7 +782,7 @@ lemma frameScaleSq_le_realM_pow [S.IsAdmissible] (v : InfinitePlace E) (a : ℕ)
 places is `(M rd / (2π)) ^ f`, because `ϖ` generates the different. Here `rd` is the root
 discriminant of `E`, and `f` is the number of infinite places. -/
 lemma prod_abs_realM : ∏ v : InfinitePlace E, |S.realM v| =
-    (S.M * rootDiscr E / (2 * π)) ^ numInfPlaces E := by
+    (S.level * rootDiscr E / (2 * π)) ^ numInfPlaces E := by
   -- The square of `∏ ‖Φ v ϖ‖` is the norm of the different, that is `|discr E| = rd ^ (2 f)`.
   have h_absNorm : Ideal.absNorm (Ideal.span {S.deltaE}) = (discr E).natAbs := by
     rw [← S.span_deltaE, absNorm_differentIdeal E]
@@ -800,7 +801,7 @@ constant of the shape, times the power `k - n⁷` of `|κ_v| ^ (2 ϱ + 1) / (M N
 bounds the inverses of the scales of the frequencies in `BoundsDecay`. -/
 noncomputable def decayConst : ℝ :=
   ∏ v : InfinitePlace E,
-    𝔰.scaledVolumeRatio * (|S.realM v| ^ (2 * 𝔰.ϱ + 1) / (S.M * S.N)) ^ (𝔰.k - 𝔰.n ^ 7)
+    𝔰.scaledVolumeRatio * (|S.realM v| ^ (2 * 𝔰.ϱ + 1) / (S.level * S.N)) ^ (𝔰.k - 𝔰.n ^ 7)
 
 lemma decayConst_nonneg : 0 ≤ S.decayConst := by
   have ratio_pos : 0 < 𝔰.scaledVolumeRatio := by simp [Shape.scaledVolumeRatio, pi_pos]
@@ -825,17 +826,18 @@ lemma boundsDecay_prod [S.IsAdmissible] :
   -- Sum the frequencies with `x v = realM v ^ (2 * ϱ + 1) / (M * N)`, where `|x v| ≤ B`.
   intro a c hc X hX₀ hXT
   have hb : 1 ≤ S.b := S.one_le_b
-  have MN_pos : 0 < S.M * S.N := by simp [Nat.pos_iff_ne_zero, Nat.Prime.ne_zero, S.N_prime.ne_zero]
+  have MN_pos : 0 < S.level * S.N := by
+    simp [Nat.pos_iff_ne_zero, Nat.Prime.ne_zero, S.N_prime.ne_zero]
   have ratio_pos : 0 < 𝔰.scaledVolumeRatio := by simp [Shape.scaledVolumeRatio, pi_pos]
-  let x (v : InfinitePlace E) : ℝ := S.realM v ^ (2 * 𝔰.ϱ + 1) / (S.M * S.N)
+  let x (v : InfinitePlace E) : ℝ := S.realM v ^ (2 * 𝔰.ϱ + 1) / (S.level * S.N)
   let B : ℝ := (S.b ^ 23) ^ (2 * 𝔰.ϱ + 1)
-  have abs_x (v : InfinitePlace E) : |x v| = |S.realM v| ^ (2 * 𝔰.ϱ + 1) / (S.M * S.N) := by
+  have abs_x (v : InfinitePlace E) : |x v| = |S.realM v| ^ (2 * 𝔰.ϱ + 1) / (S.level * S.N) := by
     simp [x, abs_div]
   have lower (v : InfinitePlace E) : ‖c v / S.frameScaleSq v a‖⁻¹ ≤ |x v| := by
     have h_pos : 0 < S.frameScaleSq v a := S.frameScaleSq_pos v a
     calc
       _ = ‖c v‖⁻¹ * S.frameScaleSq v a := by simp [div_eq_inv_mul, abs_of_pos h_pos]
-      _ ≤ |S.realM v| / S.M * (|S.realM v| ^ (2 * 𝔰.ϱ) / S.N) := by
+      _ ≤ |S.realM v| / S.level * (|S.realM v| ^ (2 * 𝔰.ϱ) / S.N) := by
         grw [hc v, S.frameScaleSq_le_realM_pow v a]
       _ = |x v| := by rw [abs_x, pow_succ', div_mul_div_comm]
   have upper (v : InfinitePlace E) : |x v| ≤ B := by
@@ -1121,9 +1123,9 @@ lemma sq_sum_globalWeight_le [S.IsAdmissible] {A : Finset Eˣ}
 end
 
 omit [WeilData E] [T.StarStable] in
-/-- The sieve. Let `b = S.b`, `M = S.M` and `N = S.N` be the size parameter, the level and the prime
-of the admissible filling data `S`, let `k`, `ϱ`, `n = ϱ + 1` be the parameters of its shape `𝔰`,
-and let `f` be the number of infinite places. Let `U ⊆ A`, and let `1 / M` and `t`, `1 / t` for
+/-- The sieve. Let `b = S.b`, `M = S.level` and `N = S.N` be the size parameter, the level and the
+prime of the admissible filling data `S`, let `k`, `ϱ`, `n = ϱ + 1` be the parameters of its shape
+`𝔰`, and let `f` be the number of infinite places. Let `U ⊆ A`, and let `1 / M` and `t`, `1 / t` for
 `t ∈ A` be integral off `T`. Let the forms `J_T i` on pairs of heads (sequences of units) at `T`
 satisfy the axioms of the sieve (`SieveSystem`) in length `ϱ`: for `i ≤ ϱ`, `J_T i` is the integral
 of `J_T (i + 1)` over a common entry at position `i`, read as a unit (`unitOrOne`); the top form
@@ -1144,10 +1146,10 @@ i = volÔ E / ∏ v, frameScaleSq v i ^ 2`, with `volÔ E` the volume of the int
 `decayConst = ∏ v, scaledVolumeRatio * (|κ_v| ^ (2 ϱ + 1) / (M N)) ^ (k - n⁷)`. -/
 theorem sieve [S.IsAdmissible] {A : Finset Eˣ}
     (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T ∧ ((t⁻¹ : Eˣ) : E) ∈ ratIntegralOff T)
-    (hM_inv : (S.M : E)⁻¹ ∈ ratIntegralOff T)
+    (hM_inv : (S.level : E)⁻¹ ∈ ratIntegralOff T)
     {J_T : ℕ → (ℕ → (LocProd T)ˣ) → (ℕ → (LocProd T)ˣ) → ℂ} {mass_T : ℝ} {U : Finset Eˣ}
     (hJ_T : SieveSystem unitOrOne
-      (fun w : (LocProd T)ˣ ↦ ratToPlaces T (S.M : E)⁻¹ * ((w⁻¹ : (LocProd T)ˣ) : LocProd T))
+      (fun w : (LocProd T)ˣ ↦ ratToPlaces T (S.level : E)⁻¹ * ((w⁻¹ : (LocProd T)ˣ) : LocProd T))
       𝔰.ϱ J_T (S.charOnPlaces T) mass_T (finHeadWeight (𝔰.n ^ 6)) (S.frequencyDecay T))
     (hU : U ⊆ A) :
     -- the heads at the infinite place `v`

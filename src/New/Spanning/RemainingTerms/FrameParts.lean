@@ -263,14 +263,14 @@ lemma apply_inr_besselFrame_eq {γ γ' : S.G E} (hZ : S.frameProducts γ' = S.fr
   · simpa [frameProducts_castSucc_apply] using congrFun₂ hZ i.castSucc a
 
 /-- Let `E` contain a primitive 5040th root of unity, let `S` be a filling of shape `𝔰` with the
-congruence level `M = S.M`, and let the `ϱ` columns of `η` be rational vectors of `Λ ∩ X₀`. Then
+congruence level `M = S.level`, and let the `ϱ` columns of `η` be rational vectors of `Λ ∩ X₀`. Then
 there is a move `u`, that is, a rational unipotent element of level `M` for `Λ` that fixes the
 standard frame, with the following property. For every `γ`, the coordinates in `X₀` of the frame of
 `u γ` (`framePartX₀`) are those of the frame of `γ` minus `M η Ξ₀`. -/
 lemma exists_framePartX₀_mul_eq_sub_smul (c : S.Classes) {η : Matrix 𝔰.κ (Fin 𝔰.ϱ) E}
     (hη : IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix η)) :
     ∃ u ∈ S.classUnipotent₀ c, ∀ γ : S.G E,
-      framePartX₀ (u * γ) = framePartX₀ γ - (S.M : E) •
+      framePartX₀ (u * γ) = framePartX₀ γ - (S.level : E) •
         (η * isotropicRows (S.frameProducts γ)) := by
   -- The Eichler map made from `η` fixes the standard frame, as `η` is orthogonal to it.
   let v : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ) E := fromRows 0 ((η.fromRows 0).fromRows 0)
@@ -284,14 +284,14 @@ lemma exists_framePartX₀_mul_eq_sub_smul (c : S.Classes) {η : Matrix 𝔰.κ 
   obtain ⟨u, -, hu, τ, hu_eq⟩ : ∃ u ∈ S.classUnipotent c,
       ((∀ (b : Fin 𝔰.ϱ) (a : Fin (𝔰.ϱ + 1)), (vᴴ * S.ratGram) b (𝔰.besselFrame a) = 0) →
         u ∈ S.classUnipotent₀ c) ∧
-      ∃ τ : E, u.val.val = 1 + (S.M : E) •
+      ∃ τ : E, u.val.val = 1 + (S.level : E) •
         (x * (vᴴ * S.ratGram) - (v + x * (τ • (vᴴ * S.ratGram * v) - 0)) * (xᴴ * S.ratGram)) :=
     S.exists_mem_classUnipotent_eq_one_add_smul c id v 0 (by simp [v]) (by simp) hv_int
       (by simp [IsIntMatrix]) rfl
   refine ⟨u, hu hv_frame, fun γ ↦ Matrix.ext fun i b ↦ ?_⟩
   -- In the coordinates of `X₀` the rows of `x` vanish, and those of `v` are those of `η`.
   change (u.val.val * frameImage γ.val.val) (𝔰.indexX₀ i) b =
-    (framePartX₀ γ - (S.M : E) • (η * isotropicRows (S.frameProducts γ))) i b
+    (framePartX₀ γ - (S.level : E) • (η * isotropicRows (S.frameProducts γ))) i b
   have h_products :
       xᴴ * (S.ratGram * frameImage γ.val.val) = isotropicRows (S.frameProducts γ) := by
     rw [← Matrix.mul_assoc, inclMatrix_conjTranspose_mul_frameImage]
@@ -360,15 +360,16 @@ lemma col_framePartX₀_sub_mem {c c' c'' : S.Classes} {s s' : S.ResidueGL} {γ 
 /-! ## Lifts of a lattice -/
 
 /-- Let `L` be the lattice with the basis `y a`, where `y` is rational and `a` is adelic, let
-`e_1, …, e_ϱ` be the basis of the isotropic space `A` and of the lattice `Λ ∩ A`, and let `M = S.M`.
-The matrix `w` gives a linear map from `L` to `M (Λ ∩ A)`, namely `y t ↦ M ∑ e_i (w t)_i`, such that
-each vector of `L` plus its image is orthogonal to the frame of `γ`. -/
+`e_1, …, e_ϱ` be the basis of the isotropic space `A` and of the lattice `Λ ∩ A`, and let
+`M = S.level`. The matrix `w` gives a linear map from `L` to `M (Λ ∩ A)`, namely
+`y t ↦ M ∑ e_i (w t)_i`, such that each vector of `L` plus its image is orthogonal to the frame of
+`γ`. -/
 structure IsLift {r : ℕ} (γ : S.G E) (y : Matrix 𝔰.κ (Fin r) E) (a : GL (Fin r) (𝔸f E))
     (w : Matrix (Fin 𝔰.ϱ) (Fin r) E) : Prop where
   /-- The map takes the basis `y a` into `M (Λ ∩ A)`. -/
   isIntMatrix : IsIntMatrix (Ô E) (finAdeleMatrix w * a.val)
   /-- The lifted vectors are orthogonal to the frame of `γ`. -/
-  orthogonal : (framePartX₀ γ)ᴴ * y + (S.M : E) • ((isotropicRows (S.frameProducts γ))ᴴ * w) = 0
+  orthogonal : (framePartX₀ γ)ᴴ * y + (S.level : E) • ((isotropicRows (S.frameProducts γ))ᴴ * w) = 0
 
 omit [HasPrimitiveRoot5040 E] in
 /-- The lattice `L_γ = S.termLattice c c' γ` consists of the vectors `v` of `Λ ∩ X₀` such that some
@@ -380,7 +381,8 @@ lemma exists_isLift {c c' : S.Classes} {γ : S.G E} {r : ℕ} {y : Matrix 𝔰.�
     (h_le : colLattice (Ô E) (finAdeleMatrix y * a.val) ≤ S.termLattice c c' γ) :
     ∃ w : Matrix (Fin 𝔰.ϱ) (Fin r) E, IsLift γ y a w := by
   -- By the definition of `L_γ`, each vector of the basis `y a` has a lift over the finite adeles.
-  let lift : Matrix (Fin (𝔰.ϱ + 1)) (Fin 𝔰.ϱ) E := (S.M : E) • (isotropicRows (S.frameProducts γ))ᴴ
+  let lift : Matrix (Fin (𝔰.ϱ + 1)) (Fin 𝔰.ϱ) E :=
+    (S.level : E) • (isotropicRows (S.frameProducts γ))ᴴ
   obtain ⟨W, hW_int, hW⟩ : ∃ W : Matrix (Fin 𝔰.ϱ) (Fin r) (𝔸f E), IsIntMatrix (Ô E) W ∧
       finAdeleMatrix lift * W =
         (finAdeleMatrix (framePartX₀ γ))ᴴ * (finAdeleMatrix y * a.val) := by
@@ -458,7 +460,7 @@ lemma exists_conjTranspose_mul_eq_of_row_mem {c : S.Classes} {r : ℕ} {y : Matr
   · simp [η, conjTranspose_nonsing_inv, Matrix.mul_assoc, nonsing_inv_mul _ h_unit]
 
 /-- Let `L ⊆ Λ ∩ X₀` have the basis `m = y a`, with `Λ` the lattice of the class `c` and the columns
-of `y` independent. Let `M = S.M` be the congruence level, let `Ξ₀` be the first `ϱ` rows of the
+of `y` independent. Let `M = S.level` be the congruence level, let `Ξ₀` be the first `ϱ` rows of the
 matrix of products of the standard frame with its image under `γ`, and write `F(γ) = framePartX₀ γ`
 for the coordinates in `X₀` of that image. Let `w` be a lift of `L` for `γ`: the matrix `w a` is
 integral and `F(γ)ᴴ y + M Ξ₀ᴴ w = 0`. Let each row of `w' a - w a` be an integral combination of the
@@ -471,7 +473,8 @@ lemma IsLift.exists_conjTranspose_framePartX₀_mul_eq_neg {c : S.Classes} {r : 
     (h_congr : ∀ i : Fin 𝔰.ϱ, (finAdeleMatrix w' * a.val) i - (finAdeleMatrix w * a.val) i ∈
       colLattice (Ô E) ((finAdeleMatrix y * a.val)ᴴ * (finAdeleMatrix y * a.val))ᵀ) :
     ∃ u ∈ S.classUnipotent₀ c,
-      (framePartX₀ (u * γ))ᴴ * y = -((S.M : E) • ((isotropicRows (S.frameProducts γ))ᴴ * w')) := by
+      (framePartX₀ (u * γ))ᴴ * y =
+        -((S.level : E) • ((isotropicRows (S.frameProducts γ))ᴴ * w')) := by
   have h_sub : finAdeleMatrix (w' - w) = finAdeleMatrix w' - finAdeleMatrix w :=
     Matrix.map_sub _ (map_sub (algebraMap E (𝔸f E))) w' w
   obtain ⟨η, hη, h_product⟩ : ∃ η : Matrix 𝔰.κ (Fin 𝔰.ϱ) E,
@@ -480,15 +483,18 @@ lemma IsLift.exists_conjTranspose_framePartX₀_mul_eq_neg {c : S.Classes} {r : 
     rw [h_sub, Matrix.sub_mul]
     exact h_congr i
   obtain ⟨u, hu, h_moved⟩ : ∃ u ∈ S.classUnipotent₀ c, ∀ γ : S.G E,
-      framePartX₀ (u * γ) = framePartX₀ γ - (S.M : E) • (η * isotropicRows (S.frameProducts γ)) :=
+      framePartX₀ (u * γ) =
+        framePartX₀ γ - (S.level : E) • (η * isotropicRows (S.frameProducts γ)) :=
     exists_framePartX₀_mul_eq_sub_smul c hη
-  have h_orth : (framePartX₀ γ)ᴴ * y = -((S.M : E) • ((isotropicRows (S.frameProducts γ))ᴴ * w)) :=
+  have h_orth :
+      (framePartX₀ γ)ᴴ * y = -((S.level : E) • ((isotropicRows (S.frameProducts γ))ᴴ * w)) :=
     eq_neg_of_add_eq_zero_left hw.orthogonal
   refine ⟨u, hu, ?_⟩
   calc (framePartX₀ (u * γ))ᴴ * y
-      = (framePartX₀ γ)ᴴ * y - (S.M : E) • ((isotropicRows (S.frameProducts γ))ᴴ * (ηᴴ * y)) := by
+      = (framePartX₀ γ)ᴴ * y -
+          (S.level : E) • ((isotropicRows (S.frameProducts γ))ᴴ * (ηᴴ * y)) := by
         simp [h_moved, Matrix.sub_mul, Matrix.mul_assoc]
-    _ = -((S.M : E) • ((isotropicRows (S.frameProducts γ))ᴴ * w')) := by
+    _ = -((S.level : E) • ((isotropicRows (S.frameProducts γ))ᴴ * w')) := by
         rw [h_orth, h_product, Matrix.mul_sub, smul_sub]
         abel
 
@@ -559,9 +565,9 @@ lemma HasCellRank.sum_norm_sq_sub_mul_inv_lt_one (hγ : S.HasCellRank j γ)
 
 omit [HasPrimitiveRoot5040 E] in
 /-- Let `E` contain a primitive 5040th root of unity, and let `S` have the congruence level
-`M = S.M`. Let `γ` and `γ'` have the same integral matrix `Z = S.frameProducts γ` of products of the
-standard frame with its image, with the leading minor `δ` of order `j`. Let both have the cell rank
-`j`: the flags of the frame and of its image share vectors at all indices from `j` on, up to a
+`M = S.level`. Let `γ` and `γ'` have the same integral matrix `Z = S.frameProducts γ` of products of
+the standard frame with its image, with the leading minor `δ` of order `j`. Let both have the cell
+rank `j`: the flags of the frame and of its image share vectors at all indices from `j` on, up to a
 number of norm one, `δ ≠ 0`, and `S.termDisc`, formed from the last two leading minors of `Z`, is
 nonzero exactly when `j = ϱ + 1`. Let the idele `d` be the number `M δ`. If the coordinates in `X₀`
 of the images of the frame under `γ'` and `γ` (`framePartX₀`) are congruent modulo `d (Λ ∩ X₀)`,
@@ -569,31 +575,31 @@ with `Λ` the lattice of the class `c`, then they differ by `M η Ξ₀`, where 
 rational vectors of `Λ ∩ X₀` and `Ξ₀` consists of the first `ϱ` rows of `Z`. -/
 lemma HasCellRank.exists_framePartX₀_sub_eq {d : (𝔸f E)ˣ} (hγ : S.HasCellRank j γ)
     (hγ' : S.HasCellRank j γ') (hZ : S.frameProducts γ' = S.frameProducts γ)
-    (hd : d.val = ((S.M * leadingMinor (S.frameProducts γ) j : E) : 𝔸f E))
+    (hd : d.val = ((S.level * leadingMinor (S.frameProducts γ) j : E) : 𝔸f E))
     (hZ_int : ∀ a b : Fin (𝔰.ϱ + 1), IsIntegral ℤ (S.frameProducts γ a b))
     (h_congr : ∀ i : Fin (𝔰.ϱ + 1),
       ((↑) : E → 𝔸f E) ∘ (framePartX₀ γ' - framePartX₀ γ).col i ∈ d • S.classLatticeX₀ c) :
     ∃ η : Matrix 𝔰.κ (Fin 𝔰.ϱ) E, IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix η) ∧
-      framePartX₀ γ' - framePartX₀ γ = (S.M : E) • (η * isotropicRows (S.frameProducts γ)) := by
+      framePartX₀ γ' - framePartX₀ γ = (S.level : E) • (η * isotropicRows (S.frameProducts γ)) := by
   -- Let `v` be the difference and `Y` the first `j` rows of `Z` completed by rows of `1`. Then
   -- `v Y⁻¹ = M η'` with the columns of `η'` in `Λ ∩ X₀`. The last column and the columns `k ≥ j` of
   -- `M η'` are so short that they vanish.
   set Y : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E := paddedLeading j (S.frameProducts γ)
   set v : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := framePartX₀ γ' - framePartX₀ γ
-  have hM_ne : (S.M : E) ≠ 0 := Nat.cast_ne_zero.2 (zero_lt_two.trans_le two_le_M).ne'
+  have hM_ne : (S.level : E) ≠ 0 := Nat.cast_ne_zero.2 (zero_lt_two.trans_le two_le_level).ne'
   have hδ : Y.det = leadingMinor (S.frameProducts γ) j := det_paddedLeading
   have h_det : Y.det ≠ 0 := hδ.trans_ne hγ.leadingMinor_ne_zero
   rw [← hδ] at hd
-  let η' : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := (S.M * Y.det)⁻¹ • v * Y.adjugate
+  let η' : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := (S.level * Y.det)⁻¹ • v * Y.adjugate
   have hη' : IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix η') := by
     rw [finAdeleMatrix_mul, ← Matrix.mul_assoc]
     exact (isIntMatrix_mul_finAdeleMatrix_inv_smul (mul_ne_zero hM_ne h_det) hd h_congr).mul
       (isIntMatrix_paddedLeading hZ_int).adjugate
-  have h_inv : v * Y⁻¹ = (S.M : E) • η' := by
+  have h_inv : v * Y⁻¹ = (S.level : E) • η' := by
     simp only [η', Matrix.inv_def, Ring.inverse_eq_inv', Matrix.mul_smul, Matrix.smul_mul,
       smul_smul, mul_inv, mul_inv_cancel_left₀ hM_ne]
   have h_int : IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix (v * Y⁻¹)) := by
-    simpa [h_inv, finAdeleMatrix_smul] using hη'.smul (natCast_mem (Ô E) S.M)
+    simpa [h_inv, finAdeleMatrix_smul] using hη'.smul (natCast_mem (Ô E) S.level)
   have h_zero (i : 𝔰.κ) (k : Fin (𝔰.ϱ + 1)) (hk : j.val ≤ k.val ∨ k = 𝔰.top) : η' i k = 0 := by
     have h_col : (v * Y⁻¹).col k = 0 :=
       col_eq_zero_of_norm_lt_one h_int (hγ.sum_norm_sq_sub_mul_inv_lt_one hγ' hZ hk)
@@ -601,7 +607,7 @@ lemma HasCellRank.exists_framePartX₀_sub_eq {d : (𝔸f E)ˣ} (hγ : S.HasCell
     exact (smul_eq_zero_iff_right hM_ne).1 (congrFun h_col i)
   refine ⟨η'.submatrix id Fin.castSucc, fun r i ↦ hη' r i.castSucc, ?_⟩
   calc v = v * Y⁻¹ * Y := (Y.nonsing_inv_mul_cancel_right v h_det.isUnit).symm
-    _ = (S.M : E) • (η'.submatrix id Fin.castSucc * isotropicRows (S.frameProducts γ)) := by
+    _ = (S.level : E) • (η'.submatrix id Fin.castSucc * isotropicRows (S.frameProducts γ)) := by
       rw [h_inv, Matrix.smul_mul, mul_paddedLeading_eq_submatrix_mul_isotropicRows h_zero]
 
 /-- Let `γ` and `γ'` have the same matrix `Z = S.frameProducts γ`, with integral entries, of
@@ -614,17 +620,18 @@ the images of the frame under `γ'` and `γ` (`framePartX₀`) are congruent mod
 `framePartX₀ (u γ') = framePartX₀ γ` for some `u ∈ S.classUnipotent₀ c`. -/
 lemma HasCellRank.exists_framePartX₀_mul_eq_of_sub_mem {d : (𝔸f E)ˣ} (hγ : S.HasCellRank j γ)
     (hγ' : S.HasCellRank j γ') (hZ : S.frameProducts γ' = S.frameProducts γ)
-    (hd : d.val = ((S.M * leadingMinor (S.frameProducts γ) j : E) : 𝔸f E))
+    (hd : d.val = ((S.level * leadingMinor (S.frameProducts γ) j : E) : 𝔸f E))
     (hZ_int : ∀ a b : Fin (𝔰.ϱ + 1), IsIntegral ℤ (S.frameProducts γ a b))
     (h_congr : ∀ i : Fin (𝔰.ϱ + 1),
       ((↑) : E → 𝔸f E) ∘ (framePartX₀ γ' - framePartX₀ γ).col i ∈ d • S.classLatticeX₀ c) :
     ∃ u ∈ S.classUnipotent₀ c, framePartX₀ (u * γ') = framePartX₀ γ := by
   obtain ⟨η, hη, h_diff⟩ : ∃ η : Matrix 𝔰.κ (Fin 𝔰.ϱ) E,
       IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix η) ∧
-        framePartX₀ γ' - framePartX₀ γ = (S.M : E) • (η * isotropicRows (S.frameProducts γ)) :=
+        framePartX₀ γ' - framePartX₀ γ = (S.level : E) • (η * isotropicRows (S.frameProducts γ)) :=
     hγ.exists_framePartX₀_sub_eq hγ' hZ hd hZ_int h_congr
   obtain ⟨u, hu, h_moved⟩ : ∃ u ∈ S.classUnipotent₀ c, ∀ γ : S.G E,
-      framePartX₀ (u * γ) = framePartX₀ γ - (S.M : E) • (η * isotropicRows (S.frameProducts γ)) :=
+      framePartX₀ (u * γ) =
+        framePartX₀ γ - (S.level : E) • (η * isotropicRows (S.frameProducts γ)) :=
     exists_framePartX₀_mul_eq_sub_smul c hη
   exact ⟨u, hu, by rw [h_moved, hZ, ← h_diff, _root_.sub_sub_cancel]⟩
 
@@ -643,11 +650,11 @@ lemma genIndex_algebraMap_le_pow_of_norm_sq_le {x : E} {e : ℕ}
 
 omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
 private lemma genIndex_le_of_norm_le_frame_bound {x : E}
-    (h : ∀ v : InfinitePlace E, ‖Φ v x‖ ≤ S.M * S.b ^ (270 * 𝔰.n ^ 2)) :
+    (h : ∀ v : InfinitePlace E, ‖Φ v x‖ ≤ S.level * S.b ^ (270 * 𝔰.n ^ 2)) :
     genIndex (x : 𝔸f E) ≤ S.b ^ (2 * 𝔰.n ^ 3 * numInfPlaces E) := by
   refine genIndex_algebraMap_le_pow_of_norm_sq_le fun v ↦ ?_
   have hb : 0 < S.b := b_pos
-  calc ‖Φ v x‖ ^ 2 ≤ (S.b ^ 23 * S.b ^ (270 * 𝔰.n ^ 2)) ^ 2 := by grw [h, M_le_b_pow]
+  calc ‖Φ v x‖ ^ 2 ≤ (S.b ^ 23 * S.b ^ (270 * 𝔰.n ^ 2)) ^ 2 := by grw [h, level_le_b_pow]
     _ ≤ S.b ^ (2 * 𝔰.n ^ 3) := by
       rw [← pow_add, ← pow_mul]
       apply pow_le_pow_right₀ S.one_le_b
@@ -655,14 +662,15 @@ private lemma genIndex_le_of_norm_le_frame_bound {x : E}
       linarith [pow_pos 𝔰.ϱ.succ_pos 2]
 
 omit [HasPrimitiveRoot5040 E] in
-/-- Let `S` be admissible, with size parameter `b = S.b` and `M = S.M`, the product of the two level
-primes. Let `ϱ = 𝔰.ϱ` and `n = 𝔰.n = ϱ + 1`, and let `f` be the number of infinite places. Let `γ`
-be near: for some archimedean point `y`, both `y` and `γ⁻¹ y` lie in `S.boxedPoints`. Let
+/-- Let `S` be admissible, with size parameter `b = S.b` and `M = S.level`, the product of the two
+level primes. Let `ϱ = 𝔰.ϱ` and `n = 𝔰.n = ϱ + 1`, and let `f` be the number of infinite places. Let
+`γ` be near: for some archimedean point `y`, both `y` and `γ⁻¹ y` lie in `S.boxedPoints`. Let
 `δ = leadingMinor (S.frameProducts γ) j` be the leading minor of order `j ≤ ϱ + 1` of the matrix of
 products of the standard frame with its image under `γ`. The generalised index of `M δ`, the
 absolute value of its norm to `ℚ`, is at most `b ^ (2 n³ f)`. -/
-lemma IsNear.genIndex_M_mul_leadingMinor_le {γ : S.G E} (j : Fin (𝔰.ϱ + 2)) (h_near : S.IsNear γ) :
-    genIndex ((S.M * leadingMinor (S.frameProducts γ) j : E) : 𝔸f E) ≤
+lemma IsNear.genIndex_level_mul_leadingMinor_le {γ : S.G E} (j : Fin (𝔰.ϱ + 2))
+    (h_near : S.IsNear γ) :
+    genIndex ((S.level * leadingMinor (S.frameProducts γ) j : E) : 𝔸f E) ≤
       S.b ^ (2 * 𝔰.n ^ 3 * numInfPlaces E) := by
   refine genIndex_le_of_norm_le_frame_bound fun v ↦ ?_
   simp only [map_mul, map_natCast, norm_mul, Complex.norm_natCast]
@@ -674,7 +682,7 @@ lemma IsNear.genIndex_M_mul_leadingMinor_le {γ : S.G E} (j : Fin (𝔰.ϱ + 2))
 
 omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- If `Z` has integral entries, then the modulus `S.frameModulus j Z = M det (Y Yᴴ)` is integral,
-where `M = S.M` and `Y` consists of the first `j` rows of `Z` completed by rows of `1`. -/
+where `M = S.level` and `Y` consists of the first `j` rows of `Z` completed by rows of `1`. -/
 lemma frameModulus_mem_integralAdeles_of_isIntegral {j : Fin (𝔰.ϱ + 2)}
     {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E}
     (hZ : ∀ a b : Fin (𝔰.ϱ + 1), IsIntegral ℤ (Z a b)) :
@@ -682,11 +690,11 @@ lemma frameModulus_mem_integralAdeles_of_isIntegral {j : Fin (𝔰.ϱ + 2)}
   let O : Subring E := (Ô E).comap (algebraMap E (𝔸f E))
   have : IsStarStable O := isStarStable_comap_Ô
   have hY : IsIntMatrix O (paddedLeading j Z) := isIntMatrix_paddedLeading hZ
-  exact nsmul_mem (hY.mul hY.conjTranspose).det_mem S.M
+  exact nsmul_mem (hY.mul hY.conjTranspose).det_mem S.level
 
 omit [HasPrimitiveRoot5040 E] in
-/-- Let `S` be admissible, with the size parameter `b = S.b` and the congruence level `M = S.M`, let
-`n = ϱ + 1`, and let `f` be the number of infinite places. Let `γ` be near: for some archimedean
+/-- Let `S` be admissible, with the size parameter `b = S.b` and the congruence level `M = S.level`,
+let `n = ϱ + 1`, and let `f` be the number of infinite places. Let `γ` be near: for some archimedean
 point `y`, both `y` and `γ⁻¹ y` lie in `S.boxedPoints`. Let `δ` be the leading minor of any order
 `j ≤ ϱ + 1` of the matrix of products of the standard frame with its image under `γ`. The modulus
 `S.frameModulus` is `M δ star δ`. Its generalised index, the absolute value of its norm to `ℚ`, is
@@ -696,6 +704,6 @@ lemma IsNear.genIndex_frameModulus_le {j : Fin (𝔰.ϱ + 2)} {γ : S.G E} (h_ne
       S.b ^ (2 * 𝔰.n ^ 3 * numInfPlaces E) := by
   refine genIndex_le_of_norm_le_frame_bound fun v ↦ ?_
   simpa [frameModulus, sq, mul_assoc] using
-    mul_le_mul_of_nonneg_left (h_near.norm_map_leadingMinor_sq_le j v) (Nat.cast_nonneg S.M)
+    mul_le_mul_of_nonneg_left (h_near.norm_map_leadingMinor_sq_le j v) (Nat.cast_nonneg S.level)
 
 end New.Filling

@@ -622,11 +622,11 @@ lemma avoidsScalarCosets_setOf_exists_apply_eq
 
 /-- Each level prime `levelPrime i` is at most `b` times the other, so `M / b ≤ p_i ^ 2`, with
 `p_i = levelPrime i`, for the level `M = p₀ p₁`. -/
-lemma M_div_b_le_levelPrime_sq (i : Fin 2) : S.M / S.b ≤ (S.levelPrime i : ℝ) ^ 2 := by
+lemma level_div_b_le_levelPrime_sq (i : Fin 2) : S.level / S.b ≤ (S.levelPrime i : ℝ) ^ 2 := by
   have hb : 0 < S.b := one_pos.trans_le S.one_le_b
   have h_le (j : Fin 2) : (S.levelPrime j : ℝ) ≤ S.levelPrime i * S.b := by
     grw [S.levelPrime_le j, ← S.le_levelPrime i, ← pow_succ]
-  rw [div_le_iff₀ hb, M, Nat.cast_mul, sq, mul_assoc]
+  rw [div_le_iff₀ hb, level, Nat.cast_mul, sq, mul_assoc]
   obtain rfl | rfl : i = 0 ∨ i = 1 := by omega
   · grw [h_le 1]
   · grw [mul_comm, h_le 0]
@@ -658,15 +658,15 @@ theorem secondMoment_compl_besselS_le [HasPrimitiveRoot5040 E] [hS : S.IsAdmissi
   -- give at most `(b³ / M)^m (M / b⁶)^m 𝒟_id = b^(-3m) 𝒟_id ≤ b⁻³⁰ 𝒟_id`.
   have h_links : (S.b ^ (2 * Core.numInfPlaces E) / meetBound) ^ 𝔰.k * S.mainSecondMoment ≤
       (S.b ^ 30)⁻¹ * S.identitySecondMoment := by
-    have hM : (0 : ℝ) < S.M := Nat.cast_pos.2 (two_pos.trans_le two_le_M)
-    have h_meetBound_ge : (S.M / S.b) ^ Core.numInfPlaces E ≤ meetBound := by
+    have hM : (0 : ℝ) < S.level := Nat.cast_pos.2 (two_pos.trans_le two_le_level)
+    have h_meetBound_ge : (S.level / S.b) ^ Core.numInfPlaces E ≤ meetBound := by
       grw [h_meetBound_def, prod_const, card_univ, Fintype.card_prod, S.card_chosenPlaces,
           Fintype.card_bool,
-        Nat.cast_pow, pow_mul', M_div_b_le_levelPrime_sq]
+        Nat.cast_pow, pow_mul', level_div_b_le_levelPrime_sq]
     have h_exp : 30 ≤ 3 * (𝔰.k * Core.numInfPlaces E) := by
       linarith [S.forty_le_k_mul_numInfPlaces]
-    calc _ ≤ (S.b ^ (2 * Core.numInfPlaces E) / (S.M / S.b) ^ Core.numInfPlaces E) ^ 𝔰.k *
-          ((S.M / S.b ^ 6) ^ (𝔰.k * Core.numInfPlaces E) * S.identitySecondMoment) := by
+    calc _ ≤ (S.b ^ (2 * Core.numInfPlaces E) / (S.level / S.b) ^ Core.numInfPlaces E) ^ 𝔰.k *
+          ((S.level / S.b ^ 6) ^ (𝔰.k * Core.numInfPlaces E) * S.identitySecondMoment) := by
           grw [hS.mainSecondMoment_le, ← h_meetBound_ge]
       _ = (S.b ^ (3 * (𝔰.k * Core.numInfPlaces E)))⁻¹ * S.identitySecondMoment := by
         simp only [div_pow]

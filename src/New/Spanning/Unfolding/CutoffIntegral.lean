@@ -33,7 +33,8 @@ explicit lattices.
 Notions from other files:
 * `New.Filling.besselFn`: for a tuple `i` of coordinates (`New.Filling.BesselCoord`), the product
   over the places `v` of the `i v`-th coordinate of `W side (y v)`.
-* `New.Filling.M`, `New.Filling.classUnipotent`: the level M = p₀ p₁, the product of the two primes
+* `New.Filling.level`, `New.Filling.classUnipotent`: the level M = p₀ p₁, the product of the two
+primes
   `S.levelPrime`; the rational points u of 𝖴 with h_c⁻¹ u h_c in the principal congruence
   subgroup K(M).
 * `New.Shape.Form.besselU`, `New.Shape.Form.besselS`: the group 𝖴 of block upper unitriangular
@@ -213,18 +214,19 @@ lemma exists_classBasis_eq_fromBlocks {E : Type} [Field E] [CMType E] [HasPrimit
 
 /-- Let `E` contain a primitive 5040th root of unity and let `S` be admissible. Let `γ` lie in
 `S.classUnipotent c`, the rational unipotent elements that the representative of the class `c`
-conjugates into the principal congruence subgroup of level `S.M`. Then the row of γ − 1 at e_a,
-divided by `S.M`, has integral coordinates in the basis `classBasis c` of the lattice of `c`. -/
-lemma classUnipotent_sub_one_div_M_row_integral {E : Type} [Field E] [CMType E]
+conjugates into the principal congruence subgroup of level `S.level`. Then the row of γ − 1 at e_a,
+divided by `S.level`, has integral coordinates in the basis `classBasis c` of the lattice of `c`. -/
+lemma classUnipotent_sub_one_div_level_row_integral {E : Type} [Field E] [CMType E]
     [HasPrimitiveRoot5040 E] {𝔰 : Shape} {S : Filling E 𝔰} {c : S.Classes}
     (γ : S.classUnipotent c) (a : Fin 𝔰.ϱ) (j : 𝔰.BesselIndex) :
-    (finAdeleMatrix ((S.M : E)⁻¹ • ((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) - 1)) (inl a) ᵥ*
+    (finAdeleMatrix ((S.level : E)⁻¹ • ((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) - 1)) (inl a) ᵥ*
       (classBasis c).val) j ∈ Ô E := by
   -- Conjugation by the basis turns γ into `S.translateByClassReps c c γ`, which lies in
   -- `S.principalLevel`.
   let k : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (𝔸f E) := S.translateByClassReps c c γ
-  have h_conj : finAdeleMatrix ((S.M : E)⁻¹ • ((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) - 1)) *
-      (classBasis c).val = (classBasis c).val * S.ideleM⁻¹ • (k - 1) := by
+  have h_conj :
+      finAdeleMatrix ((S.level : E)⁻¹ • ((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) - 1)) *
+        (classBasis c).val = (classBasis c).val * S.ideleM⁻¹ • (k - 1) := by
     simp [k, coe_translateByClassReps, Matrix.map_sub, -Nat.cast_mul, sub_mul, mul_assoc, mul_sub]
     rfl
   have h_level : S.translateByClassReps c c γ ∈ S.principalLevel := γ.property.2
@@ -364,15 +366,16 @@ lemma lintegral_classCutoff_eq_measure [HasPrimitiveRoot5040 E] [S.IsAdmissible]
 
 /-- Let `γ ∈ S.classUnipotent c`. If, at an infinite place `v`, right multiplication by `γ` adds the
 (e_a, e*_a) entry of `γ` to that of every unipotent `x`, then the (e_a, e*_a) entry of `γ` divided
-by the level `S.M` is skew: the complex conjugation `star` of the CM field `E` changes its sign. -/
+by the level `S.level` is skew: the complex conjugation `star` of the CM field `E` changes its sign.
+-/
 lemma star_inv_mul_apply_eStar_eq_neg {c : S.Classes} (γ : S.classUnipotent c) (v : InfinitePlace E)
     (a : Fin 𝔰.ϱ)
     (h_add : ∀ x : (𝔰.middleGram (1 : ℂ)).besselU,
       (↑(x * classUnipotentToInf c γ v) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (inl a) (eStar a) =
         (classUnipotentToInf c γ v : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (inl a) (eStar a) +
           (x : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (inl a) (eStar a)) :
-    star ((S.M : E)⁻¹ * (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (inl a) (eStar a)) =
-      -((S.M : E)⁻¹ * (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (inl a) (eStar a)) := by
+    star ((S.level : E)⁻¹ * (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (inl a) (eStar a)) =
+      -((S.level : E)⁻¹ * (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (inl a) (eStar a)) := by
   -- Take x = γ⁻¹ = J γᴴ J.
   let J : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ := (𝔰.middleGram (1 : ℂ)).splitGram
   let Y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ := classUnipotentToInf c γ v
@@ -385,29 +388,29 @@ lemma star_inv_mul_apply_eStar_eq_neg {c : S.Classes} (γ : S.classUnipotent c) 
     self_eq_neg, ← two_mul, Nat.Prime.ne_zero, -ofReal_div] using h_inv
 
 /-- For admissible `S` and `γ ∈ S.classUnipotent c`, the (e_a, e*_a) entry of `γ` is the level
-`S.M` times an algebraic integer. -/
+`S.level` times an algebraic integer. -/
 lemma isIntegral_inv_mul_apply_eStar [HasPrimitiveRoot5040 E] {c : S.Classes}
     (γ : S.classUnipotent c) (a : Fin 𝔰.ϱ) :
     IsIntegral ℤ
-      ((S.M : E)⁻¹ * (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (inl a) (eStar a)) := by
+      ((S.level : E)⁻¹ * (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (inl a) (eStar a)) := by
   obtain ⟨M, h_basis, -⟩ := exists_classBasis_eq_fromBlocks c
   -- `using!` identifies the entry of `finAdeleMatrix` with the image under `algebraMap`.
   exact algebraMap_mem_Ô.1
-    (by simpa [vecMul_fromBlocks, h_basis] using! classUnipotent_sub_one_div_M_row_integral γ a
+    (by simpa [vecMul_fromBlocks, h_basis] using! classUnipotent_sub_one_div_level_row_integral γ a
           (eStar a))
 
 open scoped Classical in
 /-- The volume of the fundamental domain for the free entries (`IsFreeEntry`) of the row e_a, of
-which there are 2(ϱ − 1 − a) + k + 1, is `(∏ v, S.M ^ 2 / S.frameScaleSq v a) / volÔ E` to that
+which there are 2(ϱ − 1 − a) + k + 1, is `(∏ v, S.level ^ 2 / S.frameScaleSq v a) / volÔ E` to that
 power. Here `S.basisScale v j` is the scale of the basis vector `j` at the place `v`,
-`S.frameScaleSq v a` is the square of the scale of e_a, `S.M` is the level, and `volÔ E` is
+`S.frameScaleSq v a` is the square of the scale of e_a, `S.level` is the level, and `volÔ E` is
 2^r₂/√|disc E|, with r₂ the number of complex places. -/
 lemma prod_norm_basisScale_sq_div_eq (S : Filling E 𝔰) (a : Fin 𝔰.ϱ) :
     (∏ v : InfinitePlace E, ‖∏ j : {j : 𝔰.BesselIndex // IsFreeEntry (a, j)},
-        (S.M : ℂ) / S.basisScale v (inl a) * S.basisScale v j‖ ^ 2) /
+        (S.level : ℂ) / S.basisScale v (inl a) * S.basisScale v j‖ ^ 2) /
         (1 / (S.N : ℝ) ^ numInfPlaces E) /
         volÔ E ^ Fintype.card {j : 𝔰.BesselIndex // IsFreeEntry (a, j)} =
-      ((∏ v : InfinitePlace E, (S.M : ℝ) ^ 2 / S.frameScaleSq v a) / volÔ E) ^
+      ((∏ v : InfinitePlace E, (S.level : ℝ) ^ 2 / S.frameScaleSq v a) / volÔ E) ^
         (a.rev + (𝔰.k + 1) + a.rev : ℕ) := by
   -- `↓` splits the product and the count over the three blocks before they are simplified.
   simp [div_pow, prod_pow, tsub_add_eq_tsub_tsub_swap, Finset.prod_mul_distrib,
@@ -420,9 +423,9 @@ lemma prod_norm_basisScale_sq_div_eq (S : Filling E 𝔰) (a : Fin 𝔰.ϱ) :
 lattice of free entries and of the lattice of imaginary parts at e*_a. -/
 lemma unipotentCovolume_eq_prod (S : Filling E 𝔰) :
     S.unipotentCovolume =
-      (∏ a : Fin 𝔰.ϱ, ((∏ v : InfinitePlace E, (S.M : ℝ) ^ 2 / S.frameScaleSq v a) / volÔ E) ^
+      (∏ a : Fin 𝔰.ϱ, ((∏ v : InfinitePlace E, (S.level : ℝ) ^ 2 / S.frameScaleSq v a) / volÔ E) ^
           (a.rev + (𝔰.k + 1) + a.rev : ℕ)) *
-        ∏ a : Fin 𝔰.ϱ, ((∏ v : InfinitePlace E, |S.M / S.frameScaleSq v a|) *
+        ∏ a : Fin 𝔰.ϱ, ((∏ v : InfinitePlace E, |S.level / S.frameScaleSq v a|) *
           √√|NumberField.discr E|) := by
   have h_exponent (k : ℕ) (a : Fin 𝔰.ϱ) :
       k + 2 * (𝔰.ϱ - a) = a.rev + (k + 1) + a.rev + 1 := by grind
@@ -512,18 +515,18 @@ lemma genIndex_det_freeBlock (c : S.Classes) (a : Fin 𝔰.ϱ) :
 
 omit [HasPrimitiveRoot5040 E] in
 variable (S) in
-/-- For each `a`, the scales `S.M / S.basisScale v (inl a) * S.basisScale v j` are nonzero for all
-infinite places `v` and all `j` with `IsFreeEntry (a, j)`. Here `inl a` indexes the basis vector
+/-- For each `a`, the scales `S.level / S.basisScale v (inl a) * S.basisScale v j` are nonzero for
+all infinite places `v` and all `j` with `IsFreeEntry (a, j)`. Here `inl a` indexes the basis vector
 e_a. So this family of scales is a unit. -/
 lemma isUnit_basisScale_ratio (a : Fin 𝔰.ϱ) :
     IsUnit fun (j : {j : 𝔰.BesselIndex // IsFreeEntry (a, j)}) (v : InfinitePlace E) ↦
-      (S.M : ℂ) / S.basisScale v (inl a) * S.basisScale v j := by
+      (S.level : ℂ) / S.basisScale v (inl a) * S.basisScale v j := by
   simp [Nat.Prime.ne_zero, Pi.isUnit_iff]
 
 /-- The lattice of free entries of the row e_a for the class `c`: the vectors with entries
-`S.M / S.basisScale v e_a * S.basisScale v j * Φ v (x j)`, for the rational vectors `x` on the free
-columns `j` such that `freeBlock c a *ᵥ x` is integral. Here `S.basisScale v j` is the scale of the
-basis vector `j` at the infinite place `v`, and `Φ v` is the chosen complex embedding at `v`. -/
+`S.level / S.basisScale v e_a * S.basisScale v j * Φ v (x j)`, for the rational vectors `x` on the
+free columns `j` such that `freeBlock c a *ᵥ x` is integral. Here `S.basisScale v j` is the scale of
+the basis vector `j` at the infinite place `v`, and `Φ v` is the chosen complex embedding at `v`. -/
 noncomputable def freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) :
     AddSubmonoid ({j : 𝔰.BesselIndex // IsFreeEntry (a, j)} → InfinitePlace E → ℂ) :=
   (Variety.classLattice (freeBlock c a)⁻¹ ⊥
@@ -531,13 +534,13 @@ noncomputable def freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) :
 
 /-- Let `S` be a filling of shape `𝔰` over the CM field `E` containing a primitive 5040th root of
 unity, with `S` admissible. For `c` in `S.Classes`, the lattice `freeLattice c a` of free entries of
-the row e_a has a measurable strict fundamental domain. Its volume is `((∏ v, S.M ^
+the row e_a has a measurable strict fundamental domain. Its volume is `((∏ v, S.level ^
 2 / S.frameScaleSq v a) / volÔ E) ^ (a.rev + (𝔰.k + 1) + a.rev)`, the exponent being the number of
 free columns. -/
 lemma exists_fundamental_domain_freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) :
     ∃ F : Set ({j : 𝔰.BesselIndex // IsFreeEntry (a, j)} → InfinitePlace E → ℂ),
       MeasurableSet F ∧
-      volume.real F = ((∏ v : InfinitePlace E, (S.M : ℝ) ^ 2 / S.frameScaleSq v a) / volÔ E) ^
+      volume.real F = ((∏ v : InfinitePlace E, (S.level : ℝ) ^ 2 / S.frameScaleSq v a) / volÔ E) ^
         (a.rev + (𝔰.k + 1) + a.rev : ℕ) ∧
       ∀ x : {j : 𝔰.BesselIndex // IsFreeEntry (a, j)} → InfinitePlace E → ℂ,
         ∃! l : freeLattice c a, l.val + x ∈ F := by
@@ -553,12 +556,12 @@ lemma exists_fundamental_domain_freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) :
 lemma rowCoords_fst_mem_freeLattice (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.classUnipotent c) :
     freeRowCoords (classUnipotentToInf c γ) a ∈ freeLattice c a := by
   let row : 𝔰.BesselIndex → 𝔸f E :=
-    finAdeleMatrix ((S.M : E)⁻¹ • ((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) - 1)) (inl a)
+    finAdeleMatrix ((S.level : E)⁻¹ • ((γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) - 1)) (inl a)
   have h_int (j : {j : 𝔰.BesselIndex // IsFreeEntry (a, j)}) :
       ((freeBlock c a).val *ᵥ row ∘ Subtype.val) j ∈ Ô E := by
-    simpa only [freeBlock_mulVec] using classUnipotent_sub_one_div_M_row_integral γ a j
+    simpa only [freeBlock_mulVec] using classUnipotent_sub_one_div_level_row_integral γ a j
   refine ⟨_, torsionClass_eq_zero.2 h_int, ?_⟩
-  have hM : (S.M : ℂ) ≠ 0 := by simp [Nat.Prime.ne_zero]
+  have hM : (S.level : ℂ) ≠ 0 := by simp [Nat.Prime.ne_zero]
   simp [funext_iff, mul_assoc, freeRowCoords, coe_classUnipotentToInf_apply,
     inl_ne_coe_isFreeEntry, field, -Nat.cast_mul]
 
@@ -602,8 +605,9 @@ lemma exists_rowCoords_fst_eq (c : S.Classes) (a : Fin 𝔰.ϱ)
 /-- Let `E` contain a primitive 5040th root of unity. Suppose that at the place `v`, right
 multiplication by the image `classUnipotentToInf c γ v` of `γ ∈ S.classUnipotent c`
 adds its (e_a, e*_a) entry to that of every `x` in `besselU`. Then the imaginary parts of this entry
-of `classUnipotentToInf c γ` at all places form a vector `(S.M / S.frameScaleSq w a * Im Φ_w(s))_w`
-for an integer `s` of `E` with `star s = -s` (`imSkewLattice`). -/
+of `classUnipotentToInf c γ` at all places form a vector
+`(S.level / S.frameScaleSq w a * Im Φ_w(s))_w` for an integer `s` of `E` with `star s = -s`
+(`imSkewLattice`). -/
 lemma rowCoords_snd_mem_imSkewLattice (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.classUnipotent c)
     (v : InfinitePlace E)
     (h_add : ∀ x : (𝔰.middleGram (1 : ℂ)).besselU,
@@ -611,21 +615,21 @@ lemma rowCoords_snd_mem_imSkewLattice (c : S.Classes) (a : Fin 𝔰.ϱ) (γ : S.
         (classUnipotentToInf c γ v : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (inl a) (eStar a) +
           (x : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (inl a) (eStar a)) :
     imRowCoords (classUnipotentToInf c γ) a ∈
-      imSkewLattice fun w : InfinitePlace E ↦ S.M / S.frameScaleSq w a := by
-  -- The entry of γ at (e_a, e*_a) is `S.M` times s, with s integral and skew.
+      imSkewLattice fun w : InfinitePlace E ↦ S.level / S.frameScaleSq w a := by
+  -- The entry of γ at (e_a, e*_a) is `S.level` times s, with s integral and skew.
   refine ⟨IsIntegralClosure.mk' (𝓞 E) _ (isIntegral_inv_mul_apply_eStar γ a), RingOfIntegers.ext ?_,
     ?_⟩
   · simpa using star_inv_mul_apply_eStar_eq_neg γ v a h_add
-  · have hM : (S.M : ℝ) ≠ 0 := by simp [Nat.Prime.ne_zero]
+  · have hM : (S.level : ℝ) ≠ 0 := by simp [Nat.Prime.ne_zero]
     simp [pow_mul', funext_iff, imRowCoords, coe_classUnipotentToInf_apply, basisScale, field,
       -Nat.cast_mul, -ofReal_div]
 
 /-- Let `E` contain a primitive 5040th root of unity. Fix a class `c` and a row e_a. Let `l` be a
-vector `(S.M / S.frameScaleSq v a * Im Φ_v(s))_v` for an integer `s` of `E` with `star s = -s`
+vector `(S.level / S.frameScaleSq v a * Im Φ_v(s))_v` for an integer `s` of `E` with `star s = -s`
 (`imSkewLattice`). Then `l` is the vector of imaginary parts at (e_a, e*_a) of the real image of
 some `γ ∈ S.classUnipotent c` whose other coordinates `rowCoords` vanish. -/
 lemma exists_rowCoords_snd_eq (c : S.Classes) (a : Fin 𝔰.ϱ) {l : InfinitePlace E → ℝ}
-    (hl : l ∈ imSkewLattice fun v : InfinitePlace E ↦ S.M / S.frameScaleSq v a) :
+    (hl : l ∈ imSkewLattice fun v : InfinitePlace E ↦ S.level / S.frameScaleSq v a) :
     ∃ γ : S.classUnipotent c,
       imRowCoords (classUnipotentToInf c γ) a = l ∧
       freeRowCoords (classUnipotentToInf c γ) = 0 ∧
@@ -648,7 +652,7 @@ end Lattices
 open scoped Classical in
 /-- Let `S` be admissible and `c` a class, with finite adelic representative h_c. The group
 `S.classUnipotent c` consists of the rational unipotent `γ` with h_c⁻¹ γ h_c in the principal
-congruence subgroup of level `S.M`; let `Γ` be its image in the real unipotent group 𝖴_∞. In the
+congruence subgroup of level `S.level`; let `Γ` be its image in the real unipotent group 𝖴_∞. In the
 basis e₁, …, e_ϱ, middle block, e*₁, …, e*_ϱ, the map `rowCoords` sends a point of 𝖴_∞ to the free
 entries of each row e_a and the imaginary parts of the entries at (e_a, e*_a), at all infinite
 places. There are measurable sets `F a` and `F' a` such that each coset `u Γ` has exactly one point
@@ -668,7 +672,7 @@ lemma exists_box_existsUnique_rowCoords_mem [HasPrimitiveRoot5040 E]
   -- `existsUnique_mul_mem_box` applies to fundamental domains of these lattices.
   choose F hF_meas hF_vol hF_fund using exists_fundamental_domain_freeLattice c
   choose F' hF'_meas hF'_vol hF'_fund using fun a : Fin 𝔰.ϱ ↦
-    exists_fundamental_domain_im_skew (fun v ↦ S.M / S.frameScaleSq v a)
+    exists_fundamental_domain_im_skew (fun v ↦ S.level / S.frameScaleSq v a)
       (by simp [Nat.Prime.ne_zero])
   refine ⟨F, F', hF_meas, hF'_meas, ?_, fun u ↦ ?_⟩
   · simp only [hF_vol, hF'_vol, unipotentCovolume_eq_prod]
@@ -700,7 +704,7 @@ lemma exists_box_existsUnique_rowCoords_mem [HasPrimitiveRoot5040 E]
   refine (existsUnique_congr fun _ ↦ Sum.forall).1
     (existsUnique_mul_mem_box deg coord h_coord_inj (classUnipotentToInf c).range
       (Sum.rec (freeLattice c)
-        fun a ↦ (imSkewLattice fun v ↦ S.M / S.frameScaleSq v a).toAddSubmonoid)
+        fun a ↦ (imSkewLattice fun v ↦ S.level / S.frameScaleSq v a).toAddSubmonoid)
       (Sum.rec F F') (Sum.rec hF_fund hF'_fund) ?attained ?in_lattice ?translates u)
   case translates =>
     rintro γ (a | a) h_low x

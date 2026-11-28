@@ -21,7 +21,7 @@ import New.Spanning.Unfolding.ReducedPoints
 
 A term is a rational point `γ` of the unitary group with
 `S.translateByClassReps c c' γ = h_c⁻¹ γ h_c'` integral. Its orbit is the double coset of `γ` under
-the groups `New.Filling.classUnipotent₀` of unipotent elements of level `M = S.M` that fix the
+the groups `New.Filling.classUnipotent₀` of unipotent elements of level `M = S.level` that fix the
 frame. The amplitude majorants of the terms of an orbit are summed by Schur's test: the mean of the
 sum of the weights over the orbit is reduced to a sum over a lattice, and then to the integral of a
 kernel divided by the covolume of the lattice.
@@ -203,16 +203,16 @@ variable (S j)
 /-- The first `min ϱ j` indices of the isotropic vectors of the frame. -/
 abbrev initialIsotropicIndex : Fin (min 𝔰.ϱ j) ↪ Fin 𝔰.ϱ := castLEEmb (min_le_left 𝔰.ϱ j)
 
-/-- The diagonal matrix with entries `S.M / basisScale v (e_l)`, `l < min ϱ j`. It converts the
+/-- The diagonal matrix with entries `S.level / basisScale v (e_l)`, `l < min ϱ j`. It converts the
 parameters of a shift, given in the rational frame, to the unit frame at the place `v`. -/
 noncomputable def shiftScaling (v : InfinitePlace E) :
     Matrix (Fin (min 𝔰.ϱ j)) (Fin (min 𝔰.ϱ j)) ℂ :=
-  diagonal fun l ↦ S.M / S.basisScale v (.inl (initialIsotropicIndex j l))
+  diagonal fun l ↦ S.level / S.basisScale v (.inl (initialIsotropicIndex j l))
 
 /-- The shift with parameter `x`: at each infinite place, the unipotent element with central
 parameter `0` that acts on `X₀` as the product of the Eichler maps along `e₁, …, e_i`,
 `i = min ϱ j`, with the parameters given by the rows of `(shiftScaling j v)ᴴ * x v`: the vectors
-`x_l` multiplied by the conjugates of `S.M / basisScale v (e_l)`. -/
+`x_l` multiplied by the conjugates of `S.level / basisScale v (e_l)`. -/
 noncomputable def eichlerShift (x : InfinitePlace E → Fin (min 𝔰.ϱ j) → 𝔰.κ → ℂ)
     (v : InfinitePlace E) : 𝔰.G₁ :=
   unipotentOf (inclMatrix ℂ (initialIsotropicIndex j) * ((S.shiftScaling j v)ᴴ * of (x v)), 0)
@@ -229,14 +229,14 @@ noncomputable def kernelBound (γ : S.G E) (v : InfinitePlace E) : ℝ :=
 variable {S j}
 
 /-- The columns of `l` lie in `Λ ∩ X₀`, where `Λ` is the lattice of the class `c`, and modulo the
-isotropic space the frame of `p` is that of `p₀` moved in `X₀` by `S.M • l` times the first
+isotropic space the frame of `p` is that of `p₀` moved in `X₀` by `S.level • l` times the first
 `min ϱ j` rows of the matrix of products of `γ`. -/
 def IsLatticeTranslate (c : S.Classes) (γ p₀ p : S.G E) (l : Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E) :
     Prop :=
   IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix l) ∧
     (frameImage (p : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)).toRows₂ =
       (frameImage (p₀ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)).toRows₂ +
-        fromRows (fromRows (S.M • (l * (isotropicRows (S.frameProducts γ)).submatrix
+        fromRows (fromRows (S.level • (l * (isotropicRows (S.frameProducts γ)).submatrix
           (initialIsotropicIndex j) id)) 0) 0
 
 @[fun_prop]
@@ -262,13 +262,13 @@ lemma IsLatticeTranslate.frameX₀Part_eq {p p₀ : S.G E} {q : Matrix 𝔰.κ (
   ext a b
   obtain ⟨-, hq_eq⟩ := hq
   have h_entry : p.1.1 (𝔰.indexX₀ a) (𝔰.besselFrame b) = p₀.1.1 (𝔰.indexX₀ a) (𝔰.besselFrame b) +
-      S.M * ∑ l, q a l * S.frameProducts γ (initialIsotropicIndex j l).castSucc b := by
+      S.level * ∑ l, q a l * S.frameProducts γ (initialIsotropicIndex j l).castSucc b := by
     have h_translate_entry := congrFun₂ hq_eq (.inl (.inl a)) b
     simpa [Matrix.mul_apply] using h_translate_entry
   have h_term (l : Fin (min 𝔰.ϱ j)) :
-      S.M * (Φ v (q a l) * Φ v (S.frameProducts γ (initialIsotropicIndex j l).castSucc b)) *
+      S.level * (Φ v (q a l) * Φ v (S.frameProducts γ (initialIsotropicIndex j l).castSucc b)) *
           S.basisScale v (𝔰.besselFrame b) =
-        Φ v (q a l) * (S.M / S.basisScale v (.inl (initialIsotropicIndex j l))) *
+        Φ v (q a l) * (S.level / S.basisScale v (.inl (initialIsotropicIndex j l))) *
           realFrameGram (S.ratToInf γ v) (initialIsotropicIndex j l).castSucc b := by
     have h_scale : S.basisScale v (.inl (initialIsotropicIndex j l)) =
         S.realM v ^ (𝔰.ϱ - initialIsotropicIndex j l) / √S.N := by simp [basisScale]
@@ -380,21 +380,22 @@ lemma HasCellRank.exists_isLatticeTranslate (h_rank : S.HasCellRank j γ) {p₀ 
   set x : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := (frameMiddle p.1.1 - frameMiddle p₀.1.1).toRows₁ with hx
   rw [frameMiddle_translateByClassReps_sub h_eq, ← colLattice_smul] at h_rows
   obtain ⟨W, hW_int, hW⟩ := exists_isIntMatrix_mul_eq_of_col_mem h_rows
-  have h_adelic : S.classCoordX₀ c * finAdeleMatrix x = (S.M : 𝔸f E) • (Wᴴ * finAdeleMatrix ξ) := by
+  have h_adelic :
+      S.classCoordX₀ c * finAdeleMatrix x = (S.level : 𝔸f E) • (Wᴴ * finAdeleMatrix ξ) := by
     rw [← conjTranspose_conjTranspose (S.classCoordX₀ c * finAdeleMatrix x), ← hW]
     simp [Units.smul_def, ideleM_val]
-  let l : Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E := (S.M : E)⁻¹ • (x * ξ')
+  let l : Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E := (S.level : E)⁻¹ • (x * ξ')
   have hl : S.classCoordX₀ c * finAdeleMatrix l = Wᴴ := by
-    have h_cancel : (((S.M : E)⁻¹ : E) : 𝔸f E) * (S.M : 𝔸f E) = 1 := by
+    have h_cancel : (((S.level : E)⁻¹ : E) : 𝔸f E) * (S.level : 𝔸f E) = 1 := by
       simpa [Nat.Prime.ne_zero, -Nat.cast_mul] using
-        (map_mul (algebraMap E (𝔸f E)) (S.M : E)⁻¹ S.M).symm
+        (map_mul (algebraMap E (𝔸f E)) (S.level : E)⁻¹ S.level).symm
     rw [finAdeleMatrix_smul, finAdeleMatrix_mul, Matrix.mul_smul, ← Matrix.mul_assoc, h_adelic,
       Matrix.smul_mul, Matrix.mul_assoc, ← finAdeleMatrix_mul, h_inv, smul_smul, h_cancel]
     simp
-  have h_rational : x = S.M • (l * ξ) := by
+  have h_rational : x = S.level • (l * ξ) := by
     -- `classCoordX₀ c` has a left inverse, so it is enough to compare coordinates.
     have h_coords : S.classCoordX₀ c * finAdeleMatrix x =
-        S.classCoordX₀ c * finAdeleMatrix ((S.M : E) • (l * ξ)) := by
+        S.classCoordX₀ c * finAdeleMatrix ((S.level : E) • (l * ξ)) := by
       simp [h_adelic, finAdeleMatrix_smul, ← Matrix.mul_assoc, hl]
     rw [← Nat.cast_smul_eq_nsmul E]
     exact Matrix.map_injective (algebraMap E (𝔸f E)).injective
@@ -633,11 +634,11 @@ lemma exists_tsum_schurWeight_le {B : Set (S.G E)}
 omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- The matrix `shiftScaling j v` is diagonal with entries `M / basisScale v (e_l)` for `l < i`. The
 absolute value of its determinant is `(M √N) ^ i / |realM v| ^ ∑_{a < j} (ϱ - a)`, where
-`i = min ϱ j`, `M = S.M` is the level, `N = S.N` is the number with `h(z, z) = -N`, and `S.realM v`
-is the ratio of consecutive scales `basisScale` of the isotropic vectors. -/
+`i = min ϱ j`, `M = S.level` is the level, `N = S.N` is the number with `h(z, z) = -N`, and
+`S.realM v` is the ratio of consecutive scales `basisScale` of the isotropic vectors. -/
 lemma norm_det_shiftScaling (v : NumberField.InfinitePlace E) :
     ‖(S.shiftScaling j v).det‖ =
-      (S.M * √S.N) ^ min 𝔰.ϱ j / |S.realM v| ^ ∑ a : Fin j, (𝔰.ϱ - a) := by
+      (S.level * √S.N) ^ min 𝔰.ϱ j / |S.realM v| ^ ∑ a : Fin j, (𝔰.ϱ - a) := by
   -- The index `ϱ`, if it is below `j`, contributes `0` to the exponent.
   have h_exp : ∑ l : Fin (min 𝔰.ϱ j), (𝔰.ϱ - l) = ∑ a : Fin j, (𝔰.ϱ - a) := by
     refine sum_of_injective (castLE (min_le_right 𝔰.ϱ j)) (castLE_injective _) _ _
@@ -646,8 +647,8 @@ lemma norm_det_shiftScaling (v : NumberField.InfinitePlace E) :
     have ha_lt : a.val < min 𝔰.ϱ j := by lia
     exact ha ⟨⟨a, ha_lt⟩, rfl⟩
   have h_entry (l : Fin (min 𝔰.ϱ j)) :
-      ‖(S.M / S.basisScale v (.inl (initialIsotropicIndex j l)) : ℂ)‖ =
-        S.M * √S.N / |S.realM v| ^ (𝔰.ϱ - l) := by
+      ‖(S.level / S.basisScale v (.inl (initialIsotropicIndex j l)) : ℂ)‖ =
+        S.level * √S.N / |S.realM v| ^ (𝔰.ϱ - l) := by
     simp [basisScale, abs_of_nonneg, div_div_eq_mul_div, -Nat.cast_mul]
   rw [shiftScaling, det_diagonal, norm_prod, ← h_exp]
   simp only [h_entry]
@@ -664,10 +665,10 @@ lemma kernelBound_le (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) (v : NumberFie
     S.kernelBound j γ v ≤
       ((2 * S.frameBoxRadius ^ 2) ^ (min 𝔰.ϱ j + 1) * S.N ^ j.val /
           ‖Φ v (leadingMinor (S.frameProducts γ) j)‖) ^ min 𝔰.ϱ j *
-        ((S.b ^ 13 / S.M ^ 2) ^ min 𝔰.ϱ j * S.N ^ (j - 𝔰.ϱ) /
+        ((S.b ^ 13 / S.level ^ 2) ^ min 𝔰.ϱ j * S.N ^ (j - 𝔰.ϱ) /
           ‖Φ v (leadingMinor (S.frameProducts γ) j)‖) ^ 𝔰.k := by
   have hb : 2 ≤ S.b := two_le_b
-  have hM : 2 ≤ S.M := two_le_M
+  have hM : 2 ≤ S.level := two_le_level
   have hN : 0 < S.N := S.N_prime.pos
   have hδ : 0 < ‖Φ v (leadingMinor (S.frameProducts γ) j)‖ := by
     simpa using h_rank.leadingMinor_ne_zero
@@ -699,18 +700,18 @@ lemma kernelBound_le (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) (v : NumberFie
   -- is dropped in the `i`-th power.
   have h_power : (S.N : ℝ) ^ j.val = S.N ^ (j - 𝔰.ϱ) * S.N ^ i := by
     rw [← pow_add, ← h_extra, Nat.sub_add_cancel (min_le_right _ _)]
-  have h_jacobian : ((S.M * √S.N) ^ i / w)⁻¹ ^ 2 = w ^ 2 / ((S.M ^ 2) ^ i * S.N ^ i) := by
+  have h_jacobian : ((S.level * √S.N) ^ i / w)⁻¹ ^ 2 = w ^ 2 / ((S.level ^ 2) ^ i * S.N ^ i) := by
     rw [inv_div, div_pow, pow_right_comm _ i 2, mul_pow, sq_sqrt (by positivity), mul_pow]
-  calc ((S.M * √S.N) ^ i / w)⁻¹ ^ (2 * 𝔰.k) *
+  calc ((S.level * √S.N) ^ i / w)⁻¹ ^ (2 * 𝔰.k) *
         ((2 * S.frameBoxRadius ^ 2) ^ ((i + 1) * i) * (2 ^ (i + 1) * θ ^ (2 * (j - i))) ^ 𝔰.k /
           (w ^ 2 / S.N ^ j.val * δ) ^ (𝔰.k + i))
     _ = ((2 * S.frameBoxRadius ^ 2) ^ (i + 1) * S.N ^ j.val / (w ^ 2 * δ)) ^ i *
-        (2 ^ (i + 1) * θ ^ (2 * (j - 𝔰.ϱ)) * S.N ^ (j - 𝔰.ϱ) / ((S.M ^ 2) ^ i * δ)) ^ 𝔰.k := by
+        (2 ^ (i + 1) * θ ^ (2 * (j - 𝔰.ϱ)) * S.N ^ (j - 𝔰.ϱ) / ((S.level ^ 2) ^ i * δ)) ^ 𝔰.k := by
       rw [h_extra, pow_mul _ 2 𝔰.k, h_jacobian, pow_mul _ (i + 1), pow_add _ 𝔰.k, h_power]
       simp only [div_pow, mul_pow]
       field_simp
     _ ≤ ((2 * S.frameBoxRadius ^ 2) ^ (i + 1) * S.N ^ j.val / (1 ^ 2 * δ)) ^ i *
-        ((S.b ^ 13) ^ i * S.N ^ (j - 𝔰.ϱ) / ((S.M ^ 2) ^ i * δ)) ^ 𝔰.k := by gcongr
+        ((S.b ^ 13) ^ i * S.N ^ (j - 𝔰.ϱ) / ((S.level ^ 2) ^ i * δ)) ^ 𝔰.k := by gcongr
     _ = _ := by ring
 
 omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
@@ -728,7 +729,7 @@ of the leading minor of order `j` of `S.frameProducts γ`, divided by `N ^ (2 f)
 lemma prod_kernelBound_le (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCellRank j γ)
     (hj : j ≠ 0) :
     ∏ v : NumberField.InfinitePlace E, S.kernelBound j γ v ≤
-      S.tailScale * (S.b ^ 13 / S.M ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E) *
+      S.tailScale * (S.b ^ 13 / S.level ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E) *
         (√(S.minorNorm j γ))⁻¹ ^ 𝔰.k := by
   have hb : 2 ≤ S.b := two_le_b
   have hN : 0 < S.N := S.N_prime.pos
@@ -762,15 +763,15 @@ lemma prod_kernelBound_le (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCe
   calc ∏ v : InfinitePlace E, S.kernelBound j γ v
       ≤ ∏ v : InfinitePlace E, ((2 * S.frameBoxRadius ^ 2) ^ (min 𝔰.ϱ j + 1) * S.N ^ j.val /
             ‖Φ v (leadingMinor (S.frameProducts γ) j)‖) ^ min 𝔰.ϱ j *
-          ((S.b ^ 13 / S.M ^ 2) ^ min 𝔰.ϱ j * S.N ^ (j - 𝔰.ϱ) /
+          ((S.b ^ 13 / S.level ^ 2) ^ min 𝔰.ϱ j * S.N ^ (j - 𝔰.ϱ) /
             ‖Φ v (leadingMinor (S.frameProducts γ) j)‖) ^ 𝔰.k :=
         prod_le_prod₀ (fun v _ ↦ kernelBound_nonneg b_pos.le v) fun v _ ↦ kernelBound_le h_rank hj v
     _ = (((2 * S.frameBoxRadius ^ 2) ^ (min 𝔰.ϱ j + 1) * S.N ^ j.val) ^ numInfPlaces E / P) ^
-          min 𝔰.ϱ j * (((S.b ^ 13 / S.M ^ 2) ^ min 𝔰.ϱ j * S.N ^ (j - 𝔰.ϱ)) ^
+          min 𝔰.ϱ j * (((S.b ^ 13 / S.level ^ 2) ^ min 𝔰.ϱ j * S.N ^ (j - 𝔰.ϱ)) ^
             numInfPlaces E / P) ^ 𝔰.k := by
         rw [prod_mul_distrib, prod_pow, prod_pow, Finset.prod_div_distrib, Finset.prod_div_distrib,
           Finset.prod_const, Finset.prod_const, card_univ]
-    _ ≤ S.tailScale * (((S.b ^ 13 / S.M ^ 2) ^ min 𝔰.ϱ j * S.N ^ (j - 𝔰.ϱ)) ^
+    _ ≤ S.tailScale * (((S.b ^ 13 / S.level ^ 2) ^ min 𝔰.ϱ j * S.N ^ (j - 𝔰.ϱ)) ^
           numInfPlaces E / P) ^ 𝔰.k := by grw [h_small]
     _ = _ := by
         rw [h_sqrt, inv_div]
@@ -807,7 +808,7 @@ lemma tsum_schurIntegral_le (h_over : γ ∈ S.termsOver c s c') (h_rank : S.Has
     ∑' δ : doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c'),
         S.schurIntegral c c' δ (min 𝔰.ϱ j) ≤
       .ofReal (S.unipotentCovolume * (card S.BesselCoord * S.tailScale ^ 2 *
-        (S.b ^ 13 / S.M ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E) *
+        (S.b ^ 13 / S.level ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E) *
         (S.isotropicRowsIndex j (S.translateByClassReps c c' γ) / √(S.minorNorm j γ)) ^ 𝔰.k)) := by
   -- Integrate in stages, averaging over the shifts with parameter in a fundamental domain `D` of
   -- the lattice. On each of the `isotropicRowsIndex ^ k` cosets the mean of the sum of the weights
@@ -853,7 +854,7 @@ lemma tsum_schurIntegral_le (h_over : γ ∈ S.termsOver c s c') (h_rank : S.Has
       lintegral_boxCutoff_le_of_average c volume measurable_eichlerShift eichlerShift_mem
         (by fun_prop) h_inv D h_pos hD_finite h_mean
     _ ≤ .ofReal (index ^ 𝔰.k * (S.tailScale * (S.tailScale *
-          (S.b ^ 13 / S.M ^ 2) ^ d * (√(S.minorNorm j γ))⁻¹ ^ 𝔰.k)) *
+          (S.b ^ 13 / S.level ^ 2) ^ d * (√(S.minorNorm j γ))⁻¹ ^ 𝔰.k)) *
           (S.unipotentCovolume * card S.BesselCoord)) := by
       grw [hC, ← ofReal_prod_of_nonneg fun v _ ↦ kernelBound_nonneg hb.le v,
         prod_kernelBound_le h_over h_rank hj, ← ofReal_natCast]
@@ -877,7 +878,7 @@ theorem sq_tsum_amplitudeMajorant_doubleCoset_le (h_over : γ ∈ S.termsOver c 
     (∑' δ : doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c'),
       S.amplitudeMajorant .cut c c' δ) ^ 2 ≤
       .ofReal ((S.unipotentCovolume * card S.BesselCoord * S.tailScale ^ 2 *
-          (S.b ^ 13 / S.M ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E)) ^ 2 *
+          (S.b ^ 13 / S.level ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E)) ^ 2 *
         (S.N ^ numInfPlaces E / S.minorGauge j c c' γ) ^ 𝔰.k) := by
   -- By Cauchy–Schwarz the square is at most the product of the sums of the two factors, for `γ`
   -- and for `γ⁻¹`.
@@ -936,12 +937,13 @@ lemma div_tailScale_pow_mul_identitySecondMoment_le_cellRankSecondMoment (hj : j
     lia
 
 omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
-/-- The field `le_M` of `S` gives `S.b ^ 19 ≤ S.M`, so the factor `S.b ^ 13 / S.M²` is at most
-`1 / (S.b ^ 4 S.M)`. -/
-lemma b_pow_div_M_sq_le : S.b ^ 13 / (S.M : ℝ) ^ 2 ≤ (S.b ^ 4 * S.M)⁻¹ := by
+/-- The field `le_level` of `S` gives `S.b ^ 19 ≤ S.level`, so the factor `S.b ^ 13 / S.M²` is at
+most `1 / (S.b ^ 4 S.level)`. -/
+lemma b_pow_div_level_sq_le : S.b ^ 13 / (S.level : ℝ) ^ 2 ≤ (S.b ^ 4 * S.level)⁻¹ := by
   have hb_pos : 0 < S.b := b_pos
-  have h_pow : S.b ^ 17 ≤ (S.M : ℝ) := (pow_le_pow_right₀ S.one_le_b (by norm_num)).trans S.le_M
-  have hM_pos : 0 < (S.M : ℝ) := (pow_pos hb_pos 17).trans_le h_pow
+  have h_pow : S.b ^ 17 ≤ (S.level : ℝ) :=
+    (pow_le_pow_right₀ S.one_le_b (by norm_num)).trans S.le_level
+  have hM_pos : 0 < (S.level : ℝ) := (pow_pos hb_pos 17).trans_le h_pow
   field_simp
   exact h_pow
 
@@ -984,7 +986,7 @@ lemma tsum_amplitudeMajorant_orbit_le (h_over : γ ∈ S.termsOver c s c')
   have h_moment_le : S.tailScale ^ 8 / (S.tailScale ^ 32) ^ min 𝔰.ϱ j * S.identitySecondMoment ≤
       S.cellRankSecondMoment j :=
     div_tailScale_pow_mul_identitySecondMoment_le_cellRankSecondMoment hj
-  have h_ratio_le : S.b ^ 13 / (S.M : ℝ) ^ 2 ≤ (S.b ^ 4 * S.M)⁻¹ := b_pow_div_M_sq_le
+  have h_ratio_le : S.b ^ 13 / (S.level : ℝ) ^ 2 ≤ (S.b ^ 4 * S.level)⁻¹ := b_pow_div_level_sq_le
   grw [h_ratio_le, ← h_moment_le, ← h_dim, h_gain]
   refine le_of_eq ?_
   simp only [identitySecondMoment, sourceDim, pairCountScale, Nat.cast_mul, div_pow, inv_pow,

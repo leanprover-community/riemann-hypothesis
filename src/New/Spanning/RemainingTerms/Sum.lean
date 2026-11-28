@@ -27,8 +27,8 @@ block meets.
 * `New.Filling.secondMoment_remainingTerms_le`, `New.Filling.linkSecondMoment_le_of_le_meetNorm`:
   the resulting bounds for the second moment of the remaining terms.
 
-Here `b = S.b` is the scale, `M = S.M` the congruence level, `k = 𝔰.k` and `n = 𝔰.n` are sizes of
-the shape, `f` is the number of infinite places, `τ = S.tailScale = b ^ (k f / 4)` is the number
+Here `b = S.b` is the scale, `M = S.level` the congruence level, `k = 𝔰.k` and `n = 𝔰.n` are sizes
+of the shape, `f` is the number of infinite places, `τ = S.tailScale = b ^ (k f / 4)` is the number
 whose powers may be lost, `𝗀 = S.termDisc`, `𝒟_id = S.identitySecondMoment` and
 `𝒟_main = S.mainSecondMoment`.
 
@@ -80,13 +80,13 @@ lemma IsNearPairOverAgreeingBlock.one_le_pairDiscriminant {E : Type} [Field E] [
 
 /-- For a near pair `(γ, γ')`, the square of the discriminant of the common lattice is at most
 `(2 / M) ^ (2 i f)` times the product of the two gauges, where `i` is the codimension in each link
-(`New.link`) of the intersection of the links, `M = S.M` is the congruence level and `f` is the
+(`New.link`) of the intersection of the links, `M = S.level` is the congruence level and `f` is the
 number of infinite places. -/
 lemma IsNearPairOverAgreeingBlock.pairDiscriminant_sq_le {E : Type} [Field E] [CMType E]
     {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E]
     {c c' : S.Classes} {γ γ' : S.G E} (hq : S.IsNearPairOverAgreeingBlock c c' (γ, γ')) :
     S.pairDiscriminant c c' γ γ' ^ 2 ≤
-      (2 / S.M) ^ (2 * S.linkCorank γ γ' * numInfPlaces E) *
+      (2 / S.level) ^ (2 * S.linkCorank γ γ' * numInfPlaces E) *
         (S.levelGauge (S.cellRank γ) c c' γ * S.levelGauge (S.cellRank γ') c c' γ') := by
   obtain ⟨⟨-, h_cell⟩, ⟨-, h_cell'⟩, s, h_agrees, h_over, h_over'⟩ := hq
   simpa only [ite_self, Nat.cast_one, mul_one] using
@@ -97,9 +97,10 @@ private lemma IsNearPairOverAgreeingBlock.scaled_pairDiscriminant_sq_le
     {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E]
     {c c' : S.Classes} {γ γ' : S.G E}
     (hq : S.IsNearPairOverAgreeingBlock c c' (γ, γ')) :
-    (S.pairDiscriminant c c' γ γ' * ((S.M : ℝ) / 2) ^ (S.linkCorank γ γ' * numInfPlaces E)) ^ 2 ≤
+    (S.pairDiscriminant c c' γ γ' *
+        ((S.level : ℝ) / 2) ^ (S.linkCorank γ γ' * numInfPlaces E)) ^ 2 ≤
       S.levelGauge (S.cellRank γ) c c' γ * S.levelGauge (S.cellRank γ') c c' γ' := by
-  have hM : 2 ≤ S.M := two_le_M
+  have hM : 2 ≤ S.level := two_le_level
   rw [mul_pow, ← pow_mul, ← le_div_iff₀ (by positivity), div_eq_mul_inv, ← inv_pow, inv_div,
     mul_comm, Nat.mul_comm (_ * _) 2, ← Nat.mul_assoc]
   exact hq.pairDiscriminant_sq_le
@@ -125,11 +126,11 @@ lemma IsNearPairOverAgreeingBlock.corank_le_and_pairDiscriminant_le {E : Type} [
     le_finrank_commonLink_add h_cell γ'
   have h_bound := (levelGauge_pos h_over' h_cell').le.trans (h_near'.levelGauge_le h_over' h_cell')
   have hb₂ : 2 ≤ S.b := two_le_b
-  have h_ratio : S.b ^ 18 ≤ (S.M : ℝ) / 2 := by
+  have h_ratio : S.b ^ 18 ≤ (S.level : ℝ) / 2 := by
     rw [le_div_iff₀ (by positivity)]
     calc
       S.b ^ 18 * 2 ≤ S.b ^ 19 := by grw [hb₂, ← pow_succ]
-      _ ≤ (S.M : ℝ) := S.le_M
+      _ ≤ (S.level : ℝ) := S.le_level
   have h_pow_mul_disc_le : S.b ^ (18 * i * numInfPlaces E) * d ≤ S.discriminantBound := by
     rw [Nat.mul_assoc, pow_mul, mul_comm]
     grw [h_ratio]
@@ -341,36 +342,36 @@ standing hypotheses `S.IsAdmissible`. For `i ≥ 1` and `l ≤ i + 1` we have `�
 whose common lattice has corank `l`. -/
 lemma pow_mul_mainSecondMoment_div_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
     [ok : S.IsAdmissible] {i l : ℕ} (hi : i ≠ 0) (hl : l ≤ i + 1) :
-    S.tailScale ^ (l + 6) * S.mainSecondMoment / ((S.M / 2) ^ (i * numInfPlaces E)) ^ 𝔰.k ≤
+    S.tailScale ^ (l + 6) * S.mainSecondMoment / ((S.level / 2) ^ (i * numInfPlaces E)) ^ 𝔰.k ≤
       S.identitySecondMoment / S.tailScale ^ 10 := by
   -- Each unit of `i` gives the factor `x = τ (2 / M) ^ (k f) ≤ 1`; one such factor and the upper
   -- bound for `𝒟_main / 𝒟_id` give `τ ^ 7 x 𝒟_main ≤ τ ^ 8 (2 / b ^ 6) ^ (k f) 𝒟_id`.
   have hb : 2 ≤ S.b := two_le_b
   have hτ : 1 ≤ S.tailScale := one_le_tailScale
-  have hM : 2 ≤ S.M := two_le_M
+  have hM : 2 ≤ S.level := two_le_level
   have h_main : 0 ≤ S.mainSecondMoment := mainSecondMoment_nonneg
   have h_id : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
   set m : ℕ := 𝔰.k * numInfPlaces E
-  set x : ℝ := S.tailScale * (2 / S.M) ^ m with hx
-  have h_ratio : 2 * S.b ≤ S.M :=
+  set x : ℝ := S.tailScale * (2 / S.level) ^ m with hx
+  have h_ratio : 2 * S.b ≤ S.level :=
     calc
       2 * S.b ≤ S.b ^ 2 := by grw [hb, ← sq]
       _ ≤ S.b ^ 19 := pow_le_pow_right₀ S.one_le_b (by norm_num)
-      _ ≤ (S.M : ℝ) := S.le_M
+      _ ≤ (S.level : ℝ) := S.le_level
   have hx_le : x ≤ 1 :=
-    calc x ≤ S.tailScale ^ 4 * (2 / S.M) ^ m := by grw [hx, ← le_self_pow₀ hτ four_ne_zero]
-      _ = (2 * S.b / S.M) ^ m := by
+    calc x ≤ S.tailScale ^ 4 * (2 / S.level) ^ m := by grw [hx, ← le_self_pow₀ hτ four_ne_zero]
+      _ = (2 * S.b / S.level) ^ m := by
         rw [tailScale_pow_four]
         ring
       _ ≤ 1 := pow_le_one₀ (by positivity) (div_le_one_of_le₀ h_ratio (by positivity))
   calc
-    _ ≤ S.tailScale ^ (i + 1 + 6) * S.mainSecondMoment / ((S.M / 2) ^ (i * numInfPlaces E)) ^
+    _ ≤ S.tailScale ^ (i + 1 + 6) * S.mainSecondMoment / ((S.level / 2) ^ (i * numInfPlaces E)) ^
       𝔰.k := by
       gcongr
     _ = S.tailScale ^ 7 * x ^ i * S.mainSecondMoment := by
-      rw [hx, ← inv_div 2 (S.M : ℝ), inv_pow, inv_pow, div_inv_eq_mul]
+      rw [hx, ← inv_div 2 (S.level : ℝ), inv_pow, inv_pow, div_inv_eq_mul]
       ring
-    _ ≤ S.tailScale ^ 7 * x * ((S.M / S.b ^ 6) ^ m * S.identitySecondMoment) := by
+    _ ≤ S.tailScale ^ 7 * x * ((S.level / S.b ^ 6) ^ m * S.identitySecondMoment) := by
       grw [pow_le_of_le_one (by positivity) hx_le hi, ok.mainSecondMoment_le]
     _ = (S.tailScale ^ 4) ^ 2 * (2 / S.b ^ 6) ^ m * S.identitySecondMoment := by
       simp only [hx, div_pow]
@@ -396,7 +397,7 @@ theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
           (S.termSize c c' (q : S.G E × S.G E).1 * S.termSize c c' (q : S.G E × S.G E).2) ≤
       .ofReal (S.identitySecondMoment / S.b ^ (𝔰.k * numInfPlaces E)) := by
   -- Apply `sum_termSize_mul_le` with `B = τ ^ (-10) 𝒟_id`, according to the corank of the links.
-  have hM : 2 ≤ S.M := two_le_M
+  have hM : 2 ≤ S.level := two_le_level
   have hτ : 1 ≤ S.tailScale := one_le_tailScale
   have h_id : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
   have h_const : S.tailScale * (S.identitySecondMoment / S.tailScale ^ 10) ≤
@@ -442,7 +443,7 @@ theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
     field_simp
   · -- Different links: the gain is `(M / 2) ^ (i f)`, and the corank is at most `i + 1`.
     have h_corank_le : 𝔰.k - finrank E (commonLink γ γ') ≤ i + 1 := by lia
-    exact ⟨(S.M / 2) ^ (i * numInfPlaces E), S.mainSecondMoment, by positivity, h_gain,
+    exact ⟨(S.level / 2) ^ (i * numInfPlaces E), S.mainSecondMoment, by positivity, h_gain,
       cellRankSecondMoment_le_mainSecondMoment j, cellRankSecondMoment_le_mainSecondMoment j',
       pow_mul_mainSecondMoment_div_le hi h_corank_le⟩
 
@@ -748,10 +749,11 @@ theorem secondMoment_remainingTerms_le {E : Type} [Field E] [CMType E] {𝔰 : S
 /-- **Remaining terms, one link at a time.** Let `E` be a CM field with a primitive root of unity of
 order 5040, and let `S` be data of the filling theorem over `E` that satisfy the standing hypotheses
 `S.IsAdmissible`. Let `Ω` be a set of reductions, that is, of elements of `S.ResidueGL`, the product
-of the general linear groups over the residue fields at the chosen places above the level `M = S.M`.
-A reduction `s` meets at a place above `M` if, modulo that place, the span of the frame and its
-image under `s` share a nonzero vector; `S.meetNorm s` is the norm of the product of the places at
-which `s` meets. Let `z ≠ 0` be a natural number with `z ≤ S.meetNorm s` for every `s ∈ Ω`.
+of the general linear groups over the residue fields at the chosen places above the level
+`M = S.level`. A reduction `s` meets at a place above `M` if, modulo that place, the span of the
+frame and its image under `s` share a nonzero vector; `S.meetNorm s` is the norm of the product of
+the places at which `s` meets. Let `z ≠ 0` be a natural number with `z ≤ S.meetNorm s` for every
+`s ∈ Ω`.
 
 Let `T` be the set of rational points `γ` of the unitary group with `S.termDisc γ ≠ 0`. For classes
 `c`, `c'`, a reduction `s` and a submodule `Λ`, take the sum of the amplitudes of the `γ ∈ T` that

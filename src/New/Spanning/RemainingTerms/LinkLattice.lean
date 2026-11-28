@@ -10,7 +10,7 @@ import New.Spanning.Unfolding.ReducedPoints
 # The lattice of a link
 
 Let `γ` be a term of cell rank `j`, `Λ` the lattice of a class, `A` the span of `e₁, …, e_ϱ`,
-`I = A ∩ γ A`, `z` the last vector of the frame, of norm `-N`, and `M = S.M` the level of the
+`I = A ∩ γ A`, `z` the last vector of the frame, of norm `-N`, and `M = S.level` the level of the
 congruence group. The vectors of `Λ` orthogonal to `A` and `γ A` give a lattice `L¹` in the link of
 `γ`, and those whose `e_a`-coordinates are divisible by `M` give the lattice `L⁺_γ`. The lattice
 `L¹` is realized as an orthogonal complement: adjoin two vectors `z'`, `z''` of norm `N` to the
@@ -597,14 +597,14 @@ end Index
 `k = S.translateByClassReps c c' γ`. Column `a` of `P` holds the products of `e_a` with the frame
 `k e₁, …, k e_ϱ, k z`. The lattice `L` spanned by the columns is a copy of `(Λ ∩ A)/(Λ ∩ I)`, for
 `Λ` the lattice of `c`, `A` the span of the `e_a` and `I = A ∩ γ A`. The index of `M L` in `L`
-divides `M ^ (2 i f)`, where `M = S.M` is the level (`S.ideleM` as a finite idele), `i = min ϱ j`
-and `f` is the number of infinite places. -/
+divides `M ^ (2 i f)`, where `M = S.level` is the level (`S.ideleM` as a finite idele),
+`i = min ϱ j` and `f` is the number of infinite places. -/
 lemma submoduleIndex_ideleM_smul_isotropicRows_dvd [HasPrimitiveRoot5040 E]
     {s : S.ResidueGL} (hγ : γ ∈ S.termsOver c s c') (hj : S.HasCellRank j γ) :
     let P : Matrix (Fin (𝔰.ϱ + 1)) (Fin 𝔰.ϱ) (𝔸f E) :=
       (isotropicRows ((S.latticeMiddle (𝔸f E)).frameGram (S.translateByClassReps c c' γ)))ᴴ
     submoduleIndex (S.ideleM • colLattice (Ô E) P) (colLattice (Ô E) P) ∣
-      S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := by
+      S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := by
   -- The span `Lⱼ` of the columns `a < j` has finite index in `L` and at most `i` generators.
   let Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) (𝔸f E) :=
     (S.latticeMiddle (𝔸f E)).frameGram (S.translateByClassReps c c' γ)
@@ -615,7 +615,7 @@ lemma submoduleIndex_ideleM_smul_isotropicRows_dvd [HasPrimitiveRoot5040 E]
   have h_le : Lⱼ ≤ L := colLattice_le fun a ↦ col_mem_colLattice a.val
   have h_finite : submoduleIndex Lⱼ L ≠ 0 := (isotropicRowsIndex_pos hγ hj).ne'
   have h_level : submoduleIndex (S.ideleM • intVectors (Ô E) (IndexBelow j))
-      (intVectors (Ô E) (IndexBelow j)) = S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := by
+      (intVectors (Ô E) (IndexBelow j)) = S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := by
     rw [← Nat.cast_inj (R := ℝ), submoduleIndex_smul_intVectors S.ideleM_mem, S.ideleM_val,
       genIndex_natCast, Fintype.card_subtype, Fin.card_filter_val_lt]
     push_cast
@@ -629,7 +629,7 @@ lemma submoduleIndex_ideleM_smul_isotropicRows_dvd [HasPrimitiveRoot5040 E]
       submoduleIndex_ideleM_smul_eq h_finite h_le
     _ ∣ submoduleIndex (S.ideleM • intVectors (Ô E) (IndexBelow j))
         (intVectors (Ô E) (IndexBelow j)) := submoduleIndex_dvd_of_le _ h_image le_sup_left
-    _ = S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := h_level
+    _ = S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := h_level
 
 omit [DecidableEq τ] [Fintype τ] in
 /-- Let `A` be the span of `e₁, …, e_ϱ` and let `γ` have cell rank `j` (`S.HasCellRank j γ`). Let
@@ -743,15 +743,15 @@ variable [HasPrimitiveRoot5040 E]
 and let `m` have integral entries. Column `a` of `P` holds the products of `e_a` with the frame
 `k e₁, …, k e_ϱ, k z`; let `L` be the lattice spanned by the columns. Then some invertible integral
 `B` has `P m x ∈ M L` for each of its columns `x`, and `genIndex (det B)`, the index of its lattice
-in the integral vectors, is at most `M ^ (2 i f)`. Here `M = S.M` is the level, `i = min ϱ j` and
-`f` is the number of infinite places. -/
+in the integral vectors, is at most `M ^ (2 i f)`. Here `M = S.level` is the level, `i = min ϱ j`
+and `f` is the number of infinite places. -/
 lemma exists_basis_mulVec_mem_ideleM_smul {s : S.ResidueGL} (hγ : γ ∈ S.termsOver c s c')
     (hj : S.HasCellRank j γ) {m : Matrix (Fin 𝔰.ϱ) τ (𝔸f E)} (hm : IsIntMatrix (Ô E) m) :
     let P : Matrix (Fin (𝔰.ϱ + 1)) (Fin 𝔰.ϱ) (𝔸f E) :=
       (isotropicRows ((S.latticeMiddle (𝔸f E)).frameGram (S.translateByClassReps c c' γ)))ᴴ
     ∃ B : GL τ (𝔸f E), IsIntMatrix (Ô E) B.val ∧
       (∀ b : τ, P *ᵥ (m *ᵥ B.val.col b) ∈ S.ideleM • colLattice (Ô E) P) ∧
-      genIndex B.val.det ≤ S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := by
+      genIndex B.val.det ≤ S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := by
   intro P
   let F : (τ → 𝔸f E) →ₗ[Ô E] Fin (𝔰.ϱ + 1) → 𝔸f E := (P * m).mulVecLin.restrictScalars (Ô E)
   let K : Submodule (Ô E) (τ → 𝔸f E) :=
@@ -759,7 +759,7 @@ lemma exists_basis_mulVec_mem_ideleM_smul {s : S.ResidueGL} (hγ : γ ∈ S.term
   have h_image : (intVectors (Ô E) τ).map F ≤ colLattice (Ô E) P := by
     rintro _ ⟨x, hx, rfl⟩
     exact ⟨m *ᵥ x, hm.mulVec hx, mulVec_mulVec x P m⟩
-  have h_dvd : submoduleIndex K (intVectors (Ô E) τ) ∣ S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) :=
+  have h_dvd : submoduleIndex K (intVectors (Ô E) τ) ∣ S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) :=
     calc
       submoduleIndex K (intVectors (Ô E) τ) =
           submoduleIndex (S.ideleM • colLattice (Ô E) P) ((intVectors (Ô E) τ).map F) :=
@@ -767,9 +767,9 @@ lemma exists_basis_mulVec_mem_ideleM_smul {s : S.ResidueGL} (hγ : γ ∈ S.term
       _ ∣ submoduleIndex (S.ideleM • colLattice (Ô E) P) (colLattice (Ô E) P) :=
         submoduleIndex_dvd_of_le .id le_rfl
           (le_sup_of_le_left (h_image.trans_eq (Submodule.map_id _).symm))
-      _ ∣ S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) :=
+      _ ∣ S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) :=
         submoduleIndex_ideleM_smul_isotropicRows_dvd hγ hj
-  have hM : S.M ≠ 0 := by simp [Nat.Prime.ne_zero]
+  have hM : S.level ≠ 0 := by simp [Nat.Prime.ne_zero]
   obtain ⟨h_index_ne, h_index_le⟩ := ne_zero_and_le_of_dvd (pow_ne_zero _ hM) h_dvd
   obtain ⟨B, hB⟩ : ∃ B : GL τ (𝔸f E), colLattice (Ô E) B.val = K :=
     exists_colLattice_eq_of_submoduleIndex_ne_zero inf_le_left h_index_ne
@@ -785,7 +785,7 @@ lemma exists_basis_mulVec_mem_ideleM_smul {s : S.ResidueGL} (hγ : γ ∈ S.term
 and let `S : Filling E 𝔰` be data of the filling theorem. Let `γ` be a term from `c'` to `c` of cell
 rank `j`, and let the columns of `v` be a basis of its link. For some invertible finite-adelic `e`
 the columns of `v e` lie in the lattice `L⁺_γ`, and the torsion index `S.torsionIndex` times the
-discriminant of their lattice is at most `M ^ (2 i f) 𝗀♯ / N ^ f`. Here `M = S.M` is the level,
+discriminant of their lattice is at most `M ^ (2 i f) 𝗀♯ / N ^ f`. Here `M = S.level` is the level,
 `N = S.N` is minus the norm of the last frame vector, `i = min ϱ j`, `f` is the number of infinite
 places and `𝗀♯ = S.minorGauge j c c' γ` is `Nm (S.subframeMinor j γ) / N ^ f` divided by the two
 indices `isotropicRowsIndex` at `S.translateByClassReps c c' γ` and at its inverse. -/
@@ -794,7 +794,7 @@ theorem exists_hasLevelLifts_linkDiscSq_le {s : S.ResidueGL} (hγ : γ ∈ S.ter
     (hL : colSpan v = link γ) :
     ∃ e : GL τ (𝔸f E), HasLevelLifts c γ (finAdeleMatrix v * e.val) ∧
       S.torsionIndex (S.translateByClassReps c c' γ) ^ 2 * S.linkDiscSq v e ≤
-        (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
+        (S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
           S.N ^ numInfPlaces E) ^ 2 := by
   -- Start from the lattice `v e` with integral lifts `t w`, whose part in `A` is `m`. The vectors
   -- `x` for which `m x` is divisible by `M` modulo `A ∩ γ A` have a basis `B` of index at most
@@ -821,7 +821,7 @@ theorem exists_hasLevelLifts_linkDiscSq_le {s : S.ResidueGL} (hγ : γ ∈ S.ter
     set i₁ : ℝ := (S.isotropicRowsIndex j (S.translateByClassReps c c' γ) : ℝ)
     set i₂ : ℝ := (S.isotropicRowsIndex j (S.translateByClassReps c c' γ)⁻¹ : ℝ)
     set i₃ : ℝ := (S.torsionIndex (S.translateByClassReps c c' γ) : ℝ)
-    set G : ℝ := (S.M : ℝ) ^ (2 * min 𝔰.ϱ j * numInfPlaces E)
+    set G : ℝ := (S.level : ℝ) ^ (2 * min 𝔰.ϱ j * numInfPlaces E)
     have h_indices : i₁ * i₂ ≠ 0 := left_ne_zero_of_mul h_ne
     calc
       i₃ ^ 2 * S.linkDiscSq v (e * B)

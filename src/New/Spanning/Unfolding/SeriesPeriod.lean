@@ -40,7 +40,7 @@ Notions from other files:
   translates under `U_c` add up to one. An integral over a quotient by `U_c` is written as an
   integral against `β_c`.
 * `h.besselChar`: the character of `R(𝔸)` given by the entries at the simple roots. The hypothesis
-  `hj_genericConst` is `ȷ Y.genericConst = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`, `M = S.M`,
+  `hj_genericConst` is `ȷ Y.genericConst = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`, `M = S.level`,
   `ϖ = S.deltaE` and `Y.genericConst` the constant of `ψ_U = Y.unipotentChar`; it makes
   `h.besselChar` equal to `ψ_U` on `U(𝔸)`.
 * `Y.sourceFn t φ`: the function `𝒲 (u a) = ψ_U (u) t (ǎ_∞⁻¹ φ (a_fin))` on `R(𝔸)`, where `ǎ_∞`
@@ -144,13 +144,13 @@ lemma shift_eq_smul_besselCharMatrix (h : S.Fits V l kw Y η) :
     grind [map_natCast]
 
 /-- Suppose `V` with the grading `Y` fits the filling data `S`, and let `h.besselChar r` be the
-standard additive character of `E` at `-(M ϖ)⁻¹ σ`. Here `M = S.M`, `ϖ = S.deltaE`, and `σ` is the
-sum `simpleRootSum` of the entries of `r` at the simple roots, read in the adelic group of `S`. Let
-`c = Y.genericConst` be the constant of the generic character `ψ_U = Y.unipotentChar`, and assume
-`ȷ c = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`. Then `h.besselChar u = ψ_U u` for every `u` in
+standard additive character of `E` at `-(M ϖ)⁻¹ σ`. Here `M = S.level`, `ϖ = S.deltaE`, and `σ` is
+the sum `simpleRootSum` of the entries of `r` at the simple roots, read in the adelic group of `S`.
+Let `c = Y.genericConst` be the constant of the generic character `ψ_U = Y.unipotentChar`, and
+assume `ȷ c = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`. Then `h.besselChar u = ψ_U u` for every `u` in
 `Y.unipotent`, the unipotent radical of the Bessel group. -/
 lemma besselChar_eq_unipotentChar [WeilData E] (h : S.Fits V l kw Y η)
-    (hj_genericConst : WeilData.j * Y.genericConst = -(S.M * S.deltaE : E)⁻¹) {u : New.G E ε}
+    (hj_genericConst : WeilData.j * Y.genericConst = -(S.level * S.deltaE : E)⁻¹) {u : New.G E ε}
     (hu : u ∈ Y.unipotent) :
     h.besselChar u = Y.unipotentChar u := by
   -- With `σ` the sum of the entries at the simple roots, the trace is `c * (σ - star σ)`, and
@@ -171,12 +171,12 @@ lemma besselChar_eq_unipotentChar [WeilData E] (h : S.Fits V l kw Y η)
   rw [besselChar, Grading.unipotentChar, h_trace, h_half, stdAddChar_inv_two_mul_add_star,
     hj_genericConst]
 
-/-- Let `ȷ c = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`, `c = Y.genericConst`, `M = S.M` and
+/-- Let `ȷ c = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`, `c = Y.genericConst`, `M = S.level` and
 `ϖ = S.deltaE`, so that `h.besselChar` extends the generic character `ψ_U`. Then `sourceFn t φ` at
 `r ∈ R(𝔸)` is `h.besselChar r` times the coefficient `algFormCoeff 1 t φ` at the `H`-part
 `Y.leviPart r` of `r`. -/
 lemma sourceFn_eq_besselChar_mul [WeilData E] (h : S.Fits V l kw Y η)
-    (hj_genericConst : WeilData.j * Y.genericConst = -(S.M * S.deltaE : E)⁻¹)
+    (hj_genericConst : WeilData.j * Y.genericConst = -(S.level * S.deltaE : E)⁻¹)
     (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ) (φ : AlgForm (E := E) 𝔰.κ kw 0) (r : Y.besselGroup) :
     Y.sourceFn t φ r = h.besselChar r * algFormCoeff 1 t φ (Y.leviPart r) := by
   rw [Grading.sourceFn,
@@ -256,7 +256,7 @@ lemma exists_ratEquiv_mul_classPoint (h : S.Fits V l kw Y η) {c : S.Classes}
 
 /-! ### The Bessel function as an integral over `R(F_∞)` -/
 
-/-- Suppose `V` fits `S` and `ȷ Y.genericConst = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`, `M = S.M` and
+/-- Suppose `V` fits `S` and `ȷ Y.genericConst = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`, `M = S.level` and
 `ϖ = S.deltaE`, so that `h.besselChar` extends `ψ_U`. Let `ψ` be an algebraic form on `H`, let `t`
 be any linear form on its space of values, and let `𝒲` be `sourceFn t` of the translate of `ψ` by
 `η`. Let `s = u a` be a real point of `R = U ⋊ H`, so that `a_∞ = (Y.leviPart (s, 1)).1` is the real
@@ -264,7 +264,7 @@ component of its `H`-part, and let `h.classSection c s = (s, h_c)`. Then
 `𝒲 (s, h_c) = ψ_U (u) t (ǎ_∞⁻¹ ψ (c.out))`, where `ǎ_∞` is the action of `a_∞` by `conjWeylRep` and
 `ψ_U (u)` is written `h.besselChar (s, 1)`. -/
 lemma sourceFn_classSection [WeilData E] (h : S.Fits V l kw Y η)
-    (hj_genericConst : WeilData.j * Y.genericConst = -(S.M * S.deltaE : E)⁻¹)
+    (hj_genericConst : WeilData.j * Y.genericConst = -(S.level * S.deltaE : E)⁻¹)
     (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ) (ψ : AlgForm (E := E) 𝔰.κ kw 0) (c : S.Classes)
     (s : Y.besselReal) :
     Y.sourceFn t (algFormRep kw 0 η ψ) (h.classSection c s) =
@@ -279,16 +279,16 @@ lemma sourceFn_classSection [WeilData E] (h : S.Fits V l kw Y η)
   simp
 
 /-- **The integral formula of the Bessel function, paired with the value of a form on `H`.** Suppose
-`V` fits `S` and `ȷ Y.genericConst = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`, `M = S.M` and `ϖ = S.deltaE`.
-Then there are a real point `g₀` and a linear form `t` with the following property for every form
-`ψ` on `H`, class `c` and real point `x` of the group of `V`. The value of `ψ` at the representative
-`c.out`, taken to the coordinates of the Bessel function by the linear isomorphism
+`V` fits `S` and `ȷ Y.genericConst = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`, `M = S.level` and
+`ϖ = S.deltaE`. Then there are a real point `g₀` and a linear form `t` with the following property
+for every form `ψ` on `H`, class `c` and real point `x` of the group of `V`. The value of `ψ` at the
+representative `c.out`, taken to the coordinates of the Bessel function by the linear isomorphism
 `h.weylBesselEquiv`, paired with the full, uncut Bessel function `S.besselFn .full` at the image of
 `x` in the real group of `S`, is `∫_{R(F_∞)} conj e (g₀⁻¹ s⁻¹ x) 𝒲 (s, h_c) ds`. Here
 `e = typeKernel l ε` is the kernel of the type, `(s, h_c) = h.classSection c s` with `h_c` the
 finite point of `c`, and `𝒲 = sourceFn t` of the translate of `ψ` by `η`. -/
 theorem exists_dotProduct_besselFn_eq_integral [WeilData E] (h : S.Fits V l kw Y η)
-    (hj_genericConst : WeilData.j * Y.genericConst = -(S.M * S.deltaE : E)⁻¹) :
+    (hj_genericConst : WeilData.j * Y.genericConst = -(S.level * S.deltaE : E)⁻¹) :
     ∃ (g₀ : GInf E ε) (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ),
       ∀ (ψ : AlgForm (E := E) 𝔰.κ kw 0) (c : S.Classes) (x : GInf E ε),
         h.weylBesselEquiv (ψ.val c.out) ⬝ᵥ S.besselFn .full (h.realHomeomorph x) =
@@ -408,12 +408,12 @@ lemma exists_eq_unipotent_mul_inclX (h : S.Fits V l kw Y η) [S.IsAdmissible]
   rwa [h_char, unipotentChar_one, div_one] at h_quot
 
 /-- Suppose `V` fits `S` (`h`), `S` is admissible and `ȷ c = -(M ϖ)⁻¹`, with `ȷ = WeilData.j`,
-`c = Y.genericConst`, `M = S.M`, `ϖ = S.deltaE`. Let `t` be a linear functional and `ψ` an algebraic
-form fixed by `S.sourceLevel`. Let `𝒲 = Y.sourceFn t (algFormRep kw 0 η ψ)`, built from the
-translate of `ψ` by `η`. Then `𝒲 (r * Y.besselProdEquiv (1, k)) = 𝒲 (r)` for `r` in `Y.besselGroup`
-and `k` in `Y.besselFin` lying in the principal level `S.stdPrincipalLevel`. -/
+`c = Y.genericConst`, `M = S.level`, `ϖ = S.deltaE`. Let `t` be a linear functional and `ψ` an
+algebraic form fixed by `S.sourceLevel`. Let `𝒲 = Y.sourceFn t (algFormRep kw 0 η ψ)`, built from
+the translate of `ψ` by `η`. Then `𝒲 (r * Y.besselProdEquiv (1, k)) = 𝒲 (r)` for `r` in
+`Y.besselGroup` and `k` in `Y.besselFin` lying in the principal level `S.stdPrincipalLevel`. -/
 lemma sourceFn_mul_of_mem_stdPrincipalLevel [WeilData E] (h : S.Fits V l kw Y η) [S.IsAdmissible]
-    (hj_genericConst : WeilData.j * Y.genericConst = -(S.M * S.deltaE : E)⁻¹)
+    (hj_genericConst : WeilData.j * Y.genericConst = -(S.level * S.deltaE : E)⁻¹)
     (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ)
     (ψ : levelSpace (algFormRep kw 0) S.sourceLevel) (r : Y.besselGroup) {k : Y.besselFin}
     (hk : (k : Gf E 𝔰.BesselIndex) ∈ S.stdPrincipalLevel) :
@@ -621,14 +621,14 @@ lemma sourceFormCoords_apply (h : S.Fits V l kw Y η)
 /-- **The Poincaré series represents a Bessel period.** Suppose `V` with the grading `Y` fits the
 admissible filling data `S`: the type, the indexing and the lattice of `V` agree with those of `S`,
 up to the central element `η` of `H(𝔸_fin)`. Let `ȷ Y.genericConst = -(M ϖ)⁻¹`, with
-`ȷ = WeilData.j`, `M = S.M` and `ϖ = S.deltaE`, so that the character of the filling data is `ψ_U`.
-There are a real point `g₀` and a linear form `t` with `∫_{[G]} y · 𝒫 ψ = ∫_{[R]} 𝒲 (r) y (r g₀) dr`
-for every source form `ψ` and every form `y` of the conjugate type and principal level. Here `𝒫 ψ`
-is the series over `G(F)` of the Bessel function, with coefficients the values
-`h.sourceFormCoords ψ` of `ψ` at the class representatives, and `𝒲` is `sourceFn t` of the translate
-of `ψ` by `η`. -/
+`ȷ = WeilData.j`, `M = S.level` and `ϖ = S.deltaE`, so that the character of the filling data is
+`ψ_U`. There are a real point `g₀` and a linear form `t` with
+`∫_{[G]} y · 𝒫 ψ = ∫_{[R]} 𝒲 (r) y (r g₀) dr` for every source form `ψ` and every form `y` of the
+conjugate type and principal level. Here `𝒫 ψ` is the series over `G(F)` of the Bessel function,
+with coefficients the values `h.sourceFormCoords ψ` of `ψ` at the class representatives, and `𝒲` is
+`sourceFn t` of the translate of `ψ` by `η`. -/
 theorem exists_integral_poincareSeries_eq_period (h : S.Fits V l kw Y η) [S.IsAdmissible]
-    (hj_genericConst : WeilData.j * Y.genericConst = -(S.M * S.deltaE : E)⁻¹) :
+    (hj_genericConst : WeilData.j * Y.genericConst = -(S.level * S.deltaE : E)⁻¹) :
     ∃ (g₀ : GInf E ε) (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ),
       ∀ (ψ : levelSpace (algFormRep kw 0) S.sourceLevel) {y : New.G E ε → ℂ},
         V.IsForm (star (typeKernel l ε)) y → HasLevel y S.stdPrincipalLevel.toSubgroup →

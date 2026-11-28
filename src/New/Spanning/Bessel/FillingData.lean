@@ -499,7 +499,7 @@ noncomputable def filling : Filling D.E D.shape where
   chosenPlaces_q i w hw := D.q_eq_levelPrime hw.2
   chosenPlaces_injective := D.isConjApart_chosenPlace.injective
   star_notMem_chosenPlaces hw hw' := IsChosen.not_star hw.1 hw'.1
-  M_dvd_iff r := by
+  level_dvd_iff r := by
     -- The primes `D.levelPrime 0` and `D.levelPrime 1` are distinct, so their product divides `r`
     -- iff both do.
     have h_prod : ↑(D.levelPrime 0 * D.levelPrime 1) ∣ r ↔ ∀ i : Fin 2, ↑(D.levelPrime i) ∣ r := by
@@ -531,8 +531,8 @@ noncomputable def filling : Filling D.E D.shape where
   succ_le_b := D.le_of_hasLogBound
   thousand_le_b := D.le_of_hasLogBound
   one_le_b := D.le_of_hasLogBound
-  M_le_b_pow := D.le_of_hasLogBound
-  le_M := D.le_of_hasLogBound
+  level_le_b_pow := D.le_of_hasLogBound
+  le_level := D.le_of_hasLogBound
   five_le_N := D.le_of_hasLogBound
 
 /-- The Bessel system of `D.filling` at the infinite place `v` has type

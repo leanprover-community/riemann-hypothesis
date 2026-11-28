@@ -195,7 +195,7 @@ lemma scaledSiegelConst_mul_decayConst_le [S.IsAdmissible] :
         (Fintype.card S.BesselCoord * S.identitySecondMoment * S.unipotentCovolume ^ 2) := by
   -- Apart from the common factor `c`, both sides are `f`-th powers, of `A` and of `b ^ n⁹ * B`.
   have hb : 1 ≤ S.b := S.one_le_b
-  have hM : (1 : ℝ) ≤ S.M := mod_cast one_le_two.trans two_le_M
+  have hM : (1 : ℝ) ≤ S.level := mod_cast one_le_two.trans two_le_level
   have hN : (1 : ℝ) ≤ S.N := mod_cast S.N_prime.pos
   obtain ⟨s, hs, hs_sq⟩ : ∃ s : ℝ, 1 ≤ s ∧ NumberField.rootDiscr E = s ^ 2 :=
     ⟨√(NumberField.rootDiscr E), Real.one_le_sqrt.2 (one_le_rootDiscr E),
@@ -204,13 +204,13 @@ lemma scaledSiegelConst_mul_decayConst_le [S.IsAdmissible] :
     grw [← S.pow_le_k, Nat.pow_le_pow_right 𝔰.ϱ.succ_pos (by norm_num : 7 ≤ 9)]
     lia)
   -- `Q ^ f` is the product of the `|κ_v|` and `x` the base of the decay at one place. The power
-  -- `S.M ^ D` is an explicit factor of `A`, and its square is a factor of `B`.
-  let Q : ℝ := S.M * s ^ 2 / (2 * π)
-  let x : ℝ := Q ^ (2 * 𝔰.ϱ + 1) / (S.M * S.N)
+  -- `S.level ^ D` is an explicit factor of `A`, and its square is a factor of `B`.
+  let Q : ℝ := S.level * s ^ 2 / (2 * π)
+  let x : ℝ := Q ^ (2 * 𝔰.ϱ + 1) / (S.level * S.N)
   let D : ℕ := 𝔰.ϱ * (2 * 𝔰.k + 2 * 𝔰.ϱ + 1)
-  let A : ℝ := S.M ^ D * (π ^ 𝔰.k / (𝔰.k - 1).factorial / S.N ^ 𝔰.k * s * (2 / s ^ 2) ^ 𝔰.k) *
+  let A : ℝ := S.level ^ D * (π ^ 𝔰.k / (𝔰.k - 1).factorial / S.N ^ 𝔰.k * s * (2 / s ^ 2) ^ 𝔰.k) *
     ((2 / s ^ 2) ^ 𝔰.n / 𝔰.openCellConst) * (𝔰.scaledVolumeRatio * x ^ K)
-  let B : ℝ := (S.M ^ D / S.N ^ 𝔰.k * (s ^ 2 / 2) ^ (𝔰.ϱ * (𝔰.k + 𝔰.ϱ)) * s ^ 𝔰.ϱ) ^ 2
+  let B : ℝ := (S.level ^ D / S.N ^ 𝔰.k * (s ^ 2 / 2) ^ (𝔰.ϱ * (𝔰.k + 𝔰.ϱ)) * s ^ 𝔰.ϱ) ^ 2
   let c : ℝ := Nat.card (S.reducedImage besselS) * card S.Classes *
     (card S.BesselCoord / S.frameScaleProd) ^ 2
   have h_kappa : ∏ v, |S.realM v| = Q ^ Core.numInfPlaces E := by rw [prod_abs_realM, hs_sq]
@@ -239,7 +239,7 @@ lemma scaledSiegelConst_mul_decayConst_le [S.IsAdmissible] :
     (one_le_pow_iff_of_nonneg (by positivity) Fintype.card_ne_zero).1
       ((Finset.one_le_prod₀ fun v _ ↦ S.one_le_abs_realM v).trans_eq h_kappa)
   have h_place : A = B * ((2 / s ^ 2) ^ (𝔰.n + 2 * 𝔰.ϱ ^ 2) * (s / s ^ (2 * 𝔰.ϱ)) /
-      (2 * S.M ^ (𝔰.ϱ * (2 * 𝔰.ϱ + 1))) * x⁻¹ ^ 𝔰.n ^ 7) := by
+      (2 * S.level ^ (𝔰.ϱ * (2 * 𝔰.ϱ + 1))) * x⁻¹ ^ 𝔰.n ^ 7) := by
     have h_x : x ^ K = x ^ 𝔰.k * x⁻¹ ^ 𝔰.n ^ 7 := by
       simp [hK, pow_add, field]
     simp only [A, B, h_x]
@@ -250,12 +250,12 @@ lemma scaledSiegelConst_mul_decayConst_le [S.IsAdmissible] :
   -- Those factors are at most `b ^ n⁹`: `2 / s²` is at most `b`, `s / s^(2ϱ)` at most `1` and
   -- `x⁻¹` at most a power of `b`.
   have h_factor : (2 / s ^ 2) ^ (𝔰.n + 2 * 𝔰.ϱ ^ 2) * (s / s ^ (2 * 𝔰.ϱ)) /
-      (2 * S.M ^ (𝔰.ϱ * (2 * 𝔰.ϱ + 1))) * x⁻¹ ^ 𝔰.n ^ 7 ≤ S.b ^ 𝔰.n ^ 9 := by
+      (2 * S.level ^ (𝔰.ϱ * (2 * 𝔰.ϱ + 1))) * x⁻¹ ^ 𝔰.n ^ 7 ≤ S.b ^ 𝔰.n ^ 9 := by
     have h_two : 2 / s ^ 2 ≤ S.b := (div_le_self zero_le_two (one_le_pow₀ hs)).trans two_le_b
     have h_s : s / s ^ (2 * 𝔰.ϱ) ≤ 1 :=
       div_le_one_of_le₀ (le_self_pow₀ hs (by grind [S.ten_pow_five_le_varrho])) (by positivity)
     have h_inv : x⁻¹ ≤ S.b ^ 23 * S.b ^ (60 * 𝔰.n) := by
-      grw [inv_div, div_le_self (by positivity) (one_le_pow₀ hQ), S.M_le_b_pow, S.N_le]
+      grw [inv_div, div_le_self (by positivity) (one_le_pow₀ hQ), S.level_le_b_pow, S.N_le]
     grw [div_le_self (by positivity) (by bound), h_two, h_s, h_inv, mul_one, ← pow_add, ← pow_mul,
       ← pow_add]
     refine pow_le_pow_right₀ hb ?_

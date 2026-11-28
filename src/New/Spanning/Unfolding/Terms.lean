@@ -481,7 +481,7 @@ lemma tailScale_pow_mul_identitySecondMoment_le [S.IsAdmissible] :
   rw [pow_mul _ 4 11, tailScale_pow_four, ← pow_mul']
   exact IsAdmissible.mul_identitySecondMoment_le
 
-lemma two_le_M : 2 ≤ S.M := by simp [two_le_iff, Nat.Prime.ne_one, Nat.Prime.ne_zero]
+lemma two_le_level : 2 ≤ S.level := by simp [two_le_iff, Nat.Prime.ne_one, Nat.Prime.ne_zero]
 
 lemma two_le_b : 2 ≤ S.b := by linarith [S.thousand_le_b]
 

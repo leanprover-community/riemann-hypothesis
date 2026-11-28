@@ -254,13 +254,13 @@ lemma exists_integral_pi_eq (h : S.Fits V l kw Y η) :
 /-! ### The three factors of the integrand -/
 
 /-- The standard additive character of `E` at `-(M ϖ)⁻¹` times the sum `simpleRootSum` of the
-entries at the simple roots of the image of `r` in the adelic group of `S`. Here `M = S.M` is the
-product of the two level primes and `ϖ = S.deltaE` is the chosen generator of the different of `E`.
-On `R(𝔸)` this is a character that is trivial on `H(𝔸)`; it extends `ψ_U` when the constant
+entries at the simple roots of the image of `r` in the adelic group of `S`. Here `M = S.level` is
+the product of the two level primes and `ϖ = S.deltaE` is the chosen generator of the different of
+`E`. On `R(𝔸)` this is a character that is trivial on `H(𝔸)`; it extends `ψ_U` when the constant
 `c = Y.genericConst` of `ψ_U` satisfies `ȷ * c = -(M ϖ)⁻¹`, where `ȷ = WeilData.j` is the purely
 imaginary element of `E` fixed by the Weil data. -/
 def besselChar (h : S.Fits V l kw Y η) (r : New.G E ε) : ℂ :=
-  stdAddChar E (toAdele (-(S.M * S.deltaE : E)⁻¹) * simpleRootSum (h.adelicEquiv r))
+  stdAddChar E (toAdele (-(S.level * S.deltaE : E)⁻¹) * simpleRootSum (h.adelicEquiv r))
 
 /-- Suppose `V` fits `S`. Let `s` be a point of `GInf E ε = ∏_v U(diag ε)`, so that `(s, 1)` is the
 adelic point with infinite part `s` and trivial finite part, and let `g_v = realCoords s v` be its
@@ -269,7 +269,7 @@ product over `v` of `wave (-simpleRootSum g_v)`. -/
 lemma besselChar_inl_inv (h : S.Fits V l kw Y η) (s : GInf E ε) :
     (h.besselChar (s, 1))⁻¹ = ∏ v : InfinitePlace E, wave (-simpleRootSum (h.realCoords s v)) := by
   set x : S.G (𝔸 E) := h.adelicEquiv (s, 1) with hx
-  set z : 𝔸 E := toAdele (-(S.M * S.deltaE : E)⁻¹) * simpleRootSum x with hz
+  set z : 𝔸 E := toAdele (-(S.level * S.deltaE : E)⁻¹) * simpleRootSum x with hz
   have hx_fin : S.adelicToFin x = 1 := by
     simpa [← hx, mul_assoc, eq_inv_mul_iff_mul_eq] using h.finiteEquiv_eq_conj_adelicToFin (s, 1)
   have hz_fin : z.2 = 0 := by

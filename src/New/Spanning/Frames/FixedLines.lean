@@ -216,8 +216,9 @@ variable {S : Filling E 𝔰}
 /-- The level `M = S.ideleM`, the product of the two level primes as a finite idele, lies in the
 maximal ideal at every chosen place `w`. -/
 theorem v_ideleM_lt_one {i : Fin 2} (w : S.chosenPlaces i) : v (S.ideleM.val w) < 1 := by
-  obtain ⟨h_zero, -⟩ : New.reduceAt w (S.M : Ô E) = 0 ∧ New.reduceAt w (star (S.M : Ô E)) = 0 :=
-    (S.M_dvd_iff S.M).1 dvd_rfl ⟨i, w⟩
+  obtain ⟨h_zero, -⟩ :
+      New.reduceAt w (S.level : Ô E) = 0 ∧ New.reduceAt w (star (S.level : Ô E)) = 0 :=
+    (S.level_dvd_iff S.level).1 dvd_rfl ⟨i, w⟩
   rw [reduceAt_eq_zero, SubringClass.coe_natCast] at h_zero
   rwa [ideleM_val]
 

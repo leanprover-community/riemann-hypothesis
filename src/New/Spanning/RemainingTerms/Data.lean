@@ -14,8 +14,8 @@ We write `X₀` for the definite hermitian space with coordinates `𝔰.κ`, and
 spans the rest of the middle part.
 
 Here a term is a rational element `γ`, taken with two classes `c` and `c'`, `A` is the span of
-`e₁, …, e_ϱ`, `Λ` is the lattice of the class `c`, `M = S.M` is the level and `f` is the number of
-infinite places. A term in the cell `j` has `rk A / (A ∩ γ A) = min ϱ j`.
+`e₁, …, e_ϱ`, `Λ` is the lattice of the class `c`, `M = S.level` is the level and `f` is the number
+of infinite places. A term in the cell `j` has `rk A / (A ∩ γ A) = min ϱ j`.
 
 Notions from other files:
 * `S.classCoordX₀ c`: the matrix of a basis of `X₀` in the coordinates of `Λ`; it is orthonormal
@@ -75,7 +75,7 @@ def linkCorank : ℕ := 𝔰.k + 1 - finrank E ↥(link γ ⊓ link γ')
 /-- The gauge `𝗀*` of a term in the cell `j`: `S.maxGauge` times the factor `M ^ (2 j' f)`,
 `j' = min ϱ j`, that is due to the congruence level `M`. Here `f` is the number of infinite
 places. -/
-def levelGauge : ℝ := S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.maxGauge j c c' γ
+def levelGauge : ℝ := S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.maxGauge j c c' γ
 
 /-- The bound `b ^ (n³ f)` for the gauges of near terms and for the discriminants of the pairs
 that are counted, where `f` is the number of infinite places. -/

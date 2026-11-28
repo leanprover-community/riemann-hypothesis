@@ -11,7 +11,7 @@ import Lib.General.NumberTheory.SUnitsAndClassNumber
 /-!
 # The box
 
-Let `S : Filling E 𝔰` be admissible data for a CM field `E` and a shape `𝔰`, with `M = S.M` the
+Let `S : Filling E 𝔰` be admissible data for a CM field `E` and a shape `𝔰`, with `M = S.level` the
 level and `b = S.b`. Consider the tuples of complex numbers, one for each infinite place, modulo
 `M 𝓞_E`, and fix a measurable set `D` of representatives, each coordinate of each point of `D`
 having modulus at most `b ^ 26`.
@@ -112,34 +112,34 @@ variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
   {D : Set (InfinitePlace E → ℂ)}
 
 /-- A tuple of complex numbers, one for each infinite place, lies in `S.levelMultiples`, the
-multiples of the level `M = S.M`, if and only if it consists of the images of `M x` for an integer
-`x` of `E`. -/
+multiples of the level `M = S.level`, if and only if it consists of the images of `M x` for an
+integer `x` of `E`. -/
 lemma mem_levelMultiples {w : InfinitePlace E → ℂ} :
-    w ∈ S.levelMultiples ↔ ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.M * (x : E))) = w :=
+    w ∈ S.levelMultiples ↔ ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.level * (x : E))) = w :=
   .rfl
 
 /-- Let `S : Filling E 𝔰`, the data of the filling theorem, satisfy the standing hypotheses
 `S.IsAdmissible`. For `r ≥ 0` and a tuple `w` over the infinite places, only finitely many `l` in
 `S.levelMultiples` make all coordinates of `l + w` have modulus at most `r`. Here `S.levelMultiples`
-is the set of tuples `M x`, where `x` is an integer of `E` and `M = S.M` is the level. -/
+is the set of tuples `M x`, where `x` is an integer of `E` and `M = S.level` is the level. -/
 lemma finite_setOf_levelMultiples_add_le {r : ℝ} (hr : 0 ≤ r)
     (w : InfinitePlace E → ℂ) :
     {l : S.levelMultiples | ∀ v : InfinitePlace E, ‖(l.val + w) v‖ ≤ r}.Finite := by
   have h_integer (l : S.levelMultiples) :
-      ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.M * (x : E))) = l.val :=
+      ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.level * (x : E))) = l.val :=
     mem_levelMultiples.1 l.property
   choose x hx using h_integer
   let A : Set S.levelMultiples := {l | ∀ v : InfinitePlace E, ‖(l.val + w) v‖ ≤ r}
-  let f (l : S.levelMultiples) (_ : Unit) : E := S.M * (x l : E)
+  let f (l : S.levelMultiples) (_ : Unit) : E := S.level * (x l : E)
   have h_bound : ∀ l ∈ A, ∀ i : Unit,
       IsIntegral ℤ (f l i) ∧ ∀ v : InfinitePlace E, ‖Φ v (f l i)‖ ≤ r + ‖w‖ := by
     refine fun l hl i ↦ ⟨(isIntegral_natCast _).mul (x l).isIntegral_coe, fun v ↦ ?_⟩
-    change ‖Φ v (S.M * (x l : E))‖ ≤ r + ‖w‖
+    change ‖Φ v (S.level * (x l : E))‖ ≤ r + ‖w‖
     rw [congrFun (hx l) v, ← add_sub_cancel_right (l.val v) (w v)]
     exact norm_sub_le_of_le (hl v) (norm_le_pi_norm w v)
   have h_inj : InjOn f A := by
     intro l _ l' _ h_eq
-    have h_mul : S.M * (x l : E) = S.M * (x l' : E) := congrFun h_eq ()
+    have h_mul : S.level * (x l : E) = S.level * (x l' : E) := congrFun h_eq ()
     ext1
     rw [← hx l, ← hx l', h_mul]
   have h_lt_top : (A.encard : ℝ≥0∞) < ⊤ :=
@@ -159,25 +159,26 @@ lemma exists_isResidueDomain [S.IsAdmissible] :
   let B : Set (InfinitePlace E → ℂ) :=
     {w : InfinitePlace E → ℂ | ∀ v : InfinitePlace E, ‖w v‖ ≤ S.b ^ 26}
   -- Every tuple is within `M (2 f) ^ 2 |ϖ| ≤ b ^ 26` of a tuple in `S.levelMultiples`, where
-  -- `M = S.M` is the level, `ϖ = S.deltaE` and `f = numInfPlaces E`.
+  -- `M = S.level` is the level, `ϖ = S.deltaE` and `f = numInfPlaces E`.
   have h_nonempty (w : InfinitePlace E → ℂ) : ∃ l : S.levelMultiples, l.val + w ∈ B := by
     have h_ne : S.deltaE ≠ 0 := mod_cast S.deltaE_ne_zero
     have h_different : S.deltaE ∈ differentIdeal ℤ (𝓞 E) := by simp [S.span_deltaE]
     obtain ⟨a, ha_int, ha_near⟩ : ∃ a : E, 0 - algebraMap E (𝔸f E) a ∈ Ô E ∧
-        ∀ v : InfinitePlace E, ‖-w v / S.M - Φ v a‖ ≤ (2 * numInfPlaces E) ^ 2 * ‖Φ v S.deltaE‖ :=
-      exists_principal_near_of_mem_differentIdeal h_ne h_different (fun v ↦ -w v / S.M) 0
+        ∀ v : InfinitePlace E,
+          ‖-w v / S.level - Φ v a‖ ≤ (2 * numInfPlaces E) ^ 2 * ‖Φ v S.deltaE‖ :=
+      exists_principal_near_of_mem_differentIdeal h_ne h_different (fun v ↦ -w v / S.level) 0
     rw [zero_sub, neg_mem_iff, algebraMap_mem_Ô] at ha_int
     let l : S.levelMultiples :=
-      ⟨fun v ↦ Φ v (S.M * a), mem_levelMultiples.2 ⟨⟨a, ha_int⟩, rfl⟩⟩
+      ⟨fun v ↦ Φ v (S.level * a), mem_levelMultiples.2 ⟨⟨a, ha_int⟩, rfl⟩⟩
     refine ⟨l, fun v ↦ ?_⟩
-    have hM_ne : (S.M : ℂ) ≠ 0 := by simp [Nat.Prime.ne_zero]
+    have hM_ne : (S.level : ℂ) ≠ 0 := by simp [Nat.Prime.ne_zero]
     have h_places : 2 * (numInfPlaces E : ℝ) ≤ S.b := by linarith [S.numInfPlaces_le_div]
-    calc ‖Φ v (S.M * a) + w v‖ = ‖(S.M : ℂ)‖ * ‖-w v / S.M - Φ v a‖ := by
+    calc ‖Φ v (S.level * a) + w v‖ = ‖(S.level : ℂ)‖ * ‖-w v / S.level - Φ v a‖ := by
           rw [← norm_mul, ← norm_neg, map_mul, map_natCast]
           congr 1
           field
       _ ≤ S.b ^ 23 * (S.b ^ 2 * S.b) := by
-          grw [ha_near, RCLike.norm_natCast, M_le_b_pow, IsAdmissible.norm_deltaE_le, h_places]
+          grw [ha_near, RCLike.norm_natCast, level_le_b_pow, IsAdmissible.norm_deltaE_le, h_places]
       _ = S.b ^ 26 := by ring
   -- Only finitely many integers have bounded conjugates.
   have h_finite (w : InfinitePlace E → ℂ) : {l : S.levelMultiples | l.val + w ∈ B}.Finite :=
@@ -254,7 +255,7 @@ lemma ratTriangle_eq_one_apply_of_le (y : InfinitePlace E → 𝔰.G₁) {row co
   · rw [h_diagonal, div_self (S.basisScale_ne_zero v _), mul_one]
   · rw [zero_mul]
 
-/-- If `D` is a set of representatives modulo `S.M 𝓞_E` as in `New.Filling.IsResidueDomain`, in
+/-- If `D` is a set of representatives modulo `S.level 𝓞_E` as in `New.Filling.IsResidueDomain`, in
 particular measurable, then the set of points whose triangular matrix has its entries above the
 diagonal in `D` is measurable. -/
 lemma IsResidueDomain.measurableSet_reducedPoints (hD : S.IsResidueDomain D) :
@@ -269,8 +270,8 @@ lemma IsResidueDomain.measurableSet_reducedPoints (hD : S.IsResidueDomain D) :
 /-- At an infinite place `v` the scale `S.basisScale v` of the normalised basis is
 `κ_v ^ (ϱ - a) / √N` at the `a`-th frame vector `𝔰.besselFrame a`. Here `ϱ = 𝔰.ϱ` is the number of
 hyperbolic planes, `N = S.N` is the prime of the data, and `κ_v = S.realM v` is the real number
-`S.M * Φ v S.deltaE / (2 π i)`. For admissible `S` one has `1 ≤ |κ_v|`, so the scale does not grow
-along the frame: for `a ≤ b` the scale at `b` divided by the scale at `a` has modulus at most
+`S.level * Φ v S.deltaE / (2 π i)`. For admissible `S` one has `1 ≤ |κ_v|`, so the scale does not
+grow along the frame: for `a ≤ b` the scale at `b` divided by the scale at `a` has modulus at most
 one. -/
 lemma norm_basisScale_div_le_one [S.IsAdmissible] (v : InfinitePlace E) {a b : Fin (𝔰.ϱ + 1)}
     (hab : a ≤ b) :
@@ -281,10 +282,10 @@ lemma norm_basisScale_div_le_one [S.IsAdmissible] (v : InfinitePlace E) {a b : F
   refine div_le_one_of_le₀ ?_ (by positivity)
   gcongr
 
-/-- Let `S` be admissible and `D` a measurable set of representatives modulo `S.M 𝓞_E` whose points
-have modulus at most `S.b ^ 26` at every place. If `y` is reduced for `D`, that is, the entries
-above the diagonal of `S.ratTriangle y` lie in `D`, then all entries of `gramSchmidtMatrix (y v)`
-have modulus at most `S.b ^ 26`. -/
+/-- Let `S` be admissible and `D` a measurable set of representatives modulo `S.level 𝓞_E` whose
+points have modulus at most `S.b ^ 26` at every place. If `y` is reduced for `D`, that is, the
+entries above the diagonal of `S.ratTriangle y` lie in `D`, then all entries of
+`gramSchmidtMatrix (y v)` have modulus at most `S.b ^ 26`. -/
 lemma IsResidueDomain.norm_gramSchmidtMatrix_le [S.IsAdmissible] (hD : S.IsResidueDomain D)
     {y : InfinitePlace E → 𝔰.G₁} (hy : y ∈ S.reducedPoints D) (v : InfinitePlace E)
     (a b : Fin (𝔰.ϱ + 1)) : ‖gramSchmidtMatrix (y v) a b‖ ≤ S.b ^ 26 := by
@@ -299,7 +300,7 @@ lemma IsResidueDomain.norm_gramSchmidtMatrix_le [S.IsAdmissible] (hD : S.IsResid
   · simp [ratTriangle_eq_one_apply_of_le y hba.le, hba.ne',
     pow_nonneg (zero_le_one.trans S.one_le_b)]
 
-/-- Let `S` be admissible, let `D` be a measurable set of representatives modulo `S.M 𝓞_E`, the
+/-- Let `S` be admissible, let `D` be a measurable set of representatives modulo `S.level 𝓞_E`, the
 points of `D` having modulus at most `S.b ^ 26` at every place, and let `y` be reduced for `D`: the
 entries of the triangular matrix `S.ratTriangle y` above the diagonal lie in `D`. Then at every
 infinite place `v` the point `y v` is in the `frameBox` of radius
@@ -322,7 +323,7 @@ lemma IsResidueDomain.mem_frameBox [S.IsAdmissible] (hD : S.IsResidueDomain D)
 
 /-- Let `S` be admissible, that is, satisfy the standing hypotheses `New.Filling.IsAdmissible`,
 `n = 𝔰.n`, and let `y` be boxed: the entries above the diagonal of `S.ratTriangle y` lie in the set
-of representatives modulo `S.M 𝓞_E` chosen in `S.boxedPoints`, and
+of representatives modulo `S.level 𝓞_E` chosen in `S.boxedPoints`, and
 `besselLength (y v) ≤ S.b ^ (6 n + 2)` at every infinite place `v`, where `besselLength g` is the
 infimum of `‖s * g‖ + 1` over `s` in the Bessel subgroup `besselS` of `𝔰.G₁`. Then `y v` lies in the
 `frameBox` of radius `S.frameBoxRadius = S.b ^ (37 n)`. -/

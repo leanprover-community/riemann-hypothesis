@@ -17,7 +17,7 @@ archimedean points. The middle space is X₀ ⊕ E z, with X₀ spanned by the b
 `κ`. Write 𝖴 for the Bessel unipotent group `New.Shape.Form.besselU`. Write H for
 `New.Shape.Form.besselH`, the unitary group U(X₀), acting only on the basis vectors indexed by `κ`.
 Write `New.Shape.Form.besselS` for the group they generate. Write σ = `New.simpleRootSum` for the
-sum of the entries just above the diagonal on the frame. The level is `S.M = p₀ p₁` with
+sum of the entries just above the diagonal on the frame. The level is `S.level = p₀ p₁` with
 `pᵢ = S.levelPrime i`, and `S.chosenPlaces i` are the chosen places of norm `pᵢ`. K(M) is
 `S.principalLevel`. For a class c, h_c = `S.classRep c` is its representative in H. For classes c,
 d, `S.translateByClassReps c d γ` is h_c⁻¹ γ h_d, and `S.termsOver c s d` is the set of rational γ
@@ -243,11 +243,11 @@ lemma _root_.Membership.mem.ratToInf_mem_agreeWithOneOn {γ : S.G E}
 variable (S) in
 /-- For adelic `x` and an infinite place `v`, `simpleRootSum (S.adelicToInf x v)` is the sum of the
 entries just above the diagonal of the block on `(e_0, …, e_{ϱ-1}, z)` of the rescaled `v`-component
-of `x`. It equals `-2πi` times the `v`-component of `-simpleRootSum x / (M ϖ)`. Here `M = S.M` is
-the level and `ϖ = S.deltaE` generates the different of `E`. -/
+of `x`. It equals `-2πi` times the `v`-component of `-simpleRootSum x / (M ϖ)`. Here `M = S.level`
+is the level and `ϖ = S.deltaE` generates the different of `E`. -/
 lemma simpleRootSum_adelicToInf (x : S.G (𝔸 E)) (v : InfinitePlace E) :
     simpleRootSum (S.adelicToInf x v) =
-      -π * 2 * .I * (toAdele (-(S.M * S.deltaE : E)⁻¹) * simpleRootSum x).1 v := by
+      -π * 2 * .I * (toAdele (-(S.level * S.deltaE : E)⁻¹) * simpleRootSum x).1 v := by
   have h_entry (a : Fin 𝔰.ϱ) :
       (S.adelicToInf x v).val (𝔰.besselFrame a.castSucc) (𝔰.besselFrame a.succ) =
         (x.val (𝔰.besselFrame a.castSucc) (𝔰.besselFrame a.succ)).1 v * (S.realM v : ℂ)⁻¹ := by
@@ -262,20 +262,20 @@ variable (S) in
 /-- Let `σ = New.simpleRootSum` be the sum of the entries just above the diagonal on the frame e₁,
 …, e_ϱ, z, let `x` be an adelic point, and let `c_v = σ (S.adelicToInf x v)` be the value of `σ` at
 the component of `x` at `v`, written in the basis rescaled by `S.basisScale v`. Let `ψ` be the
-standard character of the adeles and `ψ_f` its finite part, `M = S.M` the level, the product of the
-two primes `S.levelPrime i`, and `ϖ = S.deltaE` the generator of the different of `E`. The product
-of the numbers `wave c_v = exp (c_v - c̄_v)` over the infinite places is `ψ(-σ(x) / (M ϖ))` divided
-by `S.unipotentChar x_f = ψ_f(-σ(x_f) / (M ϖ))`, where `x_f = S.adelicToFin x` is the finite part of
-`x`; that is, it is the archimedean factor of `ψ(-σ(x) / (M ϖ))`. -/
+standard character of the adeles and `ψ_f` its finite part, `M = S.level` the level, the product of
+the two primes `S.levelPrime i`, and `ϖ = S.deltaE` the generator of the different of `E`. The
+product of the numbers `wave c_v = exp (c_v - c̄_v)` over the infinite places is `ψ(-σ(x) / (M ϖ))`
+divided by `S.unipotentChar x_f = ψ_f(-σ(x_f) / (M ϖ))`, where `x_f = S.adelicToFin x` is the finite
+part of `x`; that is, it is the archimedean factor of `ψ(-σ(x) / (M ϖ))`. -/
 lemma prod_wave_simpleRootSum_adelicToInf (x : S.G (𝔸 E)) :
     ∏ v : InfinitePlace E, wave (simpleRootSum (S.adelicToInf x v)) =
-      New.stdAddChar E (toAdele (-(S.M * S.deltaE : E)⁻¹) * simpleRootSum x) /
+      New.stdAddChar E (toAdele (-(S.level * S.deltaE : E)⁻¹) * simpleRootSum x) /
         S.unipotentChar (S.adelicToFin x) := by
-  set z : 𝔸 E := toAdele (-(S.M * S.deltaE : E)⁻¹) * simpleRootSum x with hz
+  set z : 𝔸 E := toAdele (-(S.level * S.deltaE : E)⁻¹) * simpleRootSum x with hz
   -- The finite factor of `ψ(z)` is `unipotentChar`, so the quotient is the archimedean factor.
   have h_fin : S.unipotentChar (S.adelicToFin x) = ψf E z.2 := by
     have h_arg : z.2 = algebraMap E (𝔸f E) (-(S.deltaE : E)⁻¹) *
-        (algebraMap E (𝔸f E) (S.M : E)⁻¹ * (simpleRootSum x).2) := by
+        (algebraMap E (𝔸f E) (S.level : E)⁻¹ * (simpleRootSum x).2) := by
       rw [← mul_assoc, ← map_mul, neg_mul, ← mul_inv, mul_comm (S.deltaE : E)]
       rfl -- the finite component of a product of adeles is the product of the finite components
     have h_coe (t : Circle) : Circle.coeHom t = (t : ℂ) := rfl
@@ -298,7 +298,7 @@ of the finite character `S.unipotentChar` at `S.ratToFin γ`, the finite adelic 
 lemma prod_wave_simpleRootSum_ratToInf (γ : S.G E) :
     ∏ v : InfinitePlace E, wave (simpleRootSum (S.ratToInf γ v)) =
       star (S.unipotentChar (S.ratToFin γ)) := by
-  let z : 𝔸 E := toAdele (-(S.M * S.deltaE : E)⁻¹) * simpleRootSum (S.ratToAdelic γ)
+  let z : 𝔸 E := toAdele (-(S.level * S.deltaE : E)⁻¹) * simpleRootSum (S.ratToAdelic γ)
   -- The adelic character is trivial on the rational element `z`.
   have h_trivial : New.stdAddChar E z = 1 := by
     simp only [z, simpleRootSum_ratToAdelic, ← map_mul, stdAddChar_toAdele]
@@ -570,7 +570,7 @@ lemma intGL_map_reduceAboveM (k : S.latticeStabilizer) (i : Fin 2) (w : S.chosen
   -- both sides are now the products in `h_unitary`
   simpa only [Units.val_mul, h_conj, h_inv, IsUnit.unit_spec] using h_unitary
 
-lemma ideleM_val : S.ideleM.val = S.M := by simp [ideleM]
+lemma ideleM_val : S.ideleM.val = S.level := by simp [ideleM]
 
 lemma ideleM_mem : (S.ideleM : 𝔸f E) ∈ Ô E := by simp [ideleM, mul_mem]
 
@@ -599,14 +599,15 @@ are the maps `S.reduceAboveM x`. -/
 lemma inv_ideleM_smul_mem_iff (r : Ô E) :
     S.ideleM⁻¹ • (r : 𝔸f E) ∈ Ô E ↔
       ∀ x : ((i : Fin 2) × S.chosenPlaces i) × Bool, S.reduceAboveM x r = 0 := by
-  -- `M⁻¹ r` is integral iff `M` divides `r` in `Ô E`, and `M_dvd_iff` describes this by the places.
+  -- `M⁻¹ r` is integral iff `M` divides `r` in `Ô E`, and `level_dvd_iff` describes this by the
+  -- places.
   have h_coe : ((S.levelPrime 0 * S.levelPrime 1 : ℕ) : Ô E) = (S.ideleM : 𝔸f E) := by
     simp [ideleM_val, -Nat.cast_mul]
   have h_dvd : S.ideleM⁻¹ • (r : 𝔸f E) ∈ Ô E ↔
       ((S.levelPrime 0 * S.levelPrime 1 : ℕ) : Ô E) ∣ r := by
     simp only [dvd_def, Subtype.ext_iff, MulMemClass.coe_mul, h_coe, Units.smul_def, smul_eq_mul,
       ← S.ideleM.inv_mul_eq_iff_eq_mul, Subtype.exists, exists_prop, exists_eq_right']
-  simp only [h_dvd, S.M_dvd_iff r, Prod.forall, Bool.forall_bool, reduceAboveM_false,
+  simp only [h_dvd, S.level_dvd_iff r, Prod.forall, Bool.forall_bool, reduceAboveM_false,
     reduceAboveM_true, RingHom.comp_apply, starRingEnd_apply]
 
 /-- An integral finite adelic isometry `k` reduces to `1` at all chosen places iff `k` is congruent

@@ -562,12 +562,12 @@ theorem IsFillingData.psi_simpleRootSum_eq_unipotentChar [hF : S.IsFillingData T
 /-- Let `F` be a filling datum at `T` (`hF`): a large lattice datum on the completions at `T` whose
 modulus `F.levelUnit` is the component of `M = p₀p₁ = S.ideleM`. Let `M⁻¹` be integral off `T`
 (`hM_inv`). Then `P.modulus F.levelUnit` is `(M ^ f)⁻¹ ^ 2`, with `M` read as the natural number
-`S.M` and `f` the number of infinite places of `E`. -/
+`S.level` and `f` the number of infinite places of `E`. -/
 theorem IsFillingData.modulus_levelUnit [hF : S.IsFillingData T F]
     [hM_inv : Fact (S.ideleM⁻¹.val ∈ integralOff T)] :
-    P.modulus F.levelUnit = (S.M ^ numInfPlaces E : ℝ≥0∞)⁻¹ ^ 2 := by
+    P.modulus F.levelUnit = (S.level ^ numInfPlaces E : ℝ≥0∞)⁻¹ ^ 2 := by
   -- The product formula for `S.ideleM`, which is a unit off `T`, squared.
-  have h_rat : P.modulus F.levelUnit ^ (2⁻¹ : ℝ) = (S.M ^ numInfPlaces E : ℝ≥0∞)⁻¹ := by
+  have h_rat : P.modulus F.levelUnit ^ (2⁻¹ : ℝ) = (S.level ^ numInfPlaces E : ℝ≥0∞)⁻¹ := by
     simpa [hF.levelUnit_eq, ideleM_val, ← ofReal_norm] using
       P.modulus_evalPlaces_rpow_half ⟨((mem_Ô_iff T).1 S.ideleM_mem).2, hM_inv.out⟩
   rw [← h_rat, ← rpow_natCast, Nat.cast_ofNat, rpow_inv_rpow two_ne_zero]

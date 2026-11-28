@@ -25,8 +25,8 @@ filling for each place in a given set `Sg` of chosen places.
 Notions from other files:
 * `New.Filling.IsAdmissible`: the standing hypotheses on the level and the sizes of a filling `S`.
 * `New.Filling.IsFillingData`: `F` is a large lattice datum over `LocProd T`, its modulus
-  `g = F.levelUnit` is the component at `T` of `S.ideleM` (the product `S.M` of the two level primes
-  as a finite idele), and the character is that of `S` at `T`.
+  `g = F.levelUnit` is the component at `T` of `S.ideleM` (the product `S.level` of the two level
+  primes as a finite idele), and the character is that of `S` at `T`.
 * `New.Floors.PlaceData.massIntegral`: `ϰ(Z) = ∫ |∫_Z phase(y x y⁻¹) dy| ^ 2 dx`.
 * `New.Floors.PlaceData.IntermediateGroup.massRatio`: `vol(Z) vol(K(g)) / unipotentMass ^ 2`, where
   `vol` is `New.Floors.PlaceData.groupMeasure` and `Z` lies between `K(g)` and the integral points.
@@ -45,19 +45,19 @@ namespace New.Filling
 open Finset ComplexOrder MeasureTheory Floors ENNReal PlaceData IntegralPlace.IsLargeLatticeData
 
 /-- Let `S` be admissible filling data over the CM field `E`. Let `b = S.b` be the real number in
-whose powers sizes are measured, `M = S.M` the product of the two level primes, `f = numInfPlaces E`
-the number of infinite places, and `n = 𝔰.n = ϱ + 1` with `ϱ` the number of hyperbolic planes. Then
-`(2 (M ^ f) ^ 2) ^ (n ^ 6) ≤ b ^ (n ^ 9 * f)`. -/
-lemma two_mul_M_pow_sq_pow_le {E : Type} {𝔰 : Shape} [Field E] [CMType E]
+whose powers sizes are measured, `M = S.level` the product of the two level primes,
+`f = numInfPlaces E` the number of infinite places, and `n = 𝔰.n = ϱ + 1` with `ϱ` the number of
+hyperbolic planes. Then `(2 (M ^ f) ^ 2) ^ (n ^ 6) ≤ b ^ (n ^ 9 * f)`. -/
+lemma two_mul_level_pow_sq_pow_le {E : Type} {𝔰 : Shape} [Field E] [CMType E]
     (S : Filling E 𝔰) :
-    (2 * ((S.M : ℝ) ^ numInfPlaces E) ^ 2) ^ 𝔰.n ^ 6 ≤ S.b ^ (𝔰.n ^ 9 * numInfPlaces E) := by
+    (2 * ((S.level : ℝ) ^ numInfPlaces E) ^ 2) ^ 𝔰.n ^ 6 ≤ S.b ^ (𝔰.n ^ 9 * numInfPlaces E) := by
   have one_le_b : 1 ≤ S.b := S.one_le_b
   have exponent_le : 46 * numInfPlaces E + 1 ≤ 𝔰.n ^ 3 * numInfPlaces E := by
     grw [Shape.n, ← S.ten_pow_five_le_varrho]
     grind [S.k_le_f, S.pow_chain]
   calc
     _ ≤ (S.b * ((S.b ^ 23) ^ numInfPlaces E) ^ 2) ^ 𝔰.n ^ 6 := by
-      grw [S.M_le_b_pow, show 2 ≤ S.b by linarith [S.thousand_le_b]]
+      grw [S.level_le_b_pow, show 2 ≤ S.b by linarith [S.thousand_le_b]]
     _ = S.b ^ ((46 * numInfPlaces E + 1) * 𝔰.n ^ 6) := by ring
     _ ≤ S.b ^ (𝔰.n ^ 3 * numInfPlaces E * 𝔰.n ^ 6) := by gcongr
     _ = S.b ^ (𝔰.n ^ 9 * numInfPlaces E) := by ring
@@ -140,12 +140,13 @@ lemma IsFillingData.norm_floorForm_div_massRatio_le {E : Type} {𝔰 : Shape} [F
     pow_le_pow_right_of_le_one' (by simp [Nat.one_le_iff_ne_zero, denomIndex_ne_zero]) (by norm_num)
   grw [h_cube] at h_bound
   grw [norm_div_massRatio_le Z (by simp [denomIndex_ne_zero, mul_eq_top, div_eq_top]) h_bound]
-  -- the factors agree one by one, except the power of `2 / modulus F.levelUnit = 2 (S.M ^ f) ^ 2`
-  -- (`modulus_levelUnit`), which is bounded by `two_mul_M_pow_sq_pow_le`
+  -- the factors agree one by one, except the power of
+  -- `2 / modulus F.levelUnit = 2 (S.level ^ f) ^ 2` (`modulus_levelUnit`), which is bounded by
+  -- `two_mul_level_pow_sq_pow_le`
   simp (disch := positivity) only [modulus_levelUnit, frequencyDecay, finHeadWeight, toReal_mul,
     toReal_pow, toReal_ofReal, toReal_inv, inv_pow, toReal_div, div_inv_eq_mul]
   gcongr _ * ?_ * _
-  exact S.two_mul_M_pow_sq_pow_le
+  exact S.two_mul_level_pow_sq_pow_le
 
 /-- Let `F` be a filling datum with modulus `g` on the unitary group `G` over the completions at
 `T`, and let `Z` lie between the congruence subgroup `K(g)` and the integral points. Take the
@@ -270,7 +271,7 @@ lemma IsFillingData.posSemidef_lastEntryDensity {E : Type} {𝔰 : Shape} [Field
 
 /-- Let `F` be a filling datum of admissible data `S` on the unitary group over `LocProd T`, the
 product of the completions at the finite places `T`. Its modulus `g = F.levelUnit` is the component
-at `T` of `S.ideleM`, the product `M = S.M` of the two level primes as a finite idele; let
+at `T` of `S.ideleM`, the product `M = S.level` of the two level primes as a finite idele; let
 `S.ideleM⁻¹` be integral off `T`. Let `Sg` be a set of chosen places above the first level prime and
 `d w` a nonzero vector of the span of the frame modulo `w` or its conjugate. There is a subgroup `Z`
 between the congruence subgroup `K(g)` and the integral points such that (a) `Z` contains the
@@ -297,7 +298,7 @@ lemma IsFillingData.exists_intermediateGroup_sieveSystem {E : Type} {𝔰 : Shap
       -- (a)
       (∀ k : S.latticeStabilizer, S.reduction k ∈ S.fixer Sg d → S.toPlaces T k ∈ Z.val) ∧
       -- (b)
-      SieveSystem unitOrOne (fun u : (LocProd T)ˣ ↦ ratToPlaces T S.M⁻¹ * ↑u⁻¹) 𝔰.ϱ
+      SieveSystem unitOrOne (fun u : (LocProd T)ˣ ↦ ratToPlaces T S.level⁻¹ * ↑u⁻¹) 𝔰.ϱ
         (fun (j : ℕ) (p q : ℕ → (LocProd T)ˣ) ↦ (if j ≤ 𝔰.ϱ then F.floorForm j p q Z.besselVector 1
           else F.lastEntryDensity (S.piNAt T) Z p q) / Z.massRatio.toReal)
         (S.charOnPlaces T) ((1 + S.b⁻¹ ^ 6) / (S.b ^ (6 * 𝔰.k)) ^ #Sg)

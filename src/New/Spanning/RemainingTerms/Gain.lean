@@ -205,15 +205,15 @@ lemma gram_linkForm_eq_gram_sourceCols_sub {i : ℕ}
 /-- Let `y v` and `y' v'` be lattices of rank `i` in the links of `γ` and `γ'`, given by rational
 columns and adelic bases. Suppose that `S.linkForm`, the difference of the forms on the two middle
 vectors of a pair, pairs `y` with `y'` nondegenerately and the lattices with values in `M Ô`, for
-the level `M = S.M`. Then the product of their squared discriminants `S.linkDiscSq` is at least
+the level `M = S.level`. Then the product of their squared discriminants `S.linkDiscSq` is at least
 `(M / 2) ^ (4 i f)`, where `f` is the number of infinite places. -/
 lemma one_le_mul_linkDiscSq [HasPrimitiveRoot5040 E] {i : ℕ}
     {y y' : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin i) E}
     (hy : colSpan y ≤ link γ) (hy' : colSpan y' ≤ link γ') {v v' : GL (Fin i) (𝔸f E)}
     (h_det : (yᴴ * S.linkForm * y').det ≠ 0)
     (h_int : IsIntMatrix (Ô E)
-      (v.valᴴ * (finAdeleMatrix ((S.M⁻¹ : E) • (yᴴ * S.linkForm * y')) * v'.val))) :
-    1 ≤ ((2 / S.M : ℝ) ^ (2 * i * numInfPlaces E)) ^ 2 *
+      (v.valᴴ * (finAdeleMatrix ((S.level⁻¹ : E) • (yᴴ * S.linkForm * y')) * v'.val))) :
+    1 ≤ ((2 / S.level : ℝ) ^ (2 * i * numInfPlaces E)) ^ 2 *
       (S.linkDiscSq y v * S.linkDiscSq y' v') := by
   -- Let `a`, `b` be the vectors of `X₀ ⊥ E z⁺` under `y`, `y'`, and `u = Υ_γ⁻¹ Υ_γ'`. The pairing
   -- is that of `a` with `(1 - u) b`, so `a / M` and `(1 - u) b` pair integrally.
@@ -230,30 +230,31 @@ lemma one_le_mul_linkDiscSq [HasPrimitiveRoot5040 E] {i : ℕ}
       dotProduct_positiveGram_mulVec_linkIsometry]
   have h_form : yᴴ * S.linkForm * y' = aᴴ * S.positiveGram * (b - ub) :=
     gram_linkForm_eq_gram_sourceCols_sub hy hy' h_ub
-  have h_pairing : ((S.M⁻¹ : E) • a)ᴴ * S.positiveGram * (b - ub) =
-      (S.M⁻¹ : E) • (yᴴ * S.linkForm * y') := by
+  have h_pairing : ((S.level⁻¹ : E) • a)ᴴ * S.positiveGram * (b - ub) =
+      (S.level⁻¹ : E) • (yᴴ * S.linkForm * y') := by
     simp [h_form]
-  have h_left : ((S.M⁻¹ : E) • a)ᴴ * S.positiveGram * ((S.M⁻¹ : E) • a) =
-      (S.M⁻¹ : E) ^ 2 • (aᴴ * S.positiveGram * a) := by
+  have h_left : ((S.level⁻¹ : E) • a)ᴴ * S.positiveGram * ((S.level⁻¹ : E) • a) =
+      (S.level⁻¹ : E) ^ 2 • (aᴴ * S.positiveGram * a) := by
     simp [smul_smul, sq]
-  have h_det' : (((S.M⁻¹ : E) • a)ᴴ * S.positiveGram * (b - ub)).det ≠ 0 := by
+  have h_det' : (((S.level⁻¹ : E) • a)ᴴ * S.positiveGram * (b - ub)).det ≠ 0 := by
     rw [h_pairing]
     simpa [Nat.Prime.ne_zero] using h_det
   rw [← h_pairing] at h_int
   -- Liouville's inequality for this integral pairing, with the bounds for the Gram determinants.
   have h_liouville : (1 : ℝ) ^ 2 ≤ genIndex v.val.det ^ 2 *
-      (|(Algebra.norm ℚ (((S.M⁻¹ : E) • a)ᴴ * S.positiveGram * ((S.M⁻¹ : E) • a)).det : ℝ)| *
+      (|(Algebra.norm ℚ
+            (((S.level⁻¹ : E) • a)ᴴ * S.positiveGram * ((S.level⁻¹ : E) • a)).det : ℝ)| *
           |(Algebra.norm ℚ ((b - ub)ᴴ * S.positiveGram * (b - ub)).det : ℝ)| *
         genIndex v'.val.det ^ 2) :=
-    liouville_gram positiveGram_posDef ((S.M⁻¹ : E) • a) (b - ub) v v' h_det'
+    liouville_gram positiveGram_posDef ((S.level⁻¹ : E) • a) (b - ub) v v' h_det'
       zero_le_one (one_le_genIndex h_int.det_mem)
-  have h_scalar (w : InfinitePlace E) : ‖Φ w ((S.M⁻¹ : E) ^ 2)‖ = (S.M : ℝ)⁻¹ ^ 2 := by simp
+  have h_scalar (w : InfinitePlace E) : ‖Φ w ((S.level⁻¹ : E) ^ 2)‖ = (S.level : ℝ)⁻¹ ^ 2 := by simp
   rw [linkDiscSq, linkDiscSq, gram_linkMetric_eq_gram_sourceCols hy,
     gram_linkMetric_eq_gram_sourceCols hy']
   calc
     (1 : ℝ) = 1 ^ 2 := (one_pow 2).symm
     _ ≤ _ := h_liouville
-    _ ≤ genIndex v.val.det ^ 2 * (((S.M : ℝ)⁻¹ ^ 2) ^ (2 * i * numInfPlaces E) *
+    _ ≤ genIndex v.val.det ^ 2 * (((S.level : ℝ)⁻¹ ^ 2) ^ (2 * i * numInfPlaces E) *
           |(Algebra.norm ℚ (aᴴ * S.positiveGram * a).det : ℝ)| *
           ((2 ^ 2) ^ (2 * i * numInfPlaces E) *
             |(Algebra.norm ℚ (bᴴ * S.positiveGram * b).det : ℝ)|) *
@@ -307,14 +308,14 @@ lemma gram_finAdeleMatrix_mul {n σ τ ι : Type} [Fintype n] [Fintype σ] [Fint
 `D : S.LinkSplitting c c' j x γ γ' i` splits the link of `γ` into its intersection with the link of
 `γ'` and a complement of rank `i` with a lattice. `D'` does the same for `γ'`, with `j'`, `x'`. The
 two lattices are paired nondegenerately by `S.linkForm`, the difference of the forms on the two
-middle vectors of a pair, with values in `M Ô` for `M = S.M`. So the product of their squared
+middle vectors of a pair, with values in `M Ô` for `M = S.level`. So the product of their squared
 discriminants `S.linkDiscSq` is at least `(M / 2) ^ (4 i f)`, where `f = numInfPlaces E` is the
 number of infinite places. -/
 lemma LinkSplitting.one_le_mul_linkDiscSq [HasPrimitiveRoot5040 E] {x' i : ℕ}
     (D : S.LinkSplitting c c' j x γ γ' i)
     (D' : S.LinkSplitting c c' j' x' γ' γ i) (h_over : γ ∈ S.termsOver c s c')
     (h_over' : γ' ∈ S.termsOver c s c') :
-    1 ≤ ((2 / S.M : ℝ) ^ (2 * i * numInfPlaces E)) ^ 2 *
+    1 ≤ ((2 / S.level : ℝ) ^ (2 * i * numInfPlaces E)) ^ 2 *
       (S.linkDiscSq D.complCols D.complLattice * S.linkDiscSq D'.complCols D'.complLattice) := by
   classical
   let _ : Fintype D.CommonIndex := D.fintypeCommonIndex
@@ -333,7 +334,7 @@ lemma LinkSplitting.one_le_mul_linkDiscSq [HasPrimitiveRoot5040 E] {x' i : ℕ}
   have h_pair : IsIntMatrix (Ô E)
       ((finAdeleMatrix D.commonCols * D.complShear +
             finAdeleMatrix D.complCols * D.complLattice.val)ᴴ *
-          finAdeleMatrix ((S.M⁻¹ : E) • S.linkForm) *
+          finAdeleMatrix ((S.level⁻¹ : E) • S.linkForm) *
         (finAdeleMatrix D'.commonCols * D'.complShear +
           finAdeleMatrix D'.complCols * D'.complLattice.val)) :=
     D.hasIntegralLifts.isIntMatrix_linkForm h_over h_over' D'.hasIntegralLifts
@@ -348,7 +349,7 @@ its gauge `S.levelGauge j c c' γ` is positive. -/
 lemma levelGauge_pos [HasPrimitiveRoot5040 E] (h_over : γ ∈ S.termsOver c s c')
     (h_cell : S.HasCellRank j γ) : 0 < S.levelGauge j c c' γ := by
   have h_gauge : 0 < S.maxGauge j c c' γ := maxGauge_pos h_over h_cell
-  have hM : 0 < S.M := Nat.pos_of_ne_zero (by simp [Nat.Prime.ne_zero])
+  have hM : 0 < S.level := Nat.pos_of_ne_zero (by simp [Nat.Prime.ne_zero])
   unfold levelGauge
   positivity
 
@@ -362,7 +363,7 @@ For each term multiply its torsion index `S.torsionIndex`, the index of `Λ ∩ 
 part of its lattice in `commonLink γ γ'`, the subspace of `X₀` common to the two links. The product
 of these two numbers is at most `(2 / M) ^ (2 c⁺ f)` times the product of the gauges `S.levelGauge`:
 the gauge is the larger of `S.N ^ f * minorNorm` and `termDiscNorm` of the term, divided by its two
-isotropic row indices, times `M ^ (2 min(ϱ, j) f)`, `j'` for `γ'`. Here `M = S.M` is the level,
+isotropic row indices, times `M ^ (2 min(ϱ, j) f)`, `j'` for `γ'`. Here `M = S.level` is the level,
 `c⁺ = S.linkCorank γ γ'` is the codimension of the intersection of the links in each and `f` is the
 number of infinite places. The bound may be divided by `x ^ 2` if `c⁺ = 0` and `γ` has the top rank
 `𝔰.ϱ < j`. -/
@@ -375,7 +376,7 @@ lemma torsionIndex_mul_discriminant_commonPart_le [HasPrimitiveRoot5040 E] (h_ag
         (S.torsionIndex (S.translateByClassReps c c' γ') *
           discriminant (finrank E (commonLink γ' γ)) (S.commonPart c c' γ' γ)) *
         (if 𝔰.ϱ < j ∧ S.linkCorank γ γ' = 0 then x else 1 : ℕ) ^ 2 ≤
-      (2 / S.M) ^ (2 * S.linkCorank γ γ' * numInfPlaces E) *
+      (2 / S.level) ^ (2 * S.linkCorank γ γ' * numInfPlaces E) *
         (S.levelGauge j c c' γ * S.levelGauge j' c c' γ') := by
   -- Split both links along their intersection. The complements are paired nondegenerately by
   -- `S.linkForm`, and their lattices are paired integrally by `S.linkForm / M`, so the product of
@@ -403,7 +404,7 @@ lemma torsionIndex_mul_discriminant_commonPart_le [HasPrimitiveRoot5040 E] (h_ag
   obtain ⟨D'⟩ : Nonempty (S.LinkSplitting c c' j' X γ' γ (S.linkCorank γ γ')) := by
     rw [linkCorank_comm]
     exact nonempty_linkSplitting h_agrees h_over' h_cell' γ hX_le h_top' h_corank'
-  have h_congruence : 1 ≤ ((2 / S.M : ℝ) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)) ^ 2 *
+  have h_congruence : 1 ≤ ((2 / S.level : ℝ) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)) ^ 2 *
       (S.linkDiscSq D.complCols D.complLattice * S.linkDiscSq D'.complCols D'.complLattice) :=
     D.one_le_mul_linkDiscSq D' h_over h_over'
   have h_pos : 0 < S.levelGauge j c c' γ := levelGauge_pos h_over h_cell
@@ -418,13 +419,13 @@ lemma torsionIndex_mul_discriminant_commonPart_le [HasPrimitiveRoot5040 E] (h_ag
   refine le_of_sq_le_sq ?_ (by positivity)
   calc
     _ ≤ (d * d' * X ^ 2) ^ 2 *
-        (((2 / S.M) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)) ^ 2 *
+        (((2 / S.level) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)) ^ 2 *
           (S.linkDiscSq D.complCols D.complLattice * S.linkDiscSq D'.complCols D'.complLattice)) :=
       le_mul_of_one_le_right (sq_nonneg _) h_congruence
-    _ = ((2 / S.M) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)) ^ 2 *
+    _ = ((2 / S.level) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)) ^ 2 *
         ((d * X) ^ 2 * S.linkDiscSq D.complCols D.complLattice *
           ((d' * X) ^ 2 * S.linkDiscSq D'.complCols D'.complLattice)) := by ring
-    _ ≤ ((2 / S.M) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)) ^ 2 *
+    _ ≤ ((2 / S.level) ^ (2 * S.linkCorank γ γ' * numInfPlaces E)) ^ 2 *
         (S.levelGauge j c c' γ ^ 2 * S.levelGauge j' c c' γ' ^ 2) := by
       gcongr
       exacts [D.discriminant_sq_mul_le, D'.discriminant_sq_mul_le]
@@ -817,7 +818,7 @@ share a nonzero vector). The common lattice `S.pairLattice` is the part of `L_γ
 `commonLink γ γ'`, the subspace of `X₀` common to the two links, for the lattices `L_γ`, `L_γ'` of
 the terms. Its discriminant is at most `(2 / M) ^ (c⁺ f)` times the geometric mean of the gauges
 `S.levelGauge`, each the larger of `S.N ^ f * minorNorm` and `termDiscNorm`, divided by the two
-isotropic row indices, times `M ^ (2 min(ϱ, j) f)`, `j'` for `γ'`. Here `M = S.M` is the level,
+isotropic row indices, times `M ^ (2 min(ϱ, j) f)`, `j'` for `γ'`. Here `M = S.level` is the level,
 `c⁺ = S.linkCorank γ γ'` is the codimension in each link of the intersection of the two, and `f` is
 the number of infinite places. The bound may be divided by `x` if `c⁺ = 0` and `γ` has the top rank
 `𝔰.ϱ < j`. The inequality is stated squared. -/
@@ -826,7 +827,7 @@ theorem pairDiscriminant_sq_le (h_agrees : S.Agrees s) (h_meet : x ≤ S.meetNor
     (h_cell : S.HasCellRank j γ) (h_cell' : S.HasCellRank j' γ') :
     (S.pairDiscriminant c c' γ γ' *
         (if 𝔰.ϱ < j ∧ S.linkCorank γ γ' = 0 then x else 1 : ℕ)) ^ 2 ≤
-      (2 / S.M) ^ (2 * S.linkCorank γ γ' * numInfPlaces E) *
+      (2 / S.level) ^ (2 * S.linkCorank γ γ' * numInfPlaces E) *
         (S.levelGauge j c c' γ * S.levelGauge j' c c' γ') := by
   -- Bound the index of the common lattice once from each term; the torsion indices change places.
   have h_first : S.pairDiscriminant c c' γ γ' ≤
@@ -911,7 +912,7 @@ lemma IsNear.levelGauge_le [S.IsAdmissible] (h_near : S.IsNear γ) (h_over : γ 
       have h_pos : 0 < S.maxGauge j c c' γ := maxGauge_pos h_over h_cell
       rw [levelGauge]
       gcongr
-      exact S.M_le_b_pow
+      exact S.level_le_b_pow
     _ ≤ S.discriminantBound := by
       rw [← pow_mul, ← pow_mul, ← pow_add, ← pow_add]
       exact pow_le_pow_right₀ hb h_exponent

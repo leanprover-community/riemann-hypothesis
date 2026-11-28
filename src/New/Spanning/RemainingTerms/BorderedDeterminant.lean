@@ -444,7 +444,7 @@ def minorGauge (j : Fin (𝔰.ϱ + 2)) (c c' : S.Classes) (γ : S.G E) : ℝ :=
 
 /-- The larger of `𝗀♯ = minorGauge` and `termDiscNorm`, the product of the absolute values of
 `𝗀(γ) = S.termDisc γ` at the infinite places. The gauge `𝗀*` is this number times a power of the
-congruence level `S.M`. -/
+congruence level `S.level`. -/
 def maxGauge (j : Fin (𝔰.ϱ + 2)) (c c' : S.Classes) (γ : S.G E) : ℝ :=
   max (S.minorGauge j c c' γ) (S.termDiscNorm γ)
 

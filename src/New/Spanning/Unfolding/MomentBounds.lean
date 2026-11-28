@@ -99,7 +99,7 @@ open scoped Classical in
 integral scalar (`InScalarCoset`), as only the residues of the scalar at the chosen places
 matter. -/
 lemma card_inScalarCoset_le : #{s : S.ResidueGL | ∃ ζ : Ô E, S.InScalarCoset ζ s} ≤
-    S.M ^ Core.numInfPlaces E * Nat.card (S.reducedImage besselS) := by
+    S.level ^ Core.numInfPlaces E * Nat.card (S.reducedImage besselS) := by
   -- An element `s = ζ t` is determined by the residues of `ζ` and by `t`.
   have h_scalar (s : {s : S.ResidueGL // ∃ ζ : Ô E, S.InScalarCoset ζ s}) :
       ∃ (ζ : Ô E) (t : S.ResidueGL), t ∈ S.reducedImage besselS ∧ ∀ (i : Fin 2)
@@ -164,7 +164,7 @@ lemma sum_secondMoment_inScalarCoset_le
     (h_le : ∀ s : S.ResidueGL, secondMoment (S.amplitudeSum .full Set.univ) {s} ≤ 2 * S.sourceDim) :
     ∑ s : S.ResidueGL with ∃ ζ : Ô E, S.InScalarCoset ζ s,
         secondMoment (S.amplitudeSum .full Set.univ) {s} ≤
-      2 * S.M ^ Core.numInfPlaces E * S.identitySecondMoment :=
+      2 * S.level ^ Core.numInfPlaces E * S.identitySecondMoment :=
   calc _ ≤ #{s : S.ResidueGL | ∃ ζ : Ô E, S.InScalarCoset ζ s} • (2 * S.sourceDim : ℝ) :=
         sum_le_card_nsmul _ _ _ fun s _ ↦ h_le s
     _ ≤ _ := by
@@ -173,15 +173,15 @@ lemma sum_secondMoment_inScalarCoset_le
 
 /-- Let the filling `S` be admissible (`IsAdmissible`). Then `8 M ^ f 𝒟_id ≤ b^(-6kf) 𝒟_main`, as
 `b^(11kf) 𝒟_id ≤ 𝒟_main`, `8 M ^ f ≤ b (b²³) ^ f` and `23 f + 1 ≤ 5 k f`. -/
-lemma eight_mul_M_pow_mul_identitySecondMoment_le [S.IsAdmissible] :
-    8 * S.M ^ Core.numInfPlaces E * S.identitySecondMoment ≤
+lemma eight_mul_level_pow_mul_identitySecondMoment_le [S.IsAdmissible] :
+    8 * S.level ^ Core.numInfPlaces E * S.identitySecondMoment ≤
       (S.b ^ (6 * 𝔰.k))⁻¹ ^ #(univ : Finset (S.chosenPlaces 0)) * S.mainSecondMoment := by
   have h_id_nonneg : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
   have h_exp : 23 * Core.numInfPlaces E + 1 ≤ 5 * (𝔰.k * Core.numInfPlaces E) := by
     nlinarith only [S.thousand_mul_le_k, NeZero.one_le (n := Core.numInfPlaces E)]
   have hb : 1000 ≤ S.b := S.thousand_le_b
   calc _ ≤ S.b * (S.b ^ 23) ^ Core.numInfPlaces E * S.identitySecondMoment := by
-        grw [M_le_b_pow, show (8 : ℝ) ≤ S.b by linarith]
+        grw [level_le_b_pow, show (8 : ℝ) ≤ S.b by linarith]
     _ ≤ S.b ^ (5 * (𝔰.k * Core.numInfPlaces E)) * S.identitySecondMoment := by
       grw [← pow_mul, ← pow_succ', pow_le_pow_right₀ S.one_le_b h_exp]
     _ ≤ _ := pow_mul_identitySecondMoment_le_mul_mainSecondMoment univ
@@ -223,8 +223,8 @@ lemma secondMoment_fixer_univ_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
   have h_id_nonneg : 0 ≤ S.identitySecondMoment := identitySecondMoment_nonneg
   have h_main_nonneg : 0 ≤ S.mainSecondMoment := mainSecondMoment_nonneg
   set target : ℝ := (S.b ^ (6 * 𝔰.k))⁻¹ ^ #(univ : Finset (S.chosenPlaces 0)) * S.mainSecondMoment
-  have h_id_le_target : 8 * S.M ^ Core.numInfPlaces E * S.identitySecondMoment ≤ target :=
-    eight_mul_M_pow_mul_identitySecondMoment_le
+  have h_id_le_target : 8 * S.level ^ Core.numInfPlaces E * S.identitySecondMoment ≤ target :=
+    eight_mul_level_pow_mul_identitySecondMoment_le
   let β (s : S.ResidueGL) : ℝ := secondMoment (S.amplitudeSum .full Set.univ) {s}
   let Ω : Set S.ResidueGL := {s | s ∈ S.fixer univ vectors ∧ ¬∃ ζ : Ô E, S.InScalarCoset ζ s}
   -- The scalar cosets have at most `M ^ f #R̄₀` elements, each with `β s ≤ 2 D_X`.
@@ -237,7 +237,7 @@ lemma secondMoment_fixer_univ_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
   have h_id : (S.b ^ 15)⁻¹ ^ 2 * S.identitySecondMoment ≤ target / 8 := by
     have h_inv : (S.b ^ 15)⁻¹ ^ 2 ≤ 1 :=
       pow_le_one₀ (by positivity) (inv_le_one_of_one_le₀ (one_le_pow₀ hb))
-    grw [h_inv, ← h_id_le_target, ← one_le_pow₀ (Nat.one_le_cast.2 (one_le_two.trans two_le_M))]
+    grw [h_inv, ← h_id_le_target, ← one_le_pow₀ (Nat.one_le_cast.2 (one_le_two.trans two_le_level))]
     linarith
   have h_rest : ∑ s : S.ResidueGL with s ∈ Ω, β s ≤ target / 2 := by
     have h_avoid : S.AvoidsScalarCosets Ω := fun ζ h_int _ _ s hs h ↦ hs.2 ⟨⟨ζ, h_int⟩, h⟩

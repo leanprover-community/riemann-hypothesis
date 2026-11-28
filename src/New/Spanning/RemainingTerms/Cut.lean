@@ -572,7 +572,7 @@ theorem nonempty_linkSplitting {c c' : S.Classes} {γ : S.G E} {j : Fin (𝔰.ϱ
       (hmu_span.trans_le inf_le_left)
   set k : S.GFin := S.translateByClassReps c c' γ
   obtain ⟨f, hf, hf_disc : S.torsionIndex k ^ 2 * S.linkDiscSq (fromCols (fromCols m u) y) f ≤
-      (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
+      (S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
         S.N ^ numInfPlaces E) ^ 2⟩ :=
     exists_hasLevelLifts_linkDiscSq_le h_term h_cell hy.hasLeftInv hy.colSpan_fromCols
   obtain ⟨a₁, v, z, ha₁, hv, h_split₂ : S.linkDiscSq (fromCols m u) a₁ * S.linkDiscSq y v =
@@ -637,7 +637,7 @@ theorem nonempty_linkSplitting {c c' : S.Classes} {γ : S.G E} {j : Fin (𝔰.ϱ
     _ = S.torsionIndex k ^ 2 * S.linkDiscSq ((m.fromCols u).fromCols y) f * G ^ 2 := by
       rw [← h_split₂, ← h_split₁]
       ring
-    _ ≤ (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
+    _ ≤ (S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
         S.N ^ numInfPlaces E) ^ 2 * G ^ 2 := by gcongr
     _ = S.levelGauge j c c' γ ^ 2 * S.minorNorm j γ ^ 2 := by
       simp only [levelGauge, h_cell.maxGauge_eq, h_cell.minorGauge_eq, G]
@@ -645,8 +645,8 @@ theorem nonempty_linkSplitting {c c' : S.Classes} {γ : S.G E} {j : Fin (𝔰.ϱ
 
 omit [HasPrimitiveRoot5040 E] in
 /-- Let `γ` and `γ'` be terms over the classes `c`, `c'` with the same reduction `s` modulo the
-level `M = S.M`. Let `w` and `w'` have integral lifts (`HasIntegralLifts`): their columns are the
-images, in the links of `γ` and `γ'`, of vectors of the lattice of `c`. Then the products of the
+level `M = S.level`. Let `w` and `w'` have integral lifts (`HasIntegralLifts`): their columns are
+the images, in the links of `γ` and `γ'`, of vectors of the lattice of `c`. Then the products of the
 columns of `w` with those of `w'` for the form `S.linkForm / M` are integral adeles. Here
 `S.linkForm = diag(T, -T)` on two copies of `X₀ ⊕ E z`, of Gram matrix `T`. -/
 lemma HasIntegralLifts.isIntMatrix_linkForm {c c' : S.Classes} {s : S.ResidueGL} {γ γ' : S.G E}
@@ -654,7 +654,7 @@ lemma HasIntegralLifts.isIntMatrix_linkForm {c c' : S.Classes} {s : S.ResidueGL}
     {w' : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) σ (𝔸f E)} (h_lift : HasIntegralLifts c γ w)
     (hγ : γ ∈ S.termsOver c s c') (hγ' : γ' ∈ S.termsOver c s c')
     (h_lift' : HasIntegralLifts c γ' w') :
-    IsIntMatrix (Ô E) (wᴴ * finAdeleMatrix ((S.M⁻¹ : E) • S.linkForm) * w') := by
+    IsIntMatrix (Ô E) (wᴴ * finAdeleMatrix ((S.level⁻¹ : E) • S.linkForm) * w') := by
   -- The matrix `k` of `δ = γ γ'⁻¹` in the basis of the lattice is congruent to `1` modulo `M`. The
   -- pairing is `-nᴴ J (k - 1) n' / M` for the integral lifts `n`, `n'` of `w`, `w'` and the Gram
   -- matrix `J` of the lattice.
@@ -673,9 +673,10 @@ lemma HasIntegralLifts.isIntMatrix_linkForm {c c' : S.Classes} {s : S.ResidueGL}
       S.principalLevel_eq_unitaryLevel.le h_one
     exact h_level.right
   -- The pairing of the rational vectors, over `E`.
-  have h_rat : (linkMatrix γ * t)ᴴ * ((S.M⁻¹ : E) • S.linkForm) * (linkMatrix γ' * t') =
-      (S.M⁻¹ : E) • (tᴴ * S.ratGram * t') - (S.M⁻¹ : E) • (tᴴ * S.ratGram * (δ * t')) := by
-    simpa [δ, fromBlocks_smul] using gram_linkMatrix_mul ht_orth ht'_orth (S.M⁻¹ : E) (S.M⁻¹ : E)
+  have h_rat : (linkMatrix γ * t)ᴴ * ((S.level⁻¹ : E) • S.linkForm) * (linkMatrix γ' * t') =
+      (S.level⁻¹ : E) • (tᴴ * S.ratGram * t') - (S.level⁻¹ : E) • (tᴴ * S.ratGram * (δ * t')) := by
+    simpa [δ, fromBlocks_smul] using
+      gram_linkMatrix_mul ht_orth ht'_orth (S.level⁻¹ : E) (S.level⁻¹ : E)
   -- `S.classCoord c` carries `S.ratGram` to `J` and conjugates `δ` to `k`.
   have h_gram (y : Matrix 𝔰.BesselIndex ρ' E) :
       uᴴ * finAdeleMatrix (tᴴ * S.ratGram * y) * u' =
@@ -689,15 +690,15 @@ lemma HasIntegralLifts.isIntMatrix_linkForm {c c' : S.Classes} {s : S.ResidueGL}
   have h_move : S.classCoord c * finAdeleMatrix (δ * t') * u' = k * n' := by
     rw [finAdeleMatrix, Matrix.map_mul, ← Matrix.mul_assoc, h_conj, hn']
     simp only [Matrix.mul_assoc]
-  have hM_inv : ((S.M⁻¹ : E) : 𝔸f E) = S.ideleM⁻¹.val := by simp [ideleM]
+  have hM_inv : ((S.level⁻¹ : E) : 𝔸f E) = S.ideleM⁻¹.val := by simp [ideleM]
   have h_pairing :
-      (finAdeleMatrix (linkMatrix γ * t) * u)ᴴ * finAdeleMatrix ((S.M⁻¹ : E) • S.linkForm) *
+      (finAdeleMatrix (linkMatrix γ * t) * u)ᴴ * finAdeleMatrix ((S.level⁻¹ : E) • S.linkForm) *
           (finAdeleMatrix (linkMatrix γ' * t') * u') =
         -(nᴴ * J * (S.ideleM⁻¹ • (k - 1) * n')) :=
-    calc (finAdeleMatrix (linkMatrix γ * t) * u)ᴴ * finAdeleMatrix ((S.M⁻¹ : E) • S.linkForm) *
+    calc (finAdeleMatrix (linkMatrix γ * t) * u)ᴴ * finAdeleMatrix ((S.level⁻¹ : E) • S.linkForm) *
           (finAdeleMatrix (linkMatrix γ' * t') * u')
       _ = uᴴ * finAdeleMatrix
-          ((linkMatrix γ * t)ᴴ * ((S.M⁻¹ : E) • S.linkForm) * (linkMatrix γ' * t')) * u' := by
+          ((linkMatrix γ * t)ᴴ * ((S.level⁻¹ : E) • S.linkForm) * (linkMatrix γ' * t')) * u' := by
         simp only [conjTranspose_mul, Matrix.map_mul, finAdeleMatrix_conjTranspose,
           Matrix.mul_assoc]
       _ = S.ideleM⁻¹.val • (uᴴ * finAdeleMatrix (tᴴ * S.ratGram * t') * u') -

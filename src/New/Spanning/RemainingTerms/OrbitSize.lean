@@ -59,11 +59,11 @@ noncomputable def cellRankSecondMoment (j : Fin (𝔰.ϱ + 2)) : ℝ :=
 /-- The bound `τ² (D_j / (n_p (M ^ (2 j' f) x) ^ k)) ^ (1 / 2)`, `j' = min ϱ j`, for one near orbit
 of terms under left and right multiplication by the groups `classUnipotent₀`, of cell rank `j` and
 gauge `x`, in units of the covolume `unipotentCovolume`. Here `τ` is `tailScale`, `D_j` is
-`cellRankSecondMoment j`, `n_p` is `pairCountScale`, `M` is the level `S.M`, `k` is the rank of `X₀`
-and `f` is the number of infinite places. -/
+`cellRankSecondMoment j`, `n_p` is `pairCountScale`, `M` is the level `S.level`, `k` is the rank of
+`X₀` and `f` is the number of infinite places. -/
 noncomputable def orbitBound (j : Fin (𝔰.ϱ + 2)) (x : ℝ) : ℝ :=
   S.tailScale ^ 2 * √(S.cellRankSecondMoment j /
-    (S.pairCountScale * (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * x) ^ 𝔰.k))
+    (S.pairCountScale * (S.level ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * x) ^ 𝔰.k))
 
 variable {S} {γ : S.G E}
 
@@ -101,7 +101,7 @@ lemma cellRankSecondMoment_nonneg (j : Fin (𝔰.ϱ + 2)) :
 `M` is the level and `f` is the number of infinite places. -/
 lemma orbitBound_top (x : ℝ) : S.orbitBound ⊤ x = S.tailScale ^ 2 *
     √(S.mainSecondMoment / (S.pairCountScale *
-      (S.M ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k) * x ^ 𝔰.k))) := by
+      (S.level ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k) * x ^ 𝔰.k))) := by
   rw [orbitBound, cellRankSecondMoment, ite_eq_left (by simp), min_eq_left (by simp), mul_pow,
     ← pow_mul]
 
@@ -121,7 +121,7 @@ lemma IsNear.inv_pow_le_orbitBound [S.IsAdmissible] (h_near : S.IsNear γ)
     (h_one_le : 1 ≤ S.termDiscNorm γ) :
     (S.b ^ (𝔰.k ^ 3 * numInfPlaces E))⁻¹ ≤ S.orbitBound ⊤ (S.termDiscNorm γ) := by
   have hb : 1 ≤ S.b := S.one_le_b
-  have hM : 2 ≤ S.M := two_le_M
+  have hM : 2 ≤ S.level := two_le_level
   have h_pairs : 0 < S.pairCountScale := pairCountScale_pos
   have h_exponent : 23 * (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k) + 270 * 𝔰.n ^ 2 * numInfPlaces E * 𝔰.k ≤
       𝔰.k ^ 3 * numInfPlaces E * 2 := by
@@ -131,9 +131,9 @@ lemma IsNear.inv_pow_le_orbitBound [S.IsAdmissible] (h_near : S.IsNear γ)
   grw [orbitBound_top, ← pairCountScale_le_mainSecondMoment, ← one_le_tailScale, one_pow, one_mul]
   -- compare the squares: the pair count cancels
   refine le_sqrt_of_sq_le ?_
-  have h_den : (S.M : ℝ) ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k) * S.termDiscNorm γ ^ 𝔰.k ≤
+  have h_den : (S.level : ℝ) ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k) * S.termDiscNorm γ ^ 𝔰.k ≤
       S.b ^ (𝔰.k ^ 3 * numInfPlaces E * 2) := by
-    grw [M_le_b_pow, h_near.termDiscNorm_le, ← pow_mul, ← pow_mul, ← pow_add,
+    grw [level_le_b_pow, h_near.termDiscNorm_le, ← pow_mul, ← pow_mul, ← pow_add,
       pow_le_pow_right₀ hb h_exponent]
   rw [div_mul_cancel_left₀ h_pairs.ne', inv_pow, ← pow_mul]
   exact inv_anti₀ (by positivity) h_den
@@ -275,7 +275,7 @@ the number of classes and `N = -h(z, z)` the prime `S.N`, `n_p = pairCountScale`
 `unipotentOrder = M ^ (f ϱ (2 k + 2 ϱ + 1))` times `siegelConst = (π ^ k / ((k - 1)! N ^ k)) ^ f
 |disc E| ^ (1 / 4) vol(Ô) ^ k`. -/
 lemma two_pow_mul_pairCountScale_mul_le :
-    2 ^ (𝔰.k * numInfPlaces E) * (S.pairCountScale * S.M ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k)) ≤
+    2 ^ (𝔰.k * numInfPlaces E) * (S.pairCountScale * S.level ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k)) ≤
       S.tailScale * (S.scaledSiegelConst * volÔ E ^ 𝔰.n) := by
   -- With `x = 200 f k rd` we have `x ^ 1000 ≤ b`, so `x ^ (4 k f) ≤ τ`. This absorbs the powers of
   -- `2`, `k` and `rd`, and `unipotentOrder` is at least `M ^ (2 ϱ f k)`.
@@ -290,7 +290,7 @@ lemma two_pow_mul_pairCountScale_mul_le :
   have hf : (1 : ℝ) ≤ f := Nat.one_le_cast.2 NeZero.one_le
   have hk : (1 : ℝ) ≤ 𝔰.k := Nat.one_le_cast.2 (by grind [S.pow_le_k])
   have hN : (0 : ℝ) < S.N := Nat.cast_pos.2 S.N_prime.pos
-  have hM : (1 : ℝ) ≤ S.M := Nat.one_le_cast.2 (one_le_two.trans two_le_M)
+  have hM : (1 : ℝ) ≤ S.level := Nat.one_le_cast.2 (one_le_two.trans two_le_level)
   have h_two : 2 ≤ x := by nlinarith [mul_le_mul hf hk zero_le_one (by positivity)]
   have h_k_le : 𝔰.k ≤ x := by nlinarith [mul_le_mul hf h_rd zero_le_one (by positivity)]
   have h_rd_le : rd ≤ x := by nlinarith [mul_le_mul hf hk zero_le_one (by positivity)]
@@ -320,7 +320,7 @@ lemma two_pow_mul_pairCountScale_mul_le :
       ← one_le_pow₀ (one_le_two.trans two_le_pi), ← hf_eq]
     simp only [div_pow, inv_pow]
     exact le_of_eq (by field)
-  have h_order : (S.M : ℝ) ^ (2 * 𝔰.ϱ * f * 𝔰.k) ≤ S.unipotentOrder := by
+  have h_order : (S.level : ℝ) ^ (2 * 𝔰.ϱ * f * 𝔰.k) ≤ S.unipotentOrder := by
     simpa [unipotentOrder] using pow_le_pow_right₀ hM (by lia : 2 * 𝔰.ϱ * f * 𝔰.k ≤ _)
   grw [scaledSiegelConst, mul_assoc _ S.siegelConst, ← h_siegel, ← h_order, ← h_tail, h_two,
     pairCountScale]
@@ -332,7 +332,7 @@ mainSecondMoment / (pairCountScale M ^ (2 ϱ f k))`. Here `ν` is `unipotentCovo
 `f` is the number of infinite places. -/
 lemma pairingBoundConst_le [S.IsAdmissible] :
     S.pairingBoundConst ≤ (S.unipotentCovolume * S.tailScale ^ 2 / 2) ^ 2 *
-      (S.mainSecondMoment / (S.pairCountScale * S.M ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k))) := by
+      (S.mainSecondMoment / (S.pairCountScale * S.level ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k))) := by
   -- The bound `scaledSiegelConst_le` joins `pairingBoundConst_le_mul` and
   -- `two_pow_mul_pairCountScale_mul_le`.
   have hτ : 2 ≤ S.tailScale := two_le_tailScale
@@ -342,7 +342,7 @@ lemma pairingBoundConst_le [S.IsAdmissible] :
   have h_volume : (0 : ℝ) < volÔ E := by rw [volÔ_eq]; positivity [rootDiscr_pos E]
   have h_moment : 0 ≤ S.mainSecondMoment := mainSecondMoment_nonneg
   have h_pairs : 0 < S.pairCountScale := pairCountScale_pos
-  have hM : 2 ≤ S.M := two_le_M
+  have hM : 2 ≤ S.level := two_le_level
   have hb : 0 < S.b := b_pos
   have h_small : S.b⁻¹ ^ 9 ≤ 1 := pow_le_one₀ (by positivity) (inv_le_one_of_one_le₀ S.one_le_b)
   rw [← mul_div_assoc, le_div_iff₀ (by positivity)]
@@ -350,7 +350,7 @@ lemma pairingBoundConst_le [S.IsAdmissible] :
     _ ≤ S.tailScale * (card S.BesselCoord ^ 2 /
         (S.besselDegree * 𝔰.openCellConst ^ numInfPlaces E * S.frameScaleProd ^ 2)) *
         (2 ^ (𝔰.k * numInfPlaces E) *
-          (S.pairCountScale * S.M ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k))) := by
+          (S.pairCountScale * S.level ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k))) := by
       grw [pairingBoundConst_le_mul]
       exact le_of_eq (by ring)
     _ ≤ 2 * S.tailScale ^ 2 * S.unipotentCovolume ^ 2 * S.mainSecondMoment := by
@@ -376,13 +376,13 @@ lemma prod_pairingBoundSq_le [S.IsAdmissible] (h_one_le : 1 ≤ S.termDiscNorm �
           (card (S.besselSystem v).Index) ≤
       (S.unipotentCovolume * S.orbitBound ⊤ (S.termDiscNorm γ) / 2) ^ 2 := by
   have h_const : 0 ≤ S.mainSecondMoment /
-    (S.pairCountScale * S.M ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k)) :=
+    (S.pairCountScale * S.level ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k)) :=
     div_nonneg mainSecondMoment_nonneg (mul_nonneg pairCountScale_pos.le (by positivity))
   have h_exponent : 𝔰.k ≤ 10 ^ 5 * 𝔰.n ^ 4 + (𝔰.k - 1) := by
     grind [Nat.pow_pos (n := 4) 𝔰.ϱ.succ_pos]
   calc
     _ ≤ (S.unipotentCovolume * S.tailScale ^ 2 / 2) ^ 2 *
-        (S.mainSecondMoment / (S.pairCountScale * S.M ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k))) /
+        (S.mainSecondMoment / (S.pairCountScale * S.level ^ (2 * 𝔰.ϱ * numInfPlaces E * 𝔰.k))) /
           S.termDiscNorm γ ^ 𝔰.k := by
       rw [prod_pairingBoundSq_eq]
       exact div_le_div₀ (by positivity) pairingBoundConst_le (by positivity)

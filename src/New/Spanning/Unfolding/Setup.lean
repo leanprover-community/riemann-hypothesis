@@ -64,7 +64,7 @@ p₁ (`levelPrime`) different from `N`, with finite sets `chosenPlaces i` of pla
 purely imaginary generator ϖ = `deltaE` of the different; a free level `sourceLevel` in `U(X₀)`; and
 a Bessel system at each infinite place. The two sets of chosen places are disjoint and contain no
 conjugate of a chosen place; M = p₀ p₁ is the product of the chosen places and their conjugates in
-the sense of `M_dvd_iff`.
+the sense of `level_dvd_iff`.
 
 The remaining fields are size conditions on ϱ, k = |κ|, the degree, the root discriminant and the
 primes, many of them in terms of the real parameter `b`. They also require 5 ≤ N. -/
@@ -114,7 +114,7 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
       w ∈ chosenPlaces i → star w ∉ chosenPlaces j
   /-- An integral finite adele r is divisible by M = p₀ p₁ if and only if r and r̄ vanish modulo
   every chosen place. -/
-  M_dvd_iff (r : Ô E) : ↑(levelPrime 0 * levelPrime 1) ∣ r ↔
+  level_dvd_iff (r : Ô E) : ↑(levelPrime 0 * levelPrime 1) ∣ r ↔
       ∀ p : Σ i : Fin 2, chosenPlaces i, reduceAt p.2 r = 0 ∧ reduceAt p.2.val (star r) = 0
   /-- For each p_i there are as many chosen places as E has infinite places. -/
   card_chosenPlaces (i : Fin 2) : Fintype.card (chosenPlaces i) = Core.numInfPlaces E
@@ -148,9 +148,9 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   /-- 1 ≤ b. -/
   one_le_b : 1 ≤ b
   /-- M = p₀ p₁ is at most b²³. -/
-  M_le_b_pow : ↑(levelPrime 0 * levelPrime 1) ≤ b ^ 23
+  level_le_b_pow : ↑(levelPrime 0 * levelPrime 1) ≤ b ^ 23
   /-- M = p₀ p₁ is at least b¹⁹. -/
-  le_M : b ^ 19 ≤ ↑(levelPrime 0 * levelPrime 1)
+  le_level : b ^ 19 ≤ ↑(levelPrime 0 * levelPrime 1)
   /-- 5 ≤ N. -/
   five_le_N : (5 : ℝ) ≤ N
 
@@ -187,7 +187,7 @@ lemma pow_chain (S : Filling E 𝔰) :
 /-! ### Groups, classes and reduction -/
 
 /-- The natural number M = p₀p₁, the product of the two primes of the data. -/
-abbrev M : ℕ := S.levelPrime 0 * S.levelPrime 1
+abbrev level : ℕ := S.levelPrime 0 * S.levelPrime 1
 
 /-- For a commutative ring R, the diagonal Gram matrix over R of X₀ ⊕ Ez in the standard basis:
 1 on κ and −N at z. -/
@@ -249,7 +249,7 @@ def reducedImage (A : Subgroup S.GFin) : Subgroup S.ResidueGL :=
 /-- The real number κ_v (no relation to the index set κ), the real part of M·v(ϖ)/(2πi), where
 v(ϖ) is the image of ϖ = `deltaE` under the chosen embedding `Φ v`. By `coe_realM` the quotient is
 real. -/
-def realM (v : InfinitePlace E) : ℝ := (S.M * Φ v S.deltaE.val / (2 * π * Complex.I)).re
+def realM (v : InfinitePlace E) : ℝ := (S.level * Φ v S.deltaE.val / (2 * π * Complex.I)).re
 
 /-- The scales of the normalised basis at v: κ_v^(ϱ−a+1)/√N on e_a (a = 1, …, ϱ), 1 on κ, 1/√N on z,
 and the inverse of the scale of e_a on e*_a. -/
@@ -288,8 +288,8 @@ of infinite places; for every class c it serves as the covolume of 𝖴_c(M) (`c
 𝖴_∞. -/
 def unipotentCovolume : ℝ :=
   let d : ℕ := ∑ a ∈ Finset.range 𝔰.ϱ, (a + (𝔰.k + 1) + a)
-  (S.M ^ (2 * d + 𝔰.ϱ) / S.N ^ 𝔰.k) ^ numInfPlaces E / volÔ E ^ d * √√|NumberField.discr E| ^ 𝔰.ϱ /
-    S.frameScaleProd
+  (S.level ^ (2 * d + 𝔰.ϱ) / S.N ^ 𝔰.k) ^ numInfPlaces E / volÔ E ^ d *
+    √√|NumberField.discr E| ^ 𝔰.ϱ / S.frameScaleProd
 
 /-- The constant `c_S = (π^k / ((k - 1)! N^k))^f · |disc E|^(1/4) · vol(Ô)^k`, where `k = |κ|`,
 `f` is the number of infinite places and `vol(Ô) = New.volÔ E`. With the root discriminant
@@ -310,7 +310,8 @@ lemma basisScale_besselFrame (v : InfinitePlace E) :
   simp [basisScale, forall_fin_succ']
 
 /-- The real number κ_v = `realM v`, viewed in ℂ, equals M·v(ϖ)/(2πi). -/
-lemma coe_realM (v : InfinitePlace E) : S.realM v = S.M * Φ v S.deltaE / (2 * π * Complex.I) := by
+lemma coe_realM (v : InfinitePlace E) :
+    S.realM v = S.level * Φ v S.deltaE / (2 * π * Complex.I) := by
   -- The right side is real: `Φ v ϖ` is purely imaginary by `star_deltaE`.
   have h_star : (starRingEnd ℂ) (Φ v S.deltaE.val) = -Φ v S.deltaE.val := by
     simpa using congrArg (fun x : 𝓞 E ↦ Φ v x.val) S.star_deltaE
@@ -427,7 +428,7 @@ def frameBoxRadius : ℝ := S.b ^ (37 * 𝔰.n)
 /-- The multiples `M x` of the level, for integers `x` of `E`, as tuples over the infinite
 places. -/
 def levelMultiples : AddSubgroup (InfinitePlace E → ℂ) :=
-  (AddMonoidHom.mk' (fun (x : 𝓞 E) (v : InfinitePlace E) ↦ Φ v (S.M * (x : E)))
+  (AddMonoidHom.mk' (fun (x : 𝓞 E) (v : InfinitePlace E) ↦ Φ v (S.level * (x : E)))
     fun x y ↦ by simp [funext_iff, mul_add]).range
 
 /-- The set `D` is a measurable set of representatives for the tuples of complex numbers, one for
@@ -507,7 +508,7 @@ def mainSecondMoment : ℝ := S.sourceDim ^ 2 / (S.besselDegree * mass E 𝔰.r)
 
 /-- The number M^(fϱ(2k + 2ϱ + 1)), with k = |κ| and f the number of infinite places of E: the order
 of the reduction of the integral points of 𝖴. -/
-abbrev unipotentOrder : ℕ := S.M ^ (numInfPlaces E * (𝔰.ϱ * (2 * 𝔰.k + 2 * 𝔰.ϱ + 1)))
+abbrev unipotentOrder : ℕ := S.level ^ (numInfPlaces E * (𝔰.ϱ * (2 * 𝔰.k + 2 * 𝔰.ϱ + 1)))
 
 /-- The constant a_* = |R̄₀| · M^(fϱ(2k + 2ϱ + 1)) · (number of classes) · c_S, with R̄₀ the image
 in `ResidueGL` of the Bessel subgroup, c_S = `siegelConst`, k = |κ|, f the number of infinite
@@ -544,7 +545,7 @@ class IsAdmissible : Prop where
   mul_identitySecondMoment_le : S.b ^ (11 * (𝔰.k * numInfPlaces E)) * S.identitySecondMoment ≤
     S.mainSecondMoment
   /-- The ratio of `mainSecondMoment` to `identitySecondMoment` is at most (M / b⁶)^(k f). -/
-  mainSecondMoment_le : S.mainSecondMoment ≤ (S.M / S.b ^ 6) ^ (𝔰.k * numInfPlaces E) *
+  mainSecondMoment_le : S.mainSecondMoment ≤ (S.level / S.b ^ 6) ^ (𝔰.k * numInfPlaces E) *
     S.identitySecondMoment
   /-- The tensor product of the Bessel systems has at most b^(2 k f) coordinates. -/
   card_besselCoord_le : Fintype.card S.BesselCoord ≤ S.b ^ (2 * 𝔰.k * numInfPlaces E)
@@ -712,9 +713,9 @@ def amplitudeSum (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) (c' : S.Cla
 
 /-! ### Scales, Gram matrices and the covolume -/
 
-/-- The absolute value of κ_v = `realM v` is `S.M * ‖Φ v ϖ‖ / (2π)`, where ϖ = `S.deltaE` is the
+/-- The absolute value of κ_v = `realM v` is `S.level * ‖Φ v ϖ‖ / (2π)`, where ϖ = `S.deltaE` is the
 generator of the different and `Φ v` is the chosen complex embedding at `v`. -/
-lemma abs_realM_eq (v : InfinitePlace E) : |S.realM v| = S.M * ‖Φ v S.deltaE‖ / (2 * π) := by
+lemma abs_realM_eq (v : InfinitePlace E) : |S.realM v| = S.level * ‖Φ v S.deltaE‖ / (2 * π) := by
   simpa [abs_of_pos pi_pos] using congrArg (fun z : ℂ ↦ ‖z‖) (S.coe_realM v)
 
 /-- Let γ be rational, v an infinite place and a, b frame indices in 0, …, ϱ. The (a, b) frame
@@ -747,7 +748,7 @@ lemma det_submatrix_realFrameGram_ratToInf (γ : S.G E) (v : InfinitePlace E) {n
 `classUnipotent c` in the unipotent group at the infinite places, and does not depend on the
 class c. -/
 lemma unipotentCovolume_pos : 0 < S.unipotentCovolume := by
-  have h_M : 0 < S.M := by simp [Nat.Prime.pos]
+  have h_M : 0 < S.level := by simp [Nat.Prime.pos]
   have h_N : 0 < S.N := S.N_prime.pos
   have h_discr : NumberField.discr E ≠ 0 := NumberField.discr_ne_zero E
   have h_Λ : 0 < S.frameScaleProd := S.frameScaleProd_pos
@@ -759,7 +760,7 @@ lemma unipotentCovolume_pos : 0 < S.unipotentCovolume := by
 
 /-- The level M = p₀p₁ as a unit of the finite adeles of E. -/
 def ideleM : (𝔸f E)ˣ :=
-  Units.map (algebraMap E (𝔸f E)).toMonoidHom (Units.mk0 S.M (by simp [Nat.Prime.ne_zero]))
+  Units.map (algebraMap E (𝔸f E)).toMonoidHom (Units.mk0 S.level (by simp [Nat.Prime.ne_zero]))
 
 /-- For u in the finite adelic unitary group, the number ψ_f(−σ(u)/(Mϖ)), where σ(u) sums the
 entries just above the diagonal in the frame block of u. -/

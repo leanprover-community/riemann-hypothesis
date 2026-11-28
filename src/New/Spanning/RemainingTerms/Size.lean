@@ -188,7 +188,7 @@ lemma card_residueGL_mul_b_pow_le :
     rw [← hr] at hkf ⊢
     lia
   calc
-    _ ≤ ((S.b ^ 23) ^ (2 * 𝔰.ϱ + k + 1) ^ 2) ^ f * S.b ^ 40 := by grw [h_group, M_le_b_pow]
+    _ ≤ ((S.b ^ 23) ^ (2 * 𝔰.ϱ + k + 1) ^ 2) ^ f * S.b ^ 40 := by grw [h_group, level_le_b_pow]
     _ = S.b ^ (23 * (2 * 𝔰.ϱ + k + 1) ^ 2 * f + 40) := by ring
     _ ≤ S.b ^ (k ^ 3 * f * 2) := by gcongr
     _ ≤ _ := by grw [pow_mul, ← le_mul_of_one_le_right (by positivity) one_le_two]
