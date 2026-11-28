@@ -722,9 +722,10 @@ private lemma sum_linearFrob_apply_eq_zero {p : ℕ} [ThePrime p] {R : CommRingC
         congrArg _ ((h_action _ (h_pow (hW i)) _ z).trans (AddMonoidHom.comp_apply ..))
       _ = _ := H.map_map (δ i) (red i) ξ
   -- So it remains to see that the locus where `∑ m i [v i w] = 0` is locally everything in `T`.
-  suffices h_loc : IsZariskiLocallyTop PadicTest.ringFunctor (relationLocus m v) from
+  suffices h_loc : (relationLocus m v).IsZariskiLocallyTop PadicTest.ringFunctor from
     (Finset.sum_congr rfl fun i _ ↦ congrArg (m i • ·) (h_term i)).trans
       (H.sum_map_eq_zero_of_relationLocus m v (h_zar h_loc).isCohomEquiv ξ)
+  rw [Subfunctor.isZariskiLocallyTop_iff]
   intro c w 𝔪 h𝔪
   obtain ⟨b, hb, h_rel⟩ := h_rel_loc c (T.ι.app c w) 𝔪 h𝔪
   refine ⟨b, hb, fun B f hf ↦ ?_⟩
@@ -826,7 +827,7 @@ lemma ellAdicCohom.isCrystalline_and_linearFrob_rel {p : ℕ} [ThePrime p] {R : 
   have h_zar : HasZariskiDescent _ Ψ := (hasPartitions_periodAlg (S := Amax) Bmax
     (.refl _)).hasZariskiDescent (𝟙 _) (by simp) (·.isTest.isComparableRing)
   let V' := V.whisker (algFunctor ⋙ restrictAlg R OC)
-  have hV_dense : IsCohomDense Ψ V' := h_zar (hV.1.whisker _)
+  have hV_dense : IsCohomDense Ψ V' := h_zar (hV.1.whisker (algFunctor ⋙ restrictAlg R OC))
   let periodEquiv (n : ℕ) :
       Bmax ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩ ≃ₗ[Bmax] H (freeAb.obj V'.toFunctor) Ψ n :=
     .ofBijective (H.mapₗ .. ∘ₗ J n Y) ((hV_dense.isCohomEquiv n).comp ((hJ n).bijective Y))

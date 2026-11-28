@@ -618,7 +618,7 @@ lemma IsCohomDense.of_affine_cover {Y : CommRingCat ⥤ Type 1} {Λ : Ab}
     hasPartitions_locConstCoeff.hasZariskiDescent (𝟙 _) (by simp) fun C ↦
       C.property.isComparableRing
   refine h_dense.trans (U := U.preimage (mapOnTests (pointMap y)))
-    (h_zar fun C ⟨⟨f⟩, ⟨g⟩, hfg⟩ m hm_max ↦ ?_) A ⟨𝟙 _⟩
+    (h_zar (Subfunctor.isZariskiLocallyTop_iff.2 fun C ⟨⟨f⟩, ⟨g⟩, hfg⟩ m hm_max ↦ ?_)) A ⟨𝟙 _⟩
   replace hfg : π ≫ g = f := congr(($hfg).down)
   -- The idempotents `single i 1` generate the unit ideal, so the image of one of them avoids `m`.
   obtain ⟨i, hi⟩ : ∃ i : I, g.hom (single i 1) ∉ m := by

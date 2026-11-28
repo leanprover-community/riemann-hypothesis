@@ -321,7 +321,7 @@ lemma hasZariskiDescent_hodgeCoeff :
   have h_span : span G = ⊤ := by
     by_contra h_ne
     obtain ⟨m, hm, h_le⟩ := ne_top_iff_exists_maximal.1 h_ne
-    obtain ⟨f, hf_notMem, hf_mem⟩ := hU X y m hm
+    obtain ⟨f, hf_notMem, hf_mem⟩ := Subfunctor.isZariskiLocallyTop_iff.1 hU X y m hm
     exact hf_notMem (h_le (subset_span hf_mem))
   obtain ⟨s, hs_sub, hs_span⟩ := (span_eq_top_iff_finite _).1 h_span
   -- Their first components `X.baseProj i` define a dense subfunctor `someUnitLocus` inside the

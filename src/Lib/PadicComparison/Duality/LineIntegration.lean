@@ -189,8 +189,9 @@ lemma isZariskiLocallyTop_preimage_topLocus_inf_sup
     (h_max : ∀ (c : C) (m : Ideal ((ringOf g).obj c)), m.IsMaximal →
       ∃ (c' : C) (f : c ⟶ c'), RingHom.ker ((ringOf g).map f).hom = m)
     {L L' J : IdealFamily (ringOf g)} (h_eq : ∀ c : C, J.ideal c = ⊥ → L.ideal c = L'.ideal c) :
-    IsZariskiLocallyTop (ringOf g)
-      ((L'.topLocus ⊓ (L.topLocus ⊔ J.topLocus)).preimage L'.topLocus.ι) := by
+    ((L'.topLocus ⊓ (L.topLocus ⊔ J.topLocus)).preimage L'.topLocus.ι).IsZariskiLocallyTop
+      (ringOf g) := by
+  rw [Subfunctor.isZariskiLocallyTop_iff]
   intro c y m hm
   obtain ⟨c', f, hf⟩ : ∃ (c' : C) (f : c ⟶ c'), RingHom.ker ((ringOf g).map f).hom = m :=
     h_max c m hm
@@ -251,8 +252,8 @@ lemma exists_move_kernel_of_eq_imp_eq (K : TorsionCoeff g)
     rw [hs_eq c hc]
   -- Where `L s'` is the unit ideal, locally `L s` or `J` is the unit ideal too.
   have h_loc :
-      IsZariskiLocallyTop (ringOf g)
-        (((L s').topLocus ⊓ ((L s).topLocus ⊔ J.topLocus)).preimage (L s').topLocus.ι) :=
+      (((L s').topLocus ⊓ ((L s).topLocus ⊔ J.topLocus)).preimage
+        (L s').topLocus.ι).IsZariskiLocallyTop (ringOf g) :=
     isZariskiLocallyTop_preimage_topLocus_inf_sup h_max h_L_eq
   -- By Zariski descent, classes relative to `(L s').topLocus ⊓ ((L s).topLocus ⊔ J.topLocus)`
   -- come from classes relative to `(L s').topLocus`. Let δ' be the class that restricts to the

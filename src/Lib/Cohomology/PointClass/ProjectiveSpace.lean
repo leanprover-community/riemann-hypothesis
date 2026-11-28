@@ -622,8 +622,9 @@ lemma New.Variety.CutsOutLocus.IsNoetherNormalization.pullback_injective {p : �
     exact hasZariskiDescent_genericOver (k := k) (𝟭 _) (hasPartitions_periodAlg _ e)
   suffices h_l : IsCohomEquiv genericCoeff l by
     exact injective_H_map_of_comp_eq_nsmul k Fintype.card_ne_zero h_transfer h_l n
-  refine h_eqv _ (h_zar fun c x (m : Ideal (T.obj c)) hm ↦ ?_)
-    (h_zar fun c x (m : Ideal (T.obj c)) hm ↦ ?_)
+  refine h_eqv _
+    (h_zar (Subfunctor.isZariskiLocallyTop_iff.2 fun c x (m : Ideal (T.obj c)) hm ↦ ?_))
+    (h_zar (Subfunctor.isZariskiLocallyTop_iff.2 fun c x (m : Ideal (T.obj c)) hm ↦ ?_))
   · -- near `m`, a point `[w]` of projective space comes from `W`
     obtain ⟨⟨w⟩, hw : span (.range w) = ⊤⟩ := x
     obtain ⟨a, ha, h_cover⟩ :=

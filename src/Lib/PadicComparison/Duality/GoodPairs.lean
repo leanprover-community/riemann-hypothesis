@@ -34,8 +34,9 @@ Notions from other files:
 * `New.Variety.ComparedTheory`: a theory along g with morphisms to its coefficient from the locally
   constant ℤ/ℓ-valued functions, such that it and `New.Variety.Theory.locallyConstant` satisfy the
   projective line formula.
-* `New.Variety.IsZariskiLocallyTop ι U`: every point of `Y` lies in `U` after inverting some element
-  outside any given maximal ideal, that is, `U` is all of `Y` Zariski-locally.
+* `CategoryTheory.Subfunctor.IsZariskiLocallyTop ι U`: every point of `Y` lies in `U` after
+  inverting some element outside any given maximal ideal, that is, `U` is all of `Y`
+  Zariski-locally.
 
 ## Relation to the literature
 
@@ -235,7 +236,8 @@ equal, so they have the same class and the locus `sameClassLocus u U` is all of 
 in particular it is everything Zariski-locally. -/
 lemma isZariskiLocallyTop_sameClassLocus_of_injective (u : E ⟶ Y) (U : Subfunctor Y)
     (hu : ∀ c : TestOver A, Function.Injective (u.app c)) :
-    IsZariskiLocallyTop (ringOf (𝟭 (TestOver A))) (sameClassLocus u U) := by
+    (sameClassLocus u U).IsZariskiLocallyTop (ringOf (𝟭 (TestOver A))) := by
+  rw [Subfunctor.isZariskiLocallyTop_iff]
   rintro c ⟨⟨a, b⟩, h_image⟩ m hm
   obtain rfl : a = b := hu c h_image
   exact ⟨1, m.one_notMem, fun B f _ ↦ rfl⟩
@@ -250,8 +252,8 @@ modulo the preimage of `U` (`h_inj`). Then the pair `(E, u⁻¹ U)` is good for 
 `D` iff `(Y, U)` is. Here `E` and `Y` are set-valued functors on the tests over `A`, `u : E ⟶ Y`
 and `U` is a subfunctor of `Y`. -/
 lemma isFiniteLerayHirsch_iff_of_locally_bijective (u : E ⟶ Y)
-    (h_surj : IsZariskiLocallyTop (ringOf (𝟭 (TestOver A))) (Subfunctor.range u ⊔ U))
-    (h_inj : IsZariskiLocallyTop (ringOf (𝟭 (TestOver A))) (sameClassLocus u U)) :
+    (h_surj : (Subfunctor.range u ⊔ U).IsZariskiLocallyTop (ringOf (𝟭 (TestOver A))))
+    (h_inj : (sameClassLocus u U).IsZariskiLocallyTop (ringOf (𝟭 (TestOver A)))) :
     D.IsFiniteLerayHirsch (relFreeAb (U.preimage u)) ↔ D.IsFiniteLerayHirsch (relFreeAb U) := by
   -- Under Zariski descent it suffices that the kernel and cokernel of `relFreeAb.map u` are
   -- locally zero.
@@ -478,11 +480,12 @@ private lemma rootPairsToProdLine_app_injective (c : TestOver A) :
 `Y = Spec (R[X] / f)[1 / g]`, is the image `(y, (x - y : 1))` of a pair of `rootPairs P`, or lies in
 `offClosedFiber Y × ℙ¹` or in `Y × (ℙ¹ ∖ (0 : 1))`. -/
 private lemma isZariskiLocallyTop_range_rootPairsToProdLine_sup :
-    IsZariskiLocallyTop (ringOf (𝟭 (TestOver A)))
+    Subfunctor.IsZariskiLocallyTop (ringOf (𝟭 (TestOver A)))
       (.range (rootPairsToProdLine P) ⊔
         ((offClosedFiber (testUnitLocus (A := A) (AdjoinRoot.mk P.f P.g)).toFunctor).preimage
             (fst ..) ⊔
           (affineChart.whisker (ringOf (𝟭 (TestOver A)))).preimage (snd ..))) := by
+  rw [Subfunctor.isZariskiLocallyTop_iff]
   rintro c ⟨w, q : projLine (.of c.obj)⟩ m hm
   let m' : Ideal c.obj := m
   have hm' : m'.IsMaximal := hm
@@ -611,7 +614,7 @@ lemma isFiniteLerayHirsch_principal_open
       D.IsFiniteLerayHirsch (relFreeAb W.topPoints) := by
     refine D.isFiniteLerayHirsch_iff_of_isCohomEquiv (relFreeAb.map (𝟙 _) h_le) fun g h_zar ↦
       relFreeAb.isCohomEquiv_of_le (U := W.topPoints.whisker g) (U' := U.whisker g)
-        (fun _ ↦ h_le _) (h_zar fun c q m hm ↦ ?_)
+        (fun _ ↦ h_le _) (h_zar (Subfunctor.isZariskiLocallyTop_iff.2 fun c q m hm ↦ ?_))
     by_cases h_fibre : (Q.whisker g).ideal c ≤ m
     · have h_form : ¬(I ⊥).pullToTests.ideal (.mk (obj := g.obj c) q.val) ≤ m :=
         fun h ↦ hm.ne_top (eq_top_mono (sup_le (le_sup_left.trans h) h_fibre) q.property)
@@ -709,7 +712,8 @@ lemma isFiniteLerayHirsch_standard_etale
     (offClosedFiber Y).preimage (fst ..) ⊔ (affineChart.whisker (ringOf (𝟭 _))).preimage (snd ..)
   let u : (rootPairs P).toFunctor ⟶ G.toFunctor := (rootPairs P).ι ≫ snd ..
   let v : (rootPairs P).toFunctor ⟶ Y ⊗ projLineAlong (𝟭 _) := rootPairsToProdLine P
-  have u_surj : IsZariskiLocallyTop (ringOf (𝟭 _)) (.range u ⊔ U) := by
+  have u_surj : (.range u ⊔ U).IsZariskiLocallyTop (ringOf (𝟭 _)) := by
+    rw [Subfunctor.isZariskiLocallyTop_iff]
     intro c ψ m hm
     let m' : Ideal c.obj := m
     have hm' : m'.IsMaximal := hm
@@ -739,8 +743,9 @@ lemma isFiniteLerayHirsch_standard_etale
       D.IsFiniteLerayHirsch (relFreeAb U) := by
     -- `u` is locally injective: two roots `y`, `y'` paired with the same `x` agree near `m`, unless
     -- `f x ∉ m`, when both pairs are locally in `U`.
-    refine D.isFiniteLerayHirsch_iff_of_locally_bijective u u_surj fun c
-      ⟨⟨⟨(w, ψ), hw, hw_C⟩, (χ, _), hχ, hχ_C⟩, rfl⟩ m hm ↦ ?_
+    refine D.isFiniteLerayHirsch_iff_of_locally_bijective u u_surj
+      (Subfunctor.isZariskiLocallyTop_iff.2 fun c
+        ⟨⟨⟨(w, ψ), hw, hw_C⟩, (χ, _), hχ, hχ_C⟩, rfl⟩ m hm ↦ ?_)
     let m' : Ideal c.obj := m
     have hm' : m'.IsMaximal := hm
     have : m'.IsPrime := hm'.isPrime

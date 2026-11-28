@@ -826,19 +826,20 @@ lemma IsChartCovered.pairRestrictBijective {n : ℕ} {X : CommAlg k ⥤ Type 1}
   -- compare `V(T)` with its preimage in `X(B_{S,M})`. Over each point of `V(T)` the lifts are
   -- represented by one pair `(S, T ^ n)`, whose coefficients are `T` again (`HasUniversalPoints`).
   let V : Subfunctor X := ⨆ a : EtaleChart n X, a.locus
-  have V_loc : IsZariskiLocallyTop (𝟭 _ ⋙ forget₂ ..) (V.whisker (𝟭 _)) :=
+  have V_loc : (V.whisker (𝟭 _)).IsZariskiLocallyTop (𝟭 _ ⋙ forget₂ ..) :=
     isZariskiLocallyTop_of_open_cover fun K hK x ↦ by
       obtain ⟨a, ha⟩ := IsChartCovered.exists_chart K hK x
       exact ⟨a.locus, a.isOpenSubfunctor, ha, le_iSup locus a⟩
   -- The coefficients are additive on tests and on pairs, which gives Zariski descent; so `V`,
   -- being locally everything, is dense.
   have dense_T : IsCohomDense genericCoeff (V.whisker genericOver) :=
-    hasZariskiDescent_genericOver (𝟭 _) hasPartitions_genericCoeff (V_loc.whisker _)
+    hasZariskiDescent_genericOver (𝟭 _) hasPartitions_genericCoeff (V_loc.whisker genericOver)
   let ρ : pairAlg ⋙ X ⟶ (HodgeTatePair.toTest ⋙ genericOver) ⋙ X := Functor.whiskerRight toGeneric X
   let V' : Subfunctor ((HodgeTatePair.toTest ⋙ genericOver) ⋙ X) :=
     V.whisker (HodgeTatePair.toTest ⋙ genericOver)
   have dense_B : IsCohomDense scalarCoeff (V'.preimage ρ) :=
-    (hasZariskiDescent_genericOver _ hasPartitions_scalarCoeff (V_loc.whisker _)).preimage ρ
+    (hasZariskiDescent_genericOver _ hasPartitions_scalarCoeff
+      (V_loc.whisker (HodgeTatePair.toTest ⋙ genericOver))).preimage ρ
   refine ((Comparison.of ..).isBijective_congr (p := (V.whisker genericOver).ι)
       (V'.fromPreimage_ι ρ).symm dense_T.isCohomEquiv dense_B.isCohomEquiv).2
     (HasUniversalPoints.isBijective ?_)

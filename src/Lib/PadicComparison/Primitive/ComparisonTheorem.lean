@@ -187,7 +187,7 @@ lemma ComparedTheory.isFiniteLerayHirsch_freeAb_iff_relFreeAb {ℓ : ℕ} {Ω : 
     refine (D.isFiniteLerayHirsch_iff_of_isCohomEquiv (freeAb.map (Subfunctor.ι ⊥))
       fun _ zar ↦ ?_).mp (h_zero _ (freeAb.hom_ext nofun))
     refine (zar (U := .whisker (Y := (offClosedFiber X).toFunctor) ⊥ _)
-      fun _ y _ hm ↦ ?_).isCohomEquiv
+      (Subfunctor.isZariskiLocallyTop_iff.2 fun _ y _ hm ↦ ?_)).isCohomEquiv
     refine (hm.ne_top (eq_top_mono ?_ y.prop)).elim
     simp only [IdealFamily.ofMaximalIdeal, IsLocalRing.maximalIdeal_eq_bot]
     exact Ideal.map_le_iff_le_comap.2 bot_le

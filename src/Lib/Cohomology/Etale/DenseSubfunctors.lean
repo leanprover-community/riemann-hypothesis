@@ -494,7 +494,7 @@ lemma HasPartitions.hasZariskiDescent (hF : HasPartitions ι F) {κ : C ⥤ Comm
   have hI : I = ⊤ := by
     refine ne_top_iff_exists_maximal.not_right.mpr fun ⟨m, hm, hIm⟩ ↦ ?_
     obtain ⟨g, hg, hgU⟩ : ∃ g ∉ m, ∀ (B : C) (f : A ⟶ B), IsUnit (κ.map f g) → Y.map f y ∈ U B :=
-      hU A y m hm
+      Subfunctor.isZariskiLocallyTop_iff.1 hU A y m hm
     obtain ⟨e, he_notMem, he, hg_dvd⟩ := exists_dvd_idempotent_of_notMem (h_compare A) hm hg
     refine he_notMem (hIm ((hF.isCohomDense_partition e he).mono ?_))
     rintro B f (hf | hf)

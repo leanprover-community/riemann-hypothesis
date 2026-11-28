@@ -126,20 +126,18 @@ lemma ComparedTheory.mem_of_isClosedClass_of_isCharting [PreValuationRing A]
   -- local: by excision (`ComparedTheory.isFiniteLerayHirsch_iff_of_locally_bijective`) it passes
   -- from `U` to `Y` if `U` is locally all of `Y`.
   have of_cover {Y : TestOver A ⥤ Type 1} (U : Subfunctor Y)
-      (hU : IsZariskiLocallyTop (ringOf (𝟭 _)) U)
+      (hU : U.IsZariskiLocallyTop (ringOf (𝟭 _)))
       (h_mem : P (freeAb U.toFunctor)) : P (freeAb Y) := by
     -- A point of `U` lies in the range of `U.ι`.
-    have h_cover : IsZariskiLocallyTop (ringOf (𝟭 _)) (.range U.ι ⊔ offClosedFiber Y) := by
-      intro t y m hm
-      refine (hU t y m hm).imp fun _ ↦ .imp_right fun h_in_U B f hf ↦ ?_
-      simp [show Y.map f y ∈ U.obj B from h_in_U B f hf]
-    have h_inj : IsZariskiLocallyTop (ringOf (𝟭 _)) (sameClassLocus U.ι (offClosedFiber Y)) :=
+    have h_cover : (.range U.ι ⊔ offClosedFiber Y).IsZariskiLocallyTop (ringOf (𝟭 _)) :=
+      hU.mono (le_sup_of_le_left (Subfunctor.range_ι U).ge)
+    have h_inj : (sameClassLocus U.ι (offClosedFiber Y)).IsZariskiLocallyTop (ringOf (𝟭 _)) :=
       isZariskiLocallyTop_sameClassLocus_of_injective _ _ fun _ ↦ Subtype.val_injective
     exact h_iff.2 ((D.isFiniteLerayHirsch_iff_of_locally_bijective U.ι h_cover h_inj).1
       (h_iff.1 h_mem))
   -- `V` is locally all of `X`, and `ℤ[V]` lies in every closed class that contains its charts.
   obtain ⟨V, hV_local, hV_charts⟩ := hV
-  refine of_cover (V.whisker _) (hV_local.whisker _)
+  refine of_cover (V.whisker _) (hV_local.whisker (ι _ ⋙ restrictAlg k A))
     (hV_charts _ (hP.comap (restrictAlong _)) fun chart _ ↦ ?_)
   -- On tests over `A` the chart is represented by its base change `B`, a smooth `A`-algebra.
   let B := CommAlgCat.of A (A ⊗[k] chart.coordRing)
@@ -174,7 +172,8 @@ lemma ComparedTheory.mem_of_isClosedClass_of_isCharting [PreValuationRing A]
       (testUnitLocus.nonempty_iso_away _).some.inv ≫ (ι _).whiskerLeft (reprMap iso.hom) ≫
         (testUnitLocus.nonempty_iso_away _ _).some.hom
     exact (hP.iff_of_isIso (freeAb.map e)).1 h_std
-  refine of_cover (⨆ x : s, testUnitLocus (a x)) (fun t φ m hm ↦ ?_) ?_
+  refine of_cover (⨆ x : s, testUnitLocus (a x))
+    (Subfunctor.isZariskiLocallyTop_iff.2 fun t φ m hm ↦ ?_) ?_
   · -- The prime of `B` below `m` misses `a x` for some `x ∈ s`.
     obtain ⟨x, hx, h_unit⟩ := iUnion₂_eq_univ_iff.1 hs (comap φ.down.hom'.toRingHom ⟨m, hm.isPrime⟩)
     refine ⟨_, h_unit, fun B' f hf ↦ ?_⟩

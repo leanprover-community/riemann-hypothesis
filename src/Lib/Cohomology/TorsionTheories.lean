@@ -55,7 +55,7 @@ Notions from other files:
 * `New.Variety.IsCohomDense`, `New.Variety.HasZariskiDescent`: `U ⊆ Y` is dense for `F` if, for
   every point `h_A → Y`, the inclusion of the preimage of `U` induces bijections on Ext with
   coefficients `F`; `F` has Zariski descent if every `U` that contains `Y` near each maximal ideal
-  (`New.Variety.IsZariskiLocallyTop`) is dense for `F`.
+  (`CategoryTheory.Subfunctor.IsZariskiLocallyTop`) is dense for `F`.
 
 ## Relation to the literature
 
@@ -803,9 +803,10 @@ protected def TorsionCoeff.onElements : TorsionCoeff (elementsProj X ⋙ g) wher
         map g f hf := (U.preimage (pointMap y)).map (Functor.Elements.homMk (x :=
           ⟨X.map f.down a.val⟩) (y := ⟨X.map (f.down ≫ g) a.val⟩) g (X.map_comp_apply ..).symm) hf }
     -- `V` is locally everything, because `U` is so at the image of `y` under `f`.
-    have hV : IsZariskiLocallyTop (ringOf g) V :=
-      fun d f m hm ↦ by
-        obtain ⟨r, hr, h_mem⟩ := hU ⟨X.map f.down a.val⟩ (Y.map ⟨f.down, rfl⟩ y) m hm
+    have hV : V.IsZariskiLocallyTop (ringOf g) :=
+      Subfunctor.isZariskiLocallyTop_iff.2 fun d f m hm ↦ by
+        obtain ⟨r, hr, h_mem⟩ :=
+          Subfunctor.isZariskiLocallyTop_iff.1 hU ⟨X.map f.down a.val⟩ (Y.map ⟨f.down, rfl⟩ y) m hm
         exact ⟨r, hr, fun e k hk ↦ by
           simpa only [← Y.map_comp_apply] using!
             h_mem ⟨X.map (f.down ≫ k) a.val⟩ ⟨k, (X.map_comp_apply ..).symm⟩ hk⟩
@@ -832,14 +833,14 @@ def Theory.onElements : Theory (elementsProj X ⋙ g) :=
 
 /-- Zero sections of the kernel of `I.toZerosCoeff Θ.functor`, together with the objects where `I`
 is the unit ideal (the preimage of `I.topLocus` under the map `toUnit _` to the one-point functor),
-are locally everything (`New.Variety.IsZariskiLocallyTop`). So if a section `x` of `Θ.functor` over
-`c` dies along every map `c ⟶ d` with `I_d = 0`, then each maximal ideal `m` of the ring of `c`
-misses some `a` such that every map `c ⟶ d` inverting `a` kills `x` or makes `I_d` the unit
-ideal. -/
+are locally everything (`CategoryTheory.Subfunctor.IsZariskiLocallyTop`). So if a section `x` of
+`Θ.functor` over `c` dies along every map `c ⟶ d` with `I_d = 0`, then each maximal ideal `m` of the
+ring of `c` misses some `a` such that every map `c ⟶ d` inverting `a` kills `x` or makes `I_d` the
+unit ideal. -/
 lemma Theory.isZariskiLocallyTop_ker_toZerosCoeff :
-    IsZariskiLocallyTop (ringOf g)
-      (zeroSection (kerComplex (I.toZerosCoeff Θ.functor)).X₁ ⊔ I.topLocus.preimage
-        (toUnit _)) := by
+    (zeroSection (kerComplex (I.toZerosCoeff Θ.functor)).X₁ ⊔
+      I.topLocus.preimage (toUnit _)).IsZariskiLocallyTop (ringOf g) := by
+  rw [Subfunctor.isZariskiLocallyTop_iff]
   rintro c ⟨s, hs⟩ m hm
   -- `s` is a section of `Θ.functor` over `c` whose class in `I.zerosCoeff Θ.functor` is zero
   have h_dies : ∀ (d : C) (f : c ⟶ d), I.ideal d = ⊥ → Θ.functor.map f s = 0 := (eq_zero_iff s).1 hs
@@ -1000,9 +1001,8 @@ lemma IdealFamily.isCohomEquiv_constToZeros (hΘ : Θ.functor = locConstAlong g)
       relFreeAb.mem_of_mk_mem (.zmultiples (relFreeAb.mk (I.topLocus.whisker φ) ⟨⟩)) (by simp) s
     obtain ⟨n, rfl⟩ := AddSubgroup.mem_zmultiples_iff.1 h_mult
     -- The constant `n` dies where `I` does, so locally it is zero or `I` is everything.
-    have h_loc : IsZariskiLocallyTop (ringOf g)
-        (zeroSection (kerComplex (I.toZerosCoeff (locConstAlong g))).X₁ ⊔
-          I.topLocus.preimage (toUnit _)) := by
+    have h_loc : (zeroSection (kerComplex (I.toZerosCoeff (locConstAlong g))).X₁ ⊔
+        I.topLocus.preimage (toUnit _)).IsZariskiLocallyTop (ringOf g) := by
       rw [← hΘ]
       exact Θ.isZariskiLocallyTop_ker_toZerosCoeff I
     have h_ker_n : (I.toZerosCoeff (locConstAlong g)).app (φ.obj c)
@@ -1032,7 +1032,8 @@ lemma IdealFamily.isCohomEquiv_constToZeros (hΘ : Θ.functor = locConstAlong g)
       exact (congrArg ((↑ℓ * r : ℤ) • ·) h_map).symm
   · -- Cokernel: a locally constant function is constant near each maximal ideal, and constants
     -- are in the image.
-    have h_loc : IsZariskiLocallyTop (ringOf g) (zeroSection (abCoker I.constToZeros)) := by
+    have h_loc : (zeroSection (abCoker I.constToZeros)).IsZariskiLocallyTop (ringOf g) := by
+      rw [Subfunctor.isZariskiLocallyTop_iff]
       rintro c ⟨⟨s : locConstAlong g c⟩⟩ m hm
       obtain ⟨a, ha, h_const⟩ := exists_locConst_eq_const s ⟨m, hm.isPrime⟩
       obtain ⟨n, hn⟩ := ZMod.intCast_surjective (s.down.toFun ⟨m, hm.isPrime⟩)
@@ -1054,7 +1055,7 @@ lemma TorsionCoeff.pullbackAlong_oneLocConst_surjective :
   let I : IdealFamily (ringOf (𝟭 (TestOver A))) := IdealFamily.mk ⊥ (by simp)
   -- Where the zero ideal is everything there is no maximal ideal: the empty subfunctor is dense.
   have h_dense : IsCohomDense M.functor (⊥ : Subfunctor (I.whisker g).topLocus.toFunctor) := by
-    refine M.zariski_descent fun c y m hm ↦ ?_
+    refine M.zariski_descent (Subfunctor.isZariskiLocallyTop_iff.2 fun c y m hm ↦ ?_)
     -- `y` says that the zero ideal of the ring at `c` is the unit ideal
     exact (hm.ne_top (eq_top_mono bot_le y.property)).elim
   -- so the cohomology of the locus where `I` is the unit ideal is that of the empty functor, zero

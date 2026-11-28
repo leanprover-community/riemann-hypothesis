@@ -13,6 +13,7 @@ public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.Topology.LocallyConstant.Algebra
 public import Mathlib.Algebra.Category.Grp.Abelian
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.Basic
+public import TauCeti.CategoryTheory.Abelian.FunctorCohomology.ZariskiDescent
 import Mathlib.Algebra.Category.Grp.AB
 import Mathlib.Algebra.Category.Grp.Zero
 import Mathlib.Algebra.Divisibility.Prod
@@ -27,6 +28,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Valuation.LocalSubring
+import all TauCeti.CategoryTheory.Abelian.FunctorCohomology.ZariskiDescent
 import TauCeti.RingTheory.Ideal.Maps
 public import Lib.General.Algebra.AbsIntegrallyClosed
 
@@ -79,7 +81,7 @@ noncomputable section
   `New.Variety.Comparison.pull`.
 * `New.Variety.HasPartitions` and `New.Variety.HasZariskiDescent`: for tests with rings `ι A`,
   cutting along idempotents, and Zariski descent (a subfunctor that holds near every maximal ideal,
-  `New.Variety.IsZariskiLocallyTop`, is dense).
+  `CategoryTheory.Subfunctor.IsZariskiLocallyTop`, is dense).
 -/
 
 section Defs
@@ -283,23 +285,26 @@ structure HasPartitions where
       Bijective (fun x : ι.obj A ↦ (ι.map (Y := B₁) π₁ x, ι.map (Y := B₂) π₂ x)) →
       Bijective fun x : F.obj A ↦ (F.map π₁ x, F.map π₂ x)
 
-/-- The subfunctor `U` of `Y` is locally everything for the rings `ι A`: for every `y ∈ Y(A)` and
-maximal ideal `m` of the ring `ι A` there is `a ∉ m` such that `y` maps into `U` along every
-`A ⟶ B` that makes `a` invertible. -/
-abbrev IsZariskiLocallyTop : Prop :=
-  ∀ (A : C) (y : Y.obj A) (m : Ideal (ι.obj A)), Ideal.IsMaximal m →
-    ∃ a ∉ m, ∀ (B : C) (f : A ⟶ B), IsUnit (ι.map f a) → Y.map f y ∈ U B
+/-- Unfolding Tau Ceti's `CategoryTheory.Subfunctor.IsZariskiLocallyTop`: `U` is locally everything
+for the rings `ι A` if for every `y ∈ Y(A)` and maximal ideal `m` of the ring `ι A` there is `a ∉ m`
+such that `y` maps into `U` along every `A ⟶ B` that makes `a` invertible. -/
+lemma _root_.CategoryTheory.Subfunctor.isZariskiLocallyTop_iff {C : Type*} [Category* C]
+    {ι : C ⥤ CommRingCat} {Y : C ⥤ Type*} {U : Subfunctor Y} :
+    U.IsZariskiLocallyTop ι ↔ ∀ (A : C) (y : Y.obj A) (m : Ideal (ι.obj A)), m.IsMaximal →
+      ∃ a ∉ m, ∀ (B : C) (f : A ⟶ B), IsUnit (ι.map f a) → Y.map f y ∈ U.obj B :=
+  Iff.rfl
 
-/-- Zariski descent for `F`: a subfunctor `U` of `Y` that is locally everything
-(`New.Variety.IsZariskiLocallyTop`) is dense for `F` (`New.Variety.IsCohomDense`). -/
+/-- Zariski descent for `F`: a subfunctor `U` of `Y` that is locally everything for the rings `ι A`
+(`CategoryTheory.Subfunctor.IsZariskiLocallyTop`) is dense for `F` (`New.Variety.IsCohomDense`). -/
 def HasZariskiDescent : Prop :=
-  ∀ ⦃Y : C ⥤ Type 1⦄ ⦃U : Subfunctor Y⦄, IsZariskiLocallyTop ι U → IsCohomDense F U
+  ∀ ⦃Y : C ⥤ Type 1⦄ ⦃U : Subfunctor Y⦄, U.IsZariskiLocallyTop ι → IsCohomDense F U
 
 /-- If the subfunctor `U` of `Y` is locally everything for the rings `ι A`
-(`New.Variety.IsZariskiLocallyTop`), then its restriction `U.whisker φ` along `φ : C' ⥤ C` is
-locally everything for the rings `ι (φ A')`. -/
-lemma IsZariskiLocallyTop.whisker {ι : C ⥤ CommRingCat} {U : Subfunctor Y}
-    (h : IsZariskiLocallyTop ι U) : IsZariskiLocallyTop (φ ⋙ ι) (U.whisker φ) := by
+(`CategoryTheory.Subfunctor.IsZariskiLocallyTop`), then its restriction `U.whisker φ` along
+`φ : C' ⥤ C` is locally everything for the rings `ι (φ A')`. -/
+lemma _root_.CategoryTheory.Subfunctor.IsZariskiLocallyTop.whisker {ι : C ⥤ CommRingCat}
+    {U : Subfunctor Y} (h : U.IsZariskiLocallyTop ι) :
+    (U.whisker φ).IsZariskiLocallyTop (φ ⋙ ι) := by
   intro A y m hm_max
   obtain ⟨a, ha_not_mem, h_mem_of_unit⟩ : ∃ a ∉ m, ∀ (B : C) (f : φ.obj A ⟶ B),
       IsUnit (ι.map f a) → Y.map f y ∈ U B := h (φ.obj A) y m hm_max

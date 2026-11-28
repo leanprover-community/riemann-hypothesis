@@ -42,8 +42,8 @@ the calculus of charts and shows that an atlas yields a cover by pieces étale o
 Notions from other files:
 * `New.Variety.IsPointwiseSurjective p`: the map `p : E ⟶ Y` of functors is surjective on `A`-points
   for every object `A`.
-* `New.Variety.IsZariskiLocallyTop`: every point maps into the given subfunctor once some element
-  outside any given maximal ideal of the algebra is made a unit.
+* `CategoryTheory.Subfunctor.IsZariskiLocallyTop`: every point maps into the given subfunctor once
+  some element outside any given maximal ideal of the algebra is made a unit.
 * `CategoryTheory.Subfunctor.whisker`: for a subfunctor `U` of `Y` and `φ : C' ⥤ C`, the subfunctor
   `φ ⋙ U` of `φ ⋙ Y`.
 * `New.Variety.restrictAlg k k'`: restriction of scalars, which regards a commutative `k'`-algebra
@@ -368,7 +368,8 @@ lemma isZariskiLocallyTop_of_open_cover {C : Type 1} [Category.{0} C] {k : Type}
     {X : CommAlg k ⥤ Type 1} {Θ : C ⥤ CommAlg k} {T : Subfunctor (Θ ⋙ X)}
     (h_cover : ∀ K : CommAlg k, IsField K.carrier → ∀ x : X K, ∃ O : Subfunctor X,
       IsOpenSubfunctor O ∧ x ∈ O K ∧ O.whisker Θ ≤ T) :
-    IsZariskiLocallyTop (Θ ⋙ forget₂ (CommAlg k) CommRingCat) T := by
+    T.IsZariskiLocallyTop (Θ ⋙ forget₂ (CommAlg k) CommRingCat) := by
+  rw [Subfunctor.isZariskiLocallyTop_iff]
   intro c y (m : Ideal (Θ.obj c)) hm
   -- The image of `y` in the residue field at `m` lies in some open `O`.
   have hfield : IsField (Θ.obj c ⧸ m) := (Quotient.field m).toIsField
@@ -944,7 +945,7 @@ lemma IsChartCovered.comap [IsChartCovered d X] (hu : IsOpenSubfunctor (Subfunct
 `New.Variety.IsClosedClass` and contains `ℤ[Hom(R, -)]` for the ring `R` of each chart of `X` (of
 any dimension) whose coordinates are all units, that is, étale over a torus. -/
 def IsCharting (V : Subfunctor X) : Prop :=
-  IsZariskiLocallyTop (forget₂ (CommAlg k) CommRingCat) V ∧
+  V.IsZariskiLocallyTop (forget₂ (CommAlg k) CommRingCat) ∧
   ∀ P : CommAlg k ⥤ Ab → Prop, IsClosedClass P →
     (∀ {d : ℕ} (b : EtaleChart d X),
       (∀ j : Fin d, IsUnit (b.coordinate j)) → P (freeAb (reprBy b.coordRing))) →

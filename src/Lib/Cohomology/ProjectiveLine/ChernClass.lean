@@ -241,7 +241,7 @@ lemma isCohomEquiv_tensorPoint_tateGen (hS : ∀ (c : C) (x : S c), ℓ • x = 
   refine LocalIso.isCohomEquiv ⟨?_, ?_⟩
   · -- Kernel: the discrete logarithm l to the base ζ turns s ⊗ ε = 0 into l ζ • s = 0.
     rintro c (s : S c) hs
-    refine hF fun d f m hm ↦ ?_
+    refine hF (Subfunctor.isZariskiLocallyTop_iff.2 fun d f m hm ↦ ?_)
     let ψ : (ringOf g).obj c →+* Localization.AtPrime m :=
       (algebraMap _ (Localization.AtPrime m)).comp ((ringOf g).map f.down).hom
     have hζ : IsPrimitiveRoot (tateRoot ψ ε).val ℓ := h_prim f.down m
@@ -261,7 +261,8 @@ lemma isCohomEquiv_tensorPoint_tateGen (hS : ∀ (c : C) (x : S c), ℓ • x = 
     exact ⟨1, m.one_notMem, fun b f' _ ↦ map_zero (S.map _).hom⟩
   · -- Cokernel: t (1 / ℓ) = ζ ^ i at m, so y = t' (1 / ℓ) is 1 at m for t' = t - i • ε.
     intro c t
-    refine t.inductionOn (fun s t ↦ hF fun d f m hm ↦ ?_) fun _ _ ↦ add_mem
+    refine t.inductionOn
+      (fun s t ↦ hF (Subfunctor.isZariskiLocallyTop_iff.2 fun d f m hm ↦ ?_)) fun _ _ ↦ add_mem
     let ψ : (ringOf g).obj c →+* Localization.AtPrime m :=
       (algebraMap _ (Localization.AtPrime m)).comp ((ringOf g).map f.down).hom
     have hζ : IsPrimitiveRoot (tateRoot ψ ε).val ℓ := h_prim f.down m
