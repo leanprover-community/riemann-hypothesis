@@ -80,17 +80,17 @@ attribute [instance 20] SetLike.GradeZero.instMonoid SetLike.GradeZero.instCommM
 -- `attribute [-simp]`, the effect passes to importers. The reversed tags last one command only,
 -- so the warning about their head symbols does not apply.
 set_option warning.simp.varHead false in
-attribute [simp ←, simp] Matrix.conjTranspose_eq_transpose_of_trivial MonoidHom.CompTriple.comp_eq
+attribute [simp ←, simp] MonoidHom.CompTriple.comp_eq
   LinearMap.identityMapOfZeroModuleIsZero smul_left_cancel_iff mul_cancel_left_mem_nonZeroDivisors
   IsAddKleinFour.card_four' MeasureTheory.lintegral_of_isEmpty Nat.card_eq_zero_of_infinite
   IsRegular.smul_eq_zero_iff_right Unitary.star_mul_self_of_mem inv_mul_cancel_of_invertible
   bot_eq_one' EmbeddingLike.map_eq_one_iff Submodule.smul_coe_torsionBy Valuation.IsUniformizer.val
   star_trivial SetLike.GradeZero.coe_ofNat Associates.coe_unit_eq_one inv_mul_cancel_comm_assoc
-  nsmul_eq_zero_iff SetLike.GradeZero.coe_mul RingHomCompTriple.comp_eq Finset.Ioc_eq_empty_of_le
+  nsmul_eq_zero_iff SetLike.GradeZero.coe_mul RingHomCompTriple.comp_eq
   Finset.univ_eq_empty IsRegular.smul_right_inj IsAddKleinFour.card_four BooleanRing.mul_add_mul
   Submodule.smul_mem_iff' IsKleinFour.card_four' Nat.sub_eq_zero_of_le IsUnit.inv_mul_cancel
-  IsUnit.mul_inv_cancel GroupWithZero.dvd_iff Ring.inverse_non_unit ciSup_of_not_bddAbove tsum_empty
-  inv_mul_cancel_comm mul_inv_cancel_comm Set.iInter_of_empty CharP.cast_eq_zero IsEmpty.exists_iff
+  IsUnit.mul_inv_cancel GroupWithZero.dvd_iff Ring.inverse_non_unit ciSup_of_not_bddAbove
+  inv_mul_cancel_comm mul_inv_cancel_comm CharP.cast_eq_zero IsEmpty.exists_iff
   IsMin.finsetIio_eq Set.Icc_eq_empty RCLike.star_def inf_of_le_right inf_of_le_left FunLike.coe_mul
   Nat.card_unique smul_left_inj norm_map RKHS.coe_smul tsum_comp_neg Nat.sub_self conj_trivial
   bot_eq_zero'

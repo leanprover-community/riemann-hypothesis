@@ -135,7 +135,7 @@ lemma analyticAt_weightMinors (hx : x.det ≠ 0) : AnalyticAt ℂ (weightMinors 
 @[simp]
 theorem weightMinors_const (hx : x.det ≠ 0) (c : ℤ) :
     weightMinors (fun _ : n ↦ c) x = x.det ^ c := by
-  simp [Ioc_self, weightMinors_eq_det_zpow_mul_prod hx c c]
+  simp [weightMinors_eq_det_zpow_mul_prod hx c c]
 
 /-- For invertible x, an integer c ≥ 0 and a set p of indices with w_j ≤ w_i for i in p, j not
 in p: adding c to the entries of w on p multiplies m_w(x) = `weightMinors w x` (the product over
