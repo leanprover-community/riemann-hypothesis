@@ -449,6 +449,78 @@ theorem Gauge.formMajorant_zero_sq_le_of_hasDeepVector (hk : F.IsCut W) (hx : x 
   rw [mul_pow, mul_pow, mul_assoc]
   grw [pow_le_pow_right₀ (one_le_pow₀ Γ.one_le_loss) (show 2 ≤ 3 by norm_num)]
 
+/-- On the supports the weight is a character of frequency `ξ`. Let ψ be the additive character of
+the place, with ψ(ηz) = ψ(ξz) for all numbers `z` of size `200 n²` in the gauge (`Γ.ofSize`), where
+`n = 𝔰.n`. Let `t σ e_j` have size `60 n² + 6`, where `σ e_j` is the vector `orbitPoint j σ`, and
+let `f'` vanish almost everywhere off the `τ` for which `t τ e_j` has size `99 n² + 6`. Then for
+every number `c`, the integral over floor `j` of `ψ(η ⟨σ e_j, τ e_j⟩) * (c * conj (f' τ))` is `c`
+times the conjugate of the Fourier transform of `f'` at `t σ e_j`, of frequency `-ξ`. -/
+lemma Gauge.integral_char_mul_mul_conj_eq {j : Fin 𝔰.n} {η : A}
+    (hφ : ∀ z ∈ Γ.ofSize (200 * 𝔰.n ^ 2), ψ (η * z) = ψ (ξ * z)) {t σ : T.G}
+    (hσ : t.val.val *ᵥ orbitPoint j σ ∈ Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6)) {f' : T.G → ℂ}
+    (h_supp' : ∀ᵐ τ ∂F.floorMeasure j,
+      f' τ ≠ 0 → t.val.val *ᵥ orbitPoint j τ ∈ Γ.vecsOfSize (99 * 𝔰.n ^ 2 + 6)) (c : ℂ) :
+    ∫ τ, ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) * (c * conj (f' τ))
+        ∂F.floorMeasure j =
+      c * conj (∫ τ, ψ ((-ξ).val * star (t *ᵥ orbitPoint j σ + 0) ⬝ᵥ T.splitGram *ᵥ
+        t *ᵥ orbitPoint j τ) * f' τ ∂F.floorMeasure j) := by
+  -- On the supports the Gram entry has size `200 * 𝔰.n ^ 2`, where `hφ` applies.
+  have h_char {τ : T.G} (hτ : t.val.val *ᵥ orbitPoint j τ ∈ Γ.vecsOfSize (99 * 𝔰.n ^ 2 + 6)) :
+      ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) =
+        ψ (ξ * star (t.val.val *ᵥ orbitPoint j σ) ⬝ᵥ
+          T.splitGram *ᵥ t.val.val *ᵥ orbitPoint j τ) := by
+    rw [← U.form_mulVec_mulVec t]
+    exact hφ _ (Γ.mem_ofSize_mono (Γ.dotProduct_mem_ofSize
+      (fun a _ ↦ Γ.neg_mem_iff_and_star_mem_iff.2.2 (hσ a))
+      (Size.HasMatrixSize.mulVec Γ.splitGram_and_inv_mem.1 hτ)))
+  rw [← integral_conj, ← integral_const_mul]
+  refine integral_congr_ae ?_
+  filter_upwards [h_supp'] with τ hτ
+  by_cases hfτ : f' τ = 0
+  · simp [hfτ]
+  rw [h_char (hτ hfτ)]
+  simp [P.ψ.map_neg_eq_inv, inv_eq_conj, mul_left_comm _ (ψ _)]
+
+/-- Plancherel on a set of bounded size. Let `t ∈ floorGroup j` move `x` to a matrix of size
+`99 n²`, where `n = 𝔰.n`, and let `k` be a pairing kernel at floor `j`. Then the integral over the
+`σ` for which `t σ e_j` has size `60 n² + 6`, where `σ e_j` is `orbitPoint j σ`, of the squared
+modulus of the Fourier transform at `t σ e_j + v₀`, of frequency `-ξ`, of the correlation
+`τ ↦ F.partialCorrelation (j + 1) k (τ x) (τ y)` is at most `Γ.floorsConst` times
+`(P.kernelBound / P.modulus ξ) ^ card F.FreeIndex` times the integral of its squared modulus. -/
+lemma Gauge.setLIntegral_enorm_integral_char_mul_partialCorrelation_sq_le {j : Fin 𝔰.n}
+    {t x : T.G} {k : T.G → T.G → ℂ} {d : T.G} (ht : t ∈ floorGroup j)
+    (h_size : Γ.HasMatrixSize (99 * 𝔰.n ^ 2) (t * x).val.val) (hk : F.IsPairingKernel j k d)
+    (y : T.G) (v₀ : 𝔰.BesselIndex → A) :
+    ∫⁻ σ in {σ | t.val.val *ᵥ orbitPoint j σ ∈ Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6)},
+        ‖∫ τ, ψ ((-ξ).val * star (t *ᵥ orbitPoint j σ + v₀) ⬝ᵥ T.splitGram *ᵥ
+          t *ᵥ orbitPoint j τ) * F.partialCorrelation (j + 1) k (τ * x) (τ * y)
+          ∂F.floorMeasure j‖ₑ ^ 2 ∂F.floorMeasure j ≤
+      Γ.floorsConst * (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex *
+        ∫⁻ τ, ‖F.partialCorrelation (j + 1) k (τ * x) (τ * y)‖ₑ ^ 2 ∂F.floorMeasure j := by
+  let G (v : 𝔰.BesselIndex → A) : ℂ :=
+    ∫ τ, ψ ((-ξ).val * star (v + v₀) ⬝ᵥ T.splitGram *ᵥ t *ᵥ orbitPoint j τ) *
+      F.partialCorrelation (j + 1) k (τ * x) (τ * y) ∂F.floorMeasure j
+  have hG : Measurable G := by
+    unfold G
+    fun_prop
+  have h_const : Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) *
+      Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12)) ≤ Γ.floorsConst := by
+    have h_cube : 𝔰.n ≤ 𝔰.n ^ 3 := Nat.le_self_pow three_ne_zero _
+    rw [← pow_add]
+    exact pow_le_pow_right₀ Γ.one_le_loss (by linarith)
+  calc ∫⁻ σ in {σ | t.val.val *ᵥ orbitPoint j σ ∈ Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6)},
+        ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j
+      = ∫⁻ v in Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6), ‖G v‖ₑ ^ 2 ∂F.floorQuadricMeasure j :=
+        (measurePreserving_mulVec_orbitPoint j ht).setLIntegral_comp_preimage
+          (f := fun v ↦ ‖G v‖ₑ ^ 2) measurableSet_vecsOfSize (by fun_prop)
+    _ ≤ Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) * Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12)) *
+          (P.kernelBound / P.modulus (-ξ).val) ^ card F.FreeIndex *
+          ∫⁻ τ, ‖F.partialCorrelation (j + 1) k (τ * x) (τ * y)‖ₑ ^ 2 ∂F.floorMeasure j :=
+        Γ.correlation_plancherel ht h_size hk y (by simp) (-ξ) v₀ (.inr rfl)
+    _ ≤ _ := by
+        grw [h_const]
+        simp
+
 /-- Let `W` be a cut Bessel function, `p` a head of length j ≤ ϱ, `q` a second sequence of units,
 `x` a position and `F.groupMeasure` a Haar measure. Let ψ be the additive character of the place,
 and let ψ(ηz) = ψ(ξz) for the unit ξ and all numbers z of size 200 n² (n = `𝔰.n`) in the gauge
@@ -500,54 +572,22 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
     Γ.correlation_support ht h_size ker₁ (g * x)
   have h_supp' : ∀ᵐ τ ∂F.floorMeasure j, f' τ ≠ 0 → τ ∈ S' :=
     Γ.correlation_support ht h_size' ker₂ ((weylElem j p)⁻¹ * (g * x))
-  -- On the supports the Gram entry has size `200 * 𝔰.n ^ 2`, where `hφ` applies.
-  have h_char {σ τ : T.G} (hσ : σ ∈ S) (hτ : τ ∈ S') :
-      ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) =
-        ψ (ξ * star (t.val.val *ᵥ orbitPoint j σ) ⬝ᵥ
-          T.splitGram *ᵥ t.val.val *ᵥ orbitPoint j τ) := by
-    rw [← U.form_mulVec_mulVec t]
-    exact hφ _ (Γ.mem_ofSize_mono (Γ.dotProduct_mem_ofSize
-      (fun a _ ↦ Γ.neg_mem_iff_and_star_mem_iff.2.2 (hσ a))
-      (Size.HasMatrixSize.mulVec Γ.splitGram_and_inv_mem.1 hτ)))
+  -- `G` is the Fourier transform of `f'`, of frequency `-ξ`.
   let G (v : 𝔰.BesselIndex → A) : ℂ :=
     ∫ τ, ψ ((-ξ).val * star (v + 0) ⬝ᵥ T.splitGram *ᵥ t *ᵥ orbitPoint j τ) * f' τ
       ∂F.floorMeasure j
-  have hG : Measurable G := by
-    unfold G f'
-    fun_prop
   have h_inner : ∀ᵐ σ ∂F.floorMeasure j,
       ∫ τ, ψ (η * star (orbitPoint j σ) ⬝ᵥ T.splitGram *ᵥ orbitPoint j τ) *
         (f σ * conj (f' τ)) ∂F.floorMeasure j = f σ * conj (G (t *ᵥ orbitPoint j σ)) := by
     filter_upwards [h_supp] with σ hσ
-    rw [← integral_conj, ← integral_const_mul]
-    refine integral_congr_ae ?_
-    filter_upwards [h_supp'] with τ hτ
     by_cases hfσ : f σ = 0
     · simp [hfσ]
-    by_cases hfτ : f' τ = 0
-    · simp [hfτ]
-    rw [h_char (hσ hfσ) (hτ hfτ)]
-    simp [P.ψ.map_neg_eq_inv, inv_eq_conj, mul_left_comm _ (ψ _)]
-  have h_const : Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) *
-      Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12)) ≤ Γ.floorsConst := by
-    have h_cube : 𝔰.n ≤ 𝔰.n ^ 3 := Nat.le_self_pow three_ne_zero _
-    rw [← pow_add]
-    exact pow_le_pow_right₀ Γ.one_le_loss (by linarith)
+    exact Γ.integral_char_mul_mul_conj_eq hφ (hσ hfσ) h_supp' (f σ)
   have h_bound : ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j ≤
       Γ.floorsConst * (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex *
-        ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j := by
-    calc ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j
-        = ∫⁻ v in Γ.vecsOfSize (60 * 𝔰.n ^ 2 + 6), ‖G v‖ₑ ^ 2 ∂F.floorQuadricMeasure j :=
-          (measurePreserving_mulVec_orbitPoint j ht).setLIntegral_comp_preimage
-            (f := fun v ↦ ‖G v‖ₑ ^ 2) measurableSet_vecsOfSize (by fun_prop)
-      _ ≤ Γ.loss ^ (99 * 𝔰.n * (60 * 𝔰.n ^ 2 + 6 + 6)) * Γ.loss ^ (99 * 𝔰.n * (99 * 𝔰.n ^ 2 + 12)) *
-            (P.kernelBound / P.modulus (-ξ).val) ^ card F.FreeIndex *
-            ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j :=
-          Γ.correlation_plancherel ht h_size' ker₂ ((weylElem j p)⁻¹ * (g * x)) (by simp) (-ξ) 0
-            (.inr rfl)
-      _ ≤ _ := by
-          grw [h_const]
-          simp
+        ∫⁻ τ, ‖f' τ‖ₑ ^ 2 ∂F.floorMeasure j :=
+    Γ.setLIntegral_enorm_integral_char_mul_partialCorrelation_sq_le ht h_size' ker₂
+      ((weylElem j p)⁻¹ * (g * x)) 0
   have h_off : ∀ᵐ σ ∂F.floorMeasure j, σ ∉ S → f σ * conj (G (t *ᵥ orbitPoint j σ)) = 0 :=
     h_supp.mono fun σ hσ h_out ↦ mul_eq_zero_of_left (of_not_not (mt hσ h_out)) _
   rw [integral_congr_ae h_inner, ← setIntegral_eq_integral_of_ae_compl_eq_zero h_off]
