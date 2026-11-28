@@ -93,6 +93,16 @@ lemma countable_quotient_localLevel (A : Set (FinPlace E)) :
   have := QuotientGroup.discreteTopology (isOpen_coe_localLevel (n := n) A)
   exact TopologicalSpace.separableSpace_iff_countable.1 inferInstance
 
+omit [WeilData E] in
+/-- For `A ⊆ B`, viewing the chosen representatives at `A` as cosets at `B` is injective:
+the natural quotient map sends each representative back to its original coset. -/
+lemma cosetRep_injective_of_subset {B : Set (FinPlace E)} (hAB : A ⊆ B) :
+    Function.Injective fun q : Gf E n ⧸ localLevel n A ↦
+      ((cosetRep q).val : Gf E n ⧸ localLevel n B) := by
+  have h_level : localLevel n B ≤ localLevel n A := fun _ hg w hw ↦ hg w (hAB hw)
+  refine Function.LeftInverse.injective (g := Subgroup.quotientMapOfLE h_level) fun q ↦ ?_
+  rw [Subgroup.quotientMapOfLE_apply_mk, mk_cosetRep]
+
 /-- The character `b ∘ det` is trivial on `stdLevel E n ⊓ supportedOn n A`, the integral finite
 points whose component is `1` at every place outside `A` and its conjugate. -/
 def IsUnramifiedOn (b : AutChar E) (n : Type) [Fintype n] [DecidableEq n]

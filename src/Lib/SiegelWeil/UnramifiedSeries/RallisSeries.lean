@@ -380,10 +380,8 @@ lemma tendsto_vacuumSum_inter (h_rank : 2 * card n < card m) (hb : IsUnramifiedO
   let c (q : Gf E n ⧸ localLevel n A) : ℂ := vacuumCoeff (card m) b (cosetRep q).val
   let incl (R : Finset (FinPlace E)) (q : Gf E n ⧸ localLevel n (A ∩ R)) :
       Gf E n ⧸ localLevel n A := (cosetRep q).val
-  have h_inj (R : Finset (FinPlace E)) : Function.Injective (incl R) := by
-    intro q q' h_eq
-    rw [← mk_cosetRep q, ← mk_cosetRep q', QuotientGroup.eq]
-    exact fun w hw ↦ QuotientGroup.eq.1 h_eq w hw.left
+  have h_inj (R : Finset (FinPlace E)) : Function.Injective (incl R) :=
+    cosetRep_injective_of_subset Set.inter_subset_left
   have h_sum (R : Finset (FinPlace E)) :
       ∑' q : Gf E n ⧸ localLevel n A, (Set.range (incl R)).indicator c q =
         vacuumSum n (card m) b (A ∩ R) := by
