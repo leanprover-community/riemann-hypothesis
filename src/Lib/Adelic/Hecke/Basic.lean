@@ -1,6 +1,7 @@
 module
 
 import TauCeti.RepresentationTheory.Induction.Mackey.Subgroup
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.Basic
 public import Mathlib.GroupTheory.DoubleCoset
 public import Mathlib.RepresentationTheory.Coinduced
 import Mathlib.Algebra.FiniteSupport.Basic
@@ -165,13 +166,6 @@ lemma isLocallyConstant_of_eventually_mul {X : Type*} {f : G → X}
     rw [← map_mul_left_nhds_one x, Filter.eventually_map]
     filter_upwards [h_fix] with k hk using hk x
 
-/-- For an open subgroup `H` of a topological group `G`, a compact subset `C` of `G` meets only
-finitely many cosets `g H`. -/
-lemma finite_quotient_image_of_isCompact (hH : IsOpen (H : Set G)) {C : Set G} (hC : IsCompact C) :
-    ((↑) '' C : Set (G ⧸ H)).Finite := by
-  have : DiscreteTopology (G ⧸ H) := QuotientGroup.discreteTopology hH
-  exact (hC.image continuous_quotient_mk').finite_of_discrete
-
 /-- For a compact subgroup `K` and an open subgroup `H` of a topological group, the index
 `[K : H ∩ K]` is finite, so it is nonzero as a natural number. -/
 @[to_additive relIndex_ne_zero_add]
@@ -263,7 +257,7 @@ lemma isHeckeFunction_doubleCoset [TopologicalSpace G] [IsTopologicalGroup G]
   have hK_compact : IsCompact (K : Set G) := isCompact_iff_compactSpace.2 inferInstance
   have h_compact : IsCompact (doubleCoset g K K) :=
     (hK_compact.mul isCompact_singleton).mul hK_compact
-  refine ⟨(finite_quotient_image_of_isCompact hK h_compact).subset fun q hq ↦ ?_,
+  refine ⟨(h_compact.finite_image_mk ⟨K, hK⟩).subset fun q hq ↦ ?_,
     fun x k hk ↦ ⟨?_, ?_⟩⟩
   · exact ⟨q.out, support_indicator_subset hq, q.out_eq⟩
   · -- `x * k` and `x` lie in the double coset together: absorb `k` in the right factor

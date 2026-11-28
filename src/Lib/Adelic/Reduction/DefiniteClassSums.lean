@@ -2,6 +2,7 @@ module
 
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Topology.Algebra.ProperConstSMul
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.Basic
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.Reduction.FiniteVolume
@@ -196,7 +197,7 @@ instance hasFiniteType_of_isLevel {K : Subgroup (Gf E n)} [hK : IsLevel K] :
   refine ⟨?_, fun g ↦ ?_, hK.isOpen, hK.isCompact⟩
   · -- A compact set `C` with `Γf C = Gf` meets finitely many cosets of the open group `K`.
     obtain ⟨C, hC, hcover⟩ := V.isCocompact_finitePart
-    refine (finite_quotient_image_of_isCompact hK.isOpen hC).of_surjective
+    refine (hC.finite_image_mk ⟨K, hK.isOpen⟩).of_surjective
       (fun c ↦ ⟦c.val.out⟧) (Quot.ind fun g ↦ ?_)
     -- the class of `g` comes from the coset of `γ * g ∈ C`
     obtain ⟨γ, hγ, (hγg : γ * g ∈ C)⟩ := hcover g

@@ -4,6 +4,7 @@ import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Topology.Algebra.ProperAction.Torsor
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.Basic
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Periods.BesselIntegral
@@ -205,7 +206,7 @@ lemma exists_finset_coverMultiplicity_dvd_pow {S A J : Subgroup (Gf E ι)} [hA :
   -- `T` is finite: it lies in the image of the compact set `A * D` modulo the open subgroup `J`.
   obtain ⟨T, mem_T⟩ := Finite.exists_finset
     (s := {t : Gf E ι ⧸ J | ∃ p : S, ↑p ∈ A ∧ p⁻¹ • t ∈ C})
-    ((finite_quotient_image_of_isCompact hJ.isOpen (hA.isCompact.mul hD_compact)).subset
+    (((hA.isCompact.mul hD_compact).finite_image_mk ⟨J, hJ.isOpen⟩).subset
       fun t ⟨p, hp, hpt⟩ ↦
         let ⟨d, hd, hd_eq⟩ := hC hpt
         ⟨p * d, mul_mem_mul hp hd, eq_inv_smul_iff.1 hd_eq⟩)

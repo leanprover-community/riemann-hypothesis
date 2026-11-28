@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Polynomial.Eval.Irreducible
 import Mathlib.RingTheory.PiTensorProduct
 import TauCeti.Analysis.Normed.Ring.Ultra
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.Basic
 public import Lib.General.LinearAlgebra.IdempotentRadical
 public import Lib.Adelic.TraceFormula.ChangingSigns
 import Lib.General.Combinatorics
@@ -184,7 +185,7 @@ lemma finite_range_inter_support [TopologicalSpace M] [IsTopologicalGroup M]
     (range r ∩ {p : X | F p ≠ 0}).Finite := by
   let r' : M ⧸ L → X :=
     Quotient.lift r fun m m' h ↦ (hr m m').2 (QuotientGroup.leftRel_apply.1 h)
-  refine ((finite_quotient_image_of_isCompact hL hC).image r').subset ?_
+  refine ((hC.finite_image_mk ⟨L, hL⟩).image r').subset ?_
   rintro _ ⟨⟨m, rfl⟩, hm⟩
   obtain ⟨m', hm', h_eq⟩ := h_supp m hm
   exact ⟨m', ⟨m', hm', rfl⟩, h_eq⟩

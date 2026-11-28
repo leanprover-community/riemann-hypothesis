@@ -4,6 +4,7 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unitary
 import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
 import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.Basic
 public import Lib.Shimura.HeckeTower.HeckeData
 import Lib.Adelic.Reduction.FiniteVolume
 import Lib.General.LinearAlgebra.PartnerAlgebra
@@ -350,7 +351,7 @@ lemma New.Variety.finite_isSignedFrame_classes {E n : Type} [Field E] [CMBase E]
     Classical.epsilon fun x : GL n (𝔸f E) ↦ IsFrameFor β x ∧ (x : GL n (𝔸f E) ⧸ V) = q
   obtain ⟨B, hB, h_gram_mem⟩ := exists_isCompact_gram_mkAdelicGL_mem E n
   obtain ⟨F, C, Cf, hF, -, hCf, h_mahler⟩ := exists_isBoundedDualBasis hB
-  refine (hF.image2 (fun β q ↦ ⟦rep β q⟧) (finite_quotient_image_of_isCompact hV hCf)).subset ?_
+  refine (hF.image2 (fun β q ↦ ⟦rep β q⟧) (hCf.finite_image_mk ⟨V, hV⟩)).subset ?_
   -- `x` is a signed frame for the rational form `J₀`
   rintro _ ⟨x, ⟨_ℓ, J₀, h_frame, h_sig⟩, rfl⟩
   -- The form `J₀` is positive definite at a place `v ≠ v₀`, so it is an invertible matrix `J`.

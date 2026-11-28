@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.Topology.Algebra.Group.OpenSubgroup.Basic
 public import New.UpperBound.Seesaw.IntegralAsCosetSum
 public import New.UpperBound.Seesaw.UnfoldingStages
 import Lib.Weil.Periods.LatticeBounds
@@ -125,8 +126,8 @@ lemma exists_isStageCut (j : ℕ) (hj : j ≤ 2 * D.ϱ + 1) :
 classes of the elements of `D.chosenLevel` (integral points that reduce to `1` at the chosen places)
 for `j = 0`, and a chosen cut (`IsStageCut`) for `j > 0`. -/
 def cutPoints : ∀ j : ℕ, j ≤ 2 * D.ϱ + 1 → Finset (Gf D.E (D.Y j) ⧸ levelY ϑ j)
-  | 0, _ => (finite_quotient_image_of_isCompact (IsLevel.isOpen (K := levelY ϑ 0))
-      (IsLevel.isCompact (K := D.chosenLevel))).toFinset
+  | 0, _ => (IsCompact.finite_image_mk (IsLevel.isCompact (K := D.chosenLevel))
+      ⟨levelY ϑ 0, IsLevel.isOpen⟩).toFinset
   | k + 1, hk => (exists_isStageCut ϑ (k + 1) hk).choose
 
 /-- For `k + 1 ≤ 2 ϱ + 1` the set `cutPoints ϑ (k + 1)` is a cut (`IsStageCut`). -/

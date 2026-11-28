@@ -3,6 +3,7 @@ module
 import Mathlib.RingTheory.Frobenius
 import Mathlib.Topology.Algebra.Group.Units
 import TauCeti.RepresentationTheory.Subrepresentation
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.Basic
 public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
 public import Lib.LocalGL.Shintani.CosetDescent
 import Lib.LocalGL.Shintani.LiftingGreenCharacters
@@ -283,8 +284,7 @@ lemma isLocalMatching_shintani {S : GalSemidirect (ResField w) (ResField u) n �
   · -- Inflated functions are bi-invariant under the principal level, with compact support:
     -- `inflateConj` vanishes off the integral matrices.
     constructor <;>
-      exact ⟨(finite_quotient_image_of_isCompact isOpen_localCongruence
-        (isCompact_localIntGL _)).subset
+      exact ⟨((isCompact_localIntGL _).finite_image_mk ⟨_, isOpen_localCongruence⟩).subset
         fun q hq ↦ ⟨_, by by_contra h; exact hq (dite_eq_right h), q.out_eq⟩,
         by simp +contextual [mem_localCongruence_zero, inflateConj,
           mul_mem_cancel_right, ← MulMemClass.mk_mul_mk, mul_mem_cancel_left]⟩

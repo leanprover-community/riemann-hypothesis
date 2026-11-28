@@ -10,6 +10,7 @@ import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.FieldTheory.Galois.IsometricAction
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.Basic
 import TauCeti.Topology.Algebra.Group.Units
 public import Lib.GaloisRep.Main.Defs
 public import Lib.GaloisRep.Main.LocalConditions
@@ -1078,7 +1079,7 @@ lemma avatarCompatAt_of_type_eq_zero
   -- Inertia comes from the compact group of unit ideles, and the kernel of `θ` is open.
   have finite : (avatar θ '' inertiaGroup Gal(Ω/E) A).Finite := by
     refine .of_surjOn (fun y ↦ Units.map ιℓ (kerLift θ.character y)) ?_
-      (finite_quotient_image_of_isCompact h_open isCompact_idelesUnitOff_empty)
+      (isCompact_idelesUnitOff_empty.finite_image_mk ⟨_, h_open⟩)
     rintro _ ⟨s, hs, rfl⟩
     obtain ⟨x, hx, hxs⟩ := hA.exists_localArtin_eq_of_mem_inertiaGroup hs
     exact ⟨QuotientGroup.mk (locIdele w x), ⟨locIdele w x, locIdele_mem_idelesUnitOff hx, rfl⟩,
