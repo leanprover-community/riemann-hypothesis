@@ -286,18 +286,12 @@ lemma exists_map_coe_eq_firstCols {π : O →+* R} [IsLocalHom π] (hπ : Surjec
     {e : b ⊕ a ≃ n} {y : Matrix n b O} {k : GL n R} (hy_map : y.map π = firstCols e k) :
     ∃ j ∈ intGL n O, y.map (↑) = firstCols e j := by
   -- Lift the other columns of `k`; the resulting matrix is invertible as `π` is local.
-  let M : Matrix n n O := of fun i ↦ extend (e ∘ Sum.inl) (y i) (surjInv hπ ∘ k i)
-  have hM_cols (i : n) (j : b) : M i (e (Sum.inl j)) = y i j :=
-    (e.injective.comp Sum.inl_injective).extend_apply (y i) (surjInv hπ ∘ k i) j
-  have h_map : π.mapMatrix M = k := by
-    refine Matrix.ext fun i c ↦ show π (M i c) = k.val i c from ?_
-    by_cases hc : ∃ j : b, (e ∘ Sum.inl) j = c
-    · obtain ⟨j, rfl⟩ := hc
-      simpa [hM_cols] using congr_fun₂ hy_map i j
-    · simp [M, extend_apply' (y i) (surjInv hπ ∘ k i) c hc, surjInv_eq hπ]
-  obtain ⟨j, hj⟩ : IsUnit M := isUnit_of_mapMatrix π (by simp [h_map])
-  refine ⟨GeneralLinearGroup.map O.subtype j, MonoidHom.mem_range.2 ⟨j, rfl⟩, ?_⟩
-  simp [hj, hM_cols, ← ext_iff]
+  let M : Matrix n n O := of fun i c ↦ (e.symm c).elim (y i) fun _ ↦ surjInv hπ (k i c)
+  have hM : π.mapMatrix M = k := Matrix.ext fun i c ↦ match h : e.symm c with
+    | .inl j => by simpa [M, e.symm_apply_eq.mp h] using congr_fun₂ hy_map i j
+    | .inr _ => by simp [M, h, surjInv_eq hπ]
+  obtain ⟨j, hj⟩ : IsUnit M := isUnit_of_mapMatrix π (hM ▸ k.isUnit)
+  exact ⟨GeneralLinearGroup.map O.subtype j, ⟨j, rfl⟩, Matrix.ext fun i c ↦ by simp [hj, M]⟩
 
 end Lift
 

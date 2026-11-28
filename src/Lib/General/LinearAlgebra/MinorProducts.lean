@@ -320,21 +320,15 @@ lemma alternatingMap_eq_sum_minors [Fintype I] [LinearOrder I]
     (f : (I → R) [⋀^Fin k]→ₗ[R] R) (X : Matrix I (Fin k) R) :
     f (fun a : Fin k ↦ X.col a) = ∑ S : Set.powersetCard I k,
       (X.submatrix (enumSubset S) id).det * f fun a : Fin k ↦ Pi.single (enumSubset S a) 1 := by
-  -- Apply the linear map `φ` induced by `f` to the exterior product `v` of the columns, expanded
-  -- in the standard basis of the exterior power.
-  let φ : ⋀[R]^k (I → R) →ₗ[R] R := exteriorPower.alternatingMapLinearEquiv f
-  let v : ⋀[R]^k (I → R) := exteriorPower.ιMulti R k fun a ↦ X.col a
-  let B : Module.Basis (Set.powersetCard I k) R (⋀[R]^k (I → R)) :=
-    (Pi.basisFun R I).exteriorPower k
-  have h_coord (S : Set.powersetCard I k) : B.repr v S = (X.submatrix (enumSubset S) id).det := by
-    rw [exteriorPower.basis_repr_apply, exteriorPower.ιMultiDual_apply_ιMulti,
-      ← det_transpose (X.submatrix _ _)]
-    simp [submatrix, transpose]
-  have h_value (S : Set.powersetCard I k) : φ (B S) = f fun a ↦ Pi.single (enumSubset S a) 1 := by
-    simp [φ, B, exteriorPower.ιMulti_family, Function.comp_def]
-  calc f (fun a ↦ X.col a) = φ v := (exteriorPower.alternatingMapLinearEquiv_apply_ιMulti f _).symm
-    _ = φ (∑ S, B.repr v S • B S) := by rw [B.sum_repr]
-    _ = _ := by simp [h_coord, h_value]
+  -- Write `f` as a linear map on the exterior power and expand the exterior product of the columns
+  -- in its standard basis `B`.
+  let B := (Pi.basisFun R I).exteriorPower k
+  rw [← exteriorPower.alternatingMapLinearEquiv_apply_ιMulti f,
+    ← B.sum_repr (exteriorPower.ιMulti R k _), map_sum]
+  refine Finset.sum_congr rfl fun S _ ↦ ?_
+  rw [map_smul, smul_eq_mul, exteriorPower.basis_repr_apply,
+    exteriorPower.ιMultiDual_apply_ιMulti, ← det_transpose (X.submatrix _ _)]
+  simp [B, submatrix, transpose, exteriorPower.ιMulti_family, Function.comp_def]
 
 /-- The Cauchy–Binet formula: the determinant of `A * X`, with `k` rows in `A` and `k` columns in
 `X`, is the sum over the `k`-sets `S` of inner indices (listed in increasing order by

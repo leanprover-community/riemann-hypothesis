@@ -115,19 +115,16 @@ lemma picClass_pull_absFrobenius {ι : Type} {L : LineBundle X.left ι} (hL : L.
     l ^ f • L.picClass = (L.pull (absFrobenius f X)).picClass := by
   -- `L.pow (l ^ f)` is indexed by tuples of indices. On the constant tuples its cover is that of
   -- `L` and its cocycle the `l ^ f`-th power of that of `L`.
-  rw [← picClass_pow]
   -- The Frobenius does not move the charts.
-  have h_opens (a : ι) : (L.pull (absFrobenius f X)).opens a = L.opens a := by
-    ext x
-    simp [absFrobenius_apply]
-  refine picClass_eq_of_le (fun a _ ↦ a) (fun a ↦ ?_) fun a b A t ht ↦ ?_
-  · exact le_iInf fun _ ↦ (h_opens a).le
-  · -- `L.transition a b` is regular on `L.opens a`, so it commutes with `x ↦ x ^ l ^ f`.
-    rw [h_opens] at ht
-    have h_frob : L.transition a b A (t ≫ absFrobenius f X) = L.transition a b A t ^ l ^ f := by
-      rw [comp_absFrobenius]
-      exact hL.isRegularOn_transition a b _ t ht
-    simpa [pow] using h_frob
+  have h_opens (a : ι) : (L.pull (absFrobenius f X)).opens a = L.opens a :=
+    SetLike.ext fun _ ↦ by simp [absFrobenius_apply]
+  refine (picClass_pow ..).symm.trans <| picClass_eq_of_le (fun a _ ↦ a)
+    (fun a ↦ le_iInf fun _ ↦ (h_opens a).le) fun a b A t ht ↦ ?_
+  -- `L.transition a b` is regular on `L.opens a`, so it commutes with `x ↦ x ^ l ^ f`.
+  have h_frob : L.transition a b A (t ≫ absFrobenius f X) = L.transition a b A t ^ l ^ f := by
+    rw [comp_absFrobenius]
+    exact hL.isRegularOn_transition a b _ t (h_opens a ▸ ht)
+  simpa [pow] using h_frob
 
 end AbsoluteFrobenius
 

@@ -652,20 +652,14 @@ lemma New.IsCentralProj.isChar_card_mul_coeff (h : IsCentralProj e) :
     IsChar fun g : G ↦ Nat.card G * e.coeff g := by
   -- The pairing of |G|·e with a character χ is the trace of e on a representation with character
   -- conj χ. As e acts there by an idempotent, this trace is a natural number, the rank.
-  have h_class : IsClassFunction fun g ↦ Nat.card G * e.coeff g := by simp [h.isClassFunction _ _]
   -- A class function whose pairing with every character is in `ℕ` is an `ℕ`-combination of
   -- characters, hence a character.
-  suffices h_nat : ∀ χ : G → ℂ, IsChar χ →
-      ∃ m : ℕ, classInner χ (fun g ↦ Nat.card G * e.coeff g) = algebraMap ℕ ℂ m from
-    isChar_of_mem_virtualChars (h_class.mem_virtualChars h_nat)
-  intro χ hχ
-  obtain ⟨ρ, hρ⟩ : ∃ ρ : FDRep ℂ G, ρ.character = fun g ↦ starRingEnd ℂ (χ g) := hχ.star
-  have h_trace :
-      classInner χ (fun g ↦ Nat.card G * e.coeff g) = trace ℂ ρ (asAlgebraHom ρ.ρ e) := by
-    simp [classInner, finMean, finsum_eq_sum_of_fintype, ← congrFun hρ, asAlgebraHom_eq_sum,
-      FDRep.character, sum_div, mul_rotate']
-  use Module.finrank ℂ (range (asAlgebraHom ρ.ρ e))
-  rw [h_trace, (h.isIdempotentElem.map _).isProj_range.trace, eq_natCast]
+  refine isChar_of_mem_virtualChars <|
+    IsClassFunction.mem_virtualChars (by simp [h.isClassFunction _ _]) fun χ hχ ↦ ?_
+  obtain ⟨ρ, hρ⟩ := hχ.star
+  refine ⟨_, by simpa [classInner, finMean, finsum_eq_sum_of_fintype, ← congrFun hρ,
+    asAlgebraHom_eq_sum, FDRep.character, sum_div, mul_rotate', eq_natCast] using
+    (h.isIdempotentElem.map (asAlgebraHom ρ.ρ)).isProj_range.trace⟩
 
 /-- If `e` is a central idempotent of the complex group algebra of a finite group `G`, then
 `g ↦ |G| · e(g)`, with `e(g)` the coefficient of `g`, is the character of a representation of `G` of
