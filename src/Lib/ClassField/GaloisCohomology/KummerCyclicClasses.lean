@@ -1,5 +1,6 @@
 module
 
+public import Lib.General.Algebra.AbsIntegrallyClosed
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.CategoryTheory.Shift.Basic
@@ -103,10 +104,8 @@ lemma val_ofBase (a : Additive Kˣ) :
 /-- If Ω is algebraically closed and `n ≠ 0`, every `x` in `Ωˣ` (written additively) is `n • y`
 for some `y`: the element `x` has an `n`-th root in `Ωˣ`. -/
 lemma exists_nsmul (x : DiscreteUnits Ω) [IsAlgClosed Ω] {n : ℕ} (hn : n ≠ 0) :
-    ∃ y : DiscreteUnits Ω, n • y = x := by
-  -- an `n`-th root of `x` in the field is again a unit
-  obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq (x.toMul : Ω) hn.pos
-  exact ⟨Additive.ofMul (Units.ofPow x.toMul z hn hz), ext hz⟩
+    ∃ y : DiscreteUnits Ω, n • y = x :=
+  Variety.IsAbsIntegrallyClosed.exists_nsmul_unit hn x
 
 end New.DiscreteUnits
 
@@ -140,12 +139,6 @@ abbrev unitsModule : DiscreteModule ℤ Γ :=
 /-- Additive maps from a finite group `A` to `Ωˣ` (written additively) form a finite set. -/
 instance [Finite A] : Finite (A →+ DiscreteUnits Ω) :=
   .of_equiv (Multiplicative A →* Ωˣ) toMultiplicativeLeft.symm
-
-/-- For Ω algebraically closed, `Ωˣ` written additively is divisible by every non-zero integer,
-since every unit has `n`-th roots (`New.DiscreteUnits.exists_nsmul`). -/
-instance : DivisibleBy (DiscreteUnits Ω) ℤ :=
-  @AddGroup.divisibleByIntOfDivisibleByNat _ _
-    (divisibleByOfSMulRightSurj _ _ (swap (·.exists_nsmul)))
 
 variable {Γ}
   (W : DiscreteModule S Γ) (M : DiscreteModule R Γ) (N : DiscreteModule R' Γ) (b : A →+ B →+ C)

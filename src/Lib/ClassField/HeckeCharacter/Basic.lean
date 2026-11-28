@@ -6,7 +6,8 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Algebra.Star.Unitary
 public import Lib.ClassField.Places.Ideles
 import Lib.Adelic.Adeles.StrongApproximation
-import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+import Lib.General.Algebra.AbsIntegrallyClosed
+import Lib.General.Groups.ProfiniteCharacters
 import Lib.GaloisRep.Hilbert90.UnitaryGroups
 
 /-!
