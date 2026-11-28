@@ -905,6 +905,7 @@ lemma isUnit_natCast_of_pow_factorization_succ_dvd (hX : X ≠ 0)
     simpa [pow_succ, NeZero.ne, mul_dvd_mul_iff_left] using h_dvd
   exact (X.coprime_ordCompl L.out hX).cast.isUnit_of_dvd h_dvd_compl
 
+/-- Finiteness of the Kolyvagin reciprocity component. -/
 lemma finite_component : Finite (component l e ψ ν) :=
   finite_vanishingCocycles (n := ν)
     (fun g y ↦ (cyclotomicPowDirichlet_smul_eq_self g.prop (nsmul_quot_eq_zero dvd_rfl y)).right)
