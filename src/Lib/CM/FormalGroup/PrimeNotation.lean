@@ -58,12 +58,14 @@ namespace New
 /-- The number `π_p`, as a complex number: `√-d = I * √d` if `p = d`, and `p` otherwise. -/
 noncomputable def piPrime (d p : ℕ) : ℂ := if p = d then .I * √d else p
 
+/-- The prime norm `primeNorm d p` is a positive power of `p` (in fact `p` or `p ^ 2`). -/
 lemma exists_primeNorm_eq_pow (d p : ℕ) [Fact d.Prime] :
     ∃ e : ℕ, e ≠ 0 ∧ primeNorm d p = p ^ e := by
   by_cases h : chiK d p = -1
   · exact ⟨2, two_ne_zero, by simp [primeNorm, h]⟩
   · exact ⟨1, one_ne_zero, by simp [primeNorm, h]⟩
 
+/-- The prime norm `primeNorm d p` is strictly greater than 1 for any prime `p`. -/
 lemma one_lt_primeNorm (d p : ℕ) [Fact d.Prime] [Fact p.Prime] : 1 < primeNorm d p := by
   grind [exists_primeNorm_eq_pow d p, Nat.one_lt_pow, (Fact.out : p.Prime).one_lt]
 
@@ -83,8 +85,10 @@ instance (d p : ℕ) [Fact d.Prime] [Fact p.Prime] : NeZero (primeNorm d p - 1) 
 `p = d`, and `1` otherwise (see `New.norm_piPrime`). -/
 noncomputable def piPrimeValuation (d p : ℕ) : ℝ := if p = d then 1 / 2 else 1
 
+/-- The valuation `piPrimeValuation d d` at the ramified prime `d` is `1/2`. -/
 lemma piPrimeValuation_self (d : ℕ) : piPrimeValuation d d = 1 / 2 := ite_eq_left rfl
 
+/-- The valuation `piPrimeValuation d p` at a prime `p ≠ d` is `1`. -/
 lemma piPrimeValuation_of_ne {d p : ℕ} (hd : p ≠ d) : piPrimeValuation d p = 1 := ite_eq_right hd
 
 lemma piPrimeValuation_pos (d p : ℕ) : 0 < piPrimeValuation d p := by
