@@ -297,18 +297,17 @@ positions `(i, j)` above the block diagonal. -/
 lemma card_freeEntry_besselIndex (𝔰 : Shape) :
     Nat.card (FreeEntry (BesselIndex.level : 𝔰.BesselIndex → ℕ)) =
       𝔰.ϱ * (2 * 𝔰.k + 2 * 𝔰.ϱ + 1) := by
-  have h_choose : (2 * 𝔰.ϱ).choose 2 = 𝔰.ϱ * (2 * 𝔰.ϱ - 1) := by
-    rw [Nat.choose_two_right, mul_assoc, Nat.mul_div_cancel_left _ two_pos]
+  have h_choose : (2 * 𝔰.ϱ).choose 2 + 2 * 𝔰.ϱ = 𝔰.ϱ * (2 * 𝔰.ϱ + 1) := by
+    have h := Nat.add_one_mul_choose_eq (2 * 𝔰.ϱ) 1
+    rw [Nat.choose_succ_succ', Nat.choose_one_right, mul_comm (2 * 𝔰.ϱ + 1), mul_assoc] at h
+    linarith
   calc Nat.card (FreeEntry (BesselIndex.level : 𝔰.BesselIndex → ℕ))
       = (2 * 𝔰.ϱ).choose 2 + 2 * 𝔰.ϱ * (𝔰.k + 1) := by
         rw [card_freeEntry_level, show Fintype.card 𝔰.MiddleIndex = 𝔰.k + 1 by simp]
-    _ = 𝔰.ϱ * (2 * 𝔰.ϱ - 1 + 2 * (𝔰.k + 1)) := by
+    _ = (2 * 𝔰.ϱ).choose 2 + 2 * 𝔰.ϱ + 2 * 𝔰.ϱ * 𝔰.k := by ring
+    _ = 𝔰.ϱ * (2 * 𝔰.k + 2 * 𝔰.ϱ + 1) := by
       rw [h_choose]
       ring
-    _ = 𝔰.ϱ * (2 * 𝔰.k + 2 * 𝔰.ϱ + 1) := by
-      obtain h_zero | h_pos := Nat.eq_zero_or_pos 𝔰.ϱ
-      · simp [h_zero]
-      · rw [show 2 * 𝔰.ϱ - 1 + 2 * (𝔰.k + 1) = 2 * 𝔰.k + 2 * 𝔰.ϱ + 1 by omega]
 
 /-- The order of `Ū = S.reducedImage besselU`, the reduction of the integral points of the Bessel
 unipotent group, is `S.unipotentOrder = M ^ (f ϱ (2k + 2ϱ + 1))`. Here `M` is the product of the two
