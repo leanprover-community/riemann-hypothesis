@@ -16,21 +16,22 @@ name: Label PR
 # (its latest "labeled" event is by github-actions[bot]); labels people add are left alone.
 # Size labels are different: when the size label changes, the other size labels are removed,
 # whoever added them.
-# Since labels can be removed, only the run for the PR's current head may apply them: newer
-# pushes cancel older runs, and a run whose head has moved on exits without changes.
+# Since the paths and size depend on the comparison, a push or a change of base branch cancels
+# older label jobs. A run for a previous head or base branch exits before applying labels.
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited]
 
 permissions: {}
 
-concurrency:
-  group: label-pr-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
-
 jobs:
   label:
+    # A title or body edit does not change the diff and should not cancel a label job.
+    if: github.event.action != 'edited' || github.event.changes.base
+    concurrency:
+      group: label-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -41,6 +42,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
           BASE: ${{ github.event.pull_request.base.sha }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           git init -q pr
@@ -96,10 +98,10 @@ jobs:
           flag documentation "$docs"
 
           api="repos/$GITHUB_REPOSITORY/issues/$PR"
-          pr=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq '"\(.head.sha) \(.additions) \(.deletions)"')
-          read -r current additions deletions <<< "$pr"
-          if [[ "$current" != "$HEAD" ]]; then
-            echo "The PR head has moved to $current; the run for that head applies its labels."
+          pr=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq '"\(.head.sha) \(.base.ref) \(.additions) \(.deletions)"')
+          read -r current current_base additions deletions <<< "$pr"
+          if [[ "$current" != "$HEAD" || "$current_base" != "$BASE_REF" ]]; then
+            echo "The PR head or base branch changed; skipping labels for the old comparison."
             exit 0
           fi
 
