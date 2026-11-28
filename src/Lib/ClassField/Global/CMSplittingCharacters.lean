@@ -312,6 +312,11 @@ lemma exists_sign_principalIdele_mul_norm_eq_one {s : InfinitePlace L → ℤˣ}
     rw [← map_finAdeleIncl_principalIdele_mul_adeleNorm, ← hxy, map_one]
   exact ⟨_, y, hx_sign, h_one⟩
 
+/-- A unit fixed by complex conjugation comes from the maximal real subfield. -/
+private lemma exists_map_unit_of_star_eq {a : Lˣ} (ha : star a.val = a.val) :
+    ∃ u : (maximalRealSubfield L)ˣ, u.map (maximalRealSubfield L).subtype = a :=
+  ⟨mk0 ⟨a.val, mem_maximalRealSubfield_iff_star_eq.mpr ha⟩ (by simp [Subtype.ext_iff]), ext rfl⟩
+
 /-- If `a ∈ Lˣ` has `ā = a` and `a z z̄ = 1` for a finite idele `z`, then `∏ w, Φ w a` is
 positive. -/
 lemma prod_Φ_pos_of_principalIdele_mul_norm_eq_one {a : Lˣ} {z : (𝔸f L)ˣ}
@@ -321,9 +326,7 @@ lemma prod_Φ_pos_of_principalIdele_mul_norm_eq_one {a : Lˣ} {z : (𝔸f L)ˣ}
   algebraize [Ω.fieldEmb L]
   obtain ⟨χ, hχ⟩ : ∃ χ : QZChar Gal(Ω/K), IsProGalois (ker χ) L Ω := exists_char_isProGalois_ker
   -- `a` comes from `a₀ ∈ Kˣ`, and `a₀` times the norm of `z` is `1`, as base change is injective
-  have h_mem : a.val ∈ K := mem_maximalRealSubfield_iff_star_eq.mpr ha
-  obtain ⟨a₀, rfl⟩ : ∃ a₀ : Kˣ, a₀.map K.subtype = a :=
-    ⟨mk0 ⟨a.val, h_mem⟩ (by simp [Subtype.ext_iff]), ext rfl⟩
+  obtain ⟨a₀, rfl⟩ := exists_map_unit_of_star_eq ha
   have h_one : principalIdele a₀ * z.map (adeleNorm K L) = 1 := by
     apply map_injective (f := (finAdeleIncl K L).toMonoidHom) (adeleMap_injective _)
     rw [map_finAdeleIncl_principalIdele_mul_adeleNorm, haz, map_one]
@@ -399,9 +402,7 @@ lemma exists_quadraticIdeleChar_eq_neg_one {w : FinPlace E} (hw : star w = w) :
   -- If `t = a z z̄`, then `a` is positive at infinity, and `χ` kills the symbol of `x`: that of
   -- `a` by the sign law, and that of a norm.
   rintro ⟨a, z, ha, h_eq⟩
-  have h_mem : a.val ∈ K := mem_maximalRealSubfield_iff_star_eq.mpr ha
-  obtain ⟨a₀, rfl⟩ : ∃ a₀ : Kˣ, a₀.map K.subtype = a :=
-    ⟨mk0 ⟨a.val, h_mem⟩ (by simp [Subtype.ext_iff]), ext rfl⟩
+  obtain ⟨a₀, rfl⟩ := exists_map_unit_of_star_eq ha
   have h_pos (τ : InfinitePlace E) : 0 < Φ τ (a₀.val : E) := by
     have h_inf : (1 : ℂ) = Φ τ (a₀.val : E) * ((z : 𝔸 E).1 τ * star ((z : 𝔸 E).1 τ)) :=
       congrFun (congrArg (fun y : (𝔸 E)ˣ ↦ (y : 𝔸 E).1) h_eq) τ
