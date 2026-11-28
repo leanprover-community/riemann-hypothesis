@@ -663,15 +663,6 @@ noncomputable instance : TraceOne (𝔸f E) where
   element := (2⁻¹ : E)
   element_add_star := by norm_num [← map_add]
 
-/-- The Heisenberg element `heisenbergElem a p` of floor `a` over the finite adeles is a continuous
-function of its parameter `p`, a pair of a vector and a skew element. -/
-lemma New.continuous_heisenbergElem_finAdele {T : 𝔰.Form (𝔸f E)} [IsHermitianUnit T.splitGram]
-    (a : Fin 𝔰.ϱ) : Continuous (heisenbergElem (T := T) a) := by
-  rw [(Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit).continuous_iff]
-  simp only [comp_def, heisenbergElem, eichlerMap, star_neg, mulVec_mulVec, Pi.star_single,
-    star_one, single_vecMul, one_smul, U.val_of_coe]
-  fun_prop
-
 /-- The skew elements `t - t̄` with `t ∈ E` are dense in the skew finite adeles. -/
 lemma New.denseRange_skewPart_algebraMap :
     DenseRange fun t : E ↦ skewPart (algebraMap E (𝔸f E) t) := by
@@ -716,7 +707,7 @@ lemma New.besselU_dense {T : 𝔰.Form E} [IsHermitianUnit T] {T' : 𝔰.Form (�
   -- For `l < ϱ`, `x` is a Heisenberg element, and rational parameters are dense.
   let a : Fin 𝔰.ϱ := ⟨l, hl⟩
   obtain ⟨p, rfl⟩ : ∃ p, x = heisenbergElem a p := exists_eq_heisenbergElem_of_mem hx
-  refine map_mem_closure (continuous_heisenbergElem_finAdele a)
+  refine map_mem_closure (continuous_heisenbergElem (a := a))
     (((DenseRange.piMap fun _ ↦ denseRange_algebraMap_finAdele).prodMap
       denseRange_skewPart_algebraMap) p) ?_
   rintro _ ⟨⟨v, t⟩, rfl⟩

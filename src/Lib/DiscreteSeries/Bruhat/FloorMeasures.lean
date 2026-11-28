@@ -405,6 +405,17 @@ lemma simpleRootSum_conj_heisenbergElem (hs : s ∈ floorGroup (a + 1)) :
 
 end FloorGroups
 
+/-- The Heisenberg element `heisenbergElem a p` of floor `a` is a continuous function of its
+parameter `p`, a pair of a vector and a skew element. -/
+@[fun_prop]
+lemma continuous_heisenbergElem [TopologicalSpace A] [IsTopologicalRing A] [ContinuousStar A]
+    [T2Space A] [TraceOne A] {T : 𝔰.Form A} [H : IsHermitianUnit T.splitGram]
+    {a : Fin 𝔰.ϱ} : Continuous (heisenbergElem (T := T) a) := by
+  refine (Matrix.unitaryGroupOf.isClosedEmbedding_val H.isUnit).continuous_iff.2 ?_
+  simp only [↓comp_def, heisenbergElem, eichlerMap, star_neg, mulVec_mulVec, Pi.star_single,
+    star_one, single_vecMul, one_smul, val_of_coe]
+  fun_prop
+
 variable [TopologicalSpace A] [MeasureSpace A] [P : Place A]
   (ι : Type) [Fintype ι] [DecidableEq ι] (T : 𝔰.Form A) (m : ℕ)
   {n k Z : Type} [Fintype n] [Fintype k] [DecidableEq k]
@@ -611,14 +622,6 @@ lemma measurable_floorWeyl [H : IsHermitianUnit T.splitGram] :
     of_apply]
   -- each entry is constant, `c`, or its conjugate inverse, on pieces cut out by `IsUnit c`
   apply_rules [Measurable.ite] <;> measurability
-
-@[fun_prop]
-lemma continuous_heisenbergElem [H : IsHermitianUnit T.splitGram]
-    {a : Fin 𝔰.ϱ} : Continuous (heisenbergElem (T := T) a) := by
-  refine isClosedEmbedding_unitary_coe.continuous_iff.2 ?_
-  simp only [↓comp_def, heisenbergElem, eichlerMap, star_neg, mulVec_mulVec, Pi.star_single,
-    star_one, single_vecMul, one_smul, val_of_coe]
-  fun_prop
 
 /-- An element `s` of `G_l` acts on the coordinates of floor at least `l` by a block that preserves
 their volume. -/
