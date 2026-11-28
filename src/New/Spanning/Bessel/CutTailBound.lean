@@ -58,9 +58,6 @@ variable {𝔰 : Shape} {I : Type} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I]
   [p : UnitarySignFrame 𝔰 ε] {rep : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ) →* unitaryGroup I ℂ} {l : HCParam ε}
   {A L : ℕ}
 
-private lemma sFinite_besselGraphMeasure {𝔰 : Shape} : SFinite 𝔰.besselGraphMeasure := by
-  unfold Shape.besselGraphMeasure
-  infer_instance
 
 private lemma measurable_norm_U {ι : Type*} [Fintype ι] [DecidableEq ι] {J : Matrix ι ι ℂ} :
     Measurable fun g : U J ↦ ‖g.val.val‖ :=
@@ -455,7 +452,6 @@ lemma exists_isDecayMajorant_besselAverage {f m : ℕ} {b : ℝ} {x : 𝔰.G₁}
   -- With `φ g = (2 / ‖g‖) ^ M` and `Φ y = ∫ φ (x⁻¹ s y) ds`, the majorant is `|c| Φ`. It is bounded
   -- by `lintegral_decay_le_besselBallVolume`, and unfolding gives its integral; the volume of the
   -- ball cancels against the norm of `W`.
-  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   obtain ⟨hb_one, hb_two⟩ : 1 ≤ b ∧ 2 ≤ b := ⟨by linarith, by linarith⟩
   let M : ℕ := 9 * 𝔰.r ^ 2
   let φ (g : 𝔰.G₁) : ℝ≥0∞ := .ofReal ((2 / ‖g.val.val‖) ^ M)

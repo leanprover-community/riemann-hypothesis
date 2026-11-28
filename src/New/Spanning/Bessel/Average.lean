@@ -92,6 +92,11 @@ instance Shape.besselGraphMeasure_finiteOnCompacts :
     IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure :=
   Measure.IsFiniteMeasureOnCompacts.map _ 𝔰.besselGraphChart
 
+/-- The measure `du dh` on `R` (`besselGraphMeasure`) is s-finite. -/
+instance Shape.besselGraphMeasure_sFinite : SFinite 𝔰.besselGraphMeasure := by
+  unfold Shape.besselGraphMeasure
+  infer_instance
+
 /-- The measure `du dh` on `R` (`besselGraphMeasure`) is invariant under right multiplication. -/
 instance Shape.besselGraphMeasure_isMulRightInvariant :
     𝔰.besselGraphMeasure.IsMulRightInvariant := by

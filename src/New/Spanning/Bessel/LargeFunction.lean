@@ -619,8 +619,6 @@ open Matrix Fintype Complex Norms.L2Operator MeasureTheory ComplexConjugate ENNR
 variable {𝔰 : Shape} {I : Type*} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I] [DecidableEq I]
   [UnitarySignFrame 𝔰 ε]
 
-private lemma sFinite_besselGraphMeasure : SFinite 𝔰.besselGraphMeasure :=
-  @Measure.instSFiniteMap _ _ _ _ (𝔰.besselHaar.prod volume) 𝔰.besselGraphChart inferInstance
 
 private lemma continuous_uncurry_smul_mul_left {G S E : Type*} [TopologicalSpace G] [Mul G]
     [ContinuousMul G] [TopologicalSpace S] [TopologicalSpace E] [SMul ℂ E] [ContinuousSMul ℂ E]
@@ -634,7 +632,6 @@ Haar measure of G₁. -/
 lemma measurePreserving_unfold_besselGraphMeasure :
     MeasurePreserving (fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ q.snd.val.fst * q.fst)
       (besselQuotMeasure.prod 𝔰.besselGraphMeasure) volume := by
-  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   have h_meas : Measurable (fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ q.snd.val.fst * q.fst) :=
     (measurable_fst.comp (measurable_subtypeVal.comp measurable_snd)).mul measurable_fst
   refine ⟨h_meas, Measure.ext_of_lintegral _ fun (g : 𝔰.G₁ → ℝ≥0∞) (hg : Measurable g) ↦ ?_⟩
@@ -831,7 +828,6 @@ on the unipotent group `𝖴`. Then `W = besselAverage l rep x v`, given by
 lemma isBesselFunction_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
     (h_gap : l.HasLargeGap excess) : IsBesselFunction rep (besselAverage l rep x v) where
   stronglyMeasurable := by
-    have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
     exact (continuous_besselIntegrand x h_cont).stronglyMeasurable.integral_prod_right
   bounded :=
     have h_le (y : 𝔰.G₁) : ‖besselAverage l rep x v y‖ₑ ≤
@@ -861,7 +857,6 @@ lemma convolve_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
       besselAverage l rep x v := by
   have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
   have : ContinuousInv 𝔰.G₁ := continuousInv_G₁
-  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   -- Exchange the two integrals and use the product formula of the kernel `deg * c_λ`.
   have h_kernel : IsIdempotentKernel fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g :=
     isIdempotentKernel_dsCoeffInFrame h_gap
@@ -956,7 +951,6 @@ lemma formalDegree_mul_integral_norm_sq_besselAverage (h_cont : Continuous rep) 
     ((l.formalDegree * ∫ y : 𝔰.G₁, ‖besselAverage l rep x v y‖ ^ 2 ∂besselQuotMeasure : ℝ) : ℂ) =
       ⟪v, besselAverage l rep x v x⟫_ℂ := by
   have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
-  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   -- Insert the integral for one factor of `⟪W y, W y⟫`, unfold, and use that `e_λ` reproduces `W`
   -- at the point `x`.
   set W : 𝔰.G₁ → EuclideanSpace ℂ I := besselAverage l rep x v
