@@ -816,7 +816,8 @@ and a linear map `P.toZp : O → ℤ_p`, modulo `p ^ P.exponent`. Its Tate dual 
 `Hom(Y ⊗ Y', O(1))`, extended by `O` through the cocycle of `P`. Pair a vector `n` of this
 extension, tensored with `W(C^♭)`, with `w ⊗ y` by `P.extensionForm`, which sends `(λ, o)` to the
 form `p ^ P.exponent • λ + o • ψ`. The value, reduced modulo `p ^ P.exponent` through `P.toZp`, is
-the pairing `P.wittPairing` of `y` with `w` multiplied by the projection of `n` to `W(C^♭) ⊗ O`. -/
+the pairing `P.wittPairing` of the product of the projection of `n` to `W(C^♭) ⊗ O` and `w` with
+`y`. -/
 lemma map_wittPairing_extensionForm (n : P.tateDualSide.extensionLattice.Ambient) (w : S.Ambient)
     (y : S'.Ambient) :
     DiagTensor.map (mkQ (Ideal.span {(p : ℤ_[p]) ^ P.exponent}) ∘ₗ P.toZp)
