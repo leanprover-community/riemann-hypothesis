@@ -157,6 +157,20 @@ lemma adjoin_eq_top_and_exists_algHom_eq_smul {B : Type*} [CommRing B] [Algebra 
   exact ⟨h_top, fun a ↦ ⟨pb.lift (a • τ) (aeval_eq_zero_of_dvd_aeval_eq_zero hm.dvd' <| by
     simp [_root_.smul_pow, (by simpa [dvd_iff] using hm.dvd : τ ^ m = 0)]), pb.lift_gen _ _⟩⟩
 
+/-- Iterated divisibility by a nilpotent element forces vanishing. -/
+lemma eq_zero_of_dvd_cofactor {B : Type*} [MonoidWithZero B] {τ b : B} {N : ℕ} (hN : τ ^ N = 0)
+    (h_dvd : ∀ (i : ℕ) (g : B), b = τ ^ i * g → τ ^ i ≠ 0 → τ ∣ g) :
+    b = 0 := by
+  have h_pow (i : ℕ) : τ ^ i ∣ b := by
+    induction i with
+    | zero => simp
+    | succ i ih =>
+      obtain ⟨g, hg⟩ := ih
+      by_cases hi : τ ^ i = 0
+      · simp [hg, hi]
+      · simpa only [hg, pow_succ] using mul_dvd_mul_left _ (h_dvd i g hg hi)
+  simpa [hN] using h_pow N
+
 /-- Facts on a `k`-algebra `B` with a point `u` of `placeTorsion x`, a map `s : B → k[ε]` and
 an element `τ`, relative to a line `L` of tangent vectors of `x.groupScheme` at `0`: `u` is
 universal (as in `exists_local_universal_point`), `s` sends `u` to `L 1`, and `τ` is a nilpotent
@@ -250,6 +264,32 @@ lemma exists_isLocalParameter {p : NumberField.RingOfIntegers E} (hp : x.baseHom
       val_map_eq := hs_map, fst_eq_zero := hτ_fst, snd_ne_zero := hτ_snd, pow_eq_zero := hN,
       dvd_of_fst_eq_zero := h_dvd, exists_lift := h_lift }⟩
 
+/-- If `f` vanishes at `l` on the universal point `u` and all constant points, it vanishes at
+`l` on every point over a local `k`-algebra admitting a `k`-algebra map to `k`. Such a point is a
+constant point plus one that factors through `u`. -/
+private lemma apply_eq_zero_of_apply_universal_eq_zero {B : Type} [CommRing B] [Algebra k B]
+    [IsLocalRing B] {u : placeTorsion x B}
+    (h_fac : ∀ {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C] (π : C →ₐ[k] k)
+      (y : placeTorsion x C), placeTorsionMap π y = 0 → ∃ ψ : B →ₐ[k] C, placeTorsionMap ψ u = y)
+    {W : Type*} [AddCommGroup W] [Module k W]
+    (f : ∀ (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C],
+      placeTorsion x C →ₛₗ[x.baseHom] W →ₗ[k] C)
+    (hf : ∀ {C C' : Type} [CommRing C] [Algebra k C] [CommRing C'] [Algebra k C'] [IsLocalRing C]
+      [IsLocalRing C'] (ψ : C →ₐ[k] C') (z : ↥(placeTorsion x C)) (l : W),
+      f C' (placeTorsionMap ψ z) l = ψ (f C z l))
+    {l : W} (h_zero : f B u l = 0) (h_const : ∀ y : placeTorsion x k, f k y l = 0)
+    (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C] (π : C →ₐ[k] k)
+    (y : placeTorsion x C) :
+    f C y l = 0 := by
+  have h_red : placeTorsionMap π (y - placeTorsionMap (ofId k C) (placeTorsionMap π y)) = 0 := by
+    -- `↓`: after `map_sub` splits the difference, simp must form `π ∘ ofId` before the inner
+    -- `ofId ∘ π`.
+    simp [↓map_sub, ↓← placeTorsionMap_comp]
+  obtain ⟨ψ, hψ⟩ := h_fac π _ h_red
+  have h_diff : f C (y - placeTorsionMap (ofId k C) (placeTorsionMap π y)) l = 0 := by
+    rw [← hψ, hf, h_zero, map_zero]
+  simpa only [map_sub, LinearMap.sub_apply, hf (ofId k C), h_const, map_zero, sub_zero] using h_diff
+
 /-- The main step of `finrank_le_of_placeTorsion`. Let `u`, `s`, `τ` satisfy `IsLocalParameter`
 for the tangent line `L`, let `γ i` read the coefficient of `τ ^ i` (`hγ`), and let `f` be as in
 `finrank_le_of_placeTorsion`. If `l` gives `0` at every `k`-point and the coefficient of
@@ -330,31 +370,13 @@ lemma eq_zero_of_isLocalParameter (h_ker : RingHom.ker x.baseHom ≠ ⊥)
     have hj : 0 < j := j.pos_of_ne_zero fun hj_zero ↦ hi_ne (by simp [hj_zero])
     exact hg (by rw [← hγ _ hi, ← h_factor, h_coeff_zero j hj hi])
   -- As `τ` is nilpotent and generates the maximal ideal, `f B u l` vanishes.
-  have h_zero : f B u l = 0 := by
-    have h_pow (i : ℕ) : τ ^ i ∣ f B u l := by
-      induction i with
-      | zero => simp
-      | succ i ih =>
-        obtain ⟨g, hg⟩ := ih
-        by_cases hi : τ ^ i = 0
-        · simp [hg, hi]
-        · simpa only [hg, pow_succ] using
-            mul_dvd_mul_left _ (hT.dvd_of_fst_eq_zero g (h_lowest i g hg hi))
-    simpa [hT.pow_eq_zero] using h_pow N
+  have h_zero : f B u l = 0 :=
+    eq_zero_of_dvd_cofactor hT.pow_eq_zero fun i g hg hi ↦
+      hT.dvd_of_fst_eq_zero g (h_lowest i g hg hi)
   -- A point over a finite local `C` is a constant point plus one that factors through `u`.
-  refine h_sep l fun C _ _ _ _ y ↦ ?_
-  let π : C →ₐ[k] k := lift.comp (mkₐ k (maximalIdeal C))
-  have h_red : placeTorsionMap π (y - placeTorsionMap (ofId k C) (placeTorsionMap π y)) = 0 := by
-    -- `↓`: after `map_sub` splits the difference, simp must form `π ∘ ofId` before the inner
-    -- `ofId ∘ π`.
-    simp [↓map_sub, ↓← placeTorsionMap_comp]
-  obtain ⟨ψ, hψ⟩ := hT.exists_map_eq π _ h_red
-  have h_split : f C y l = f C (placeTorsionMap ψ u) l +
-      f C (placeTorsionMap (ofId k C) (placeTorsionMap π y)) l := by
-    rw [hψ, map_sub, LinearMap.sub_apply, sub_add_cancel]
-  have h_const_π : π (f C y l) = 0 := by rw [← hf π y l, h_const]
-  rw [h_split]
-  simp [hf, h_zero, h_const_π]
+  exact h_sep l fun C _ _ _ _ y ↦
+    apply_eq_zero_of_apply_universal_eq_zero hT.exists_map_eq f hf h_zero h_const C
+      (lift.comp (mkₐ k (maximalIdeal C))) y
 
 /-- Let `x` over `k` be the reduction, at a good place `w = ker x.baseHom` (which gives some `p ≠ 0`
 in `w` and a tangent line at `0` on which `𝓞 E` acts through `x.baseHom`), of an object `y` over a
