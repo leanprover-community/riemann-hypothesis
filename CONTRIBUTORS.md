@@ -183,7 +183,7 @@ Everyone with a merged pull request in this repository, by number of merged pull
 - [rorcores](https://github.com/rorcores): [1 merged](https://github.com/leanprover-community/riemann-hypothesis/pulls?q=is%3Apr+is%3Amerged+author%3Arorcores)
 - [RossRichardson](https://github.com/RossRichardson): [1 merged](https://github.com/leanprover-community/riemann-hypothesis/pulls?q=is%3Apr+is%3Amerged+author%3ARossRichardson)
 - [ryane79](https://github.com/ryane79): [1 merged](https://github.com/leanprover-community/riemann-hypothesis/pulls?q=is%3Apr+is%3Amerged+author%3Aryane79)
-- [s-celles](https://github.com/s-celles): [1 merged](https://github.com/leanprover-community/riemann-hypothesis/pulls?q=is%3Apr+is%3Amerged+author%3As-celles)
+- [s-celles](https://github.com/s-celles): [1 merged](https://github.com/leanprover-community/riemann-hypothesis/pulls?q=is%3Apr+is%3Amerged+%28author%3As-celles+OR+author%3As-celles-bot%29)
 - [sagerock](https://github.com/sagerock): [1 merged](https://github.com/leanprover-community/riemann-hypothesis/pulls?q=is%3Apr+is%3Amerged+author%3Asagerock)
 - [siro-314](https://github.com/siro-314): [1 merged](https://github.com/leanprover-community/riemann-hypothesis/pulls?q=is%3Apr+is%3Amerged+author%3Asiro-314)
 - [stormvmerwijk](https://github.com/stormvmerwijk): [1 merged](https://github.com/leanprover-community/riemann-hypothesis/pulls?q=is%3Apr+is%3Amerged+author%3Astormvmerwijk)
