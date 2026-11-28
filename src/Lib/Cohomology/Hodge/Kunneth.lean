@@ -255,7 +255,7 @@ private lemma bijective_lerayHirsch_reprBy {k : Type} [Field k] [CharZero k]
   let forms : (I × J →₀ k) ≃+ (I →₀ TotalH (freeAb (reprBy c)) hodgeCoeff) :=
     curryAddEquiv (α := I).trans (mapRange.addEquiv
       (b.repr.symm.toAddEquiv.trans (.trans (.symm .ulift) (sectionEquiv hodgeCoeff c))))
-  let classes : (I × J →₀ k) ≃ₗ[k] (J →₀ Π₀ a, H N hodgeCoeff a) :=
+  let classes : (I × J →₀ k) ≃ₗ[k] (J →₀ TotalH N hodgeCoeff) :=
     Finsupp.domLCongr (.prodComm _ J) ≪≫ₗ curryLinearEquiv k ≪≫ₗ
       mapRange.linearEquiv (DFinsupp.basis fun a ↦ ofVectorSpace k (H N hodgeCoeff a)).repr.symm
   refine (bijective_iff_of_comm_sq ?_ forms.bijective
@@ -263,21 +263,20 @@ private lemma bijective_lerayHirsch_reprBy {k : Type} [Field k] [CharZero k]
   -- Both sides are additive: compare them on `r • x ⊗ b j`.
   refine fun w ↦ w.induction_linear (by simp [map_zero])
     (fun u v hu hv ↦ by simp only [map_add, hu, hv]) fun ⟨⟨a, x⟩, j⟩ r ↦ ?_
+  let ρ : hodgeCoeff (k := k) ⟶ hodgeCoeff := (CoeffAction.act r).asHom
   have h_forms : forms (single (⟨a, x⟩, j) r) =
-      single ⟨a, x⟩ (sectionEquiv hodgeCoeff c ⟨r • b j⟩) := by
-    simp [I, forms]
+      single ⟨a, x⟩ (homClass ((homReprEquiv c hodgeCoeff).symm (ρ.app c ⟨b j⟩))) := by
+    simp [I, forms, ρ, sectionEquiv]
     rfl
   have h_classes : classes (single (⟨a, x⟩, j) r) = single j (r • x.val.toTotalH) := by
     simp [I, classes, DFinsupp.basis]
     rfl
   -- The scalar `r` acts on the coefficients by `ρ`; move it out of the class of `r • b j` ...
-  let ρ : hodgeCoeff (k := k) ⟶ hodgeCoeff := (CoeffAction.act r).asHom
   have h_scalar :
       (homReprEquiv c hodgeCoeff).symm (ρ.app c ⟨b j⟩) =
-        (homReprEquiv c hodgeCoeff).symm ⟨b j⟩ ≫ ρ := by
-    apply (mk₀_bijective ..).injective
-    rw [← mk₀_comp_mk₀]
-    exact (push_homReprEquiv_symm ρ c ⟨b j⟩).symm
+        (homReprEquiv c hodgeCoeff).symm ⟨b j⟩ ≫ ρ :=
+    (AddEquiv.symm_apply_eq _).2 (congrArg (ρ.app c)
+      ((homReprEquiv c hodgeCoeff).apply_symm_apply ⟨b j⟩).symm)
   -- ... and across the product of forms, which is bilinear.
   have h_balanced :
       (abTensor hodgeCoeff).map ρ ≫ exteriorAlg.mulPairing =
