@@ -132,10 +132,6 @@ private lemma continuousMul_G₁ : ContinuousMul 𝔰.G₁ := inferInstance
 
 private lemma continuousInv_G₁ : ContinuousInv 𝔰.G₁ := inferInstance
 
-private lemma measurableMul_besselGraph : MeasurableMul 𝔰.besselGraph := inferInstance
-
-private lemma borelSpace_besselGraph : BorelSpace 𝔰.besselGraph := inferInstance
-
 /-- The measure on `R` unfolds 𝖴∖G₁ to G₁: for measurable `f ≥ 0`, the integral of `f (x s y)` over
 `s` in `R` and then over `y` in G₁ for `besselQuotMeasure`, which computes integrals over 𝖴∖G₁,
 is the integral of `f` over G₁. -/
@@ -549,11 +545,6 @@ theorem IsSteep.exists_stationary_point {X : Type} [Fintype X] {l : HCParam ε}
             (fun s' : 𝔰.besselGraph ↦ simpleRootSum s'.val.fst - conj (simpleRootSum s'.val.fst)) s
             ∂𝔰.besselGraphMeasure‖ := by
   classical
-  have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
-  have : BorelSpace 𝔰.besselGraph := borelSpace_besselGraph
-  have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
-  have : IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure :=
-    𝔰.besselGraphMeasure_finiteOnCompacts
   have : Nonempty 𝔰.κ := ⟨τ (Sum.inr ())⟩
   -- The stationary position with `n` vectors, where the weight of `u` lies in `[0, a]`; there are
   -- `2 n` coordinates of `G₁` and one coordinate of `H` outside `X`.
@@ -619,6 +610,7 @@ open Matrix Fintype Complex Norms.L2Operator MeasureTheory ComplexConjugate ENNR
 variable {𝔰 : Shape} {I : Type*} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I] [DecidableEq I]
   [UnitarySignFrame 𝔰 ε]
 
+@[local instance]
 private lemma sFinite_besselGraphMeasure : SFinite 𝔰.besselGraphMeasure :=
   @Measure.instSFiniteMap _ _ _ _ (𝔰.besselHaar.prod volume) 𝔰.besselGraphChart inferInstance
 
@@ -634,7 +626,6 @@ Haar measure of G₁. -/
 lemma measurePreserving_unfold_besselGraphMeasure :
     MeasurePreserving (fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ q.snd.val.fst * q.fst)
       (besselQuotMeasure.prod 𝔰.besselGraphMeasure) volume := by
-  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   have h_meas : Measurable (fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ q.snd.val.fst * q.fst) :=
     (measurable_fst.comp (measurable_subtypeVal.comp measurable_snd)).mul measurable_fst
   refine ⟨h_meas, Measure.ext_of_lintegral _ fun (g : 𝔰.G₁ → ℝ≥0∞) (hg : Measurable g) ↦ ?_⟩
@@ -656,9 +647,6 @@ noncomputable def besselBallVolume : ℝ≥0∞ :=
 /-- The ball whose volume is `besselBallVolume x` has finite measure, as the conjugation by `x` is
 proper on `R`. -/
 lemma besselBallVolume_ne_top : besselBallVolume (ε := ε) x ≠ ∞ := by
-  have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
-  have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
-  have : IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure := 𝔰.besselGraphMeasure_finiteOnCompacts
   exact measure_ball_ne_top_of_isProperMap 𝔰.besselGraphMeasure
     (j := (MonoidHom.fst _ _).comp (besselPairHom x)) (isProperMap_besselPairHom_fst x) 1
 
@@ -682,10 +670,6 @@ lemma lintegral_decay_le_besselBallVolume (y : 𝔰.G₁) :
           Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖) ^ (9 * 𝔰.r ^ 2))
         ∂𝔰.besselGraphMeasure ≤
       .ofReal (16 ^ (9 * 𝔰.r ^ 2)) * besselBallVolume (ε := ε) x := by
-  have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
-  have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
-  have : IsFiniteMeasureOnCompacts 𝔰.besselGraphMeasure := 𝔰.besselGraphMeasure_finiteOnCompacts
-  have : BorelSpace 𝔰.besselGraph := borelSpace_besselGraph
   let j : 𝔰.besselGraph →* USign ε := (MonoidHom.fst _ _).comp (besselPairHom x)
   have hj_apply (s : 𝔰.besselGraph) : j s = frameEquiv (x⁻¹ * s.val.fst * x) := rfl
   -- The general covering bound for the proper map `j`, at the point `x⁻¹ y`.
@@ -795,8 +779,6 @@ lemma besselAverage_mul (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
     besselAverage l rep x v (s.val.fst * y) =
       wave (simpleRootSum s.val.fst) •
         (besselValueRep rep s.val.snd).val (besselAverage l rep x v y) := by
-  have : MeasurableMul 𝔰.besselGraph := measurableMul_besselGraph
-  have : 𝔰.besselGraphMeasure.IsMulRightInvariant := 𝔰.besselGraphMeasure_isMulRightInvariant
   -- Substitute `t * s⁻¹` for `t`; the measure is right invariant and `simpleRootSum` is additive.
   have h_wave (t : 𝔰.besselGraph) : wave (-simpleRootSum (t.val.fst * s.val.fst⁻¹)) =
       wave (simpleRootSum s.val.fst) * wave (-simpleRootSum t.val.fst) := by
@@ -831,7 +813,6 @@ on the unipotent group `𝖴`. Then `W = besselAverage l rep x v`, given by
 lemma isBesselFunction_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
     (h_gap : l.HasLargeGap excess) : IsBesselFunction rep (besselAverage l rep x v) where
   stronglyMeasurable := by
-    have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
     exact (continuous_besselIntegrand x h_cont).stronglyMeasurable.integral_prod_right
   bounded :=
     have h_le (y : 𝔰.G₁) : ‖besselAverage l rep x v y‖ₑ ≤
@@ -861,7 +842,6 @@ lemma convolve_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
       besselAverage l rep x v := by
   have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
   have : ContinuousInv 𝔰.G₁ := continuousInv_G₁
-  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   -- Exchange the two integrals and use the product formula of the kernel `deg * c_λ`.
   have h_kernel : IsIdempotentKernel fun g : 𝔰.G₁ ↦ l.formalDegree * l.dsCoeffInFrame g :=
     isIdempotentKernel_dsCoeffInFrame h_gap
@@ -956,7 +936,6 @@ lemma formalDegree_mul_integral_norm_sq_besselAverage (h_cont : Continuous rep) 
     ((l.formalDegree * ∫ y : 𝔰.G₁, ‖besselAverage l rep x v y‖ ^ 2 ∂besselQuotMeasure : ℝ) : ℂ) =
       ⟪v, besselAverage l rep x v x⟫_ℂ := by
   have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
-  have : SFinite 𝔰.besselGraphMeasure := sFinite_besselGraphMeasure
   -- Insert the integral for one factor of `⟪W y, W y⟫`, unfold, and use that `e_λ` reproduces `W`
   -- at the point `x`.
   set W : 𝔰.G₁ → EuclideanSpace ℂ I := besselAverage l rep x v
