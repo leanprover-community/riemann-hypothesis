@@ -253,13 +253,19 @@ lemma exists_rankInner_labelChar_eq_finMean (hP : Irreducible P) (hx : Polynomia
   · rw [pow_add, map_mul, labelChar_eq_greenTau T hS hS_monic,
       rankInner_mul_eq_rankInner_skew greenTau_eq_zero_of_dim_ne, degree_eq, h_skew, mul_assoc,
       h_avg]
-  -- Both sides are double sums, over `z` and over the other coordinates `u`; compare the terms.
-  rw [finMean_equiv (consEquiv _) fun _ ↦ rfl]
-  simp only [finMean_prod]
-  simp only [finMean, card_eq_fintype_card, coe_val, finsum_eq_sum_of_fintype, sum_div, mul_sum,
-    sum_comm (α := _ˣ), Fintype.card_pi, Finset.prod_const, Finset.card_univ, Fintype.card_fin,
-    cast_pow, consEquiv_apply, prod_univ_succ, cons_zero, cons_succ, B']
-  congr! 2 with z _ u
+  have mean_comm (F : (Fin b → k'⟮x⟯ˣ) → k'⟮x⟯ˣ → ℂ) :
+      (finMean fun u ↦ finMean (F u)) = finMean fun z ↦ finMean fun u ↦ F u z := by
+    rw [← finMean_prod (fun p : (Fin b → k'⟮x⟯ˣ) × k'⟮x⟯ˣ ↦ F p.1 p.2),
+      ← finMean_prod (fun p : k'⟮x⟯ˣ × (Fin b → k'⟮x⟯ˣ) ↦ F p.2 p.1)]
+    exact finMean_equiv (Equiv.prodComm _ _) fun _ ↦ rfl
+  rw [finMean_equiv (consEquiv _) (fun _ ↦ rfl), finMean_prod]
+  simp only [B', ← finMean_const_mul]
+  refine (mean_comm _).trans ?_
+  congr 1
+  funext z
+  congr 1
+  funext u
+  simp only [consEquiv_apply, prod_univ_succ, cons_zero, cons_succ]
   rw [block z u]
   -- The sign in `B'` cancels the one split off by `pow_add`.
   simp [θ, field, ← pow_mul]
