@@ -557,8 +557,6 @@ lemma schrodingerOpAtN_directDatum_mem_raises (ϑ : D.TameChar) (x : D.Translati
     Kernel.omega_mem_raises_iff]
   exact D.schrodingerOpAt_directDatum_mem_raises ϑ x hj
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- **The prime `N`, valuation.** Let `m` be the number of lifts, `f` the number of infinite places
 of `E`, `b` the weight and `M` the principal level of the data `D`. Let `ϑ` be a twist, a character
 of `U(1)` of weight `0` whose tame part is non-trivial exactly on the finite set `ϑ.Q` of places,
@@ -586,8 +584,9 @@ lemma gaugeLe_compositeLift_at_N {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ}
       chainOfTensor ϑ φ (D.gluedVacuum x) =
         c • chain (D.liftKernel ϑ) (direct x) (2 * (D.ϱ + 1)) ψ := by
     rw [← h_chain (D.translateDatum x) φ hφ_ramified,
-      funext (D.vacuumProjFinPart_translateDatum ϑ (hΨ.mem_admissibleTranslations hx))]
-    exact TensorChain.lift_pure ..
+      funext (D.vacuumProjFinPart_translateDatum ϑ (hΨ.mem_admissibleTranslations hx)),
+      gluedVacuum, TensorChain.lift_pure]
+    dsimp only [doubleLiftChain]
   have h_sum : chainOfTensor ϑ φ (gluedTensor Ψ) =
       c • chainCombination ϑ Ψ direct (2 * (D.ϱ + 1)) ψ := by
     simp +contextual only [gluedTensor, Finsupp.sum, map_sum, map_smul, LinearMap.sum_apply,
@@ -603,11 +602,12 @@ lemma gaugeLe_compositeLift_at_N {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ}
       (fun j ↦ D.schrodingerOpAtN ϑ j directDatum)
       (fun j _ _ a b hb ↦ D.omega_schrodingerOpAtN_directDatum ϑ j _ a ⟨b, hb⟩) D.diagPointN
       (fun x _ _ hj ↦ D.schrodingerOpAtN_directDatum_mem_raises ϑ x hj) h_integral
-  -- A bound at `D.diagPointN D.m` gives the same bound for the restriction at `1`: the change of
-  -- lattice cancels the normalising division in the restriction map.
+  -- A bound at `D.diagPointN D.m`, which is `D.diagPoint D.m D.piNPlaces` as the `calc` writes it,
+  -- gives the same bound for the restriction at `1`: the change of lattice cancels the normalising
+  -- division in the restriction map.
   rw [h_compositeLift_eq]
   refine GaugeLe.restrictToY_of_diag D (D.map_adeleExtension_diagPoint _ _) fun g ↦ ?_
-  calc _ = ‖ιₚ c‖ * weylGauge _ (D.lastEntry D.m) (g * D.diagPointN D.m)
+  calc _ = ‖ιₚ c‖ * weylGauge _ (D.lastEntry D.m) (g * D.diagPoint D.m D.piNPlaces)
           ((chainCombination ϑ Ψ direct D.m ψ).val g) := weylGauge_smul ..
     _ ≤ D.N ^ (D.m * D.f * D.b) * D.N ^ ∑ _ ∈ Finset.range D.m, D.f * D.b := by
       grw [h_direct g, hc]
