@@ -381,41 +381,33 @@ lemma exists_reduction_mod_p :
     ∃ F : Amax →+* (Ainf ⧸ span {(p : Ainf), xi})[X],
       (∀ P : Ainf[X], F (aeval xiDivP P) = P.map (mk (span {↑p, xi}))) ∧
       ∀ y : Amax, ↑p ∣ y ↔ F y = 0 := by
-  let R : Type := (Ainf ⧸ span {(p : Ainf), xi})[X]
-  -- `p` and `ξ` vanish in `A_inf / (p, ξ)`, hence in `R`
-  have h_zero {c : Ainf} (hc : c ∈ span {(p : Ainf), xi}) : algebraMap Ainf R c = 0 := by
-    rw [Polynomial.algebraMap_apply, Quotient.algebraMap_eq, eq_zero_iff_mem.mpr hc, map_zero]
-  have h_p_zero : (p : R) = 0 := by
-    rw [← map_natCast (algebraMap Ainf R) p, h_zero (subset_span (by simp))]
-  have h_xi : algebraMap Ainf R xi = p * .X := by
-    rw [h_zero (subset_span (by simp)), h_p_zero, zero_mul]
-  -- `R` is killed by `p`, so it is `p`-adically complete, and the universal property of `A` applies
-  have h_complete : IsAdicComplete (span {(p : R)}) R := by
-    rw [h_p_zero, Set.singleton_zero, span_zero]
-    infer_instance
-  obtain ⟨F, hF_alg, hF_X⟩ :
-      ∃ F : Amax →+* R, (∀ c : Ainf, F c = algebraMap Ainf R c) ∧ F xiDivP = .X :=
-    exists_lift (algebraMap Ainf R) .X h_xi
-  have hF (P : Ainf[X]) : F (aeval xiDivP P) = P.map (mk (span {↑p, xi})) := by
-    simp [R, hF_alg, hF_X, aeval_def, eval₂_eq_sum, sum, Polynomial.map]
-  refine ⟨F, hF, fun y ↦ ⟨?_, fun hy ↦ ?_⟩⟩
-  · rintro ⟨c, rfl⟩
-    rw [map_mul, map_natCast, h_p_zero, zero_mul]
-  -- write `y = P(X) + p c`; if `F y = 0` then the reduction of `P` vanishes
-  obtain ⟨P, c, hc⟩ : ∃ (P : Ainf[X]) (c : Amax), y - aeval xiDivP P = p ^ 1 * c :=
-    exists_p_pow_dvd_sub_aeval y 1
-  obtain rfl : y = aeval xiDivP P + p * c := by linear_combination hc
-  have h_map_zero : P.map (mk (span {↑p, xi})) = 0 := by
-    rwa [map_add, map_mul, map_natCast, h_p_zero, zero_mul, add_zero, hF] at hy
-  -- so every coefficient of `P` lies in `(p, ξ)`
-  have hP_map : P ∈ (span {(p : Ainf), xi}).map C :=
-    mem_map_C_iff.mpr fun i ↦ eq_zero_iff_mem.mp (by rw [← coeff_map, h_map_zero, coeff_zero])
-  have hP_mem : P ∈ span {↑p, C xi} := by rwa [map_span, image_pair, map_natCast] at hP_map
-  obtain ⟨a, b, rfl⟩ : ∃ a b : Ainf[X], a * p + b * C xi = P := mem_span_pair.mp hP_mem
-  -- and `ξ = p X` is divisible by `p` in `Amax`
-  refine ⟨aeval xiDivP a + aeval xiDivP b * xiDivP + c, ?_⟩
-  rw [map_add, map_mul, map_mul, map_natCast, aeval_C]
-  linear_combination -aeval xiDivP b * p_mul_X (p := p)
+  let f := C (p : Ainf) * X - C xi
+  let I : Ideal Ainf := span {↑p, xi}
+  let J : Ideal Ainf[X] := span {f}
+  let K : Ideal Ainf[X] := span {↑p}
+  -- Modulo p, the relation pX − ξ imposes exactly ξ = 0 on the coefficients.
+  have heq : J ⊔ K = I.map C := by
+    rw [sup_comm, ← span_insert, map_span, image_pair, map_natCast]
+    rw [show f = -(C xi - (p : Ainf[X]) * X) by simp [f], span_insert, span_singleton_neg,
+      ← span_insert, span_pair_sub_left_mul]
+  let B := AdjoinRoot f
+  let P : Ideal B := span {↑p}
+  have hP : P ^ 1 = K.map (mk J) := (pow_one P).trans (by simp [P, K, map_span]; rfl)
+  -- Passing to the double quotient gives A_inf[X]/(p, pX − ξ), then (A_inf/(p, ξ))[X].
+  let e := (quotEquivOfEq hP).trans <| (DoubleQuot.quotQuotEquivQuotSup J K).trans <|
+    (quotEquivOfEq heq).trans I.polynomialQuotientEquivQuotientPolynomial.symm
+  let π := AdicCompletion.evalₐ P 1
+  refine ⟨e.toRingHom.comp π.toRingHom, fun g ↦ ?_, fun y ↦ ?_⟩
+  · change e (π (aeval xiDivP g)) = _
+    have hg : aeval xiDivP g = (AdicCompletion.of P B (AdjoinRoot.mk f g) : Amax) := by
+      change aeval (algebraMap B (AdicCompletion P B) (AdjoinRoot.root f)) g =
+        algebraMap B (AdicCompletion P B) (AdjoinRoot.mk f g)
+      rw [← AdjoinRoot.aeval_eq, aeval_algebraMap_apply]
+    rw [hg, AdicCompletion.evalₐ_of]
+    exact I.polynomialQuotientEquivQuotientPolynomial_symm_mk g
+  · change (p : Amax) ∣ y ↔ e (π y) = 0
+    refine Iff.trans ?_ (map_eq_zero_iff e e.injective).symm
+    simpa [π, P, B, f, Amax] using! Adic.pow_dvd_iff_evalₐ_eq_zero y 1
 
 /-- Let `f` be a monic polynomial over `A_inf` and `X = ξ / p` (`xiDivP`). If `p ^ m` divides
 `f(X) y` in the period ring A, then it divides `y`. -/
