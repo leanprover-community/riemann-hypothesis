@@ -110,6 +110,14 @@ lemma New.DiscreteSeries.integrable_of_compactSpace [CompactSpace X]
 
 namespace New
 
+/-- A unit lifts along an injective monoid map if its value and inverse both lift. -/
+lemma exists_units_map_eq {M N : Type*} [Monoid M] [Monoid N] (f : M →* N)
+    (hf : Function.Injective f) {u : Nˣ} (hu : ↑u ∈ Set.range f)
+    (hv : ↑u⁻¹ ∈ Set.range f) : ∃ v : Mˣ, Units.map f v = u := by
+  obtain ⟨a, ha⟩ := hu
+  obtain ⟨b, hb⟩ := hv
+  exact ⟨⟨a, b, hf (by simp [ha, hb]), hf (by simp [ha, hb])⟩, Units.ext ha⟩
+
 section Matrices
 
 variable {m n R S : Type*} [DecidableEq n]
@@ -202,13 +210,9 @@ def intGL (n : Type*) [Fintype n] [DecidableEq n] (O : Subring R) : Subgroup (GL
 lemma mem_intGL {g : GL n R} :
     g ∈ intGL n O ↔ (∀ i j : n, g i j ∈ O) ∧ ∀ i j : n, g⁻¹ i j ∈ O := by
   refine ⟨fun ⟨k, hk⟩ ↦ by simp [← hk, ← map_inv], fun ⟨h_val, h_inv⟩ ↦ ?_⟩
-  -- Lift `g` and its inverse to matrices over `O`; they are still inverse to each other.
-  let A : Matrix n n O := of fun i j ↦ ⟨g i j, h_val i j⟩
-  let B : Matrix n n O := of fun i j ↦ ⟨g⁻¹ i j, h_inv i j⟩
-  have hAB : (A * B).map O.subtype = (1 : Matrix n n O).map O.subtype := by
-    rw [Matrix.map_mul, one_map_ringHom]
-    exact g.mul_inv
-  exact ⟨.mkOfMulEqOne A B (map_injective O.subtype_injective hAB), Units.ext rfl⟩
+  exact exists_units_map_eq (u := g) O.subtype.mapMatrix.toMonoidHom
+    (Matrix.map_injective O.subtype_injective)
+    ⟨of fun i j ↦ (⟨g i j, h_val i j⟩ : O), rfl⟩ ⟨of fun i j ↦ (⟨g⁻¹ i j, h_inv i j⟩ : O), rfl⟩
 
 /-- The matrix over `O` with the entries of an element `k` of GL_n(O). -/
 def intGL.toMatrix (k : intGL n O) : Matrix n n O :=

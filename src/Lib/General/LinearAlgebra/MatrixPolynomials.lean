@@ -192,10 +192,9 @@ lemma exists_gl_map_eq_of_fixed (hψ_inj : Function.Injective ψ)
   have h_lift {u : GL n S} (hu : u.map σ = u) : ∃ N : Matrix n n R, N.map ψ = u := by
     choose N hN using fun i j : n ↦ h_fixed (u i j) ((GeneralLinearGroup.ext_iff _ _).1 hu i j)
     exact ⟨of N, Matrix.ext hN⟩
-  obtain ⟨N, hN⟩ := h_lift hg
-  obtain ⟨M, hM⟩ := h_lift (u := g⁻¹) (by rw [map_inv, hg])
-  have h_inv : N * M = 1 := map_injective hψ_inj (by simp [hN, hM])
-  exact ⟨.mkOfMulEqOne N M h_inv, Units.ext hN⟩
+  apply exists_units_map_eq (ψ.mapMatrix (m := n)).toMonoidHom (Matrix.map_injective hψ_inj)
+  · exact h_lift hg
+  · exact h_lift (u := g⁻¹) (by rw [map_inv, hg])
 
 /-- Let `δ = diagGL d` be the invertible diagonal matrix with unit entries `d i`. Its twisted norm
 `δ · σ(δ) ⋯ σ^(p-1)(δ)`, with `σ` acting on entries, is diagonal with entries

@@ -119,23 +119,16 @@ lemma map_finAdeleIncl_principalIdele_mul_adeleNorm (x : (maximalRealSubfield L)
 lemma exists_map_finAdeleIncl_eq_of_star_eq {t : (𝔸f L)ˣ} (ht : star t.val = t.val) :
     ∃ b : (𝔸f (maximalRealSubfield L))ˣ,
       Units.map (finAdeleIncl (maximalRealSubfield L) L).toMonoidHom b = t := by
-  have h_one : ((1 : Gal(L/maximalRealSubfield L)) : L →+* L) = RingHom.id L :=
-    RingHom.ext fun _ ↦ rfl
-  have h_conj : (complexConj L : L →+* L) = starRingEnd L := RingHom.ext fun _ ↦ rfl
-  have h_fixed (σ : Gal(L/maximalRealSubfield L)) : adeleMap (σ : L →+* L) t.val = t.val := by
+  have lift (u : (𝔸f L)ˣ) (hu : star u = u) :
+      u.val ∈ (finAdeleIncl (maximalRealSubfield L) L).range := by
+    apply mem_range_finAdeleIncl_iff.mpr
+    intro σ
     induction σ using gal_maximalReal_induction
-    · rw [h_one, adeleMap_id]
-    · rw [h_conj, ← star_eq_adeleMap, ht]
-  -- the inverse of `t` is fixed by the Galois group too, so both come from adeles of `L⁺`
-  have h_fixed_inv (σ : Gal(L/maximalRealSubfield L)) :
-      adeleMap (σ : L →+* L) t⁻¹.val = t⁻¹.val := by
-    apply t.mul_right_inj.mp
-    rw [t.mul_inv, ← h_fixed σ, ← map_mul, t.mul_inv, map_one]
-  obtain ⟨b, hb⟩ := mem_range_finAdeleIncl_iff.mpr h_fixed
-  obtain ⟨c, hc⟩ := mem_range_finAdeleIncl_iff.mpr h_fixed_inv
-  have hbc : b * c = 1 := adeleMap_injective (algebraMap (maximalRealSubfield L) L)
-    (by rw [map_mul, hb, hc, t.mul_inv, map_one])
-  exact ⟨mkOfMulEqOne b c hbc, ext hb⟩
+    · exact adeleMap_id _
+    · exact (star_eq_adeleMap _).symm.trans (congrArg Units.val hu)
+  have ht' : star t = t := Units.ext ht
+  exact exists_units_map_eq (finAdeleIncl (maximalRealSubfield L) L).toMonoidHom
+    (adeleMap_injective _) (lift t ht') (lift t⁻¹ (by simp [ht']))
 
 /-- For an embedding of `L` in `Ω`, some character `χ` of `Gal(Ω/L⁺)` cuts out `L`: its kernel is
 `Gal(Ω/L)`. -/
