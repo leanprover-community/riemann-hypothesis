@@ -60,9 +60,10 @@ public import Std.Tactic.BVDecide.Normalize.Prop
 /-!
 # Speed settings
 
-The three settings of this file make instance search and `simp` faster in all files of the
-development. They add no axiom, and no proof relies on them: with this file emptied, the other files
-still compile, more slowly.
+The three speed settings of this file make instance search and `simp` faster in all files of the
+development. They add no axiom, but a few proofs rely on them: without them, six files fail to
+compile, two of them by timeouts. The file also makes `Representation.isTrivial_def` a `simp` lemma,
+which one proof uses as such.
 -/
 
 @[expose] public section
