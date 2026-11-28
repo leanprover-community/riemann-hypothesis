@@ -1,7 +1,6 @@
 module
 
 public import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.Basic
-import TauCeti.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Mathlib.Algebra.Star.Subsemiring
 public import Mathlib.NumberTheory.NumberField.CMField
 public import Mathlib.RingTheory.Henselian
@@ -10,10 +9,12 @@ public import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 import Mathlib.Topology.Algebra.Group.SubmonoidClosure
 import Mathlib.Topology.Algebra.Valued.LocallyCompact
-import Mathlib.Topology.UniformSpace.Uniformizable
 import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.NumberTheory.NumberField.Global.Adeles.FiniteBaseChange
+import TauCeti.RingTheory.DedekindDomain.AdicCompletionExtension
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.BorelSpace
+import TauCeti.Topology.Algebra.Module.ModuleTopology
 public import Lib.Speed
 
 /-!
@@ -72,7 +73,7 @@ noncomputable section
 section AdeleDefs
 
 open NumberField Ideal IsDedekindDomain Filter Valued IsCMField RestrictedProduct Set
-  IsLocalRing HeightOneSpectrum WithZeroTopology WithZero adicCompletion UniformSpace.Completion
+  IsLocalRing HeightOneSpectrum WithZeroTopology WithZero adicCompletion
 open scoped Classical
 
 namespace New
@@ -283,17 +284,18 @@ variable {u : FinPlace K} {w : FinPlace L}
 
 /-- For a finite place w of L above the finite place u of K, the continuous extension of
 `f : K → L` to a homomorphism of the completions at u and at w. -/
+@[no_expose]
 def locMap (h : w.comap f = u) : adicCompletion K u →+* adicCompletion L w :=
   let := f.toAlgebra
   have : w.asIdeal.LiesOver u.asIdeal := .mk (congrArg HeightOneSpectrum.asIdeal h).symm
   -- `f` is uniformly continuous for the valuations at `u` and `w`, so it extends to the completions
-  (equiv L w).symm.toRingHom.comp
-    ((mapRingHom _ (uniformContinuous_algebraMap_liesOver K L u w).continuous).comp
-      (equiv K u).toRingHom)
+  u.adicCompletionExtension K L w
 
 @[fun_prop] lemma continuous_locMap {u : FinPlace K} {w : FinPlace L} (hw : w.comap f = u) :
     Continuous (locMap f hw) :=
-  continuous_induced_rng.mpr (continuous_map.comp (by fun_prop))
+  let := f.toAlgebra
+  have : w.asIdeal.LiesOver u.asIdeal := .mk (congrArg HeightOneSpectrum.asIdeal hw).symm
+  u.continuous_adicCompletionExtension K L w
 
 /-- For a finite place `w` of `L` above the place `u` of `K`, the map of completions `locMap f hw`
 extends the field homomorphism `f : K →+* L`. -/
@@ -302,14 +304,8 @@ extends the field homomorphism `f : K →+* L`. -/
       algebraMap L (adicCompletion L w) (f x) := by
   let : Algebra K L := f.toAlgebra
   have : w.asIdeal.LiesOver u.asIdeal := .mk (congrArg HeightOneSpectrum.asIdeal hw).symm
-  let φ : WithVal (u.valuation K) →+* WithVal (w.valuation L) := algebraMap _ _
-  have hφ : Continuous φ := (uniformContinuous_algebraMap_liesOver K L u w).continuous
-  let x' : WithVal (u.valuation K) := algebraMap K _ x
-  -- Through `equiv`, the map `locMap f hw` is the extension of `φ` to the uniform completions.
-  change (equiv L w).symm (mapRingHom φ hφ x') = (equiv L w).symm (φ x')
-  rw [mapRingHom_coe]
-
-attribute [irreducible] locMap
+  -- `locMap f hw` is Tau Ceti's `adicCompletionExtension`, which extends `f` on `K`.
+  simpa [locMap, algebraMap_adicCompletion] using! u.adicCompletionExtension_coe K L w x
 
 /-- Let `f : K →+* L` be an embedding of number fields and `w` a finite place of `L` above the place
 `u` of `K`. Along the induced map `locMap f hw` of completions, the valuation `v` is raised to some
@@ -318,12 +314,13 @@ lemma exists_v_locMap_eq_pow {u : FinPlace K} {w : FinPlace L} (hw : w.comap f =
     ∃ e : ℕ, e ≠ 0 ∧ ∀ x : adicCompletion K u, v (locMap f hw x) = v x ^ e := by
   let : Algebra K L := f.toAlgebra
   have : w.asIdeal.LiesOver u.asIdeal := .mk (congrArg HeightOneSpectrum.asIdeal hw).symm
-  -- Take for `e` the ramification index of `w` over `u`. Both sides are continuous in `x`, so it
-  -- suffices to treat elements of `K`, which is dense in its completion.
-  refine ⟨w.asIdeal.ramificationIdx (𝓞 K), (w.asIdeal.ramificationIdx_pos (𝓞 K)).ne',
-    (denseRange_algebraMap K u).eq fun x : K ↦ ?_⟩
-  simpa only [locMap_algebraMap, v_algebraMap_eq_valuation] using!
-    (valuation_liesOver L u w x).symm
+  -- Take for `e` the ramification index of `w` over `u` in Tau Ceti's valuation formula
+  -- (`valued_adicCompletionExtension`), which is nonzero since `w` lies over the prime `u`.
+  exact ⟨u.asIdeal.ramificationIdx' w.asIdeal,
+    IsDedekindDomain.ramificationIdx'_ne_zero_of_liesOver w.asIdeal u.ne_bot,
+    u.valued_adicCompletionExtension K L w⟩
+
+attribute [irreducible] locMap
 
 /-- The map of completions induced by a field homomorphism preserves and reflects integrality. -/
 @[simp] lemma v_locMap_le_one_iff {u : FinPlace K} {w : FinPlace L} (hw : w.comap f = u)
@@ -362,11 +359,7 @@ filter along the cofinite filter, as its fibres are finite. -/
 lemma tendsto_place_comap_cofinite : Tendsto (FinPlace.comap f) cofinite cofinite := by
   -- the places above `u` divide the nonzero ideal generated by `u`, so they are finitely many
   let : Algebra K L := f.toAlgebra
-  refine .cofinite_of_finite_preimage_singleton fun u ↦
-    (finite_factors (map_ne_bot_of_ne_bot (S := 𝓞 L) u.ne_bot)).subset ?_
-  rintro w rfl
-  change w.asIdeal ∣ (w.asIdeal.comap (algebraMap (𝓞 K) (𝓞 L))).map (algebraMap (𝓞 K) (𝓞 L))
-  exact dvd_iff_le.2 map_comap_le
+  exact tendsto_under_cofinite (𝓞 K) (𝓞 L)
 
 /-- For an embedding f: K → L of number fields, the induced ring homomorphism from the finite
 adeles of K to those of L; it gives base change and the Galois action. -/
@@ -1028,7 +1021,8 @@ Base change of finite adeles along an extension `L / K` of number fields.
 
 section AdeleBaseChange
 
-open Algebra Module Basis IsTopologicalAddGroup IsRightUniformAddGroup
+open Algebra Module Basis IsDedekindDomain NumberField
+open scoped TensorProduct
 
 namespace New
 
@@ -1050,9 +1044,6 @@ instance (priority := low) adeleAlgebra : Algebra (𝔸f K) (𝔸f L) := (finAde
 @[local simp]
 lemma algebraMap_eq_finAdeleIncl : algebraMap (𝔸f K) (𝔸f L) = finAdeleIncl K L := rfl
 
-attribute [local instance] rightUniformSpace isUniformAddGroup_of_addCommGroup
-  completeSpace_of_weaklyLocallyCompactSpace
-
 /-- For a finite basis b of L over K, the linear map sending a family (a_i) of finite adeles of
 K to the finite adele ∑ a_i b_i of L. -/
 abbrev adeleCombination : (ι → 𝔸f K) →ₗ[𝔸f K] 𝔸f L :=
@@ -1065,63 +1056,31 @@ lemma adeleCombination_repr (x : L) :
   conv_rhs => rw [← b.sum_repr x]
   simp [smul_def, Fintype.linearCombination]
 
-lemma continuous_adeleCombination : Continuous (adeleCombination b) := by
-  change Continuous fun a : ι → 𝔸f K ↦ ∑ i : ι, finAdeleIncl K L (a i) * (b i : 𝔸f L)
-  exact continuous_finsetSum _ fun i _ ↦
-    ((continuous_adeleMap _).comp (continuous_apply i)).mul_const _
-
-/-- Let `b` be a basis of `L / K` with dual basis `b.traceDual` for the trace form, and let `U` be a
-closed set of finite adeles of `K` that contains `N * Ô K`, with `N ≠ 0` (`Ô K` is the ring of
-integral finite adeles). If `(∑ a j • b j) * (b.traceDual i / N)` is integral, then `a i ∈ U`. -/
-lemma apply_mem_of_adeleCombination_mul_traceDual_mem_Ô [DecidableEq ι] {U : Set (𝔸f K)}
-    (hU : IsClosed U) {N : ℕ} (hN : N ≠ 0) (h_sub : ∀ x ∈ Ô K, (N : 𝔸f K) * x ∈ U)
-    (i : ι) (a : ι → 𝔸f K)
-    (ha_int : adeleCombination b a * algebraMap L (𝔸f L) (b.traceDual i / N) ∈ Ô L) : a i ∈ U := by
-  let d : L := b.traceDual i / N
-  have h_closed : IsClosed {a : ι → 𝔸f K | adeleCombination b a * d ∈ Ô L → a i ∈ U} :=
-    isClosed_imp (isOpen_Ô.preimage ((continuous_adeleCombination b).mul_const _))
-      (hU.preimage (continuous_apply i))
-  -- By density it suffices to look at the coordinates of an element `x` of `L`.
-  refine isClosed_property (DenseRange.piMap fun _ : ι ↦ denseRange_algebraMap_finAdele) h_closed
-    (fun c hc ↦ ?_) a ha_int
-  obtain ⟨x, rfl⟩ := b.equivFun.surjective c
-  have h_int : IsIntegral ℤ (x * d) := by
-    simpa [adeleCombination_repr, ← map_mul, algebraMap_mem_Ô] using hc
-  -- The `i`-th coordinate of `x` is the trace of `x * b.traceDual i`.
-  have h_trace : b.repr x i = N * trace K L (x * d) := by
-    rw [← nsmul_eq_mul, ← map_nsmul]
-    simp [d, ← mul_div_assoc, ← traceForm_apply, ← Basis.traceDual_repr_apply, hN]
-  simpa [h_trace] using h_sub _ (algebraMap_mem_Ô.2 (isIntegral_trace h_int))
-
-/-- For a finite basis `b` of `L / K`, the topology on families of finite adeles of `K` is induced
-from the finite adeles of `L` by the map `adeleCombination b`, `(a i) ↦ ∑ a i • b i`. -/
-lemma isInducing_adeleCombination : Topology.IsInducing (adeleCombination b) := by
-  classical
-  -- The map is continuous, so it suffices that each coordinate is small where the sum is small.
-  refine IsTopologicalAddGroup.isInducing_iff_nhds_zero.2
-    (le_antisymm ((continuous_adeleCombination b).tendsto' 0 0 (map_zero _)).le_comap ?_)
-  rw [nhds_pi, Filter.le_pi]
-  intro i
-  refine (closed_nhds_basis (0 : 𝔸f K)).tendsto_right_iff.2 fun U ⟨hU, hU_closed⟩ ↦ ?_
-  obtain ⟨N, hN, h_sub⟩ := mem_nhds_zero_finAdele_iff.1 hU
-  have h_nhds : {z : 𝔸f L | z * algebraMap L (𝔸f L) (b.traceDual i / N) ∈ Ô L} ∈ nhds 0 :=
-    (isOpen_Ô.preimage (continuous_mul_const _)).mem_nhds (by simp)
-  -- Where the sum lies in this neighbourhood of `0`, the `i`-th coordinate lies in `U`.
-  filter_upwards [Filter.preimage_mem_comap h_nhds] with a ha
-  exact apply_mem_of_adeleCombination_mul_traceDual_mem_Ô b hU_closed hN h_sub i a ha
-
 /-- For a finite basis `b` of `L` over `K`, the map `adeleCombination b`, `(a i) ↦ ∑ a i • b i`,
 from families of finite adeles of `K` to the finite adeles of `L` is a homeomorphism.
 
 Known result: base change for the finite adeles of a number field. -/
 lemma isHomeomorph_adeleCombination : IsHomeomorph (adeleCombination b) := by
-  have h_ind : Topology.IsInducing (adeleCombination b) := isInducing_adeleCombination b
-  -- The range is complete, hence closed, and it contains the dense image of `L`.
-  have h_closed : IsClosed (Set.range (adeleCombination b)) :=
-    (AddMonoidHom.isUniformInducing_of_isInducing h_ind).isComplete_range.isClosed
-  have h_surj : Function.Surjective (adeleCombination b) :=
-    isClosed_property denseRange_algebraMap_finAdele h_closed fun x ↦ ⟨_, adeleCombination_repr b x⟩
-  exact isHomeomorph_iff_isEmbedding_surjective.2 ⟨h_ind.isEmbedding, h_surj⟩
+  -- Transport `𝔸f K ⊗[K] L ≃ₜ 𝔸f L` (`finiteAdeleBaseChangeEquiv`) to coordinates in `b`.
+  have h_incl : finAdeleIncl K L = finiteAdeleExtension (𝓞 K) K (𝓞 L) L :=
+    eq_finiteAdeleExtension_of_continuous (𝓞 K) K (𝓞 L) L
+      (continuous_adeleMap _) (adeleMap_algebraMap _)
+  have h_lhs (a : ι → 𝔸f K) :
+      adeleCombination b a = ∑ i, finiteAdeleExtension (𝓞 K) K (𝓞 L) L (a i) * b i := by
+    simp [Fintype.linearCombination_apply, smul_def, h_incl]
+  let _ : TopologicalSpace (𝔸f K ⊗[K] L) := moduleTopology (𝔸f K) (𝔸f K ⊗[K] L)
+  have : IsModuleTopology (𝔸f K) (𝔸f K ⊗[K] L) := ⟨rfl⟩
+  let _ : Algebra (𝔸f K) (𝔸f L) := finiteAdeleExtensionAlgebra (𝓞 K) K (𝓞 L) L
+  let e₁ : (ι → 𝔸f K) ≃ₜ (𝔸f K ⊗[K] L) :=
+    (TauCeti.ModuleTopology.equivFunHomeomorph (b.baseChange (𝔸f K))).symm
+  let e₂ : (𝔸f K ⊗[K] L) ≃ₜ 𝔸f L :=
+    (TauCeti.GlobalNumberFields.finiteAdeleBaseChangeEquiv K L).toHomeomorph
+  have h_eq : (adeleCombination b : (ι → 𝔸f K) → 𝔸f L) = e₁.trans e₂ := by
+    ext1 a
+    simp [h_lhs, e₁, show ⇑e₂ = ⇑(TauCeti.GlobalNumberFields.finiteAdeleBaseChangeEquiv K L) from
+      rfl, equivFun_symm_apply, map_sum, smul_def]
+  rw [h_eq]
+  exact (e₁.trans e₂).isHomeomorph
 
 /-- A finite basis of L over K, viewed as a basis of the finite adeles of L over the finite
 adeles of K. -/
