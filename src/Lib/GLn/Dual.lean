@@ -495,13 +495,8 @@ lemma GL.exists_toPoly_eq_hookNumber_dual_smul {R : Type} [CommRing R]
     (hκ : ∀ τ : Φ, ∀ h ∈ Ico 1 (rankAt n τ), κ' τ h = κ τ (rankAt n τ - h))
     {f : MatrixPoly (Sigma n) R} (hf : f ∈ nablaFamily R n κ) :
     ∃ ζ : WeylIndexFamily n κ → R, toPoly n κ ζ = hookNumber κ' (rankAt n) • f := by
-  -- With `G B = hookNumber • 1` for the Gram matrix `G` and `c` the coordinates of `f` in
-  -- `nablaBasis`, take `ζ = B *ᵥ c`.
   obtain ⟨B, hB⟩ := exists_weylGram_mul_eq_hookNumber_dual_smul hκ
-  obtain ⟨c, rfl⟩ : f ∈ (nablaCombination κ).range := range_nablaCombination.ge hf
-  refine ⟨B.map (↑) *ᵥ c, ?_⟩
-  rw [← nablaCombination_weylGramOver_mulVec, mulVec_mulVec, ← map_mul_intCast, hB]
-  simp [Matrix.map_intCast, ← C_mul']
+  exact exists_toPoly_eq_smul_of_weylGram_mul hB hf
 
 end Duality
 

@@ -421,22 +421,24 @@ lemma card_columnFilling_le {t L : ℕ} (ht : 1 ≤ t) (h_rank : ∀ τ : Φ, ra
       simp only [← pow_mul, Finset.prod_pow_eq_pow_sum, Finset.sum_range, le_refl]
     _ ≤ t ^ L := Nat.pow_le_pow_right ht h_degree
 
+/-- If the integral Weyl Gram matrix satisfies `G B = h • 1`, then every semi-invariant `f`
+of the given weight has `h • f` in the image of `toPoly`. -/
+lemma exists_toPoly_eq_smul_of_weylGram_mul {h : ℤ}
+    {B : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ}
+    (hB : weylGram n κ * B = h • 1) {f : MatrixPoly (Sigma n) R} (hf : f ∈ nablaFamily R n κ) :
+    ∃ ζ : WeylIndexFamily n κ → R, toPoly n κ ζ = h • f := by
+  obtain ⟨c, rfl⟩ := range_nablaCombination.ge hf
+  refine ⟨B.map (↑) *ᵥ c, ?_⟩
+  rw [← nablaCombination_weylGramOver_mulVec, mulVec_mulVec, ← map_mul_intCast, hB]
+  simp [Matrix.map_intCast, ← Int.cast_smul_eq_zsmul R]
+
 /-- Over any commutative ring, let f be a Borel semi-invariant of the weight given by κ
 (`New.nablaFamily`). Then the hook number times f is `toPoly n κ ζ` for some coordinate vector ζ,
 where `New.toPoly` sends ζ to `∑ i, (G ζ) i • b i` (G the Gram matrix, b the basis minor
 products). -/
 lemma exists_toPoly_eq_hookNumber_smul {f : MatrixPoly (Sigma n) R} (hf : f ∈ nablaFamily R n κ) :
     ∃ ζ : WeylIndexFamily n κ → R, toPoly n κ ζ = hookNumber κ (rankAt n) • f := by
-  -- With `c` the coordinates of `f` in `nablaBasis` and `F` the matrix of Fock pairings of
-  -- `nablaBasis`, take `ζ = F *ᵥ c`: the Gram matrix times `F` is the hook number times the
-  -- identity.
-  obtain ⟨c, rfl⟩ : f ∈ (nablaCombination κ).range := range_nablaCombination.ge hf
-  let F : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ :=
-    of fun i j ↦ fockPairing ℤ (nablaBasis ℤ n κ i) (nablaBasis ℤ n κ j)
-  refine ⟨F.map (↑) *ᵥ c, ?_⟩
-  rw [← nablaCombination_weylGramOver_mulVec, mulVec_mulVec, ← map_mul_intCast,
-    weylGram_mul_fockPairing]
-  simp [Matrix.map_intCast, ← Int.cast_smul_eq_zsmul R]
+  exact exists_toPoly_eq_smul_of_weylGram_mul weylGram_mul_fockPairing hf
 
 end «GL»
 
