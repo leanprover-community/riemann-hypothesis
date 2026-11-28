@@ -121,13 +121,52 @@ basis vector of floor below a. -/
 lemma heisenbergElem_mem_floorUnipotent : heisenbergElem (T := T) a p ∈ floorUnipotent a := by
   -- The matrix differs from `1` only in row `e_a` and in column `e*_a`, and the entries of `v`
   -- vanish on the floors at most `a`: compare the entries with those of `1`.
-  refine Subgroup.mem_inf.2 ⟨?_, ?_⟩
-  · simp [mem_floorGroup, heisenbergElem, eichlerMap, vecMulVec, Pi.single_apply,
-      inclMatrix_val_mulVec, sub_eq_zero, -mulVec_mulVec]
-    grind [star_zero]
-  · simp [mem_unipotentBelow, heisenbergElem, eichlerMap, vecMulVec, Pi.single_apply,
-      inclMatrix_val_mulVec, BesselIndex.level, sub_eq_zero, -mulVec_mulVec]
-    grind [star_zero]
+  set v : 𝔰.BesselIndex → A := inclMatrix A (↑) *ᵥ p.1 with hv
+  have hv_zero {k : 𝔰.BesselIndex} (hk : floorOf k ≤ a) : v k = 0 := by
+    rw [hv, inclMatrix_val_mulVec, dite_eq_right (by lia)]
+  have h_orth {j : 𝔰.BesselIndex} (hj : floorOf j ≤ a) :
+      star v ⬝ᵥ T.splitGram *ᵥ Pi.single j 1 = 0 := by
+    rw [mulVec_single_one, splitGram_col j (lt_of_le_of_lt hj a.isLt), dotProduct_single, mul_one,
+      Pi.star_apply, hv_zero (by rw [floorOf_oppositeIndex]; exact hj), star_zero]
+  have h_entry (i j : 𝔰.BesselIndex) :
+      (heisenbergElem (T := T) a p).val.val i j = (1 : Matrix _ _ A) i j +
+        (if j = eStar a then v i else 0) +
+        (if i = inl a then
+          (if j = eStar a then p.2 - element * star v ⬝ᵥ T.splitGram *ᵥ v else 0) -
+          star v ⬝ᵥ T.splitGram *ᵥ Pi.single j 1 else 0) := by
+    have h := congrFun (heisenbergElem_mulVec (T := T) (a := a) (p := p) (Pi.single j 1)) i
+    rw [mulVec_single_one, col_apply] at h
+    rw [h]
+    simp only [Pi.add_apply, Pi.smul_apply, Pi.single_apply, smul_eq_mul,
+      Matrix.one_apply, eq_comm (a := i), eq_comm (a := eStar a)]
+    split_ifs <;> ring
+  refine Subgroup.mem_inf.2 ⟨mem_floorGroup.2 fun i j hj ↦ ?_,
+    mem_unipotentBelow.2 fun i j hij ↦ ?_⟩
+  · have hne : j ≠ eStar a := fun h ↦ by simp [h] at hj
+    rw [h_entry, ite_eq_right hne, ite_eq_right hne, h_orth hj.le]
+    simp
+  · rw [h_entry]
+    by_cases hje : j = eStar a
+    · subst hje
+      have hi_ne : i ≠ inl a := by
+        rintro rfl
+        simp only [floorOf, BesselIndex.level, elim_inl, elim_inr, Nat.lt_add_one,
+          ↓reduceIte] at hij
+        lia
+      have hi_fl : floorOf i ≤ a := le_of_not_gt fun hlt ↦ by
+        rw [ite_eq_right (Nat.not_lt.2 hlt)] at hij
+        simp only [floorOf, BesselIndex.level, elim_inr, Nat.lt_add_one, ↓reduceIte] at hij
+        lia
+      rw [ite_eq_left rfl, ite_eq_right hi_ne, hv_zero hi_fl, add_zero, add_zero]
+    · rw [ite_eq_right hje, ite_eq_right hje, add_zero]
+      split_ifs with hia
+      · subst hia
+        have hj_fl : floorOf j ≤ a := le_of_not_gt fun hlt ↦ by
+          rw [ite_eq_right (Nat.not_lt.2 hlt)] at hij
+          simp only [floorOf, BesselIndex.level, elim_inl, Nat.lt_add_one, ↓reduceIte] at hij
+          lia
+        rw [h_orth hj_fl, sub_self, add_zero]
+      · rw [add_zero]
 
 variable {a p q}
 
@@ -190,19 +229,36 @@ lemma exists_heisenbergElem_mulVec_eq {w : 𝔰.BesselIndex → A}
       w = (heisenbergElem (T := T) a p).val.val *ᵥ Pi.single (eStar a) 1 := by
   obtain ⟨v, d, rfl⟩ : ∃ (v : {j // a + 1 ≤ floorOf j} → A) (d : A), w = Pi.single (eStar a) 1 +
       inclMatrix A (fun j : {j // a + 1 ≤ floorOf j} ↦ j.val) *ᵥ v + d • Pi.single (inl a) 1 := by
-    refine ⟨fun j ↦ w j, w (inl a), ?_⟩
-    simp [funext_iff, Pi.single_apply, inclMatrix_val_mulVec] at h_lower ⊢
-    grind
+    refine ⟨fun j ↦ w j, w (inl a), funext fun j ↦ ?_⟩
+    simp only [Pi.add_apply, Pi.smul_apply, Pi.single_apply, inclMatrix_val_mulVec, smul_eq_mul]
+    rcases j with b | m | b
+    · by_cases hba : b = a
+      · subst hba; simp
+      · rw [ite_eq_right (by simp), ite_eq_right (by simp [hba]), mul_zero, zero_add, add_zero]
+        split_ifs with hge
+        · rfl
+        · exact h_lower (inl b) (by simp only [floorOf] at hge ⊢; lia)
+    · rw [ite_eq_right (by simp), ite_eq_right (by simp), mul_zero, zero_add, add_zero,
+        dite_eq_left (by simp only [floorOf]; lia)]
+    · by_cases hba : b = a
+      · subst hba; simp [h_top]
+      · rw [ite_eq_right (by simp [hba]), ite_eq_right (by simp), mul_zero, zero_add, add_zero]
+        split_ifs with hge
+        · rfl
+        · exact h_lower (eStar b) (by simp only [floorOf] at hge ⊢; lia)
   -- isotropy determines `d + star d`, and the skew parameter supplies the rest of `d`
   have h_trace : d + star d = -(star (inclMatrix A (↑) *ᵥ v) ⬝ᵥ T.splitGram *ᵥ
       inclMatrix A (↑) *ᵥ v) := by
     simp [mulVec_add, mulVec_smul, inclMatrix_val_mulVec, -mulVec_mulVec] at h_isotropic
-    grind
+    linear_combination h_isotropic
   use ⟨v, skewPart (star element * d)⟩
+  have h_quad : star (inclMatrix A (↑) *ᵥ v) ⬝ᵥ T.splitGram *ᵥ inclMatrix A (↑) *ᵥ v =
+      -(d + star d) := by rw [h_trace, neg_neg]
   have h_coef : star element * d - element * star d - element * star (inclMatrix A (↑) *ᵥ v) ⬝ᵥ
     T.splitGram *ᵥ
       inclMatrix A (↑) *ᵥ v = d := by
-    grind
+    rw [h_quad]
+    linear_combination d * element_add_star (A := A)
   simp [inclMatrix_val_mulVec, h_coef, -mulVec_mulVec]
 
 /-- Let g lie in G_a and let i be the index of e_a or e*_a. If c times column i of g has coordinate
@@ -219,8 +275,11 @@ lemma exists_col_eq_heisenbergElem (i : 𝔰.BesselIndex) (c : A) (h : g ∈ flo
   have top : w (eStar a) = 1 := by simpa [w, mul_comm] using h_entry
   have isotropic : star w ⬝ᵥ T.splitGram *ᵥ w = 0 := by
     have h_zero : star (Pi.single i c) ⬝ᵥ T.splitGram *ᵥ Pi.single i c = 0 := by
-      simp [h_floor]
-      grind [oppositeIndex_involutive_and_floorOf_level]
+      have hi_ne : oppositeIndex i ≠ i := by
+        rcases i with b | m | b <;> simp [oppositeIndex, floorOf] at h_floor ⊢
+        lia
+      rw [mulVec_single, splitGram_col i (h_floor ▸ a.isLt), dotProduct_smul, dotProduct_single,
+        mul_one, Pi.star_apply, Pi.single_eq_of_ne hi_ne, star_zero, smul_zero]
     exact (form_mulVec_mulVec g _ _).trans h_zero
   exact exists_heisenbergElem_mulVec_eq lower top isotropic
 
@@ -237,7 +296,27 @@ lemma inv_mul_mem_floorGroup_succ (h : g⁻¹ * s ∈ partialUnitriangularGroup 
   · rw [h_star]
     simpa [Pi.single_apply, Matrix.one_apply] using congrFun h_fix i
   · -- the other columns of floor at most `a` are those of the identity matrix by `h`
-    grind [level_le_or_exists_eq_eStar, mem_inf, Fin.ext_iff]
+    by_cases hlt : floorOf j < a
+    · exact mem_floorGroup.1 h.2 i j hlt
+    · have hjeq : floorOf j = a := by lia
+      have hj_le : BesselIndex.level j ≤ 𝔰.ϱ :=
+        (level_le_or_exists_eq_eStar j).resolve_right fun ⟨b, hjb, hfb⟩ ↦
+          h_star (hjb.trans (congrArg eStar (Fin.ext (by lia))))
+      have hj_lvl : BesselIndex.level j = a := by
+        rcases j with b | m | b
+        · simp only [floorOf] at hjeq ⊢; exact hjeq
+        · simp only [floorOf] at hjeq; lia
+        · simp only [BesselIndex.level, elim_inr] at hj_le; lia
+      by_cases hle : BesselIndex.level j ≤ BesselIndex.level i
+      · exact mem_partialUnitriangularGroup.1 h.1 i j hle (Or.inl ⟨hj, by lia⟩)
+      · rw [hj_lvl] at hle
+        have hi_fl : floorOf i < a := by
+          rcases i with b | m | b
+          · simp only [floorOf, BesselIndex.level, elim_inl] at hle ⊢; lia
+          · simp only [BesselIndex.level, elim_inr, elim_inl] at hle; lia
+          · simp only [BesselIndex.level, elim_inr] at hle; lia
+        exact apply_eq_one_apply_of_mem_floorGroup h.2 i j
+          (Or.inl ⟨hi_fl, lt_trans hi_fl a.isLt⟩)
 
 /-- For a < ϱ and g in Q_{a+1} ∩ G_a, there is a Heisenberg element ν(v, β) of floor a such that
 g⁻¹ν(v, β) lies in G_{a+1}. -/
@@ -537,9 +616,41 @@ lemma HyperbolicBasis.map_floorBasis_volume :
   let order : Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m → (Fin 2 ⊕ SplitIndex m ι) ⊕ S ⊕ S :=
     inl ∘ inl ⊕ᵥ
       (Sum.map (inr ∘ inl) inl ⊕ᵥ (inl ∘ inr ∘ inr ∘ inl ⊕ᵥ Sum.map (inr ∘ inr ∘ inr) inr))
+  have h_incl_inj : Injective incl := by
+    rintro (x | x | x) (y | y | y) h <;> simp [incl] at h ⊢
+    exact h
+    exact Subtype.ext h
+    exact Subtype.ext h
+  have h_incl_range (i : 𝔰.BesselIndex) : i ∈ Set.range incl ↔ b.val ≤ floorOf i := by
+    rcases i with a | m | a
+    · refine ⟨?_, fun h ↦ ⟨inr (inl ⟨a, h⟩), rfl⟩⟩
+      rintro ⟨x | x | x, hx⟩
+      · cases hx
+      · simp only [incl, elim_inr, Sum.map_inl, inl.injEq] at hx
+        exact hx ▸ x.2
+      · cases hx
+    · exact iff_of_true ⟨inl m, rfl⟩
+        (by rcases m with m | m <;> simp only [floorOf]; exact b.isLt.le; exact b.is_le)
+    · refine ⟨?_, fun h ↦ ⟨inr (inr ⟨a, h⟩), rfl⟩⟩
+      rintro ⟨x | x | x, hx⟩
+      · cases hx
+      · cases hx
+      · simp only [incl, elim_inr, Sum.map_inr, Function.comp_apply, inr.injEq] at hx
+        exact hx ▸ x.2
   have h_incl : volume.map (inclMatrix A incl *ᵥ ·) = FloorGroups.floorVolume b :=
-    map_inclMatrix_eq_floorVolume incl (by simp [incl, S, Injective]) (by simp [incl, S, b.is_le])
-  have h_order : Bijective order := by simp [order, S, Bijective, Injective, Surjective]
+    map_inclMatrix_eq_floorVolume incl h_incl_inj h_incl_range
+  let orderInv : (Fin 2 ⊕ SplitIndex m ι) ⊕ S ⊕ S → Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m
+    | inl (inl i) => inl i
+    | inl (inr (inl i)) => inr (inl (inl i))
+    | inl (inr (inr (inl i))) => inr (inr (inl i))
+    | inl (inr (inr (inr i))) => inr (inr (inr (inl i)))
+    | inr (inl i) => inr (inl (inr i))
+    | inr (inr i) => inr (inr (inr (inr i)))
+  have h_order : Bijective order :=
+    ⟨Function.LeftInverse.injective (f := order) (g := orderInv) (by
+        rintro (x | (x | x) | x | (x | x)) <;> rfl),
+      Function.RightInverse.surjective (f := order) (g := orderInv) (by
+        rintro ((x | (x | (x | x))) | (x | x)) <;> rfl)⟩
   simp only [floorBasis, diagonal_one', ← mulVec_mulVec, fromBlocks_mulVec, zero_mulVec, add_zero,
     one_mulVec, zero_add]
   -- The map permutes the coordinates, splits off those of the pairs `e_a`, `e*_a` with `b ≤ a`,
@@ -657,10 +768,12 @@ unit mass at `1`. -/
 lemma heisenbergMeasure_mconv_dirac [H : IsHermitianUnit T.splitGram] (h : s ∈ floorUnipotent l) :
     heisenbergMeasure l ∗ₘ dirac s = heisenbergMeasure l ∧
     dirac s ∗ₘ heisenbergMeasure l = heisenbergMeasure l := by
-  fun_cases heisenbergMeasure
-  case case2 hl =>
-    simp [eq_one_of_mem_floorGroup_inf h (by grind)]
-  case case1 hl =>
+  have : MeasurableMul₂ T.G := ⟨continuous_mul.measurable⟩
+  have : MeasurableMul T.G :=
+    ⟨fun _ ↦ (continuous_const.mul continuous_id).measurable,
+      fun _ ↦ (continuous_id.mul continuous_const).measurable⟩
+  by_cases hl : l < 𝔰.ϱ
+  · rw [heisenbergMeasure, dite_eq_left hl]
     obtain ⟨⟨v, t⟩, rfl⟩ := exists_eq_heisenbergElem_of_mem (a := ⟨l, hl⟩) h
     -- By `heisenbergElem_mul`, multiplication by `heisenbergElem a (v, t)` on either side
     -- translates the skew parameter, which `P.skewMeasure` absorbs, and translates the vector by
@@ -673,12 +786,36 @@ lemma heisenbergMeasure_mconv_dirac [H : IsHermitianUnit T.splitGram] (h : s ∈
     have vec_inv (Φ : T.G → ℝ≥0∞) :
         ∫⁻ w, ∫⁻ β, Φ (heisenbergElem ⟨l, hl⟩ (w + v, β)) ∂P.skewMeasure =
           ∫⁻ w, ∫⁻ β, Φ (heisenbergElem ⟨l, hl⟩ (w, β)) ∂P.skewMeasure :=
-      lintegral_add_right_eq_self (fun w ↦ ∫⁻ β, Φ (heisenbergElem ⟨l, hl⟩ (w, β)) ∂P.skewMeasure) v
+      lintegral_add_right_eq_self
+        (fun w ↦ ∫⁻ β, Φ (heisenbergElem ⟨l, hl⟩ (w, β)) ∂P.skewMeasure) v
+    have h_heis : Measurable (heisenbergElem (T := T) ⟨l, hl⟩) :=
+      continuous_heisenbergElem.measurable
     constructor
-    all_goals
-      refine ext_of_lintegral _ fun Φ hΦ ↦ ?_
-      simp (disch := fun_prop) [heisenbergElem_mul, add_assoc, add_comm t, add_comm v, skew_inv,
-        vec_inv, ↓ mconv_dirac, ↓ lintegral_map, ↓ lintegral_prod, ↓ dirac_mconv]
+    · refine ext_of_lintegral _ fun Φ hΦ ↦ ?_
+      have hΦr1 : Measurable fun x : T.G ↦ Φ (x * heisenbergElem ⟨l, hl⟩ (v, t)) :=
+        hΦ.comp (measurable_mul_const _)
+      have hΦr2 : Measurable fun p : ({i // l + 1 ≤ floorOf i} → A) × skewAdjoint A ↦
+          Φ (heisenbergElem ⟨l, hl⟩ p * heisenbergElem ⟨l, hl⟩ (v, t)) := hΦr1.comp h_heis
+      have hΦ0 : Measurable fun p : ({i // l + 1 ≤ floorOf i} → A) × skewAdjoint A ↦
+          Φ (heisenbergElem ⟨l, hl⟩ p) := hΦ.comp h_heis
+      rw [mconv_dirac, lintegral_map hΦ (measurable_mul_const _), lintegral_map hΦr1 h_heis,
+        lintegral_map hΦ h_heis, lintegral_prod _ hΦr2.aemeasurable,
+        lintegral_prod _ hΦ0.aemeasurable]
+      simp only [heisenbergElem_mul, add_assoc, skew_inv, vec_inv]
+    · refine ext_of_lintegral _ fun Φ hΦ ↦ ?_
+      have hΦl1 : Measurable fun x : T.G ↦ Φ (heisenbergElem ⟨l, hl⟩ (v, t) * x) :=
+        hΦ.comp (measurable_const_mul _)
+      have hΦl2 : Measurable fun p : ({i // l + 1 ≤ floorOf i} → A) × skewAdjoint A ↦
+          Φ (heisenbergElem ⟨l, hl⟩ (v, t) * heisenbergElem ⟨l, hl⟩ p) := hΦl1.comp h_heis
+      have hΦ0 : Measurable fun p : ({i // l + 1 ≤ floorOf i} → A) × skewAdjoint A ↦
+          Φ (heisenbergElem ⟨l, hl⟩ p) := hΦ.comp h_heis
+      rw [dirac_mconv, lintegral_map hΦ (measurable_const_mul _), lintegral_map hΦl1 h_heis,
+        lintegral_map hΦ h_heis, lintegral_prod _ hΦl2.aemeasurable,
+        lintegral_prod _ hΦ0.aemeasurable]
+      simp only [heisenbergElem_mul, add_assoc, add_comm t, add_comm v, skew_inv, vec_inv]
+  · rw [heisenbergMeasure, dite_eq_right hl, eq_one_of_mem_floorGroup_inf h (by lia),
+      dirac_mconv_dirac, mul_one]
+    exact ⟨rfl, rfl⟩
 
 /-- Let `η_l = heisenbergMeasure l` be the measure on the unitary group `T.G` carried by the
 Heisenberg group `N_l`. For `l < ϱ` it is the image of Haar measure on `V_(l+1)` times the skew
@@ -688,14 +825,24 @@ in `G_(l+1) = floorGroup (l + 1)`, the unitary elements fixing every basis vecto
 lemma dirac_mconv_heisenbergMeasure_comm [H : IsHermitianUnit T.splitGram]
     (h : s ∈ floorGroup (l + 1)) :
     dirac s ∗ₘ heisenbergMeasure l = heisenbergMeasure l ∗ₘ dirac s := by
-  fun_cases heisenbergMeasure
-  case case2 => simp
-  case case1 hl =>
+  have : MeasurableMul₂ T.G := ⟨continuous_mul.measurable⟩
+  have : MeasurableMul T.G :=
+    ⟨fun _ ↦ (continuous_const.mul continuous_id).measurable,
+      fun _ ↦ (continuous_id.mul continuous_const).measurable⟩
+  by_cases hl : l < 𝔰.ϱ
+  · rw [heisenbergMeasure, dite_eq_left hl]
     -- by `mul_heisenbergElem`, moving `s` across applies its block to the vector, which keeps the
     -- volume
-    nth_rw 2 [← ((measurePreserving_floor_block_mulVec h).prod (.id _)).map_eq]
-    simp (disch := fun_prop) [↓Measure.map_map, mul_heisenbergElem (a := ⟨l, hl⟩) h, Prod.map_def,
-      ↓ dirac_mconv, ↓ comp_def, ↓ mconv_dirac]
+    have h_heis : Measurable (heisenbergElem (T := T) ⟨l, hl⟩) :=
+      continuous_heisenbergElem.measurable
+    have h_blk := (measurePreserving_floor_block_mulVec h).prod (.id P.skewMeasure)
+    nth_rw 2 [← h_blk.map_eq]
+    rw [dirac_mconv, mconv_dirac, Measure.map_map (measurable_const_mul _) h_heis,
+      Measure.map_map h_heis h_blk.measurable,
+      Measure.map_map (measurable_mul_const _) (h_heis.comp h_blk.measurable)]
+    exact congrArg (Measure.map · _) (funext fun ⟨v, β⟩ ↦ mul_heisenbergElem (a := ⟨l, hl⟩) h)
+  · rw [heisenbergMeasure, dite_eq_right hl, dirac_mconv_dirac, dirac_mconv_dirac,
+      mul_one, one_mul]
 
 /-! ### Convolutions along the floors, quadric measures and Plancherel -/
 
@@ -711,9 +858,21 @@ def ascConv : ℕ → Measure T.G
   | 0 => dirac 1
   | j + 1 => ascConv j ∗ₘ σ j
 
-instance (a i : ℕ) : SFinite (descConv σ a i) := by fun_induction descConv <;> infer_instance
+instance (a i : ℕ) : SFinite (descConv σ a i) := by
+  induction i generalizing a with
+  | zero =>
+    have h1 : IsFiniteMeasure (dirac (1 : T.G)) := ⟨by simp⟩
+    exact @instSFiniteOfSigmaFinite _ _ _ h1.toSigmaFinite
+  | succ i ih =>
+    have : SFinite (descConv σ (a + 1) i) := ih (a + 1)
+    exact Measure.sfinite_mconv_of_sfinite (descConv σ (a + 1) i) (σ a)
 
-instance : SFinite (ascConv σ j) := by fun_induction ascConv <;> infer_instance
+instance : SFinite (ascConv σ j) := by
+  induction j with
+  | zero =>
+    have h1 : IsFiniteMeasure (dirac (1 : T.G)) := ⟨by simp⟩
+    exact @instSFiniteOfSigmaFinite _ _ _ h1.toSigmaFinite
+  | succ j ih => exact Measure.sfinite_mconv_of_sfinite (ascConv σ j) (σ j)
 
 variable {σ}
 
@@ -891,6 +1050,11 @@ lemma ascConv_heisenbergMeasure_invariant (hs : s ∈ unipotentBelow j) :
   · -- `heisenbergMeasure j` absorbs `γ` and `ascConv heisenbergMeasure j` absorbs `ν`; the two
     -- measures commute
     intro j γ hγ ν ⟨asc_ν, ν_asc⟩
+    have : MeasurableMul₂ T.G := ⟨continuous_mul.measurable⟩
+    have hγf : IsFiniteMeasure (dirac γ) := ⟨by simp⟩
+    have hνf : IsFiniteMeasure (dirac ν) := ⟨by simp⟩
+    have : SFinite (dirac γ) := @instSFiniteOfSigmaFinite _ _ _ hγf.toSigmaFinite
+    have : SFinite (dirac ν) := @instSFiniteOfSigmaFinite _ _ _ hνf.toSigmaFinite
     obtain ⟨η_γ, γ_η⟩ := heisenbergMeasure_mconv_dirac hγ
     rw [← dirac_mconv_dirac]
     constructor
@@ -905,7 +1069,8 @@ lemma ae_ascConv_mem_unipotentBelow :
   induction j with
   | zero => simp [ascConv]
   | succ j ih =>
-    exact ae_mem_mconv (ih.mono (by grind)) (ae_mem_floorUnipotent.mono fun _ hx ↦ hx.2)
+    exact ae_mem_mconv (ih.mono fun _ hx ↦ unipotentBelow_le_succ hx)
+      (ae_mem_floorUnipotent.mono fun _ hx ↦ hx.2)
       (isClosed_of_entries_eq_one mem_unipotentBelow).measurableSet
 
 omit [DecidableEq ι] in
@@ -920,9 +1085,30 @@ lemma Place.lintegral_damped_fourier_le (ξ : A) {G : A → ℝ} (hG : Continuou
   -- Expand the square as a double integral over `x = (w, w')` and integrate over `v` first.
   let g (v : ι → A) (x : (ι → A) × (ι → A)) : ℂ :=
     P.ψ (ξ * star v ⬝ᵥ (x.2 - x.1)) * ((∏ i, G (v i)) * (star (f x.1) * f x.2))
+  have h_psi : Continuous P.ψ := by fun_prop
+  have hg_meas : Measurable g.uncurry := by
+    have h_dot : Measurable fun p : (ι → A) × (ι → A) × (ι → A) ↦
+        star p.1 ⬝ᵥ (p.2.2 - p.2.1) :=
+      Finset.measurable_sum _ fun i _ ↦
+        (continuous_star.measurable.comp ((measurable_pi_apply i).comp measurable_fst)).mul
+          ((measurable_pi_apply i).comp
+            ((measurable_snd.comp measurable_snd).sub (measurable_fst.comp measurable_snd)))
+    have h_p : Measurable fun p : (ι → A) × (ι → A) × (ι → A) ↦
+        P.ψ (ξ * star p.1 ⬝ᵥ (p.2.2 - p.2.1)) :=
+      h_psi.measurable.comp ((measurable_const_mul ξ).comp h_dot)
+    have h_G : Measurable fun p : (ι → A) × (ι → A) × (ι → A) ↦
+        ((∏ i, G (p.1 i) : ℝ) : ℂ) :=
+      Complex.continuous_ofReal.measurable.comp
+        (Finset.measurable_prod _ fun i _ ↦
+          hG.measurable.comp ((measurable_pi_apply i).comp measurable_fst))
+    have h_f : Measurable fun p : (ι → A) × (ι → A) × (ι → A) ↦
+        star (f p.2.1) * f p.2.2 :=
+      (continuous_star.measurable.comp (hf_meas.comp (measurable_fst.comp measurable_snd))).mul
+        (hf_meas.comp (measurable_snd.comp measurable_snd))
+    exact h_p.mul (h_G.mul h_f)
   have hg : Integrable g.uncurry :=
     .mono ((Integrable.fintype_prod fun _ ↦ hG_int).smul_prod (hf.mul_prod hf))
-      (Measurable.aestronglyMeasurable (by fun_prop)) (by simp [g, uncurry])
+      hg_meas.aestronglyMeasurable (by simp [g, uncurry])
   have h_expand (v : ι → A) :
       ‖∫ w : ι → A, P.ψ (ξ * star v ⬝ᵥ w) * f w‖ ^ 2 * ∏ i : ι, (G (v i) : ℂ) =
         ∫ x : (ι → A) × (ι → A), g v x := by
@@ -966,8 +1152,15 @@ lemma Place.lintegral_damped_fourier_le (ξ : A) {G : A → ℝ} (hG : Continuou
       lintegral_mono h_diff
     _ = (∫⁻ a : A, ‖∫ v : A, G v * P.ψ (star v * ξ * a)‖ₑ) ^ card ι *
           ∫⁻ w : ι → A, ‖f w‖ₑ ^ 2 := by
-      rw [lintegral_mul_const _ (by fun_prop), card, ← Finset.prod_const (lintegral ..),
-        ← TauCeti.lintegral_fintype_prod_eq_prod _ (by fun_prop), volume_pi]
+      have h_ft : Measurable fun a : A ↦ ‖∫ v : A, (G v : ℂ) * P.ψ (star v * ξ * a)‖ₑ :=
+        ((Complex.continuous_ofReal.comp (hG.comp continuous_snd)).mul
+          (h_psi.comp (((continuous_star.comp continuous_snd).mul continuous_const).mul
+            continuous_fst))).stronglyMeasurable.integral_prod_right.eNorm
+      have h_prod : Measurable fun z : ι → A ↦
+          ∏ i, ‖∫ v : A, (G v : ℂ) * P.ψ (star v * ξ * z i)‖ₑ :=
+        Finset.measurable_prod _ fun i _ ↦ h_ft.comp (measurable_pi_apply i)
+      rw [lintegral_mul_const _ h_prod, card, ← Finset.prod_const (lintegral ..),
+        ← TauCeti.lintegral_fintype_prod_eq_prod _ (fun _ ↦ h_ft), volume_pi]
 /-- Plancherel's inequality at a place A: for a unit η and f measurable and integrable on A^ι,
 ∫ |∫ ψ(η v*w) f(w) dw|² dv ≤ (c/md η)^{|ι|} ∫ |f|². Here v*w is `star v ⬝ᵥ w`, ψ is the additive
 character of the place, and md is its `modulus`. The constant c = `kernelBound` is part of the data
@@ -982,28 +1175,50 @@ lemma Place.plancherel_inequality (η : Aˣ) {f : (ι → A) → ℂ} (hf : Inte
   obtain ⟨G, hG, hG_int, hG_pos, hG_zero, hG_mass⟩ := P.exists_plancherel_kernel
   let damped (x : A) (v : ι → A) : ℝ≥0∞ :=
     ‖(‖∫ w, P.ψ (η * star v ⬝ᵥ w) * f w‖ ^ 2 * ∏ i, G (star x * v i) : ℂ)‖ₑ
+  have h_psi : Continuous P.ψ := by fun_prop
+  have h_meas_F : StronglyMeasurable fun v : ι → A ↦
+      ∫ w : ι → A, P.ψ (η * star v ⬝ᵥ w) * f w := by
+    have h_dot : Measurable fun p : (ι → A) × (ι → A) ↦ star p.1 ⬝ᵥ p.2 :=
+      Finset.measurable_sum _ fun i _ ↦
+        (continuous_star.measurable.comp ((measurable_pi_apply i).comp measurable_fst)).mul
+          ((measurable_pi_apply i).comp measurable_snd)
+    have h_m : Measurable fun p : (ι → A) × (ι → A) ↦ P.ψ (η * star p.1 ⬝ᵥ p.2) * f p.2 :=
+      (h_psi.measurable.comp ((measurable_const_mul (η : A)).comp h_dot)).mul
+        (hf_meas.comp measurable_snd)
+    exact h_m.stronglyMeasurable.integral_prod_right
+  have h_meas_damped (x : A) : Measurable (damped x) :=
+    (((Complex.continuous_ofReal.measurable.comp h_meas_F.norm.measurable).pow_const 2).mul
+      (Complex.continuous_ofReal.measurable.comp
+        (Finset.measurable_prod _ fun i _ ↦
+          hG.measurable.comp ((measurable_const_mul (star x)).comp
+            (measurable_pi_apply i))))).stronglyMeasurable.eNorm
   have h_limit (v : ι → A) :
       Tendsto (damped · v) (nhds 0) (nhds (‖∫ w, P.ψ (η * star v ⬝ᵥ w) * f w‖ₑ ^ 2)) :=
     Continuous.tendsto' (by fun_prop) 0 _ (by simp [damped, eNorm, hG_zero])
+  have h_ft_meas : Measurable fun x : A ↦ ‖∫ v : A, (G v : ℂ) * P.ψ (star v * x)‖ₑ :=
+    ((Complex.continuous_ofReal.comp (hG.comp continuous_snd)).mul
+      (h_psi.comp ((continuous_star.comp continuous_snd).mul
+        continuous_fst))).stronglyMeasurable.integral_prod_right.eNorm
   have h_unit (u : Aˣ) : ∫⁻ v : ι → A, damped u v ≤
       (P.kernelBound / P.modulus η) ^ card ι * ∫⁻ w : ι → A, ‖f w‖ₑ ^ 2 := by
-    -- Substitute `v ↦ (star u)⁻¹ • v` on the left and `z ↦ η * u⁻¹ * z` in the mass of the kernel;
-    -- both sides acquire the factor `(modulus u)⁻¹ ^ card ι`.
-    grw [lintegral_eq_mul_lintegral_map (map_mulVec_volume _ (star u⁻¹.1 • 1) _), lintegral_map_le,
-        ← hG_mass,
+    -- Substitute `v ↦ (star u)⁻¹ • v` on the left and `z ↦ η * u⁻¹ * z` in the mass of the
+    -- kernel; both sides acquire the factor `(modulus u)⁻¹ ^ card ι`.
+    have h_det : IsUnit (star u⁻¹.1 • (1 : Matrix ι ι A)).det := by simp [IsUnit.pow]
+    have h_mul : Measurable ((star u⁻¹.1 • (1 : Matrix ι ι A)) *ᵥ ·) := by fun_prop
+    grw [lintegral_eq_mul_lintegral_map (map_mulVec_volume _ (star u⁻¹.1 • 1) h_det)
+          (modulus_ne_zero h_det.unit) (modulus_ne_top h_det.unit),
+        lintegral_map (h_meas_damped u) h_mul, ← hG_mass,
         lintegral_eq_mul_lintegral_map (map_mul_volume (η * u⁻¹)) (modulus_ne_zero _)
           (modulus_ne_top _),
-        lintegral_map]
-    · have h_cancel (a : A) : star u.val * (star u⁻¹.val * a) = a := by simp [← mul_assoc,
-      ← star_mul]
-      simpa [damped, smul_mulVec, mul_pow, ENNReal.mul_div_right_comm, ENNReal.div_self,
-        mul_assoc, h_cancel] using
-        mul_le_mul_right (lintegral_damped_fourier_le (η.val * u⁻¹.val) hG hG_int hG_pos hf hf_meas)
-          ((P.modulus u)⁻¹ ^ card ι)
-    -- the side goals: measurability, and the determinant is a unit
-    any_goals fun_prop
-    all_goals simp [IsUnit.pow]
-  grw [lintegral_mono fun v ↦ (h_limit v).liminf_eq.ge, lintegral_liminf_le (by fun_prop)]
+        lintegral_map h_ft_meas (measurable_const_mul _)]
+    have h_cancel (a : A) : star u.val * (star u⁻¹.val * a) = a := by
+      simp [← mul_assoc, ← star_mul]
+    simpa [damped, smul_mulVec, mul_pow, ENNReal.mul_div_right_comm, ENNReal.div_self,
+      mul_assoc, h_cancel] using
+      mul_le_mul_right (lintegral_damped_fourier_le (η.val * u⁻¹.val) hG hG_int hG_pos hf hf_meas)
+        ((P.modulus u)⁻¹ ^ card ι)
+  refine le_trans (lintegral_mono fun v ↦ (h_limit v).liminf_eq.ge)
+    (le_trans (lintegral_liminf_le h_meas_damped) ?_)
   exact liminf_le_of_frequently_le'
     ((mem_closure_iff_frequently.1 (dense_of_ae ae_isUnit 0)).mono (Set.forall_mem_range.2 h_unit))
 
