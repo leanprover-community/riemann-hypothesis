@@ -2,7 +2,8 @@ module
 
 public import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.NumberTheory.Multiplicity
-import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
+import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
+import TauCeti.NumberTheory.Cyclotomic.Surjectivity
 public import Lib.General.Topology
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 public import Lib.ClassField.Places.ProfiniteGalois -- shake: keep (needed public by an exposed definition)
@@ -380,12 +381,10 @@ instance : IsCyclotomicExtension {N} ℚ (cycloField N) := by
 /-- For a natural number `N ≠ 0` and the Galois group of `New.Ω` (ℚ̄, an algebraically closed field
 of characteristic `0`) over `ℚ`, the character modulo `N` is surjective. -/
 lemma cyclotomicCharMod_surjective :
-    Surjective (cyclotomicCharMod (Γ := Gal(New.Ω/ℚ)) New.Ω N) := by
-  -- The image has as many elements as the index of the kernel, which is the degree `φ(N)` of the
-  -- cyclotomic field that the kernel fixes.
-  refine range_eq_top.mp (eq_top_of_card_eq _ ?_)
-  rw [← index_ker, ← finrank_fixedFieldOf, Rat.finrank N]
-  simp
+    Surjective (cyclotomicCharMod (Γ := Gal(New.Ω/ℚ)) New.Ω N) :=
+  TauCeti.modularCyclotomicCharacter_surjective_of_irreducible
+    (HasEnoughRootsOfUnity.natCard_rootsOfUnity New.Ω N)
+    (Polynomial.cyclotomic.irreducible_rat (NeZero.pos N))
 
 end New
 
