@@ -230,77 +230,43 @@ lemma spaceChar_div_sqrt_ideleAbs_pow (ha : CharUnramifiedAt a.baseChange.finPar
       ← Real.rpow_pow_comm, Real.inv_rpow]
   simp [h_char, h_abs, frobValue, mul_pow, pow_right_comm]
 
-/-- Translates of the vacuum by the group of T. Let w be split, the base change of a unramified at
-w, and f a vacuum at w. Let U be a subspace of 𝔽_w^m of dimension i and γ_U = `New.basicCosetRep U`.
-Then γ_Uᵀ sends f to `schrodingerOp {w} Ψ f` (`New.Space.schrodingerOp`), where Ψ is the function
-x ↦ z^i·𝟙(xᵀγ_U⁻¹) on finite adelic matrices, read at w. Here 𝟙 is the indicator of the integral
-matrices over E_w and z = `a.frobValue n w`. -/
-lemma pairWeil_transposeGL_basicCosetRep (ha : CharUnramifiedAt a.baseChange.finPart w)
-    (hw : w.IsSplit) (hf : (S.hom T).projOn {w} f = f)
-    (U : Submodule (ResField w) (m → ResField w)) :
-    pairWeil S T a b ((1, 1), 1, ofSplitPlace hw (transposeGL (basicCosetRep U))) f =
+/-- Translates of the vacuum at a split place `w`. Let `f` be fixed by `projOn {w}`, and let
+`g ∈ GL_n(E_w)` and `h ∈ GL_m(E_w)`. Under `pairWeil S T a b`, the pair `(g, h)` placed at `w`
+sends `f` to `schrodingerOp {w} Ψ f`, where for `x_w = (vecToMatrix x).map (evalAt w)` the value
+`Ψ(x)` is `(χ_a(det h) / χ_b(det g)) * (|det g| ^ (card m / 2) / |det h| ^ (card n / 2))` times
+the indicator that every entry of `h⁻¹ x_w g` has valuation at most `1` (lies in `𝒪_w`), for
+`χ_a = a.spaceChar (card n)` and `χ_b = b.spaceChar (card m)`. -/
+lemma pairWeil_ofSplitPlace (a b : AutChar E) (hw : w.IsSplit) (hf : (S.hom T).projOn {w} f = f)
+    (g : GL n (LocField w)) (h : GL m (LocField w)) :
+    pairWeil S T a b ((1, ofSplitPlace hw g), 1, ofSplitPlace hw h) f =
       (S.hom T).schrodingerOp {w}
-        (fun x : m × n → 𝔸f E ↦ a.frobValue n w ^ Module.finrank (ResField w) U *
-          if ∀ (i : n) (j : m),
-            v ((((vecToMatrix x).map (evalAt w))ᵀ * (basicCosetRep U)⁻¹.val) i j) ≤ 1
-          then 1 else 0) f := by
+        (fun x : m × n → 𝔸f E ↦
+          ((a.spaceChar (card n)).val (locFullIdele w h.det) /
+              (b.spaceChar (card m)).val (locFullIdele w g.det) *
+              (√(ideleAbs (locFullIdele w g.det)) : ℂ) ^ card m /
+              (√(ideleAbs (locFullIdele w h.det)) : ℂ) ^ card n) *
+            if ∀ (i : m) (j : n),
+              v ((h⁻¹.val * (vecToMatrix x).map (evalAt w) * g.val) i j) ≤ 1
+            then 1 else 0) f := by
   classical
-  set γ : GL m (LocField w) := basicCosetRep U
-  obtain ⟨-, -, hγ_det : v γ.det.val = WithZero.exp (-(Module.finrank (ResField w) U : ℤ))⟩ :=
-    basicCosetRep_mem_basicDoubleCoset U
-  have h_det : v (transposeGL γ).det.val = WithZero.exp (-(Module.finrank (ResField w) U : ℤ)) := by
-    simpa using hγ_det
-  have h_local : (ofSplitPlace hw (transposeGL γ))⁻¹.val.val.map (evalAt w) = γ⁻¹.valᵀ := by
+  have h_loc_g : (ofSplitPlace hw g).val.val.map (evalAt w) = g.val :=
+    congrArg Units.val (atPlace_ofSplitPlace hw g)
+  have h_loc_h : (ofSplitPlace hw h)⁻¹.val.val.map (evalAt w) = h⁻¹.val := by
     rw [← map_inv]
-    exact congrArg Units.val (atPlace_ofSplitPlace hw (transposeGL γ)⁻¹)
+    exact congrArg Units.val (atPlace_ofSplitPlace hw h⁻¹)
   have h_integral (x : m × n → 𝔸f E) :
-      matrixToVec ((ofSplitPlace hw (transposeGL γ))⁻¹.val.val * vecToMatrix x) ∈
+      matrixToVec ((ofSplitPlace hw h)⁻¹.val.val * vecToMatrix x * (ofSplitPlace hw g).val.val) ∈
           integralBox (m × n) {w} ↔
-        ∀ (i : n) (j : m), v ((((vecToMatrix x).map (evalAt w))ᵀ * γ⁻¹.val) i j) ≤ 1 := by
-    rw [matrixToVec_mem_integralBox_singleton, Matrix.map_mul, h_local, forall_comm,
-      ← transpose_transpose (_ * _), transpose_mul, transpose_transpose]
-    rfl
+        ∀ (i : m) (j : n), v ((h⁻¹.val * (vecToMatrix x).map (evalAt w) * g.val) i j) ≤ 1 := by
+    rw [matrixToVec_mem_integralBox_singleton, Matrix.map_mul, Matrix.map_mul, h_loc_h, h_loc_g]
   -- Write `f` as `schrodingerOp {w} Ψ f` with `Ψ` the indicator of the matrices integral at `w`;
-  -- `pairWeil_schrodingerOp_of_mem_supportedOn` moves `Ψ`, with a scalar that depends on `det γ`.
+  -- `pairWeil_schrodingerOp_of_mem_supportedOn` moves `Ψ` with local determinant scalars.
   nth_rw 1 [← hf]
   simp (disch := simp [hw]) only [← schrodingerOp_boxIndicator, ← coe_singleton, detOn_eq_prod,
     pairWeil_schrodingerOp_of_mem_supportedOn, smul_schrodingerOp]
   congr 2 with x
-  simp only [← h_integral, ← spaceChar_div_sqrt_ideleAbs_pow ha h_det]
+  simp only [← h_integral]
   simp [boxIndicator]
-
-/-- Translates of the vacuum by the group of S. Let w be split, the base change of b unramified at
-w, and f a vacuum at w. Let U be a subspace of 𝔽_w^n of dimension i and γ_U = `New.basicCosetRep U`.
-Then γ_U⁻¹ sends f to `schrodingerOp {w} Ψ f` (`New.Space.schrodingerOp`), where Ψ is the function
-x ↦ z^i·𝟙(xγ_U⁻¹) on finite adelic matrices, read at w. Here 𝟙 is the indicator of the integral
-matrices over E_w and z = `b.frobValue m w`. -/
-lemma pairWeil_basicCosetRep_inv (hb : CharUnramifiedAt b.baseChange.finPart w)
-    (hw : w.IsSplit) (hf : (S.hom T).projOn {w} f = f)
-    (U : Submodule (ResField w) (n → ResField w)) :
-    pairWeil S T a b ((1, ofSplitPlace hw (basicCosetRep U)⁻¹), 1, 1) f =
-      (S.hom T).schrodingerOp {w}
-        (fun x : m × n → 𝔸f E ↦ b.frobValue m w ^ Module.finrank (ResField w) U *
-          if ∀ (i : m) (j : n),
-            v (((vecToMatrix x).map (evalAt w) * (basicCosetRep U)⁻¹.val) i j) ≤ 1
-          then 1 else 0) f := by
-  classical
-  set γ : GL n (LocField w) := basicCosetRep U
-  obtain ⟨-, -, hγ_det : v γ.det.val = WithZero.exp (-(Module.finrank (ResField w) U : ℤ))⟩ :=
-    basicCosetRep_mem_basicDoubleCoset U
-  have h_local : (ofSplitPlace hw γ⁻¹).val.val.map (evalAt w) = γ⁻¹.val :=
-    congrArg Units.val (atPlace_ofSplitPlace hw γ⁻¹)
-  have h_integral (x : m × n → 𝔸f E) :
-      matrixToVec (vecToMatrix x * (ofSplitPlace hw γ⁻¹).val.val) ∈ integralBox (m × n) {w} ↔
-        ∀ (i : m) (j : n), v (((vecToMatrix x).map (evalAt w) * γ⁻¹.val) i j) ≤ 1 := by
-    rw [matrixToVec_mem_integralBox_singleton, Matrix.map_mul, h_local]
-  -- Write `f` as `schrodingerOp {w} Ψ f` with `Ψ` the indicator of the matrices integral at `w`;
-  -- `pairWeil_schrodingerOp_of_mem_supportedOn` moves `Ψ`, with a scalar that depends on `det γ`.
-  nth_rw 1 [← hf]
-  simp (disch := simp [hw]) only [← schrodingerOp_boxIndicator, ← coe_singleton, detOn_eq_prod,
-    pairWeil_schrodingerOp_of_mem_supportedOn, smul_schrodingerOp]
-  congr 2 with x
-  simp only [← h_integral, ← spaceChar_div_sqrt_ideleAbs_pow hb hγ_det]
-  simp [boxIndicator, div_eq_mul_inv]
 
 /-- Let w be split of norm q, let the base changes of a and b be unramified at w, and let f be a
 vacuum at w (fixed by `projOn {w}`). Let γ_U = `basicCosetRep U`, the representative, with kernel U
@@ -327,24 +293,40 @@ lemma sum_heckePolyCoeff_smul_pairWeil
     ∑ U : Submodule (ResField w) (n → ResField w),
         heckePolyCoeff X U • pairWeil S T a b ((1, ofSplitPlace hw (basicCosetRep U)⁻¹), 1, 1) f =
       segmentDatum (card n) (b.frobValue m w) := by
-  -- Read an adelic matrix `x` at `w`. The translates of `f` are given by
-  -- `pairWeil_transposeGL_basicCosetRep` and `pairWeil_basicCosetRep_inv`; summing them over the
-  -- subspaces `U` is the `q`-binomial theorem, for the matrix `loc x` or its transpose.
+  -- Read an adelic matrix `x` at `w`. Both translates of `f` specialize `pairWeil_ofSplitPlace`;
+  -- summing them over `U` is the `q`-binomial theorem for `loc x` or its transpose.
   let loc (x : m × n → 𝔸f E) : Matrix m n (LocField w) := (vecToMatrix x).map (evalAt w)
+  have h_frob_T (U : Submodule (ResField w) (m → ResField w)) :
+      (a.spaceChar (card n)).val (locFullIdele w (transposeGL (basicCosetRep U)).det) /
+          (√(ideleAbs (locFullIdele w (transposeGL (basicCosetRep U)).det)) : ℂ) ^ card n =
+        a.frobValue n w ^ Module.finrank (ResField w) U :=
+    spaceChar_div_sqrt_ideleAbs_pow ha
+      (by simpa using (basicCosetRep_mem_basicDoubleCoset U).2.2)
+  have h_frob_S (U : Submodule (ResField w) (n → ResField w)) :
+      (b.spaceChar (card m)).val (locFullIdele w (basicCosetRep U).det) /
+          (√(ideleAbs (locFullIdele w (basicCosetRep U).det)) : ℂ) ^ card m =
+        b.frobValue m w ^ Module.finrank (ResField w) U :=
+    spaceChar_div_sqrt_ideleAbs_pow hb (basicCosetRep_mem_basicDoubleCoset U).2.2
+  have h_tr (U : Submodule (ResField w) (m → ResField w))
+      (y : Matrix m n (LocField w)) (i : m) (j : n) :
+      ((transposeGL (basicCosetRep U))⁻¹.val * y) i j = (yᵀ * (basicCosetRep U)⁻¹.val) j i := by
+    change (((basicCosetRep U)⁻¹.val)ᵀ * y) i j = _
+    simp [Matrix.mul_apply, mul_comm]
   have h_dat (d : ℕ) (c : ℂ) :
       residueDatum (fun () ↦ w) (fun x ↦ qPochhammer w.q (d - (x ()).rank) (X * c)) =
         fun x ↦ if ∀ (i : m) (j : n), v (loc x i j) ≤ 1 then
           qPochhammer w.q (d - ((loc x).map residueOrZero).rank) (X * c) else 0 := by
     ext x
     simp [residueDatum, loc, vecToMatrix, ← evalAt_apply, mem_LocInt]
-  simp only [pairWeil_transposeGL_basicCosetRep ha hw hf, pairWeil_basicCosetRep_inv hb hw hf,
-    h_dat, smul_schrodingerOp, ← _root_.sum_apply, ← map_sum]
+  simp only [← map_one (ofSplitPlace (n := n) hw), ← map_one (ofSplitPlace (n := m) hw),
+    pairWeil_ofSplitPlace a b hw hf, h_dat, smul_schrodingerOp, ← _root_.sum_apply, ← map_sum]
   constructor
   · congr with x
-    simpa [loc, transpose_map, forall_comm (α := n)] using
+    simpa [loc, h_tr, transpose_map, forall_comm (α := n), ← h_frob_T, div_eq_mul_inv,
+      -coe_units_inv] using
       sum_heckePolyCoeff_mul_ite_integral_eq X (a.frobValue n w) (loc x)ᵀ
   · congr with x
-    simpa [loc] using
+    simpa [loc, ← h_frob_S, div_eq_mul_inv] using
       sum_heckePolyCoeff_mul_ite_integral_eq X (b.frobValue m w) (loc x)
 
 /-- The local identity behind the transfer, in the group of T. Let w be split of norm q, let the
