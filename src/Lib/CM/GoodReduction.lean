@@ -506,15 +506,15 @@ end PeriodPair
 namespace New
 
 open PeriodPair QuadField Submodule
-variable {p : ℕ} [Fact p.Prime] {x y : ℂ_[p]}
+variable {K : Type*} [NormedField K] [IsUltrametricDist K] {x y : K}
 
-/-- The difference of two integral elements of `ℂ_[p]` is integral. -/
+/-- The difference of two integral elements of an ultrametric normed field is integral. -/
 lemma norm_sub_le_one (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) : ‖x - y‖ ≤ 1 := by
   simpa [sub_eq_add_neg] using
     (IsUltrametricDist.norm_add_le_max x (-y)).trans (max_le hx (by rwa [norm_neg]))
 
-/-- If two elements `x, y` of `ℂ_[p]` have an integral sum and a product of norm `> 1`, then the
-norm of that product is `‖x‖²` (the two norms are equal). -/
+/-- If two elements `x, y` of an ultrametric normed field have an integral sum and a product of
+norm `> 1`, then the norm of that product is `‖x‖²` (the two norms are equal). -/
 lemma norm_sq_eq_of_norm_add_le_one (h_add : ‖x + y‖ ≤ 1) (h_mul : 1 < ‖x * y‖) :
     ‖x‖ ^ 2 = ‖x * y‖ := by
   have h_eq : ‖x‖ = ‖y‖ := by
@@ -524,11 +524,11 @@ lemma norm_sq_eq_of_norm_add_le_one (h_add : ‖x + y‖ ≤ 1) (h_mul : 1 < ‖
     exact h_mul.not_ge ((mul_le_of_le_one_left (norm_nonneg y) h_add.1).trans h_add.2)
   simp [h_eq, sq]
 
-/-- Let `s, s', s₀` be functions with values in `ℂ_[p]` on a finite group such that, for all `c`,
-`s(c) + s'(c) + s₀(c)` and `s(c) s'(g c)` are integral and `s(g c) s₀(g c) = -s(c)`. Then `s` is
-integral: a norm `‖s(c)‖ > 1` would be replaced by its square root at each step `c ↦ g c`, and the
-steps return to `c`. -/
-lemma norm_le_one_of_cycle {G : Type*} [Group G] [Finite G] (g : G) {s s' s₀ : G → ℂ_[p]}
+/-- Let `s, s', s₀` be functions with values in an ultrametric normed field on a finite group such
+that, for all `c`, `s(c) + s'(c) + s₀(c)` and `s(c) s'(g c)` are integral and `s(g c) s₀(g c) =
+-s(c)`. Then `s` is integral: a norm `‖s(c)‖ > 1` would be replaced by its square root at each
+step `c ↦ g c`, and the steps return to `c`. -/
+lemma norm_le_one_of_cycle {G : Type*} [Group G] [Finite G] (g : G) {s s' s₀ : G → K}
     (h_sum : ∀ c : G, ‖s c + s' c + s₀ c‖ ≤ 1) (h_dual : ∀ c : G, ‖s c * s' (g * c)‖ ≤ 1)
     (h_step : ∀ c : G, s (g * c) * s₀ (g * c) = -s c) (c : G) : ‖s c‖ ≤ 1 := by
   have halve (c : G) (hc : 1 < ‖s c‖) : ‖s (g * c)‖ ^ 2 = ‖s c‖ := by
@@ -793,10 +793,10 @@ lemma norm_disc_eq_one {p : ℕ} [Fact p.Prime] {d : ℕ} (C : CMLattice d) [Pri
 
 end CMLattice
 
-/-- For a prime `p`, an element of `ℂ_[p]` of the form `x u + y v` with `x, y` integral and
+/-- In an ultrametric normed field, an element of the form `x u + y v` with `x, y` integral and
 `‖u‖, ‖v‖ < 1` has norm `< 1`. -/
-lemma norm_lt_one_of_eq_mul_add_mul {p : ℕ} [Fact p.Prime] {x y : ℂ_[p]} (hx : ‖x‖ ≤ 1)
-    (hy : ‖y‖ ≤ 1) {u v z : ℂ_[p]} (hz : z = x * u + y * v) (hu : ‖u‖ < 1) (hv : ‖v‖ < 1) :
+lemma norm_lt_one_of_eq_mul_add_mul {x y : K} (hx : ‖x‖ ≤ 1)
+    (hy : ‖y‖ ≤ 1) {u v z : K} (hz : z = x * u + y * v) (hu : ‖u‖ < 1) (hv : ‖v‖ < 1) :
     ‖z‖ < 1 := by
   subst hz
   refine (IsUltrametricDist.norm_add_le_max _ _).trans_lt (max_lt ?_ ?_)
