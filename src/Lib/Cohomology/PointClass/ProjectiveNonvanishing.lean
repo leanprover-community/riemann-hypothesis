@@ -82,6 +82,13 @@ def Gm.ofCoord :
     freeAb (unimodular (k := k) (d := 1)).toFunctor ⟶ forget₂ (CommAlg k) CommRingCat ⋙ Gm :=
   freeAb.desc (fun _ v ↦ ⟨(isUnit_of_unimodular_one v).unit⟩) fun _ _ _ _ ↦ ext.2 rfl
 
+private lemma Gm.ofCoord_apply_down_val {A : CommAlg k}
+    (v : (unimodular (k := k) (d := 1)).toFunctor.obj A) :
+    ((Gm.ofCoord.app A).hom (.of v)).down.val = v.val.down 0 := by
+  have h : (Gm.ofCoord.app A).hom (.of v) = ⟨(isUnit_of_unimodular_one v).unit⟩ :=
+    freeAb.desc_of ..
+  exact (congrArg (fun z : Gm.obj _ ↦ z.down.val) h).trans (IsUnit.unit_spec _)
+
 /-- On `p`-adic tests with ring `R`, the morphism `t ↦ 1 - μ t` from the additive group of
 `T = R[1/p]` (`New.Variety.genericCoeff`) to the units of `B = W(R♭)[1/p] / (ker θ)²`. Here `μ t` is
 `New.Variety.thickeningOver.mulMu`, the product with `μ = [ε] - 1`. As `(μ s) * (μ t) = 0`, the
@@ -211,26 +218,52 @@ private lemma pull_mk₀_comp_contractionPow_one_eq_pull_extClass_oneSubMu
     let q := HodgeTatePair.toSqZero.app X
     let z := ((unimodular (d := 1)).toFunctor.map q) y
     obtain ⟨w, hw_smul, hω_app⟩ := hω (HodgeTatePair.toHodgeTest.obj X) z
-    simp [D, α, ← Functor.map_comp]
-    erw [AddMonoidHom.add_apply]
-    iterate 4 erw [AddMonoidHom.comp_apply]
     have h_map : (N.map q).hom (.of y) =
         FreeAddCommGroup.of (((unimodular (d := 1)).toFunctor.map q) y) := by
       change FreeAddCommGroup.map _ (.of y) = _
       exact FreeAddCommGroup.map_of_apply y
-    erw [h_map]
-    erw [AddMonoidHom.comp_apply, AddMonoidHom.comp_apply]
-    erw [hω_app, ← sub_eq_iff_eq_add', freeAb.desc_of, Gm.ext]
-    change _ *
-      (1 - mulMu (HodgeTatePair.toTest.obj Y)
-        (-ExteriorAlgebra.algebraMapInv (contraction f.2 (.ι _ w)))) = _ + _
+    have h_ω : (ω.app (HodgeTatePair.toHodgeTest.obj X)).hom ((N.map q).hom (.of y)) =
+        ⟨ExteriorAlgebra.ι _ w⟩ :=
+      (congrArg (ω.app (HodgeTatePair.toHodgeTest.obj X)).hom h_map).trans hω_app
+    let liftMap (Z : HodgeTatePair) :
+        N.obj (HodgeTatePair.pairAlg.obj Z) ⟶
+          (thickeningOver ⋙ forget₂ (CommAlg k) CommRingCat ⋙ Gm).obj Z.test :=
+      Gm.ofCoord.app (HodgeTatePair.pairAlg.obj Z) ≫
+        Gm.map (CommRingCat.ofHom (.pullbackFst ..))
+    change ((thickeningOver ⋙ forget₂ (CommAlg k) CommRingCat ⋙ Gm).map f.fst).hom
+        ((liftMap X).hom (.of y)) =
+      (oneSubMu.app Y.test).hom ⟨ExteriorAlgebra.algebraMapInv
+        (R := (HodgeTatePair.toHodgeTest.obj Y).baseAlg)
+        (((HodgeTatePair.contractionCocycle.component f).hom
+          ((ω.app (HodgeTatePair.toHodgeTest.obj X)).hom ((N.map q).hom (.of y)))).down)⟩ +
+      (liftMap Y).hom ((N.map (HodgeTatePair.pairAlg.map f)).hom (.of y))
+    have h_liftX : ((liftMap X).hom (.of y)).down.val = (v 0).val.1 :=
+      congrArg (fun x ↦ x.val.1) (Gm.ofCoord_apply_down_val y)
+    have h_liftY : ((liftMap Y).hom ((N.map (HodgeTatePair.pairAlg.map f)).hom (.of y))).down.val =
+        thickeningOver.map f.fst (v 0).val.1 + mulMu Y.test (f.snd (v 0).val.2.snd).fst := by
+      let y' := ((unimodular (d := 1)).toFunctor.map (HodgeTatePair.pairAlg.map f)) y
+      have h_mapf : (N.map (HodgeTatePair.pairAlg.map f)).hom (.of y) =
+          FreeAddCommGroup.of y' := by
+        change FreeAddCommGroup.map _ (.of y) = _
+        exact FreeAddCommGroup.map_of_apply y
+      have h_coord : ((Gm.ofCoord.app (HodgeTatePair.pairAlg.obj Y)).hom
+          ((N.map (HodgeTatePair.pairAlg.map f)).hom (.of y))).down.val = y'.val.down 0 :=
+        (congrArg (fun u : Gm.obj _ ↦ u.down.val)
+          (congrArg (Gm.ofCoord.app (HodgeTatePair.pairAlg.obj Y)).hom h_mapf)).trans
+            (Gm.ofCoord_apply_down_val y')
+      exact congrArg (fun x ↦ x.val.1) h_coord
+    rw [h_ω, ← sub_eq_iff_eq_add', Gm.ext]
+    change thickeningOver.map f.fst ((liftMap X).hom (.of y)).down.val *
+      (1 - mulMu Y.test
+        (-ExteriorAlgebra.algebraMapInv (contraction f.2 (.ι _ w)))) =
+      ((liftMap Y).hom ((N.map (HodgeTatePair.pairAlg.map f)).hom (.of y))).down.val
+    rw [h_liftX, h_liftY]
     -- `mulMu` is linear over `B` (`mulMu_proj_mul`); `v 0 = (b, a + m)` with `proj b = a` (the
     -- fibre product condition) and `m = a • w` (`hw_smul`).
     let a : X.GenericRing := (v 0).val.2.fst
     let m : Fin X.rank → X.GenericRing := (v 0).val.2.snd
     let w' : Fin X.rank → X.GenericRing := w
     change a • w' = m at hw_smul
-    erw [freeAb.desc_of]
     have h_proj : (proj.app Y.test) (thickeningOver.map f.fst (v 0).val.fst) =
         genericOver.map f.fst a :=
       (proj.naturality_apply f.fst (v 0).val.fst).trans
@@ -983,10 +1016,12 @@ lemma projSpace.exists_hodgeTateMap_pointClass_line :
       have hd : ((oneSub (discTwist epsPow)).app c).hom (.of u) = .of u - .of u' :=
         freeAb.desc_of ..
       change (f.app c).hom (((oneSub (discTwist epsPow)).app c).hom (.of u)) = 0
-      erw [hd, _root_.map_sub]
+      refine (congrArg (f.app c).hom hd).trans ((map_sub (f.app c).hom ..).trans ?_)
       obtain ⟨⟨_ | _⟩, t⟩ := u
-      · erw [h_f_false, sub_zero]
-      · erw [h_f_true, h_f_true, ha_twist, sub_self]
+      · exact (congrArg₂ (· - ·) (h_f_false c t) (h_f_false c _)).trans (sub_self _)
+      · exact (congrArg₂ (· - ·) (h_f_true c t)
+          ((h_f_true c _).trans (congrArg FreeAddCommGroup.of (ha_twist c ⟨true⟩ t)))).trans
+            (sub_self _)
     · -- With `μ = mulMu c 1`, which has square zero:
       -- `(1 - μ) * [ε * u] = (1 - μ) * (1 + μ) * [u] = [u]`.
       intro c u
@@ -997,18 +1032,37 @@ lemma projSpace.exists_hodgeTateMap_pointClass_line :
       have ht : T.hom (.of u) = .of u - .of u' := freeAb.desc_of ..
       change G.hom (((-W).app c).hom (T.hom (.of u))) =
         (oneSubMu.app c).hom ((κ.app c).hom ((gluing.app c).hom (.of u)))
-      erw [NatTrans.app_neg, AddCommGrpCat.hom_neg, AddMonoidHom.neg_apply, ht, _root_.map_sub, _root_.map_neg, _root_.map_sub, neg_sub]
+      have h_lhs : G.hom (((-W).app c).hom (T.hom (.of u))) =
+          G.hom ((W.app c).hom (.of u')) - G.hom ((W.app c).hom (.of u)) := by
+        have h_sub : (W.app c).hom (T.hom (.of u)) =
+            (W.app c).hom (.of u) - (W.app c).hom (.of u') :=
+          (congrArg (W.app c).hom ht).trans (map_sub (W.app c).hom ..)
+        change G.hom (-(W.app c).hom (T.hom (.of u))) = _
+        rw [h_sub, _root_.map_neg, _root_.map_sub, neg_sub]
+      refine h_lhs.trans ?_
       obtain ⟨⟨_ | _⟩, t⟩ := u
-      · erw [h_W_false, gluing_apply_point c t, h_κ]
-        rw [sub_self]
-        change 0 = (oneSubMu.app c).hom 0
-        exact (map_zero (oneSubMu.app c).hom).symm
-      · let t' : (tilt ⋙ reprBy (monoidAlg ℚ)).obj c :=
+      · let uf : (tiltPointsSum pointOrTorus).obj c := ⟨⟨false⟩, t⟩
+        have h_l : G.hom ((W.app c).hom (.of u')) - G.hom ((W.app c).hom (.of uf)) = 0 := by
+          refine (congrArg₂ (· - ·) (congrArg G.hom (h_W_false c _))
+            (congrArg G.hom (h_W_false c t))).trans (sub_self _)
+        have h_r : (oneSubMu.app c).hom ((κ.app c).hom ((gluing.app c).hom (.of uf))) = 0 :=
+          (congrArg (oneSubMu.app c).hom
+            ((congrArg (κ.app c).hom (gluing_apply_point c t)).trans (h_κ c false _))).trans
+              (map_zero (oneSubMu.app c).hom)
+        exact h_l.trans h_r.symm
+      · let ut : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, t⟩
+        let t' : (tilt ⋙ reprBy (monoidAlg ℚ)).obj c :=
           ⟨charTwist epsPow (AddMonoidHom.id ℚ) ≫ t.down⟩
         have h_W_twist : (W.app c).hom (.of u') = .of (torusPoint c t') :=
           h_W_true c t'
-        erw [gluing_apply_torus c t, _root_.map_sub (κ.app c).hom, h_κ c false, h_κ c true,
-          h_W_true c t, h_W_twist]
+        have h_rhs : (κ.app c).hom ((gluing.app c).hom (.of ut)) =
+            (0 : genericCoeff.obj c) - ⟨(1 : genericAlg c)⟩ := by
+          refine (congrArg (κ.app c).hom (gluing_apply_torus c t)).trans
+            ((map_sub (κ.app c).hom ..).trans ?_)
+          exact congrArg₂ (· - ·) (h_κ c false _) (h_κ c true _)
+        refine (congrArg₂ (· - ·) (congrArg G.hom h_W_twist)
+          (congrArg G.hom (h_W_true c t))).trans ?_
+        refine Eq.trans ?_ (congrArg (oneSubMu.app c).hom h_rhs).symm
         apply neg_injective
         rw [neg_sub]
         let one_c : genericCoeff.obj c := ⟨(1 : genericAlg c)⟩
@@ -1016,8 +1070,10 @@ lemma projSpace.exists_hodgeTateMap_pointClass_line :
           -((oneSubMu.app c).hom (0 - one_c))
         rw [zero_sub, _root_.map_neg, neg_neg]
         refine sub_eq_of_eq_add (Gm.ext.2 (.symm ?_))
-        change (1 - mulMu c _) * _ = _
-        erw [desc_of, desc_of, IsUnit.unit_spec, IsUnit.unit_spec]
+        change (1 - mulMu c _) * (G.hom (.of (torusPoint c t'))).down.val =
+          (G.hom (.of (torusPoint c t))).down.val
+        rw [Gm.ofCoord_apply_down_val (torusPoint c t'),
+          Gm.ofCoord_apply_down_val (torusPoint c t)]
         have h_coord (u : (tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
             (torusPoint c u).val.down 0 =
               teichmullerLift c ((discToTorus coeHom ≫ u.down).hom (.single 1 1)) :=
@@ -1195,8 +1251,14 @@ lemma New.Variety.projSpace.exists_map_pointClass_eq_nsmul_map_cup {k : Type} [F
   rw [map_pointClass_eq_sum_of_isCoincidenceSet _ _ coin]
   -- The class of a point `(v, w)` is the product of the classes, which do not depend on the points.
   refine sum_eq_card_nsmul fun ⟨v, w⟩ _ ↦ ?_
-  erw [← IsPointSum.cup_pointClass, pointClass_eq_pointClass_affinePoint v,
-    pointClass_eq_pointClass_affinePoint w, pointClass_eq_pointClass_affinePoint z]
+  have hcup : pointClass (d + 1)
+      (X := MonoidalCategory.tensorObj (projSpace k d) (projSpace k 1)) (v, w) =
+      HodgeH.map (freeAb.prod (projSpace k d) (projSpace k 1))
+        (cup exteriorAlg.mulPairing (pointClass d v) (pointClass 1 w) (add_comm 1 d)) :=
+    (IsPointSum.cup_pointClass (X := projSpace k d) (Y := projSpace k 1) (v, w)).symm
+  refine hcup.trans ?_
+  rw [pointClass_eq_pointClass_affinePoint v, pointClass_eq_pointClass_affinePoint w,
+    pointClass_eq_pointClass_affinePoint z]
 
 -- Keeps definitional checks from unfolding the Ext groups.
 seal CategoryTheory.Abelian.Ext in
@@ -1221,16 +1283,32 @@ lemma New.Variety.projSpace.hodgeTateMap_pointClass_ne_zero {p : ℕ} {k : Type}
     -- Only the term `h = d` of the product formula survives; its coefficient is `± n * (d + 1)`.
     trans PairH.map (freeAb.prod (projSpace k d) (projSpace k 1))
       (HodgeTatePair.cross (restrictToPairs η) (restrictToPairs ξ)) = 0
-    · erw [hn, map_nsmul, hodgeTateMap_map, hodgeTateMap_cup, sum_eq_single d _ (by simp)]
-      · simp [n_ne, hξ, hη, ← Nat.cast_smul_eq_nsmul k]
-        let y : PairH (abTensor (freeAb.obj (projSpace k d)) (freeAb.obj (projSpace k 1))) :=
-          HodgeTatePair.cross (restrictToPairs η) (restrictToPairs ξ)
-        change PairH.map (freeAb.prod (projSpace k d) (projSpace k 1)) ((↑d + 1 : k) • y) = 0 ↔
-          PairH.map (freeAb.prod (projSpace k d) (projSpace k 1)) y = 0
-        rw [LinearMap.map_smul]
-        simp [Nat.cast_add_one_ne_zero]
-      · intro h _ h_ne
-        simp [hodgeTateMap_pointClass_eq_zero_of_ne z h_ne]
+    · let c : HodgeH ((abTensor.obj (freeAb.obj (projSpace k d))).obj
+          (freeAb.obj (projSpace k 1))) (d + 1) :=
+        cup exteriorAlg.mulPairing (pointClass d z) (pointClass 1 (affinePoint 0 0)) (add_comm 1 d)
+      have h_ht : hodgeTateMap (d + 1)
+          (HodgeH.map (freeAb.map (lineProductMap k d)) (pointClass (d + 1) (affinePoint 0 0))) =
+          n • PairH.map (freeAb.prod (projSpace k d) (projSpace k 1))
+            ((d + 1 : ℕ) • HodgeTatePair.cross (hodgeTateMap 1 (pointClass 1 (affinePoint 0 0)))
+              (hodgeTateMap d (pointClass d z))) := by
+        refine (congrArg (hodgeTateMap (d + 1)) hn).trans ?_
+        rw [map_nsmul]
+        congr 1
+        refine (hodgeTateMap_map (freeAb.prod (projSpace k d) (projSpace k 1)) c).trans ?_
+        congr 1
+        refine (hodgeTateMap_cup (pointClass d z) (pointClass 1 (affinePoint 0 0))
+          (add_comm 1 d) (d + 1)).trans ?_
+        refine (sum_eq_single d (fun h _ h_ne ↦ ?_) (by simp)).trans ?_
+        · simp [hodgeTateMap_pointClass_eq_zero_of_ne z h_ne]; rfl
+        · simp; rfl
+      rw [h_ht]
+      simp [n_ne, hξ, hη, ← Nat.cast_smul_eq_nsmul k]
+      let y : PairH (abTensor (freeAb.obj (projSpace k d)) (freeAb.obj (projSpace k 1))) :=
+        HodgeTatePair.cross (restrictToPairs η) (restrictToPairs ξ)
+      change PairH.map (freeAb.prod (projSpace k d) (projSpace k 1)) ((↑d + 1 : k) • y) = 0 ↔
+        PairH.map (freeAb.prod (projSpace k d) (projSpace k 1)) y = 0
+      rw [LinearMap.map_smul]
+      simp [Nat.cast_add_one_ne_zero]
     rw [hξ]
     refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
     swap
@@ -1284,8 +1362,12 @@ lemma New.Variety.projSpace.hodgeTateMap_pointClass_ne_zero {p : ℕ} {k : Type}
       have h_pullback := congrArg (PairH.map (freeAb.map σ)) ((key_iff z).2 h)
       -- Since `σ` is a section, the left side is `hodgeTateMap 1` of the class of `[1 : 0]`, the
       -- restriction of `η`.
-      erw [← hodgeTateMap_map, ← HodgeH.map_comp, ← freeAb.map_comp, σ_mul, freeAb.map_id, H.map_id,
-        hη, map_zero,
+      have h_id : HodgeH.map (𝟙 (freeAb.obj (projSpace k 1)))
+          (pointClass 1 (affinePoint 0 0)) = pointClass 1 (affinePoint 0 0) := by
+        change H.map _ (𝟙 _) _ _ = _
+        exact H.map_id ..
+      rw [← hodgeTateMap_map, ← HodgeH.map_comp, ← freeAb.map_comp, σ_mul, freeAb.map_id,
+        h_id, hη, map_zero,
         map_eq_zero_iff _ IsChartCovered.pairRestrictBijective.injective_restrictToPairs]
         at h_pullback
       exact h_pullback
