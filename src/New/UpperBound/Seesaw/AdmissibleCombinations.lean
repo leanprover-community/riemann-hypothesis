@@ -599,70 +599,38 @@ lemma gram_stringFrame_eq_signMatrix {s N : ℕ} (hN : 0 < N) :
           simp only [h_col b hb, hab, har, h1, h2, ha, ↓reduceIte, ite_self, mul_zero,
             add_zero]
 
+/-- The signed reversal acts on each column of the unit frame by its string sign. -/
+private lemma signedReversal_mul_stringFrame_one :
+    (of fun i j : Fin s ↦ if i = j.rev then (if i = j then -(1 : ℂ) else 1) else 0) *
+        stringFrame s 1 = stringFrame s 1 * signMatrix (stringSign s) := by
+  ext i b
+  rw [signMatrix, Matrix.mul_diagonal]
+  simp only [Matrix.mul_apply, of_apply, ← Fin.rev_eq_iff, ite_mul, zero_mul,
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+  have h_mid (h : b = b.rev) : (b : ℕ) < (s + 1) / 2 := by
+    rw [Fin.ext_iff, Fin.val_rev] at h
+    omega
+  by_cases hi : i = b
+  · subst i
+    by_cases hb : b = b.rev
+    · simp [stringSign, h_mid hb, ← hb]
+    · simp [stringFrame, hb, Ne.symm hb, div_eq_mul_inv]
+      rw [mul_right_comm]
+      simp [← Int.cast_mul]
+  · by_cases hj : i = b.rev
+    · subst i
+      simp [stringFrame, hi, Ne.symm hi, div_eq_mul_inv, mul_comm]
+    · have hr : i.rev ≠ b := fun h ↦ hj (Fin.rev_eq_iff.mp h)
+      have hr' : i.rev ≠ b.rev := fun h ↦ hi (Fin.rev_inj.mp h)
+      simp only [stringFrame, of_apply, hi, hj, hr, hr', ↓reduceIte, add_zero, mul_zero,
+        ite_self, zero_mul]
+
 /-- For `N = 1` the frame `stringFrame s N` is unitary. -/
 lemma conjTranspose_stringFrame_one_mul_self : (stringFrame s 1)ᴴ * stringFrame s 1 = 1 := by
-  let σ (b : Fin s) : ℂ := stringSign s b
-  let t : ℂ := (√2⁻¹ : ℝ)
-  have ht : t * t = 2⁻¹ := by
-    simp only [Real.sqrt_inv, Complex.ofReal_inv, ← mul_inv, ← Complex.ofReal_mul,
-      Nat.ofNat_nonneg, Real.mul_self_sqrt, Complex.ofReal_ofNat, t]
-  have hσ_rev (a : Fin s) (ha : a ≠ a.rev) : σ a + σ a.rev = 0 := by
-    simp only [σ, stringSign, rev_lt_half_iff a ha]
-    by_cases h_lt : (a : ℕ) < (s + 1) / 2 <;>
-      simp only [h_lt, ↓reduceIte, Units.val_neg, Units.val_one, Int.reduceNeg, Int.cast_neg,
-        Int.cast_one, not_true_eq_false, not_false_eq_true, neg_add_cancel, add_neg_cancel]
-  have h_col_mid (b : Fin s) (hb : b = b.rev) (i : Fin s) :
-      stringFrame s 1 i b = if i = b then 1 else 0 := by
-    by_cases hi : i = b <;>
-      simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
-        Nat.cast_one, inv_one, Real.sqrt_one, Complex.ofReal_add, Complex.ofReal_inv,
-        hi, of_apply, ↓reduceIte, stringSign_mid b hb, neg_div, one_div, ← hb, neg_add_cancel_left,
-        add_zero, Complex.ofReal_one]
-  have h_col (b : Fin s) (hb : b ≠ b.rev) (i : Fin s) :
-      stringFrame s 1 i b = (if i = b then σ b * t else 0) + if i = b.rev then t else 0 := by
-    by_cases hi : i = b <;>
-      simp only [stringFrame, div_eq_mul_inv, Complex.ofReal_mul, Complex.ofReal_intCast,
-        Complex.ofReal_inv, Real.sqrt_inv, Complex.ofReal_add, hi, of_apply, ↓reduceIte,
-        hb, add_zero, Complex.ofReal_zero, zero_add, σ, t]
-  have h_star (i b : Fin s) : star (stringFrame s 1 i b) = stringFrame s 1 i b := by
-    simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
-      Complex.ofReal_add, Complex.ofReal_inv, of_apply, star_add, apply_ite star, star_div₀,
-      star_intCast, Complex.star_def, Complex.conj_ofReal, star_zero, star_inv₀]
-  have rev_eq_self (x y : Fin s) (hx : x = x.rev) (hy : y = y.rev) : x = y := by
-    rw [Fin.ext_iff, Fin.val_rev] at hx hy; exact Fin.ext (by omega)
-  ext a b
-  simp only [Matrix.mul_apply, conjTranspose_apply, h_star, Matrix.one_apply]
-  by_cases ha : a = a.rev
-  · simp only [h_col_mid a ha, ite_mul, one_mul, zero_mul, Fintype.sum_ite_eq']
-    by_cases hb : b = b.rev
-    · have hab : a = b := rev_eq_self a b ha hb
-      subst hab; simp only [h_col_mid a ha, ↓reduceIte]
-    · have hab : a ≠ b := fun h ↦ hb (by rw [← h]; exact ha)
-      have har : a ≠ b.rev := fun h ↦ hb (by rw [h, Fin.rev_rev] at ha; exact ha.symm)
-      simp only [h_col b hb, hab, har, ↓reduceIte, add_zero]
-  · simp only [h_col a ha, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul,
-      Fintype.sum_ite_eq']
-    by_cases hb : b = b.rev
-    · have hab : a ≠ b := fun h ↦ ha (by rw [h]; exact hb)
-      have har : a.rev ≠ b := fun h ↦ ha (by rw [← h, Fin.rev_rev] at hb; exact hb.symm)
-      simp only [h_col_mid b hb, hab, har, ↓reduceIte, mul_zero, add_zero]
-    · have hσ_sq (x : Fin s) : σ x * σ x = 1 := by
-        simp only [σ, stringSign]; split_ifs <;> norm_num
-      by_cases hab : a = b
-      · subst hab
-        have hba : a.rev ≠ a := fun h ↦ ha h.symm
-        simp only [h_col a hb, hba, hba.symm, ↓reduceIte, add_zero, zero_add]
-        calc σ a * t * (σ a * t) + t * t = (σ a * σ a + 1) * (t * t) := by ring
-          _ = 1 := by rw [hσ_sq a, ht]; norm_num
-      · by_cases har : a = b.rev
-        · subst har
-          have hrb : b.rev ≠ b := fun h ↦ hb h.symm
-          simp only [h_col b hb, hrb, hrb.symm, Fin.rev_rev, ↓reduceIte, zero_add, add_zero]
-          calc σ b.rev * t * t + t * (σ b * t) = (σ b.rev + σ b) * (t * t) := by ring
-            _ = 0 := by rw [add_comm, hσ_rev b hb, zero_mul]
-        · have h1 : a.rev ≠ b := fun h ↦ har (by rw [← h, Fin.rev_rev])
-          have h2 : a.rev ≠ b.rev := fun h ↦ hab (Fin.rev_inj.mp h)
-          simp only [h_col b hb, hab, har, h1, h2, ↓reduceIte, mul_zero, add_zero]
+  have h := gram_stringFrame_eq_signMatrix (s := s) (N := 1) Nat.zero_lt_one
+  rw [Matrix.mul_assoc, Nat.cast_one, signedReversal_mul_stringFrame_one, ← Matrix.mul_assoc] at h
+  simpa only [Matrix.mul_assoc, signMatrix_mul_self, Matrix.mul_one] using
+    congrArg (· * signMatrix (stringSign s)) h
 
 omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`, and let `N` be a positive integer.
