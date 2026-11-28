@@ -449,34 +449,33 @@ lemma contractOtherCopies_one_mem_restrictTotalDegree {r ℓ : ℕ}
     {l : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O)} {j : ZMod N} (h : Exponents N k n → O)
     (β : Exponents N k n) :
     T.contractOtherCopies r ℓ l j 1 h β ∈
-      restrictTotalDegree (Fin k × Fin k) O (N * n * k * (ℓ + 2) * T.P ^ ℓ) := by
+      restrictTotalDegree (Fin k × Fin k) O (N * n * k * (ℓ + 2) * T.primePow ^ ℓ) := by
   rw [contractOtherCopies, conjFrobGenericMatrix_one]
   exact Submodule.sum_mem _ fun γ _ ↦ Submodule.smul_mem _ _ <|
     tensorDualExcept_mem_restrictTotalDegree l j fun _ hν ↦
       T.degree_le_of_coeff_substitutionOperator hν j
 
-/-- Weight and defect in one copy. Let `T` be a Frobenius cycle (`P = T.P`, `w = T.sqrtPrime`,
-`w ^ 2 = p`) from a local ring `W` to a domain
-`O` of characteristic `0` in which `p` is not a unit. Let `r = a + 1`, `N n k (ℓ + 2) ≤ P ^ ℓ` and
-`ℓ ≤ N`. Let each linear form `l i` be invariant under conjugation, through `T.embedding i`, by the
-Levi subgroup of the blocks of sizes `r` and `k - r`. Let `β` be a monomial of degree `n` in each
-letter. The polynomial `T.contractOtherCopies r ℓ l j g h β` in one generic matrix is the entry `β`
-of the vector obtained from `T.letterRep n g *ᵥ h` by substituting the `N` generic matrices
-conjugated by `g` and applying the `l i` in all of them but the `j`-th. Let its coefficient of `α`
-not be divisible by `w ^ c`. Then the row weight of `α` (its degree in the row `r` minus its degree
-in the row `a`), divided by `P ^ ℓ`, is within `defectThreshold k c = 3 k c` of the defect of `β` at
-the letter `j + ℓ`. The defect is a weighted sum over all letters of the degrees of `β` in the
-variables `a` and `r`, with the real weights `T.defectWeight (j + ℓ) a r`; `exponentOf β` is `β` as
-one exponent vector. -/
+/-- Weight and defect in one copy. Let `T` be a Frobenius cycle (`P = T.primePow`,
+`w = T.sqrtPrime`, `w ^ 2 = p`) from a local ring `W` to a domain `O` of characteristic `0` in which
+`p` is not a unit. Let `r = a + 1`, `N n k (ℓ + 2) ≤ P ^ ℓ` and `ℓ ≤ N`. Let each linear form `l i`
+be invariant under conjugation, through `T.embedding i`, by the Levi subgroup of the blocks of sizes
+`r` and `k - r`. Let `β` be a monomial of degree `n` in each letter. The polynomial
+`T.contractOtherCopies r ℓ l j g h β` in one generic matrix is the entry `β` of the vector obtained
+from `T.letterRep n g *ᵥ h` by substituting the `N` generic matrices conjugated by `g` and applying
+the `l i` in all of them but the `j`-th. Let its coefficient of `α` not be divisible by `w ^ c`.
+Then the row weight of `α` (its degree in the row `r` minus its degree in the row `a`), divided by
+`P ^ ℓ`, is within `defectThreshold k c = 3 k c` of the defect of `β` at the letter `j + ℓ`. The
+defect is a weighted sum over all letters of the degrees of `β` in the variables `a` and `r`, with
+the real weights `T.defectWeight (j + ℓ) a r`; `exponentOf β` is `β` as one exponent vector. -/
 lemma abs_weight_div_sub_defect_le [IsDomain O] [CharZero O] {a r : Fin k} {ℓ c : ℕ}
-    (hp : ¬IsUnit (T.p : O)) (ha : a + 1 = r.val) (h_size : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ)
+    (hp : ¬IsUnit (T.p : O)) (ha : a + 1 = r.val) (h_size : N * n * k * (ℓ + 2) ≤ T.primePow ^ ℓ)
     (hℓ : ℓ ≤ N) {l : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O)}
     (hl : ∀ i : ZMod N, ∀ u ∈ levi W (twoBlock k r), ∀ ψ : MvPolynomial (Fin k × Fin k) O,
       l i (conjSubst (T.embedding i) u ψ) = l i ψ)
     {j : ZMod N} {g : GL (Fin k) W} {h : Exponents N k n → O} {β : Exponents N k n}
     {α : Fin k × Fin k →₀ ℕ}
     (h_coeff : ¬T.sqrtPrime ^ c ∣ (T.contractOtherCopies r ℓ l j g h β).coeff α) :
-    |(α.weight (fun v : Fin k × Fin k ↦ rootVector a r v.1) : ℤ) / (T.P : ℝ) ^ ℓ -
+    |(α.weight (fun v : Fin k × Fin k ↦ rootVector a r v.1) : ℤ) / (T.primePow : ℝ) ^ ℓ -
       (exponentOf β).weight (T.defectWeight (j + ℓ) a r)| ≤ defectThreshold k c := by
   -- Some monomial `ν` in all copies, with the part `α` in the copy `j`, has a coefficient that is
   -- not divisible by `w ^ c`, and for `i ≠ j` no `l i` kills its part in the copy `i`.
@@ -499,7 +498,7 @@ lemma abs_weight_div_sub_defect_le [IsDomain O] [CharZero O] {a r : Fin k} {ℓ 
     exact h_ne_zero i (ne_of_mem_erase hi) (apply_monomial_eq_zero_of_weight_ne (twoBlock k r)
       (T.embedding i) T.prime.pos hp (rootVector a r) (hl i) h_ne)
   have h_weight : T.copyWeight ℓ a r j ν =
-      ((ν.curry j).weight (fun v : Fin k × Fin k ↦ rootVector a r v.1) : ℤ) / T.P ^ ℓ := by
+      ((ν.curry j).weight (fun v : Fin k × Fin k ↦ rootVector a r v.1) : ℤ) / T.primePow ^ ℓ := by
     rw [copyWeight,
       Finset.sum_eq_zero fun i hi ↦ by rw [h_balanced i hi, sub_self, mul_zero], add_zero]
   rw [← h_weight, abs_sub_comm]
@@ -518,7 +517,7 @@ put `c* = 3 k c`. The row weight of `α` is its degree in the row `r` minus its 
 `2 c* P ^ ℓ`; if the row weight is above `2 c* P ^ ℓ`, then the defect is above `c*`. -/
 lemma lt_weight_and_lt_defect_of_not_dvd_coeff_contractOtherCopies [IsDomain O] [CharZero O]
     {a r : Fin k} {ℓ c : ℕ} (hp : ¬IsUnit (T.p : O))
-    (ha : a + 1 = r.val) (h_size : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ) (hℓ : ℓ ≤ N)
+    (ha : a + 1 = r.val) (h_size : N * n * k * (ℓ + 2) ≤ T.primePow ^ ℓ) (hℓ : ℓ ≤ N)
     {l : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O)}
     (hl : ∀ i : ZMod N, ∀ u ∈ levi W (twoBlock k r), ∀ ψ : MvPolynomial (Fin k × Fin k) O,
       l i (conjSubst (T.embedding i) u ψ) = l i ψ)
@@ -526,15 +525,15 @@ lemma lt_weight_and_lt_defect_of_not_dvd_coeff_contractOtherCopies [IsDomain O] 
     {α : Fin k × Fin k →₀ ℕ}
     (h_coeff : ¬T.sqrtPrime ^ c ∣ (T.contractOtherCopies r ℓ l j g h β).coeff α) :
     (3 * defectThreshold k c < (exponentOf β).weight (T.defectWeight (j + ℓ) a r) →
-      2 * defectThreshold k c * (T.P : ℤ) ^ ℓ <
+      2 * defectThreshold k c * (T.primePow : ℤ) ^ ℓ <
         α.weight (fun v : Fin k × Fin k ↦ rootVector a r v.1)) ∧
-    (2 * defectThreshold k c * (T.P : ℤ) ^ ℓ <
+    (2 * defectThreshold k c * (T.primePow : ℤ) ^ ℓ <
         α.weight (fun v : Fin k × Fin k ↦ rootVector a r v.1) →
       defectThreshold k c < (exponentOf β).weight (T.defectWeight (j + ℓ) a r)) := by
   set wt : ℤ := α.weight fun v : Fin k × Fin k ↦ rootVector a r v.1
-  have h_bad_iff : 2 * defectThreshold k c * (T.P : ℤ) ^ ℓ < wt ↔
-      2 * defectThreshold k c < wt / (T.P : ℝ) ^ ℓ := by
-    rw [lt_div_iff₀ (pow_pos (zero_lt_one.trans T.one_lt_P) ℓ), ← Int.cast_lt (R := ℝ),
+  have h_bad_iff : 2 * defectThreshold k c * (T.primePow : ℤ) ^ ℓ < wt ↔
+      2 * defectThreshold k c < wt / (T.primePow : ℝ) ^ ℓ := by
+    rw [lt_div_iff₀ (pow_pos (zero_lt_one.trans T.one_lt_primePow) ℓ), ← Int.cast_lt (R := ℝ),
       Int.cast_mul, Int.cast_mul, Int.cast_pow, Int.cast_natCast, Int.cast_natCast, Int.cast_ofNat]
   obtain ⟨h_lower, h_upper⟩ :=
     abs_le.1 (T.abs_weight_div_sub_defect_le hp ha h_size hℓ hl h_coeff)
@@ -577,10 +576,10 @@ monomial with defect above `3 c*` at some letter; the defect is the weighted deg
 `T.defectWeight`. -/
 lemma partialAverage_univ_mulVec_mem_defectConditions [IsDomain O] [CharZero O] {a r : Fin k}
     {ℓ c : ℕ} (hp : ¬IsUnit (T.p : O)) (ha : a + 1 = r.val)
-    (h_size : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ) (hℓ : ℓ ≤ N) {D : ℕ}
+    (h_size : N * n * k * (ℓ + 2) ≤ T.primePow ^ ℓ) (hℓ : ℓ ≤ N) {D : ℕ}
     {I : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O)}
     (hI : ∀ j : ZMod N, IsAverage (twoBlock k r) (T.embedding j) (rootVector a r)
-      (2 * defectThreshold k c * T.P ^ ℓ) ((T.p : O) ^ T.multinomialExponent k) D (I j))
+      (2 * defectThreshold k c * T.primePow ^ ℓ) ((T.p : O) ^ T.multinomialExponent k) D (I j))
     (h : Exponents N k n → O) :
     T.partialAverage n r ℓ I univ *ᵥ h ∈
       T.defectConditions n a r (span {T.sqrtPrime ^ c}) (3 * defectThreshold k c) := by
@@ -612,11 +611,11 @@ vector `f` over `O` with `w ^ (-m) Δ g f` integral for all `g ∈ GL_k(W)`, whe
 `⟨Av_{J ∪ {j}} h, h'⟩ ≡ ⟨Av_J h, h'⟩` modulo `w ^ c` for `j ∉ J`. -/
 lemma pow_dvd_pairing_partialAverage_insert_sub [IsDomain O] [CharZero O] {a r : Fin k} {ℓ c : ℕ}
     (hp : ¬IsUnit (T.p : O))
-    (ha : a + 1 = r.val) (h_size : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ) (hℓ : ℓ ≤ N)
+    (ha : a + 1 = r.val) (h_size : N * n * k * (ℓ + 2) ≤ T.primePow ^ ℓ) (hℓ : ℓ ≤ N)
     {I : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O)}
     (hI : ∀ j : ZMod N, IsAverage (twoBlock k r) (T.embedding j) (rootVector a r)
-      (2 * defectThreshold k c * T.P ^ ℓ) ((T.p : O) ^ T.multinomialExponent k)
-      (N * n * k * (ℓ + 2) * T.P ^ ℓ) (I j))
+      (2 * defectThreshold k c * T.primePow ^ ℓ) ((T.p : O) ^ T.multinomialExponent k)
+      (N * n * k * (ℓ + 2) * T.primePow ^ ℓ) (I j))
     {b b' : Exponents N k n → O} (hb : T.IsEdgePairing b b') {J : Finset (ZMod N)} {j : ZMod N}
     (hj : j ∉ J) (h : Exponents N k n → O) {h' : Exponents N k n → O}
     (hh' : h' ∈ T.allEdgesForms k n r) :
@@ -641,8 +640,9 @@ lemma pow_dvd_pairing_partialAverage_insert_sub [IsDomain O] [CharZero O] {a r :
     rw [linearMap_map_sum, dotProduct]
     refine sum_congr rfl fun β _ ↦ ?_
     rw [LinearMap.map_smul, smul_eq_mul, T.map_contractOtherCopies_one, Pi.mul_apply, mul_assoc]
-  have h_degree : ψ.totalDegree ≤ N * n * k * (ℓ + 2) * T.P ^ ℓ := (mem_restrictTotalDegree ..).1 <|
-    sum_mem fun β _ ↦ Submodule.smul_mem _ _ (T.contractOtherCopies_one_mem_restrictTotalDegree h β)
+  have h_degree : ψ.totalDegree ≤ N * n * k * (ℓ + 2) * T.primePow ^ ℓ :=
+    (mem_restrictTotalDegree ..).1 <| sum_mem fun β _ ↦
+      Submodule.smul_mem _ _ (T.contractOtherCopies_one_mem_restrictTotalDegree h β)
   have h_update_ev : update l j ev = l :=
     update_eq_self_iff.2 (piecewise_eq_of_notMem J I (fun _ ↦ ev) hj).symm
   suffices h_mem : I j ψ - ev ψ ∈ span {T.sqrtPrime ^ c} by
@@ -681,14 +681,13 @@ lemma pow_dvd_pairing_partialAverage_insert_sub [IsDomain O] [CharZero O] {a r :
     have h_lt : a < r := Fin.lt_def.2 (ha ▸ Nat.lt_succ_self a.val)
     exact (hb.pow_dvd_pairing_letterRep T h_lt hh' (inv_mem hg) h_defect).mul_left _
 
-/-- The averaging map. Let `T` be a Frobenius cycle (`P = T.P`, `w = T.sqrtPrime`, `w ^ 2 = p`)
-over a valuation domain `O` of characteristic
-`0` in which `p` is not a unit. Vectors are coefficient vectors of polynomials of degree `n` in each
-of `N` groups of `k` variables, on which `GL_k(W)` acts by `T.letterRep n`. Let `r = a + 1`,
-`N = 2 ℓ` and `N k (ℓ + 2) n + n + k < P ^ ℓ`. Put `c* = 3 k c` and
-`c₀ = T.multinomialExponent k = k² log_p P^N`. Let the weights `b` define a pairing
-`⟨h, h'⟩ = ∑_β h'_β b_β h_β` that makes the matrices of `g` and `gᵀ` adjoint, with
-`b b' = p ^ (N c₀)`. For every `c` there is a matrix `Av` with two properties.
+/-- The averaging map. Let `T` be a Frobenius cycle (`P = T.primePow`, `w = T.sqrtPrime`,
+`w ^ 2 = p`) over a valuation domain `O` of characteristic `0` in which `p` is not a unit. Vectors
+are coefficient vectors of polynomials of degree `n` in each of `N` groups of `k` variables, on
+which `GL_k(W)` acts by `T.letterRep n`. Let `r = a + 1`, `N = 2 ℓ` and
+`N k (ℓ + 2) n + n + k < P ^ ℓ`. Put `c* = 3 k c` and `c₀ = T.multinomialExponent k = k² log_p P^N`.
+Let the weights `b` define a pairing `⟨h, h'⟩ = ∑_β h'_β b_β h_β` that makes the matrices of `g` and
+`gᵀ` adjoint, with `b b' = p ^ (N c₀)`. For every `c` there is a matrix `Av` with two properties.
 * For all `h` and all `g` in the Levi subgroup of the blocks of sizes `r` and `k - r`, `w ^ c`
   divides the coefficient in `g Av h` of each monomial with defect above `3 c*` at some letter `i`;
   the defect is the weighted degree for the weights `T.defectWeight i a r`.
@@ -696,7 +695,7 @@ of `N` groups of `k` variables, on which `GL_k(W)` acts by `T.letterRep n`. Let 
   `h' ∈ T.allEdgesForms k n r`. -/
 theorem exists_average_mem_defectConditions_and_dvd_sub [IsDomain O] [CharZero O] {a r : Fin k}
     [ValuationRing O] (hp : ¬IsUnit (T.p : O)) (ha : a + 1 = r.val) {ℓ : ℕ}
-    (hℓ : ℓ + ℓ = N) (h_size : N * k * (ℓ + 2) * n + n + k < T.P ^ ℓ)
+    (hℓ : ℓ + ℓ = N) (h_size : N * k * (ℓ + 2) * n + n + k < T.primePow ^ ℓ)
     {b b' : Exponents N k n → O} (hb : T.IsEdgePairing b b') (c : ℕ) :
     ∃ Av : Matrix (Exponents N k n) (Exponents N k n) O,
       (∀ h : Exponents N k n → O,
@@ -706,17 +705,17 @@ theorem exists_average_mem_defectConditions_and_dvd_sub [IsDomain O] [CharZero O
           (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ (b * h) := by
   have h_eq : N * n * k * (ℓ + 2) = N * k * (ℓ + 2) * n := by
     rw [mul_right_comm N n k, mul_right_comm (N * k) n (ℓ + 2)]
-  have h_small : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ := by
+  have h_small : N * n * k * (ℓ + 2) ≤ T.primePow ^ ℓ := by
     rw [h_eq]
     exact ((Nat.le_add_right _ n).trans (Nat.le_add_right _ k)).trans h_size.le
   have hℓ_le : ℓ ≤ N := hℓ ▸ Nat.le_add_right ℓ ℓ
   -- `D` bounds the degree in one copy; it is small against `P ^ N`, so the averages exist.
-  let D : ℕ := N * n * k * (ℓ + 2) * T.P ^ ℓ
-  have hD : D + k < T.P ^ N := by
-    have h1 : D + k < (N * k * (ℓ + 2) * n + 1) * T.P ^ ℓ := by
+  let D : ℕ := N * n * k * (ℓ + 2) * T.primePow ^ ℓ
+  have hD : D + k < T.primePow ^ N := by
+    have h1 : D + k < (N * k * (ℓ + 2) * n + 1) * T.primePow ^ ℓ := by
       rw [add_mul, one_mul, ← h_eq]
       exact Nat.add_lt_add_left ((Nat.le_add_left k _).trans_lt h_size) D
-    have h2 : (N * k * (ℓ + 2) * n + 1) * T.P ^ ℓ ≤ T.P ^ N :=
+    have h2 : (N * k * (ℓ + 2) * n + 1) * T.primePow ^ ℓ ≤ T.primePow ^ N :=
       (Nat.mul_le_mul_right _ (Nat.succ_le_of_lt
         (((Nat.le_add_right _ n).trans (Nat.le_add_right _ k)).trans_lt h_size))).trans_eq
         (by rw [← pow_add, hℓ])
@@ -725,8 +724,8 @@ theorem exists_average_mem_defectConditions_and_dvd_sub [IsDomain O] [CharZero O
     rw [pow_mul]
     exact (Nat.le_add_right D k).trans_lt hD
   have h_exists (j : ZMod N) : ∃ I : Dual O (MvPolynomial (Fin k × Fin k) O),
-      IsAverage (twoBlock k r) (T.embedding j) (rootVector a r) (2 * defectThreshold k c * T.P ^ ℓ)
-        ((T.p : O) ^ T.multinomialExponent k) D I :=
+      IsAverage (twoBlock k r) (T.embedding j) (rootVector a r)
+        (2 * defectThreshold k c * T.primePow ^ ℓ) ((T.p : O) ^ T.multinomialExponent k) D I :=
     exists_isAverage (twoBlock k r) (T.embedding j) T.prime hp (T.frobExp * N) hD_pow
       (hD.le.trans_eq T.card_residueField.symm) _ _
   choose I hI using h_exists

@@ -16,10 +16,10 @@ import Lib.LocalGL.Green.CuspidalFunctions
 # The dimension of the forms of bounded defect
 
 Let `T` be a Frobenius cycle (`New.FrobeniusCycle`) over a field `K` of characteristic `p`, with
-`P = T.P` and `q = T.q = P ^ N`. Exponents are indexed by `(b, s) ∈ Fin k × ZMod N`, and `s` is
-called the letter. The defect of an exponent `β` at the letter `i` along the root `(a, a')` is the
-linear form `∑ x, T.defectWeight i a a' x * β x`. Pieri's inequalities say that the defects along
-the simple roots `(b, b + 1)` are at most `0`.
+`P = T.primePow` and `q = T.q = P ^ N`. Exponents are indexed by `(b, s) ∈ Fin k × ZMod N`, and `s`
+is called the letter. The defect of an exponent `β` at the letter `i` along the root `(a, a')` is
+the linear form `∑ x, T.defectWeight i a a' x * β x`. Pieri's inequalities say that the defects
+along the simple roots `(b, b + 1)` are at most `0`.
 
 The forms whose translates by a Levi subgroup with two blocks have bounded defect along the root
 between the blocks are counted by flags and lattice points. One substitutes `x ^ m` for the
@@ -275,8 +275,8 @@ lemma coeff_powerPacking {n m : ℕ} {a : Fin k}
 
 /-- Let `T` be a Frobenius cycle from the local ring `W` to the field `K` of characteristic `T.p`:
 ring maps `ι s : W → K`, one for each letter `s ∈ ℤ/N`, with `ι (s + 1) ≡ ι s ^ P` modulo the prime
-`T.p`. Here `P = T.P` is a power of `T.p`, the residue field of `W` has `q = T.q = P ^ N` elements,
-and the letters are alternately even and odd (`T.isEven`). A matrix `g ∈ GL_k(W)` acts on
+`T.p`. Here `P = T.primePow` is a power of `T.p`, the residue field of `W` has `q = T.q = P ^ N`
+elements, and the letters are alternately even and odd (`T.isEven`). A matrix `g ∈ GL_k(W)` acts on
 polynomials in the variables `x (b, s)`, `b < k`, by the linear substitution `T.polyAction g`, given
 in the letter `s` by `ι s g` for even `s` and by `ι s` of the inverse transpose of `g` for odd `s`.
 Let `m` be a power of `q`. The forms `F u`, of degree `n` in each letter, are packed into
@@ -497,24 +497,24 @@ lemma FrobeniusCycle.exists_coeff_ne_zero_weight_defectWeight_nonpos (T : Froben
 root `(a, a')`, is the linear form with coefficients `T.defectWeight i a a'`, namely `β v + ∑ s, ± P
 ^ ((s - i) mod N) * (β (a', s) - β (a, s)) / (q - 1)`, with the sign `+` at even `s`, where
 `v = T.rootVar a a' i` is `(a', i)` for even `i` and `(a, i)` for odd `i`. Let
-`β = permStep T.isEven T.P 1 ν`, that is, `β (b, s) = ± (P * ν (b, s + 1) - ν (b, s))` with the same
-signs. Then the defect of `β` is `β v - (ν (a, i) - ν (a', i))`. -/
+`β = permStep T.isEven T.primePow 1 ν`, that is, `β (b, s) = ± (P * ν (b, s + 1) - ν (b, s))` with
+the same signs. Then the defect of `β` is `β v - (ν (a, i) - ν (a', i))`. -/
 lemma FrobeniusCycle.defectWeight_dotProduct_permStep (T : FrobeniusCycle N W K) {a a' : Fin k}
     (i : ZMod N) (ν : Fin k × ZMod N → ℝ) :
-    T.defectWeight i a a' ⬝ᵥ permStep T.isEven T.P 1 ν =
-      permStep T.isEven T.P 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i)) := by
+    T.defectWeight i a a' ⬝ᵥ permStep T.isEven T.primePow 1 ν =
+      permStep T.isEven T.primePow 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i)) := by
   -- Each letter `s` contributes `telescope (s - 1) - telescope s`, and these terms cancel in the
   -- sum over all letters. The letter `i` contributes the right side in addition.
   have hq : ((T.p : ℝ) ^ T.frobExp) ^ N - 1 ≠ 0 := mod_cast (sub_pos.2 T.one_lt_q).ne'
   let telescope (s : ZMod N) : ℝ :=
-    T.P ^ (1 + (s - i).val) * (ν (a, s + 1) - ν (a', s + 1)) / (T.q - 1)
+    T.primePow ^ (1 + (s - i).val) * (ν (a, s + 1) - ν (a', s + 1)) / (T.q - 1)
   have h_prev (s : ZMod N) : telescope (s - 1) =
-      T.P ^ (if s = i then N else (s - i).val) * (ν (a, s) - ν (a', s)) / (T.q - 1) := by
+      T.primePow ^ (if s = i then N else (s - i).val) * (ν (a, s) - ν (a', s)) / (T.q - 1) := by
     simp [telescope, one_add_val_sub_one_sub]
   have h_letter (s : ZMod N) :
-      ∑ b : Fin k, T.defectWeight i a a' (b, s) * permStep T.isEven T.P 1 ν (b, s) =
+      ∑ b : Fin k, T.defectWeight i a a' (b, s) * permStep T.isEven T.primePow 1 ν (b, s) =
         telescope (s - 1) - telescope s +
-        if s = i then permStep T.isEven T.P 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i))
+        if s = i then permStep T.isEven T.primePow 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i))
         else 0 := by
     rw [h_prev]
     simp only [telescope, defectWeight, rootVar, one_add_val_sub_one_sub]
@@ -533,20 +533,20 @@ lemma FrobeniusCycle.exists_mem_defectCone_sum_le (T : FrobeniusCycle N W K) (a 
     ∃ σ ∈ T.defectCone a (-1),
       0 ≤ σ ∧
       (∀ x : Fin k × ZMod N, ∃ z : ℤ, σ x = z) ∧
-      ∀ s : ZMod N, ∑ b : Fin k, σ (b, s) ≤ (T.P ^ (2 * (a.val + 1)) - 1 : ℝ) := by
+      ∀ s : ZMod N, ∑ b : Fin k, σ (b, s) ≤ (T.primePow ^ (2 * (a.val + 1)) - 1 : ℝ) := by
   -- Let `μ = (P ^ (2 a), …, P ^ 2, 1, 0, …, 0)`, and let `ν` be `μ` at even and `P μ` at odd
   -- letters. Then `σ = permStep ν` is `(P ^ 2 - 1) μ` at even and `0` at odd letters.
-  have hP_sq : (0 : ℝ) ≤ T.P ^ 2 - 1 := sub_nonneg.2 (one_le_pow₀ T.one_lt_P.le)
-  let μ (b : Fin k) : ℝ := if b ≤ a then (T.P ^ 2) ^ (a.val - b) else 0
-  let ν (x : Fin k × ZMod N) : ℝ := (if T.isEven x.2 then 1 else T.P : ℝ) * μ x.1
+  have hP_sq : (0 : ℝ) ≤ T.primePow ^ 2 - 1 := sub_nonneg.2 (one_le_pow₀ T.one_lt_primePow.le)
+  let μ (b : Fin k) : ℝ := if b ≤ a then (T.primePow ^ 2) ^ (a.val - b) else 0
+  let ν (x : Fin k × ZMod N) : ℝ := (if T.isEven x.2 then 1 else T.primePow : ℝ) * μ x.1
   have hμ_nonneg (b : Fin k) : 0 ≤ μ b := ite_nonneg (by positivity) le_rfl
-  have hμ_sum : ∑ b : Fin k, μ b = ∑ j ∈ range (a.val + 1), (T.P ^ 2 : ℝ) ^ j := by
+  have hμ_sum : ∑ b : Fin k, μ b = ∑ j ∈ range (a.val + 1), (T.primePow ^ 2 : ℝ) ^ j := by
     simp only [μ, Fin.le_def]
     rw [Fin.sum_univ_eq_sum_range fun j : ℕ ↦ if j ≤ a.val then _ ^ (a.val - j) else (0 : ℝ),
       ← sum_filter, show (range k).filter (· ≤ a.val) = range (a.val + 1) by grind]
-    exact sum_range_reflect (fun j : ℕ ↦ (T.P ^ 2 : ℝ) ^ j) (a.val + 1)
+    exact sum_range_reflect (fun j : ℕ ↦ (T.primePow ^ 2 : ℝ) ^ j) (a.val + 1)
   have hμ_succ (b b' : Fin k) (hb : b.val + 1 = b') :
-      μ b = T.P ^ 2 * μ b' + if b = a then 1 else 0 := by
+      μ b = T.primePow ^ 2 * μ b' + if b = a then 1 else 0 := by
     rcases lt_trichotomy b a with h_lt | rfl | h_gt
     · simp only [μ, ite_eq_left h_lt.le, ite_eq_left (show b' ≤ a by omega), ite_eq_right h_lt.ne,
         show a.val - b = (a.val - b') + 1 by omega]
@@ -554,12 +554,13 @@ lemma FrobeniusCycle.exists_mem_defectCone_sum_le (T : FrobeniusCycle N W K) (a 
     · simp [μ, show ¬b' ≤ b by omega]
     · simp [μ, h_gt.ne', show ¬b' ≤ a by omega, h_gt.not_ge]
   have hσ (b : Fin k) (i : ZMod N) :
-      permStep T.isEven T.P 1 ν (b, i) = if T.isEven i then (T.P ^ 2 - 1) * μ b else 0 := by
+      permStep T.isEven T.primePow 1 ν (b, i) =
+        if T.isEven i then (T.primePow ^ 2 - 1) * μ b else 0 := by
     by_cases h_even : T.isEven i <;> simp [ν, T.isEven_succ, h_even]; ring
-  refine ⟨permStep T.isEven T.P 1 ν, fun i b b' hb ↦ ?_, fun (b, i) ↦ ?_, fun (b, i) ↦ ?_,
+  refine ⟨permStep T.isEven T.primePow 1 ν, fun i b b' hb ↦ ?_, fun (b, i) ↦ ?_, fun (b, i) ↦ ?_,
     fun s ↦ ?_⟩
   · -- The defects are `P ^ 2 μ b' - μ b` at even and `P (μ b' - μ b)` at odd letters.
-    have h_gap : 0 ≤ (T.P ^ 2 - 1) * μ b' := mul_nonneg hP_sq (hμ_nonneg b')
+    have h_gap : 0 ≤ (T.primePow ^ 2 - 1) * μ b' := mul_nonneg hP_sq (hμ_nonneg b')
     rw [defectWeight_dotProduct_permStep]
     by_cases h_even : T.isEven i
     · simp only [rootVar, hσ, ν, h_even, ite_true, hμ_succ b b' hb]
@@ -568,14 +569,15 @@ lemma FrobeniusCycle.exists_mem_defectCone_sum_le (T : FrobeniusCycle N W K) (a 
       split_ifs <;> nlinarith
   · rw [hσ]
     exact ite_nonneg (mul_nonneg hP_sq (hμ_nonneg b)) le_rfl
-  · refine ⟨if T.isEven i ∧ b ≤ a then (T.P ^ 2 - 1) * (T.P ^ 2) ^ (a.val - b) else 0, ?_⟩
+  · refine ⟨if T.isEven i ∧ b ≤ a then (T.primePow ^ 2 - 1) * (T.primePow ^ 2) ^ (a.val - b)
+      else 0, ?_⟩
     simp only [hσ, μ, ite_and, mul_ite, mul_zero, Int.cast_ite, Int.cast_mul, Int.cast_sub,
       Int.cast_pow, Int.cast_natCast, Int.cast_one, Int.cast_zero]
   · simp only [hσ]
     split_ifs
     · rw [← Finset.mul_sum, hμ_sum, mul_geom_sum, pow_mul]
     · rw [sum_const_zero]
-      exact sub_nonneg.2 (one_le_pow₀ T.one_lt_P.le)
+      exact sub_nonneg.2 (one_le_pow₀ T.one_lt_primePow.le)
 
 /-- The slab `degreeSlab k D` is the set of vectors `β ≥ 0` with degree `∑ b, β (b, s)` in
 `[D s - 1, D s]` for each letter `s`. Let `h ≥ 0`, and let `σ ≥ 0` lie in `T.defectCone a (-1)`.
@@ -602,8 +604,8 @@ lemma FrobeniusCycle.smul_add_mem_defectCone_inter_degreeSlab (T : FrobeniusCycl
 
 /-- Let `T` be a Frobenius cycle from the local ring `W` to the field `K` of characteristic `T.p`:
 ring maps `ι s : W → K`, one for each letter `s ∈ ℤ/N`, with `ι (s + 1) ≡ ι s ^ P` modulo the prime
-`T.p`. Here `P = T.P` is a power of `T.p`, the residue field of `W` has `q = T.q = P ^ N` elements,
-and the letters are alternately even and odd (`T.isEven`). A matrix `g ∈ GL_k(W)` acts on
+`T.p`. Here `P = T.primePow` is a power of `T.p`, the residue field of `W` has `q = T.q = P ^ N`
+elements, and the letters are alternately even and odd (`T.isEven`). A matrix `g ∈ GL_k(W)` acts on
 polynomials in the variables `x (b, s)`, `b < k`, by the linear substitution `T.polyAction g`, given
 in the letter `s` by `ι s g` for even `s` and by `ι s` of the inverse transpose of `g` for odd `s`.
 The defect of a vector `β` indexed by `(b, s) ∈ Fin k × ZMod N`, at the letter `i` along the root
@@ -653,27 +655,27 @@ lemma FrobeniusCycle.div_mem_defectCone_inter_degreeSlab (T : FrobeniusCycle N W
 open Pointwise in
 /-- Let `T` be a Frobenius cycle (`New.FrobeniusCycle`) from the local ring `W` to the field `K` of
 characteristic `T.p`. It consists of ring maps `ι s : W → K`, one for each letter `s ∈ ℤ/N`, with
-`ι (s + 1) ≡ ι s ^ P` modulo the prime `T.p`. Here `P = T.P` is a power of `T.p`, the residue field
-of `W` has `q = T.q = P ^ N` elements, and the letters are alternately even and odd (`T.isEven`). A
-matrix `g ∈ GL_k(W)` acts on polynomials in the variables `x (b, s)`, `b < k`, by the linear
-substitution `T.polyAction g`. In the letter `s` it is given by `ι s g` for even `s` and by `ι s` of
-the inverse transpose of `g` for odd `s`. Let `β` be a vector indexed by `(b, s) ∈ Fin k × ZMod N`.
-Its defect at the letter `i` along the root `(b, b')` is the linear form with coefficients
-`T.defectWeight i b b'`, namely `β v + ∑ s, ± P ^ ((s - i) mod N) * (β (b', s) - β (b, s)) / (q -
-1)`. The sign is `+` at even `s`, and `v = (b', i)` for even `i`, `v = (b, i)` for odd `i`. Let `m`
-be a power of `q`, let `a' = a + 1` and `t ≥ 2 (k + 1)`. Let `L = levi W (twoBlock k a')` be the
-group of block diagonal matrices with blocks `a'` and `k - a'`. Let
-`S = T.defectConditions n a a' ⊥ (3 t)` be the space of forms of degree `n` in each letter whose
-translates by `L` have coefficient in the ideal `⊥`, that is `0`, at every exponent whose defect
-along `(a, a')` is above `3 t` at some letter. Let `σ ≥ 0` be an integral vector of defect at most
-`-1` along `(a, a')` and at most `0` along the other simple roots. Let `D s` be `n + k + 1` plus the
-degree of `4 t σ` in the letter `s`. Then `m ^ (k N) * dim S` is at most a product of two factors.
-The first is the index in `L` of its intersection with the lower Iwahori subgroup
-`parahoric W Fin.val`: the matrices whose `(i, j)` entry lies in the maximal ideal when `i < j`. The
-second is the number of points of `m⁻¹ ℤ ^ (k N)` in the cone `T.defectCone a 0` of Pieri's
-inequalities, cut by the slab of vectors `β ≥ 0` with degrees in `[D s - 1, D s]`. This cone
-consists of the vectors whose defect is at most `0` along all simple roots `(b, b + 1)` at all
-letters. -/
+`ι (s + 1) ≡ ι s ^ P` modulo the prime `T.p`. Here `P = T.primePow` is a power of `T.p`, the residue
+field of `W` has `q = T.q = P ^ N` elements, and the letters are alternately even and odd
+(`T.isEven`). A matrix `g ∈ GL_k(W)` acts on polynomials in the variables `x (b, s)`, `b < k`, by
+the linear substitution `T.polyAction g`. In the letter `s` it is given by `ι s g` for even `s` and
+by `ι s` of the inverse transpose of `g` for odd `s`. Let `β` be a vector indexed by
+`(b, s) ∈ Fin k × ZMod N`. Its defect at the letter `i` along the root `(b, b')` is the linear form
+with coefficients `T.defectWeight i b b'`, namely
+`β v + ∑ s, ± P ^ ((s - i) mod N) * (β (b', s) - β (b, s)) / (q - 1)`. The sign is `+` at even `s`,
+and `v = (b', i)` for even `i`, `v = (b, i)` for odd `i`. Let `m` be a power of `q`, let
+`a' = a + 1` and `t ≥ 2 (k + 1)`. Let `L = levi W (twoBlock k a')` be the group of block diagonal
+matrices with blocks `a'` and `k - a'`. Let `S = T.defectConditions n a a' ⊥ (3 t)` be the space of
+forms of degree `n` in each letter whose translates by `L` have coefficient in the ideal `⊥`, that
+is `0`, at every exponent whose defect along `(a, a')` is above `3 t` at some letter. Let `σ ≥ 0` be
+an integral vector of defect at most `-1` along `(a, a')` and at most `0` along the other simple
+roots. Let `D s` be `n + k + 1` plus the degree of `4 t σ` in the letter `s`. Then
+`m ^ (k N) * dim S` is at most a product of two factors. The first is the index in `L` of its
+intersection with the lower Iwahori subgroup `parahoric W Fin.val`: the matrices whose `(i, j)`
+entry lies in the maximal ideal when `i < j`. The second is the number of points of `m⁻¹ ℤ ^ (k N)`
+in the cone `T.defectCone a 0` of Pieri's inequalities, cut by the slab of vectors `β ≥ 0` with
+degrees in `[D s - 1, D s]`. This cone consists of the vectors whose defect is at most `0` along all
+simple roots `(b, b + 1)` at all letters. -/
 lemma FrobeniusCycle.finrank_defectConditions_mul_pow_le (T : FrobeniusCycle N W K) [CharP K T.p]
     {a a' : Fin k} (ha : a.val + 1 = a') (n : ℕ) {t : ℕ} (ht : 2 * (k + 1) ≤ t)
     {m j : ℕ} (hm : m = T.q ^ j)
@@ -735,8 +737,8 @@ lemma FrobeniusCycle.finrank_defectConditions_mul_pow_le (T : FrobeniusCycle N W
 
 /-- Let `T` be a Frobenius cycle from the local ring `W` to the field `K` of characteristic `T.p`:
 ring maps `ι s : W → K`, one for each letter `s ∈ ℤ/N`, with `ι (s + 1) ≡ ι s ^ P` modulo the prime
-`T.p`. Here `P = T.P` is a power of `T.p`, the residue field of `W` has `q = T.q = P ^ N` elements,
-and the letters are alternately even and odd (`T.isEven`). A matrix `g ∈ GL_k(W)` acts on
+`T.p`. Here `P = T.primePow` is a power of `T.p`, the residue field of `W` has `q = T.q = P ^ N`
+elements, and the letters are alternately even and odd (`T.isEven`). A matrix `g ∈ GL_k(W)` acts on
 polynomials in the variables `x (b, s)`, `b < k`, by the linear substitution `T.polyAction g`, given
 in the letter `s` by `ι s g` for even `s` and by `ι s` of the inverse transpose of `g` for odd `s`.
 The defect of a vector `β` indexed by `(b, s) ∈ Fin k × ZMod N`, at the letter `i` along the root
@@ -755,14 +757,14 @@ degrees in `[D s - 1, D s]`. -/
 lemma FrobeniusCycle.exists_finrank_defectConditions_le_volume (T : FrobeniusCycle N W K)
     [CharP K T.p] {a a' : Fin k} (ha : a.val + 1 = a') (n : ℕ) {t : ℕ} (ht : 2 * (k + 1) ≤ t) :
     ∃ D : ZMod N → ℝ,
-      (∀ s : ZMod N, D s ∈ Set.Icc 1 (n + 4 * t * T.P ^ (2 * a'.val) : ℝ)) ∧
+      (∀ s : ZMod N, D s ∈ Set.Icc 1 (n + 4 * t * T.primePow ^ (2 * a'.val) : ℝ)) ∧
       finrank K (T.defectConditions n a a' ⊥ (3 * t)) ≤
         (parahoric W Fin.val).relIndex (levi W (twoBlock k a')) *
           volume.real (T.defectCone a 0 ∩ degreeSlab k D) := by
   obtain ⟨σ, hσ_cone, hσ_nonneg, hσ_int, hσ_le⟩ := T.exists_mem_defectCone_sum_le a
   let D (s : ZMod N) : ℝ := n + k + 1 + ∑ b : Fin k, ((4 * t : ℝ) • σ) (b, s)
   refine ⟨D, fun s ↦ ?_, ?_⟩
-  · have h_shift : 4 * t * ∑ b : Fin k, σ (b, s) ≤ 4 * t * (T.P ^ (2 * a'.val) - 1) := by
+  · have h_shift : 4 * t * ∑ b : Fin k, σ (b, s) ≤ 4 * t * (T.primePow ^ (2 * a'.val) - 1) := by
       grw [hσ_le s, ha]
     have h_nonneg : 0 ≤ 4 * t * ∑ b : Fin k, σ (b, s) :=
       mul_nonneg (by positivity) (sum_nonneg fun b _ ↦ hσ_nonneg (b, s))
@@ -865,14 +867,14 @@ lemma pow_div_factorial_le_card_monomials (k n : ℕ) :
         simp [card_finsuppAntidiag_nat_eq_choose, ← choose_symm_add, add_comm]
 
 omit [NeZero N] in
-/-- Let `q = T.P ^ N` be the number of elements of the residue field of the local ring `W`; the
-Frobenius cycle `T` enters only through this number. The index in `GL_k(W)` of the parahoric
+/-- Let `q = T.primePow ^ N` be the number of elements of the residue field of the local ring `W`;
+the Frobenius cycle `T` enters only through this number. The index in `GL_k(W)` of the parahoric
 subgroup with blocks `r` and `k - r`, times the number of flags of its Levi subgroup `L`, is at most
 `∏ (q ^ (l + 1) - 1) / (q - 1)` over `l < k`. -/
 lemma FrobeniusCycle.index_mul_relIndex_le (T : FrobeniusCycle N W K) (r : ℕ) :
     ((parahoric W (twoBlock k r)).index *
         (parahoric W Fin.val).relIndex (levi W (twoBlock k r)) : ℝ) ≤
-      ∏ l : Fin k, (((T.P : ℝ) ^ N) ^ (l.val + 1) - 1) / (T.P ^ N - 1) := by
+      ∏ l : Fin k, (((T.primePow : ℝ) ^ N) ^ (l.val + 1) - 1) / (T.primePow ^ N - 1) := by
   have : Finite (IsLocalRing.ResidueField W) := T.finite_residueField
   -- The entries of the Levi subgroup between the blocks vanish, and
   -- `twoBlock k r i < twoBlock k r j` implies `i < j`.
@@ -897,30 +899,31 @@ simple roots if and only if `ν` lies in `New.pieriCone`, the cone of Pieri's in
 coordinates `ν`. The index `a'` does not matter, as the bound is `0` at every root. -/
 lemma FrobeniusCycle.permStep_mem_defectCone_iff (T : FrobeniusCycle N W K) {a' : Fin k}
     (ν : Fin k × ZMod N → ℝ) :
-    permStep T.isEven T.P 1 ν ∈ T.defectCone a' 0 ↔ ν ∈ pieriCone T.isEven (T.P : ℝ) := by
+    permStep T.isEven T.primePow 1 ν ∈ T.defectCone a' 0 ↔
+      ν ∈ pieriCone T.isEven (T.primePow : ℝ) := by
   change (∀ (i : ZMod N) (b b' : Fin k), b.val + 1 = b' →
-      T.defectWeight i b b' ⬝ᵥ permStep T.isEven T.P 1 ν ≤ if b = a' then (0 : ℝ) else 0) ↔
+      T.defectWeight i b b' ⬝ᵥ permStep T.isEven T.primePow 1 ν ≤ if b = a' then (0 : ℝ) else 0) ↔
     ∀ (i : ZMod N) (b b' : Fin k), b.val + 1 = b' →
-      permStep T.isEven T.P 1 ν ((if T.isEven i then b' else b), i) ≤ ν (b, i) - ν (b', i)
+      permStep T.isEven T.primePow 1 ν ((if T.isEven i then b' else b), i) ≤ ν (b, i) - ν (b', i)
   refine forall₄_congr fun i b b' hb ↦ ?_
   rw [defectWeight_dotProduct_permStep, ite_self, sub_nonpos, rootVar]
 
-/-- For a Frobenius cycle `T` with `q = T.P ^ N`, the cone `T.defectCone a 0` of Pieri's
+/-- For a Frobenius cycle `T` with `q = T.primePow ^ N`, the cone `T.defectCone a 0` of Pieri's
 inequalities fills the part `∏ (q - 1) / (q ^ (l + 1) - 1)`, over `l < k`, of the volume of every
 slab of vectors `β ≥ 0` with degrees in `[D s - 1, D s]`. -/
 lemma FrobeniusCycle.prod_mul_volume_defectCone_inter_degreeSlab (T : FrobeniusCycle N W K)
     {a : Fin k} (D : ZMod N → ℝ) :
-    (∏ l : Fin k, (((T.P : ℝ) ^ N) ^ (l.val + 1) - 1) / (T.P ^ N - 1)) *
+    (∏ l : Fin k, (((T.primePow : ℝ) ^ N) ^ (l.val + 1) - 1) / (T.primePow ^ N - 1)) *
       volume.real (T.defectCone a 0 ∩ degreeSlab k D) = volume.real (degreeSlab k D) :=
-  prod_mul_volume_real_inter_degreeSlab T.one_lt_P D T.permStep_mem_defectCone_iff
+  prod_mul_volume_real_inter_degreeSlab T.one_lt_primePow D T.permStep_mem_defectCone_iff
 
 /-- Few forms have bounded defect. Let `T` be a Frobenius cycle from the local ring `W` to the field
 `K` of characteristic `T.p`: ring maps `ι s : W → K`, one for each letter `s ∈ ℤ/N`, with
-`ι (s + 1) ≡ ι s ^ P` modulo the prime `T.p`. Here `P = T.P` is a power of `T.p`, the residue field
-of `W` has `q = T.q = P ^ N` elements, and the letters are alternately even and odd (`T.isEven`). A
-matrix `g ∈ GL_k(W)` acts on polynomials in the variables `x (b, s)`, `b < k`, by the linear
-substitution `T.polyAction g`, given in the letter `s` by `ι s g` for even `s` and by `ι s` of the
-inverse transpose of `g` for odd `s`. The defect of a vector `β` indexed by
+`ι (s + 1) ≡ ι s ^ P` modulo the prime `T.p`. Here `P = T.primePow` is a power of `T.p`, the residue
+field of `W` has `q = T.q = P ^ N` elements, and the letters are alternately even and odd
+(`T.isEven`). A matrix `g ∈ GL_k(W)` acts on polynomials in the variables `x (b, s)`, `b < k`, by
+the linear substitution `T.polyAction g`, given in the letter `s` by `ι s g` for even `s` and by
+`ι s` of the inverse transpose of `g` for odd `s`. The defect of a vector `β` indexed by
 `(b, s) ∈ Fin k × ZMod N`, at the letter `i` along the root `(b, b')`, is the linear form with
 coefficients `T.defectWeight i b b'`, namely
 `β v + ∑ s, ± P ^ ((s - i) mod N) * (β (b', s) - β (b, s)) / (q - 1)`, with the sign `+` at even
@@ -934,13 +937,13 @@ defect above `3 t` along `(a, a')` at some letter. Let `θ ≤ 1`, and let `n > 
 `N`-tuples of monomials of degree `n` in `k` variables. -/
 lemma FrobeniusCycle.index_mul_finrank_defectConditions_le (T : FrobeniusCycle N W K) {a a' : Fin k}
     [CharP K T.p] (ha : a.val + 1 = a') {n t : ℕ} {θ : ℝ} (hn : 0 < n) (ht : 2 * (k + 1) ≤ t)
-    (hθ : θ ≤ 1) (h_large : 8 * N * k * t * T.P ^ (2 * a'.val) ≤ θ * n) :
+    (hθ : θ ≤ 1) (h_large : 8 * N * k * t * T.primePow ^ (2 * a'.val) ≤ θ * n) :
     (parahoric W (twoBlock k a')).index * finrank K (T.defectConditions n a a' ⊥ (3 * t)) ≤
       (1 + θ) * Fintype.card (Monomials (Fin k) n) ^ N := by
   -- The index times the number of flags of the Levi subgroup is at most the number of all flags,
   -- which cancels the share of the cone in the slab. The degrees of the slab are at most `n + E`.
   obtain ⟨D, hD, h_flags⟩ := T.exists_finrank_defectConditions_le_volume ha n ht
-  set E : ℝ := 4 * t * T.P ^ (2 * a'.val) with hE_def
+  set E : ℝ := 4 * t * T.primePow ^ (2 * a'.val) with hE_def
   have hE_le : 2 * N * k * E ≤ θ * n := by linarith
   have hE : 0 ≤ E := by positivity
   have hn_real : (0 : ℝ) < n := cast_pos.2 hn

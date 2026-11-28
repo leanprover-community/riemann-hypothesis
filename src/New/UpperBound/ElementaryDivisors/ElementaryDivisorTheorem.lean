@@ -409,7 +409,7 @@ structure IsLargeDegree (k n r : ℕ) (θ : ℝ) : Prop where
   /-- The residue field is large against the degree. -/
   degree_pow_le : n ^ 4 ≤ T.q
   /-- The degree is large against `N k log q / θ` and `P ^ r`. -/
-  le_degree : (N * k * Real.log T.q / θ) ^ 5 * T.P ^ (3 * r) ≤ n
+  le_degree : (N * k * Real.log T.q / θ) ^ 5 * T.primePow ^ (3 * r) ≤ n
 
 /-- Half of the letters are even. -/
 lemma card_isEven_add_self : #{s : ZMod N | T.isEven s} + #{s : ZMod N | T.isEven s} = N := by
@@ -429,7 +429,7 @@ def congruencePrecision (k : ℕ) : ℕ := 5 * (N * T.multinomialExponent k)
 /-- For rank `k ≥ 2` one has `N c₀ ≥ 2`, where `N` is the number of letters and
 `c₀ = T.multinomialExponent k = k ^ 2 * (frobExp * N)` with `P = p ^ frobExp`. -/
 lemma two_le_mul_multinomialExponent (hk : 2 ≤ k) : 2 ≤ N * T.multinomialExponent k := by
-  have h_frobExp : 0 < T.frobExp := Nat.pos_of_ne_zero fun h ↦ by simpa [h] using T.five_le_P
+  have h_frobExp : 0 < T.frobExp := Nat.pos_of_ne_zero fun h ↦ by simpa [h] using T.five_le_primePow
   have hN : 0 < N := NeZero.pos N
   calc 2 ≤ k ^ 2 := hk.trans (Nat.le_self_pow two_ne_zero k)
     _ ≤ k ^ 2 * (T.frobExp * N) := Nat.le_mul_of_pos_right _ (Nat.mul_pos h_frobExp hN)
@@ -444,7 +444,8 @@ lemma multinomialExponent_le_mul_log (k : ℕ) :
     (T.multinomialExponent k : ℝ) ≤ 3 / 2 * k ^ 2 * Real.log T.q := by
   have h_p : Real.log 2 ≤ Real.log T.p := Real.log_le_log two_pos (by exact_mod_cast T.prime.two_le)
   have h_eq : Real.log T.q = T.frobExp * N * Real.log T.p := by
-    rw [FrobeniusCycle.q, FrobeniusCycle.P, ← pow_mul, Nat.cast_pow, Real.log_pow, Nat.cast_mul]
+    rw [FrobeniusCycle.q, FrobeniusCycle.primePow, ← pow_mul, Nat.cast_pow, Real.log_pow,
+      Nat.cast_mul]
   have h_log : (T.frobExp * N : ℝ) ≤ 3 / 2 * Real.log T.q := by
     nlinarith [Real.log_two_gt_d9, show (0 : ℝ) ≤ T.frobExp * N by positivity]
   calc (T.multinomialExponent k : ℝ) = k ^ 2 * (T.frobExp * N) := by simp [multinomialExponent]
@@ -477,21 +478,22 @@ lemma mul_log_le_div (h_large : T.IsLargeDegree k n r θ) :
     N * k * Real.log T.q ≤ N * k * Real.log T.q / θ :=
   le_div_self (by positivity) h_large.proportion_pos h_large.proportion_le_one
 
-/-- Let `T` be a Frobenius cycle: a prime `p`, a power `P = T.P` of `p` and `N` ring maps `W → O`
-(the letters), each the `P`-th power of the one before modulo `p`, where the residue field of `W`
-has `q = P ^ N` elements. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
-`(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `(N k) ^ 5 ≤ n`, because `log q ≥ 1`. -/
+/-- Let `T` be a Frobenius cycle: a prime `p`, a power `P = T.primePow` of `p` and `N` ring maps
+`W → O` (the letters), each the `P`-th power of the one before modulo `p`, where the residue field
+of `W` has `q = P ^ N` elements. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`,
+`n ^ 4 ≤ q` and `(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `(N k) ^ 5 ≤ n`, because `log q ≥ 1`. -/
 lemma mul_pow_le_degree (h_large : T.IsLargeDegree k n r θ) : (N * k) ^ 5 ≤ n := by
   have h_log : 1 ≤ Real.log T.q := by
-    have h_five : (5 : ℝ) ≤ T.q := mod_cast T.five_le_P.trans (Nat.le_self_pow (NeZero.ne N) T.P)
+    have h_five : (5 : ℝ) ≤ T.q :=
+      mod_cast T.five_le_primePow.trans (Nat.le_self_pow (NeZero.ne N) T.primePow)
     exact (Real.le_log_iff_exp_le (by linarith)).2 (by linarith [Real.exp_one_lt_three])
   have hθ : 0 < θ := h_large.proportion_pos
   have h_base : (N * k : ℝ) ≤ N * k * Real.log T.q / θ :=
     (le_mul_of_one_le_right (by positivity) h_log).trans h_large.mul_log_le_div
   rify
   calc ((N : ℝ) * k) ^ 5 ≤ (N * k * Real.log T.q / θ) ^ 5 := by gcongr
-    _ ≤ (N * k * Real.log T.q / θ) ^ 5 * T.P ^ (3 * r) :=
-        le_mul_of_one_le_right (by positivity) (one_le_pow₀ T.one_lt_P.le)
+    _ ≤ (N * k * Real.log T.q / θ) ^ 5 * T.primePow ^ (3 * r) :=
+        le_mul_of_one_le_right (by positivity) (one_le_pow₀ T.one_lt_primePow.le)
     _ ≤ n := h_large.le_degree
 
 /-- Under the size conditions `h_large`, `27 ≤ log T.q`: from `T.q ≥ n ^ 4` and
@@ -505,16 +507,16 @@ lemma twenty_seven_le_log_q (h_large : T.IsLargeDegree k n r θ) : 27 ≤ Real.l
     _ = Real.log (2 ^ 40) := by simp
     _ ≤ Real.log T.q := Real.log_le_log (by positivity) (mod_cast h_two)
 
-/-- Let `T` be a Frobenius cycle: a prime `p`, a power `P = T.P` of `p` and `N` ring maps `W → O`
-(the letters), each the `P`-th power of the one before modulo `p`, where the residue field of `W`
-has `q = P ^ N` elements. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
-`(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. For `2 ℓ = N` one has `N k (ℓ + 2) n + n + k < P ^ ℓ`, because
-`P ^ ℓ = √q ≥ n ^ 2` and `n ≥ (N k) ^ 2 + 2`. -/
-lemma mul_degree_add_lt_P_pow (h_large : T.IsLargeDegree k n r θ) {ℓ : ℕ} (hℓ : ℓ + ℓ = N) :
-    N * k * (ℓ + 2) * n + n + k < T.P ^ ℓ := by
+/-- Let `T` be a Frobenius cycle: a prime `p`, a power `P = T.primePow` of `p` and `N` ring maps
+`W → O` (the letters), each the `P`-th power of the one before modulo `p`, where the residue field
+of `W` has `q = P ^ N` elements. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`,
+`n ^ 4 ≤ q` and `(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. For `2 ℓ = N` one has
+`N k (ℓ + 2) n + n + k < P ^ ℓ`, because `P ^ ℓ = √q ≥ n ^ 2` and `n ≥ (N k) ^ 2 + 2`. -/
+lemma mul_degree_add_lt_primePow_pow (h_large : T.IsLargeDegree k n r θ) {ℓ : ℕ} (hℓ : ℓ + ℓ = N) :
+    N * k * (ℓ + 2) * n + n + k < T.primePow ^ ℓ := by
   have hN : 2 ≤ N := T.two_le_card_letters
   have hk : 2 ≤ k := h_large.two_le_rank
-  have h_sqrt : n ^ 2 ≤ T.P ^ ℓ := by
+  have h_sqrt : n ^ 2 ≤ T.primePow ^ ℓ := by
     rw [← Nat.pow_le_pow_iff_left two_ne_zero, ← pow_mul, ← pow_mul, mul_two ℓ, hℓ]
     exact h_large.degree_pow_le
   have hℓ_le : ℓ + 2 ≤ N * k := by nlinarith
@@ -528,7 +530,7 @@ lemma mul_degree_add_lt_P_pow (h_large : T.IsLargeDegree k n r θ) {ℓ : ℕ} (
   calc N * k * (ℓ + 2) * n + n + k ≤ N * k * (N * k) * n + n + k := by gcongr
     _ < ((N * k) ^ 2 + 2) * n := by linarith
     _ ≤ n ^ 2 := by grw [h_sq, sq n]
-    _ ≤ T.P ^ ℓ := h_sqrt
+    _ ≤ T.primePow ^ ℓ := h_sqrt
 
 /-- A large degree `n` is greater than `1`, because `n ≥ (N k) ^ 5`. -/
 lemma one_lt_degree (h_large : T.IsLargeDegree k n r θ) : 1 < n :=
@@ -539,23 +541,24 @@ lemma degree_lt_q (h_large : T.IsLargeDegree k n r θ) : n < T.q :=
   (lt_self_pow₀ h_large.one_lt_degree (by norm_num)).trans_le h_large.degree_pow_le
 
 omit [NeZero N] in
-/-- Under the size conditions `h_large`, `(N k log T.q) ^ 5 T.P ^ (3 r) ≤ θ n`: clear the
-denominator in the degree condition `(N k log T.q / θ) ^ 5 T.P ^ (3 r) ≤ n` and use `θ ^ 5 ≤ θ`. -/
+/-- Under the size conditions `h_large`, `(N k log T.q) ^ 5 T.primePow ^ (3 r) ≤ θ n`: clear the
+denominator in the degree condition `(N k log T.q / θ) ^ 5 T.primePow ^ (3 r) ≤ n` and use
+`θ ^ 5 ≤ θ`. -/
 lemma mul_log_pow_mul_le (h_large : T.IsLargeDegree k n r θ) :
-    (N * k * Real.log T.q) ^ 5 * T.P ^ (3 * r) ≤ θ * n := by
+    (N * k * Real.log T.q) ^ 5 * T.primePow ^ (3 * r) ≤ θ * n := by
   have hθ : 0 < θ := h_large.proportion_pos
-  calc (N * k * Real.log T.q) ^ 5 * T.P ^ (3 * r)
-      = θ ^ 5 * ((N * k * Real.log T.q / θ) ^ 5 * T.P ^ (3 * r)) := by field_simp
+  calc (N * k * Real.log T.q) ^ 5 * T.primePow ^ (3 * r)
+      = θ ^ 5 * ((N * k * Real.log T.q / θ) ^ 5 * T.primePow ^ (3 * r)) := by field_simp
     _ ≤ θ ^ 5 * n := by grw [h_large.le_degree]
     _ ≤ θ * n := by grw [pow_le_of_le_one hθ.le h_large.proportion_le_one (by norm_num)]
 
-/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.P`, and let
+/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.primePow`, and let
 `q = P ^ N`. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
 `(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `8 N k c* P ^ (2 r) ≤ θ n`, where
 `c* = defectThreshold k c = 3 k c` for the precision
 `c = T.congruencePrecision k = 5 N k ^ 2 log_p q`, `p = T.p`. -/
 lemma mul_defectThreshold_le_mul_degree (h_large : T.IsLargeDegree k n r θ) :
-    8 * N * k * defectThreshold k (T.congruencePrecision k) * T.P ^ (2 * r) ≤ θ * n := by
+    8 * N * k * defectThreshold k (T.congruencePrecision k) * T.primePow ^ (2 * r) ≤ θ * n := by
   -- With `u = N k log q ≥ 27 N k` the left side is at most `180 N k ^ 3 u P ^ (2 r)`.
   set L : ℝ := Real.log T.q
   set u : ℝ := N * k * L
@@ -572,50 +575,50 @@ lemma mul_defectThreshold_le_mul_degree (h_large : T.IsLargeDegree k n r θ) :
     calc (180 * N * k ^ 3 : ℝ) ≤ 27 ^ 4 * N ^ 3 * k * N * k ^ 3 := by gcongr
       _ = (27 * (N * k)) ^ 4 := by ring
       _ ≤ u ^ 4 := by gcongr
-  calc (8 * N * k * defectThreshold k (T.congruencePrecision k) * T.P ^ (2 * r) : ℝ)
-      = 24 * N * k ^ 2 * T.congruencePrecision k * T.P ^ (2 * r) := by
+  calc (8 * N * k * defectThreshold k (T.congruencePrecision k) * T.primePow ^ (2 * r) : ℝ)
+      = 24 * N * k ^ 2 * T.congruencePrecision k * T.primePow ^ (2 * r) := by
         simp only [defectThreshold, Nat.cast_mul, Nat.cast_ofNat]
         ring
-    _ ≤ 24 * N * k ^ 2 * (15 / 2 * (k * u)) * T.P ^ (2 * r) := by gcongr
-    _ = 180 * N * k ^ 3 * u * T.P ^ (2 * r) := by ring
-    _ ≤ u ^ 4 * u * T.P ^ (3 * r) := by
+    _ ≤ 24 * N * k ^ 2 * (15 / 2 * (k * u)) * T.primePow ^ (2 * r) := by gcongr
+    _ = 180 * N * k ^ 3 * u * T.primePow ^ (2 * r) := by ring
+    _ ≤ u ^ 4 * u * T.primePow ^ (3 * r) := by
         gcongr
-        exacts [T.one_lt_P.le, by norm_num]
-    _ = u ^ 5 * T.P ^ (3 * r) := by ring
+        exacts [T.one_lt_primePow.le, by norm_num]
+    _ = u ^ 5 * T.primePow ^ (3 * r) := by ring
     _ ≤ θ * n := h_large.mul_log_pow_mul_le
 
-/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.P`, and let
+/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.primePow`, and let
 `q = P ^ N`. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
 `(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `c₀ P ^ (2 r) ≤ n`, where
 `c₀ = T.multinomialExponent k = k ^ 2 log_p q` for the prime `p = T.p` of which `P` is a power. -/
 lemma multinomialExponent_mul_le_degree (h_large : T.IsLargeDegree k n r θ) :
-    (T.multinomialExponent k : ℝ) * T.P ^ (2 * r) ≤ n := by
+    (T.multinomialExponent k : ℝ) * T.primePow ^ (2 * r) ≤ n := by
   have hN : 0 < N := NeZero.pos N
   have hk : 0 < k := lt_of_lt_of_le (by decide : 0 < 2) h_large.two_le_rank
   have h_coeff : T.multinomialExponent k ≤
       8 * N * k * defectThreshold k (T.congruencePrecision k) := by
     simp only [defectThreshold, congruencePrecision, ← Nat.mul_assoc]
     exact Nat.le_mul_of_pos_left _ (by positivity)
-  calc (T.multinomialExponent k : ℝ) * T.P ^ (2 * r)
-      ≤ 8 * N * k * defectThreshold k (T.congruencePrecision k) * T.P ^ (2 * r) := by
+  calc (T.multinomialExponent k : ℝ) * T.primePow ^ (2 * r)
+      ≤ 8 * N * k * defectThreshold k (T.congruencePrecision k) * T.primePow ^ (2 * r) := by
           gcongr
           exact_mod_cast h_coeff
     _ ≤ θ * n := h_large.mul_defectThreshold_le_mul_degree
     _ ≤ n := mul_le_of_le_one_left n.cast_nonneg h_large.proportion_le_one
 
-/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.P`, and let
+/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.primePow`, and let
 `q = P ^ N`. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
 `(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `N c₀ ≤ c_div`, where
 `c₀ = T.multinomialExponent k = k ^ 2 log_p q` with `p = T.p`, and `c_div = T.divisorConstant k n
 r = N n (1 / P ^ (2 r) + r ^ 2 / (k P))`. -/
 lemma mul_multinomialExponent_le_divisorConstant (h_large : T.IsLargeDegree k n r θ) :
     (N * T.multinomialExponent k : ℝ) ≤ T.divisorConstant k n r := by
-  have hP : (1 : ℝ) ≤ T.P := T.one_lt_P.le
-  have h_div : (T.multinomialExponent k : ℝ) ≤ n / (T.P : ℝ) ^ (2 * r) :=
+  have hP : (1 : ℝ) ≤ T.primePow := T.one_lt_primePow.le
+  have h_div : (T.multinomialExponent k : ℝ) ≤ n / (T.primePow : ℝ) ^ (2 * r) :=
     (le_div_iff₀ (by positivity)).2 h_large.multinomialExponent_mul_le_degree
-  calc (N * T.multinomialExponent k : ℝ) ≤ N * (n / (T.P : ℝ) ^ (2 * r)) := by gcongr
-    _ = N * n * (1 / (T.P : ℝ) ^ (2 * r)) := by ring
-    _ ≤ N * n * (1 / (T.P : ℝ) ^ (2 * r) + r ^ 2 / (k * T.P)) :=
+  calc (N * T.multinomialExponent k : ℝ) ≤ N * (n / (T.primePow : ℝ) ^ (2 * r)) := by gcongr
+    _ = N * n * (1 / (T.primePow : ℝ) ^ (2 * r)) := by ring
+    _ ≤ N * n * (1 / (T.primePow : ℝ) ^ (2 * r) + r ^ 2 / (k * T.primePow)) :=
         mul_le_mul_of_nonneg_left (le_add_of_nonneg_right (by positivity)) (by positivity)
     _ = T.divisorConstant k n r := by rw [divisorConstant]
 
@@ -684,8 +687,8 @@ lemma charP_residueField [IsLocalRing O] (hp : ¬IsUnit (T.p : O)) :
 
 /-- Let `W` be a local ring, `O` a valuation domain of characteristic zero and `T` a Frobenius cycle
 with `N` letters (ring maps `W → O`). Its prime `p = T.p = w ^ 2`, `w = T.sqrtPrime`, is not a unit
-of `O`, and the residue field of `W` has `q = P ^ N` elements for the power `P = T.P` of `p`. Forms
-have `k` variables and degree `n` in each letter and are given by their coefficients, and
+of `O`, and the residue field of `W` has `q = P ^ N` elements for the power `P = T.primePow` of `p`.
+Forms have `k` variables and degree `n` in each letter and are given by their coefficients, and
 `g ∈ GL_k(W)` acts on them by the matrix `ρ(g) = T.letterRep n g`. Let `0 < r ≤ k / 2`, `0 < θ ≤ 1`,
 `n ^ 4 ≤ q` and `(N k log q / θ) ^ 5 P ^ (3 r) ≤ n` (`h_large`). Let `b` be weights such that `ρ(g)`
 and `ρ(gᵀ)` are adjoint for `(h, h') ↦ h' ⬝ᵥ (b * h)`, with `b * b' = p ^ (N c₀)` for
@@ -721,7 +724,7 @@ theorem exists_isEdgeCondition (hp : ¬IsUnit (T.p : O)) {r : ℕ} {θ : ℝ}
     (T.map (residue O)).defectConditions n a r ⊥ (3 * defectThreshold k c)
   obtain ⟨Av, h_mem : ∀ h : Exponents N k n → O, Av *ᵥ h ∈ C, h_pairing⟩ :=
     T.exists_average_mem_defectConditions_and_dvd_sub hp ha T.card_isEven_add_self
-      (h_large.mul_degree_add_lt_P_pow T.card_isEven_add_self) hb c
+      (h_large.mul_degree_add_lt_primePow_pow T.card_isEven_add_self) hb c
   have h_index : ((parahoric W (twoBlock k r)).index * finrank (ResidueField O) S : ℝ) ≤
       (1 + θ) * Fintype.card (Exponents N k n) := by
     have h_rank : 2 * (k + 1) ≤ defectThreshold k c :=
@@ -889,13 +892,13 @@ variable {T} in
 /-- Let `T` be a Frobenius cycle with `N` letters (ring maps `W → O`) whose prime `p = w ^ 2`,
 `w = T.sqrtPrime`, is not a unit of `O`. Forms have `k` variables and degree `n` in each letter, and
 their monomials are indexed by `Exponents N k n`. Let `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
-`(N k log q / θ) ^ 5 P ^ (3 r) ≤ n` for `P = T.P` and `q = P ^ N` (`h_large`). The edge `e ∈ E` has
-the origin `src e ∈ X` and the basis change `g e`, and every edge from every origin occurs: each
-pair of a point of `X` and a coset of the parahoric subgroup of `GL_k(W)` with blocks `r` and
-`k - r` is `(src e, (g e)⁻¹)` for some `e`. The functions on edges that depend only on the origin
-(`T.originFunctions`) are the image of a matrix `Q` with a left inverse, so its columns are a basis,
-and the inclusion `T.edgeRestriction` of the integral functions on origins is `Q * d`, where `det d`
-divides `w ^ l` and `l` is at most `c_div = T.divisorConstant k n r` times the rank. -/
+`(N k log q / θ) ^ 5 P ^ (3 r) ≤ n` for `P = T.primePow` and `q = P ^ N` (`h_large`). The edge
+`e ∈ E` has the origin `src e ∈ X` and the basis change `g e`, and every edge from every origin
+occurs: each pair of a point of `X` and a coset of the parahoric subgroup of `GL_k(W)` with blocks
+`r` and `k - r` is `(src e, (g e)⁻¹)` for some `e`. The functions on edges that depend only on the
+origin (`T.originFunctions`) are the image of a matrix `Q` with a left inverse, so its columns are a
+basis, and the inclusion `T.edgeRestriction` of the integral functions on origins is `Q * d`, where
+`det d` divides `w ^ l` and `l` is at most `c_div = T.divisorConstant k n r` times the rank. -/
 lemma IsLargeDegree.exists_basis_det_dvd {r : ℕ} {θ : ℝ} (h_large : T.IsLargeDegree k n r θ)
     (hp : ¬IsUnit (T.p : O)) {X E : Type*} [Fintype X] [DecidableEq X] [Fintype E] [DecidableEq E]
     {src : E → X} {g : E → GL (Fin k) W}
@@ -1171,11 +1174,11 @@ lemma _root_.New.EdgeCoordinates.surjective_origin_originBasisChange {k : ℕ} {
   exact 𝓔.eq_of_origin_eq e e' h_origin (by simpa only [inv_inv] using QuotientGroup.eq.1 h_coset)
 
 /-- The theorem on elementary divisors. Let `O` be a valuation domain of characteristic zero and `T`
-a Frobenius cycle with `N` letters, prime `p = T.p` and power `P = T.P` of `p`, so that the residue
-field of `W` has `q = T.q = P ^ N` elements. Let `k` be the rank and `n` the degree in each letter,
-and let `J` split the index set `I` into exponents and `H`. Let `p` be a non-unit of `O`, and let
-`Y ∘ f = f ∘ A` for the edge Hecke operator `A` of the edges `𝓔` between the representatives `X`.
-Let `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `q ≥ n ^ 4` and `n ≥ (N k log q / θ) ^ 5 P ^ (3 r)`. Then `Y`
+a Frobenius cycle with `N` letters, prime `p = T.p` and power `P = T.primePow` of `p`, so that the
+residue field of `W` has `q = T.q = P ^ N` elements. Let `k` be the rank and `n` the degree in each
+letter, and let `J` split the index set `I` into exponents and `H`. Let `p` be a non-unit of `O`,
+and let `Y ∘ f = f ∘ A` for the edge Hecke operator `A` of the edges `𝓔` between the representatives
+`X`. Let `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `q ≥ n ^ 4` and `n ≥ (N k log q / θ) ^ 5 P ^ (3 r)`. Then `Y`
 keeps the image `L` of `f`, and for every `m` the colength of `Y L + p ^ m L` in `L` divides `p ^ l`
 for some `l ≤ (3 c_div + θ m) |X| |I|`, with `c_div = T.divisorConstant k n r`. -/
 theorem elementary_divisors {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W]

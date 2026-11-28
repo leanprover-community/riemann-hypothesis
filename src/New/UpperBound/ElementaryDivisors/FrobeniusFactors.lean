@@ -75,7 +75,7 @@ variable {N k : ℕ} {W O R : Type} [NeZero N] [CommRing W] [IsLocalRing W] [Com
 its entries raised to the power `P ^ d`. -/
 abbrev frobGenericMatrix (s : ZMod N) (d : ℕ) :
     Matrix (Fin k) (Fin k) (MvPolynomial (ZMod N × Fin k × Fin k) O) :=
-  of fun b c : Fin k ↦ X (s - d, b, c) ^ T.P ^ d
+  of fun b c : Fin k ↦ X (s - d, b, c) ^ T.primePow ^ d
 
 /-- The matrix `M` if the letter `s` is even, and the transposed adjugate of `M` if `s` is odd. -/
 def parityCofactor (s : ZMod N) (M : Matrix (Fin k) (Fin k) R) : Matrix (Fin k) (Fin k) R :=
@@ -113,7 +113,7 @@ def _root_.New.rootVector (a a' b : Fin k) : ℤ :=
 /-- The weight of the index `b`: the entry at `b` of `ρ = New.rootVector a a'`, divided by
 `P ^ ℓ`. -/
 def indexWeight (ℓ : ℕ) (a a' b : Fin k) : ℝ :=
-  rootVector a a' b / (T.P ^ ℓ : ℝ)
+  rootVector a a' b / (T.primePow ^ ℓ : ℝ)
 
 /-- The weight at the copy `i` of a monomial `ν` in the entries of all the generic matrices. For a
 monomial in one matrix let `row` and `col` be the sums of the entries of
@@ -122,14 +122,14 @@ monomial in one matrix let `row` and `col` be the sums of the entries of
 `i - u`, `0 < u < N`. -/
 def copyWeight (ℓ : ℕ) (a a' : Fin k) (i : ZMod N) (ν : ZMod N × Fin k × Fin k →₀ ℕ) : ℝ :=
   ((weight (fun v : Fin k × Fin k ↦ rootVector a a' v.1) (ν.curry i) : ℤ) +
-    ∑ j ∈ Finset.univ.erase i, (T.P ^ (j - i).val / T.q : ℝ) *
+    ∑ j ∈ Finset.univ.erase i, (T.primePow ^ (j - i).val / T.q : ℝ) *
       ((weight (fun v : Fin k × Fin k ↦ rootVector a a' v.1) (ν.curry j) : ℤ) -
-        (weight (fun v : Fin k × Fin k ↦ rootVector a a' v.2) (ν.curry j) : ℤ))) / T.P ^ ℓ
+        (weight (fun v : Fin k × Fin k ↦ rootVector a a' v.2) (ν.curry j) : ℤ))) / T.primePow ^ ℓ
 
 /-- The scaled index weight of the index `b` at the exponent `m`: its weight
 `New.FrobeniusCycle.indexWeight` times `P ^ m / q`. -/
 def scaledIndexWeight (ℓ : ℕ) (a a' : Fin k) (m : ℕ) (b : Fin k) : ℝ :=
-  T.indexWeight ℓ a a' b * (T.P ^ m / T.q)
+  T.indexWeight ℓ a a' b * (T.primePow ^ m / T.q)
 
 /-- The weight at the copy `i` of the entry `(b, c)` of the generic matrix of the copy `j`: the
 weight of the row `b` if `j = i`, and else the difference of the scaled index weights of `b` and `c`
@@ -393,39 +393,40 @@ lemma substitutionOperator_mem (G : ℝ → AddSubgroup R) [IsRealFiltration G]
 /-! ### Weights of indices and the Gauss filtration -/
 
 omit [NeZero N] in
-lemma abs_indexWeight_le (b : Fin k) : |T.indexWeight ℓ a a' b| ≤ 1 / T.P ^ ℓ := by
+lemma abs_indexWeight_le (b : Fin k) : |T.indexWeight ℓ a a' b| ≤ 1 / T.primePow ^ ℓ := by
   rw [indexWeight, abs_div, abs_pow, abs_cast]
   gcongr
   unfold rootVector
   split_ifs <;> simp
 
 /-- Let `T` be a Frobenius cycle: its letters `s : ZMod N` are alternately even and odd
-(`T.isEven`), `P = T.P` is its prime power and `q = T.q = P ^ N`. Let `a' = a + 1`. The defect
-weight `T.defectWeight j a a' (b, s)` at a letter `j` is `± P ^ ((s - j) mod N) / (q - 1)` for
-`b = a, a'` (positive at `a'` for even and at `a` for odd `s`, with `1` added to the positive weight
-if `s = j`) and `0` for other `b`. For `j = i + ℓ`, this weight times `1 - 1 / q` is
+(`T.isEven`), `P = T.primePow` is its prime power and `q = T.q = P ^ N`. Let `a' = a + 1`. The
+defect weight `T.defectWeight j a a' (b, s)` at a letter `j` is `± P ^ ((s - j) mod N) / (q - 1)`
+for `b = a, a'` (positive at `a'` for even and at `a` for odd `s`, with `1` added to the positive
+weight if `s = j`) and `0` for other `b`. For `j = i + ℓ`, this weight times `1 - 1 / q` is
 `± ρ b / P ^ ℓ * P ^ (d + m) / q`, with `+` for even and `-` for odd `s`. Here `ρ b` is `1` at `a'`,
 `-1` at `a` and else `0`, `ρ b / P ^ ℓ` is the index weight of `b`, `m = (s - d - i) mod N`, and
 `d = ℓ + 1` or `ℓ` as `(b, s)` is deep for the cut at `a'` or not. -/
 lemma mul_defectWeight_eq_indexWeight_mul (ha : (a : ℕ) + 1 = (a' : ℕ)) (i : ZMod N) (b : Fin k) :
     (1 - 1 / T.q) * T.defectWeight (i + ℓ) a a' (b, s) =
       (if T.isEven s then 1 else -1) * T.indexWeight ℓ a a' b *
-        (T.P ^ (ℓ + T.deepIndicator a' (b, s) +
+        (T.primePow ^ (ℓ + T.deepIndicator a' (b, s) +
           (s - (ℓ + T.deepIndicator a' (b, s) : ℕ) - i).val) / T.q) := by
   have hlt : a < a' := Fin.lt_def.2 (by lia)
   -- The factor `P ^ ℓ` cancels against the denominator of the index weight, and
   -- `1 - 1 / q = (q - 1) / q`, so it is enough to compare the numerators.
   have h_cancel (e : ℕ) :
-      T.indexWeight ℓ a a' b * (T.P ^ (ℓ + e + (s - (ℓ + e : ℕ) - i).val) / T.q) =
-        rootVector a a' b * T.P ^ (e + (s - e - (i + ℓ)).val) / T.q := by
-    have hP : (T.P : ℝ) ≠ 0 := (zero_lt_one.trans T.one_lt_P).ne'
+      T.indexWeight ℓ a a' b * (T.primePow ^ (ℓ + e + (s - (ℓ + e : ℕ) - i).val) / T.q) =
+        rootVector a a' b * T.primePow ^ (e + (s - e - (i + ℓ)).val) / T.q := by
+    have hP : (T.primePow : ℝ) ≠ 0 := (zero_lt_one.trans T.one_lt_primePow).ne'
     rw [show s - (ℓ + e : ℕ) - i = s - e - (i + ℓ) by grind, indexWeight, add_assoc, pow_add]
     field_simp
   suffices h_num :
-      (if (b, s) = T.rootVar a a' s then (T.P : ℝ) ^ (1 + (s - 1 - (i + ℓ)).val) else 0) -
-          (if (b, s) = T.rootVar a' a s then (T.P : ℝ) ^ (s - (i + ℓ)).val else 0) =
-        (if T.isEven s then 1 else -1) * (rootVector a a' b * T.P ^ (T.deepIndicator a' (b, s) +
-          (s - T.deepIndicator a' (b, s) - (i + ℓ)).val)) by
+      (if (b, s) = T.rootVar a a' s then (T.primePow : ℝ) ^ (1 + (s - 1 - (i + ℓ)).val) else 0) -
+          (if (b, s) = T.rootVar a' a s then (T.primePow : ℝ) ^ (s - (i + ℓ)).val else 0) =
+        (if T.isEven s then 1 else -1) * (rootVector a a' b *
+          T.primePow ^ (T.deepIndicator a' (b, s) +
+            (s - T.deepIndicator a' (b, s) - (i + ℓ)).val)) by
     have hq : (T.q : ℝ) - 1 ≠ 0 := (sub_pos.2 T.one_lt_q).ne'
     rw [mul_assoc, h_cancel, ← mul_div_assoc, ← h_num, defectWeight]
     have hq_ne : (T.q : ℝ) ≠ 0 := (zero_lt_one.trans T.one_lt_q).ne'
@@ -468,17 +469,18 @@ omit [NeZero N]
 and conjugate by `h` through `T.embedding s`. Modulo `p` this is the entrywise `P ^ d`-th power of
 `Y`, as `T.embedding (s - d)` to the power `P ^ d` is `T.embedding s` modulo `p`. -/
 lemma p_dvd_letterConj_pow_sub {Y : Matrix (Fin k) (Fin k) O} {b c : Fin k} :
-    (T.p : O) ∣ T.letterConj h s ((T.letterConj h⁻¹ (s - d) Y).map (· ^ T.P ^ d)) b c -
-      Y b c ^ T.P ^ d := by
+    (T.p : O) ∣ T.letterConj h s ((T.letterConj h⁻¹ (s - d) Y).map (· ^ T.primePow ^ d)) b c -
+      Y b c ^ T.primePow ^ d := by
   -- Modulo `p` the power `P ^ d` is a ring map `f`, and it carries `T.embedding (s - d)` to
   -- `T.embedding s`. So the two conjugations cancel.
   let Q : Type := O ⧸ Ideal.span {(T.p : O)}
   let π : O →+* Q := Ideal.Quotient.mk _
   have hp : π T.p = 0 := (eq_zero_iff_dvd _ _).2 dvd_rfl
-  have h_add (x y : O) : π ((x + y) ^ T.P ^ d) = π (x ^ T.P ^ d) + π (y ^ T.P ^ d) := by
+  have h_add (x y : O) :
+      π ((x + y) ^ T.primePow ^ d) = π (x ^ T.primePow ^ d) + π (y ^ T.primePow ^ d) := by
     simp only [← pow_mul, add_pow_prime_pow_eq T.prime, map_add, map_mul, hp, zero_mul, add_zero]
-  let f : O →+* Q := RingHom.mk' (π.toMonoidHom.comp (powMonoidHom (T.P ^ d))) h_add
-  have hf (x : O) : f x = π (x ^ T.P ^ d) := rfl
+  let f : O →+* Q := RingHom.mk' (π.toMonoidHom.comp (powMonoidHom (T.primePow ^ d))) h_add
+  have hf (x : O) : f x = π (x ^ T.primePow ^ d) := rfl
   have h_frob (x : W) : f (T.embedding (s - d) x) = π (T.embedding s x) := by
     rw [hf, eq_comm, ← sub_eq_zero, ← map_sub, eq_zero_iff_dvd]
     simpa using T.frobenius_pow_congr d (s - d) x
@@ -490,13 +492,13 @@ lemma p_dvd_letterConj_pow_sub {Y : Matrix (Fin k) (Fin k) O} {b c : Fin k} :
     simp [letterConj, A, B, Matrix.map_mul]
   have h_inner : (T.letterConj h⁻¹ (s - d) Y).map f = B * Y.map f * A := by
     simp [letterConj, A, B, Matrix.map_mul, comp_def, h_frob]
-  have h_pow (Z : Matrix (Fin k) (Fin k) O) : (Z.map (· ^ T.P ^ d)).map π = Z.map f :=
+  have h_pow (Z : Matrix (Fin k) (Fin k) O) : (Z.map (· ^ T.primePow ^ d)).map π = Z.map f :=
     Matrix.ext fun i j ↦ (hf (Z i j)).symm
-  have h_cancel : (T.letterConj h s ((T.letterConj h⁻¹ (s - d) Y).map (· ^ T.P ^ d))).map π =
-      (Y.map (· ^ T.P ^ d)).map π :=
+  have h_cancel : (T.letterConj h s ((T.letterConj h⁻¹ (s - d) Y).map (· ^ T.primePow ^ d))).map π =
+      (Y.map (· ^ T.primePow ^ d)).map π :=
     calc _ = A * (B * Y.map f * A) * B := by rw [h_outer, h_pow, h_inner]
       _ = A * B * Y.map f * (A * B) := by simp only [mul_assoc]
-      _ = (Y.map (· ^ T.P ^ d)).map π := by rw [hAB, one_mul, mul_one, h_pow]
+      _ = (Y.map (· ^ T.primePow ^ d)).map π := by rw [hAB, one_mul, mul_one, h_pow]
   rw [← eq_zero_iff_dvd, map_sub, sub_eq_zero]
   exact congrFun₂ h_cancel b c
 
@@ -506,7 +508,8 @@ power `P ^ d`, and the result is conjugated by `h` through `T.embedding s`. -/
 def conjFrobGenericMatrix (h : GL (Fin k) W) (s : ZMod N) (d : ℕ) :
     Matrix (Fin k) (Fin k) (MvPolynomial (ZMod N × Fin k × Fin k) O) :=
   (T.map C).letterConj h s
-    (((T.map C).letterConj h⁻¹ (s - d) (of fun b c : Fin k ↦ X (s - d, b, c))).map (· ^ T.P ^ d))
+    (((T.map C).letterConj h⁻¹ (s - d) (of fun b c : Fin k ↦ X (s - d, b, c))).map
+      (· ^ T.primePow ^ d))
 
 lemma conjFrobGenericMatrix_one :
     T.conjFrobGenericMatrix (1 : GL (Fin k) W) = T.frobGenericMatrix := by
@@ -531,23 +534,23 @@ lemma letterConj_mem_gaussFiltration {σ : Type} {w : O} {ω : σ → ℝ} {t : 
   exact sum_mem fun j _ ↦ sum_mem fun i _ ↦ by
     simpa using mul_mem_graded (mul_mem_graded (hC _) (hY i j)) (hC _)
 
-/-- Let all variable weights `ω v` have size at most `1 / T.P ^ d`. Then the entry `(b, c)` of
-`T.conjFrobGenericMatrix h s d` has the level `t = T.P ^ d • ω (s - d, b, c)` of the same entry
-`X (s - d, b, c) ^ T.P ^ d` without the conjugations: its coefficient at a monomial `μ` is divisible
-by `T.sqrtPrime ^ ⌈t - weight ω μ⌉₊`. -/
+/-- Let all variable weights `ω v` have size at most `1 / T.primePow ^ d`. Then the entry `(b, c)`
+of `T.conjFrobGenericMatrix h s d` has the level `t = T.primePow ^ d • ω (s - d, b, c)` of the same
+entry `X (s - d, b, c) ^ T.primePow ^ d` without the conjugations: its coefficient at a monomial `μ`
+is divisible by `T.sqrtPrime ^ ⌈t - weight ω μ⌉₊`. -/
 lemma conjFrobGenericMatrix_mem_gaussFiltration {ω : ZMod N × Fin k × Fin k → ℝ}
-    (hω : ∀ v : ZMod N × Fin k × Fin k, |ω v| ≤ 1 / T.P ^ d) (b c : Fin k) :
+    (hω : ∀ v : ZMod N × Fin k × Fin k, |ω v| ≤ 1 / T.primePow ^ d) (b c : Fin k) :
     T.conjFrobGenericMatrix h s d b c ∈
-      gaussFiltration (adicFiltration T.sqrtPrime) ω (T.P ^ d • ω (s - d, b, c)) := by
+      gaussFiltration (adicFiltration T.sqrtPrime) ω (T.primePow ^ d • ω (s - d, b, c)) := by
   -- Only monomials of weight at least `-1` occur. At these the wanted power of `T.sqrtPrime`
   -- divides `T.sqrtPrime ^ 2 = p`, and modulo `p` the conjugations cancel.
   let G : ℝ → AddSubgroup (MvPolynomial (ZMod N × Fin k × Fin k) O) :=
     gaussFiltration (adicFiltration 0) ω
   set M : MvPolynomial (ZMod N × Fin k × Fin k) O := T.conjFrobGenericMatrix h s d b c
-  set t : ℝ := T.P ^ d • ω (s - d, b, c)
-  have hX (v : ZMod N × Fin k × Fin k) : X v ∈ G (-(1 / T.P ^ d)) :=
+  set t : ℝ := T.primePow ^ d • ω (s - d, b, c)
+  have hX (v : ZMod N × Fin k × Fin k) : X v ∈ G (-(1 / T.primePow ^ d)) :=
     antitone (neg_le_of_abs_le (hω v)) X_mem_gaussFiltration
-  have h_supp : M ∈ G (T.P ^ d • -(1 / T.P ^ d)) :=
+  have h_supp : M ∈ G (T.primePow ^ d • -(1 / T.primePow ^ d)) :=
     T.letterConj_mem_gaussFiltration (fun i j ↦ pow_mem_graded _
       (T.letterConj_mem_gaussFiltration (fun x y ↦ hX (s - d, x, y)) i j)) b c
   refine mem_gaussFiltration_adicFiltration_iff.2 fun μ ↦ ?_
@@ -559,19 +562,19 @@ lemma conjFrobGenericMatrix_mem_gaussFiltration {ω : ZMod N × Fin k × Fin k �
     have hp : T.p ≠ 0 := T.prime.ne_zero
     simpa [t, field, mul_comm] using le_of_abs_le (hω (s - d, b, c))
   have h_le : ⌈t - weight ω μ⌉₊ ≤ 2 := ceil_le.2 (by push_cast; linarith)
-  have h_mod : C (T.sqrtPrime ^ 2) ∣ M - X (s - d, b, c) ^ T.P ^ d := by
+  have h_mod : C (T.sqrtPrime ^ 2) ∣ M - X (s - d, b, c) ^ T.primePow ^ d := by
     rw [T.sqrtPrime_sq, map_natCast]
     exact (T.map C).p_dvd_letterConj_pow_sub
-  have h_error : T.sqrtPrime ^ 2 ∣ M.coeff μ - (X (s - d, b, c) ^ T.P ^ d).coeff μ := by
+  have h_error : T.sqrtPrime ^ 2 ∣ M.coeff μ - (X (s - d, b, c) ^ T.primePow ^ d).coeff μ := by
     simpa only [AddMonoidAlgebra.coeff_sub_apply] using (C_dvd_iff_dvd_coeff _ _).1 h_mod μ
-  have h_main : T.sqrtPrime ^ ⌈t - weight ω μ⌉₊ ∣ (X (s - d, b, c) ^ T.P ^ d).coeff μ :=
+  have h_main : T.sqrtPrime ^ ⌈t - weight ω μ⌉₊ ∣ (X (s - d, b, c) ^ T.primePow ^ d).coeff μ :=
     mem_gaussFiltration_adicFiltration_iff.1 (pow_mem_graded _ X_mem_gaussFiltration) μ
   exact (dvd_sub_left h_main).1 ((pow_dvd_pow _ h_le).trans h_error)
 
 end
 
 /-- Let `ν` be a monomial in the variables `(j, b, c)`, the entries of `N` generic `k × k` matrices,
-let `P = T.P`, `q = P ^ N` and `ρ = rootVector a a' = e_{a'} - e_a`. The weight
+let `P = T.primePow`, `q = P ^ N` and `ρ = rootVector a a' = e_{a'} - e_a`. The weight
 `T.entryWeight ℓ a a' i (j, b, c)` is `ρ b / P ^ ℓ` if `j = i` and else
 `P ^ ((j - i) mod N) / q * (ρ b - ρ c) / P ^ ℓ`. Its sum over the variables of `ν` equals
 `T.copyWeight ℓ a a' i ν`, which is defined copy by copy from the sums of `ρ` over the row indices
@@ -591,23 +594,24 @@ lemma weight_entryWeight (i : ZMod N) (ν : ZMod N × Fin k × Fin k →₀ ℕ)
 
 /-- The scaled index weight of an index at an exponent `m ≤ N` has size at most `1 / P ^ ℓ`. -/
 lemma abs_scaledIndexWeight_le {m : ℕ} (hm : m ≤ N) (b : Fin k) :
-    |T.scaledIndexWeight ℓ a a' m b| ≤ 1 / T.P ^ ℓ := by
+    |T.scaledIndexWeight ℓ a a' m b| ≤ 1 / T.primePow ^ ℓ := by
   rw [scaledIndexWeight, abs_mul]
   refine (mul_le_of_le_one_right (abs_nonneg _) ?_).trans (T.abs_indexWeight_le b)
-  rw [abs_of_nonneg (by positivity), div_le_one (zero_lt_one.trans T.one_lt_q), cast_pow T.P N]
-  exact pow_le_pow_right₀ T.one_lt_P.le hm
+  rw [abs_of_nonneg (by positivity), div_le_one (zero_lt_one.trans T.one_lt_q),
+    cast_pow T.primePow N]
+  exact pow_le_pow_right₀ T.one_lt_primePow.le hm
 
 /-- For every copy `i` and every entry `v` (a copy together with a row and a column index), the
-weight `T.entryWeight ℓ a a' i v` has absolute value at most `2 / T.P ^ ℓ`. -/
+weight `T.entryWeight ℓ a a' i v` has absolute value at most `2 / T.primePow ^ ℓ`. -/
 lemma abs_entryWeight_le (i : ZMod N) (v : ZMod N × Fin k × Fin k) :
-    |T.entryWeight ℓ a a' i v| ≤ 2 / T.P ^ ℓ := by
-  rw [entryWeight, show (2 / T.P ^ ℓ : ℝ) = 1 / T.P ^ ℓ + 1 / T.P ^ ℓ by ring]
+    |T.entryWeight ℓ a a' i v| ≤ 2 / T.primePow ^ ℓ := by
+  rw [entryWeight, show (2 / T.primePow ^ ℓ : ℝ) = 1 / T.primePow ^ ℓ + 1 / T.primePow ^ ℓ by ring]
   split_ifs
   · exact (T.abs_indexWeight_le _).trans (le_add_of_nonneg_left (by positivity))
   · have hm : (v.1 - i).val ≤ N := (v.1 - i).val_lt.le
     grw [abs_sub, T.abs_scaledIndexWeight_le hm, T.abs_scaledIndexWeight_le hm]
 
-/-- Let `P = T.P`. The entry `(b, c)` of
+/-- Let `P = T.primePow`. The entry `(b, c)` of
 `T.frobGenericMatrix s d` is the variable `(s - d, b, c)` to the power `P ^ d`, so its weight at the
 copy `i` is `P ^ d` times `T.entryWeight`. For `d ≤ N` this weight differs by at most `1 / P ^ ℓ`
 from the scaled index weight of `b` at the exponent `d + 1 + (s - (d + 1) - i) mod N` less that of
@@ -616,9 +620,9 @@ lemma abs_scaledIndexWeight_sub_scaledIndexWeight_sub_entryWeight_le (hd : d ≤
     (b c : Fin k) :
     |T.scaledIndexWeight ℓ a a' (d + 1 + (s - (d + 1 : ℕ) - i).val) b -
         T.scaledIndexWeight ℓ a a' (d + (s - d - i).val) c -
-      T.P ^ d * T.entryWeight ℓ a a' i (s - d, b, c)| ≤ 1 / T.P ^ ℓ := by
+      T.primePow ^ d * T.entryWeight ℓ a a' i (s - d, b, c)| ≤ 1 / T.primePow ^ ℓ := by
   have h_shift (m : ℕ) (b : Fin k) :
-      T.scaledIndexWeight ℓ a a' (d + m) b = T.P ^ d * T.scaledIndexWeight ℓ a a' m b := by
+      T.scaledIndexWeight ℓ a a' (d + m) b = T.primePow ^ d * T.scaledIndexWeight ℓ a a' m b := by
     unfold scaledIndexWeight
     ring
   have h_succ : d + 1 + (s - (d + 1 : ℕ) - i).val =
@@ -628,7 +632,8 @@ lemma abs_scaledIndexWeight_sub_scaledIndexWeight_sub_entryWeight_le (hd : d ≤
   split_ifs with h_copy
   · -- Only the scaled index weight of `c` is left.
     have h_full : T.scaledIndexWeight ℓ a a' N b = T.indexWeight ℓ a a' b := by
-      rw [scaledIndexWeight, ← cast_pow T.P N, div_self (zero_lt_one.trans T.one_lt_q).ne', mul_one]
+      rw [scaledIndexWeight, ← cast_pow T.primePow N, div_self (zero_lt_one.trans T.one_lt_q).ne',
+        mul_one]
     simpa [h_copy, h_shift, h_full] using T.abs_scaledIndexWeight_le hd c
   · -- The difference of the scaled index weights is exactly the weight of the entry.
     simp [h_shift, mul_sub]
@@ -637,10 +642,10 @@ end
 
 variable {r ℓ n : ℕ} {a a' : Fin k}
 
-/-- Let `T` be a Frobenius cycle, with letters `s : ZMod N`, prime power `P = T.P`, `q = P ^ N` and
-`w = T.sqrtPrime`, `w ^ 2 = p`. Let `a' = a + 1`, `ℓ ≤ N`, `|ε| ≤ 1 / 2` and `ρ = e_{a'} - e_a`.
-Take a generic matrix `X_j` for each `j : ZMod N`, and give its entry `(b, c)` the weight `ε` times
-`T.entryWeight ℓ a a' i (j, b, c)`, which is `ρ b / P ^ ℓ` if `j = i` and else
+/-- Let `T` be a Frobenius cycle, with letters `s : ZMod N`, prime power `P = T.primePow`,
+`q = P ^ N` and `w = T.sqrtPrime`, `w ^ 2 = p`. Let `a' = a + 1`, `ℓ ≤ N`, `|ε| ≤ 1 / 2` and
+`ρ = e_{a'} - e_a`. Take a generic matrix `X_j` for each `j : ZMod N`, and give its entry `(b, c)`
+the weight `ε` times `T.entryWeight ℓ a a' i (j, b, c)`, which is `ρ b / P ^ ℓ` if `j = i` and else
 `P ^ ((j - i) mod N) / q * (ρ b - ρ c) / P ^ ℓ`. The matrix `T.substitutionOperator` is the
 Kronecker product over `s` of `n`-th symmetric powers of products (transposed adjugates of products
 for odd `s`) of the entrywise powers `P ^ d`, `d ≤ ℓ` in deep rows and `d < ℓ` in the others, of the
@@ -655,15 +660,15 @@ lemma substitutionOperator_conj_mem_gaussFiltration (ha : (a : ℕ) + 1 = (a' : 
     T.substitutionOperator a' ℓ n (T.conjFrobGenericMatrix h) β γ ∈
       gaussFiltration (adicFiltration T.sqrtPrime) (ε • T.entryWeight ℓ a a' i)
         (weight ((ε * (1 - 1 / T.q)) • T.defectWeight (i + ℓ) a a') (exponentOf β) -
-          N * n * k * (ℓ + 2) / (2 * T.P ^ ℓ)) := by
+          N * n * k * (ℓ + 2) / (2 * T.primePow ^ ℓ)) := by
   set ω : ZMod N × Fin k × Fin k → ℝ := ε • T.entryWeight ℓ a a' i
-  set u : ℝ := 2⁻¹ * (1 / T.P ^ ℓ)
+  set u : ℝ := 2⁻¹ * (1 / T.primePow ^ ℓ)
   have h_scale {y z : ℝ} (hy : |y| ≤ z) : |ε * y| ≤ 2⁻¹ * z :=
     (abs_mul ε y).trans_le (mul_le_mul hε hy (abs_nonneg y) (by norm_num))
-  have h_small {d : ℕ} (hd : d ≤ ℓ) (v : ZMod N × Fin k × Fin k) : |ω v| ≤ 1 / T.P ^ d :=
-    calc |ω v| ≤ 2⁻¹ * (2 / T.P ^ ℓ) := h_scale (T.abs_entryWeight_le i v)
-      _ = 1 / T.P ^ ℓ := by ring
-      _ ≤ 1 / T.P ^ d := one_div_pow_le_one_div_pow_of_le T.one_lt_P.le hd
+  have h_small {d : ℕ} (hd : d ≤ ℓ) (v : ZMod N × Fin k × Fin k) : |ω v| ≤ 1 / T.primePow ^ d :=
+    calc |ω v| ≤ 2⁻¹ * (2 / T.primePow ^ ℓ) := h_scale (T.abs_entryWeight_le i v)
+      _ = 1 / T.primePow ^ ℓ := by ring
+      _ ≤ 1 / T.primePow ^ d := one_div_pow_le_one_div_pow_of_le T.one_lt_primePow.le hd
   -- The potential of the factor `d` at the letter `s` has the exponent `d + m`, where
   -- `s - d = i + m` and `m < N`.
   let α (s : ZMod N) (d : ℕ) (b : Fin k) : ℝ :=
@@ -680,9 +685,9 @@ lemma substitutionOperator_conj_mem_gaussFiltration (ha : (a : ℕ) + 1 = (a' : 
     simp only [α, scaledIndexWeight]
     ring
   have h_step (s : ZMod N) (d : ℕ) (hd : d ≤ ℓ) (b c : Fin k) :
-      α s (d + 1) b - α s d c - u ≤ T.P ^ d • ω (s - d, b, c) := by
-    have h_close : |α s (d + 1) b - α s d c - T.P ^ d • ω (s - d, b, c)| ≤ u := by
-      simpa only [α, ω, Pi.smul_apply, smul_eq_mul, nsmul_eq_mul, cast_pow T.P d, mul_sub,
+      α s (d + 1) b - α s d c - u ≤ T.primePow ^ d • ω (s - d, b, c) := by
+    have h_close : |α s (d + 1) b - α s d c - T.primePow ^ d • ω (s - d, b, c)| ≤ u := by
+      simpa only [α, ω, Pi.smul_apply, smul_eq_mul, nsmul_eq_mul, cast_pow T.primePow d, mul_sub,
         mul_left_comm ε] using
         h_scale (T.abs_scaledIndexWeight_sub_scaledIndexWeight_sub_entryWeight_le
           (hd.trans hℓ_le) i b c)
@@ -691,7 +696,7 @@ lemma substitutionOperator_conj_mem_gaussFiltration (ha : (a : ℕ) + 1 = (a' : 
       T.conjFrobGenericMatrix h s d b c ∈
         gaussFiltration (adicFiltration T.sqrtPrime) ω (α s (d + 1) b - α s d c - u) :=
     antitone (h_step s d hd b c) (T.conjFrobGenericMatrix_mem_gaussFiltration (h_small hd) b c)
-  rw [show (N * n * k * (ℓ + 2) / (2 * T.P ^ ℓ) : ℝ) = N * n * k * (ℓ + 2) * u by ring]
+  rw [show (N * n * k * (ℓ + 2) / (2 * T.primePow ^ ℓ) : ℝ) = N * n * k * (ℓ + 2) * u by ring]
   exact T.substitutionOperator_mem _ α _ u hα_zero hα_sum h_last h_factor (by positivity)
 
 /-- If `2 n ≤ T.q`, the defect `Δ` at the letter `i` along the root `(a, a')` of a monomial `β` of
@@ -708,14 +713,14 @@ lemma abs_defect_sub_mul_le_one (i : ZMod N) (β : Exponents N k n) (hn : 2 * n 
   exact h_size.trans (by exact_mod_cast hn)
 
 /-- Weight and defect. Let `T` be a Frobenius cycle, with letters `s : ZMod N` (even or odd), ring
-maps `W → O`, prime `p`, the power `P = T.P` of `p`, `q = P ^ N` and `w = T.sqrtPrime` in `O` with
-`w ^ 2 = p`. Let `a' = a + 1`, `N n k (ℓ + 2) ≤ P ^ ℓ`, `ℓ ≤ N` and `h` in `GL_k(W)`. Take a generic
-matrix `X_j` for each `j : ZMod N` (a copy). The matrix `T.substitutionOperator a' ℓ n` is the
-Kronecker product over `s` of `n`-th symmetric powers of products (transposed adjugates of products
-for odd `s`) of the entrywise powers `P ^ d` of the `X_{s - d}`, taken between conjugations by `h⁻¹`
-and `h` (`T.conjFrobGenericMatrix h`); here `d ≤ ℓ` in the rows `b ≥ a'` for even and `b < a'` for
-odd `s`, and `d < ℓ` in the others. Its rows `β` are monomials of degree `n` in the variables
-`(b, s)` of each letter `s`.
+maps `W → O`, prime `p`, the power `P = T.primePow` of `p`, `q = P ^ N` and `w = T.sqrtPrime` in `O`
+with `w ^ 2 = p`. Let `a' = a + 1`, `N n k (ℓ + 2) ≤ P ^ ℓ`, `ℓ ≤ N` and `h` in `GL_k(W)`. Take a
+generic matrix `X_j` for each `j : ZMod N` (a copy). The matrix `T.substitutionOperator a' ℓ n` is
+the Kronecker product over `s` of `n`-th symmetric powers of products (transposed adjugates of
+products for odd `s`) of the entrywise powers `P ^ d` of the `X_{s - d}`, taken between conjugations
+by `h⁻¹` and `h` (`T.conjFrobGenericMatrix h`); here `d ≤ ℓ` in the rows `b ≥ a'` for even and
+`b < a'` for odd `s`, and `d < ℓ` in the others. Its rows `β` are monomials of degree `n` in the
+variables `(b, s)` of each letter `s`.
 
 * The defect of `β` at `i + ℓ` is the sum over its variables of `T.defectWeight`, which is
   `± P ^ ((s - i - ℓ) mod N) / (q - 1)` for `b = a, a'` (`+` at `a'` for even and at `a` for odd
@@ -727,7 +732,7 @@ odd `s`, and `d < ℓ` in the others. Its rows `β` are monomials of degree `n` 
 If the coefficient of `ν` in the entry `(β, γ)` is not divisible by `w ^ c`, then the weight of `ν`
 is within `defectThreshold k c = 3 k c` of the defect of `β`. -/
 lemma abs_defect_sub_copyWeight_le (ha : (a : ℕ) + 1 = (a' : ℕ)) (i : ZMod N)
-    (hn_le : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ) (hℓ_le : ℓ ≤ N) (h : GL (Fin k) W) {c : ℕ}
+    (hn_le : N * n * k * (ℓ + 2) ≤ T.primePow ^ ℓ) (hℓ_le : ℓ ≤ N) (h : GL (Fin k) W) {c : ℕ}
     {β γ : Exponents N k n} {ν : ZMod N × Fin k × Fin k →₀ ℕ}
     (h_coeff : ¬T.sqrtPrime ^ c ∣
       (T.substitutionOperator a' ℓ n (T.conjFrobGenericMatrix h) β γ).coeff ν) :
@@ -740,10 +745,10 @@ lemma abs_defect_sub_copyWeight_le (ha : (a : ℕ) + 1 = (a' : ℕ)) (i : ZMod N
   set Δ : ℝ := weight (T.defectWeight (i + ℓ) a a') (exponentOf β) with hΔ
   let E : ℝ := (1 - 1 / T.q) * Δ
   set D : ℝ := T.copyWeight ℓ a a' i ν with hD
-  let L : ℝ := N * n * k * (ℓ + 2) / (2 * T.P ^ ℓ)
+  let L : ℝ := N * n * k * (ℓ + 2) / (2 * T.primePow ^ ℓ)
   have h_loss : L ≤ 2⁻¹ := by
-    have h_cast : (N * n * k * (ℓ + 2) : ℝ) ≤ T.P ^ ℓ := by exact_mod_cast hn_le
-    rw [div_le_iff₀ (mul_pos two_pos (pow_pos (zero_lt_one.trans T.one_lt_P) ℓ))]
+    have h_cast : (N * n * k * (ℓ + 2) : ℝ) ≤ T.primePow ^ ℓ := by exact_mod_cast hn_le
+    rw [div_le_iff₀ (mul_pos two_pos (pow_pos (zero_lt_one.trans T.one_lt_primePow) ℓ))]
     linarith
   have hn_le_q : 2 * n ≤ T.q :=
     calc 2 * n = 1 * n * 1 * 2 := by ring
@@ -775,28 +780,28 @@ lemma abs_defect_sub_copyWeight_le (ha : (a : ℕ) + 1 = (a' : ℕ)) (i : ZMod N
 
 /-! ### Degrees -/
 
-/-- Let `T` be a Frobenius cycle with letters `s : ZMod N` and prime power `P = T.P`. Take a generic
-matrix with entries `X (j, b, c)` for each `j : ZMod N` (a copy); `T.frobGenericMatrix s d` is the
-entrywise power `P ^ d` of the copy `s - d`. The matrix `T.substitutionOperator r ℓ n` is the
+/-- Let `T` be a Frobenius cycle with letters `s : ZMod N` and prime power `P = T.primePow`. Take a
+generic matrix with entries `X (j, b, c)` for each `j : ZMod N` (a copy); `T.frobGenericMatrix s d`
+is the entrywise power `P ^ d` of the copy `s - d`. The matrix `T.substitutionOperator r ℓ n` is the
 Kronecker product over `s` of `n`-th symmetric powers of products (transposed adjugates of products
 for odd `s`) of these for `d < ℓ + 1` or `d < ℓ`, as the side of `r` on which the row lies and the
 parity of `s` decide. Its rows and columns `β`, `γ` are families of exponent vectors of degree `n`,
-one for each letter. A monomial `ν` that occurs in an entry has degree at most
-`N n k (ℓ + 2) P ^ ℓ` in the variables of each copy `j`. -/
+one for each letter. A monomial `ν` that occurs in an entry has degree at most `N n k (ℓ + 2) P ^ ℓ`
+in the variables of each copy `j`. -/
 lemma degree_le_of_coeff_substitutionOperator {β γ : Exponents N k n}
     {ν : ZMod N × Fin k × Fin k →₀ ℕ}
     (hν : (T.substitutionOperator r ℓ n T.frobGenericMatrix β γ).coeff ν ≠ 0) (j : ZMod N) :
-    degree (ν.curry j) ≤ N * n * k * (ℓ + 2) * T.P ^ ℓ := by
+    degree (ν.curry j) ≤ N * n * k * (ℓ + 2) * T.primePow ^ ℓ := by
   -- Give the variables of the copy `j` weight `-1`. Level `-t` of the Gauss filtration over
   -- `adicFiltration 0` consists of the polynomials of degree at most `t` in the copy `j`.
   let ω (v : ZMod N × Fin k × Fin k) : ℝ := if v.1 = j then -1 else 0
   have h_mem := T.substitutionOperator_mem (gaussFiltration (adicFiltration (0 : O)) ω)
-    (α := 0) (x := 0) (u := T.P ^ ℓ) (β := β) (γ := γ) (r := r) (ℓ := ℓ) (n := n)
+    (α := 0) (x := 0) (u := T.primePow ^ ℓ) (β := β) (γ := γ) (r := r) (ℓ := ℓ) (n := n)
     (ψ := T.frobGenericMatrix) (hα_zero := by simp) (hα_sum := by simp) (hx := by simp)
     (hu := by positivity) (hψ := fun s d hd b c => by
       refine antitone (le_trans ?_ (nsmul_le_nsmul_right (a := (-1 : ℝ)) (by grind) _))
         (pow_mem_graded _ X_mem_gaussFiltration)
-      simpa using pow_le_pow_right₀ T.one_lt_P.le hd)
+      simpa using pow_le_pow_right₀ T.one_lt_primePow.le hd)
   rify
   simpa [ω, degree_eq_sum, sum_prod_type_right, weight_eq_sum] using
     le_weight_of_mem_gaussFiltration_zero h_mem hν

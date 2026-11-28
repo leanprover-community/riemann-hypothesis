@@ -86,7 +86,7 @@ theorem isLargeDegree_of_le_card {P : Parameters} (D : Data P) {N : ℕ} {W O : 
       _ ≤ exp 1 ^ D.m := (exp_le_exp.2 D.le_of_hasLogBound).trans_eq (exp_one_pow _).symm
       _ ≤ 3 ^ D.m := by grw [exp_one_lt_three.le]
       _ ≤ T.q := mod_cast h_three
-  · -- `log q ≤ frobExp N log x₁` and `T.P ^ (3 * ceilLogLifts p) ≤ √b`, since `p < x₁`.
+  · -- `log q ≤ frobExp N log x₁` and `T.primePow ^ (3 * ceilLogLifts p) ≤ √b`, since `p < x₁`.
     -- The final bound compares magnitudes; it uses `hfrobExp_upper` and `hN_upper`.
     have hfrobExp_upper : D.HasLogUpper T.frobExp (Real.log D.logX₁) :=
       D.hasLogUpper_of_le hfrobExp_le
@@ -107,7 +107,7 @@ theorem isLargeDegree_of_le_card {P : Parameters} (D : Data P) {N : ℕ} {W O : 
         _ ≤ D.x₁ ^ (3 * l₀ D.towerExp ^ 2) := pow_le_pow_right₀ (one_le_exp h_logX₁.le) h_exp
         _ ≤ √D.b := D.x₁_pow_le_sqrt_b
     calc ((N : ℝ) * D.k * Real.log T.q / (1 / (D.m ^ 2 * D.f))) ^ 5 *
-          (T.P : ℝ) ^ (3 * D.ceilLogLifts T.p)
+          (T.primePow : ℝ) ^ (3 * D.ceilLogLifts T.p)
         ≤ ((N : ℝ) * D.k * (T.frobExp * N * D.logX₁) / (1 / (D.m ^ 2 * D.f))) ^ 5 * √D.b := by
           grw [h_log, T.p.cast_pow, hp, h_pow]
       _ ≤ (D.a : ℝ) := D.le_of_hasLogBound
@@ -126,20 +126,20 @@ theorem three_mul_divisorConstant_le {P : Parameters} (D : Data P) {N ℓ : ℕ}
   have hp_pos : (0 : ℝ) < T.p := mod_cast T.prime.pos
   have hm_pos : (0 : ℝ) < D.m := HasLogBound.pos D
   have hk_pos : (0 : ℝ) < D.k := HasLogBound.pos D
-  have hp_le : T.p ≤ T.P := Nat.le_self_pow hfrobExp_pos.ne' T.p
-  have hP_pos : (0 : ℝ) < T.P := hp_pos.trans_le (mod_cast hp_le)
-  have h_first : D.m * T.p ≤ T.P ^ (2 * r) :=
+  have hp_le : T.p ≤ T.primePow := Nat.le_self_pow hfrobExp_pos.ne' T.p
+  have hP_pos : (0 : ℝ) < T.primePow := hp_pos.trans_le (mod_cast hp_le)
+  have h_first : D.m * T.p ≤ T.primePow ^ (2 * r) :=
     calc D.m * T.p ≤ T.p ^ r * T.p ^ r :=
           Nat.mul_le_mul (le_pow_clog T.prime.one_lt D.m)
             (Nat.le_self_pow (hfrobExp_pos.trans_le hfrobExp_le).ne' T.p)
       _ = T.p ^ (2 * r) := by rw [two_mul, pow_add]
-      _ ≤ T.P ^ (2 * r) := Nat.pow_le_pow_left hp_le _
-  have h_second : (r ^ 2 / (D.k * T.P) : ℝ) ≤ 1 / (D.m * T.p) := by
+      _ ≤ T.primePow ^ (2 * r) := Nat.pow_le_pow_left hp_le _
+  have h_second : (r ^ 2 / (D.k * T.primePow) : ℝ) ≤ 1 / (D.m * T.p) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity), one_mul, ← mul_assoc]
     exact mul_le_mul (D.le_of_hasLogBound : (r ^ 2 * D.m : ℝ) ≤ D.k) (mod_cast hp_le) hp_pos.le
       hk_pos.le
   calc 3 * T.divisorConstant D.k D.a r
-      = 3 * (N * D.a * (1 / T.P ^ (2 * r) + r ^ 2 / (D.k * T.P))) := by
+      = 3 * (N * D.a * (1 / T.primePow ^ (2 * r) + r ^ 2 / (D.k * T.primePow))) := by
         rw [FrobeniusCycle.divisorConstant]
     _ ≤ 3 * (N * D.a * (1 / (D.m * T.p) + 1 / (D.m * T.p))) := by
       gcongr
@@ -332,7 +332,7 @@ theorem IsMarked.exists_frobeniusCycle {P : Parameters} {D : Data P} {p : ℕ} [
     isEven i := decide (inducedPlace (t i) = l)
     sqrtPrime := ⟨w, hw_mem⟩
     prime := Fact.out
-    five_le_P := (by lia : 5 ≤ p).trans (Nat.le_self_pow h_odd.pos.ne' p)
+    five_le_primePow := (by lia : 5 ≤ p).trans (Nat.le_self_pow h_odd.pos.ne' p)
     sqrtPrime_sq := Subtype.ext hw.symm
     frobenius_congr i := dvd_letterEmbedding_sub_pow h_inert h_split h_odd (ht_succ i) _ _
     isEven_succ i := ?_

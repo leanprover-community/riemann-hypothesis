@@ -291,7 +291,7 @@ def sign (z : Fin k × ZMod N) : ℤ :=
 def card (_ : T.RootAt k) : ℕ := T.q
 
 /-- The power `P_s = P ^ (s - i)`, with `s - i` read in `[0, N)`. -/
-def frobPower (s : ZMod N) : ℕ := T.P ^ (s - D.letter).val
+def frobPower (s : ZMod N) : ℕ := T.primePow ^ (s - D.letter).val
 
 /-- The weights `q P_s` at `X_s` and `0` at the other variables, where `q = D.card` and
 `P_s = D.frobPower s`. Under the hypotheses of `HasBoundedIncrements.weight_zeroOrder_mul_card_le`,
@@ -469,8 +469,8 @@ for `D.poleOrder`. -/
 lemma defectWeight_eq [NeZero N] {T : FrobeniusCycle N W R} (D : T.RootAt k) (z : Fin k × ZMod N) :
     T.defectWeight D.letter D.fst D.snd z =
       (D.zeroOrder z - D.poleOrder z / D.card) / (D.card - 1) := by
-  change ((if z = D.varY z.2 then (T.P : ℝ) ^ (1 + (z.2 - 1 - D.letter).val) else 0) -
-    if z = D.varX z.2 then (T.P : ℝ) ^ (z.2 - D.letter).val else 0) / (D.card - 1) = _
+  change ((if z = D.varY z.2 then (T.primePow : ℝ) ^ (1 + (z.2 - 1 - D.letter).val) else 0) -
+    if z = D.varX z.2 then (T.primePow : ℝ) ^ (z.2 - D.letter).val else 0) / (D.card - 1) = _
   rw [one_add_val_sub_one_sub, zeroOrder, poleOrder]
   congr 1
   split_ifs
@@ -625,7 +625,8 @@ lemma HasBoundedIncrements.frobPower_mul_slope_le [NeZero N]
     {T : FrobeniusCycle N W R} {D : T.RootAt k}
     {c : Fin k × ZMod N → ℝ} (hc : D.HasBoundedIncrements c) (s : ZMod N) :
     D.frobPower s * D.slope c ≤ 1 / 5 := by
-  have h_power : (5 * D.frobPower s : ℝ) ≤ D.card := mod_cast T.five_mul_P_pow_le_q (s - D.letter)
+  have h_power : (5 * D.frobPower s : ℝ) ≤ D.card :=
+    mod_cast T.five_mul_primePow_pow_le_q (s - D.letter)
   have h_step : D.card * D.slope c ≤ 1 := card_mul_slope.trans_le (hc D.letter).2
   nlinarith [hc.slope_pos]
 
@@ -636,7 +637,7 @@ lemma HasBoundedIncrements.two_le_card_mul_frobPower_mul_slope [NeZero N] {T : F
     (hs : s ≠ D.letter) :
     2 ≤ D.card * D.frobPower s * D.slope c := by
   have h_power : (5 : ℝ) ≤ D.frobPower s :=
-    mod_cast T.five_le_P.trans
+    mod_cast T.five_le_primePow.trans
       (le_self_pow (by simpa only [ne_eq, ZMod.val_eq_zero, sub_eq_zero] using hs) _)
   have h_step : (2⁻¹ : ℝ) ≤ D.card * D.slope c := (hc D.letter).1.trans_eq card_mul_slope.symm
   nlinarith
@@ -686,10 +687,10 @@ lemma C_monomial_mul_X_mem_iteratedGaussFiltration {T : FrobeniusCycle N W R} {z
     nsmul_eq_mul, tsub_le_iff_right, add_comm, add_zero] using hb)
 
 /-- Expansion at infinity. Let `w = T.sqrtPrime`, a square root of the prime `T.p` in `R`, let
-`i = D.letter` and let `q = D.card = P ^ N` with `P = T.P`. In each letter `s`, `X_s = D.varX s` and
-`Y_s = D.varY s` are the variables with index `D.fst`, `D.snd` if `s` is even, in reverse order if
-it is odd. Let the weights `c` rise from `X_s` to `Y_s` by amounts in `[1 / 2, 1]`, let each term of
-`f` have `w`-adic order plus `c`-weight at least `b`, and put
+`i = D.letter` and let `q = D.card = P ^ N` with `P = T.primePow`. In each letter `s`,
+`X_s = D.varX s` and `Y_s = D.varY s` are the variables with index `D.fst`, `D.snd` if `s` is even,
+in reverse order if it is odd. Let the weights `c` rise from `X_s` to `Y_s` by amounts in
+`[1 / 2, 1]`, let each term of `f` have `w`-adic order plus `c`-weight at least `b`, and put
 `P_s = D.frobPower s = P ^ (s - i).val` and `ρ = D.slope c = (c Y_i - c X_i) / q`.
 
 In the filtration on polynomials in the variables `z` over `R[t]`, `w` weighs `1`, `t` weighs `-ρ`,
@@ -739,7 +740,7 @@ lemma HasBoundedIncrements.aeval_mem_and_sub_mem_iteratedGaussFiltration [NeZero
 /-- The error in the rule `(t + ι_i(r)) ^ P ^ n = t ^ P ^ n + ι_{i + n}(r)`. -/
 noncomputable def _root_.New.FrobeniusCycle.frobeniusError (T : FrobeniusCycle N W R) (i : ZMod N)
     (r : W) (n : ℕ) : MvPolynomial Unit R :=
-  (X () + C (T.embedding i r)) ^ T.P ^ n - X () ^ T.P ^ n - C (T.embedding (i + n) r)
+  (X () + C (T.embedding i r)) ^ T.primePow ^ n - X () ^ T.primePow ^ n - C (T.embedding (i + n) r)
 
 /-- For a letter `i`, `r` in `W` and natural `n`, take the polynomial in `t` `T.frobeniusError i r
 n = (t + ι_i(r)) ^ P ^ n - t ^ P ^ n - ι_{i + n}(r)`. In `T.iteratedGaussFiltration c ρ v`, `w`
@@ -749,11 +750,12 @@ lemma frobeniusError_mul_X_mem {T : FrobeniusCycle N W R} {c : Fin k × ZMod N �
     (hρ : 0 ≤ ρ) (v : Fin k × ZMod N → ℕ) (z : Fin k × ZMod N) (i : ZMod N) (r : W) (n : ℕ) :
     C (T.frobeniusError i r n) * X z ∈ T.iteratedGaussFiltration c ρ v (c z - v z * ρ + 2) := by
   have h_add : (T.p : MvPolynomial Unit R) ∣
-      (X () + C (T.embedding i r)) ^ T.P ^ n - X () ^ T.P ^ n - C (T.embedding i r) ^ T.P ^ n := by
+      (X () + C (T.embedding i r)) ^ T.primePow ^ n - X () ^ T.primePow ^ n -
+        C (T.embedding i r) ^ T.primePow ^ n := by
     simp only [← pow_mul, add_pow_prime_pow_eq' T.prime, add_assoc, add_sub_cancel_left,
       dvd_mul_right]
-  have h_shift : (T.p : MvPolynomial Unit R) ∣ C (T.embedding (i + n) r) - C (T.embedding i r) ^ T.P
-    ^ n := by
+  have h_shift : (T.p : MvPolynomial Unit R) ∣
+      C (T.embedding (i + n) r) - C (T.embedding i r) ^ T.primePow ^ n := by
     simpa only [map_natCast, C_sub, C_pow] using map_dvd C (T.frobenius_pow_congr n i r)
   have h_dvd : C (T.sqrtPrime ^ 2) ∣ T.frobeniusError i r n := by
     simpa only [sqrtPrime_sq, map_natCast, frobeniusError, sub_sub_sub_cancel_right] using
@@ -776,7 +778,7 @@ noncomputable def _root_.New.shiftCoeff (σ : Type*) (x : R) :
 /-- The shift of `t` undoes the transvection in `D.swapTransvection r` up to Frobenius errors. For
 `a = D.fst`, `a' = D.snd` and a letter `s ∈ ℤ/N`, `X_s = D.varX s` is `(a, s)` for even and
 `(a', s)` for odd `s`, and `Y_s = D.varY s` is the other of the two. Let `i = D.letter`,
-`q = P ^ N`, `P_s = P ^ (s - i).val` with `P = T.P`, and `ι_s = T.embedding s : W → R`.
+`q = P ^ N`, `P_s = P ^ (s - i).val` with `P = T.primePow`, and `ι_s = T.embedding s : W → R`.
 
 Act on the variable `z` by `D.swapTransvection r` through `T.polyAction`, the action of `GL_k(W)` on
 polynomials in the variables `(b, s)`. Then substitute `D.mainSubst - D.crossSubst`, with values in
@@ -857,9 +859,9 @@ lemma shiftCoeff_aeval_swapTransvection_X [NeZero N]
 /-- In each letter `s`, `X_s = D.varX s` and `Y_s = D.varY s` are the variables with the two indices
 of the root, and `D.swapVar` swaps them and fixes the others. Let the weights `c` rise from `X_s` to
 `Y_s` by amounts in `[1 / 2, 1]`, and put `i = D.letter`, `q = D.card = P ^ N`,
-`P_s = P ^ (s - i).val` with `P = T.P` and `ρ = D.slope c = (c Y_i - c X_i) / q`. Filter polynomials
-over `R[t]` so that `w = T.sqrtPrime` weighs `1`, `t` weighs `ρ` and a variable `y` weighs
-`c y - D.zeroOrder y * ρ`.
+`P_s = P ^ (s - i).val` with `P = T.primePow` and `ρ = D.slope c = (c Y_i - c X_i) / q`. Filter
+polynomials over `R[t]` so that `w = T.sqrtPrime` weighs `1`, `t` weighs `ρ` and a variable `y`
+weighs `c y - D.zeroOrder y * ρ`.
 
 Then the substitution `D.mainSubst - D.crossSubst` (`Y_i ↦ X_i`,
 `X_s ↦ t ^ (q P_s) X_s - ε_s t ^ P_s Y_s`, `Y_s ↦ Y_s - ε_s X_s` for `s ≠ i`, where
@@ -927,9 +929,9 @@ polynomials by `T.polyAction`. Let the weights `c` rise from `X_s` to `Y_s` by a
 
 In `f`, substitute `D.mainSubst - D.crossSubst` (`Y_i ↦ X_i`,
 `X_s ↦ t ^ (q P_s) X_s - ε_s t ^ P_s Y_s`, `Y_s ↦ Y_s - ε_s X_s` for `s ≠ i`, with `q = D.card`,
-`P_s = D.frobPower s = T.P ^ (s - i).val` and `ε_s = D.sign Y_s`, which is `-1` if `s` has the
-parity of `i` and `1` otherwise), then replace `t` by `t + ι_i(r)`. The result has level `b` when
-`w` weighs `1`, `t` weighs `ρ = D.slope c = (c Y_i - c X_i) / q` and a variable `z` weighs
+`P_s = D.frobPower s = T.primePow ^ (s - i).val` and `ε_s = D.sign Y_s`, which is `-1` if `s` has
+the parity of `i` and `1` otherwise), then replace `t` by `t + ι_i(r)`. The result has level `b`
+when `w` weighs `1`, `t` weighs `ρ = D.slope c = (c Y_i - c X_i) / q` and a variable `z` weighs
 `c z - D.zeroOrder z * ρ`. -/
 lemma HasBoundedIncrements.shiftCoeff_aeval_mem [NeZero N]
     {T : FrobeniusCycle N W R} {D : T.RootAt k}
@@ -1067,11 +1069,11 @@ lemma eq_of_mapDomain_merge_eq {T : FrobeniusCycle N W R} {D : T.RootAt k}
 
 /-- Put `i = D.letter`. In each letter `s`, `X_s = D.varX s` and `Y_s = D.varY s` are the two
 variables of the root. The weights `D.poleOrder` are `q P_s` at `X_s` and `0` at the other
-variables, where `q = D.card = P ^ N` and `P_s = D.frobPower s = P ^ (s - i).val` for `P = T.P`. In
-`f` substitute `D.mainSubst`, which sends `Y_i` to `X_i` and any other variable `z` to
-`t ^ D.poleOrder z * z`. Take the coefficient, a polynomial in `t`, of the monomial obtained from
-`x ^ α` by writing `X_i` for `Y_i` (`D.mergedCoeff α`). Its coefficient of `t ^ d`, with `d` the
-weight of `α` for `D.poleOrder`, is the coefficient of `x ^ α` in `f`: no other monomial of `f`
+variables, where `q = D.card = P ^ N` and `P_s = D.frobPower s = P ^ (s - i).val` for
+`P = T.primePow`. In `f` substitute `D.mainSubst`, which sends `Y_i` to `X_i` and any other variable
+`z` to `t ^ D.poleOrder z * z`. Take the coefficient, a polynomial in `t`, of the monomial obtained
+from `x ^ α` by writing `X_i` for `Y_i` (`D.mergedCoeff α`). Its coefficient of `t ^ d`, with `d`
+the weight of `α` for `D.poleOrder`, is the coefficient of `x ^ α` in `f`: no other monomial of `f`
 contributes to it. -/
 lemma coeff_mergedCoeff_aeval_mainSubst {T : FrobeniusCycle N W R} {D : T.RootAt k}
     (α : Fin k × ZMod N →₀ ℕ) (f : MvPolynomial (Fin k × ZMod N) R) :
@@ -1175,8 +1177,9 @@ end FrobeniusCycle.RootAt
 variable {R : Type} {N k : ℕ} {W : Type} [CommRing R] [NeZero N] [CommRing W] [IsLocalRing W]
 
 /-- The root lemma. Let `T` be a Frobenius cycle: ring maps `ι_s : W → R` for the letters `s ∈ ℤ/N`,
-alternately even and odd, with `ι_{s+1} ≡ ι_s ^ P` modulo a prime `p`, where `P = T.P` is a power of
-`p` and `W` has `q = P ^ N` residue classes, and a square root `w = T.sqrtPrime` of `p` in `R`.
+alternately even and odd, with `ι_{s+1} ≡ ι_s ^ P` modulo a prime `p`, where `P = T.primePow` is a
+power of `p` and `W` has `q = P ^ N` residue classes, and a square root `w = T.sqrtPrime` of `p` in
+`R`.
 
 Let `a ≠ a'`. In the letter `s` let `Y_s = T.rootVar a a' s` be the variable `(a', s)` for even and
 `(a, s)` for odd `s`, and let `X_s = T.rootVar a' a s` be the other of the two. Let the weights `c`

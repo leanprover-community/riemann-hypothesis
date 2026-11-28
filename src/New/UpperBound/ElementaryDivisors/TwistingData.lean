@@ -92,7 +92,7 @@ structure FrobeniusCycle (N : ℕ) (W R : Type) [CommRing W] [IsLocalRing W] [Co
   /-- `p` is prime. -/
   prime : p.Prime
   /-- `P = p ^ frobExp` is at least `5`. -/
-  five_le_P : 5 ≤ p ^ frobExp
+  five_le_primePow : 5 ≤ p ^ frobExp
   /-- `sqrtPrime ^ 2 = p` in `R`. -/
   sqrtPrime_sq : sqrtPrime ^ 2 = p
   /-- `embedding (s + 1) ≡ embedding s ^ P` modulo `p`. -/
@@ -111,10 +111,10 @@ variable {k N : ℕ} {W R R' : Type} [CommRing W] [IsLocalRing W] [CommRing R] [
 /-! ### The twisted action -/
 
 /-- The prime power `P = p ^ frobExp` of the Frobenius cycle. -/
-abbrev P : ℕ := T.p ^ T.frobExp
+abbrev primePow : ℕ := T.p ^ T.frobExp
 
 /-- The number `q = P ^ N` of elements of the residue field of `W`. -/
-abbrev q : ℕ := T.P ^ N
+abbrev q : ℕ := T.primePow ^ N
 
 /-- For a Frobenius cycle over `R` and a ring map `φ : R →+* R'`, the Frobenius cycle over `R'`
 obtained by composing each ring map `embedding s` with `φ` and applying `φ` to `sqrtPrime`. -/
@@ -169,8 +169,8 @@ root `(a, a')`; the defect is the sum of these weights over the monomial. Write
 times `[x = u_s] - [x = ū_s]`, plus `1` if `x = u_i`. For the recursive description of the defect
 see `New.FrobeniusCycle.defectWeight_dotProduct_permStep`. -/
 def defectWeight : ℝ :=
-  ((if x = T.rootVar a a' x.2 then (T.P : ℝ) ^ (1 + (x.2 - 1 - i).val) else 0) -
-    if x = T.rootVar a' a x.2 then (T.P : ℝ) ^ (x.2 - i).val else 0) / (T.q - 1)
+  ((if x = T.rootVar a a' x.2 then (T.primePow : ℝ) ^ (1 + (x.2 - 1 - i).val) else 0) -
+    if x = T.rootVar a' a x.2 then (T.primePow : ℝ) ^ (x.2 - i).val else 0) / (T.q - 1)
 
 /-- The submodule of the coefficient vectors `F : Exponents N k n → R` with `(ρ(g) F) β ∈ I` for
 all `g` in the Levi subgroup `levi W τ` and all `β` in the set `B` of exponents, where
@@ -199,20 +199,22 @@ abbrev deepForms (k n r d : ℕ) : Submodule R (Exponents N k n → R) :=
 /-! ### First properties -/
 
 omit [NeZero N] in
-lemma one_lt_P : (1 : ℝ) < T.P := mod_cast Nat.one_lt_ofNat.trans_le T.five_le_P
+lemma one_lt_primePow : (1 : ℝ) < T.primePow :=
+  mod_cast Nat.one_lt_ofNat.trans_le T.five_le_primePow
 
-lemma one_lt_q : (1 : ℝ) < T.q := by simpa using one_lt_pow₀ T.one_lt_P (NeZero.ne N)
+lemma one_lt_q : (1 : ℝ) < T.q := by simpa using one_lt_pow₀ T.one_lt_primePow (NeZero.ne N)
 
 omit [NeZero N] in
 /-- For a Frobenius cycle `T` and natural `n`, the ring map of the letter `s + n` is the `P ^ n`-th
 power of that of the letter `s` modulo `p`. -/
-lemma frobenius_pow_congr (x : W) : (T.p : R) ∣ T.embedding (s + n) x - T.embedding s x ^ T.P ^
-  n := by
+lemma frobenius_pow_congr (x : W) :
+    (T.p : R) ∣ T.embedding (s + n) x - T.embedding s x ^ T.primePow ^ n := by
   induction n with
   | zero => simp
   | succ n ih =>
     -- Raise the induction hypothesis to the power `P`, then take one step by `T.frobenius_congr`.
-    have h_pow : (T.p : R) ∣ T.embedding (s + n) x ^ T.P - (T.embedding s x ^ T.P ^ n) ^ T.P :=
+    have h_pow : (T.p : R) ∣
+        T.embedding (s + n) x ^ T.primePow - (T.embedding s x ^ T.primePow ^ n) ^ T.primePow :=
       ih.trans (sub_dvd_pow_sub_pow ..)
     simpa [← add_assoc, pow_succ, pow_mul] using (T.frobenius_congr (s + n) x).add h_pow
 
@@ -356,14 +358,15 @@ lemma one_add_val_sub_one_sub : 1 + (s - 1 - i).val = if s = i then N else (s - 
 
 /-! ### Bounds on the defect weights -/
 
-/-- For a Frobenius cycle `T`, let `P = T.P` be its prime power, which is at least `5`, and let
-`q = T.q = P ^ N`. For every letter `s` one has `5 P ^ s ≤ q`, where `s` is read in
+/-- For a Frobenius cycle `T`, let `P = T.primePow` be its prime power, which is at least `5`, and
+let `q = T.q = P ^ N`. For every letter `s` one has `5 P ^ s ≤ q`, where `s` is read in
 `{0, …, N - 1}`. -/
-lemma five_mul_P_pow_le_q : 5 * T.P ^ s.val ≤ T.q :=
-  calc 5 * T.P ^ s.val ≤ T.P ^ (s.val + 1) := by grw [pow_succ', T.five_le_P]
-    _ ≤ T.P ^ N := Nat.pow_le_pow_right (pow_pos T.prime.pos T.frobExp) s.val_lt
+lemma five_mul_primePow_pow_le_q : 5 * T.primePow ^ s.val ≤ T.q :=
+  calc 5 * T.primePow ^ s.val ≤ T.primePow ^ (s.val + 1) := by grw [pow_succ', T.five_le_primePow]
+    _ ≤ T.primePow ^ N := Nat.pow_le_pow_right (pow_pos T.prime.pos T.frobExp) s.val_lt
 
-lemma five_le_q : (5 : ℝ) ≤ T.q := mod_cast T.five_le_P.trans (Nat.le_self_pow (NeZero.ne N) T.P)
+lemma five_le_q : (5 : ℝ) ≤ T.q :=
+  mod_cast T.five_le_primePow.trans (Nat.le_self_pow (NeZero.ne N) T.primePow)
 
 /-- Let `a ≠ a'`. In the letter `s` let `u = T.rootVar a a' s` be the variable `(a', s)` if `s` is
 even and `(a, s)` if `s` is odd, and let `ū = T.rootVar a' a s` be the other of these two variables.
@@ -379,32 +382,34 @@ lemma defectWeight_sub_mem_Icc (T : FrobeniusCycle N W R) {i : ZMod N} {a a' : F
   have h_ne : T.rootVar a a' s ≠ T.rootVar a' a s := by grind [rootVar]
   have h_diff :
       T.defectWeight i a a' (T.rootVar a a' s) - T.defectWeight i a a' (T.rootVar a' a s) =
-        (T.P ^ (1 + (s - 1 - i).val) + T.P ^ (s - i).val) / (T.q - 1) := by
+        (T.primePow ^ (1 + (s - 1 - i).val) + T.primePow ^ (s - i).val) / (T.q - 1) := by
     simp only [defectWeight, rootVar_snd, ite_true, ite_eq_right h_ne, ite_eq_right h_ne.symm]
     ring
-  have h_first : (T.P : ℝ) ^ (1 + (s - 1 - i).val) ≤ T.q :=
+  have h_first : (T.primePow : ℝ) ^ (1 + (s - 1 - i).val) ≤ T.q :=
     mod_cast Nat.pow_le_pow_right (pow_pos T.prime.pos _) (by linarith [(s - 1 - i).val_lt])
-  have h_second : (5 * T.P ^ (s - i).val : ℝ) ≤ T.q := mod_cast T.five_mul_P_pow_le_q (s - i)
+  have h_second : (5 * T.primePow ^ (s - i).val : ℝ) ≤ T.q :=
+    mod_cast T.five_mul_primePow_pow_le_q (s - i)
   rw [h_diff]
   exact ⟨by positivity, (div_le_iff₀ q_sub_one_pos).2 (by linarith [T.five_le_q])⟩
 
-/-- Let `P = T.P` be the prime power of the Frobenius cycle, which is at least `5`, and let
+/-- Let `P = T.primePow` be the prime power of the Frobenius cycle, which is at least `5`, and let
 `q = T.q = P ^ N`. As `s` runs over the letters, the exponent `1 + (s - 1 - i).val` runs over
 `1, …, N`, and the sum `P + P ^ 2 + ⋯ + P ^ N` is at most `2 (q - 1)`. -/
-lemma sum_P_pow_le (T : FrobeniusCycle N W R) (i : ZMod N) :
-    ∑ s : ZMod N, (T.P : ℝ) ^ (1 + (s - 1 - i).val) ≤ 2 * (T.q - 1) := by
+lemma sum_primePow_pow_le (T : FrobeniusCycle N W R) (i : ZMod N) :
+    ∑ s : ZMod N, (T.primePow : ℝ) ^ (1 + (s - 1 - i).val) ≤ 2 * (T.q - 1) := by
   -- With `S = 1 + P + ⋯ + P ^ (N - 1)` the sum is both `P S` and `S + (q - 1)`.
-  set S : ℝ := ∑ s : ZMod N, (T.P : ℝ) ^ (s - i).val with hS
-  have h_mul : ∑ s : ZMod N, (T.P : ℝ) ^ (1 + (s - 1 - i).val) = T.P * S := by
+  set S : ℝ := ∑ s : ZMod N, (T.primePow : ℝ) ^ (s - i).val with hS
+  have h_mul : ∑ s : ZMod N, (T.primePow : ℝ) ^ (1 + (s - 1 - i).val) = T.primePow * S := by
     simp only [pow_add, pow_one, ← mul_sum]
-    exact congrArg _ ((Equiv.subRight 1).sum_comp fun s : ZMod N ↦ (T.P : ℝ) ^ (s - i).val)
-  have h_term (s : ZMod N) : (T.P : ℝ) ^ (1 + (s - 1 - i).val) =
-      T.P ^ (s - i).val + if s = i then (T.q - 1 : ℝ) else 0 := by
+    exact congrArg _ ((Equiv.subRight 1).sum_comp fun s : ZMod N ↦ (T.primePow : ℝ) ^ (s - i).val)
+  have h_term (s : ZMod N) : (T.primePow : ℝ) ^ (1 + (s - 1 - i).val) =
+      T.primePow ^ (s - i).val + if s = i then (T.q - 1 : ℝ) else 0 := by
     rw [one_add_val_sub_one_sub]
     split_ifs with hs <;> simp [hs]
-  have h_add : ∑ s : ZMod N, (T.P : ℝ) ^ (1 + (s - 1 - i).val) = S + (T.q - 1) := by
+  have h_add : ∑ s : ZMod N, (T.primePow : ℝ) ^ (1 + (s - 1 - i).val) = S + (T.q - 1) := by
     simp only [h_term, sum_add_distrib, Fintype.sum_ite_eq', hS]
-  have hP : 5 * S ≤ T.P * S := mul_le_mul_of_nonneg_right (mod_cast T.five_le_P) (by positivity)
+  have hP : 5 * S ≤ T.primePow * S :=
+    mul_le_mul_of_nonneg_right (mod_cast T.five_le_primePow) (by positivity)
   linarith [T.one_lt_q]
 
 /-- The defect of an exponent vector `α` at the letter `i` along the root `(a, a')` is the sum of
@@ -415,15 +420,15 @@ lemma abs_weight_defectWeight_le (T : FrobeniusCycle N W R) {i : ZMod N} {a a' :
     |α.weight (T.defectWeight i a a')| ≤ 2 * d := by
   have q_sub_one_pos : (0 : ℝ) < T.q - 1 := sub_pos.2 T.one_lt_q
   have hd : 0 ≤ d := le_trans (by positivity) (hα i)
-  let bound (s : ZMod N) : ℝ := T.P ^ (1 + (s - 1 - i).val) / (T.q - 1)
+  let bound (s : ZMod N) : ℝ := T.primePow ^ (1 + (s - 1 - i).val) / (T.q - 1)
   have h_var (x : Fin k × ZMod N) : |T.defectWeight i a a' x| ≤ bound x.2 := by
     have h_exp : (x.2 - i).val ≤ 1 + (x.2 - 1 - i).val := by
       rw [one_add_val_sub_one_sub]
       split_ifs
       exacts [(ZMod.val_lt (x.2 - i)).le, le_rfl]
-    have h_pow_nonneg : 0 ≤ (T.P : ℝ) ^ (x.2 - i).val := by positivity
-    have h_pow_le : (T.P : ℝ) ^ (x.2 - i).val ≤ (T.P : ℝ) ^ (1 + (x.2 - 1 - i).val) :=
-      pow_le_pow_right₀ T.one_lt_P.le h_exp
+    have h_pow_nonneg : 0 ≤ (T.primePow : ℝ) ^ (x.2 - i).val := by positivity
+    have h_pow_le : (T.primePow : ℝ) ^ (x.2 - i).val ≤ (T.primePow : ℝ) ^ (1 + (x.2 - 1 - i).val) :=
+      pow_le_pow_right₀ T.one_lt_primePow.le h_exp
     -- The numerator is a difference of two numbers in `[0, P ^ (1 + (s - 1 - i))]`.
     rw [defectWeight, abs_div, abs_of_pos q_sub_one_pos]
     refine div_le_div_of_nonneg_right (abs_sub_le_iff.2 ⟨?_, ?_⟩) q_sub_one_pos.le
@@ -437,9 +442,10 @@ lemma abs_weight_defectWeight_le (T : FrobeniusCycle N W R) {i : ZMod N} {a a' :
     _ = ∑ s : ZMod N, (∑ b : Fin k, (α (b, s) : ℝ)) * bound s := by
         simp only [sum_prod_type_right, sum_mul]
     _ ≤ ∑ s : ZMod N, d * bound s := by grw [hα]
-    _ = (∑ s : ZMod N, (T.P : ℝ) ^ (1 + (s - 1 - i).val)) / (T.q - 1) * d := by
+    _ = (∑ s : ZMod N, (T.primePow : ℝ) ^ (1 + (s - 1 - i).val)) / (T.q - 1) * d := by
         rw [← mul_sum, Finset.sum_div, mul_comm]
-    _ ≤ 2 * d := mul_le_mul_of_nonneg_right ((div_le_iff₀ q_sub_one_pos).2 (T.sum_P_pow_le i)) hd
+    _ ≤ 2 * d :=
+      mul_le_mul_of_nonneg_right ((div_le_iff₀ q_sub_one_pos).2 (T.sum_primePow_pow_le i)) hd
 
 end FrobeniusCycle
 

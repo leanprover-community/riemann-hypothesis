@@ -136,11 +136,11 @@ theorem residue_eq_of_embedding_eq {s : ZMod N} {u v : W}
 variable [NeZero N]
 
 /-- The degree given to the variable `v = (b, s)` in the count of common zeros behind
-`New.FrobeniusCycle.exists_le_weight_of_mem_deepForms`, a power of `P = T.P`: it is `P ^ (2 r)` if
-`v` is deep for `r` (`T.deepIndicator r v = 1`) and `2 r ≤ b`, `P` if `v` is deep and `b < 2 r`, and
-`1` if `v` is not deep. -/
+`New.FrobeniusCycle.exists_le_weight_of_mem_deepForms`, a power of `P = T.primePow`: it is
+`P ^ (2 r)` if `v` is deep for `r` (`T.deepIndicator r v = 1`) and `2 r ≤ b`, `P` if `v` is deep and
+`b < 2 r`, and `1` if `v` is not deep. -/
 def deepOrder (r : ℕ) (v : Fin k × ZMod N) : ℕ :=
-  T.P ^ (T.deepIndicator r v * if 2 * r ≤ v.1 then 2 * r else 1)
+  T.primePow ^ (T.deepIndicator r v * if 2 * r ≤ v.1 then 2 * r else 1)
 
 /-- For `k = 2 r + m`, the product of the degrees `T.deepOrder r v` over all variables is at most
 `q ^ (r (m + 1))`, the number of families of `r (m + 1)` residues of `W`, whose residue field has
@@ -155,13 +155,13 @@ theorem prod_deepOrder_le {r m : ℕ} (hm : 2 * r + m = k) :
     rw [sum_prod_type, Fin.sum_univ_add]
     simp [← Finset.sum_mul, sum_deepIndicator, Nat.not_le_of_lt (Fin.is_lt _)]
   calc ∏ v : Fin (2 * r + m) × ZMod N, T.deepOrder r v
-      = T.P ^ (N / 2 * 2 * (r * (m + 1))) := by
+      = T.primePow ^ (N / 2 * 2 * (r * (m + 1))) := by
         simp only [deepOrder, prod_pow_eq_pow_sum, h_sum]
         ring
-    _ ≤ T.P ^ (N * (r * (m + 1))) := by
+    _ ≤ T.primePow ^ (N * (r * (m + 1))) := by
         gcongr
-        exacts [mod_cast T.one_lt_P.le, N.div_mul_le_self 2]
-    _ = T.q ^ (r * (m + 1)) := by rw [q, pow_mul T.P]
+        exacts [mod_cast T.one_lt_primePow.le, N.div_mul_le_self 2]
+    _ = T.q ^ (r * (m + 1)) := by rw [q, pow_mul T.primePow]
 
 /-- If `F` lies in `T.deepForms k n r τ`, the coefficient of its translate by `g` (the matrix of `g`
 on coefficient vectors is `T.letterRep n g`) vanishes at every monomial `β` whose degree in the
@@ -341,7 +341,7 @@ noncomputable def lowPowerForms {r m : ℕ} (hm : 2 * r + m = k) {L : Type} [Fie
     (x : MvPolynomial (Fin k × ZMod N) K →+* L) (i : ZMod N) :
     Submodule L (Fin r × Fin (m + 1) → L) :=
   .span L {u : Fin r × Fin (m + 1) → L | ∃ (v : Fin k × ZMod N) (j : ℕ),
-    v.2 + j = i ∧ T.P ^ j < T.deepOrder r v ∧ (x ∘ T.entryCoeff hm v) ^ T.P ^ j = u}
+    v.2 + j = i ∧ T.primePow ^ j < T.deepOrder r v ∧ (x ∘ T.entryCoeff hm v) ^ T.primePow ^ j = u}
 
 /-- If `x` embeds the polynomials over `K` in a field `L` and `l ≠ 0`, the space
 `T.lowPowerForms hm x i` contains the unit vector at `(b, l)`. -/
@@ -351,12 +351,12 @@ lemma single_mem_lowPowerForms_of_ne_zero {r m : ℕ} (hm : 2 * r + m = k) {L : 
   -- The positions `(b', l)` give an `r × r` system, with one equation for each of the `r` integers
   -- `j = J u < 2 r` such that the letter `i - j` is even.
   choose J hJ_div hJ_even using T.exists_div_two_eq_and_isEven_sub i
-  have hP : 1 < T.P := mod_cast T.one_lt_P
+  have hP : 1 < T.primePow := mod_cast T.one_lt_primePow
   -- The matrix of the system is invertible over `L`, so `Pi.single b 1` is in its row span.
   let M : Matrix (Fin r) (Fin r) (MvPolynomial (Fin k × ZMod N) K) :=
-    of fun u b' ↦ X (entryRow hm (b', l), i - J u) ^ T.P ^ J u
+    of fun u b' ↦ X (entryRow hm (b', l), i - J u) ^ T.primePow ^ J u
   have h_det : M.det ≠ 0 := by
-    have h_inj : Function.Injective fun u : Fin r ↦ T.P ^ J u := fun u u' h_eq ↦
+    have h_inj : Function.Injective fun u : Fin r ↦ T.primePow ^ J u := fun u u' h_eq ↦
       Fin.ext (by rw [← hJ_div u, Nat.pow_right_injective hP h_eq, hJ_div u'])
     refine det_X_pow_ne_zero (fun u u' b₁ b₂ h_var ↦ ?_) h_inj
     simpa [entryRow, Fin.ext_iff] using congrArg Prod.fst h_var
@@ -366,10 +366,10 @@ lemma single_mem_lowPowerForms_of_ne_zero {r m : ℕ} (hm : 2 * r + m = k) {L : 
   obtain ⟨μ, hμ⟩ : ∃ μ : Fin r → L, μ ᵥ* x.mapMatrix M = Pi.single b 1 :=
     vecMul_surjective_iff_isUnit.2 h_unit _
   let row (u : Fin r) : Fin r × Fin (m + 1) → L :=
-    (x ∘ T.entryCoeff hm (entryCol hm (b, l), i - J u)) ^ T.P ^ J u
+    (x ∘ T.entryCoeff hm (entryCol hm (b, l), i - J u)) ^ T.primePow ^ J u
   have row_mem (u : Fin r) : row u ∈ T.lowPowerForms hm x i := by
     have h_col : 2 * r ≤ entryCol hm (b, l) := by simp only [entryCol, hl, ↓reduceIte]; lia
-    have h_order : T.deepOrder r (entryCol hm (b, l), i - J u) = T.P ^ (2 * r) := by
+    have h_order : T.deepOrder r (entryCol hm (b, l), i - J u) = T.primePow ^ (2 * r) := by
       simp [deepOrder, deepIndicator, hJ_even, h_col, show r ≤ entryCol hm (b, l) by lia]
     refine Submodule.subset_span ⟨(entryCol hm (b, l), i - J u), J u, by simp, ?_, rfl⟩
     rw [h_order]
@@ -409,7 +409,7 @@ lemma single_zero_mem_lowPowerForms {r m : ℕ} (hm : 2 * r + m = k) {L : Type} 
         simp [deepIndicator, v, rootVar, entryRow, entryCol, h_even, Nat.not_le_of_lt b.isLt]
     refine Submodule.subset_span ⟨v, 0, by simp [v], ?_, by simp [row]⟩
     rw [deepOrder, h_deep, one_mul]
-    exact Nat.pow_lt_pow_right (mod_cast T.one_lt_P) (by have := b.isLt; split_ifs <;> lia)
+    exact Nat.pow_lt_pow_right (mod_cast T.one_lt_primePow) (by have := b.isLt; split_ifs <;> lia)
   have h_pivot : row (b, 0) ≠ 0 := by
     dsimp only [row, Function.comp_apply, entryCoeff]
     cases h_even : T.isEven i
@@ -456,7 +456,7 @@ noncomputable def entryFormValue {r m : ℕ} (hm : 2 * r + m = k) {L : Type} [Fi
 /-- In characteristic `p`, raising a coordinate of the point `T.entryFormValue hm x y` to the power
 `P ^ j` raises its coefficients to that power and moves its letter `s` to `s + j`.
 
-The Frobenius cycle `T` gives a power `P = T.P` of the prime `p = T.p`, ring maps
+The Frobenius cycle `T` gives a power `P = T.primePow` of the prime `p = T.p`, ring maps
 `ι_s = T.embedding s : W → K` on the local ring `W` for the letters `s` in `ZMod N`, and a parity
 `T.isEven s` that alternates with `s`. For `k = 2 r + m`, a pair `t = (a, l)` in
 `Fin r × Fin (m + 1)` names the position of a `k × k` matrix in the row `a` and the column `a + r`
@@ -464,13 +464,14 @@ if `l = 0` and `k - l` otherwise. -/
 lemma entryFormValue_pow {r m : ℕ} (hm : 2 * r + m = k) {L : Type} [Field L]
     {x : MvPolynomial (Fin k × ZMod N) K →+* L} [CharP K T.p] [CharP L T.p]
     (y : Fin r × Fin (m + 1) → ResidueField W) (v : Fin k × ZMod N) (j : ℕ) :
-    T.entryFormValue hm x y v ^ T.P ^ j =
-      (x ∘ T.entryCoeff hm v) ^ T.P ^ j ⬝ᵥ
+    T.entryFormValue hm x y v ^ T.primePow ^ j =
+      (x ∘ T.entryCoeff hm v) ^ T.primePow ^ j ⬝ᵥ
         fun t : Fin r × Fin (m + 1) ↦ x (C (T.embedding (v.2 + j) (y t).out)) := by
   have : Fact T.p.Prime := ⟨T.prime⟩
-  have h_frob (u : W) : T.embedding (v.2 + j) u = T.embedding v.2 u ^ T.P ^ j := by
+  have h_frob (u : W) : T.embedding (v.2 + j) u = T.embedding v.2 u ^ T.primePow ^ j := by
     simpa [CharP.cast_eq_zero, sub_eq_zero] using T.frobenius_pow_congr j v.2 u
-  -- `T.P ^ j` is a power of `p`, so raising to it commutes with the sum and with the products.
+  -- `T.primePow ^ j` is a power of `p`, so raising to it commutes with the sum and with the
+  -- products.
   rw [entryFormValue, dotProduct_comm, dotProduct, ← pow_mul, sum_pow_char_pow]
   simp [dotProduct, pow_mul, mul_pow, h_frob]
 
@@ -478,7 +479,7 @@ lemma entryFormValue_pow {r m : ℕ} (hm : 2 * r + m = k) {L : Type} [Field L]
 variables and reads the constants and the other variables in `L` through `x`, sends the translate by
 `g⁻¹` of each deep variable `X v` to `X v - z v`.
 
-The Frobenius cycle `T` gives a power `P = T.P` of the prime `p = T.p`, ring maps
+The Frobenius cycle `T` gives a power `P = T.primePow` of the prime `p = T.p`, ring maps
 `ι_s = T.embedding s : W → K` on the local ring `W` for the letters `s` in `ZMod N`, and a parity
 `T.isEven s` that alternates with `s`. An element `g` of `GL_k(W)` translates polynomials by the
 substitution `T.polyAction g`, which sends `X (b, s)` to `∑ c, g_s c b * X (c, s)`, where `g_s` is
@@ -607,7 +608,7 @@ linear form `∑ t, u t * x (C (ι_i (y t).out))` is the value at the point `z` 
 does not depend on `y` and whose monomials cost less than `1`, where the variable `v` costs
 `1 / T.deepOrder r v`.
 
-The Frobenius cycle `T` gives a power `P = T.P` of the prime `p = T.p`, ring maps
+The Frobenius cycle `T` gives a power `P = T.primePow` of the prime `p = T.p`, ring maps
 `ι_s = T.embedding s : W → K` on the local ring `W` for the letters `s` in `ZMod N`, and a parity
 `T.isEven s` that alternates with `s`.
 
@@ -624,15 +625,15 @@ lemma exists_eval_entryFormValue_eq_dotProduct [CharP K T.p] {r m : ℕ} (hm : 2
         u ⬝ᵥ fun t : Fin r × Fin (m + 1) ↦ x (C (T.embedding i (y t).out)) := by
   refine exists_eval_eq_dotProduct_of_mem_span ?_ (T.mem_lowPowerForms hm hx i u)
   -- A generator is the entrywise power of the vector of some variable `v` by some small `P ^ j`.
-  rintro _ ⟨v, j, rfl, (h_lt : T.P ^ j < T.deepOrder r v), rfl⟩
-  exact ⟨v, T.P ^ j, h_lt, fun y ↦ (T.entryFormValue_pow hm y v j).symm⟩
+  rintro _ ⟨v, j, rfl, (h_lt : T.primePow ^ j < T.deepOrder r v), rfl⟩
+  exact ⟨v, T.primePow ^ j, h_lt, fun y ↦ (T.entryFormValue_pow hm y v j).symm⟩
 
 /-- Let `x` embed the polynomials over `K` in a field `L`, both fields of characteristic `p`. For
 each variable `v` there is a polynomial that does not depend on `y`, has the value
 `z v ^ T.deepOrder r v` at the point `z`, and whose monomials cost less than `1`, where the variable
 `w` costs `1 / T.deepOrder r w`.
 
-The Frobenius cycle `T` gives a power `P = T.P` of the prime `p = T.p`, ring maps
+The Frobenius cycle `T` gives a power `P = T.primePow` of the prime `p = T.p`, ring maps
 `ι_s = T.embedding s : W → K` on the local ring `W` for the letters `s` in `ZMod N`, and a parity
 `T.isEven s` that alternates with `s`.
 
@@ -652,7 +653,8 @@ lemma exists_eval_entryFormValue_eq_pow_deepOrder [CharP K T.p] {r m : ℕ} (hm 
   let j : ℕ := T.deepIndicator r v * if 2 * r ≤ v.1 then 2 * r else 1
   have h_pow (y : Fin r × Fin (m + 1) → ResidueField W) :
       T.entryFormValue hm x y v ^ T.deepOrder r v =
-        (x ∘ T.entryCoeff hm v) ^ T.P ^ j ⬝ᵥ fun t ↦ x (C (T.embedding (v.2 + j) (y t).out)) :=
+        (x ∘ T.entryCoeff hm v) ^ T.primePow ^ j ⬝ᵥ
+          fun t ↦ x (C (T.embedding (v.2 + j) (y t).out)) :=
     T.entryFormValue_pow hm y v j
   obtain ⟨g, hg_cost, hg_eval⟩ := T.exists_eval_entryFormValue_eq_dotProduct hm hx (v.2 + j) _
   exact ⟨g, hg_cost, fun y ↦ (hg_eval y).trans (h_pow y).symm⟩
@@ -660,7 +662,7 @@ lemma exists_eval_entryFormValue_eq_pow_deepOrder [CharP K T.p] {r m : ℕ} (hm 
 /-- Let `x` embed the polynomials over `K` in a field `L`, both fields of characteristic `p`. Then
 the point `z` determines the residues `y t`.
 
-The Frobenius cycle `T` gives a power `P = T.P` of the prime `p = T.p`, ring maps
+The Frobenius cycle `T` gives a power `P = T.primePow` of the prime `p = T.p`, ring maps
 `ι_s = T.embedding s : W → K` on the local ring `W` for the letters `s` in `ZMod N`, and a parity
 `T.isEven s` that alternates with `s`. For `k = 2 r + m`, a pair `t = (a, l)` in
 `Fin r × Fin (m + 1)` names the position of a `k × k` matrix in the row `a` and the column `a + r`
@@ -687,7 +689,7 @@ variable [NeZero N]
 `T.specializeShallow r x` keeps the deep variables and reads the constants and the other variables
 in `L` through `x`.
 
-The Frobenius cycle `T` gives a power `P = T.P` of the prime `p = T.p`, ring maps
+The Frobenius cycle `T` gives a power `P = T.primePow` of the prime `p = T.p`, ring maps
 `ι_s = T.embedding s : W → K` on the local ring `W` for the letters `s` in `ZMod N`, and a parity
 `T.isEven s` that alternates with `s`. The variable `X (b, s)`, of index `b < k` and letter `s`, is
 deep for `r` if `s` is even and `r ≤ b`, or `s` is odd and `b < r`; `T.deepIndicator r` is the
@@ -730,7 +732,7 @@ theorem exists_le_weight_of_mem_deepForms [CharP K T.p] {n r τ : ℕ}
     ∃ β : Exponents N k n,
       F β ≠ 0 ∧
       τ ≤ (exponentOf β).weight fun v : Fin k × ZMod N ↦
-          (T.deepIndicator r v / T.P ^ (if 2 * r ≤ v.1 then 2 * r else 1) : ℝ) := by
+          (T.deepIndicator r v / T.primePow ^ (if 2 * r ≤ v.1 then 2 * r else 1) : ℝ) := by
   -- Read `F` as a polynomial `f` in the deep variables over the field of rational functions. Each
   -- `1 + A`, with `A` in rows `< r` and columns `≥ r`, gives a zero of order `≥ τ`, and
   -- `exists_le_weight_of_mem_vanishingIdeal_pow` turns these zeros into a costly monomial. The
@@ -766,7 +768,8 @@ theorem exists_le_weight_of_mem_deepForms [CharP K T.p] {n r τ : ℕ}
     T.exists_eq_of_mem_support_specializeShallow hα
   -- `α` is the deep part of `exponentOf β`, so its cost is the weight of `β`.
   have h_term (v : Fin k × ZMod N) : (α v : ℝ) * (κ v : ℝ)⁻¹ =
-      exponentOf β v * (T.deepIndicator r v / T.P ^ (if 2 * r ≤ v.1 then 2 * r else 1) : ℝ) := by
+      exponentOf β v *
+        (T.deepIndicator r v / T.primePow ^ (if 2 * r ≤ v.1 then 2 * r else 1) : ℝ) := by
     obtain h_shallow | h_deep := T.deepIndicator_eq_zero_or_eq_one r v
     · simp [hαβ, h_shallow]
     · simp [hαβ, κ, deepOrder, h_deep]
@@ -784,13 +787,13 @@ section DepthCount
 open Finset Module Finsupp Nat
 
 /-- The number `N n (P ^ (-2 r) + r ^ 2 / (k P))`, for `N` letters, `k` variables and degree `n` in
-each letter, the prime power `P = T.P`, and the index `r` at which deep and shallow variables change
-places. In `New.FrobeniusCycle.sum_finrank_deepForms_le`, over a field of characteristic `p` and for
-`0 < 2 r ≤ k`, it bounds, up to the factor of the number of exponents, the sum of the dimensions of
-the spaces of forms all of whose translates are deep. -/
+each letter, the prime power `P = T.primePow`, and the index `r` at which deep and shallow variables
+change places. In `New.FrobeniusCycle.sum_finrank_deepForms_le`, over a field of characteristic `p`
+and for `0 < 2 r ≤ k`, it bounds, up to the factor of the number of exponents, the sum of the
+dimensions of the spaces of forms all of whose translates are deep. -/
 def New.FrobeniusCycle.divisorConstant {N : ℕ} {W R : Type} [CommRing W] [IsLocalRing W]
     [CommRing R] (T : FrobeniusCycle N W R) (k n r : ℕ) : ℝ :=
-  N * n * (1 / T.P ^ (2 * r) + r ^ 2 / (k * T.P))
+  N * n * (1 / T.primePow ^ (2 * r) + r ^ 2 / (k * T.primePow))
 
 /-- `T.divisorConstant k n r` depends on `T` only through `P`, so it is unchanged when the Frobenius
 cycle is pushed forward along a ring map. -/
@@ -844,26 +847,28 @@ deep variable the cost `1 / P ^ (2 r)` if `2 r ≤ b` and `1 / P` otherwise, and
 the cost `0`. For `2 r ≤ k` the costs add up to at most `N (k / P ^ (2 r) + r ^ 2 / P)`. -/
 lemma New.FrobeniusCycle.sum_deepIndicator_div_le (T : FrobeniusCycle N W K) {r : ℕ}
     (hk : 2 * r ≤ k) :
-    ∑ x : Fin k × ZMod N, (T.deepIndicator r x / T.P ^ (if 2 * r ≤ x.1 then 2 * r else 1) : ℝ) ≤
-      N * (k / T.P ^ (2 * r) + r ^ 2 / T.P) := by
+    ∑ x : Fin k × ZMod N,
+        (T.deepIndicator r x / T.primePow ^ (if 2 * r ≤ x.1 then 2 * r else 1) : ℝ) ≤
+      N * (k / T.primePow ^ (2 * r) + r ^ 2 / T.primePow) := by
   -- Each index `b` is deep in `N / 2` letters; at most `k` indices have `2 r ≤ b`, and `2 r`
   -- indices have `b < 2 r`.
   have h_row (b : Fin k) :
-      ∑ s : ZMod N, (T.deepIndicator r (b, s) / T.P ^ (if 2 * r ≤ b.val then 2 * r else 1) : ℝ) =
-        (N / 2 : ℕ) / T.P ^ (if 2 * r ≤ b.val then 2 * r else 1) := by
+      ∑ s : ZMod N,
+          (T.deepIndicator r (b, s) / T.primePow ^ (if 2 * r ≤ b.val then 2 * r else 1) : ℝ) =
+        (N / 2 : ℕ) / T.primePow ^ (if 2 * r ≤ b.val then 2 * r else 1) := by
     rw [← T.sum_deepIndicator r b, cast_sum, Finset.sum_div]
   have hr_sq : (r : ℝ) ≤ r ^ 2 := mod_cast Nat.le_self_pow two_ne_zero r
   have hN_half : ((N / 2 : ℕ) : ℝ) ≤ (N : ℝ) / 2 := by
     simpa only [Nat.cast_ofNat] using (Nat.cast_div_le (α := ℝ) (m := N) (n := 2))
-  have hP_nonneg : (0 : ℝ) ≤ T.P := Nat.cast_nonneg _
+  have hP_nonneg : (0 : ℝ) ≤ T.primePow := Nat.cast_nonneg _
   have h_card : (#{b : Fin k | 2 * r ≤ b.val} : ℝ) ≤ k := Nat.cast_le.mpr (card_finset_fin_le _)
-  calc _ = #{b : Fin k | 2 * r ≤ b.val} * ((N / 2 : ℕ) / (T.P : ℝ) ^ (2 * r)) +
-          2 * r * ((N / 2 : ℕ) / T.P) := by
+  calc _ = #{b : Fin k | 2 * r ≤ b.val} * ((N / 2 : ℕ) / (T.primePow : ℝ) ^ (2 * r)) +
+          2 * r * ((N / 2 : ℕ) / T.primePow) := by
         simp only [Fintype.sum_prod_type, h_row]
         simp [apply_ite, sum_ite, Fin.card_filter_val_lt, hk]
-    _ ≤ k * (N / 2 / T.P ^ (2 * r)) + 2 * r * (N / 2 / T.P) := by gcongr
-    _ = N * (k / T.P ^ (2 * r) / 2 + r / T.P) := by ring
-    _ ≤ N * (k / T.P ^ (2 * r) + r ^ 2 / T.P) :=
+    _ ≤ k * (N / 2 / T.primePow ^ (2 * r)) + 2 * r * (N / 2 / T.primePow) := by gcongr
+    _ = N * (k / T.primePow ^ (2 * r) / 2 + r / T.primePow) := by ring
+    _ ≤ N * (k / T.primePow ^ (2 * r) + r ^ 2 / T.primePow) :=
         mul_le_mul_of_nonneg_left
           (add_le_add (half_le_self (div_nonneg (Nat.cast_nonneg _) (pow_nonneg hP_nonneg _)))
             (div_le_div_of_nonneg_right hr_sq hP_nonneg))
@@ -881,7 +886,7 @@ lemma New.FrobeniusCycle.sum_finrank_deepForms_le (T : FrobeniusCycle N W K) [Ch
   -- `T.divisorConstant k n r`.
   have hk_pos : (0 : ℝ) < k := cast_pos.2 (by lia)
   let c (x : Fin k × ZMod N) : ℝ :=
-    T.deepIndicator r x / T.P ^ (if 2 * r ≤ x.1 then 2 * r else 1)
+    T.deepIndicator r x / T.primePow ^ (if 2 * r ≤ x.1 then 2 * r else 1)
   let cost (β : Exponents N k n) : ℝ := (exponentOf β).weight c
   set total : ℝ := Fintype.card (Monomials (Fin k) n) ^ N
   have h_rank (d : ℕ) :
@@ -904,13 +909,13 @@ lemma New.FrobeniusCycle.sum_finrank_deepForms_le (T : FrobeniusCycle N W K) [Ch
     _ = total * n / k * ∑ x : Fin k × ZMod N, c x := by
         simp only [cost, weight_eq_sum, nsmul_eq_mul, Finset.sum_comm (γ := Exponents N k n),
           ← Finset.sum_mul, h_mean, ← Finset.mul_sum]
-    _ ≤ total * n / k * (N * (k / T.P ^ (2 * r) + r ^ 2 / T.P)) :=
+    _ ≤ total * n / k * (N * (k / T.primePow ^ (2 * r) + r ^ 2 / T.primePow)) :=
         mul_le_mul_of_nonneg_left (T.sum_deepIndicator_div_le hk)
           (div_nonneg (mul_nonneg (pow_nonneg (Nat.cast_nonneg _) _) (Nat.cast_nonneg _)) hk_pos.le)
     _ = T.divisorConstant k n r * total := by
         rw [divisorConstant]
         have hk_ne : (k : ℝ) ≠ 0 := hk_pos.ne'
-        have hP_ne : (T.P : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (pow_pos T.prime.pos _).ne'
+        have hP_ne : (T.primePow : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (pow_pos T.prime.pos _).ne'
         field_simp
 
 end DepthCount
