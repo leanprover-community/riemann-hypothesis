@@ -481,7 +481,7 @@ lemma eq_zero_of_jetSeries_eq_zero (hf : f ∈ V.finitePart) {a : ℂ} (ha : a �
   refine eq_zero_of_apply_realVec_eq_zero fun y ↦ ?_
   have h_taylor : taylorAtZero (fun t : ℂ ↦ entireTheta f (a • t • y)) = taylorAtZero 0 := by
     rw [taylor_line_eq_subst_jetSeries hf a y, h_jet,
-      ← coe_substAlgHom (hasSubst_of_constantCoeff_zero (by simp [linearSeries])), map_zero]
+      ← coe_substAlgHom (hasSubst_of_constantCoeff_zero (by simp)), map_zero]
     exact PowerSeries.ext fun k ↦ by simp [taylorAtZero]
   have h_line : (fun t : ℂ ↦ entireTheta f (a • t • y)) = 0 :=
     eq_of_taylorAtZero_eq (by fun_prop (disch := simp [hf])) differentiable_zero h_taylor

@@ -547,7 +547,7 @@ lemma hasWeightNormSqLeIf_stackedDetProd (j : D.LiftIndex) (i : D.RowChoice)
       sum_add_distrib, Pi.single_apply]
     grind [descentPair, reducedHalfGap, targetParameter_eq]
   rw [h_weight] at h_factors
-  simpa [stackedDetProd, map_prod, mul_sum, ← prod_pow_eq_pow_sum, pow_mul] using h_factors
+  simpa [stackedDetProd, map_prod, ← prod_pow_eq_pow_sum, pow_mul] using h_factors
 
 /-- Take the product of the determinants of the constant rows `constantRows j i Y`, some of them
 rows of the matrix `Y` chosen by `i`, stacked over rows of variables. Its coordinates in the first

@@ -152,7 +152,7 @@ lemma colengthDvd_inf_comap_span [IsDomain O] [ValuationRing O] (M : Submodule O
     obtain rfl | hip := eq_or_ne i p
     · rw [Fintype.sum_eq_single i] <;> simp +contextual [m, eq_comm]
     · rw [Fintype.sum_eq_add i p hip] <;>
-        simp +contextual [m, hip, Ne.symm hip, sub_eq_add_neg, eq_comm]
+        simp +contextual [m, Ne.symm hip, sub_eq_add_neg, eq_comm]
   refine ⟨m, h_det.dvd, fun i ↦ ⟨sum_smul_mem M _ fun k _ ↦ hΦ k, ?_⟩⟩
   rw [h_comb]
   split_ifs <;> simp [Ideal.mem_span_singleton, hc i, mul_comm]
@@ -185,7 +185,7 @@ lemma ColengthDvd.of_det_dvd [IsDomain O] [ValuationRing O] [Fintype ι] [Decida
     choose w hw using fun j ↦ Ideal.mem_span_singleton.1 (hx j)
     have h_diag : diagonal d *ᵥ w = g⁻¹.val *ᵥ x :=
       funext fun j ↦ by simpa [f, mulVec_diagonal] using (hw j).symm
-    exact ⟨g'⁻¹.val *ᵥ w, by simp [mul_assoc, h_diag]⟩
+    exact ⟨g'⁻¹.val *ᵥ w, by simp [h_diag]⟩
   have h_prod : ∏ j, d j ∣ z := .trans (by simp) h_dvd
   simpa using ((h_chain univ).of_dvd h_prod).trans (of_le (z := 1) (h_image.trans h_le))
 

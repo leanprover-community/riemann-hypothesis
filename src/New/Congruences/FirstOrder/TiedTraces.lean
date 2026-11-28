@@ -383,7 +383,7 @@ lemma exists_indicator_isCongruent (hN : IsGalRepTwist N a)
   let A : D.heckeAlgebra L := 1 - ∏ y : Cong, (1 - inv y • sepProd)
   have A_apply (x : D.Eigensystem L) :
       A.val x = 1 - ∏ y : Cong, (1 - (sepProd.val y.val)⁻¹ * sepProd.val x) := by
-    simp [A, inv]
+    simp [A]
     rfl
   refine ⟨A, fun x hx ↦ ?_, fun x hx ↦ by simp [A_apply, h_zero x hx]⟩
   rw [A_apply, prod_eq_zero (mem_univ (⟨x, hx⟩ : Cong))

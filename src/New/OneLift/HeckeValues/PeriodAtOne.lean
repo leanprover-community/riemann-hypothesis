@@ -128,7 +128,7 @@ lemma residueDatum_singleton_mul {𝔪 𝔪' : Modulus E}
   have h_int : (∀ (w : 𝔪'.places) (p : n × n), x p w ∈ LocInt w.val) ↔
       (Unit → ∀ p : n × n, x p v ∈ LocInt v) ∧
         ∀ (w : 𝔪.places) (p : n × n), x p w ∈ LocInt w.val := by
-    simp only [Subtype.forall, h_places, mem_insert_iff, forall_const]
+    simp only [Subtype.forall, h_places, forall_const]
     grind
   let ψDetAt (w : FinPlace E) : ℂ :=
     ψ w ((vecToMatrix x : Matrix n n (𝔸f E)).map (residueOrZero ∘ evalAt w)).det

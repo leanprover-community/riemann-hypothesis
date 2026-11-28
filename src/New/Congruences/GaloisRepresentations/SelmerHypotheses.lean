@@ -534,7 +534,7 @@ lemma normalizingAvatar_eq_of_isFrob_inv {O : DescentPair D.E r n} {w : FinPlace
   have h_unr : CharUnramifiedAt θ.val.1 w :=
     HasWeight.charUnramifiedAt_toAlgebraic (by simp) (by simp) _ _
   rw [avatar_localArtin _ hA (.inl hℓ) h_art, h_unr.apply_locIdele_eq_zpow z, hz]
-  simp [θ, ← h_unif]
+  simp [← h_unif]
 
 variable (O : DescentPair D.E r n) (k : ℕ) (J : (D.E →+* ℂ) → Multiset ℤ)
   (c : ∀ i : O.ChosenIndex, (ResField (O.chosenPlace i))[X]) (S : Set (FinPlace D.E))

@@ -281,7 +281,7 @@ lemma IntegralPlace.ae_vectorOfLastEntry_mem_lastVectorQuadric (hN : π * star (
     have h_ne (a : 𝔰.MiddleIndex) : i ≠ inr (inl a) := by
       rintro rfl
       cases a <;> simp [floorOf] at hi
-    simp [vectorOfLastEntry_eq_mulVec, inclMatrix, mulVec, dotProduct, h_ne]
+    simp [vectorOfLastEntry_eq_mulVec, inclMatrix, mulVec, h_ne]
   have h_sphere : star x ⬝ᵥ x = ↑(π * star π)⁻¹ * t * star t - N := by
     rw [hx, ← hN]
     simp [lastEntrySphereIndex]

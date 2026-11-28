@@ -100,7 +100,7 @@ theorem lintegral_fixerHaar_eq_inv {φ : 𝔰.G₁ → ℝ≥0∞} (hφ : Measur
     mem_besselS_of_mem_besselFixer (mem_besselFixer_of_mem_besselH (toBesselH_mem h⁻¹))
   rw [← ((measurePreserving_conj_bessel mem_besselU0_iff_apply besselS_le_normalizer_besselU0
     h_mem).comp (measurePreserving_inv 𝔰.besselHaar₀)).lintegral_comp (by fun_prop)]
-  simp [mul_assoc]
+  simp
 
 /-! ### Tuples dual to the frame -/
 

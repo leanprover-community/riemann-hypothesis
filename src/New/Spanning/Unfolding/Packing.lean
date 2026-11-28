@@ -149,7 +149,7 @@ lemma frameImage_inr_eq_of_frameProducts_eq {g : S.G E} {a : Fin (𝔰.ϱ + 1)}
     (g - 1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) (Sum.inr i) (𝔰.besselFrame a)
   have h_dual (i : Fin 𝔰.ϱ) : w (Sum.inr i) = 0 := by
     cases a using lastCases <;>
-      simpa [w, frameGram, splitGram, Matrix.mul_apply, Matrix.one_apply] using h i.castSucc
+      simpa [w, frameGram, Matrix.mul_apply, Matrix.one_apply] using h i.castSucc
   have h_z : w (Sum.inl (Sum.inr ())) = 0 := by
     cases a using lastCases <;>
       simpa [w, frameGram, splitGram, middleGram, Matrix.mul_apply, Matrix.one_apply, sub_eq_zero,

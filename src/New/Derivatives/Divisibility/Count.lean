@@ -269,7 +269,7 @@ lemma dvd_subst_coupling {α ι : Type} [Fintype α] [Fintype ι] (hπ : π ∣ 
     rw [h_expand]
     exact dvd_sum fun o _ ↦ dvd_sum fun q _ ↦ by
       simpa only [MvPowerSeries.smul_eq_C_mul] using (map_dvd _ (hz o q)).mul_right _
-  rw [subst_coupling (MvPowerSeries.hasSubst_of_constantCoeff_zero (by simp [linearSeries])),
+  rw [subst_coupling (MvPowerSeries.hasSubst_of_constantCoeff_zero (by simp)),
     ← dvd_sub_left h_comb, ← sum_sub_distrib]
   simpa only [← sub_mul] using dvd_sum fun x (_ : x ∈ univ) ↦ (h_pow x).mul_right _
 
@@ -616,7 +616,7 @@ theorem norm_jet_minorProd_le_of_isChargeExponent [DecidableEq n'] (hp : chiK P.
   -- Step 2: `G` is integral in degree `B`, as `π` divides the couplings of `z` for `e ∈ S`.
   have hG (d : DirectionVar (P.Φ s) n' N →₀ ℕ) (hd : d.degree = B) : ‖G.coeff d‖ ≤ 1 :=
     hF.norm_coeff_subst_le_one (P.norm_pow_succ_div_mul_piPrimeInt hp hϖ).le
-      (by simp [linearSeries]) (fun e he he_le ↦ dvd_subst_coupling_directionSubst_of_charges
+      (by simp) (fun e he he_le ↦ dvd_subst_coupling_directionSubst_of_charges
         hπ_dvd (hw e he) (h_pair e (by simpa [S] using And.intro he_le he))) hd.le
   -- Step 3: Legendre's bound for `G`, divided by the factor `c` of the chain rule.
   have h_legendre : ‖jet ℂ_[p] (columnDetProd ℂ_[p] i') G‖ ≤

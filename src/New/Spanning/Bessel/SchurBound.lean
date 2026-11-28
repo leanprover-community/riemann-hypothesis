@@ -142,7 +142,7 @@ lemma convolve_formalDegree_mul_dsCoeffInFrame_comp_frameEquiv (l : HCParam ε) 
         ∫ a : 𝔰.G₁, (β : USign ε → ℂ) (π a)⁻¹ • l.dsCoeff (π y * π a : USign ε) := by
       simp only [← integral_const_mul, map_mul, map_inv, mul_smul_comm]
     _ = l.formalDegree * (smear l.dsCoeffSmooth.val) β (π y) := by
-      simp [smear_apply, π, ← integral_comp_frameEquiv (J := 𝔰.J₁)]
+      simp [π, ← integral_comp_frameEquiv (J := 𝔰.J₁)]
 
 omit [UnitarySignFrame 𝔰 ε] in
 /-- Let `l = 2λ` be a doubled Harish-Chandra parameter of large gap, `c_λ` the coefficient on

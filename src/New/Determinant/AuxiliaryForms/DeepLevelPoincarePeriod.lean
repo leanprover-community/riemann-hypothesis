@@ -337,7 +337,7 @@ lemma New.Space.exists_isLastColumn {E n : Type} {s : n → ℤˣ} [Field E]
     rw [sum_vecAtPoint]
     simp [funext_iff, inlLine, Space.vecAtPoint, signedSpace]
   rw [vecAtPoint_move, ← ratEmbed_mulVec_vecAtPoint, ← column_eq, mulVec_mulVec, mulVec_mulVec]
-  simp [mul_assoc]
+  simp
 
 /-- If `γ` and `γ'` have the same last column `y` (`V.IsLastColumn`), then `γ⁻¹ * γ'` lies in the
 image of `inlLine E s`. -/

@@ -308,7 +308,7 @@ lemma normalizedDescent_classForm_mul [WeilData E]
   have h_det : detOn (O.levelModulus 2).places L.point.val =
       detOn (Set.range O.chosenPlace) L.point.val := by
     ext w
-    · simp [detOn]
+    · simp
     · simp only [detOn_apply, places_levelModulus, Set.Sum.elim_range]
       by_cases hw : w ∈ Set.range O.chosenPlace
       · simp [hw]

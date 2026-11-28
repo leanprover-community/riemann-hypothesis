@@ -350,7 +350,7 @@ theorem enorm_integral_besselKernel_le {γ : S.G E} (h_near : S.IsNear γ)
       0 < RealPlace.gramDiscReal (realFrameGram (S.ratToInf γ v)) := by
     simp [gramDiscReal_realFrameGram_ratToInf, prod_pos, h_disc]
   have h_radius (_ : NumberField.InfinitePlace E) : S.b ^ (6 * 𝔰.n + 2) ≤ S.frameBoxRadius :=
-    pow_right_mono₀ S.one_le_b (by nlinarith [S.ten_pow_five_le_varrho])
+    pow_right_mono₀ S.one_le_b (by linarith [S.ten_pow_five_le_varrho])
   -- Apply the bound for one pairing to the weight `φ`, which is `ω` with complex values.
   let φ (z : NumberField.InfinitePlace E → 𝔰.G₁) : ℂ := (ω z).toReal
   have φ_meas : Measurable φ := by fun_prop

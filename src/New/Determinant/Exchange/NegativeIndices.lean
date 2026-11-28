@@ -416,7 +416,7 @@ lemma New.Exchange.integral_theta_pairWeil_stabilizer_eq_zero {s : n → ℤˣ} 
       · change (p.1 τ' : Matrix n n ℂ) * atRealPlace x' τ' = atRealPlace x' τ'
         obtain rfl | h_ne := eq_or_ne τ' τ
         · simp [p, w, hcx, Matrix.mul_assoc]
-        · simp [p, w, h_ne]
+        · simp [p, h_ne]
       · have hp_fin : (G.adeleMatrix p).map Prod.snd = 1 := by ext; simp [p, w, mul_assoc]
         exact (congrArg (· * x'.map Prod.snd) hp_fin).trans (Matrix.one_mul _)
     have hpC : (⟨p, hpS⟩ : S) ∈ C := ⟨(mulSingle τ c, 1), ⟨by simpa, by simp⟩, rfl⟩

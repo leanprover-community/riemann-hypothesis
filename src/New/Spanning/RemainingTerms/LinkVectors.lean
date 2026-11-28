@@ -170,7 +170,7 @@ lemma gram_linkVectors (γ : S.G E) :
   have h_first : ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ Pi.single (inr ()) 1 =
       ![(S.N : E), S.N * star (w (inr ()))] := by
     ext i
-    fin_cases i <;> simp [linkVectors, positiveGram, Matrix.mul_apply, hw, mul_comm]
+    fin_cases i <;> simp [linkVectors, positiveGram, hw, mul_comm]
   have h_second : ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ w = ![S.N * w (inr ()), S.N] := by
     simp [linkVectors_mulVec, hw]
   ext i k

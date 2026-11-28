@@ -317,7 +317,6 @@ theorem CriticalPair.smul_apply_trivialLiftClassSum {ϑ : D.TameChar}
   simp only [← mul_classSum, ← classSum_mul]
   rw [integralAlgebraicPart, algPart, h_lift, norm_smul, Complex.ofReal_mul, mul_pow,
     ← Complex.mul_conj', map_pow, h_norm_eq, Fintype.card_fin]
-  dsimp only [Y]
   push_cast
   ring
 
@@ -375,7 +374,7 @@ lemma testColumn_injective (hq : q.HasEmptyRow (Fin (2 * p.z - 20))) {j : ℕ} (
     (i : (lValueData hp.hasLiftRank ϑ).ChosenIndex) :
     (testColumn hq hp ϑ x₀ i).mulVec.Injective := by
   intro v v' h_eq
-  simp only [testColumn, fromRows_mulVec] at h_eq
+  simp only [testColumn] at h_eq
   exact inclMatrix_mulVecLin_injective _ _ (funext fun k ↦ congrFun h_eq (.inr k))
 
 -- Keeps definitional checks from unfolding the finite sums.
@@ -1251,7 +1250,7 @@ theorem heightLe_inv_heckeValueProd_div {θ : PrimePadicIso → D.MFoldTwist}
   · have h_one : heckeValueProd j 1 ≠ 0 := fun h ↦ h_ne (by simp [h])
     rw [h_eq, mul_div_cancel_right₀ _ h_one,
       show ((θ ι).powTwist j).normQ = (θ ι).normQ from rfl]
-    simp [mul_pow]
+    simp
     ring
 
 end New.Data

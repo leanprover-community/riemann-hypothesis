@@ -510,7 +510,7 @@ lemma exists_lintegral_enorm_unfoldedPairing_le {F : PlaceData ι T (m + 1)}
     simpa [W, frameCorrelation] using h_bd a b
   calc ∫⁻ k, ‖unfoldedPairing Z p q (k * l) (y₁, y₂)‖ₑ ∂F.quotientMeasureFrom i
     _ = ‖⟪W y₁, W y₂⟫_ℂ‖ₑ * ∫⁻ k, ‖⟪W (k * a), W (k * b)⟫_ℂ‖ₑ ∂F.quotientMeasureFrom i := by
-      simp [W, a, b, unfoldedPairing, mul_assoc, ← ofReal_norm, lintegral_const_mul']
+      simp [W, a, b, unfoldedPairing, mul_assoc, lintegral_const_mul']
     _ ≤ ‖⟪W y₁, W y₂⟫_ℂ‖ₑ * C := by gcongr
 
 /-- Let `F` be a large lattice datum, `i ≥ 𝔰.ϱ`, and `l` in the floor group `T.floorGroup 𝔰.ϱ`. The

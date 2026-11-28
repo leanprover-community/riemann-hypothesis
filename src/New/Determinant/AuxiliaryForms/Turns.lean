@@ -698,7 +698,7 @@ lemma card_gridIndex_square_le (z : Bool) (ha : a < D.m) (hb : b < D.m)
         2 * (negCount (Sum.elim (D.gridSigns z 0 a (b + 1)) (D.gridSigns z 0 (a + 1) b)) : ℤ) := by
   -- both ranks are at most `2 * D.n D.m ≤ 2 * D.halfGap`, and both weights are at least `D.halfGap`
   have h_n : D.n D.m ≤ D.halfGap := D.nat_le_of_hasLogBound
-  simp only [squarePair, Fintype.card_sum, Pi.add_apply, negCount_sumElim, Nat.cast_add]
+  simp only [squarePair, Fintype.card_sum, Pi.add_apply, Nat.cast_add]
   grw [card_gridIndex_le, card_gridIndex_le, h_n] <;> grind
 
 /-- Crossing the square `(a, b)` of the grid `z`, for `a, b < m`: there are a constant `κ`, a
@@ -933,7 +933,7 @@ lemma sum_formMap_eq_of_squareLaw {z : Bool} {ϑ : D.MFoldTwist} {w : Finset (Gr
     simpa [card_congr of.symm] using h_turn.sum_eq_of_squareLaw h_match
       (fun i : D.GridForm z a (b + 1) × (D.GridForm z (a + 1) b →ₗ[ℂ] ℂ) ↦ h_law i.1 i.2) h_dep
   -- The blocks of the matrices of the square are, by definition, the matrices on its sides.
-  simp only [GridPath.formMap_append, GridPath.formMap, LinearMap.comp_apply]
+  simp only [GridPath.formMap_append, LinearMap.comp_apply]
   exact h_square
 
 /-- Fix an off-diagonal corner `a < b < D.m` in half `z`. Every turn there transfers periods

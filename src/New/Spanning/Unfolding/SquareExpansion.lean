@@ -226,7 +226,7 @@ lemma exists_scalar_mul_besselS {γ : S.G E} {c c' : S.Classes} {s : S.ResidueGL
     have hγ₀_val : (γ₀ : GL 𝔰.BesselIndex E).val = star ζ • (γ : GL 𝔰.BesselIndex E).val :=
       val_scalarIsometry_inv_mul _ hζ γ
     rw [hk₀_val, hk, coe_translateByClassReps, coe_translateByClassReps]
-    simp [hγ₀_val, Matrix.map_smul' _ _ _ (map_mul (algebraMap E (𝔸f E)))]
+    simp [hγ₀_val]
   have hk₀_mem : (k₀ : S.GFin) ∈ besselS := by
     simpa [hk₀] using translateByClassReps_mem_besselS hγ₀ c c'
   refine ⟨ζ, hζ, h_int, ⟨γ₀, hγ₀, (mul_inv_cancel_left _ γ).symm⟩, S.reduction k₀,

@@ -163,7 +163,7 @@ lemma twoSidedSubst_firstColsCoord {p : ℕ} [Fintype Φ] (c : Φ → Matrix N N
       twoSidedSubst c g (fockPairing R G (v l')) = fockPairing R (map φ G) (v l') := by
     simpa [φ, v] using map_fockPairing φ G (v l')
   have h_schur : rowSubst (fun τ ↦ (c τ).map C) (v l) = ∑ l', (C (schur κ c l l') : R) • v l' := by
-    simp [R, v, ← sum_schur_smul_nablaBasis, detPow, schur_map]
+    simp [R, v, ← sum_schur_smul_nablaBasis, schur_map]
   have h_adjoint : fockPairing R (inFirstCols (s • F)) (v l) =
       ∑ l', schur κ c l l' • fockPairing R (map φ (inFirstCols F')) (v l') := by
     rw [← h_subst, ← inFirstCols.comp_apply, h_split]

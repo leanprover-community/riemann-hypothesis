@@ -107,7 +107,7 @@ lemma card_le_mul_finrank_of_dual_rows {O X I E : Type*} [CommRing O] [IsLocalRi
   have h_indep : LinearIndependent (ResidueField O) v := by
     refine Fintype.linearIndependent_iff.2 fun c hc i ↦ ?_
     have h_entry (y : X × I) : ∑ j : s, c j * residue O (Q y j) = 0 := by
-      simpa [v] using congrArg (fun f : X → S ↦ S.subtype (f y.1) y.2) hc
+      simpa using congrArg (fun f : X → S ↦ S.subtype (f y.1) y.2) hc
     -- Pair the relation with row `i` of `R`: only the coefficient `c i` survives.
     calc c i = ∑ j : s, c j * residue O ((R * Q) i j) := by
           simp [h_dual]

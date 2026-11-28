@@ -358,7 +358,7 @@ lemma heckeAction_pow_apply {A δ₀ : D.heckeAlgebra Q.place} {n₀ : EllAdicIn
     simp only [Algebra.smul_def]
     ring
   have kill : (heckeAction (v * s * (δ₀ - algebraMap _ _ n₀))).val y = 0 := by
-    simp [map_mul, hy, Algebra.algebraMap_eq_smul_one]
+    simp [map_mul, hy]
   rw [split, map_add, map_smul, AddMemClass.coe_add, FormEnd.add_apply, kill, add_zero]
   rfl
 
