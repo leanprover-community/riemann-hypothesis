@@ -235,43 +235,34 @@ theorem PlaceData.IsCut.isNear_of_ne_zero (hk : F.IsCut W) (h : W x ≠ 0) : F.I
   obtain ⟨u, hu, hu_box⟩ : ∃ u ∈ T.besselU, u * x ∈ F.boxSet := hk.exists_mul_mem_box h
   exact ⟨u, mem_partialUnitriangularGroup_of_mem_besselU hu, hu_box⟩
 
+/-- The two floor variables separate after taking norms, giving one pivot integral for each. -/
+private lemma PlaceData.IsCut.lintegral_formTerm_le {W : T.G → EuclideanSpace ℂ I}
+    (hW : F.IsCut W) {ω : T.G → ℂ} (hω : ∀ y : T.G, ‖ω y‖ ≤ 1) (x g : T.G) :
+    ∫⁻ σ : T.G, ∫⁻ τ : T.G, ‖ω (σ * τ⁻¹) * F.partialCorrelationProduct (j + 1) W x
+      (weylRatio j p q) (σ * weylElem j p * τ⁻¹) (σ * g)‖ₑ ∂F.floorMeasure j ∂F.floorMeasure j ≤
+      F.pivotL1Norm j (frameCorrelation W 1) g (g * x) *
+      F.pivotL1Norm j (frameCorrelation W (weylRatio j p q)) ((weylElem j p)⁻¹ * g)
+        ((weylElem j p)⁻¹ * g * x) := by
+  have hW_meas := hW.stronglyMeasurable
+  have hχ (y : T.G) : ‖ω y‖ₑ ≤ 1 := by simpa [← ofReal_norm] using ofReal_le_one.2 (hω y)
+  simp only [eNorm_mul]
+  grw [hχ]
+  simp only [one_mul, pivotL1Norm, partialCorrelationProduct, eNorm_mul, eNorm_conj,
+    _root_.mul_inv_rev, inv_inv, mul_assoc, inv_mul_cancel_left]
+  exact (lintegral_lintegral_mul
+    (by apply Measurable.aemeasurable; fun_prop [partialCorrelation])
+    (by apply Measurable.aemeasurable; fun_prop [partialCorrelation])).le
+
 /-- Let W be a cut Bessel function and |ω| ≤ 1 everywhere. For every floor `j : ℕ`, all sequences of
 units `p q : ℕ → Aˣ` and every point x of the group, the L¹ norm 𝖥_j(x; ω) of the form integrand at
 x is at most the majorant `F.formMajorant j p q W x`. -/
 theorem PlaceData.IsCut.formIntegrandL1Norm_le_formMajorant {W : T.G → EuclideanSpace ℂ I} {x : T.G}
     (hW : F.IsCut W) {ω : T.G → ℂ} (hω_le : ∀ y : T.G, ‖ω y‖ ≤ 1) :
     F.formIntegrandL1Norm j p q W x ω ≤ F.formMajorant j p q W x := by
-  have hW_meas : StronglyMeasurable W := hW.stronglyMeasurable
   rw [formIntegrandL1Norm, formMajorant]
-  refine lintegral_mono fun g : T.G ↦ ?_
-  -- The integrands of the two factors `pivotL1Norm` in `formMajorant`.
-  let plain (σ : T.G) : ℝ≥0∞ :=
-    ‖F.partialCorrelation (j + 1) (frameCorrelation W 1) (σ * g) (σ * (g * x))‖ₑ
-  let twisted (τ : T.G) : ℝ≥0∞ :=
-    ‖F.partialCorrelation (j + 1) (frameCorrelation W (weylRatio j p q))
-      (τ * ((weylElem j p)⁻¹ * g))
-      (τ * ((weylElem j p)⁻¹ * g * x))‖ₑ
-  have h_integrand (σ τ : T.G) :
-      ‖ω (σ * τ⁻¹) * F.partialCorrelationProduct (j + 1) W x (weylRatio j p q)
-        (σ * weylElem j p * τ⁻¹)
-        (σ * g)‖ₑ ≤ plain σ * twisted τ := by
-    have hω : ‖ω (σ * τ⁻¹)‖ₑ ≤ 1 := by
-      rw [← ofReal_norm]
-      exact ofReal_le_one.2 (hω_le _)
-    grw [eNorm_mul, hω, one_mul]
-    simp [partialCorrelationProduct, plain, twisted, mul_assoc]
-  have h_plain_meas : Measurable plain := by fun_prop [partialCorrelation]
-  calc ‖F.formIntegrand j p q W x ω g‖ₑ
-    _ ≤ ∫⁻ σ : T.G, ∫⁻ τ : T.G, plain σ * twisted τ ∂F.floorMeasure j ∂F.floorMeasure j :=
-      (eNorm_integral_le_lintegral_eNorm _).trans <| lintegral_mono fun σ ↦
-        (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_mono (h_integrand σ))
-    _ = ∫⁻ σ : T.G, plain σ * ∫⁻ τ : T.G, twisted τ ∂F.floorMeasure j ∂F.floorMeasure j :=
-      lintegral_congr fun σ ↦ lintegral_const_mul' _ _ eNorm_ne_top
-    _ = (∫⁻ σ : T.G, plain σ ∂F.floorMeasure j) * ∫⁻ τ : T.G, twisted τ ∂F.floorMeasure j :=
-      lintegral_mul_const _ h_plain_meas
-    _ = F.pivotL1Norm j (frameCorrelation W 1) g (g * x) *
-        F.pivotL1Norm j (frameCorrelation W (weylRatio j p q)) ((weylElem j p)⁻¹ * g)
-          ((weylElem j p)⁻¹ * g * x) := by rw [pivotL1Norm, pivotL1Norm]
+  refine lintegral_mono fun g ↦ (eNorm_integral_le_lintegral_eNorm _).trans ?_
+  exact (lintegral_mono fun σ ↦ eNorm_integral_le_lintegral_eNorm _).trans
+    (hW.lintegral_formTerm_le hω_le x g)
 
 /-- Compact support of the orbital integrals, with a bound. Let W be a cut Bessel function, p a head
 of length ϱ for the gauge Γ, with Weyl element w_p = `weylElem 𝔰.ϱ p`, and x in
@@ -573,21 +564,12 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
   -- As `‖χ‖ ≤ 1`, the integral of `‖formTerm‖` is at most that of `F.formMajorant`.
   have h_form_le : ∫⁻ z : ((T.G × T.G) × T.G) × T.G, ‖formTerm z‖ₑ ∂μ_form ≤
       ∫⁻ x : T.G, F.formMajorant b p q W x ∂F.groupMeasure := by
-    have hχ_le (y : T.G) : ‖χ y‖ₑ ≤ 1 := by
-      rw [← ofReal_norm]
-      exact ofReal_le_one.2 (hφ_le _)
     dsimp only [μ_form]
     have hF := h_form_meas.eNorm
     rw [lintegral_prod _ hF.aemeasurable, lintegral_prod _ hF.lintegral_prod_right'.aemeasurable,
       lintegral_prod _ hF.lintegral_prod_right'.lintegral_prod_right'.aemeasurable]
     refine lintegral_mono fun x ↦ lintegral_mono fun g ↦ ?_
-    simp only [formTerm, eNorm_mul]
-    grw [hχ_le]
-    -- The remaining double integral over floor `b` splits into the two factors `pivotL1Norm`.
-    simp only [one_mul, pivotL1Norm, partialCorrelationProduct, eNorm_mul, eNorm_conj,
-      _root_.mul_inv_rev,
-      inv_inv, mul_assoc, inv_mul_cancel_left]
-    exact (lintegral_lintegral_mul (by fun_prop) (by fun_prop)).le
+    exact hW.lintegral_formTerm_le (ω := χ) (fun y ↦ hφ_le _) x g
   have h_form_int : Integrable formTerm μ_form :=
     ⟨h_form_meas.aestronglyMeasurable, h_form_le.trans_lt h_fin.lt_top⟩
   have h_succ_int : Integrable succTerm μ_succ := h_law.integrable_iff.2 h_form_int
