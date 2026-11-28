@@ -710,7 +710,7 @@ lemma exists_tensorPush_ne_zero_and_dvd_total [PerfectRing S p]
       (hi : tensorPush (i.comp ψ).toLinearMap z ≠ 0) : i (ψ f) ∣ i (ψ g) → ψ f ∣ ψ g :=
     h_maximal ⟨E, i.comp ψ, hi, rfl⟩ (fun _ _ ↦ map_dvd i) f g
   refine ⟨B, ψ, hψ, fun f g ↦ ?_⟩
-  -- The perfected charts `i₁ : B → B₁`, `i₂ : B → B₂` of the blow-up of `(ψ f, ψ g)`: the sequence
+  -- On the two perfected charts, `ψ f` divides `ψ g` or `ψ g` divides `ψ f`. The sequence
   -- `B → B₁ × B₂ → B₀ → 0` is exact, and injective on the left after tensoring with any `D`.
   obtain ⟨B₁, B₂, B₀, i₁, i₂, j, h₁ : i₁ (ψ g) ∣ i₁ (ψ f), h₂ : i₂ (ψ f) ∣ i₂ (ψ g), h_surj,
     h_exact, h_inj⟩ := exists_perfect_blowup_charts natCast_eq_zero_of_algebra_oFlat B (ψ f) (ψ g)

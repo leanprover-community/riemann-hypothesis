@@ -13,10 +13,10 @@ public import Lib.PadicComparison.Descent.TestCovers -- shake: keep (needed publ
 
 Fix a prime p (the class `ThePrime p`). An algebra is perfect when x ↦ x^p is bijective; for hp :
 p = 0, `frobPow hp 1` is this map x ↦ x^p as a ring endomorphism, and O♭ denotes the tilt of the
-ring of integers of ℂ_p. The file constructs perfections of quotients and perfected blow-up charts,
-and it shows that étale algebras lift along surjections and are perfect over a perfect base in which
-p = 0. It also proves that a Laurent polynomial that is a polynomial both in T and in T⁻¹ is
-constant.
+ring of integers of ℂ_p. The file constructs perfections of quotients and of the affine charts of
+`f V = g U` in the projective line with coordinates `[U : V]`. It shows that étale algebras lift
+along surjections and are perfect over a perfect base in which p = 0. It also proves that a Laurent
+polynomial that is a polynomial both in T and in T⁻¹ is constant.
 
 ## Main definitions and results
 
@@ -75,7 +75,7 @@ namespace New.Variety
 
 variable {p : ℕ}
 /-!
-## Perfect algebras, tensor products and blow-up charts
+## Perfect algebras, tensor products and divisibility
 
 The category `New.Variety.PerfectAlg p S` of perfect S-algebras, mostly for a ring S with p = 0. The
 tilt of a p-adic test (`New.Variety.PadicTest`) is a perfect O♭-algebra.
@@ -238,7 +238,7 @@ lemma perfectRing_of_pow_surjective (hp : (p : S) = 0) [IsReduced S]
   have h_inj : Injective (frobPow hp 1) := (injective_iff_map_eq_zero _).2 (by simp [ne])
   exact ⟨by rwa [coe_frobPow_one] at h_inj, h_surj⟩
 
-/-! ### Tensor products and blow-up charts -/
+/-! ### Tensor products and divisibility -/
 
 lemma perfectRing_tensor (hp : (p : S) = 0) [PerfectRing S p] (B D : PerfectAlg p S) :
     PerfectRing (B.obj ⊗[S] D.obj) p := by
@@ -399,10 +399,11 @@ lemma exists_factor_through_blowup_charts (hp : (p : S) = 0) {B B₁ B₂ : Perf
     exact ⟨K, η, ψ.comp (.snd S _ _), hη,
       AlgHom.ext fun b ↦ by simpa using AlgHom.congr_fun hψ (C b)⟩
 
-/-- The two charts of the blow-up of (f, g), perfected. For S perfect with p = 0 and f, g in a
-perfect S-algebra B there are perfect S-algebras B₁, B₂ under B, and B₀, such that (a) g ∣ f in
-B₁ and f ∣ g in B₂; (b) B → B₁ × B₂ → B₀ → 0 is an exact sequence of S-modules; (c) the first
-map is injective after tensoring over S with any perfect S-algebra. -/
+/-- The two affine charts of `f V = g U` in the projective line over `B`, perfected.
+For `S` perfect with `p = 0` and `f, g` in a perfect `S`-algebra `B`, there are perfect
+`S`-algebras B₁ and B₂ under B, and B₀, such that (a) g ∣ f in B₁ and f ∣ g in B₂,
+(b) B → B₁ × B₂ → B₀ → 0 is an exact sequence of S-modules, and (c) the first map is injective
+after tensoring over S with any perfect S-algebra. -/
 lemma exists_perfect_blowup_charts (hp : (p : S) = 0) [PerfectRing S p] (B : PerfectAlg p S)
     (f g : B.obj) :
     ∃ (B₁ B₂ B₀ : PerfectAlg p S) (i₁ : B.obj →ₐ[S] B₁.obj) (i₂ : B.obj →ₐ[S] B₂.obj)
