@@ -1,8 +1,8 @@
 module
 
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import TauCeti.Analysis.Matrix.Spectrum
 public import New.Appendix.DiscreteSeries.SteepParameters
 import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
 import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
@@ -482,12 +482,10 @@ lemma one_add_norm_sq_le_norm_det_one_add (A : Matrix n n ℂ) :
   convert one_add_sum_le_prod_one_add Finset.univ hA.eigenvalues_nonneg using 2
   · rw [← ofReal_inj, ← trace_star_mul_self_eq_norm_sq, hA.isHermitian.trace_eq_sum_eigenvalues]
     simp
-  · rw [show ‖(1 + Aᴴ * A).det‖ = ‖(Aᴴ * A).charpoly.eval (-1)‖ from by
-      rw [eval_charpoly, map_neg, map_one, ← neg_add', det_neg]
-      simp, hA.isHermitian.charpoly_eq, Polynomial.eval_prod, norm_prod]
-    exact prod_congr rfl fun i _ ↦ by
-      simpa [← neg_add', ← ofReal_one, ← ofReal_add] using
-        Complex.norm_of_nonneg (add_nonneg zero_le_one (hA.eigenvalues_nonneg i))
+  · rw [show (1 + Aᴴ * A).det = ((∏ i, (1 + hA.isHermitian.eigenvalues i) : ℝ) : ℂ) by
+        simpa using hA.isHermitian.det_one_sub_smul (-1 : ℂ)]
+    exact Complex.norm_of_nonneg
+      (prod_nonneg fun i _ ↦ add_nonneg zero_le_one (hA.eigenvalues_nonneg i))
 
 /-- The part of `gᴴ ε g = ε` that commutes with `ε` reads `aᴴ a = 1 + yᴴ y`, for the compact part
 `a = blockDiagPart ε g` and the noncompact part `y = noncompactPart ε g`. -/
