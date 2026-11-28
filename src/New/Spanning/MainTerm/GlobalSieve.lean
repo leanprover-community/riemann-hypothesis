@@ -49,7 +49,7 @@ Notions from other files:
   (the `T`-integers) that are integral at every finite place outside `T`.
 * `New.genIndex a`, `New.denomIndex O a`: the generalised index `[O : a O]` and the denominator
   `[O : O ∩ a⁻¹ O]`.
-* `New.SieveSystem`: the axioms of the sieve for a family of forms `J i` on pairs of heads, at a
+* `TauCeti.SieveSystem`: the axioms of the sieve for a family of forms `J i` on pairs of heads, at a
   place or a product of places.
 
 ## Relation to the literature
@@ -502,7 +502,7 @@ decay `β ξ` times the weights `Λ i` of the two heads. For `i < n`, the same b
 `ξ = 1 / t - 1 / s` (divided by the level `M = S.M` at `T`) is a unit. -/
 abbrev IsGlobalSieveSystem (n : ℕ) (J : ℕ → GlobalHead T → GlobalHead T → ℂ) (En : ℝ)
     (Λ : ℕ → GlobalHead T → ℝ) (β : (InfinitePlace E → ℂ) × LocProd T → ℝ) : Prop :=
-  SieveSystem (unitOrOneAtPlaces T)
+  TauCeti.SieveSystem (unitOrOneAtPlaces T)
     (Prod.map (fun z : InfinitePlace E → ℂˣ ↦ (fun w : ℂˣ ↦ ((w⁻¹ : ℂˣ) : ℂ)) ∘ z)
       fun w : (LocProd T)ˣ ↦ ratToPlaces T (S.M : E)⁻¹ * ((w⁻¹ : (LocProd T)ˣ) : LocProd T))
     n J (S.globalChar T) En Λ β
@@ -672,15 +672,17 @@ lemma re_le_of_last_entries_ne [S.IsAdmissible]
     simpa [ξ] using hβ i (fun _ ↦ S.M) h_scale {y} (by simpa using y_ne) (by simpa using y_mem)
   have h_off : ‖J (i + 1) (S.scaledHead T p t) (S.scaledHead T q s)‖ ≤
       β ξ * (Λ (i + 1) (S.scaledHead T p t) * Λ (i + 1) (S.scaledHead T q s)) := by
-    have h_raw := K.norm_le_of_isUnit_sub i (S.scaledHead T p t) (S.scaledHead T q s) hi
     -- The frequency `ξ'` of the sieve system at these two heads is `ξ`.
-    extract_lets ξ' at h_raw
-    have hξ : ξ' = ξ := by
-      simp [ξ', ξ, scaledHead, scaledEntry, ratPoint, padTuple, unitOrOne, y, field, funext_iff,
+    suffices ∀ ξ', ξ' = ξ → (IsUnit ξ' → ‖J (i + 1) (S.scaledHead T p t) (S.scaledHead T q s)‖ ≤
+        β ξ' * (Λ (i + 1) (S.scaledHead T p t) * Λ (i + 1) (S.scaledHead T q s))) →
+        ‖J (i + 1) (S.scaledHead T p t) (S.scaledHead T q s)‖ ≤
+          β ξ * (Λ (i + 1) (S.scaledHead T p t) * Λ (i + 1) (S.scaledHead T q s)) from
+      this _ ?_ (K.norm_le_of_isUnit_sub i hi (S.scaledHead T p t) (S.scaledHead T q s))
+    · simp [ξ, scaledHead, scaledEntry, ratPoint, padTuple, unitOrOne, y, field, funext_iff,
         IsUnit.map, (S.frameScaleSq_pos _ i).ne', ↓map_sub, ↓map_mul, ↓map_units_inv]
       intro v
       field [Nat.Prime.ne_zero]
-    rw [hξ] at h_raw
+    rintro _ rfl h_raw
     exact h_raw ξ_unit
   grw [re_le_norm, h_off, hβ_le]
   exact mul_nonneg (hΛ _ _) (hΛ _ _)
@@ -1125,10 +1127,10 @@ omit [WeilData E] [T.StarStable] in
 of the admissible filling data `S`, let `k`, `ϱ`, `n = ϱ + 1` be the parameters of its shape `𝔰`,
 and let `f` be the number of infinite places. Let `U ⊆ A`, and let `1 / M` and `t`, `1 / t` for
 `t ∈ A` be integral off `T`. Let the forms `J_T i` on pairs of heads (sequences of units) at `T`
-satisfy the axioms of the sieve (`SieveSystem`) in length `ϱ`: for `i ≤ ϱ`, `J_T i` is the integral
-of `J_T (i + 1)` over a common entry at position `i`, read as a unit (`unitOrOne`); the top form
-`J_T n` is continuous, and positive semidefinite on heads with a common entry at position `ϱ`; the
-mass `J_T 0` has modulus at most `mass_T`; and the decay `frequencyDecay` times the weights
+satisfy the axioms of the sieve (`TauCeti.SieveSystem`) in length `ϱ`: for `i ≤ ϱ`, `J_T i` is the
+integral of `J_T (i + 1)` over a common entry at position `i`, read as a unit (`unitOrOne`); the top
+form `J_T n` is continuous, and positive semidefinite on heads with a common entry at position `ϱ`;
+the mass `J_T 0` has modulus at most `mass_T`; and the decay `frequencyDecay` times the weights
 `finHeadWeight` bounds the transforms for `S.charOnPlaces T` and the forms at heads with entries
 `w`, `w'` whose frequency `(1 / w - 1 / w') / M` is a unit. Multiply `J_T` by the forms `bandLimit`
 that are part of the Bessel systems `S.besselSystem v` at the infinite places: they satisfy the same
@@ -1146,7 +1148,7 @@ theorem sieve [S.IsAdmissible] {A : Finset Eˣ}
     (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T ∧ ((t⁻¹ : Eˣ) : E) ∈ ratIntegralOff T)
     (hM_inv : (S.M : E)⁻¹ ∈ ratIntegralOff T)
     {J_T : ℕ → (ℕ → (LocProd T)ˣ) → (ℕ → (LocProd T)ˣ) → ℂ} {mass_T : ℝ} {U : Finset Eˣ}
-    (hJ_T : SieveSystem unitOrOne
+    (hJ_T : TauCeti.SieveSystem unitOrOne
       (fun w : (LocProd T)ˣ ↦ ratToPlaces T (S.M : E)⁻¹ * ((w⁻¹ : (LocProd T)ˣ) : LocProd T))
       𝔰.ϱ J_T (S.charOnPlaces T) mass_T (finHeadWeight (𝔰.n ^ 6)) (S.frequencyDecay T))
     (hU : U ⊆ A) :
@@ -1177,7 +1179,7 @@ theorem sieve [S.IsAdmissible] {A : Finset Eˣ}
   have K : S.IsGlobalSieveSystem T 𝔰.ϱ J massBound (S.globalWeight T) fun ξ ↦
       (∏ v, 𝔰.scaledVolumeRatio * S.b ^ (2000 * 𝔰.n ^ 9) * dampedPower (𝔰.k - 𝔰.n ^ 7) ‖ξ.1 v‖⁻¹) *
         S.frequencyDecay T ξ.2 :=
-    hJ_T.pi fun v ↦ (S.besselSystem v).hasLocalBounds.1
+    (TauCeti.SieveSystem.pi fun v ↦ (S.besselSystem v).hasLocalBounds.1).prod hJ_T
   have hx (v : InfinitePlace E) (p : Fin 𝔰.ϱ → A) (t : Eˣ) :
       (·.1 v) ∘ S.scaledHead T p t = x v p t := rfl
   have hy (p : Fin 𝔰.ϱ → A) (t : Eˣ) : (·.2) ∘ S.scaledHead T p t = y p t := by

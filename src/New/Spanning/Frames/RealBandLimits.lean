@@ -27,7 +27,7 @@ bounds `New.HasLocalBounds` read by the sieve, given bounds on the matrix coeffi
 volumes of balls. The place ℂ lies over a real place of the totally real subfield, and the
 docstrings call it a real place.
 
-`New.HasLocalBounds` asks for a system of forms `New.SieveSystem` on floors `0, …, ϱ + 1`, each
+`New.HasLocalBounds` asks for a system of forms `TauCeti.SieveSystem` on floors `0, …, ϱ + 1`, each
 below the top an integral of the next one.
 
 Throughout `F` is the cut of the Bessel function `W`, n = ϱ + 1, k = card κ and r is the rank of G₁.
@@ -707,33 +707,35 @@ lemma exists_hasLocalBounds_of_isCutBessel (hF : IsCutBessel F rep ρ s b W f) {
   have J_top (p q : ℕ → ℂˣ) : J (𝔰.ϱ + 1) p q = ⟪normalizedCellIntegral F p,
     normalizedCellIntegral F q⟫_ℂ :=
     ite_eq_right (Nat.not_succ_le_self 𝔰.ϱ)
+  -- Descent: the transform in the next entry is the form of floor `i` with the weight `ω`.
+  have h_step {i : ℕ} (hi : i ≤ 𝔰.ϱ) (p q : ℕ → ℂˣ) (ξ : ℂ) :
+      Integrable (fun c : ℂ ↦
+        wave (ξ * c) * J (i + 1) (update p i (unitOrOne c)) (update q i (unitOrOne c))) ∧
+      ∫ c : ℂ, wave (ξ * c) * J (i + 1) (update p i (unitOrOne c)) (update q i (unitOrOne c)) =
+        hF.formConst * hF.complexData.floorForm i p q F
+          fun x : 𝔰.G₁ ↦ wave (ξ * (realFrameGram x).diag ⟨i, Nat.lt_succ_of_le hi⟩) := by
+    obtain hlt | rfl := hi.lt_or_eq
+    · simpa only [J_floor hlt] using hF.integrable_and_integral_wave_mul_floorForm_succ hlt p q ξ
+    · simp only [J_top]
+      exact hF.integrable_and_integral_wave_mul_inner_normalizedCellIntegral p q ξ
   -- The local bounds do not keep the factor `card I` of the bounds for the decay.
   have one_le_card : (1 : ℝ) ≤ card I := mod_cast card_pos
   refine ⟨J,
     { psi_zero := by simp [wave]
-      integrable_and_integral_update := fun i p q ξ hi ↦ ?_
+      integrable_mul_update := fun i hi p q ξ ↦ (h_step hi p q ξ).1
+      integral_update := fun i hi p q ↦ ?_
+      norm_integral_mul_update_le := fun i hi p q ξ ξ_unit ↦ ?_
       posSemidef := fun a _ _ ↦ ?_
       continuous := ?_
       norm_bot_le := fun p q ↦ ?_
-      norm_le_of_isUnit_sub := fun i p q hi ξ_unit ↦ ?_ },
+      norm_le_of_isUnit_sub := fun i hi p q ξ_unit ↦ ?_ },
     fun σ hσ p q hp hq ↦ (J_top p q).trans
       (hF.inner_normalizedCellIntegral_eq_of_last_entry hσ hp hq)⟩
-  · -- Descent: the transform in the next entry is the form of floor `i` with the weight `ω`.
-    let ω (x : 𝔰.G₁) : ℂ := wave (ξ * (realFrameGram x).diag ⟨i, Nat.lt_succ_of_le hi⟩)
-    intro Φ
-    have ⟨Φ_integrable, integral_Φ⟩ : Integrable Φ ∧
-        ∫ c, Φ c = hF.formConst * hF.complexData.floorForm i p q F ω := by
-      obtain hlt | rfl := hi.lt_or_eq
-      · simpa only [Φ, J_floor hlt] using hF.integrable_and_integral_wave_mul_floorForm_succ hlt p q
-          ξ
-      · simp only [Φ, J_top]
-        exact hF.integrable_and_integral_wave_mul_inner_normalizedCellIntegral p q ξ
-    rw [integral_Φ]
-    refine ⟨Φ_integrable, fun ξ_zero ↦ ?_, fun ξ_unit ↦ ?_⟩
-    · have ω_eq : ω = 1 := funext fun x ↦ by simp [ω, ξ_zero, wave]
-      rw [ω_eq, J_floor hi]
-    · exact (le_mul_of_one_le_left (norm_nonneg _) one_le_card).trans
-        (hF.norm_floorForm_wave_le hi p q ξ_unit.unit)
+  · -- At `ξ = 0` the weight is `1`.
+    simpa [wave, J_floor hi, Pi.one_def] using (h_step hi p q 0).2
+  · rw [(h_step hi p q ξ).2]
+    exact (le_mul_of_one_le_left (norm_nonneg _) one_le_card).trans
+      (hF.norm_floorForm_wave_le hi p q ξ_unit.unit)
   · -- The top form is a Gram form, so it is positive semidefinite.
     simp only [J_top]
     exact posSemidef_gram ℂ fun i ↦ normalizedCellIntegral F (a i)

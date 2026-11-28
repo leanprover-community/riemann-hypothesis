@@ -16,7 +16,7 @@ The finite half of the input of the sieve `New.Filling.sieve`.
   set `T` of places as one ring `LocProd T`. There is a subgroup `Z` of the unitary group over it
   that contains the components at `T` of the integral elements fixing given vectors at a set `Sg` of
   chosen places, and for which the forms `New.Floors.PlaceData.floorForm` and the density
-  `New.Floors.PlaceData.lastEntryDensity`, divided by `Z.massRatio`, satisfy `New.SieveSystem`.
+  `New.Floors.PlaceData.lastEntryDensity`, divided by `Z.massRatio`, satisfy `TauCeti.SieveSystem`.
 
 The subgroup is that of `New.Filling.IsFillingData.exists_intermediateGroup_norm_floorForm_div_le`,
 which bounds the form of floor `0`: it saves the power `b ^ (6 * 𝔰.k)` of the base `b` of the
@@ -30,7 +30,7 @@ Notions from other files:
 * `New.Floors.PlaceData.massIntegral`: `ϰ(Z) = ∫ |∫_Z phase(y x y⁻¹) dy| ^ 2 dx`.
 * `New.Floors.PlaceData.IntermediateGroup.massRatio`: `vol(Z) vol(K(g)) / unipotentMass ^ 2`, where
   `vol` is `New.Floors.PlaceData.groupMeasure` and `Z` lies between `K(g)` and the integral points.
-* `New.SieveSystem`: the recursion, positivity, continuity and bounds that the sieve asks of a
+* `TauCeti.SieveSystem`: the recursion, positivity, continuity and bounds that the sieve asks of a
   family of forms at a place.
 
 ## Relation to the literature
@@ -278,11 +278,11 @@ component at `T` of each integral adelic element whose reduction lies in `S.fixe
 fixes `d w` for all `w ∈ Sg`; (b) the forms `J j p q` in two sequences of units, given by the
 orbital integral `F.floorForm j` for `j ≤ ϱ` (the number of hyperbolic planes) and by the density
 `F.lastEntryDensity` at the prime `S.piNAt T` above `S.N` for `j > ϱ`, divided by the ratio of
-volumes `Z.massRatio`, are a `SieveSystem`. That is: `J j` is the integral of `J (j + 1)` over a
-common entry `unitOrOne c` at position `j ≤ ϱ`; the same integral twisted by `ψ (ξ * c)` at a unit
-`ξ`, and also `J (j + 1) p q` if `j < ϱ` and `ξ = M⁻¹ (p j)⁻¹ - M⁻¹ (q j)⁻¹` is a unit, are bounded
-by `S.frequencyDecay T ξ` times the weights `finHeadWeight (n ^ 6)` of `p` and `q`; `J (ϱ + 1)` is
-continuous, and positive semidefinite on sequences with a common entry at `ϱ`; and
+volumes `Z.massRatio`, are a `TauCeti.SieveSystem`. That is: `J j` is the integral of `J (j + 1)`
+over a common entry `unitOrOne c` at position `j ≤ ϱ`; the same integral twisted by `ψ (ξ * c)` at a
+unit `ξ`, and also `J (j + 1) p q` if `j < ϱ` and `ξ = M⁻¹ (p j)⁻¹ - M⁻¹ (q j)⁻¹` is a unit, are
+bounded by `S.frequencyDecay T ξ` times the weights `finHeadWeight (n ^ 6)` of `p` and `q`;
+`J (ϱ + 1)` is continuous, and positive semidefinite on sequences with a common entry at `ϱ`; and
 `‖J 0 p q‖ ≤ (1 + b⁻¹ ^ 6) / (b ^ (6 k)) ^ #Sg`. Here `ψ = S.charOnPlaces T` is the additive
 character of `S` restricted to `T`, `b = S.b` is the size parameter, `n = 𝔰.n = ϱ + 1` and `k = 𝔰.k`
 is the rank of the definite summand. -/
@@ -297,7 +297,7 @@ lemma IsFillingData.exists_intermediateGroup_sieveSystem {E : Type} {𝔰 : Shap
       -- (a)
       (∀ k : S.latticeStabilizer, S.reduction k ∈ S.fixer Sg d → S.toPlaces T k ∈ Z.val) ∧
       -- (b)
-      SieveSystem unitOrOne (fun u : (LocProd T)ˣ ↦ ratToPlaces T S.M⁻¹ * ↑u⁻¹) 𝔰.ϱ
+      TauCeti.SieveSystem unitOrOne (fun u : (LocProd T)ˣ ↦ ratToPlaces T S.M⁻¹ * ↑u⁻¹) 𝔰.ϱ
         (fun (j : ℕ) (p q : ℕ → (LocProd T)ˣ) ↦ (if j ≤ 𝔰.ϱ then F.floorForm j p q Z.besselVector 1
           else F.lastEntryDensity (S.piNAt T) Z p q) / Z.massRatio.toReal)
         (S.charOnPlaces T) ((1 + S.b⁻¹ ^ 6) / (S.b ^ (6 * 𝔰.k)) ^ #Sg)
@@ -308,11 +308,19 @@ lemma IsFillingData.exists_intermediateGroup_sieveSystem {E : Type} {𝔰 : Shap
   obtain ⟨pow_four_le, half_pow_le_inv_pow_six, pow_seven_le⟩ : 10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 6 ∧
     3 * 𝔰.n ^ 6 + 12 ≤ 𝔰.n ^ 7 ∧ 𝔰.n ^ 7 ≤ 𝔰.k := S.pow_chain
   rw [← hF.psi_eq]
-  refine ⟨Z, h_mem, by simp, fun j p q ξ hj ↦ ?step, fun a t ha ↦ ?posSemidef, ?continuous,
-    fun p q ↦ ?bottom, fun j p q hj hξ ↦ ?off_diagonal⟩
-  case step =>
-    -- floor `j` is the integral of floor `j + 1`
-    simp_rw [← mul_div_assoc, integral_div, ite_eq_left hj]
+  -- the integral of floor `j + 1` twisted by `ψ (ξ * c)` is floor `j` with a weight
+  have h_step {j : ℕ} (hj : j ≤ 𝔰.ϱ) (p q : ℕ → (LocProd T)ˣ) (ξ : LocProd T) :
+      let f (c : LocProd T) : ℂ := P.ψ (ξ * c) *
+        ((if j + 1 ≤ 𝔰.ϱ then
+            F.floorForm (j + 1) (Function.update p j (unitOrOne c))
+              (Function.update q j (unitOrOne c)) Z.besselVector 1
+          else F.lastEntryDensity (S.piNAt T) Z (Function.update p j (unitOrOne c))
+            (Function.update q j (unitOrOne c))) / Z.massRatio.toReal)
+      Integrable f ∧ ∫ c, f c = F.floorForm j p q Z.besselVector (fun x ↦
+        P.ψ (ξ * ((S.latticeMiddle (LocProd T)).frameGram x.val.val).diag ⟨j, by lia⟩)) /
+          Z.massRatio.toReal := by
+    intro f
+    simp_rw [f, ← mul_div_assoc, integral_div]
     split_ifs with hj'
     case' pos =>
       obtain ⟨h_int, h_eq⟩ := hF.gauge.integral_psi_mul_floorForm_succ (p := p) (q := q)
@@ -323,8 +331,16 @@ lemma IsFillingData.exists_intermediateGroup_sieveSystem {E : Type} {𝔰 : Shap
       obtain ⟨h_int, h_eq⟩ := integral_lastEntryDensity Z p q piNAt_mul_star ξ
     all_goals
       rw [h_eq]
-      exact ⟨h_int.div_const _, fun hξ ↦ by simp [hξ, Pi.one_def],
-        fun hξ ↦ hF.norm_floorForm_div_massRatio_le Z hj hξ (.inl rfl)⟩
+      exact ⟨h_int.div_const _, rfl⟩
+  refine ⟨Z, h_mem, by simp, fun j hj p q ξ ↦ (h_step hj p q ξ).1, fun j hj p q ↦ ?step,
+    fun j hj p q ξ hξ ↦ ?step_bound, fun a t ha ↦ ?posSemidef, ?continuous, fun p q ↦ ?bottom,
+    fun j hj p q hξ ↦ ?off_diagonal⟩
+  case step =>
+    -- floor `j` is the integral of floor `j + 1`
+    simpa [hj, Pi.one_def] using (h_step hj p q 0).2
+  case step_bound =>
+    rw [(h_step hj p q ξ).2]
+    exact hF.norm_floorForm_div_massRatio_le Z hj hξ (.inl rfl)
   case posSemidef =>
     simp only [Nat.not_succ_le_self, ↓reduceIte, div_eq_inv_mul]
     exact .smul (α := ℂ) (hF.posSemidef_lastEntryDensity Z a t ha) (by positivity)
