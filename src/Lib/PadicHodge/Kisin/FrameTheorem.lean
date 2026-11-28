@@ -399,6 +399,14 @@ private lemma phiInvToBdR_frobE_pow_mul_mem_of_forall_crysForms (F : Frame L) (m
     W.smul_of_tower_mem _ (hW (σ ν) ⟨?_, _, hσ ν⟩)
   simp [F.mem_forms_iff m, ↓h_unit, Matrix.one_apply]
 
+/-- If every crystalline form kills `F.comb 0 t`, then every coefficient `t i` is zero. -/
+private lemma coeff_eq_zero_of_forall_crysForms (F : Frame L)
+    (t : Fin (finrank ℤ_[p] L.Carrier) → Ainf)
+    (h_zero : ∀ μ ∈ L.crysForms, μ (F.comb 0 t) = 0)
+    (i : Fin (finrank ℤ_[p] L.Carrier)) : t i = 0 := by
+  simpa using F.phiInvToBdR_frobE_pow_mul_mem_of_forall_crysForms 0 ⊥ t
+    (fun μ hμ ↦ by simp [h_zero μ hμ]) i
+
 /-- For `x ∈ L.ainfLattice` and `a = L.jumpBound`, `τ ^ a • x` is a combination `F.comb 0 t` of
 the `F.n i`. -/
 private lemma exists_comb_eq_tau_pow_smul_of_mem_ainfLattice (F : Frame L) {x : L.Ambient}
@@ -422,7 +430,7 @@ private lemma sum_map_smul_eq_zero_of_sum_smul_eq_zero (F : Frame L) (f : Ainf �
   choose hv_frac hv_val using hv
   obtain ⟨r, hr, h_mem⟩ := fracSpan.sum_smul_mem (fun i ↦ f (c i)) (t := univ) fun i _ ↦ hv_frac i
   obtain ⟨t, ht⟩ := F.exists_comb_eq_tau_pow_smul_of_mem_ainfLattice h_mem
-  have h_kill : ∀ μ ∈ L.crysForms, μ (F.comb 0 t) ∈ (⊥ : Submodule BPlus BdR) := by
+  have h_kill : ∀ μ ∈ L.crysForms, μ (F.comb 0 t) = 0 := by
     rintro μ ⟨hμ, -⟩
     have h_rel : ∑ i, phiInvToBdR 0 (c i) * μ (v i) ∈ (⊥ : Submodule BPlus BdR) := by
       simpa [smul_def', phiInvToBdR] using congrArg μ hc
@@ -430,8 +438,8 @@ private lemma sum_map_smul_eq_zero_of_sum_smul_eq_zero (F : Frame L) (f : Ainf �
       simpa [phiInvToBdR] using
         sum_phiInvToBdR_map_mul_mem_of_mem_valueField f _ c (fun i ↦ hv_val i μ hμ) (W := ⊥) h_rel
     simp [ht, smul_def', h_zero]
-  have ht_zero (i : Fin (finrank ℤ_[p] L.Carrier)) : t i = 0 := by
-    simpa using F.phiInvToBdR_frobE_pow_mul_mem_of_forall_crysForms 0 ⊥ t h_kill i
+  have ht_zero (i : Fin (finrank ℤ_[p] L.Carrier)) : t i = 0 :=
+    F.coeff_eq_zero_of_forall_crysForms t h_kill i
   simpa [comb, nonZeroDivisors.ne_zero hr, ht_zero, smul_eq_val_smul,
     Fintype.linearCombination_apply] using
     ht.symm
@@ -534,11 +542,10 @@ private lemma span_phi_pow_smul_n_eq_valueFieldPoints (F : Frame L) (l : ℕ) :
 
 /-- The vectors `F.n i` are linearly independent over `Ainf`: crystalline forms detect the
 coefficients. -/
-private lemma linearIndependent_n (F : Frame L) : LinearIndependent Ainf F.n := by
-  refine Fintype.linearIndependent_iff.mpr fun t ht i ↦ ?_
-  have h_kill : ∀ μ ∈ L.crysForms, μ (F.comb 0 t) ∈ (⊥ : Submodule BPlus BdR) := by
-    simp [comb, ht, Fintype.linearCombination_apply]
-  simpa using F.phiInvToBdR_frobE_pow_mul_mem_of_forall_crysForms 0 ⊥ t h_kill i
+private lemma linearIndependent_n (F : Frame L) : LinearIndependent Ainf F.n :=
+  Fintype.linearIndependent_iff.mpr fun t ht ↦
+    F.coeff_eq_zero_of_forall_crysForms t fun μ _ ↦ by
+      simp [comb, ht, Fintype.linearCombination_apply]
 
 /-- The frame vectors `F.n i` span the Kisin module over `S`. -/
 private lemma span_n_eq_kisinModule (F : Frame L) : span k.S (Set.range F.n) = L.kisinModule := by
@@ -831,17 +838,25 @@ theorem mem_kisinAinf_of_crysForms {x : L.Ambient}
         rw [map_smul, smul_comm (k.E.val ^ n), hs, Algebra.smul_def, Algebra.smul_def, mul_comm]⟩
   rwa [← smul_right_injective L.Ambient (pow_ne_zero N tau_ne_zero) hw_eq]
 
-/-- Let the vectors `v i` lie in the Kisin module of `L`, and let `u i ∈ Ainf`. Suppose that for
-every `ν` in `crysForms` (the invariant A_inf-linear functionals to B_dR whose restriction to 1 ⊗ L
-comes from a Z_p-linear map L → B_max), `E ^ n • ν (∑ i, u i • v i)` is the image in `BdR` of an
+/-- Crystalline forms separate points of `L.kisinAinf`: if every `μ ∈ L.crysForms` vanishes on
+`x ∈ L.kisinAinf`, then `x = 0`. -/
+lemma eq_zero_of_crysForms {x : L.Ambient} (hx : x ∈ L.kisinAinf)
+    (h_zero : ∀ μ ∈ L.crysForms, μ x = 0) : x = 0 := by
+  obtain ⟨F⟩ : Nonempty (Frame L) := nonempty_frame
+  obtain ⟨t, rfl⟩ := F.range_comb_zero.ge hx
+  simp [Frame.comb, F.coeff_eq_zero_of_forall_crysForms t h_zero, Fintype.linearCombination_apply]
+
+/-- Let the vectors `v i` lie in the Kisin module of `L`, let `u i ∈ Ainf`, and let `μ` be in
+`crysForms` (an invariant A_inf-linear functional to B_dR whose restriction to 1 ⊗ L comes from a
+Z_p-linear map L → B_max). Suppose `E ^ n • μ (∑ i, u i • v i)` is the image in `BdR` of an
 element of `bicommutant`, the elements of B^+ = A_max[1/p] whose multiplication commutes with every
-S-linear endomorphism of B^+ preserving the image of A_max. Then every `μ` in `crysForms` vanishes
-on `∑ i, (u i - k.coord₀ (u i)) • v i`, where `k.coord₀ (u i)` is the coordinate of `u i` in S for
+S-linear endomorphism of B^+ preserving the image of A_max. Then `μ` vanishes on
+`∑ i, (u i - k.coord₀ (u i)) • v i`, where `k.coord₀ (u i)` is the coordinate of `u i` in S for
 the chosen topological basis of `Ainf` over S, i.e. the coordinate that is the identity on S. -/
 lemma apply_sum_sub_coord₀_smul_eq_zero_of_mem_crysForms {μ : L.Functional} {ι : Type} [Fintype ι]
     {v : ι → L.Ambient} (hv_mem : ∀ i : ι, v i ∈ L.kisinModule) {u : ι → Ainf} {n : ℕ}
-    (h_val : ∀ ν ∈ L.crysForms, ∃ s ∈ k.bicommutant,
-      k.E.val ^ n • ν (∑ i : ι, u i • v i) = algebraMap BPlus BdR s)
+    (h_val : ∃ s ∈ k.bicommutant,
+      k.E.val ^ n • μ (∑ i : ι, u i • v i) = algebraMap BPlus BdR s)
     (hμ : μ ∈ L.crysForms) :
     μ (∑ i : ι, (u i - algebraMap k.S Ainf (k.coord₀ (u i))) • v i) = 0 := by
   -- Write `E ^ a • μ (v i)`, with `a = jumpBound`, as the image of `q i ∈ bicommutant`, and put
@@ -853,7 +868,7 @@ lemma apply_sum_sub_coord₀_smul_eq_zero_of_mem_crysForms {μ : L.Functional} {
   set c : ι → Ainf := fun i ↦ algebraMap k.S Ainf (k.coord₀ (u i))
   choose q hq_mem hq using fun i : ι ↦
     exists_mem_bicommutant_pow_smul_eq_of_mem_kisinModule hμ (hv_mem i)
-  obtain ⟨s, hs_mem, hs⟩ := h_val μ hμ
+  obtain ⟨s, hs_mem, hs⟩ := h_val
   let w : ι → BPlus := fun i ↦ ainfToBPlus (k.E.val ^ n) * q i
   have hw_mem (i : ι) : w i ∈ k.bicommutant :=
     mul_mem (ainfToBPlus_mem_bicommutant (k.E ^ n)) (hq_mem i)
@@ -889,8 +904,7 @@ theorem mem_kisinModule_iff_crysForms {x : L.Ambient} :
         k.E.val ^ n • μ x = algebraMap BPlus BdR s := by
   -- Forwards: crystalline forms on the Kisin module. Backwards: `x` lies in `kisinAinf`, so it is
   -- `∑ i, u i • v i` for a spanning family `v`. Replacing each `u i` by `coord₀ (u i)` changes `x`
-  -- by a vector annihilated by every crystalline form, which is `0` by the `d = 0` divisibility
-  -- test.
+  -- by a vector annihilated by every crystalline form, which is `0` by `eq_zero_of_crysForms`.
   obtain ⟨v, h_span_S, h_span_A, -⟩ := exists_span_eq_kisinModule_linearIndependent (L := L)
   refine ⟨fun hx ↦ ⟨(mem_kisinAinf_of_mem_kisinModule hx).left,
     L.jumpBound, fun μ hμ ↦ exists_mem_bicommutant_pow_smul_eq_of_mem_kisinModule hμ hx⟩, ?_⟩
@@ -898,19 +912,12 @@ theorem mem_kisinModule_iff_crysForms {x : L.Ambient} :
   obtain ⟨u, rfl⟩ := (mem_span_range_iff_exists_fun Ainf).mp <| h_span_A.ge <|
     mem_kisinAinf_of_crysForms hx_sat fun μ hμ ↦ (h_val μ hμ).imp fun _ h ↦ h.2
   have hv_mem i : v i ∈ L.kisinModule := h_span_S.le (subset_span ⟨i, rfl⟩)
-  have h_diff : ∑ i, (u i - algebraMap k.S Ainf (k.coord₀ (u i))) • v i ∈
-      (0 : Ainf) • L.kisinAinf := by
-    refine mem_smul_kisinAinf_of_crysForms (fun {m r} h ↦ ?_)
+  have h_diff : ∑ i, (u i - algebraMap k.S Ainf (k.coord₀ (u i))) • v i = 0 :=
+    eq_zero_of_crysForms
       (sum_mem fun i _ ↦ L.kisinAinf.smul_mem _ (mem_kisinAinf_of_mem_kisinModule (hv_mem i)))
-      (n := 0) fun μ hμ ↦ ?_
-    · simpa only [map_zero, zero_dvd_iff, map_eq_zero_iff _ (algebraMap_injective Ainf BPlus),
-        mul_eq_zero, pow_ne_zero m k.chart.E_ne_zero, false_or] using h
-    · simp only [apply_sum_sub_coord₀_smul_eq_zero_of_mem_crysForms hv_mem h_val hμ, smul_zero,
-        zero_mem]
-  obtain ⟨y, -, hy⟩ := (mem_smul_pointwise_iff_exists _ (0 : Ainf) L.kisinAinf).mp h_diff
+      fun μ hμ ↦ apply_sum_sub_coord₀_smul_eq_zero_of_mem_crysForms hv_mem (h_val μ hμ) hμ
   rw [show ∑ i, u i • v i = ∑ i, k.coord₀ (u i) • v i by
-    simpa only [zero_smul, sub_smul, Finset.sum_sub_distrib, algebraMap_smul, sub_eq_zero]
-      using hy.symm]
+    simpa only [sub_smul, Finset.sum_sub_distrib, algebraMap_smul, sub_eq_zero] using h_diff]
   exact sum_mem fun i _ ↦ L.kisinModule.smul_mem (k.coord₀ (u i)) (hv_mem i)
 
 end New.Lift.KummerChart.JumpLattice
