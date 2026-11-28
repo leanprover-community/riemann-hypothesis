@@ -80,9 +80,7 @@ lemma exists_idele_v_eq_exp_neg_multiplicity {I : Ideal (𝓞 E)} (hI : I ≠ �
   obtain ⟨t, ht⟩ := exists_idele_eq_uniformizer_zpow (fun w ↦ -multiplicity w.asIdeal I)
     ((finite_factors hI).subset fun w hw ↦ dvd_of_multiplicity_pos (by simp_all [pos_iff_ne_zero]))
   refine ⟨t, fun w ↦ by simp [ht], fun w hw ↦ ?_⟩
-  have h_zero : multiplicity w.asIdeal I = 0 :=
-    Nat.eq_zero_of_not_pos fun h ↦ hw (dvd_iff_le.1 (dvd_of_multiplicity_pos h))
-  simp [ht, h_zero]
+  simp [ht, multiplicity_eq_zero_of_not_dvd (dvd_iff_le.not.2 hw)]
 
 /-- Let `I` be a nonzero ideal of `𝓞 E` and `t` an integral finite adele whose order at every finite
 place `w` is the multiplicity of `w` in `I`. Then the ideal `t Ô` of the ring `Ô` of integral finite
