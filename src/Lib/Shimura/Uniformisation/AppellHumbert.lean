@@ -358,6 +358,88 @@ private lemma New.Uniformisation.isPosRiemann_of_hasThetaCoords
         smul_zero]
       exact h_line t)
 
+/-- Let `σ` have no zero, with `σ * Φ z` analytic at `z`, where `Φ z z = 1` and `Φ z` has no zero
+near `z`. Let `C x y`, times `Φ` at `x - y` and `x + y` over `Φ²` at `x` and `y`, be analytic at
+each `(a, b)`. Then `(x, y) ↦ (σ x * σ y) ^ 2 * C x y / σ (x - y) / σ (x + y)` is analytic: the
+factors `Φ`, which are not zero near `(a, b)`, cancel. -/
+private lemma New.analyticAt_mul_sq_div_div {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
+    {σ : V → ℂ} {Φ C : V → V → ℂ} (σ_ne : ∀ z : V, σ z ≠ 0) (Φ_self : ∀ z : V, Φ z z = 1)
+    (Φ_ne : ∀ z : V, ∀ᶠ w : V in nhds z, Φ z w ≠ 0)
+    (σ_an : ∀ z : V, AnalyticAt ℂ (fun w : V ↦ σ w * Φ z w) z)
+    (C_an : ∀ a b : V, AnalyticAt ℂ (fun ((x, y) : V × V) ↦
+      C x y * Φ (a - b) (x - y) * Φ (a + b) (x + y) / (Φ a x * Φ b y) ^ 2) (a, b)) :
+    ∀ u : V × V,
+      AnalyticAt ℂ (fun ((x, y) : V × V) ↦ (σ x * σ y) ^ 2 * C x y / σ (x - y) / σ (x + y)) u := by
+  rintro ⟨a, b⟩
+  -- The function is the one of `C_an` times `(σ * Φ)²` at `x` and `y`, divided by `σ * Φ` at
+  -- `x - y` and `x + y`.
+  have h_num : AnalyticAt ℂ (fun ((x, y) : V × V) ↦ (σ x * Φ a x * (σ y * Φ b y)) ^ 2) (a, b) :=
+    (((σ_an a).comp_of_eq analyticAt_fst rfl).mul ((σ_an b).comp_of_eq analyticAt_snd rfl)).pow 2
+  have h_den : AnalyticAt ℂ (fun ((x, y) : V × V) ↦
+      σ (x - y) * Φ (a - b) (x - y) * (σ (x + y) * Φ (a + b) (x + y))) (a, b) :=
+    ((σ_an (a - b)).comp_of_eq (analyticAt_fst.sub analyticAt_snd) rfl).mul
+      ((σ_an (a + b)).comp_of_eq (analyticAt_fst.add analyticAt_snd) rfl)
+  refine (((C_an a b).mul h_num).div h_den (by
+    dsimp only; rw [Φ_self, Φ_self, mul_one, mul_one]; exact mul_ne_zero (σ_ne _) (σ_ne _))).congr
+    ?_
+  filter_upwards [continuous_fst.continuousAt.eventually (Φ_ne a),
+    continuous_snd.continuousAt.eventually (Φ_ne b),
+    (continuous_fst.sub continuous_snd).continuousAt.eventually (Φ_ne (a - b)),
+    (continuous_fst.add continuous_snd).continuousAt.eventually (Φ_ne (a + b))]
+    with ⟨x, y⟩ hx hy hsub hadd
+  dsimp only [Pi.div_apply, Pi.mul_apply]
+  dsimp only [Pi.sub_apply, Pi.add_apply] at hx hy hsub hadd
+  rw [show (σ x * Φ a x * (σ y * Φ b y)) ^ 2 = (σ x * σ y) ^ 2 * (Φ a x * Φ b y) ^ 2 by ring,
+    div_mul_eq_mul_div, ← mul_assoc, mul_div_cancel_right₀ _ (pow_ne_zero 2 (mul_ne_zero hx hy)),
+    show σ (x - y) * Φ (a - b) (x - y) * (σ (x + y) * Φ (a + b) (x + y)) =
+      (σ (x - y) * σ (x + y)) * (Φ (a - b) (x - y) * Φ (a + b) (x + y)) by ring,
+    show C x y * Φ (a - b) (x - y) * Φ (a + b) (x + y) * (σ x * σ y) ^ 2 =
+      ((σ x * σ y) ^ 2 * C x y) * (Φ (a - b) (x - y) * Φ (a + b) (x + y)) by ring,
+    mul_div_mul_right _ _ (mul_ne_zero hsub hadd), div_div]
+
+/-- Let `σ` and `C` have no zero, with `σ (2z) = σ z ^ 4 * (exp (q z z) * C z z)` for a bilinear
+form `q`. For `W (x, y) = (σ x * σ y) ^ 2 * C x y / σ (x - y) / σ (x + y)`, the quotient
+`W (2x, 2z) / W (x, z) ^ 4` is then an expression in the values of `C`: the exponentials cancel by
+the parallelogram identity for `q`. -/
+private lemma New.div_pow_four_eq_of_double_eq {V : Type*} [NormedAddCommGroup V]
+    [NormedSpace ℂ V] {σ : V → ℂ} {C : V → V → ℂ} {q : V →L[ℂ] V →L[ℂ] ℂ}
+    (σ_ne : ∀ z : V, σ z ≠ 0) (C_ne : ∀ x y : V, C x y ≠ 0)
+    (σ_double : ∀ z : V, σ (z + z) = σ z ^ 4 * (exp (q z z) * C z z)) (x z : V) :
+    (σ (x + x) * σ (z + z)) ^ 2 * C (x + x) (z + z) / σ (x + x - (z + z)) /
+        σ (x + x + (z + z)) / ((σ x * σ z) ^ 2 * C x z / σ (x - z) / σ (x + z)) ^ 4 =
+      (C x x * C z z) ^ 2 * C (x + x) (z + z) /
+        (C x z ^ 4 * C (x - z) (x - z) * C (x + z) (x + z)) := by
+  rw [add_sub_add_comm, add_add_add_comm, σ_double x, σ_double z, σ_double (x - z),
+    σ_double (x + z)]
+  have hq : exp (q x x) ^ 2 * exp (q z z) ^ 2 =
+      exp (q (x - z) (x - z)) * exp (q (x + z) (x + z)) := by
+    rw [← exp_natCast_mul, ← exp_natCast_mul, ← exp_add, ← exp_add]
+    congr 1
+    simp only [map_sub, map_add, sub_apply, add_apply, Nat.cast_ofNat]
+    ring
+  rw [show (σ x ^ 4 * (exp (q x x) * C x x) * (σ z ^ 4 * (exp (q z z) * C z z))) ^ 2 =
+      (σ x * σ z) ^ 8 * (C x x * C z z) ^ 2 * (exp (q x x) ^ 2 * exp (q z z) ^ 2) by ring, hq]
+  have := σ_ne x; have := σ_ne z; have := σ_ne (x - z); have := σ_ne (x + z)
+  have := C_ne x z; have := C_ne (x - z) (x - z); have := C_ne (x + z) (x + z)
+  have := exp_ne_zero (q (x - z) (x - z)); have := exp_ne_zero (q (x + z) (x + z))
+  field_simp
+
+/-- Let `σ` have no zero, with `σ * Φ z` analytic at `z`, where `Φ z z = 1`, `Φ z` has no zero near
+`z`, and `Φ` is invariant under translation by `l`. Then the quotient `σ (l + ·) / σ` is analytic:
+the factors `Φ` cancel. -/
+private lemma New.analyticAt_add_div {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
+    {σ : V → ℂ} {Φ : V → V → ℂ} {l : V} (σ_ne : ∀ z : V, σ z ≠ 0) (Φ_self : ∀ z : V, Φ z z = 1)
+    (Φ_ne : ∀ z : V, ∀ᶠ w : V in nhds z, Φ z w ≠ 0)
+    (Φ_add : ∀ z w : V, Φ (l + z) (l + w) = Φ z w)
+    (σ_an : ∀ z : V, AnalyticAt ℂ (fun w : V ↦ σ w * Φ z w) z) (z : V) :
+    AnalyticAt ℂ (fun w : V ↦ σ (l + w) / σ w) z :=
+  (((σ_an (l + z)).comp (analyticAt_const.add analyticAt_id)).div (σ_an z)
+    (by rw [Φ_self, mul_one]; exact σ_ne z)).congr
+    ((Φ_ne z).mono fun w hw ↦ by
+      dsimp only [Function.comp_def, Pi.div_apply]
+      rw [Φ_add]
+      exact mul_div_mul_right _ _ hw)
+
 /-- Let `e : V → G` be additive and zero on the lattice `L`. Let `Φ x x = 1`, with `Φ (e z) ∘ e` not
 zero near `z` and `(Φ (e 0) / Φ (e z)) ∘ e` analytic at `z`. Let `C` have no zero, with `C 0 0 = 1`,
 and let `C (e x) (e y)`, times `Φ` at `x - y` and `x + y` over `Φ²` at `x` and `y`, be analytic at
@@ -391,78 +473,25 @@ private lemma New.exists_isAppellHumbert_of_analyticAt {V : Type} [FinComplexSpa
   have W_ne (u : V × V) : W u ≠ 0 :=
     div_ne_zero (div_ne_zero (mul_ne_zero (pow_ne_zero 2 (mul_ne_zero (σ_ne _) (σ_ne _)))
       (C_ne _ _)) (σ_ne _)) (σ_ne _)
-  have W_an : ∀ u : V × V, AnalyticAt ℂ W u := by
-    rintro ⟨a, b⟩
-    -- `W` is the function of `C_an` times `(σ * Φ)²` at `x` and `y`, divided by `σ * Φ` at `x - y`
-    -- and `x + y`: the factors `Φ`, which are not zero near `(a, b)`, cancel.
-    have h_num : AnalyticAt ℂ
-        (fun (x, y) ↦ (σ x * Φ (e a) (e x) * (σ y * Φ (e b) (e y))) ^ 2) (a, b) :=
-      (((σ_an a).comp_of_eq analyticAt_fst rfl).mul ((σ_an b).comp_of_eq analyticAt_snd rfl)).pow 2
-    have h_den : AnalyticAt ℂ (fun (x, y) ↦ σ (x - y) * Φ (e (a - b)) (e (x - y)) *
-        (σ (x + y) * Φ (e (a + b)) (e (x + y)))) (a, b) :=
-      ((σ_an (a - b)).comp_of_eq (analyticAt_fst.sub analyticAt_snd) rfl).mul
-        ((σ_an (a + b)).comp_of_eq (analyticAt_fst.add analyticAt_snd) rfl)
-    refine (((C_an a b).mul h_num).div h_den (by
-      dsimp only; rw [Φ_self, Φ_self, mul_one, mul_one]; exact mul_ne_zero (σ_ne _) (σ_ne _))).congr
-      ?_
-    filter_upwards [continuous_fst.continuousAt.eventually (Φ_ne a),
-      continuous_snd.continuousAt.eventually (Φ_ne b),
-      (continuous_fst.sub continuous_snd).continuousAt.eventually (Φ_ne (a - b)),
-      (continuous_fst.add continuous_snd).continuousAt.eventually (Φ_ne (a + b))]
-      with ⟨x, y⟩ hx hy hsub hadd
-    dsimp only [W, Pi.div_apply, Pi.mul_apply]
-    dsimp only [Pi.sub_apply, Pi.add_apply] at hx hy hsub hadd
-    rw [show (σ x * Φ (e a) (e x) * (σ y * Φ (e b) (e y))) ^ 2 =
-        (σ x * σ y) ^ 2 * (Φ (e a) (e x) * Φ (e b) (e y)) ^ 2 by ring,
-      div_mul_eq_mul_div, ← mul_assoc,
-      mul_div_cancel_right₀ _ (pow_ne_zero 2 (mul_ne_zero hx hy)),
-      show σ (x - y) * Φ (e (a - b)) (e (x - y)) * (σ (x + y) * Φ (e (a + b)) (e (x + y))) =
-        (σ (x - y) * σ (x + y)) * (Φ (e (a - b)) (e (x - y)) * Φ (e (a + b)) (e (x + y))) by ring,
-      show C (e x) (e y) * Φ (e (a - b)) (e (x - y)) * Φ (e (a + b)) (e (x + y)) * (σ x * σ y) ^ 2 =
-        ((σ x * σ y) ^ 2 * C (e x) (e y)) *
-          (Φ (e (a - b)) (e (x - y)) * Φ (e (a + b)) (e (x + y))) by ring,
-      mul_div_mul_right _ _ (mul_ne_zero hsub hadd), div_div]
+  have W_an : ∀ u : V × V, AnalyticAt ℂ W u :=
+    analyticAt_mul_sq_div_div (Φ := fun z w : V ↦ Φ (e z) (e w))
+      (C := fun x y : V ↦ C (e x) (e y)) σ_ne (fun _ ↦ Φ_self _) Φ_ne σ_an C_an
   -- By `σ_double` and the parallelogram identity for `q`, the quotient `W (2x, 2y) / W (x, y) ^ 4`
-  -- depends only on `e x` and `e y`.
-  obtain ⟨T, hT⟩ : ∃ T : V × V →L[ℂ] V →L[ℂ] ℂ,
-      ∀ x y : V, HasFDerivAt (fun z : V ↦ W (x, z)) (W (x, y) • T (x, y)) y := by
-    have h_ratio (x z : V) :
-        W (x + x, z + z) / W (x, z) ^ 4 =
-          (C (e x) (e x) * C (e z) (e z)) ^ 2 * C (e (x + x)) (e (z + z)) /
-            (C (e x) (e z) ^ 4 * C (e (x - z)) (e (x - z)) * C (e (x + z)) (e (x + z))) := by
-      dsimp only [W]
-      rw [add_sub_add_comm, add_add_add_comm, σ_double x, σ_double z, σ_double (x - z),
-        σ_double (x + z)]
-      have hq : exp (q x x) ^ 2 * exp (q z z) ^ 2 =
-          exp (q (x - z) (x - z)) * exp (q (x + z) (x + z)) := by
-        rw [← exp_natCast_mul, ← exp_natCast_mul, ← exp_add, ← exp_add]
-        congr 1
-        simp only [map_sub, map_add, sub_apply, add_apply, Nat.cast_ofNat]
-        ring
-      rw [show (σ x ^ 4 * (exp (q x x) * C (e x) (e x)) *
-            (σ z ^ 4 * (exp (q z z) * C (e z) (e z)))) ^ 2 =
-          (σ x * σ z) ^ 8 * (C (e x) (e x) * C (e z) (e z)) ^ 2 *
-            (exp (q x x) ^ 2 * exp (q z z) ^ 2) by ring, hq]
-      have := σ_ne x; have := σ_ne z; have := σ_ne (x - z); have := σ_ne (x + z)
-      have := C_ne (e x) (e z); have := C_ne (e (x - z)) (e (x - z))
-      have := C_ne (e (x + z)) (e (x + z))
-      have := exp_ne_zero (q (x - z) (x - z)); have := exp_ne_zero (q (x + z) (x + z))
-      field_simp
-    refine exists_linear_logDeriv_of_periodic (L := L) W_ne W_an fun x y l hl ↦ ?_
-    rw [h_ratio x (y + l), h_ratio x y]
+  -- depends only on `e x` and `e y`; so the logarithmic derivative of `W` in the second variable
+  -- is linear.
+  obtain ⟨T, hT⟩ := exists_linear_logDeriv_of_periodic (L := L) W_ne W_an fun x y l hl ↦ by
+    have h_ratio := div_pow_four_eq_of_double_eq (C := fun x y : V ↦ C (e x) (e y)) σ_ne
+      (fun _ _ ↦ C_ne _ _) σ_double x
+    dsimp only [W]
+    rw [h_ratio (y + l), h_ratio y]
     simp only [map_add, map_sub, hL l hl, add_zero]
   -- The factor of automorphy `σ (l + ·) / σ` has constant logarithmic derivative.
   have h_log (l : L) : ∃ a : V →L[ℂ] ℂ, ∀ z : V,
       HasFDerivAt (fun w : V ↦ σ (l + w) / σ w) ((σ (l + z) / σ z) • a) z := by
     obtain ⟨l, hl⟩ := l
-    -- The factors `Φ` cancel in the quotient, so it is analytic.
     have h_an : AnalyticAt ℂ (fun w : V ↦ σ (l + w) / σ w) 0 :=
-      (((σ_an (l + 0)).comp (analyticAt_const.add analyticAt_id)).div (σ_an 0)
-        (by rw [Φ_self, mul_one]; exact σ_ne 0)).congr
-        ((Φ_ne 0).mono fun w hw ↦ by
-          dsimp only [Function.comp_def, Pi.div_apply]
-          rw [map_add e l 0, map_add e l w, hL l hl, zero_add, zero_add]
-          exact mul_div_mul_right _ _ hw)
+      analyticAt_add_div (Φ := fun z w : V ↦ Φ (e z) (e w)) σ_ne (fun _ ↦ Φ_self _) Φ_ne
+        (fun z w ↦ by simp only [map_add, hL l hl, zero_add]) σ_an 0
     refine exists_const_logDeriv (l := l) W_ne hT (fun z ↦ div_ne_zero (σ_ne _) (σ_ne _))
       h_an.differentiableAt fun x y ↦ ?_
     dsimp only [W]
@@ -474,6 +503,48 @@ private lemma New.exists_isAppellHumbert_of_analyticAt {V : Type} [FinComplexSpa
   have σ_double_mem (l : V) (hl : l ∈ L) : σ (l + l) = σ l ^ 4 * exp (q l l) := by
     rw [σ_double, hL l hl, C_zero, mul_one]
   exact ⟨σ, B, σ_ne, σ_an, σ_add, isAppellHumbert_of_double_eq σ_ne σ_double_mem σ_add hB_symm⟩
+
+/-- The point `(x, y)` of `A × A` lands in the chart of
+`(p^* N ⊗ s^* N)² ⊗ ((p + s)^* N ⊗ (p - s)^* N)⁻¹`, for the projections `p` and `s`, given by charts
+`i`, `j`, `k` and `m` of `N` iff `x`, `y`, `x + y` and `x - y` land in these charts. -/
+lemma New.landsIn_lift_parallelogram_iff {A : Over (AlgebraicGeometry.Spec (CommRingCat.of ℂ))}
+    [AddObj A] {ι : Type} {N : LineBundle A.left ι} {x y : ComplexPoint A} {i j k m : ι} :
+    LandsIn (lift x y).left (((((N.pull (fst A A).left).mul (N.pull (snd A A).left)).pow 2).mul
+        ((N.pull (fst A A + snd A A).left).mul (N.pull (fst A A - snd A A).left)).inv).opens
+        (fun _ ↦ (i, j), k, m)) ↔
+      LandsIn x.left (N.opens i) ∧ LandsIn y.left (N.opens j) ∧
+        LandsIn (x + y).left (N.opens k) ∧ LandsIn (x - y).left (N.opens m) := by
+  simp only [mul_opens, pull_opens, inv_opens, pow, pi_opens, landsIn_inf, landsIn_iInf,
+    landsIn_preimage, ← comp_left, lift_fst, lift_snd, AddMonObj.comp_add, AddGrpObj.comp_sub,
+    forall_const, and_assoc]
+
+/-- At the point `(x, y)` of `A × A`, the change of charts of
+`(p^* N ⊗ s^* N)² ⊗ ((p + s)^* N ⊗ (p - s)^* N)⁻¹`, for the projections `p` and `s`, is given by the
+changes of charts of `N` at `x`, `y`, `x + y` and `x - y`. -/
+lemma New.transition_lift_parallelogram {A : Over (AlgebraicGeometry.Spec (CommRingCat.of ℂ))}
+    [AddObj A] {ι : Type} (N : LineBundle A.left ι) (x y : ComplexPoint A)
+    (i j k m i' j' k' m' : ι) :
+    ((((N.pull (fst A A).left).mul (N.pull (snd A A).left)).pow 2).mul
+        ((N.pull (fst A A + snd A A).left).mul (N.pull (fst A A - snd A A).left)).inv).transition
+        (fun _ ↦ (i, j), k, m) (fun _ ↦ (i', j'), k', m') (.of ℂ) (lift x y).left =
+      (N.transition i i' (.of ℂ) x.left * N.transition j j' (.of ℂ) y.left) ^ 2 *
+        (N.transition k' k (.of ℂ) (x + y).left * N.transition m' m (.of ℂ) (x - y).left) := by
+  simp only [mul_transition, pow, pi_transition, Fin.prod_univ_two, inv_transition,
+    pull_transition, Pi.mul_apply, PointFn.pull, ← comp_left, lift_fst, lift_snd,
+    AddMonObj.comp_add, AddGrpObj.comp_sub, sq]
+
+/-- Let `σ` have the factor of automorphy `exp (B l z) * σ l / σ 0` for the lattice `L`, and let `f`
+be periodic for `L`, with `σ * f` entire. Then `σ * f` is a theta function of type `(B, χ)` for
+`χ l = σ l / σ 0 / exp (B l l / 2)`. -/
+lemma New.mul_mem_thetaSpace_of_periodic {V : Type} [FinComplexSpace V] {L : Submodule ℤ V}
+    {σ f : V → ℂ} {B : RealComplexForm V} (h_diff : Differentiable ℂ (σ * f))
+    (σ_add : ∀ l ∈ L, ∀ z : V, σ (z + l) = σ z * exp (B l z) * σ l / σ 0)
+    (f_add : ∀ l ∈ L, ∀ z : V, f (z + l) = f z) :
+    σ * f ∈ RealComplexForm.thetaSpace (L := L) (fun l : V ↦ σ l / σ 0 / exp (B l l / 2)) B := by
+  refine ⟨h_diff, fun l hl z ↦ ?_⟩
+  rw [Pi.mul_apply, Pi.mul_apply, σ_add l hl z, f_add l hl z, exp_add, mul_comm (exp (B l z)),
+    ← mul_assoc (σ l / σ 0 / _), div_mul_cancel₀ _ (exp_ne_zero (B l l / 2))]
+  ring
 
 /-- The existence half of the Appell–Humbert theorem. Let e : V → A(ℂ) be a uniformisation with
 kernel L, and N a linear system that embeds A, whose class satisfies the parallelogram law
@@ -511,18 +582,9 @@ lemma New.Uniformisation.appell_humbert {A : Over (AlgebraicGeometry.Spec (CommR
   have h_lifts {x : ComplexPoint A} :
       N.IsHomogeneousCoords x.1 fun j ↦ N.transition (J x) j (.of ℂ) x.1 :=
     hN.isLinearSystem.isHomogeneousCoords_transition (hJ x)
-  have hp_comp (x y : ComplexPoint A) : (lift x y).1 ≫ p.1 = x.1 := by rw [← comp_left, lift_fst]
-  have hs_comp (x y : ComplexPoint A) : (lift x y).1 ≫ s.1 = y.1 := by rw [← comp_left, lift_snd]
-  have hadd_comp (x y : ComplexPoint A) : (lift x y).1 ≫ (p + s).1 = (x + y).1 := by
-    rw [← comp_left, AddMonObj.comp_add, lift_fst, lift_snd]
-  have hsub_comp (x y : ComplexPoint A) : (lift x y).1 ≫ (p - s).1 = (x - y).1 := by
-    rw [← comp_left, AddGrpObj.comp_sub, lift_fst, lift_snd]
   have h_in {x y : ComplexPoint A} :
       LandsIn (lift x y).1 (X.opens (fun _ ↦ (J x, J y), J (x + y), J (x - y))) :=
-    landsIn_inf.2 ⟨(landsIn_iInf _).2 fun _ ↦ landsIn_inf.2
-      ⟨landsIn_preimage.2 (hp_comp x y ▸ hJ x), landsIn_preimage.2 (hs_comp x y ▸ hJ y)⟩,
-      landsIn_inf.2 ⟨landsIn_preimage.2 (hadd_comp x y ▸ hJ (x + y)),
-        landsIn_preimage.2 (hsub_comp x y ▸ hJ (x - y))⟩⟩
+    landsIn_lift_parallelogram_iff.2 ⟨hJ x, hJ y, hJ (x + y), hJ (x - y)⟩
   let Φ (x y : ComplexPoint A) : ℂ := N.transition (J y) (J x) (.of ℂ) y.1
   have Φ_self (x : ComplexPoint A) : Φ x x = 1 := N.transition_self _ _ _ (hJ _)
   have Φ_ne (z : V) : ∀ᶠ w : V in nhds z, Φ (e z) (e w) ≠ 0 :=
@@ -548,26 +610,11 @@ lemma New.Uniformisation.appell_humbert {A : Over (AlgebraicGeometry.Spec (CommR
     refine (h_an.div_const (c := C 0 0)).congr (h_near.mono fun z hz ↦ ?_)
     refine (congrArg (· / (C 0 0 : ℂ)) (hw.1.2 _ _ _ _ hz h_in)).trans ?_
     -- the change of charts for `X` is the stated quotient of the changes of charts `Φ` for `N`
-    have hz1 : LandsIn (e z.1).1 (N.opens (J (e a))) :=
-      hp_comp _ _ ▸ landsIn_preimage.1 (landsIn_inf.1 ((landsIn_iInf _).1 (landsIn_inf.1 hz).1 0)).1
-    have hz2 : LandsIn (e z.2).1 (N.opens (J (e b))) :=
-      hs_comp _ _ ▸ landsIn_preimage.1 (landsIn_inf.1 ((landsIn_iInf _).1 (landsIn_inf.1 hz).1 0)).2
-    simp only [X, mul_transition, pow, pi_transition, Fin.prod_univ_two]
-    change (((N.transition (J (e a)) (J (e z.1)) (.of ℂ) ((lift (e z.1) (e z.2)).1 ≫ p.1) *
-        N.transition (J (e b)) (J (e z.2)) (.of ℂ) ((lift (e z.1) (e z.2)).1 ≫ s.1)) *
-        (N.transition (J (e a)) (J (e z.1)) (.of ℂ) ((lift (e z.1) (e z.2)).1 ≫ p.1) *
-        N.transition (J (e b)) (J (e z.2)) (.of ℂ) ((lift (e z.1) (e z.2)).1 ≫ s.1)) *
-        (N.transition (J (e z.1 + e z.2)) (J (e a + e b)) (.of ℂ)
-          ((lift (e z.1) (e z.2)).1 ≫ (p + s).1) *
-        N.transition (J (e z.1 - e z.2)) (J (e a - e b)) (.of ℂ)
-          ((lift (e z.1) (e z.2)).1 ≫ (p - s).1))) *
-        w (fun _ ↦ (J (e z.1), J (e z.2)), J (e z.1 + e z.2), J (e z.1 - e z.2)) (.of ℂ)
-          (lift (e z.1) (e z.2)).1) / C 0 0 = _
-    rw [hp_comp, hs_comp, hadd_comp, hsub_comp, h_inv hz1, h_inv hz2, ← hC]
-    change (((Φ (e a) (e z.1))⁻¹ * (Φ (e b) (e z.2))⁻¹) *
-        ((Φ (e a) (e z.1))⁻¹ * (Φ (e b) (e z.2))⁻¹) *
+    obtain ⟨hz1, hz2, -, -⟩ := landsIn_lift_parallelogram_iff.1 hz
+    rw [transition_lift_parallelogram, h_inv hz1, h_inv hz2, ← hC]
+    change ((Φ (e a) (e z.1))⁻¹ * (Φ (e b) (e z.2))⁻¹) ^ 2 *
         (Φ (e a + e b) (e z.1 + e z.2) * Φ (e a - e b) (e z.1 - e z.2)) *
-        (C (e z.1) (e z.2) : ℂ)) / C 0 0 = _
+        (C (e z.1) (e z.2) : ℂ) / C 0 0 = _
     rw [← map_add e a b, ← map_add e z.1 z.2, ← map_sub e a b, ← map_sub e z.1 z.2]
     simp only [div_eq_mul_inv]
     ring
@@ -578,14 +625,12 @@ lemma New.Uniformisation.appell_humbert {A : Over (AlgebraicGeometry.Spec (CommR
       (fun x y ↦ div_ne_zero (C x y).ne_zero (C 0 0).ne_zero) C_an
   let χ (l : V) : ℂ := σ l / σ 0 / exp (B l l / 2)
   let θ (z : V) : ι → ℂ := σ z • fun j ↦ N.transition (J (e z)) j (.of ℂ) (e z).1
-  have θ_mem (j : ι) : (θ · j) ∈ RealComplexForm.thetaSpace (L := L) χ B := by
-    refine ⟨fun z ↦
-        (((σ_an z).mul (h_coord j z)).congr ((Φ_ne z).mono fun w hw ↦ ?_)).differentiableAt,
-      fun l hl z ↦ ?_⟩
-    · dsimp only [θ, Pi.mul_apply, Pi.smul_apply, smul_eq_mul]
-      rw [mul_div_assoc', mul_right_comm, mul_div_cancel_right₀ _ hw]
-    · dsimp only [θ, χ, Pi.smul_apply, smul_eq_mul]
-      rw [σ_add l hl z, map_add e z l, hL l hl, add_zero, exp_add, mul_comm (exp (B l z)),
-        ← mul_assoc (σ l / σ 0 / _), div_mul_cancel₀ _ (exp_ne_zero (B l l / 2))]
-      ring
+  -- Each coordinate `θ · j` is `σ` times a periodic function; it is entire, as the factors `Φ`
+  -- cancel.
+  have θ_mem (j : ι) : (θ · j) ∈ RealComplexForm.thetaSpace (L := L) χ B :=
+    mul_mem_thetaSpace_of_periodic (f := fun z ↦ N.transition (J (e z)) j (.of ℂ) (e z).1)
+      (fun z ↦ (((σ_an z).mul (h_coord j z)).congr ((Φ_ne z).mono fun w hw ↦ by
+        dsimp only [Pi.mul_apply]
+        rw [mul_div_assoc', mul_right_comm, mul_div_cancel_right₀ _ hw])).differentiableAt)
+      σ_add fun l hl z ↦ by simp only [map_add, hL l hl, add_zero]
   exact ⟨B, χ, θ, hN.isLinearSystem, h_data, θ_mem, fun z ↦ h_lifts.smul (σ_ne z).isUnit⟩
