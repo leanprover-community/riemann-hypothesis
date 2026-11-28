@@ -266,11 +266,8 @@ def extension : ShortComplex (AbFunctor C) where
 
 lemma shortExact_extension : D.extension.ShortExact := by
   -- at each object `c` the sequence is `G c → G c × F c → F c`, by `inl` and `snd`
-  refine (shortExact_of_app (fun c ↦ ?_) (fun c ↦ ?_) fun c ↦ ?_).2
-  · exact fun _ _ h ↦ (Prod.mk.inj h).1
-  · rintro ⟨y, x⟩
-    exact ⟨fun h ↦ ⟨y, Prod.ext rfl h.symm⟩, fun ⟨_, h⟩ ↦ (congrArg Prod.snd h).symm⟩
-  · exact fun x ↦ ⟨(0, x), rfl⟩
+  exact (shortExact_of_app (fun _ _ _ h ↦ congrArg Prod.fst h)
+    (fun _ ↦ Function.Exact.inl_snd (R := ℤ)) (fun _ x ↦ ⟨(0, x), rfl⟩)).2
 
 /-- For a cocycle D from F to G, the class in Ext^1(F,G) of its extension G → E → F, viewed in
 the total Ext group. -/
