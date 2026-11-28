@@ -520,6 +520,112 @@ lemma length_ribetCocyclesVanishingOn_divisibleQuot_le [DVR O] [Fintype Y] {r : 
   rw [← length_top, ← h_top]
   exact h_length
 
+/-- If the product of the differences `ξ e a - ξ k a` over `k ≠ e` divides `C`, then some element
+of `O[X j][G]` is `C` on the character `ξ e` and `0` on the other characters (`polyChar`). -/
+lemma exists_polyChar_eq_ite_of_prod_dvd {t : ℕ} {ξ : Fin t → G →* O} (a : G) {e : Fin t} {C : O}
+    (hC_dvd : ∏ k ∈ ({e}ᶜ : Finset (Fin t)), (ξ e a - ξ k a) ∣ C) :
+    ∃ q : (MvPolynomial J O)[G], ∀ e' : Fin t,
+      polyChar J (ξ e') q = if e' = e then .C C else 0 := by
+  refine exists_apply_eq_ite_of_prod_dvd (fun e' ↦ polyChar J (ξ e')) (.single a 1) ?_
+  simpa [polyChar_single] using map_dvd (MvPolynomial.C (σ := J)) hC_dvd
+
+/-- The constant term of the determinant of a matrix `B` over `O[X j][G]` acting through `ρ`
+(`polyAction`) is the determinant of `B` acting through `ρ` at `X j = 0` (`polyActionAtZero`). -/
+lemma constantCoeff_det_comp_map_polyAction {ι r : Type} [Fintype ι] [DecidableEq ι] [Fintype r]
+    [DecidableEq r] (ρ : G →* Matrix r r O) (B : Matrix ι ι (MvPolynomial J O)[G]) :
+    constantCoeff (Matrix.comp ι ι r r (MvPolynomial J O) (B.map (polyAction J ρ))).det =
+      (Matrix.comp ι ι r r O (B.map (polyActionAtZero J ρ))).det := by
+  simp [polyActionAtZero, det_apply']
+
+section CharacterRows
+
+variable {u : Y → G →* Matrix σ σ O}
+variable [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G] {t : ℕ} {ξ : Fin t → G →* O}
+  [Fintype W] [DecidableEq W] {δ : W → G} {o : W → O[X]} {s₀ s : Finset G} {γ a : G} {c₁ C p : O}
+  {τ φ : J × Bool → G} {ε : J → O[X]} {ty : J →o Fin t} {b : Fin t → ℕ∞}
+
+/-- The gluing (`exists_traceIdeal_multiplier_eq_sum_det`) for a system `R` of matrices for the
+characters (`CharacterRows`), with the matrices `R.tiedMatrix i` and the weights
+`∏ R.coeff e (i e)`. On `𝓧`, `u x` is, after reindexing along `blockEquiv`, the block `ρ x` plus the
+characters `ξ e`, with `ξ 0 = 1`; `k` is `1` on the characters and `0` on the blocks; `q₀` is `C` on
+`ξ 0` and `0` on the other characters; and the rows of `B₀` are tied (`tiedRows`). Then one `f : S`
+multiplies the determinants of all combinations `∑ ω g (u x g - 1)` into `𝒥`, and its value at
+`x ∈ 𝓧` is `det (B₀ on the block) * C * c₀ ^ t * ∏ R.detSum e`, where `c₀ = (∏ o v (1)) C ^ #s`. -/
+lemma CharacterRows.exists_traceIdeal_multiplier_eq_mul_prod_detSum
+    (R : CharacterRows u ξ δ o s₀ s γ a c₁ C p τ φ ε ty b) [NeZero t] {r : Type} [Fintype r]
+    [DecidableEq r] (blockEquiv : r ⊕ Fin t ≃ σ) {𝓧 : Set Y} (ρ : 𝓧 → G →* Matrix r r O)
+    (hξ₀ : ξ 0 = 1)
+    (hu_block : ∀ (x : 𝓧) (g : G),
+      u x g = reindex blockEquiv blockEquiv
+        (fromBlocks (ρ x g) 0 0 (diagonal fun e : Fin t ↦ ξ e g)))
+    (h𝒥 : IsTraceIdeal 𝒥 (fun x : Y ↦ u x) p τ φ Prod.fst ε) {z : G → W ⊕ s₀ ⊕ s → O}
+    (hz : AreCoordinates u (ribetGenerators δ s₀ s) z) {k q₀ : (MvPolynomial J O)[G]}
+    (hkξ : ∀ e : Fin t, polyChar J (ξ e) k = 1) (hkρ : ∀ x : 𝓧, polyAction J (ρ x) k = 0)
+    (hq₀ : ∀ e : Fin t, polyChar J (ξ e) q₀ = if e = 0 then .C C else 0)
+    (B₀ : Matrix (W ⊕ s₀ ⊕ s) (W ⊕ s₀ ⊕ s) (MvPolynomial J O)[G])
+    (hB₀ : ∀ i, B₀ i ∈ tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)) :
+    ∃ f : S,
+      (∀ ω : G →₀ O, f.val * (fun x : Y ↦ MvPolynomial.C
+        (algebraMap O L (linearCombination O (fun g ↦ u x g - 1) ω).det)) ∈ 𝒥) ∧
+      ∀ x : 𝓧, f.val x = algebraMap (MvPolynomial J O) (MvPolynomial J L)
+        ((Matrix.comp _ _ r r (MvPolynomial J O) (B₀.map (polyAction J (ρ x)))).det *
+          .C (C * ((∏ v, (o v).eval 1) * C ^ #s) ^ t) * ∏ e, R.detSum e) := by
+  let c₀ : O := (∏ v, (o v).eval 1) * C ^ #s
+  let D (x : 𝓧) : MvPolynomial J O :=
+    (Matrix.comp _ _ r r (MvPolynomial J O) (B₀.map (polyAction J (ρ x)))).det
+  obtain ⟨f, hf_mem, hf_val⟩ : ∃ f : S,
+      (∀ ω : G →₀ O, f.val * (fun x : Y ↦ MvPolynomial.C
+        (algebraMap O L (linearCombination O (fun g ↦ u x g - 1) ω).det)) ∈ 𝒥) ∧
+      ∀ x : 𝓧, f.1 x = algebraMap (MvPolynomial J O) (MvPolynomial J L) (∑ i : ∀ e, Fin (R.count e),
+        (∏ e, R.coeff e (i e)) * (.C C * D x * ∏ e,
+          ((R.tiedMatrix i).map (polyChar J (ξ e))).det)) :=
+    exists_traceIdeal_multiplier_eq_sum_det u 𝒥 blockEquiv ρ hξ₀ hu_block h𝒥 hz (γ := γ) (a := a)
+      (c₁ := c₁) hkξ hkρ (μ₀ := .C C) hq₀ B₀ hB₀
+      (fun i : ∀ e, Fin (R.count e) ↦ ∏ e, R.coeff e (i e)) R.tiedMatrix R.tied
+  refine ⟨f, hf_mem, fun x ↦ ?_⟩
+  rw [hf_val x]
+  congr 1
+  calc ∑ i : ∀ e, Fin (R.count e), (∏ e, R.coeff e (i e)) *
+        (.C C * D x * ∏ e, ((R.tiedMatrix i).map (polyChar J (ξ e))).det)
+      = .C C * D x * ∑ i : ∀ e, Fin (R.count e),
+        (∏ e, R.coeff e (i e)) * ∏ e, ((R.tiedMatrix i).map (polyChar J (ξ e))).det := by
+        simp only [Finset.mul_sum, mul_left_comm (∏ e, R.coeff e _)]
+    _ = .C C * D x * (.C c₀ ^ t * ∏ e, R.detSum e) := by
+      rw [R.sum_prod_coeff_mul_prod_det_tiedMatrix]
+    _ = D x * .C (C * c₀ ^ t) * ∏ e, R.detSum e := by
+      simp only [map_mul, map_pow]
+      ring
+
+/-- Let `R` be a system of matrices for the characters (`CharacterRows`), and let
+`c₀ = (∏ o v (1)) C ^ #s`. For every polynomial `D` in the variables `X j`, the constant term of
+`D * C * c₀ ^ t * ∏ R.multiplier e` has valuation at most the valuation of the constant term of `D`
+plus `∑ b e + t (∑ v(o v (1)) + 2 #s v(C)) + (#J + 1) v(C)`, where `v = addVal O`. -/
+lemma CharacterRows.addVal_constantCoeff_mul_prod_multiplier_le
+    (R : CharacterRows u ξ δ o s₀ s γ a c₁ C p τ φ ε ty b) (D : MvPolynomial J O) :
+    addVal O (MvPolynomial.constantCoeff
+        (D * MvPolynomial.C (C * ((∏ v, (o v).eval 1) * C ^ #s) ^ t) *
+          ∏ e : Fin t, R.multiplier e)) ≤
+      addVal O (constantCoeff D) + (∑ e : Fin t, b e +
+        t * (∑ v : W, addVal O (eval 1 (o v)) + 2 * #s * addVal O C) +
+        (Fintype.card J + 1) * addVal O C) := by
+  let c₀ : O := (∏ v, (o v).eval 1) * C ^ #s
+  have hc₀ : addVal O c₀ = ∑ v, addVal O (eval 1 (o v)) + #s * addVal O C := by
+    simp [c₀, addVal_prod]
+  calc addVal O (MvPolynomial.constantCoeff (D * MvPolynomial.C (C * c₀ ^ t) * ∏ e, R.multiplier e))
+      = addVal O (constantCoeff D) + (addVal O C + t * addVal O c₀) +
+          addVal O (constantCoeff (∏ e, R.multiplier e)) := by
+        simp only [map_mul, MvPolynomial.constantCoeff_C, addVal_mul, addVal_pow, nsmul_eq_mul]
+    _ ≤ addVal O (constantCoeff D) + (addVal O C + t * addVal O c₀) +
+          (∑ e, b e + (Fintype.card J + t * #s) * addVal O C) :=
+        add_le_add le_rfl R.addVal_constantCoeff_prod_le
+    _ = addVal O (constantCoeff D) + (∑ e, b e +
+          t * (∑ v, addVal O (eval 1 (o v)) + 2 * #s * addVal O C) +
+          (Fintype.card J + 1) * addVal O C) := by
+        rw [hc₀]
+        ring
+
+end CharacterRows
+
 /-- Ribet's lemma to first order, for any group and any discrete valuation ring. Let `u x` (`x : Y`)
 be a finite family of matrix representations of `G` over `O` and `L` an `O`-algebra; let `S` be an
 algebra of families `Y → L[X j]`, where `L[X j]` is `MvPolynomial J L`, and `𝒥` an `S`-module of
@@ -601,11 +707,7 @@ lemma exists_isCommonRibetElement_addVal_le (u : Y → G →* Matrix σ σ O)
   obtain ⟨k, hkξ, hkρ⟩ : ∃ k : (MvPolynomial J O)[G], (∀ e : Fin t, polyChar J (ξ e) k = 1) ∧
       ∀ x : 𝓧, polyAction J (ρ x) k = 0 := exists_character_projector ρ hργ hy_unit hξγ
   -- Elements `q e` that are `C` on the character `ξ e` and `0` on the other characters.
-  have exists_q (e : Fin t) : ∃ q : (MvPolynomial J O)[G],
-      ∀ e' : Fin t, polyChar J (ξ e') q = if e' = e then .C C else 0 := by
-    refine exists_apply_eq_ite_of_prod_dvd (fun e' ↦ polyChar J (ξ e')) (.single a 1) ?_
-    simpa [polyChar_single] using map_dvd (MvPolynomial.C (σ := J)) (hC_dvd e)
-  choose q hq using exists_q
+  choose q hq using fun e ↦ exists_polyChar_eq_ite_of_prod_dvd (J := J) a (hC_dvd e)
   -- Generators: the `δ v`, a finite `s₀` whose `u · g - 1` span all the others, and `s`.
   obtain ⟨s₀, z, hz⟩ : ∃ (s₀ : Finset G) (z : G → W ⊕ s₀ ⊕ s → O),
       AreCoordinates u (ribetGenerators δ s₀ s) z := exists_areCoordinates_ribetGenerators u δ s
@@ -621,34 +723,11 @@ lemma exists_isCommonRibetElement_addVal_le (u : Y → G →* Matrix σ σ O)
     nonempty_characterRows u hξδ hδ_poly hz (hξγ π) c₁ hp hε hq ty (fun e Z hZ ↦ (hb e Z hZ).1)
       fun e Z hZ ↦ (hb e Z hZ).2
   -- The gluing, with the weights `∏ R.coeff e (i e)`. At `x ∈ 𝓧` the value is `F x * ∏ R.detSum e`.
-  let c₀ : O := (∏ v, (o v).eval 1) * C ^ #s
   let D (x : 𝓧) : MvPolynomial J O :=
     (Matrix.comp _ _ r r (MvPolynomial J O) (B₀.map (polyAction J (ρ x)))).det
-  let F (x : 𝓧) : MvPolynomial J O := D x * .C (C * c₀ ^ t)
-  obtain ⟨f, hf_mem, hf_val⟩ : ∃ f : S,
-      (∀ ω : G →₀ O, f.val * (fun x : Y ↦ MvPolynomial.C
-        (algebraMap O L (linearCombination O (fun g ↦ u x g - 1) ω).det)) ∈ 𝒥) ∧
-      ∀ x : 𝓧, f.1 x = algebraMap (MvPolynomial J O) (MvPolynomial J L) (∑ i : ∀ e, Fin (R.count e),
-        (∏ e, R.coeff e (i e)) * (.C C * D x * ∏ e,
-          ((R.tiedMatrix i).map (polyChar J (ξ e))).det)) :=
-    exists_traceIdeal_multiplier_eq_sum_det u 𝒥 blockEquiv ρ hξ₀ hu_block h𝒥 hz (γ := γ π) (a := a)
-      (c₁ := c₁)
-      hkξ hkρ (μ₀ := .C C) (hq 0) B₀ hB₀ (fun i : ∀ e, Fin (R.count e) ↦ ∏ e, R.coeff e (i e))
-        R.tiedMatrix R.tied
-  have hf_eq (x : 𝓧) :
-      f.val x = algebraMap (MvPolynomial J O) (MvPolynomial J L) (F x * ∏ e, R.detSum e) := by
-    rw [hf_val x]
-    congr 1
-    calc ∑ i : ∀ e, Fin (R.count e), (∏ e, R.coeff e (i e)) *
-          (.C C * D x * ∏ e, ((R.tiedMatrix i).map (polyChar J (ξ e))).det)
-        = .C C * D x * ∑ i : ∀ e, Fin (R.count e),
-          (∏ e, R.coeff e (i e)) * ∏ e, ((R.tiedMatrix i).map (polyChar J (ξ e))).det := by
-          simp only [Finset.mul_sum, mul_left_comm (∏ e, R.coeff e _)]
-      _ = .C C * D x * (.C c₀ ^ t * ∏ e, R.detSum e) := by
-        rw [R.sum_prod_coeff_mul_prod_det_tiedMatrix]
-      _ = F x * ∏ e, R.detSum e := by
-          simp only [F, map_mul, map_pow]
-          ring
+  let F (x : 𝓧) : MvPolynomial J O := D x * .C (C * ((∏ v, (o v).eval 1) * C ^ #s) ^ t)
+  obtain ⟨f, hf_mem, hf_eq⟩ := R.exists_traceIdeal_multiplier_eq_mul_prod_detSum 𝒥 blockEquiv ρ hξ₀
+    hu_block h𝒥 hz hkξ hkρ (hq 0) B₀ hB₀
   have hf_coeff (x : 𝓧) (i : J →₀ ℕ) (hi : i ≤ ∑ j : J, .single j 1) :
       (f.val x).coeff i = algebraMap O L
         (if ∑ j, .single j 1 = i then constantCoeff (F x * ∏ e, R.multiplier e) else 0) := by
@@ -661,23 +740,9 @@ lemma exists_isCommonRibetElement_addVal_le (u : Y → G →* Matrix σ σ O)
   · rw [hf_coeff x i hi.le, ite_eq_right hi.ne', map_zero]
   · rw [hf_coeff π _ le_rfl, ite_eq_left rfl]
   · -- Add up the valuations.
-    have hD_eq : constantCoeff (D π) =
-        (Matrix.comp _ _ r r O (B₀.map (polyActionAtZero J (ρ π)))).det := by
-      simp [D, polyActionAtZero, det_apply']
-    have hD : addVal O (constantCoeff (D π)) ≤ b₀ := by rwa [hD_eq]
-    have hc₀ : addVal O c₀ = ∑ v, addVal O (eval 1 (o v)) + #s * addVal O C := by
-      simp [c₀, addVal_prod]
-    calc addVal O (constantCoeff (F π * ∏ e, R.multiplier e))
-        = addVal O (constantCoeff (D π)) + (addVal O C + t * addVal O c₀) +
-            addVal O (constantCoeff (∏ e, R.multiplier e)) := by
-          simp only [F, map_mul, MvPolynomial.constantCoeff_C, addVal_mul, addVal_pow, nsmul_eq_mul]
-      _ ≤ b₀ + (addVal O C + t * addVal O c₀) +
-            (∑ e, b e + (Fintype.card J + t * #s) * addVal O C) :=
-          add_le_add (add_le_add hD le_rfl) R.addVal_constantCoeff_prod_le
-      _ = b₀ + (∑ e, b e + t * (∑ v, addVal O (eval 1 (o v)) + 2 * #s * addVal O C) +
-            (Fintype.card J + 1) * addVal O C) := by
-          rw [hc₀]
-          ring
+    have hD : addVal O (constantCoeff (D π)) ≤ b₀ := by
+      rwa [constantCoeff_det_comp_map_polyAction]
+    exact (R.addVal_constantCoeff_mul_prod_multiplier_le (D π)).trans (add_le_add hD le_rfl)
 
 end Lemma
 
