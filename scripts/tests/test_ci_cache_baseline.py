@@ -12,6 +12,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 SCRIPT = Path(__file__).resolve().parents[1] / "ci-cache-get.py"
 spec = importlib.util.spec_from_file_location("ci_cache_get", SCRIPT)
@@ -129,6 +130,28 @@ class Baseline(unittest.TestCase):
         identity = cache.current_identity(self.root)
         record, baseline = cache.find_baseline(self.root, identity, "origin/main", 200, self.fetcher)
         self.assertEqual(baseline, published)
+
+    def test_skips_ancestor_missing_a_build_input(self):
+        first = self.base()
+        published = cache.identity_at(self.root, first, {})
+        publish(self.store, published, first)
+        (self.root / "lean-toolchain").unlink()
+        commit(self.root, {}, "missing toolchain")
+        commit(self.root, {"lean-toolchain": "leanprover/lean4:v4.35.0\n",
+                           "src/A.lean": "-- 2\n"}, "restore project layout")
+        identity = cache.current_identity(self.root)
+        record, baseline = cache.find_baseline(self.root, identity, "main", 3, self.fetcher)
+        self.assertEqual((record["candidate_head"], baseline), (first, published))
+        self.assertEqual(len(self.requests), 1)
+
+    def test_historical_config_must_be_a_bounded_blob(self):
+        first = self.base()
+        with patch.object(cache, "MAX_JSON", 1), self.assertRaisesRegex(ValueError, "bounded file"):
+            cache.identity_at(self.root, first, {})
+        (self.root / "lakefile.toml").unlink()
+        changed = commit(self.root, {"lakefile.toml/nested": "x"}, "config is a directory")
+        with self.assertRaisesRegex(ValueError, "bounded file: lakefile.toml"):
+            cache.identity_at(self.root, changed, {})
 
     def test_pinned_file_must_match_its_fingerprint(self):
         self.base()

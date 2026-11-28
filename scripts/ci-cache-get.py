@@ -52,6 +52,7 @@ REPOSITORY = "leanprover-community/riemann-hypothesis"
 SCOPE = f"{REPOSITORY}-grh-lean/{PROJECT}"  # artifacts/<SCOPE>/<hash>.art
 PREFIX = f"grh-lean/{PROJECT}"  # records, maps and module manifests
 FIELDS = ("source_tree", "build_roots", "lakefile_sha256", "manifest_sha256", "toolchain")
+CONFIG_FILES = ("lakefile.toml", "lake-manifest.json", "lean-toolchain")
 SHA40 = re.compile(r"[0-9a-f]{40}\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 HASH = re.compile(r"[0-9a-f]{16}\Z")
@@ -121,7 +122,7 @@ def current_identity(root):
     """Bind actual files and the clean Git src tree, without the initial archive's pins."""
     checked = set()
     files = {}
-    for name in ("lakefile.toml", "lake-manifest.json", "lean-toolchain"):
+    for name in CONFIG_FILES:
         path = local_path(root, Path(name), checked)
         if not path.is_file() or path.stat().st_size > MAX_JSON:
             raise ValueError(f"expected a bounded regular input: {name}")
@@ -210,27 +211,37 @@ def find_record(identity, fetcher=fetch):
     return None if data is None else matching_record(data, identity)
 
 
-def blob_sha256(root, revision, name, memo):
-    """SHA-256 and bytes of a file at a revision, memoised by blob id."""
-    oid = git(root, "rev-parse", "--verify", "--quiet", f"{revision}:{name}", quiet=True)
-    if oid not in memo:
-        if git(root, "cat-file", "-t", oid) != "blob" or int(git(root, "cat-file", "-s", oid)) > MAX_JSON:
-            raise ValueError(f"expected a bounded file: {name} at {revision}")
-        data = subprocess.check_output(["git", "-C", str(root), "cat-file", "blob", oid])
-        memo[oid] = (digest(data), data)
-    return memo[oid]
+class MissingProjectInput(ValueError):
+    """A historical commit predates the expected project layout."""
 
 
 def identity_at(root, revision, memo):
     """The build inputs of a commit, from Git objects, in the form of current_identity."""
-    tree = git(root, "rev-parse", "--verify", "--quiet", f"{revision}:src", quiet=True)
+    listing = git(root, "ls-tree", "-l", revision, "--", "src", *CONFIG_FILES)
+    entries = {}
+    for line in listing.splitlines():
+        metadata, name = line.split("\t")
+        _, kind, oid, size = metadata.split()
+        entries[name] = kind, oid, size
+    if entries.keys() != {"src", *CONFIG_FILES} or entries["src"][0] != "tree":
+        raise MissingProjectInput(f"missing project inputs or src tree at {revision}")
+    tree = entries["src"][1]
     if not SHA40.fullmatch(tree):
         raise ValueError(f"invalid src Git tree at {revision}")
+    files = {}
+    for name in CONFIG_FILES:
+        kind, oid, size = entries[name]
+        if kind != "blob" or int(size) > MAX_JSON:
+            raise ValueError(f"expected a bounded file: {name} at {revision}")
+        if oid not in memo:
+            data = subprocess.check_output(["git", "-C", str(root), "cat-file", "blob", oid])
+            memo[oid] = (digest(data), data)
+        files[name] = memo[oid]
     return {
         "source_tree": tree, "build_roots": {},
-        "lakefile_sha256": blob_sha256(root, revision, "lakefile.toml", memo)[0],
-        "manifest_sha256": blob_sha256(root, revision, "lake-manifest.json", memo)[0],
-        "toolchain": blob_sha256(root, revision, "lean-toolchain", memo)[1].decode().strip(),
+        "lakefile_sha256": files["lakefile.toml"][0],
+        "manifest_sha256": files["lake-manifest.json"][0],
+        "toolchain": files["lean-toolchain"][1].decode().strip(),
     }
 
 
@@ -266,7 +277,7 @@ def baseline_candidates(root, identity, ref, depth):
     for label, compute in (*candidates, (BASELINE_FILE.name, lambda: pinned_identity(BASELINE_FILE))):
         try:
             candidate = compute()
-        except subprocess.CalledProcessError:
+        except (MissingProjectInput, subprocess.CalledProcessError):
             continue  # A commit without this project layout (src, lakefile.toml, ...).
         key = fingerprint(candidate)
         if (key not in seen and candidate["toolchain"] == identity["toolchain"]
