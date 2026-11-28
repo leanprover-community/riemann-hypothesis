@@ -173,6 +173,66 @@ variable {p : ℕ} [ThePrime p]
   [IsScalarTower ℤ_[p] R C] [OverGp Γ p] {ρ : Representation R Γ T}
 
 open Algebra Submodule Matrix IsScalarTower Finset Function NonarchimedeanGroup algebraMap
+
+/-- Galois descent for `coordAction`: any vector in `ι → BdR` fixed by `coordAction ρ e g` for
+all `g` near `1` lies in the `BdR`-span of the vectors fixed by all of `Γ`. -/
+private lemma mem_span_fixed_coordAction_of_eventually {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (e : Module.Basis ι ℤ_[p] T) {v : ι → BdR}
+    (hv : ∀ᶠ g in nearOne Γ, coordAction ρ e g v = v) :
+    v ∈ span BdR {v | ∀ g, coordAction ρ e g v = v} := by
+  obtain ⟨t, ht_nhds, ht_sub⟩ := Filter.mem_comap.mp hv
+  -- `v` is fixed by all `g` with `toGp g` in an open subgroup `V`. Being closed, `V` is the
+  -- fixer of its fixed field in `PadicAlgCl p`, over which the descent takes place.
+  obtain ⟨V, hV⟩ := is_nonarchimedean t ht_nhds
+  have h_semilinear (g : Γ) (a : PadicAlgCl p) (x : ι → BdR) :
+      coordAction ρ e g (a • x) = (toGp g • a) • coordAction ρ e g x := by
+    have h_a : toGp g • algebraMap (PadicAlgCl p) BdR a =
+        algebraMap (PadicAlgCl p) BdR (toGp g • a) :=
+      BdR.smul_algebraMap_padicAlgCl (toGp g) a
+    funext i
+    change ∑ j, algebraMap ℤ_[p] BdR (repMatrix ρ e g i j) * toGp g • (a • x j) =
+      (toGp g • a) • ∑ j, algebraMap ℤ_[p] BdR (repMatrix ρ e g i j) * toGp g • x j
+    rw [Algebra.smul_def, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j _ ↦ ?_
+    rw [Algebra.smul_def, smul_mul', h_a, mul_left_comm]
+  exact span_subset_span (PadicAlgCl p) BdR _ (mem_span_fixed toGp _ h_semilinear
+    (fun g hg ↦ ht_sub (hV hg)) (InfiniteGalois.fixingSubgroup_fixedField ⟨_, V.isClosed⟩).le)
+
+/-- For an invertible matrix `W` over `BdRPlus` and integers `k`, a vector `b : ι → BdR` has
+`hodgeMatrix W k *ᵥ b` in `(BdRPlus)^ι` if and only if each coordinate `b i` lies in the Hodge
+filtration step `hodgeFil (-k i) = t ^ (-k i) BdRPlus`. -/
+private lemma exists_comp_eq_hodgeMatrix_mulVec_iff {ι : Type*} [Fintype ι] [DecidableEq ι]
+    {W : Matrix ι ι BdRPlus} (hW : IsUnit W) (k : ι → ℤ) (b : ι → BdR) :
+    (∃ x : ι → BdRPlus, (↑) ∘ x = hodgeMatrix W k *ᵥ b) ↔ ∀ i : ι, b i ∈ hodgeFil (-k i) := by
+  -- Since `W` is invertible over `BdRPlus`, the vectors over `BdRPlus` are the `W x`, and
+  -- `W x = W t ^ k b` says `b i = x i * t ^ (-k i)`.
+  have h_unit : IsUnit (hodgeMatrix W k) := by
+    refine (hW.map (algebraMap BdRPlus BdR).mapMatrix).mul ?_
+    rw [isUnit_iff_isUnit_det, det_diagonal, isUnit_iff_ne_zero]
+    exact Finset.prod_ne_zero_iff.mpr fun i _ ↦ (tUnit ^ k i).ne_zero
+  refine hW.smul_bijective.surjective.exists.trans ?_
+  simp [mem_hodgeFil, Classical.skolem, ← funext_iff, ← h_unit.smul_left_cancel (y := b)]
+  change (∃ x : ι → BdRPlus, (fun i ↦ ((W *ᵥ x) i : BdR)) = hodgeMatrix W k *ᵥ b) ↔
+    ∃ f : ι → BdRPlus,
+      (hodgeMatrix W k *ᵥ fun i ↦ (f i : BdR) * ((tUnit : BdR) ^ k i)⁻¹) = hodgeMatrix W k *ᵥ b
+  have h_mul (f : ι → BdRPlus) :
+      (hodgeMatrix W k *ᵥ fun i ↦ (f i : BdR) * ((tUnit : BdR) ^ k i)⁻¹) =
+        fun i ↦ ((W *ᵥ f) i : BdR) := by
+    rw [hodgeMatrix, ← mulVec_mulVec]
+    have h_diag :
+        (diagonal (fun j ↦ ((tUnit ^ k j : BdRˣ) : BdR))) *ᵥ
+            (fun j ↦ (f j : BdR) * ((tUnit : BdR) ^ k j)⁻¹) =
+          fun j ↦ (f j : BdR) := by
+      funext j
+      rw [mulVec_diagonal, Units.val_zpow_eq_zpow_val, mul_left_comm,
+        mul_inv_cancel₀ (zpow_ne_zero _ tUnit.ne_zero), mul_one]
+    rw [h_diag]
+    funext i
+    change ∑ j, (W i j : BdR) * (f j : BdR) = algebraMap BdRPlus BdR (∑ j, W i j * f j)
+    rw [map_sum]
+    exact Finset.sum_congr rfl fun j _ ↦ (map_mul (algebraMap BdRPlus BdR) _ _).symm
+  simp only [h_mul]
+
 /-- Hodge basis over B_dR. Let `j = toGp : Γ → Gal(Q̄_p/Q_p)` have open image, and let T be
 potentially crystalline with a finite ℤ_p-basis e indexed by ι. There are integers k_i and a
 ℤ_p-linear automorphism N of B_dR^ι such that: (a) the k_i, with multiplicity, are the Hodge–Tate
@@ -200,28 +260,9 @@ lemma IsPotentiallyCrystalline.exists_hodge_basis {ι : Type*} [Fintype ι] [Dec
   -- Galois descent turns periods fixed near `1` into an invertible matrix `U` of periods fixed by
   -- all of `Γ`. Its Hodge form `hodgeMatrix W k = W · diag (t ^ k i)`, with `W` invertible over
   -- `BdRPlus`, is again invariant, and `N` is the inverse of multiplication by it.
-  have h_descent (v : ι → BdR) (hv : ∀ᶠ g in nearOne Γ, coordAction ρ e g v = v) :
-      v ∈ span BdR {v | ∀ g, coordAction ρ e g v = v} := by
-    obtain ⟨t, ht_nhds, ht_sub⟩ := Filter.mem_comap.mp hv
-    -- `v` is fixed by all `g` with `toGp g` in an open subgroup `V`. Being closed, `V` is the
-    -- fixer of its fixed field in `PadicAlgCl p`, over which the descent takes place.
-    obtain ⟨V, hV⟩ := is_nonarchimedean t ht_nhds
-    have h_semilinear (g : Γ) (a : PadicAlgCl p) (x : ι → BdR) :
-        coordAction ρ e g (a • x) = (toGp g • a) • coordAction ρ e g x := by
-      have h_a : toGp g • algebraMap (PadicAlgCl p) BdR a =
-          algebraMap (PadicAlgCl p) BdR (toGp g • a) :=
-        BdR.smul_algebraMap_padicAlgCl (toGp g) a
-      funext i
-      change ∑ j, algebraMap ℤ_[p] BdR (repMatrix ρ e g i j) * toGp g • (a • x j) =
-        (toGp g • a) • ∑ j, algebraMap ℤ_[p] BdR (repMatrix ρ e g i j) * toGp g • x j
-      rw [Algebra.smul_def, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun j _ ↦ ?_
-      rw [Algebra.smul_def, smul_mul', h_a, mul_left_comm]
-    exact span_subset_span (PadicAlgCl p) BdR _ (mem_span_fixed toGp _ h_semilinear
-      (fun g hg ↦ ht_sub (hV hg)) (InfiniteGalois.fixingSubgroup_fixedField ⟨_, V.isClosed⟩).le)
   have h_span : ⊤ ≤ span BdR {v : ι → BdR | ∀ g, coordAction ρ e g v = v} := by
     refine (top_le_span_fixed (ρ := overZp ρ) e h (ofId ℤ_[p] (PadicAlgCl p))).trans
-      (span_le.mpr fun v hv ↦ h_descent v ?_)
+      (span_le.mpr fun v hv ↦ mem_span_fixed_coordAction_of_eventually e ?_)
     -- The matrix of `ρ g` in `hv` (`toMatrix`) and in `coordAction` (`toMatrixAlgEquiv`) agree only
     -- by unfolding.
     simpa [comp_def, ← IsScalarTower.algebraMap_apply] using! hv
@@ -257,32 +298,9 @@ lemma IsPotentiallyCrystalline.exists_hodge_basis {ι : Type*} [Fintype ι] [Dec
   · -- Clause (b): it suffices to test on the vectors `L b`.
     exact fun g ↦ L.surjective.forall.mpr fun b ↦ by
       rw [h_act, L.symm_apply_apply, L.symm_apply_apply]
-  · -- Clause (c). Since `W` is invertible over `BdRPlus`, the vectors over `BdRPlus` are the
-    -- `W x`, and `W x = W t ^ k b` says `b i = x i * t ^ (-k i)`.
+  · -- Clause (c): `L.symm ((↑) ∘ x) = b` reads `(↑) ∘ x = hodgeMatrix W k *ᵥ b`.
     intro b
-    refine hW.smul_bijective.surjective.exists.trans ?_
-    simp [L.symm_apply_eq, mem_hodgeFil, Classical.skolem, ← funext_iff,
-      ← h_unit.smul_left_cancel (y := b)]
-    change (∃ x : ι → BdRPlus, (fun i ↦ ((W *ᵥ x) i : BdR)) = L b) ↔
-      ∃ f : ι → BdRPlus,
-        (hodgeMatrix W k *ᵥ fun i ↦ (f i : BdR) * ((tUnit : BdR) ^ k i)⁻¹) = hodgeMatrix W k *ᵥ b
-    have h_mul (f : ι → BdRPlus) :
-        (hodgeMatrix W k *ᵥ fun i ↦ (f i : BdR) * ((tUnit : BdR) ^ k i)⁻¹) =
-          fun i ↦ ((W *ᵥ f) i : BdR) := by
-      rw [hodgeMatrix, ← mulVec_mulVec]
-      have h_diag :
-          (diagonal (fun j ↦ ((tUnit ^ k j : BdRˣ) : BdR))) *ᵥ
-              (fun j ↦ (f j : BdR) * ((tUnit : BdR) ^ k j)⁻¹) =
-            fun j ↦ (f j : BdR) := by
-        funext j
-        rw [mulVec_diagonal, Units.val_zpow_eq_zpow_val, mul_left_comm,
-          mul_inv_cancel₀ (zpow_ne_zero _ tUnit.ne_zero), mul_one]
-      rw [h_diag]
-      funext i
-      change ∑ j, (W i j : BdR) * (f j : BdR) = algebraMap BdRPlus BdR (∑ j, W i j * f j)
-      rw [map_sum]
-      exact Finset.sum_congr rfl fun j _ ↦ (map_mul (algebraMap BdRPlus BdR) _ _).symm
-    simp only [hL, h_mul]
+    simpa only [L.symm_apply_eq, hL] using exists_comp_eq_hodgeMatrix_mulVec_iff hW k b
 
 open Filter Module LinearMap PadicInt crysCocycles
 
