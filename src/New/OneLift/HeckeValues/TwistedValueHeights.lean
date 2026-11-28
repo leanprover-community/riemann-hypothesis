@@ -872,10 +872,12 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
   have exists_last (χ : tameChars D.finite_isChosen.toFinset) : ∃ q : D.CriticalPair,
       (rankTwist q.character (Fin (2 * p.z - 20)) = χ.val.1 ∧ q.tamePart = χ.val.2) ∧
         q.HasEmptyRow (Fin (2 * p.z - 20)) :=
-    D.exists_hasEmptyRow (Fin (2 * p.z - 20)) (by lia) h_card_le ⟨p.z - 10, h_card⟩ χ
+    D.exists_hasEmptyRow (Fin (2 * p.z - 20)) (by lia)
+      (h_card_le.trans (Nat.le_mul_of_pos_left _ (by decide))) ⟨p.z - 10, h_card⟩ χ
   have exists_third (χ : tameChars D.finite_isChosen.toFinset) : ∃ q : D.CriticalPair,
       (rankTwist q.character (Fin 4) = χ.val.1 ∧ q.tamePart = χ.val.2) ∧ q.HasEmptyRow (Fin 4) :=
-    D.exists_hasEmptyRow (Fin 4) (by simp) h_four_le (by simp) χ
+    D.exists_hasEmptyRow (Fin 4) (by simp)
+      (h_four_le.trans (Nat.le_mul_of_pos_left _ (by decide))) (by simp) χ
   choose q₁ hχ₁ hq₁ using exists_last
   choose q₃ hχ₃ hq₃ using exists_third
   -- The jet degrees `p.negWeight τ - p.z` of `p` lie in the range where
@@ -1026,7 +1028,8 @@ theorem heightLe_inv_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegu
   have h_tame (w : FinPlace D.E) (hw : w ∉ D.finite_isChosen.toFinset) : D.chiMLocal w = 1 :=
     D.chiMLocal_eq_one_of_not_isChosen (by simpa using hw)
   have h_four_le : card (Fin 4) ≤ D.t := (Fintype.card_fin 4).trans_le D.nat_le_of_hasLogBound
-  obtain ⟨q₂, hχ₂, hq₂⟩ := D.exists_hasEmptyRow (Fin 4) (by simp) h_four_le (by simp)
+  obtain ⟨q₂, hχ₂, hq₂⟩ := D.exists_hasEmptyRow (Fin 4) (by simp)
+    (h_four_le.trans (Nat.le_mul_of_pos_left _ (by decide))) (by simp)
     ⟨(D.chiM, D.chiMLocal), D.chiM_hasWeight, h_tame⟩
   have h_ram : q₂.IsRamified := by
     simpa [CriticalPair.IsRamified, hχ₂] using

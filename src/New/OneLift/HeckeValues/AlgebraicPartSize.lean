@@ -412,12 +412,12 @@ variable {P : Parameters} {D : Data P}
 
 open Fintype Real WeilData CriticalPair AutChar
 
-/-- Let `card n` be even and between `4` and the number `D.t = 5 * D.r` of the data `D`. Let
-`χ = (μ, ψ)` be a character `μ` of `U(1)(𝔸)` of weight zero with its tame part `ψ`, which is trivial
-off the chosen places. Then some critical pair `p = (ν, z)` has an empty row on `n`, has tame part
-`ψ`, and has `ν υ ^ (card n / 2) = μ`, where `υ` is the splitting character on the norm-one ideles
-(`New.rankTwist`). -/
-lemma exists_hasEmptyRow (n : Type) [Fintype n] (h_four_le : 4 ≤ card n) (h_le_t : card n ≤ D.t)
+/-- Let `card n` be even and between `4` and twice the number `D.t = 5 * D.r` of the data `D`.
+Let `χ = (μ, ψ)` be a character `μ` of `U(1)(𝔸)` of weight zero with its tame part `ψ`, which is
+trivial off the chosen places. Then some critical pair `p = (ν, z)` has an empty row on `n`, has
+tame part `ψ`, and has `ν υ ^ (card n / 2) = μ`, where `υ` is the splitting character on the
+norm-one ideles (`New.rankTwist`). -/
+lemma exists_hasEmptyRow (n : Type) [Fintype n] (h_four_le : 4 ≤ card n) (h_le_t : card n ≤ 2 * D.t)
     (h_even : 2 ∣ card n) (χ : tameChars D.finite_isChosen.toFinset) :
     ∃ p : D.CriticalPair, (rankTwist p.character n = χ.val.1 ∧ p.tamePart = χ.val.2) ∧ p.HasEmptyRow
       n := by
@@ -486,7 +486,7 @@ lemma heightLe_norm_trivialLift_sq {j : ℕ} {p : D.CriticalPair} (hp : p.IsMain
   -- `q.integralAlgebraicPart`, integral at every prime, and in its conjugates the unknown constant
   -- of `exists_log_norm_map_norm_sq_trivialLift_eq_add_sum_jetSize` cancels.
   obtain ⟨h_card : card (RankOneIndex p.z) = 2 * p.z, hz_two : 2 ≤ p.z⟩ := hp.hasLiftRank
-  have h_card_le : card (RankOneIndex p.z) ≤ D.t := by
+  have h_card_le : card (RankOneIndex p.z) ≤ 2 * D.t := by
     have hz_le : p.z ≤ D.r := hp.z_mem.2
     rw [h_card, Data.t]
     lia
