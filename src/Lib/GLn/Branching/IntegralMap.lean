@@ -316,6 +316,167 @@ private lemma exists_eval_detPowToPoly_eq_mul_branchKernel {c : ℤ} {η : WeylI
     Nat.mod_eq_of_lt, Fin.add_def, -finRotate_symm_apply, ← Equiv.eq_symm_apply,
     Function.swap]
 
+omit [∀ τ : Φ, DecidableEq (N τ)] in
+/-- Let `c` times the product of the two kernels in `hη` be `toPoly n κ₀ η`, and let `y` be the
+generic point `X` of the rows `N`. Then a monomial `y ^ μ` times `c` times the kernel at `y` is
+`detPowToPoly` of a coordinate vector: for some `θ` over `ℤ[y]`, `detPowToPoly n κ₀ κ' θ` has the
+values `y ^ μ * (branchKernel ι γ κ' x y * c)`. -/
+private lemma exists_eval_detPowToPoly_eq_monomial_mul_branchKernel {c : ℤ}
+    {η : WeylIndexFamily n κ₀ → ℤ}
+    (hη : c • (weylKernel n (fun (τ : Φ) (h : ℕ) ↦ γ τ (h + 1)) (permArray fun (τ : Φ) (a : n τ) ↦
+          ((finRotate (Fintype.card (n τ))).symm (rowEquivFin n τ a) : ℕ)) *
+        weylKernel n κ' (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) =
+      toPoly n κ₀ η) :
+    ∃ (θ : WeylIndexFamily n κ₀ → MatrixPoly (Sigma N) ℤ) (μ : Sigma N × ℕ →₀ ℕ),
+      ∀ x : Sigma n × ℕ → MatrixPoly (Sigma N) ℤ,
+        eval x (detPowToPoly n κ₀ κ' (MatrixPoly (Sigma N) ℤ) θ) =
+          monomial μ 1 * (branchKernel ι γ κ' x X * (c : MatrixPoly (Sigma N) ℤ)) := by
+  -- Column operations on the generic point `X`, with `X₀ τ` and `X_j τ` its entries in the new row
+  -- and columns `0` and `j`: column `0` is multiplied by `X₀ τ`, and column `j > 0` becomes
+  -- `X₀ τ * column j - X_j τ * column 0`. They clear the new row beyond its first entry and
+  -- multiply the kernel by a monomial `y ^ μ`.
+  let β : Φ × ℕ × ℕ → MatrixPoly (Sigma N) ℤ := fun (τ, i, j) ↦
+    (if i = j then 1 else if i = 0 then -1 else 0) * X (⟨τ, ι τ (.inr ())⟩, j - i)
+  have h_new_row (τ : Φ) (j : ℕ) : borelMul Sigma.fst β X (⟨τ, ι τ (.inr ())⟩, j + 1) = 0 := by
+    simp only [borelMul, ite_mul, one_mul, neg_mul, zero_mul, mul_ite, mul_neg, mul_comm,
+      sum_range_succ', Nat.add_right_cancel_iff, Nat.reduceSubDiff, Nat.add_eq_zero_iff,
+      one_ne_zero, and_false, ↓reduceIte, Finset.sum_ite_eq', Finset.mem_range,
+      lt_add_iff_pos_right, Order.lt_one_iff, tsub_self, Nat.right_eq_add, tsub_zero,
+      add_neg_cancel, β]
+  obtain ⟨θ, hθ⟩ := exists_eval_detPowToPoly_eq_mul_branchKernel ι hη _ h_new_row
+  -- `μ` is the exponent of the monomial that `branchKernel_borelMul` gives for `β`; it is found
+  -- by unification in the `simpa`, so it is left as a hole.
+  exact ⟨θ, _, by simpa only [ite_mul, one_mul, neg_mul, zero_mul, branchKernel_borelMul,
+    Finsupp.prod, ↓reduceIte, tsub_self, Finsupp.coe_add, Pi.add_apply, X_pow_eq_monomial,
+    Finsupp.single_add, ← monomial_sum_one, sum_add_distrib, Int.cast_comm, mul_assoc,
+    β] using hθ⟩
+
+omit [∀ τ : Φ, DecidableEq (N τ)] in
+/-- Let `y` be the generic point `X` of the rows `N`, and let `detPowToPoly n κ₀ κ' θ`, for a
+coordinate vector `θ` over `ℤ[y]`, have the values `y ^ μ * (branchKernel ι γ κ' x y * c)`. Then
+every coefficient of `c` times the kernel at the generic points `x` and `y`, a polynomial in `y`
+over `ℤ[x]`, lies in the range of `detPowToPoly n κ₀ κ' ℤ`. -/
+private lemma coeff_smul_branchKernel_mem_range {c : ℤ}
+    {θ : WeylIndexFamily n κ₀ → MatrixPoly (Sigma N) ℤ} {μ : Sigma N × ℕ →₀ ℕ}
+    (hθ : ∀ x : Sigma n × ℕ → MatrixPoly (Sigma N) ℤ,
+      eval x (detPowToPoly n κ₀ κ' (MatrixPoly (Sigma N) ℤ) θ) =
+        monomial μ 1 * (branchKernel ι γ κ' x X * (c : MatrixPoly (Sigma N) ℤ)))
+    (δ : Sigma N × ℕ →₀ ℕ) :
+    (c • branchKernel ι γ κ' (C ∘ (X : Sigma n × ℕ → MatrixPoly (Sigma n) ℤ)) X).coeff δ ∈
+      (detPowToPoly n κ₀ κ' ℤ).range.toAddSubgroup := by
+  -- Compare the coefficients of `y ^ (μ + δ)` in `hθ`: the coefficient of `y ^ δ` in `c` times the
+  -- kernel is the image of the coefficients of `y ^ (μ + δ)` in `θ`.
+  refine ⟨fun i ↦ (θ i).coeff (μ + δ), MvPolynomial.funext fun x ↦ ?_⟩
+  have h_shift : (eval (C ∘ x) (detPowToPoly n κ₀ κ' (MatrixPoly (Sigma N) ℤ) θ)).coeff (μ + δ) =
+      (branchKernel ι γ κ' (fun p : Sigma n × ℕ ↦ (x p : MatrixPoly (Sigma N) ℤ)) X *
+        (c : MatrixPoly (Sigma N) ℤ)).coeff δ := by
+    rw [hθ, coeff_monomial_mul, one_mul]
+    -- On `ℤ` the map `C` is the cast by definition.
+    rfl
+  simpa only [detPowToPoly, LinearMap.coe_comp, Function.comp_apply, LinearMap.mulRight_apply,
+    map_mul, eval_toPoly, dotProduct, weylEval, mulVec, map_apply, Int.cast_eq,
+    mul_comm (eval x _), AddMonoidAlgebra.coeff_smul, Finsupp.coe_smul, Pi.smul_apply, smul_eval,
+    ← coeff_map, map_branchKernel, map_C, eval_X, eq_intCast, map_X, ← map_detPow C,
+    ← map_nablaBasis C, eval_map, ← eval₂_comp, ← zsmul_eq_mul, ← Int.cast_comm,
+    AddMonoidAlgebra.coeff_sum, Finsupp.coe_finsetSum, Finset.sum_apply, Int.zsmul_eq_mul]
+    using h_shift
+
+/-- Let every coefficient of `c` times the kernel at the generic points `x` and `y`, a polynomial
+in `y` over `ℤ[x]`, lie in the range of `detPowToPoly n κ₀ κ' ℤ`. Then there is an integral
+matrix `B` such that, over every commutative ring `T`, `B ev_y` represents `c` times the kernel at
+`y`: `detPowToPoly n κ₀ κ' T (B *ᵥ weylEval N (γ + κ') y)` has the values
+`c * branchKernel ι γ κ' x y`. -/
+private lemma exists_eval_detPowToPoly_mulVec_eq_mul_branchKernel {c : ℤ}
+    (h_coeff : ∀ δ : Sigma N × ℕ →₀ ℕ,
+      (c • branchKernel ι γ κ' (C ∘ (X : Sigma n × ℕ → MatrixPoly (Sigma n) ℤ)) X).coeff δ ∈
+        (detPowToPoly n κ₀ κ' ℤ).range.toAddSubgroup) :
+    ∃ B : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) ℤ,
+      ∀ (T : Type) [CommRing T] (y : Sigma N × ℕ → T) (x : Sigma n × ℕ → T),
+        eval x (detPowToPoly n κ₀ κ' T (B.map (Int.cast : ℤ → T) *ᵥ weylEval N (γ + κ') y)) =
+          c * branchKernel ι γ κ' x y := by
+  -- `c` times the kernel at generic `x` and `y` is a polynomial in `y` over `ℤ[x]`. As a
+  -- semi-invariant it is a combination of the basis `nablaBasis`, with coordinates `f`. The weight
+  -- is written with the zero sum that `nabla_le_span_nablaBasis_mul_detPow 0` expects.
+  have h_semi : c • branchKernel ι γ κ' (C ∘ (X : Sigma n × ℕ → MatrixPoly (Sigma n) ℤ)) X ∈
+      nabla (MatrixPoly (Sigma n) ℤ) Sigma.fst (diagramWeight (rankAt N) (γ + κ') +
+        ∑ τ : Φ, (0 : Φ → ℕ) τ • ∑ i ∈ range (rankAt N τ), Finsupp.single (τ, i) 1) := by
+    simp only [diagramWeight_add, Pi.zero_apply, zero_nsmul, sum_const_zero, add_zero, zsmul_eq_mul,
+      mem_nabla, aeval_def, eval₂_mul, ← coe_eval₂Hom, map_intCast, map_branchKernel,
+      Function.comp_apply, eval₂Hom_C, eval₂Hom_X', branchKernel_borelMul, mul_left_comm,
+      implies_true]
+  obtain ⟨f, hf⟩ := LinearMap.mem_range.mp (nabla_le_span_nablaBasis_mul_detPow 0 h_semi)
+  -- By `coord_mem_of_coeff_mem` the coordinates `f j` lie in the range of
+  -- `detPowToPoly n κ₀ κ' ℤ` as well; their preimages `B j` are the columns of the matrix.
+  have h_coord : ∀ j : WeylIndexFamily N (γ + κ'), ∃ b : WeylIndexFamily n κ₀ → ℤ,
+      detPowToPoly n κ₀ κ' ℤ b = f j :=
+    coord_mem_of_coeff_mem _ _ hf h_coeff
+  choose B hB using h_coord
+  -- Specialise `hf` at points `x` and `y` over any ring.
+  refine ⟨(of B)ᵀ, fun T _ y x ↦ ?_⟩
+  simpa only [detPowToPoly, transpose_of, mulVec_eq_sum, weylEval, op_smul_eq_smul, map_sum,
+    map_smul, LinearMap.coe_comp, Function.comp_apply, LinearMap.mulRight_apply, smul_eq_C_mul,
+    map_mul, eval_C, eval_toPoly, dotProduct, transpose_apply, map_apply, of_apply,
+    MulOpposite.op_intCast, Finset.sum_apply, Pi.smul_apply, MulOpposite.smul_eq_mul_unop,
+    MulOpposite.unop_intCast, mul_comm (eval y _), AlgHom.toRingHom_eq_coe, detPow_zero, mul_one,
+    linearCombination_apply, ← hB, C_mul, ← eval_map, map_C, coe_coe, aeval_def,
+    algebraMap_int_eq, map_toPoly, Int.coe_castRingHom, map_intCast, map_detPow, map_nablaBasis,
+    zsmul_eq_mul, map_branchKernel, map_X, eval_X] using congrArg (eval₂ (aeval x).toRingHom y) hf
+
+/-- Let `A` be a complex matrix such that, for every `y`,
+`detPowToPoly n κ₀ κ' ℂ (A *ᵥ weylEval N (γ + κ') y)` has the values `m * branchKernel ι γ κ' x y`.
+Then `nablaCombination (γ + κ')` sends `v ᵥ* A` to `m • branchVector ℂ ι γ κ'`, where
+`v = weylGramOver *ᵥ weylEval n κ₀ P` is the vector of coordinates of `weylKernel n κ₀ P` and `P`
+is the permutation array of `rowEquivFin`. -/
+private lemma nablaCombination_vecMul_eq_smul_branchVector {m : ℂ}
+    {A : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) ℂ}
+    (hA : ∀ (y : Sigma N × ℕ → ℂ) (x : Sigma n × ℕ → ℂ),
+      eval x (detPowToPoly n κ₀ κ' ℂ (A *ᵥ weylEval N (γ + κ') y)) =
+        m * branchKernel ι γ κ' x y) :
+    nablaCombination (γ + κ') ((weylGramOver *ᵥ weylEval n κ₀
+        (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) ᵥ* A) =
+      m • branchVector ℂ ι γ κ' := by
+  -- For `x` the identity matrix, `det x = 1` and the kernel is `branchVector` evaluated at `y`.
+  refine MvPolynomial.funext fun y ↦ ?_
+  simpa only [map.eq_1 (of _), of_apply, vecMul_mulVec, ← transpose_map,
+    weylGram_isSymm.eq, linearCombination_apply, map_sum, smul_eval, ← weylEval.eq_1,
+    ← dotProduct.eq_1, detPowToPoly, detPow, minor, LinearMap.coe_comp, Function.comp_apply,
+    LinearMap.mulRight_apply, map_mul, eval_toPoly, mulVec_mulVec, dotProduct_mulVec, map_prod,
+    map_pow, map_det, mapMatrix_apply, eval_X, permArray, Equiv.apply_symm_apply, Fin.val_inj,
+    ← diagonal.eq_1, diagonal_one, det_one, one_pow, prod_const_one, mul_one, branchKernel,
+    blockScalar.eq_unfold, reindex_apply, squarePart, EmbeddingLike.apply_eq_iff_eq,
+    transpose_one, Pi.one_apply, fromBlocks_one, submatrix_one_equiv, rowSubst_one]
+    using hA y (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))
+
+/-- Let `A` be a matrix over a field `R` of characteristic zero such that, for every `y`,
+`detPowToPoly n κ₀ κ' R (A *ᵥ weylEval N (γ + κ') y)` has the values `m * branchKernel ι γ κ' x y`.
+Then `A * schur (γ + κ') (diag(g, s)) = χ • (schur κ₀ g * A)` with
+`χ = ∏ τ, s τ ^ diagramWeight (rankAt N) γ (τ, 0) * det (g τ) ^ κ' τ (rankAt n τ)`, where
+`diag(g, s)` is `blockScalar ι g s`. -/
+private lemma mul_schur_blockScalar_eq_smul_schur_mul {R : Type} [Field R] [CharZero R] {m : R}
+    {A : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) R}
+    (hA : ∀ (y : Sigma N × ℕ → R) (x : Sigma n × ℕ → R),
+      eval x (detPowToPoly n κ₀ κ' R (A *ᵥ weylEval N (γ + κ') y)) =
+        m * branchKernel ι γ κ' x y)
+    (g : (τ : Φ) → Matrix (n τ) (n τ) R) (s : Φ → R) :
+    A * schur (γ + κ') (blockScalar ι g s) =
+      (∏ τ : Φ, s τ ^ diagramWeight (rankAt N) γ (τ, 0) * (g τ).det ^ κ' τ (rankAt n τ)) •
+        (schur κ₀ g * A) := by
+  -- It suffices to compare the two sides on the vectors `ev_y`, and there after applying
+  -- `detPowToPoly n κ₀ κ' R`, which is injective because the product of the powers
+  -- `det ^ κ' τ (rankAt n τ)` is not a zero divisor.
+  refine toLin'.injective (ext_weylEval 0 (fun y _ _ ↦ ?_) Set.infinite_univ)
+  refine toPoly_injective
+    ((isRegular_detPow (R := R) (n := n) (e := fun τ : Φ ↦ κ' τ (rankAt n τ))).right ?_)
+  change detPowToPoly n κ₀ κ' R _ = detPowToPoly n κ₀ κ' R _
+  refine MvPolynomial.funext fun x ↦ ?_
+  -- By `hA` the left side is `m` times the kernel at `x` and `diag(g, s) y`, and the right
+  -- side is a power of `s` times `m` times the kernel at `gᵀ x` and `y`.
+  simp only [toLin'_mul, LinearMap.coe_comp, Function.comp_apply, toLin'_apply, FitsRanks.refl,
+    schurDetExp_self, schur_mulVec_weylEval_of_schurDetExp_eq_zero, hA,
+    branchKernel_blockScalar ι g s x y, transpose_apply, prod_mul_distrib, mul_smul, map_smul,
+    LinearMap.smul_apply, detPowToPoly_smul_schur_mulVec g, smul_eval, eval_rowSubst,
+    mul_left_comm]
+
 /-- Let `c • (weylKernel n γ₁ P₁ * weylKernel n κ' P) = toPoly n κ₀ η` for an integer `c` and an
 integer vector `η`, where `γ₁ τ h = γ τ (h + 1)`, `P` is the permutation array of the row order
 `rowEquivFin` and `P₁` that of `rowEquivFin` shifted cyclically by one. (`New.weylKernel` is the
@@ -344,107 +505,15 @@ lemma exists_int_branching_of_weylKernel {c : ℤ} {η : WeylIndexFamily n κ₀
         B.map (Int.cast : ℤ → R) * schur (γ + κ') (blockScalar ι g s) =
           (∏ τ : Φ, s τ ^ diagramWeight (rankAt N) γ (τ, 0) * (g τ).det ^ κ' τ (rankAt n τ)) •
             (schur κ₀ g * B.map (Int.cast : ℤ → R)) := by
-  -- Say that `θ` represents `m` times the kernel at `y` if `detPowToPoly n κ₀ κ' S θ` has the
-  -- values `m * branchKernel ι γ κ' x y`. We move `η` to the generic point, read off `B` from the
-  -- coefficients of the kernel, and get both claims from one fact: `B ev_y` represents `c` times
-  -- the kernel at `y`.
-  -- Column operations on the generic point `X`, with `X₀ τ` and `X_j τ` its entries in the new row
-  -- and columns `0` and `j`: column `0` is multiplied by `X₀ τ`, and column `j > 0` becomes
-  -- `X₀ τ * column j - X_j τ * column 0`. They clear the new row beyond its first entry and
-  -- multiply the kernel by a monomial `y ^ μ`.
-  let β : Φ × ℕ × ℕ → MatrixPoly (Sigma N) ℤ := fun (τ, i, j) ↦
-    (if i = j then 1 else if i = 0 then -1 else 0) * X (⟨τ, ι τ (.inr ())⟩, j - i)
-  have h_new_row (τ : Φ) (j : ℕ) : borelMul Sigma.fst β X (⟨τ, ι τ (.inr ())⟩, j + 1) = 0 := by
-    simp only [borelMul, ite_mul, one_mul, neg_mul, zero_mul, mul_ite, mul_neg, mul_comm,
-      sum_range_succ', Nat.add_right_cancel_iff, Nat.reduceSubDiff, Nat.add_eq_zero_iff,
-      one_ne_zero, and_false, ↓reduceIte, Finset.sum_ite_eq', Finset.mem_range,
-      lt_add_iff_pos_right, Order.lt_one_iff, tsub_self, Nat.right_eq_add, tsub_zero,
-      add_neg_cancel, β]
-  obtain ⟨θ, μ, hθ⟩ : ∃ (θ : WeylIndexFamily n κ₀ → MatrixPoly (Sigma N) ℤ) (μ : Sigma N × ℕ →₀ ℕ),
-      ∀ x : Sigma n × ℕ → MatrixPoly (Sigma N) ℤ,
-        eval x (detPowToPoly n κ₀ κ' (MatrixPoly (Sigma N) ℤ) θ) =
-          monomial μ 1 * (branchKernel ι γ κ' x X * (c : MatrixPoly (Sigma N) ℤ)) := by
-    obtain ⟨θ, hθ⟩ := exists_eval_detPowToPoly_eq_mul_branchKernel ι hη _ h_new_row
-    -- `μ` is the exponent of the monomial that `branchKernel_borelMul` gives for `β`; it is found
-    -- by unification in the `simpa`, so it is left as a hole.
-    exact ⟨θ, _, by simpa only [ite_mul, one_mul, neg_mul, zero_mul, branchKernel_borelMul,
-      Finsupp.prod, ↓reduceIte, tsub_self, Finsupp.coe_add, Pi.add_apply, X_pow_eq_monomial,
-      Finsupp.single_add, ← monomial_sum_one, sum_add_distrib, Int.cast_comm, mul_assoc,
-      β] using hθ⟩
-  -- `c` times the kernel at generic `x` and `y` is a polynomial in `y` over `ℤ[x]`. As a
-  -- semi-invariant it is a combination of the basis `nablaBasis`, with coordinates `f`. The weight
-  -- is written with the zero sum that `nabla_le_span_nablaBasis_mul_detPow 0` expects.
-  have h_semi : c • branchKernel ι γ κ' (C ∘ (X : Sigma n × ℕ → MatrixPoly (Sigma n) ℤ)) X ∈
-      nabla (MatrixPoly (Sigma n) ℤ) Sigma.fst (diagramWeight (rankAt N) (γ + κ') +
-        ∑ τ : Φ, (0 : Φ → ℕ) τ • ∑ i ∈ range (rankAt N τ), Finsupp.single (τ, i) 1) := by
-    simp only [diagramWeight_add, Pi.zero_apply, zero_nsmul, sum_const_zero, add_zero, zsmul_eq_mul,
-      mem_nabla, aeval_def, eval₂_mul, ← coe_eval₂Hom, map_intCast, map_branchKernel,
-      Function.comp_apply, eval₂Hom_C, eval₂Hom_X', branchKernel_borelMul, mul_left_comm,
-      implies_true]
-  obtain ⟨f, hf⟩ := LinearMap.mem_range.mp (nabla_le_span_nablaBasis_mul_detPow 0 h_semi)
-  -- Compare the coefficients of `y ^ (μ + δ)` in `hθ`: the coefficient of `y ^ δ` in that
-  -- polynomial lies in the range of `detPowToPoly n κ₀ κ' ℤ`. By `coord_mem_of_coeff_mem` so do the
-  -- coordinates `f j`; their preimages `B j` are the columns of the matrix.
-  have h_coeff (δ : Sigma N × ℕ →₀ ℕ) :
-      (c • branchKernel ι γ κ' (C ∘ (X : Sigma n × ℕ → MatrixPoly (Sigma n) ℤ)) X).coeff δ ∈
-        (detPowToPoly n κ₀ κ' ℤ).range.toAddSubgroup := by
-    refine ⟨fun i ↦ (θ i).coeff (μ + δ), MvPolynomial.funext fun x ↦ ?_⟩
-    have h_shift : (eval (C ∘ x) (detPowToPoly n κ₀ κ' (MatrixPoly (Sigma N) ℤ) θ)).coeff (μ + δ) =
-        (branchKernel ι γ κ' (fun p : Sigma n × ℕ ↦ (x p : MatrixPoly (Sigma N) ℤ)) X *
-          (c : MatrixPoly (Sigma N) ℤ)).coeff δ := by
-      rw [hθ, coeff_monomial_mul, one_mul]
-      -- On `ℤ` the map `C` is the cast by definition.
-      rfl
-    simpa only [detPowToPoly, LinearMap.coe_comp, Function.comp_apply, LinearMap.mulRight_apply,
-      map_mul, eval_toPoly, dotProduct, weylEval, mulVec, map_apply, Int.cast_eq,
-      mul_comm (eval x _), AddMonoidAlgebra.coeff_smul, Finsupp.coe_smul, Pi.smul_apply, smul_eval,
-      ← coeff_map, map_branchKernel, map_C, eval_X, eq_intCast, map_X, ← map_detPow C,
-      ← map_nablaBasis C, eval_map, ← eval₂_comp, ← zsmul_eq_mul, ← Int.cast_comm,
-      AddMonoidAlgebra.coeff_sum, Finsupp.coe_finsetSum, Finset.sum_apply, Int.zsmul_eq_mul]
-      using h_shift
-  have h_coord : ∀ j : WeylIndexFamily N (γ + κ'), ∃ b : WeylIndexFamily n κ₀ → ℤ,
-      detPowToPoly n κ₀ κ' ℤ b = f j :=
-    coord_mem_of_coeff_mem _ _ hf h_coeff
-  choose B hB using h_coord
-  -- Specialise `hf` at points `x` and `y` over any ring.
-  have hB_kernel {T : Type} [CommRing T] (y : Sigma N × ℕ → T) (x : Sigma n × ℕ → T) :
-      eval x (detPowToPoly n κ₀ κ' T ((of B)ᵀ.map (↑) *ᵥ weylEval N (γ + κ') y)) =
-        c * branchKernel ι γ κ' x y := by
-    simpa only [detPowToPoly, transpose_of, mulVec_eq_sum, weylEval, op_smul_eq_smul, map_sum,
-      map_smul, LinearMap.coe_comp, Function.comp_apply, LinearMap.mulRight_apply, smul_eq_C_mul,
-      map_mul, eval_C, eval_toPoly, dotProduct, transpose_apply, map_apply, of_apply,
-      MulOpposite.op_intCast, Finset.sum_apply, Pi.smul_apply, MulOpposite.smul_eq_mul_unop,
-      MulOpposite.unop_intCast, mul_comm (eval y _), AlgHom.toRingHom_eq_coe, detPow_zero, mul_one,
-      linearCombination_apply, ← hB, C_mul, ← eval_map, map_C, coe_coe, aeval_def,
-      algebraMap_int_eq, map_toPoly, Int.coe_castRingHom, map_intCast, map_detPow, map_nablaBasis,
-      zsmul_eq_mul, map_branchKernel, map_X, eval_X] using congrArg (eval₂ (aeval x).toRingHom y) hf
-  refine ⟨(of B)ᵀ, MvPolynomial.funext fun y ↦ ?_, ?_⟩
-  · -- For `x` the identity matrix, `det x = 1` and the kernel is `branchVector` evaluated at `y`.
-    simpa only [transpose_of, map.eq_1 (of _), of_apply, vecMul_mulVec, ← transpose_map,
-      weylGram_isSymm.eq, linearCombination_apply, map_sum, smul_eval, ← weylEval.eq_1,
-      ← dotProduct.eq_1, detPowToPoly, detPow, minor, LinearMap.coe_comp, Function.comp_apply,
-      LinearMap.mulRight_apply, map_mul, eval_toPoly, mulVec_mulVec, dotProduct_mulVec, map_prod,
-      map_pow, map_det, mapMatrix_apply, eval_X, permArray, Equiv.apply_symm_apply, Fin.val_inj,
-      ← diagonal.eq_1, diagonal_one, det_one, one_pow, prod_const_one, mul_one, branchKernel,
-      blockScalar.eq_unfold, reindex_apply, squarePart, EmbeddingLike.apply_eq_iff_eq,
-      transpose_one, Pi.one_apply, fromBlocks_one, submatrix_one_equiv, rowSubst_one]
-      using hB_kernel y (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))
-  intro S _ _ g s
-  -- It suffices to compare the two sides on the vectors `ev_y`, and there after applying
-  -- `detPowToPoly n κ₀ κ' S`, which is injective because the product of the powers
-  -- `det ^ κ' τ (rankAt n τ)` is not a zero divisor.
-  refine toLin'.injective (ext_weylEval 0 (fun y _ _ ↦ ?_) Set.infinite_univ)
-  refine toPoly_injective
-    ((isRegular_detPow (R := S) (n := n) (e := fun τ : Φ ↦ κ' τ (rankAt n τ))).right ?_)
-  change detPowToPoly n κ₀ κ' S _ = detPowToPoly n κ₀ κ' S _
-  refine MvPolynomial.funext fun x ↦ ?_
-  -- By `hB_kernel` the left side is `c` times the kernel at `x` and `diag(g, s) y`, and the right
-  -- side is a power of `s` times `c` times the kernel at `gᵀ x` and `y`.
-  simp only [toLin'_mul, LinearMap.coe_comp, Function.comp_apply, toLin'_apply, FitsRanks.refl,
-    schurDetExp_self, schur_mulVec_weylEval_of_schurDetExp_eq_zero, hB_kernel,
-    branchKernel_blockScalar ι g s x y, transpose_apply, prod_mul_distrib, mul_smul, map_smul,
-    LinearMap.smul_apply, detPowToPoly_smul_schur_mulVec g, smul_eval, eval_rowSubst,
-    mul_left_comm]
+  -- Say that `θ` represents `m` times the kernel at `y` if `detPowToPoly n κ₀ κ' T θ`, over a
+  -- commutative ring `T`, has the values `m * branchKernel ι γ κ' x y`. We move `η` to the generic
+  -- point, read off `B` from the coefficients of the kernel, and get both claims from one fact:
+  -- `B ev_y` represents `c` times the kernel at `y`.
+  obtain ⟨θ, μ, hθ⟩ := exists_eval_detPowToPoly_eq_monomial_mul_branchKernel ι hη
+  obtain ⟨B, hB⟩ :=
+    exists_eval_detPowToPoly_mulVec_eq_mul_branchKernel ι (coeff_smul_branchKernel_mem_range ι hθ)
+  exact ⟨B, nablaCombination_vecMul_eq_smul_branchVector ι (hB ℂ),
+    fun R _ _ ↦ mul_schur_blockScalar_eq_smul_schur_mul ι (hB R)⟩
 
 /-- Let `v` be the Gram matrix `weylGramOver` times the evaluation vector at the permutation array
 of `rowEquivFin`. Let `B` be an integral matrix such that `nablaCombination` (ξ ↦ Σ ξ_i b_i over the
