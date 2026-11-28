@@ -1,5 +1,6 @@
 module
 
+import Mathlib.NumberTheory.ArithmeticFunction.Carmichael
 import Mathlib.NumberTheory.LSeries.PrimesInAP
 import Mathlib.NumberTheory.NumberField.Cyclotomic.Ideal
 import Mathlib.NumberTheory.SumTwoSquares
@@ -69,33 +70,28 @@ lemma IsSplitPrimeToDisc.exists_place_above_ne [U : HasPrimitiveRoot5040 E]
     {u : FinPlace (QuadField d)} (hu : IsSplitPrimeToDisc u) (a b : FinPlace E) :
     ∃ v : FinPlace E, v.below (QuadField d) = u ∧ v ≠ a ∧ star v ≠ a ∧ v ≠ b ∧ star v ≠ b := by
   classical
-  -- Otherwise only `a`, `b` and their conjugates lie over `p = u.q`. For `m = 80 = 16 * 5` and
-  -- `m = 63 = 9 * 7`, if `p ∤ m` then `ℚ(ζ_m)` has at most four primes over `p`, unramified of
-  -- degree dividing the exponent of `(ℤ/m)ˣ`, too small to sum to `φ(m)`; so `p` divides both.
+  -- If p does not divide m, each prime of ℚ(ζ_m) above p has residue degree at most the
+  -- Carmichael exponent λ(m). At most four such primes would give φ(m) ≤ 4λ(m).
+  -- Both 80 and 63 violate this bound and they are coprime.
   by_contra h_none
   obtain ⟨ζ, hζ⟩ := U.exists_primitive_root
   obtain ⟨-, hp, h_over⟩ := hu.isSplit_and_prime_q
   have : Fact u.q.Prime := ⟨hp⟩
-  have h_dvd (m₁ m₂ e : ℕ) (k : ℕ+) [NeZero (m₁ * m₂)] (hcop : m₁.Coprime m₂)
-      (hm : 5040 = e * (m₁ * m₂)) (hk : 4 * (k : ℕ) < m₁.totient * m₂.totient)
-      (h_exp₁ : ∀ x : ZMod m₁, IsUnit x → x ^ (k : ℕ) = 1)
-      (h_exp₂ : ∀ x : ZMod m₂, IsUnit x → x ^ (k : ℕ) = 1) : u.q ∣ m₁ * m₂ := by
+  have h_dvd (m e : ℕ) [NeZero m] (hm : 5040 = e * m)
+      (hk : 4 * ArithmeticFunction.carmichael m < m.totient) : u.q ∣ m := by
     by_contra h_not
-    obtain ⟨K, hK⟩ : ∃ K : IntermediateField ℚ E, IsCyclotomicExtension {m₁ * m₂} ℚ K :=
+    obtain ⟨K, hK⟩ : ∃ K : IntermediateField ℚ E, IsCyclotomicExtension {m} ℚ K :=
       ⟨_, (hζ.pow (by lia) hm).intermediateField_adjoin_isCyclotomicExtension _⟩
-    have h_pow : (u.q : ZMod (m₁ * m₂)) ^ (k : ℕ) = 1 := by
-      apply (ZMod.chineseRemainder hcop).injective
-      have ⟨hu₁, hu₂⟩ := Prod.isUnit_iff.mp
-        ((ZMod.isUnit_prime_of_not_dvd hp h_not).map (ZMod.chineseRemainder hcop).toRingHom)
-      rw [map_pow, map_one]
-      exact Prod.ext (h_exp₁ _ hu₁) (h_exp₂ _ hu₂)
-    have h_sum : (m₁ * m₂).totient =
-        ((span {(u.q : ℤ)}).primesOver (𝓞 K)).ncard * orderOf (u.q : ZMod (m₁ * m₂)) := by
-      rw [← finrank (m₁ * m₂) K, ← RingOfIntegers.rank,
+    obtain ⟨x, hx⟩ := ZMod.isUnit_prime_of_not_dvd hp h_not
+    have h_order : orderOf (u.q : ZMod m) ≤ ArithmeticFunction.carmichael m := by
+      rw [← hx, orderOf_units, ArithmeticFunction.carmichael_eq_exponent']
+      exact Monoid.orderOf_le_exponent Monoid.ExponentExists.of_finite x
+    have h_sum : m.totient =
+        ((span {(u.q : ℤ)}).primesOver (𝓞 K)).ncard * orderOf (u.q : ZMod m) := by
+      rw [← finrank m K, ← RingOfIntegers.rank,
         ← sum_ramification_inertia_eq_finrank (span {(u.q : ℤ)})]
       simp [ramificationIdx_eq_of_not_dvd _ K _ h_not, inertiaDeg_eq_of_not_dvd _ K _ h_not]
-    rw [← Nat.totient_mul hcop] at hk
-    grw [h_sum, orderOf_le_of_pow_eq_one k.pos h_pow,
+    grw [h_sum, h_order,
       ncard_le_ncard (t := ↑(({a, b, star a, star b} : Finset (FinPlace E)).image
         fun v ↦ (v.below K).asIdeal)) ?_, ncard_coe_finset, card_image_le, card_le_four] at hk
     · exact hk.false
@@ -104,28 +100,17 @@ lemma IsSplitPrimeToDisc.exists_place_above_ne [U : HasPrimitiveRoot5040 E]
         ⟨P, hP.1, ne_bot_of_mem_primesOver (by simpa using hp.ne_zero) hP⟩
       exact mem_image_of_mem _ (by
         grind [=_ below_star, star_star, (h_over (v.below _)).mpr (by simpa using hP.2.over.le)])
-  have h_euler {m k : ℕ} (hm : m.totient = k) (x : ZMod m) (hx : IsUnit x) : x ^ k = 1 := by
-    simpa [hm] using congrArg Units.val (ZMod.pow_totient hx.unit)
-  have h_exp_sixteen (x : ZMod 16) (hx : IsUnit x) : x ^ 4 = 1 := by
-    obtain ⟨t, ht⟩ := Nat.coprime_two_right.mp
-      (((ZMod.isUnit_iff_coprime x.val 16).mp (by simpa using hx)).coprime_dvd_right (by norm_num))
-    obtain ⟨s, hs⟩ := even_iff_two_dvd.mp (Nat.even_mul_succ_self t)
-    have h_eq : (2 * t + 1) ^ 4 = 16 * (t ^ 4 + 2 * t ^ 3 + t ^ 2 + s) + 1 := by
-      zify at hs ⊢; linear_combination 8 * hs
-    rw [← ZMod.natCast_zmod_val x, ht, ← Nat.cast_pow, h_eq]
-    simp [show (16 : ZMod 16) = 0 from rfl]
-  have hφ_sixteen : (16 : ℕ).totient = 8 := by
-    rw [show (16 : ℕ) = 2 ^ 4 from rfl, Nat.totient_prime_pow Nat.prime_two (by norm_num)]; norm_num
-  have hφ_five : (5 : ℕ).totient = 4 := Nat.totient_prime (by norm_num)
-  have hφ_nine : (9 : ℕ).totient = 6 := by
-    rw [show (9 : ℕ) = 3 ^ 2 from rfl, Nat.totient_prime_pow (by norm_num : Nat.Prime 3) two_pos]
-    norm_num
-  have hφ_seven : (7 : ℕ).totient = 6 := Nat.totient_prime (by norm_num)
-  exact hp.not_dvd_one (Nat.dvd_gcd
-    (h_dvd 16 5 63 4 (by norm_num) rfl (by simp [hφ_sixteen, hφ_five])
-      h_exp_sixteen (h_euler hφ_five))
-    (h_dvd 9 7 80 6 (by norm_num) rfl (by simp [hφ_nine, hφ_seven])
-      (h_euler hφ_nine) (h_euler hφ_seven)))
+  have h80 : 4 * ArithmeticFunction.carmichael 80 < Nat.totient 80 := by
+    rw [show 80 = 2 ^ 4 * 5 by decide, ArithmeticFunction.carmichael_mul (by decide),
+      ArithmeticFunction.carmichael_two_pow_of_ne_two (by decide),
+      ArithmeticFunction.carmichael_of_prime (by decide : Nat.Prime 5)]
+    decide
+  have h63 : 4 * ArithmeticFunction.carmichael 63 < Nat.totient 63 := by
+    rw [show 63 = 3 ^ 2 * 7 by decide, ArithmeticFunction.carmichael_mul (by decide),
+      ArithmeticFunction.carmichael_pow_of_prime_ne_two 2 (by decide : Nat.Prime 3) (by decide),
+      ArithmeticFunction.carmichael_of_prime (by decide : Nat.Prime 7)]
+    decide
+  exact hp.not_dvd_one (Nat.dvd_gcd (h_dvd 80 63 rfl h80) (h_dvd 63 80 rfl h63))
 
 end SplitPlaceCount
 
