@@ -226,6 +226,26 @@ lemma norm_coeff_smul_negLogTheta_sub_rescale_le (hp : chiK d p ≠ 1) {n : ℕ}
       _ = ‖π‖ * (‖π‖ * ‖coeff (k + 2) C.negLogTheta‖) := by ring
       _ ≤ ‖π‖ := mul_le_of_le_one_right (norm_nonneg π) h_bound
 
+/-- For `x = z² + ⋯` and `2 * R.natDegree < q_p`, a norm bound of `‖π‖` on the coefficients
+of `R(x)` below degree `q_p` bounds every coefficient of `R` by `‖π‖`. Thus `π⁻¹ • R(x)`
+lies in the integral series ring. -/
+private lemma inv_smul_aeval_translatedX_mem_integralSeriesRing
+    (R : Polynomial ℂ_[p]) {π : ℂ_[p]} (h_degree : 2 * R.natDegree < primeNorm d p)
+    (h_series : ∀ n < primeNorm d p, ‖coeff n (R.aeval (taylorVia ιₚ C.translatedX))‖ ≤ ‖π‖) :
+    π⁻¹ • R.aeval (taylorVia ιₚ C.translatedX) ∈ C.integralSeriesRing := by
+  let x : ℂ_[p]⟦X⟧ := taylorVia ιₚ C.translatedX
+  have hx : x ∈ C.integralSeriesRing := C.taylorVia_translatedX_mem_integralSeriesRing
+  have h_polynomial_coeff (i : ℕ) (hi : 2 * i < primeNorm d p) : ‖R.coeff i‖ ≤ ‖π‖ :=
+    norm_coeff_le_of_aeval C.X_sq_dvd_taylorVia_translatedX C.coeff_two_taylorVia_translatedX
+      (fun k hk ↦ C.norm_coeff_le_one_of_lt hx hk) h_series hi
+  change π⁻¹ • R.aeval x ∈ C.integralSeriesRing
+  rw [Polynomial.aeval_eq_sum_range, Finset.smul_sum]
+  refine sum_mem fun i hi ↦ ?_
+  rw [smul_smul]
+  refine C.isSeriesGenerator_translatedY.smul_mem ?_ (pow_mem hx i)
+  rw [norm_mul, norm_inv]
+  exact inv_mul_le_one_of_le₀ (h_polynomial_coeff i (by grind)) (norm_nonneg π)
+
 /-- The Frobenius congruence. Let `d ≡ 7` modulo `8` be a prime and `p` a prime that does not split
 in `ℚ(√-d)`. The Taylor series of `θ` at `0`, mapped by the chosen `ιₚ : ℂ →+* ℂ_[p]`, satisfies
 `θ(π_p z) = θ(z) ^ q_p * (1 + π_p H)` for some `H ∈ 𝒪[[y]]`. -/
@@ -239,30 +259,18 @@ lemma exists_rescale_theta_eq_pow_mul_one_add_smul (hp : chiK d p ≠ 1) :
       2 * R.natDegree < primeNorm d p ∧
       rescale π (taylorVia ιₚ C.θ) = taylorVia ιₚ C.θ ^ primeNorm d p * R.aeval x :=
     C.exists_rescale_theta_eq_pow_mul_aeval hp
-  have hx : x ∈ C.integralSeriesRing := C.taylorVia_translatedX_mem_integralSeriesRing
   -- `R(x) = exp (q g(z) - g(π z))` is `1` modulo `π` below the degree `q`.
   have h_low_series_coeff (n : ℕ) (hn : n < primeNorm d p) : ‖coeff n ((R - 1).aeval x)‖ ≤ ‖π‖ := by
     rw [map_sub, map_one, ← C.expSubst_smul_negLogTheta_sub_rescale_eq h_theta_factorization]
     exact norm_coeff_expSubst_sub_one_le (norm_piPrime_le_rpow hp)
       (constantCoeff_smul_sub_rescale C.constantCoeff_negLogTheta _ _)
       (fun k hk ↦ C.norm_coeff_smul_negLogTheta_sub_rescale_le hp hk) hn
-  -- Recover the polynomial coefficients from the low series coefficients using `x = z² + ⋯`.
-  -- Since `2 * R.natDegree < q`, this accounts for every coefficient of `R - 1`.
-  have h_polynomial_coeff (i : ℕ) (hi : 2 * i < primeNorm d p) : ‖(R - 1).coeff i‖ ≤ ‖π‖ :=
-    norm_coeff_le_of_aeval C.X_sq_dvd_taylorVia_translatedX C.coeff_two_taylorVia_translatedX
-      (fun k hk ↦ C.norm_coeff_le_one_of_lt hx hk) h_low_series_coeff hi
   have h_sub_degree_bound : (R - 1).natDegree ≤ R.natDegree := by simpa using R.natDegree_sub_le 1
-  -- The quotient polynomial now has integral coefficients, so evaluation at the integral series
-  -- `x` gives an integral series in all degrees.
-  refine ⟨π⁻¹ • (R - 1).aeval x, ?_, ?_⟩
-  · rw [Polynomial.aeval_eq_sum_range, Finset.smul_sum]
-    refine sum_mem fun i hi ↦ ?_
-    rw [smul_smul]
-    refine C.isSeriesGenerator_translatedY.smul_mem ?_ (pow_mem hx i)
-    rw [norm_mul, norm_inv]
-    exact inv_mul_le_one_of_le₀ (h_polynomial_coeff i (by grind)) (norm_nonneg π)
-  · rw [smul_inv_smul₀ ((map_ne_zero ιₚ).2 (piPrime_ne_zero d)), map_sub, map_one, add_sub_cancel,
-      h_theta_factorization]
+  have h_low_degree := (Nat.mul_le_mul_left 2 h_sub_degree_bound).trans_lt h_degree_bound
+  refine ⟨π⁻¹ • (R - 1).aeval x,
+    C.inv_smul_aeval_translatedX_mem_integralSeriesRing (R - 1) h_low_degree h_low_series_coeff, ?_⟩
+  rw [smul_inv_smul₀ ((map_ne_zero ιₚ).2 (piPrime_ne_zero d)), map_sub, map_one, add_sub_cancel,
+    h_theta_factorization]
 
 /-- The logarithm of the Frobenius congruence. Let `d ≡ 7` modulo `8` be a prime and `p` a prime
 that does not split in `ℚ(√-d)`. Then `q_p g(z) - g(π_p z) = π_p H` for some `H ∈ 𝒪[[y]]`. -/
