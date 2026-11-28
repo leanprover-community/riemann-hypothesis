@@ -212,7 +212,13 @@ theorem exists_coe_finiteEquiv_eq_conj :
       ∀ k : Gf E 𝔰.BesselIndex, (X.finiteEquiv k).val = x * k * x⁻¹ := by
   obtain ⟨x, hx_red, u, hu⟩ := X.exists_point_eq
   refine ⟨x, hx_red, fun k ↦ ?_⟩
-  simp [finiteEquiv, inclHFin, Filling.toLatticeBasis, U.conj, hu, Units.ext_iff, mul_assoc]
+  simp only [finiteEquiv, U.conj, hu, mul_assoc, _root_.mul_inv_rev, Units.smul_inv,
+    toLatticeBasis, MulEquiv.symm_mk, Equiv.symm_mk, inclHFin, MulEquiv.toMonoidHom_eq_coe,
+    MonoidHom.coe_comp, MonoidHom.coe_ofClass, MulEquiv.coe_mk, Equiv.coe_fn_mk,
+    Function.comp_apply, map_inv, MulEquiv.trans_apply, MulAut.inv_apply, MulAut.conj_symm_apply,
+    MulMemClass.mk_mul_mk, mul_inv_cancel_left, Subgroup.coe_mul, InvMemClass.coe_inv, inv_inv,
+    Units.ext_iff, Units.val_mul, coe_units_inv, Units.val_smul, smul_mul, isUnits_det_units,
+    nonsing_inv_mul_cancel_left, Matrix.mul_smul, nonsing_inv_mul, mul_smul_one, inv_smul_smul]
 
 /-- The image of k under `New.Filling.Fits.finiteEquiv` preserves the lattice of S if and only if k
 is integral in the orthonormal local bases of V. -/
@@ -286,7 +292,15 @@ theorem cutBessel_ratEquiv_mul (γ : S.G E) :
       (S.inclHFin η)⁻¹ * S.ratToFin γ * S.inclHFin η := by
     rw [finiteEquiv_eq_conj_adelicToFin, adelicEquiv_ratEquiv, ratToFin, MonoidHom.comp_apply]
   rw [cutBessel, h_inf]
-  simp [X.mem_stdPrincipalLevel_iff, h_fin, mul_assoc]
+  have h_cond :
+      X.finiteEquiv.symm ((S.classRep a.1)⁻¹ * S.inclHFin η) * (X.ratEquiv γ * g).2 ∈
+          S.stdPrincipalLevel ↔
+        (S.classRep a.1)⁻¹ * (S.ratToFin γ * (S.inclHFin η * X.finiteEquiv g.2)) ∈
+          S.principalLevel := by
+    rw [X.mem_stdPrincipalLevel_iff, X.finiteEquiv.map_mul, X.finiteEquiv.apply_symm_apply,
+      Prod.snd_mul, X.finiteEquiv.map_mul, h_fin]
+    simp only [mul_assoc, mul_inv_cancel_left]
+  simp only [h_cond]
 
 /-- The cut-off function of a = (c, i) at γ·g is bounded by β_c(y) ∏_v ‖W_v(y_v)‖, where y is γ_∞
 times the image of g_∞ under `New.Filling.Fits.realHomeomorph`, β_c is the cutoff of c and W_v is
@@ -373,12 +387,21 @@ theorem exists_tsum_enorm_cutBessel_le :
   have h_zero (δ : S.G E) (hδ : ¬InLevel δ) : X.cutBessel a (X.ratEquiv δ * g) = 0 :=
     (X.cutBessel_ratEquiv_mul a g δ).trans (ite_eq_right hδ)
   rw [← X.ratEquiv.tsum_eq]
-  obtain h_none | ⟨δ, hδ⟩ : (∀ δ, ¬InLevel δ) ∨ ∃ δ, InLevel δ := by grind
-  · simp [h_zero _ (h_none _)]
+  rcases (em (∃ δ, InLevel δ)).symm with h_none | ⟨δ, hδ⟩
+  · simp [h_zero _ (not_exists.1 h_none _)]
   -- If `γ⁻¹ * δ` satisfies the condition too, then `γ` lies in `T`.
   have h_over (γ : S.G E) (hγ : InLevel (γ⁻¹ * δ)) : γ ∈ T := by
-    simpa [T, principalLevel, termsOver, translateByClassReps, mul_assoc] using mul_mem hδ
-      (inv_mem hγ)
+    have h_mem : S.translateByClassReps a.1 a.1 γ ∈ S.principalLevel := by
+      have h_eq : ((S.classRep a.1)⁻¹ * (S.ratToFin δ * (S.inclHFin η * X.finiteEquiv g.2))) *
+          ((S.classRep a.1)⁻¹ *
+            (S.ratToFin (γ⁻¹ * δ) * (S.inclHFin η * X.finiteEquiv g.2)))⁻¹ =
+          S.translateByClassReps a.1 a.1 γ := by
+        rw [translateByClassReps, S.ratToFin.map_mul, S.ratToFin.map_inv]
+        group
+      exact h_eq ▸ mul_mem hδ (inv_mem hγ)
+    obtain ⟨k, hk, hk_eq⟩ := Subgroup.mem_map.1 h_mem
+    rw [Subgroup.coe_subtype] at hk_eq
+    exact ⟨trivial, k, hk, hk_eq⟩
   calc ∑' γ : S.G E, ‖X.cutBessel a (X.ratEquiv γ * g)‖ₑ
       = ∑' γ : S.G E, ‖X.cutBessel a (X.ratEquiv (γ⁻¹ * δ) * g)‖ₑ :=
         ((Equiv.divLeft δ).symm.tsum_eq _).symm
@@ -396,7 +419,7 @@ theorem exists_tsum_enorm_cutBessel_le :
 on the adelic group. -/
 theorem integrable_cutBessel : Integrable (X.cutBessel a) := by
   -- The sum of its norms over `V.Γ` is bounded and the quotient by `V.Γ` has finite volume.
-  refine ⟨by fun_prop, ?_⟩
+  refine ⟨(X.measurable_cutBessel a).aestronglyMeasurable, ?_⟩
   calc ∫⁻ g, ‖X.cutBessel a g‖ₑ
     _ = ∫⁻ g, ∫⁻ γ : V.Γ, ‖X.cutBessel a (γ • g)‖ₑ ∂.count ∂V.quotMeasure :=
       (lintegral_orbitMeasure_lintegral (by fun_prop)).symm
@@ -485,7 +508,7 @@ theorem realConv_tsum_cutBessel_classUnipotent (δ : New.G E ε) :
         if (S.classRep a.1)⁻¹ * (S.inclHFin η * X.finiteEquiv (δ * g).2) ∈ S.principalLevel then
           S.besselFn .full (X.realHomeomorph ((δ * g).1 * x)) a.2
         else 0 := by
-    simp [tsum_cutBessel_classUnipotent, mul_assoc]
+    rw [← mul_assoc δ g, tsum_cutBessel_classUnipotent, Prod.snd_mul, mul_one, Prod.fst_mul]
   simp only [realConv, h_sum, tsum_cutBessel_classUnipotent]
   split
   · exact X.integral_typeKernel_mul_besselFn _ _
@@ -509,15 +532,23 @@ theorem exists_levelSpace_tsum_cutBessel_eq :
     exact (cosetEquiv.summable_iff.2 (.of_eNorm ((hM g).trans_lt ENNReal.coe_lt_top).ne)).tsum_prod
   have h_bound (g : New.G E ε) : ∑' q : S.G E ⧸ S.classUnipotent a.1, ‖F q g‖ₑ ≤ M := by
     grw [← hM g, ← cosetEquiv.tsum_eq, tsum_prod', ← eNorm_tsum_le_tsum_eNorm]
+  have hF (q : S.G E ⧸ S.classUnipotent a.1) : F q = fun x : New.G E ε ↦
+      ∑' u : S.classUnipotent a.1,
+        X.cutBessel a ((X.ratEquiv u : New.G E ε) * ((X.ratEquiv q.out⁻¹ : New.G E ε) * x)) :=
+    funext fun x ↦ tsum_congr fun u ↦ by
+      change X.cutBessel a (X.ratEquiv ((u : S.G E) * q.out⁻¹) * x) = _
+      rw [X.ratEquiv.map_mul, Subgroup.coe_mul, mul_assoc]
   have h_fix (q : S.G E ⧸ S.classUnipotent a.1) (g : New.G E ε) :
       realConv (typeKernel l ε) (F q) g = F q g := by
-    simpa [F, cosetEquiv, mul_assoc] using
-      X.realConv_tsum_cutBessel_classUnipotent a g (X.ratEquiv q.out⁻¹)
+    rw [hF q]
+    exact X.realConv_tsum_cutBessel_classUnipotent a g (X.ratEquiv q.out⁻¹)
   have h_level : HasLevel (X.cutBessel a) S.stdPrincipalLevel := fun k hk g ↦ by
     classical
     rw [cutBessel, cutBessel, show (g * ((1 : GInf E ε), k)).1 = g.1 from mul_one g.1]
     exact if_congr (by rw [Prod.snd_mul, ← mul_assoc, mul_mem_cancel_right hk]) rfl rfl
-  have : Countable (S.G E ⧸ S.classUnipotent a.1) := inferInstanceAs (Countable (Quotient _))
+  have : Countable (S.G E ⧸ S.classUnipotent a.1) :=
+    Function.Injective.countable (f := fun q ↦ cosetEquiv (q, 1))
+      fun _ _ h ↦ (Prod.mk.inj (cosetEquiv.injective h)).1
   obtain ⟨y, hy⟩ :
       ∃ y : levelSpace (V.formRep (typeKernel l ε)) S.stdPrincipalLevel.toSubgroup,
         (y.val : New.G E ε → ℂ) = fun g : New.G E ε ↦
@@ -554,7 +585,9 @@ theorem coe_poincareMap (X : S.Fits V l kw Y η) [S.IsAdmissible]
       map_smul' _ _ := rfl }
   change ev (X.poincareMap φ) = X.poincareSeries φ g
   rw [show ev (X.poincareMap φ) =
-      ∑ a, φ a * ev (X.exists_levelSpace_tsum_cutBessel_eq a).choose by simp [poincareMap]]
+      ∑ a, φ a * ev (X.exists_levelSpace_tsum_cutBessel_eq a).choose by
+    rw [poincareMap, Module.Basis.constr_apply_fintype, map_sum]
+    exact sum_congr rfl fun a _ ↦ by rw [map_smul, smul_eq_mul]; rfl]
   exact sum_congr rfl fun a _ ↦
     congrArg (φ a * ·) ((X.exists_levelSpace_tsum_cutBessel_eq a).choose_spec g).symm
 
@@ -582,7 +615,7 @@ theorem cutBessel_eq_mul_indicator (g : New.G E ε) :
         a.2) *
         S.stdPrincipalLevel.carrier.indicator 1 ((X.classPoint a.1)⁻¹ * g.2) := by
   have h_point : (X.classPoint a.1)⁻¹ = X.finiteEquiv.symm ((S.classRep a.1)⁻¹ * S.inclHFin η) := by
-    simp [classPoint]
+    rw [classPoint, ← X.finiteEquiv.symm.map_inv, _root_.mul_inv_rev, inv_inv]
   simp [cutBessel, h_point, Set.indicator]
 
 /-- **Folding.** Let V fit the admissible filling data S (the hypothesis X), and let z be a form on
@@ -659,7 +692,7 @@ theorem mem_principalLevel_iff_mem_termsOver {S : Filling E 𝔰} {c : S.Classes
       S.reduction m = 1 ∧ (m : S.GFin) = (S.classRep c)⁻¹ * x := mem_map.1 hx
   have h_elem : (S.classRep c')⁻¹ * ((S.ratToFin γ)⁻¹ * (x * (k : S.GFin))) =
       (S.translateByClassReps c c' γ)⁻¹ * (m * k : S.latticeStabilizer) := by
-    simp [hm, translateByClassReps, mul_assoc]
+    rw [translateByClassReps, Subgroup.coe_mul, hm]; group
   have h_red : S.reduction (m * k) = s := by rw [map_mul, hm_red, hk, one_mul]
   rw [h_elem]
   constructor
@@ -669,11 +702,13 @@ theorem mem_principalLevel_iff_mem_termsOver {S : Filling E 𝔰} {c : S.Classes
           mem_map.1 h_mem
     have h_term : S.reduction (m * k * n⁻¹) = s := by
       rw [map_mul, map_inv, hn_red, h_red, inv_one, mul_one]
-    exact ⟨m * k * n⁻¹, h_term, by simp [hn, mul_assoc]⟩
+    exact ⟨m * k * n⁻¹, h_term, by rw [Subgroup.coe_mul, Subgroup.coe_inv, hn]; group⟩
   · rintro ⟨n, hn_red, hn⟩
     have h_one : S.reduction (n⁻¹ * (m * k)) = 1 := by
       rw [map_mul, map_inv, hn_red, h_red, inv_mul_cancel]
-    exact mem_map.2 ⟨n⁻¹ * (m * k), h_one, by simp [hn]⟩
+    refine mem_map.2 ⟨n⁻¹ * (m * k), h_one, ?_⟩
+    change (n : S.GFin)⁻¹ * ((m * k : S.latticeStabilizer) : S.GFin) = _
+    rw [hn]
 
 /-- Let the filling data S be admissible, let T be a set of rational points, c and c' classes with
 representatives h_c and h_c', and s a family of matrices over the residue fields of the chosen
@@ -736,15 +771,23 @@ theorem petersson_poincare {S : Filling E 𝔰} {V : Space E 𝔰.BesselIndex ε
           if γ ∈ S.termsOver c s c' then
             (S.classCutoff c' ((S.ratToInf γ)⁻¹ * X.realHomeomorph x)).toReal •
               S.besselFn .full ((S.ratToInf γ)⁻¹ * X.realHomeomorph x) i' else 0 := by
-      rw [cutBessel_ratEquiv_mul]
-      simp [← mem_principalLevel_iff_mem_termsOver c' h_one hk_red γ, classPoint, mul_assoc]
+      rw [cutBessel_ratEquiv_mul, Prod.fst_mul, mul_one, Prod.snd_mul, X.finiteEquiv.map_mul,
+        classPoint, X.finiteEquiv.apply_symm_apply, mul_assoc (S.inclHFin η)⁻¹ (S.classRep c),
+        mul_inv_cancel_left, S.ratToInf.map_inv, S.ratToFin.map_inv]
+      change (if (S.classRep c')⁻¹ * ((S.ratToFin γ)⁻¹ *
+          (S.classRep c * (⟨X.finiteEquiv k.val, hk_mem⟩ : S.latticeStabilizer).val)) ∈
+          S.principalLevel then _ else 0) = _
+      rw [mem_principalLevel_iff_mem_termsOver c' h_one hk_red γ]
     calc
       _ = ∑' γ : S.G E,
           X.cutBessel (c', i')
             ((X.ratEquiv γ⁻¹ : New.G E ε) * ((x, X.classPoint c) * (1, k.val))) := by
         change (X.poincareMap (.single (c', i') 1)).val ((x, X.classPoint c) * (1, k.val)) = _
-        rw [X.coe_poincareMap]
-        simp [poincareSeries, ← ((Equiv.inv (S.G E)).trans X.ratEquiv.toEquiv).tsum_eq]
+        rw [X.coe_poincareMap, poincareSeries, Fintype.sum_eq_single (c', i')]
+        · rw [PiLp.single_eq_same, one_mul]
+          exact (((Equiv.inv (S.G E)).trans X.ratEquiv.toEquiv).tsum_eq _).symm
+        · intro b hb
+          simp only [PiLp.single_apply, hb, ↓reduceIte, zero_mul]
       _ = _ := by
         rw [_root_.tsum_subtype (Set.univ ∩ S.termsOver c s c') (fun γ : S.G E ↦
           (S.classCutoff c' ((S.ratToInf γ)⁻¹ * X.realHomeomorph x)).toReal •
