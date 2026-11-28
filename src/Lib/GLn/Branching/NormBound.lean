@@ -489,6 +489,146 @@ variable {Φ : Type} [Fintype Φ] [DecidableEq Φ] {n N : Φ → Type} [∀ τ :
   [∀ τ : Φ, DecidableEq (n τ)] [∀ τ : Φ, Fintype (N τ)] [∀ τ : Φ, DecidableEq (N τ)]
   (ι : ∀ τ : Φ, n τ ⊕ Unit ≃ N τ) {κ₀ γ κ' : Φ → ℕ → ℕ}
 
+/-! ### The adjoint of an equivariant matrix -/
+
+/-- Let `T` intertwine `schur κ (diag(g, 1))` and `schur κ₀ g` up to the factor
+`∏ τ, det (g τ) ^ d τ`, for all complex `g`, with `diag(g, 1)` built by `blockScalar ι`. Let `C` be
+the adjoint of `T` for the forms of the two matrices `weylGramOver`, that is
+`weylGramOver * C = Tᵀ * weylGramOver`. Then `C` intertwines them in the other direction, up to the
+same factor. -/
+lemma schur_blockScalar_mul_eq_smul_mul_schur {κ : Φ → ℕ → ℕ} {d : Φ → ℕ}
+    {T : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N κ) ℂ}
+    {C : Matrix (WeylIndexFamily N κ) (WeylIndexFamily n κ₀) ℂ}
+    (hT : ∀ g : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ,
+      T * schur κ (blockScalar ι g 1) = (∏ τ : Φ, (g τ).det ^ d τ) • (schur κ₀ g * T))
+    (hC : weylGramOver * C = Tᵀ * weylGramOver) (g : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ) :
+    schur κ (blockScalar ι g 1) * C = (∏ τ : Φ, (g τ).det ^ d τ) • (C * schur κ₀ g) := by
+  -- Multiply by the invertible matrix `weylGramOver` on the left. By `weylGramOver_mul_schur` the
+  -- Schur matrices of `g` and of the transposes `(g τ)ᵀ` are adjoint, so the equivariance of `T` at
+  -- the transposes gives the claim.
+  have h_tr : (fun τ : Φ ↦ (blockScalar ι g 1 τ)ᵀ) = blockScalar ι (fun τ : Φ ↦ (g τ)ᵀ) 1 := by
+    funext τ
+    simp [blockScalar, fromBlocks_transpose]
+  have h_det : IsUnit (weylGramOver : Matrix (WeylIndexFamily N κ) (WeylIndexFamily N κ) ℂ).det :=
+    (isUnit_iff_isUnit_det _).1 weylGramOver_posDef.isUnit
+  have h_cancel : weylGramOver * (schur κ (blockScalar ι g 1) * C) =
+      weylGramOver * ((∏ τ : Φ, (g τ).det ^ d τ) • (C * schur κ₀ g)) :=
+    calc weylGramOver * (schur κ (blockScalar ι g 1) * C)
+      _ = (T * schur κ (blockScalar ι (fun τ : Φ ↦ (g τ)ᵀ) 1))ᵀ * weylGramOver := by
+        rw [← Matrix.mul_assoc, weylGramOver_mul_schur, h_tr, Matrix.mul_assoc, hC,
+          ← Matrix.mul_assoc, transpose_mul]
+      _ = (∏ τ : Φ, (g τ).det ^ d τ) • (Tᵀ * (weylGramOver * schur κ₀ g)) := by
+        rw [hT, weylGramOver_mul_schur]
+        simp only [transpose_smul, transpose_mul, Matrix.smul_mul, Matrix.mul_assoc,
+          det_transpose]
+      _ = weylGramOver * ((∏ τ : Φ, (g τ).det ^ d τ) • (C * schur κ₀ g)) := by
+        rw [← Matrix.mul_assoc, ← hC, Matrix.mul_smul, Matrix.mul_assoc]
+  calc schur κ (blockScalar ι g 1) * C
+    _ = weylGramOver⁻¹ * (weylGramOver * (schur κ (blockScalar ι g 1) * C)) :=
+      (nonsing_inv_mul_cancel_left _ _ h_det).symm
+    _ = (∏ τ : Φ, (g τ).det ^ d τ) • (C * schur κ₀ g) := by
+      rw [h_cancel, nonsing_inv_mul_cancel_left _ _ h_det]
+
+omit [∀ τ : Φ, DecidableEq (N τ)] in
+/-- Let `T` and `C` intertwine `schur κ (diag(g, 1))` and `schur κ₀ g` in the two directions, up to
+the same factor `∏ τ, det (g τ) ^ d τ`, for all complex `g`, with `diag(g, 1)` built by
+`blockScalar ι`. Then `T * C` commutes with every `schur κ₀ g`, so it is a scalar matrix. -/
+lemma exists_mul_eq_smul_one_of_equivariant {κ : Φ → ℕ → ℕ} {d : Φ → ℕ}
+    {T : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N κ) ℂ}
+    {C : Matrix (WeylIndexFamily N κ) (WeylIndexFamily n κ₀) ℂ}
+    (hT : ∀ g : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ,
+      T * schur κ (blockScalar ι g 1) = (∏ τ : Φ, (g τ).det ^ d τ) • (schur κ₀ g * T))
+    (hC : ∀ g : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ,
+      schur κ (blockScalar ι g 1) * C = (∏ τ : Φ, (g τ).det ^ d τ) • (C * schur κ₀ g)) :
+    ∃ m : ℂ, T * C = m • 1 := by
+  obtain ⟨m, hm⟩ := mem_range_scalar_of_commute_schur (T := T * C) fun g hg ↦ by
+    have h_det : (∏ τ : Φ, (g τ).det ^ d τ) ≠ 0 :=
+      Finset.prod_ne_zero_iff.2 fun τ _ ↦ pow_ne_zero _ (det_ne_zero_of_left_inverse (hg τ))
+    have h_left : T * ((∏ τ : Φ, (g τ).det ^ d τ) • (C * schur κ₀ g)) =
+        (∏ τ : Φ, (g τ).det ^ d τ) • (schur κ₀ g * T) * C := by
+      rw [← hC g, ← Matrix.mul_assoc, hT]
+    have h_smul : (∏ τ : Φ, (g τ).det ^ d τ) • (T * C * schur κ₀ g) =
+        (∏ τ : Φ, (g τ).det ^ d τ) • (schur κ₀ g * (T * C)) := by
+      rw [Matrix.mul_assoc T C, ← Matrix.mul_smul T, h_left, Matrix.smul_mul, Matrix.mul_assoc]
+    exact smul_right_injective _ h_det h_smul
+  exact ⟨m, by rw [← hm, scalar_apply, smul_one_eq_diagonal]⟩
+
+/-- Let `C` be the adjoint of `T` for the Hermitian forms of the two matrices `weylGramOver`, that
+is `weylGramOver * C = Tᴴ * weylGramOver`, and let `T * C = m • 1`. Then `C` multiplies the squared
+norm `weylNormSq` by `m`. -/
+lemma coe_weylNormSq_mulVec_of_mul_eq_smul_one {κ : Φ → ℕ → ℕ}
+    {T : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N κ) ℂ}
+    {C : Matrix (WeylIndexFamily N κ) (WeylIndexFamily n κ₀) ℂ} {m : ℂ}
+    (hC : weylGramOver * C = Tᴴ * weylGramOver) (hTC : T * C = m • 1)
+    (x : WeylIndexFamily n κ₀ → ℂ) :
+    (weylNormSq (C *ᵥ x) : ℂ) = m * weylNormSq x := by
+  -- Both matrices `weylGramOver` are Hermitian, so `Cᴴ * weylGramOver = weylGramOver * T`.
+  have hCG : Cᴴ * weylGramOver = weylGramOver * T := by
+    have h := congrArg conjTranspose hC
+    rwa [conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose,
+      weylGramOver_posDef.isHermitian.eq, weylGramOver_posDef.isHermitian.eq] at h
+  have h_CGC : Cᴴ * (weylGramOver * C) = m • weylGramOver := by
+    rw [← Matrix.mul_assoc, hCG, Matrix.mul_assoc, hTC, Matrix.mul_smul, Matrix.mul_one]
+  rw [coe_weylNormSq, coe_weylNormSq, star_mulVec_dotProduct]
+  simp only [mulVec_mulVec, h_CGC, smul_mulVec, dotProduct_smul, smul_eq_mul]
+
+omit [∀ τ : Φ, DecidableEq (n τ)] in
+/-- Let `C` be the adjoint of `T` for the forms of the two matrices `weylGramOver`, that is
+`weylGramOver * C = Tᵀ * weylGramOver`. Let `v` be `weylGramOver` times the evaluation vector
+`weylEval` at the permutation array of `rowEquivFin`, and let the row vector `v ᵥ* T` have the
+polynomial `c • branchVector ℂ ι γ κ'` under `nablaCombination`. Then `C` sends that evaluation
+vector to a vector of squared norm at most `c ^ 2`. -/
+lemma weylNormSq_mulVec_weylEval_le {c : ℤ}
+    {T : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) ℂ}
+    {C : Matrix (WeylIndexFamily N (γ + κ')) (WeylIndexFamily n κ₀) ℂ}
+    (hT : nablaCombination (γ + κ') ((weylGramOver *ᵥ weylEval n κ₀
+        (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) ᵥ* T) =
+      (c : ℂ) • branchVector ℂ ι γ κ')
+    (hC : weylGramOver * C = Tᵀ * weylGramOver) :
+    weylNormSq (C *ᵥ weylEval n κ₀
+      (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) ≤ (c : ℝ) ^ 2 := by
+  -- The polynomial of the image is `c` times the product of the two kernels of `branchVector`,
+  -- which are the polynomials of evaluation vectors of norm `1`.
+  have h_toPoly : toPoly N (γ + κ') (C *ᵥ weylEval n κ₀
+        (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) =
+      toPoly N γ ((c : ℂ) • weylEval N γ
+          (permArray fun (τ : Φ) (i : N τ) ↦ (newRowOrder ι 0 τ i : ℕ))) *
+        toPoly N κ' (weylEval N κ'
+          (permArray fun (τ : Φ) (i : N τ) ↦ (newRowOrder ι ⊤ τ i : ℕ))) := by
+    rw [map_smul, toPoly_weylEval, toPoly_weylEval, ← nablaCombination_weylGramOver_mulVec,
+      mulVec_mulVec, hC, ← mulVec_mulVec, mulVec_transpose, hT, branchVector, smul_mul_assoc]
+  refine (weylNormSq_le_mul_of_toPoly_eq h_toPoly).trans_eq ?_
+  rw [weylNormSq_smul, weylNormSq_weylEval_permArray (newRowOrder ι 0),
+    weylNormSq_weylEval_permArray (newRowOrder ι ⊤), mul_one, mul_one, Complex.norm_intCast,
+    sq_abs]
+
+/-- Let `C` be the adjoint of `T` for the Hermitian forms of the two matrices `weylGramOver`, that
+is `weylGramOver * C = Tᴴ * weylGramOver`, and let `0 ≤ M`. If `C` multiplies the squared norm
+`weylNormSq` by at most `M`, then so does `T`. -/
+lemma weylNormSq_mulVec_le_of_adjoint {κ : Φ → ℕ → ℕ}
+    {T : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N κ) ℂ}
+    {C : Matrix (WeylIndexFamily N κ) (WeylIndexFamily n κ₀) ℂ} {M : ℝ} (hM : 0 ≤ M)
+    (hC : weylGramOver * C = Tᴴ * weylGramOver)
+    (hC_le : ∀ x : WeylIndexFamily n κ₀ → ℂ, weylNormSq (C *ᵥ x) ≤ M * weylNormSq x)
+    (ξ : WeylIndexFamily N κ → ℂ) :
+    weylNormSq (T *ᵥ ξ) ≤ M * weylNormSq ξ := by
+  -- The pairing of `ξ` and `C (T ξ)` is `‖T ξ‖²`, so the inequality `posDef_cauchy_schwarz` gives
+  -- `‖T ξ‖⁴ ≤ ‖C (T ξ)‖² ‖ξ‖² ≤ M ‖T ξ‖² ‖ξ‖²`.
+  have h_pair : star ξ ⬝ᵥ weylGramOver *ᵥ (C *ᵥ (T *ᵥ ξ)) = (weylNormSq (T *ᵥ ξ) : ℂ) := by
+    have h_GCT : weylGramOver * (C * T) = Tᴴ * (weylGramOver * T) := by
+      rw [← Matrix.mul_assoc, hC, Matrix.mul_assoc]
+    rw [coe_weylNormSq, star_mulVec_dotProduct]
+    simp only [mulVec_mulVec, h_GCT]
+  have h_cs : weylNormSq (T *ᵥ ξ) ^ 2 ≤ weylNormSq (C *ᵥ (T *ᵥ ξ)) * weylNormSq ξ := by
+    have h := posDef_cauchy_schwarz weylGramOver_posDef ξ (C *ᵥ (T *ᵥ ξ))
+    rwa [h_pair, ← coe_weylNormSq, ← coe_weylNormSq, Complex.ofReal_re, Complex.ofReal_re,
+      Complex.norm_real, Real.norm_eq_abs, sq_abs] at h
+  rcases (weylNormSq_nonneg (T *ᵥ ξ)).eq_or_lt with h_zero | h_pos
+  · rw [← h_zero]
+    exact mul_nonneg hM (weylNormSq_nonneg ξ)
+  · refine le_of_mul_le_mul_right ?_ h_pos
+    nlinarith [mul_le_mul_of_nonneg_right (hC_le (T *ᵥ ξ)) (weylNormSq_nonneg ξ)]
+
 /-- Let `B` be an integral matrix with
 `B * schur (γ + κ') (diag(g, 1)) = (∏ τ, det (g τ) ^ κ' τ (rankAt n τ)) • (schur κ₀ g * B)`
 for all complex `g`, with `diag(g, 1)` built by `blockScalar ι`. Let `v` be the Gram matrix
@@ -507,118 +647,33 @@ lemma weylNormSq_mulVec_le_of_equivariant {c : ℤ}
         (∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (schur κ₀ g * B.map (Int.cast : ℤ → ℂ)))
     (ξ : WeylIndexFamily N (γ + κ') → ℂ) :
     weylNormSq (B.map (Int.cast : ℤ → ℂ) *ᵥ ξ) ≤ (c : ℝ) ^ 2 * weylNormSq ξ := by
-  -- Let `G₀`, `G` be the two matrices `weylGramOver` and `T` the matrix `B` over `ℂ`. The adjoint
-  -- `C` of `T` for their forms is given by `G * C = Tᵀ * G₀`. By equivariance `T * C` commutes with
-  -- every `schur κ₀ g`, so it is a scalar `m`. Then `‖C x‖² = m ‖x‖²`, and `m = ‖C v‖² ≤ c ^ 2` for
-  -- the evaluation vector `v` of norm 1. The inequality `posDef_cauchy_schwarz` for `ξ` and
-  -- `C (T ξ)` gives the bound.
-  obtain ⟨T, hT⟩ : ∃ T : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily N (γ + κ')) ℂ,
-      T = B.map (Int.cast : ℤ → ℂ) := ⟨_, rfl⟩
-  obtain ⟨G₀, hG₀⟩ : ∃ G₀ : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily n κ₀) ℂ,
-      G₀ = weylGramOver := ⟨_, rfl⟩
-  obtain ⟨G, hG⟩ : ∃ G : Matrix (WeylIndexFamily N (γ + κ')) (WeylIndexFamily N (γ + κ')) ℂ,
-      G = weylGramOver := ⟨_, rfl⟩
-  simp only [← hT] at B_block ⊢
-  rw [← hT, ← hG₀] at B_top
-  have hT_real : Tᴴ = Tᵀ := by
-    rw [hT]
+  -- Let `T` be the matrix `B` over `ℂ` and `C` its adjoint for the forms of the two matrices
+  -- `weylGramOver`; as `T` is real, `C` is also its adjoint for their Hermitian forms. By
+  -- equivariance `T * C` is a scalar `m`. Then `‖C x‖² = m ‖x‖²`, and `m = ‖C v‖² ≤ c ^ 2` for the
+  -- evaluation vector `v` of norm 1, so `T` multiplies squared norms by at most `c ^ 2` too.
+  have hT_real : (B.map (Int.cast : ℤ → ℂ))ᴴ = (B.map (Int.cast : ℤ → ℂ))ᵀ := by
     ext i j
     simp
-  have hG_posDef : G.PosDef := hG ▸ weylGramOver_posDef
-  have hG₀_herm : G₀ᴴ = G₀ := by rw [hG₀, weylGramOver_posDef.isHermitian.eq]
-  have hG_det : IsUnit G.det := (isUnit_iff_isUnit_det G).1 hG_posDef.isUnit
-  have h_coe (x : WeylIndexFamily N (γ + κ') → ℂ) : (weylNormSq x : ℂ) = star x ⬝ᵥ G *ᵥ x := by
-    rw [hG, coe_weylNormSq]
-  have h_coe₀ (x : WeylIndexFamily n κ₀ → ℂ) : (weylNormSq x : ℂ) = star x ⬝ᵥ G₀ *ᵥ x := by
-    rw [hG₀, coe_weylNormSq]
-  obtain ⟨C, hGC⟩ : ∃ C : Matrix (WeylIndexFamily N (γ + κ')) (WeylIndexFamily n κ₀) ℂ,
-      G * C = Tᵀ * G₀ :=
-    ⟨G⁻¹ * (Tᵀ * G₀), mul_nonsing_inv_cancel_left _ _ hG_det⟩
-  have hCG : Cᴴ * G = G₀ * T := by
-    have h := congrArg conjTranspose hGC
-    rwa [← hT_real, conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose,
-      hG_posDef.isHermitian.eq, hG₀_herm] at h
-  -- `schur (γ + κ') (diag(g, 1)) * C = det • (C * schur κ₀ g)`: the adjoint of the equivariance.
-  have h_adj (g : ∀ τ : Φ, Matrix (n τ) (n τ) ℂ) :
-      schur (γ + κ') (blockScalar ι g 1) * C =
-        (∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (C * schur κ₀ g) := by
-    have h_tr : (fun τ : Φ ↦ (blockScalar ι g 1 τ)ᵀ) = blockScalar ι (fun τ : Φ ↦ (g τ)ᵀ) 1 := by
-      funext τ
-      simp [blockScalar, fromBlocks_transpose]
-    have h_cancel : G * (schur (γ + κ') (blockScalar ι g 1) * C) =
-        G * ((∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (C * schur κ₀ g)) := by
-      calc G * (schur (γ + κ') (blockScalar ι g 1) * C)
-        _ = (T * schur (γ + κ') (blockScalar ι (fun τ : Φ ↦ (g τ)ᵀ) 1))ᵀ * G₀ := by
-          rw [← Matrix.mul_assoc, hG, weylGramOver_mul_schur, ← hG, h_tr, Matrix.mul_assoc, hGC,
-            ← Matrix.mul_assoc, transpose_mul]
-        _ = (∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (Tᵀ * (G₀ * schur κ₀ g)) := by
-          rw [B_block, hG₀, weylGramOver_mul_schur]
-          simp only [transpose_smul, transpose_mul, Matrix.smul_mul, Matrix.mul_assoc,
-            det_transpose]
-        _ = G * ((∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (C * schur κ₀ g)) := by
-          rw [← Matrix.mul_assoc, ← hGC, Matrix.mul_smul, Matrix.mul_assoc]
-    calc schur (γ + κ') (blockScalar ι g 1) * C
-      _ = G⁻¹ * (G * (schur (γ + κ') (blockScalar ι g 1) * C)) :=
-        (nonsing_inv_mul_cancel_left _ _ hG_det).symm
-      _ = (∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (C * schur κ₀ g) := by
-        rw [h_cancel, nonsing_inv_mul_cancel_left _ _ hG_det]
-  obtain ⟨m, hm⟩ := mem_range_scalar_of_commute_schur (T := T * C) fun g hg ↦ by
-    have h_det : (∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) ≠ 0 :=
-      Finset.prod_ne_zero_iff.2 fun τ _ ↦ pow_ne_zero _ (det_ne_zero_of_left_inverse (hg τ))
-    have h_left : T * ((∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (C * schur κ₀ g)) =
-        (∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (schur κ₀ g * T) * C := by
-      rw [← h_adj g, ← Matrix.mul_assoc, B_block]
-    have h_smul : (∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (T * C * schur κ₀ g) =
-        (∏ τ : Φ, (g τ).det ^ κ' τ (rankAt n τ)) • (schur κ₀ g * (T * C)) := by
-      rw [Matrix.mul_assoc T C, ← Matrix.mul_smul T, h_left, Matrix.smul_mul, Matrix.mul_assoc]
-    exact smul_right_injective _ h_det h_smul
-  have hTC : T * C = m • (1 : Matrix (WeylIndexFamily n κ₀) (WeylIndexFamily n κ₀) ℂ) := by
-    rw [← hm, scalar_apply, smul_one_eq_diagonal]
-  have h_CGC : Cᴴ * (G * C) = m • G₀ := by
-    rw [← Matrix.mul_assoc, hCG, Matrix.mul_assoc, hTC, Matrix.mul_smul, Matrix.mul_one]
-  have h_C (x : WeylIndexFamily n κ₀ → ℂ) : (weylNormSq (C *ᵥ x) : ℂ) = m * weylNormSq x := by
-    rw [h_coe, h_coe₀, star_mulVec_dotProduct]
-    simp only [mulVec_mulVec, h_CGC, smul_mulVec, dotProduct_smul, smul_eq_mul]
-  -- The scalar is the squared norm of `C v`, which is at most `c ^ 2`.
-  have h_toPoly : toPoly N (γ + κ') (C *ᵥ weylEval n κ₀
-        (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) =
-      toPoly N γ ((c : ℂ) • weylEval N γ
-          (permArray fun (τ : Φ) (i : N τ) ↦ (newRowOrder ι 0 τ i : ℕ))) *
-        toPoly N κ' (weylEval N κ'
-          (permArray fun (τ : Φ) (i : N τ) ↦ (newRowOrder ι ⊤ τ i : ℕ))) := by
-    rw [map_smul, toPoly_weylEval, toPoly_weylEval, ← nablaCombination_weylGramOver_mulVec, ← hG,
-      mulVec_mulVec, hGC, ← mulVec_mulVec, mulVec_transpose, B_top, branchVector, smul_mul_assoc]
-  have h_m : (m : ℂ) = (weylNormSq (C *ᵥ weylEval n κ₀
-      (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) : ℝ) := by
+  obtain ⟨C, hC⟩ : ∃ C : Matrix (WeylIndexFamily N (γ + κ')) (WeylIndexFamily n κ₀) ℂ,
+      weylGramOver * C = (B.map (Int.cast : ℤ → ℂ))ᵀ * weylGramOver :=
+    ⟨_, mul_nonsing_inv_cancel_left _ _ ((isUnit_iff_isUnit_det _).1 weylGramOver_posDef.isUnit)⟩
+  have hC_herm : weylGramOver * C = (B.map (Int.cast : ℤ → ℂ))ᴴ * weylGramOver := by
+    rw [hT_real, hC]
+  obtain ⟨m, hm⟩ := exists_mul_eq_smul_one_of_equivariant ι B_block
+    (schur_blockScalar_mul_eq_smul_mul_schur ι B_block hC)
+  have h_C := coe_weylNormSq_mulVec_of_mul_eq_smul_one hC_herm hm
+  have h_m : m = weylNormSq (C *ᵥ weylEval n κ₀
+      (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) := by
     rw [h_C, weylNormSq_weylEval_permArray (rowEquivFin n), Complex.ofReal_one, mul_one]
-  have h_m_le : weylNormSq (C *ᵥ weylEval n κ₀
-      (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) ≤ (c : ℝ) ^ 2 := by
-    refine (weylNormSq_le_mul_of_toPoly_eq h_toPoly).trans_eq ?_
-    rw [weylNormSq_smul, weylNormSq_weylEval_permArray (newRowOrder ι 0),
-      weylNormSq_weylEval_permArray (newRowOrder ι ⊤), mul_one, mul_one, Complex.norm_intCast,
-      sq_abs]
-  -- The pairing of `ξ` and `C (T ξ)` is `‖T ξ‖²`.
-  have h_GCT : G * (C * T) = Tᵀ * (G₀ * T) := by
-    rw [← Matrix.mul_assoc, hGC, Matrix.mul_assoc]
-  have h_pair : star ξ ⬝ᵥ G *ᵥ (C *ᵥ (T *ᵥ ξ)) = (weylNormSq (T *ᵥ ξ) : ℂ) := by
-    rw [h_coe₀, star_mulVec_dotProduct, hT_real]
-    simp only [mulVec_mulVec, h_GCT]
-  have h_norm : weylNormSq (C *ᵥ (T *ᵥ ξ)) = weylNormSq (C *ᵥ weylEval n κ₀
-      (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) * weylNormSq (T *ᵥ ξ) := by
-    have h := h_C (T *ᵥ ξ)
+  refine weylNormSq_mulVec_le_of_adjoint (sq_nonneg _) hC_herm (fun x ↦ ?_) ξ
+  have h_x : weylNormSq (C *ᵥ x) = weylNormSq (C *ᵥ weylEval n κ₀
+      (permArray fun (τ : Φ) (i : n τ) ↦ (rowEquivFin n τ i : ℕ))) * weylNormSq x := by
+    have h := h_C x
     rw [h_m] at h
     exact_mod_cast h
-  have h_cs : weylNormSq (T *ᵥ ξ) ^ 2 ≤ weylNormSq (C *ᵥ (T *ᵥ ξ)) * weylNormSq ξ := by
-    have h := posDef_cauchy_schwarz hG_posDef ξ (C *ᵥ (T *ᵥ ξ))
-    rwa [h_pair, ← h_coe, ← h_coe, Complex.ofReal_re, Complex.ofReal_re, Complex.norm_real,
-      Real.norm_eq_abs, sq_abs] at h
-  rcases (weylNormSq_nonneg (T *ᵥ ξ)).eq_or_lt with h_zero | h_pos
-  · rw [← h_zero]
-    exact mul_nonneg (sq_nonneg _) (weylNormSq_nonneg ξ)
-  · refine le_trans (le_of_mul_le_mul_right ?_ h_pos)
-      (mul_le_mul_of_nonneg_right h_m_le (weylNormSq_nonneg ξ))
-    rw [h_norm] at h_cs
-    linarith
+  rw [h_x]
+  exact mul_le_mul_of_nonneg_right (weylNormSq_mulVec_weylEval_le ι B_top hC)
+    (weylNormSq_nonneg x)
 
 end New.GL
 
