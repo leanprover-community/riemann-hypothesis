@@ -2,18 +2,13 @@ module
 
 public import Mathlib.RingTheory.Etale.StandardEtale
 public import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Algebra.DualNumber
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Analysis.Analytic.Polynomial
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.Unramified.LocalStructure
+import TauCeti.RingTheory.Derivation.TrivSqZeroExt
 import TauCeti.RingTheory.MvPolynomial.IntegrallyClosed
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 public import Lib.Cohomology.Etale.Basic
 import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Smoothness near an arc from an immersive generic family and a bound on the tangent space
@@ -131,11 +126,6 @@ lemma New.Variety.isStandardSmoothOfRelativeDimension_of_mvPolynomial {R S : Typ
     [IsScalarTower R (MvPolynomial (Fin d) R) S]
     [Algebra.IsStandardSmoothOfRelativeDimension 0 (MvPolynomial (Fin d) R) S] :
     Algebra.IsStandardSmoothOfRelativeDimension d R S := by
-  have : Algebra.IsStandardSmooth R (MvPolynomial (Fin d) R) :=
-    .of_basis_kaehlerDifferential (mvPolynomialBasis R (Fin d)) (by simp [subset_def])
-  have : Algebra.IsStandardSmoothOfRelativeDimension d R (MvPolynomial (Fin d) R) := by
-    simp [IsStandardSmoothOfRelativeDimension.iff_of_isStandardSmooth,
-      rank_eq_card_basis (mvPolynomialBasis R (Fin d))]
   simpa using IsStandardSmoothOfRelativeDimension.trans d 0 R (MvPolynomial (Fin d) R) S
 
 /-- Let `A = R[X₁, …, X_d]` with `R` a normal domain, and let `S` be a quotient of a standard étale
@@ -181,26 +171,23 @@ lemma New.Variety.finrank_cotangent_le {d : ℕ} {X : Scheme} {R B : CommRingCat
       Module.finrank k M ≤ d) :
     Module.finrank k (k ⊗[B] Ω[B⁄R]) ≤ d := by
   -- Apply `h_tangent` to the dual of the cotangent space and the first-order point `x ↦ x(t) + dx`.
-  let diff : B → k ⊗[B] Ω[B⁄R] := fun y ↦ 1 ⊗ₜ[B] D R B y
-  have diff_mul (x y : B) :
-      diff (x * y) = algebraMap B k x • diff y + algebraMap B k y • diff x := by
-    simp [diff, tmul_add, smul_tmul']
+  algebraize [(algebraMap B k).comp (algebraMap R B)]
+  let d : Derivation R B (k ⊗[B] Ω[B⁄R]) := (TensorProduct.mk B k Ω[B⁄R] 1).compDer (D R B)
+  let τ₀ : B →ₐ[R] TrivSqZeroExt k (k ⊗[B] Ω[B⁄R]) :=
+    (TauCeti.derivationToTrivSqZeroExtEquivLift R B k d).1
   let τ : B →+* TrivSqZeroExt k (Dual k (Dual k (k ⊗[B] Ω[B⁄R]))) :=
-    { toFun x := .inl (algebraMap B k x) + .inr (Dual.eval k _ (diff x))
-      map_one' := by simp [diff]
-      map_mul' x y := by ext <;> simp [diff_mul]
-      map_zero' := by simp [diff]
-      map_add' := by simp [diff, TrivSqZeroExt.ext_iff, tmul_add] }
+    (TrivSqZeroExt.map (Dual.eval k _)).toRingHom.comp τ₀.toRingHom
   rw [← Subspace.dual_finrank_eq]
   refine h_tangent (.of k _) (specMap τ ≫ j) ?_ ?_ fun l hl ↦
     ext_on_range (span_tmul_differential (R := R) (B := B) k) ?_
   · -- the constant part of `τ` is `t`; `-Spec.map_comp` keeps the two composites combined
-    simp [τ, ← map_comp_assoc, -Spec.map_comp, ← ofHom_comp, specMap_comp_mono_eq_iff]
-  · -- `τ` is constant on `R`, as `D` is `R`-linear
-    simp [τ, diff, hj, ← Spec.map_comp, algebraMap_eq_inl, map_inj, ConcreteCategory.hom_ext_iff]
+    simp [τ, τ₀, ← map_comp_assoc, -Spec.map_comp, ← ofHom_comp, specMap_comp_mono_eq_iff]
+  · -- `τ` is constant on `R`, as `τ₀` is an `R`-algebra map
+    simp [τ, τ₀, hj, ← Spec.map_comp, algebraMap_eq_inl', algebraMap_toAlgebra, map_inj,
+      ConcreteCategory.hom_ext_iff]
   · -- if the pull-back along `l` is constant, `l` kills every `dx`, and these span
-    change ∀ y : B, l (diff y) = 0
-    simpa [τ, ← map_comp_assoc, -Spec.map_comp, ← ofHom_comp, specMap_comp_mono_eq_iff,
+    change ∀ y : B, l (d y) = 0
+    simpa [τ, τ₀, ← map_comp_assoc, -Spec.map_comp, ← ofHom_comp, specMap_comp_mono_eq_iff,
       TrivSqZeroExt.ext_iff, algebraMap_eq_inl] using hl
 
 /-- A ring map `θ` from a formally unramified `A`-algebra to `K ⊕ K` (square zero) whose
