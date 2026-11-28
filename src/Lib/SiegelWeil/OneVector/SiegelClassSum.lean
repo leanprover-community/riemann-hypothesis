@@ -364,13 +364,16 @@ lemma New.star_adeleMatrix_mulVec_dotProduct {E κ : Type} [Field E] [CMType E] 
   simpa [vecAtPoint] using h_move
 
 /-- Unfolding over a fundamental domain `D` of a countable group `Γ` of translations, enumerated by
-`e`: if `P (e i +ᵥ z) = T i (F z)` for continuous linear functionals `T i` with summable norms and
-`F` is integrable on `D`, then `P` is integrable and `∫ P = ∑' i, T i (∫_D F)`. -/
-lemma New.integrable_and_integral_eq_tsum_of_fundamentalDomain {A X I : Type*} [AddCommGroup A]
+`e`: if `P (e i +ᵥ z) = T i (F z)` for continuous real-linear maps `T i` into a Banach space
+with summable norms and `F` is integrable on `D`, then `P` is integrable and
+`∫ P = ∑' i, T i (∫_D F)`. -/
+lemma New.integrable_and_integral_eq_tsum_of_fundamentalDomain {A X Y I : Type*} [AddGroup A]
     [MeasurableSpace A] {μ : Measure A} {Γ : AddSubgroup A} [Countable Γ] [MeasurableConstVAdd Γ A]
     [VAddInvariantMeasure Γ A μ] {D : Set A} (hD : IsAddFundamentalDomain Γ D μ)
-    [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X] (e : I ≃ Γ) {T : I → X →L[ℂ] ℂ}
-    (hT : Summable fun i : I ↦ ‖T i‖) {F : A → X} (hF : IntegrableOn F D μ) {P : A → ℂ}
+    [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
+    (e : I ≃ Γ) {T : I → X →L[ℝ] Y}
+    (hT : Summable fun i : I ↦ ‖T i‖) {F : A → X} (hF : IntegrableOn F D μ) {P : A → Y}
     (hP_meas : AEStronglyMeasurable P μ) (hPF : ∀ (i : I) (z : A), P (e i +ᵥ z) = T i (F z)) :
     Integrable P μ ∧ ∫ z, P z ∂μ = ∑' i : I, T i (∫ z in D, F z ∂μ) := by
   have h_int : Integrable P μ := by
@@ -460,8 +463,10 @@ lemma New.SiegelWeil.siegel_weil_fourierCoeff {E κ : Type} [Field E] [CMType E]
   obtain ⟨P_int, P_unfold⟩ : Integrable P μ ∧ ∫ z, P z ∂μ =
       ∑' β : R, (lagrangian (shearSplitting β)).zeroTerm (stdSpace E κ)
         (∫ z in Ω ×ˢ selfAdjointCodifferent E 1, twist z ∂μ) :=
-    integrable_and_integral_eq_tsum_of_fundamentalDomain h_fund s.toEquiv h_summable h_twist_int
-      P_meas h_term
+    integrable_and_integral_eq_tsum_of_fundamentalDomain h_fund s.toEquiv
+      (T := fun β ↦ ((lagrangian (shearSplitting β)).zeroTerm (stdSpace E κ)).restrictScalars ℝ)
+      (by simpa only [ContinuousLinearMap.norm_restrictScalars] using h_summable)
+      h_twist_int P_meas h_term
   -- By orthogonality only the rational vectors of norm `α` survive the integral over `z`.
   let g : 𝒮 ((hyperbolicSpace E Unit).hom (stdSpace E κ)) :=
     (√√|discr E| : ℂ) • ∫ z in Ω ×ˢ selfAdjointCodifferent E 1, twist z ∂μ
