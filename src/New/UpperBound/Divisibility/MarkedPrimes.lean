@@ -333,47 +333,43 @@ lemma IsMarked.cast_weight_eq (h : D.IsMarked Λ) (σ : D.Φ)
     (D.weight σ : ℝ) = D.a / D.x₁ := by
   rw [cast_weight, ite_eq_right (h.notMem_bPlaces σ hσ)]
 
-open scoped Classical in
-/-- Let `l` be a prime of a set `Λ` that is marked: it is disjoint from its conjugate, its primes
-are induced by a-places, and `p < x₁` is exceptional. For any function `G`, the sum of
-`G (D.liftWeight j τ)` over the places `τ` that induce `l` equals the sum over the places that
-induce the conjugate of `l`. Here `D.liftWeight j τ = D.weight τ + (j + 1/2) D.gap` is the weight at
-`τ` of the character of the `j`-th lift in the chain. -/
-lemma IsMarked.sum_inducedPlace_eq_sum_star (h : D.IsMarked Λ) (hl : l ∈ Λ) (j : ℕ) (G : ℕ → ℝ) :
-    ∑ τ : D.Φ with inducedPlace τ = l, G (D.liftWeight j τ) =
-      ∑ τ : D.Φ with inducedPlace τ = star l, G (D.liftWeight j τ) := by
-  -- Multiplication by the place named by `-p` carries the places inducing `l` onto those inducing
-  -- its conjugate.
-  refine sum_equiv (.mulLeft (D.placeOfInt (-p)))
-    (fun τ ↦ by simp [h.inducedPlace_placeOfInt_neg_mul]) fun τ hτ ↦ ?_
-  have h_mem : inducedPlace τ ∈ Λ := by rwa [(mem_filter.1 hτ).2]
-  -- Both `τ` and `-p τ` have the weight `a / x₁`.
-  have h_weight : (D.weight τ : ℝ) = D.weight (D.placeOfInt (-p) * τ) := by
-    simp [h.cast_weight_eq, h.inducedPlace_placeOfInt_neg_mul, h_mem]
-  simp [liftWeight_eq, Nat.cast_injective h_weight]
+/-- A subset of a marked set keeps the local hypotheses and the disjointness from conjugation. -/
+lemma IsMarked.of_subset {S : Finset (FinPlace D.E)} (h : D.IsMarked Λ) (hs : S ⊆ Λ) :
+    D.IsMarked S where
+  star_notMem w hw hw' := h.star_notMem w (hs hw) (hs hw')
+  isExceptional := h.isExceptional
+  induced_by_aPlace w hw := h.induced_by_aPlace w (hs hw)
+  isSmallNonsplit := h.isSmallNonsplit
 
 open scoped Classical in
-/-- Let the set `Λ` of primes of `E` be marked: it is disjoint from its conjugate, its primes are
-induced by a-places, and `p < x₁` is exceptional. Let `w_j(τ) = D.liftWeight j τ` be the weight at
-`τ` of the character of the `j`-th lift. For any function `G` of a weight and a prime, the sum of
-`G (w_j(τ), 𝔩)` over the places `τ` whose induced prime `𝔩` lies in `Λ` (`placesInducing Λ`) equals
-the sum of `G (w_j(τ), 𝔩̄)` over the places `τ` for which the conjugate `𝔩̄` of the induced prime
-lies in `Λ`. -/
-lemma IsMarked.sum_placesInducing_eq_sum_placesInducingConj (h : D.IsMarked Λ) (j : ℕ)
-    (G : ℕ → FinPlace D.E → ℝ) :
-    ∑ τ ∈ placesInducing Λ, G (D.liftWeight j τ) (inducedPlace τ) =
-      ∑ τ ∈ placesInducingConj Λ, G (D.liftWeight j τ) (star (inducedPlace τ)) := by
-  -- Group each sum by the prime of `Λ` that occurs, and use the balance at that prime.
-  have h_group (f : D.Φ → FinPlace D.E) :
-      ∑ τ : D.Φ with f τ ∈ Λ, G (D.liftWeight j τ) (f τ) =
-        ∑ l ∈ Λ, ∑ τ : D.Φ with f τ = l, G (D.liftWeight j τ) l := by
-    simp_rw [sum_filter]
-    rw [sum_comm]
-    simp
-  rw [h_group, h_group fun τ ↦ star (inducedPlace τ)]
-  refine sum_congr rfl fun l hl ↦ ?_
-  simp [h.sum_inducedPlace_eq_sum_star hl j fun c ↦ G c l,
-    star_eq_iff_star_eq (r := inducedPlace _), eq_comm (a := star l)]
+/-- Multiplication by the place of `-p` pairs each place inducing a prime in `Λ` with a place
+inducing its conjugate. The two places have the same lift weight, so the sum of any function
+of the weight and the prime in `Λ` agrees on the two sides. -/
+lemma IsMarked.sum_placesInducing_eq_sum_placesInducingConj {B : Type*} [AddCommMonoid B]
+    (h : D.IsMarked Λ) (j : ℕ) (F : ℕ → FinPlace D.E → B) :
+    ∑ τ ∈ placesInducing Λ, F (D.liftWeight j τ) (inducedPlace τ) =
+      ∑ τ ∈ placesInducingConj Λ, F (D.liftWeight j τ) (star (inducedPlace τ)) := by
+  classical
+  -- Multiplication by the place of −p exchanges the two fibers and preserves the lift weight.
+  apply sum_equiv (Equiv.mulLeft (D.placeOfInt (-(p : ℤ))))
+  · intro τ
+    simpa using (h.neg_pow_mul_mem_placesInducingConj_iff odd_one τ).symm
+  · intro τ hτ
+    have hmem : inducedPlace τ ∈ Λ := by simpa [placesInducing] using hτ
+    have hw : (D.weight τ : ℝ) = D.weight (D.placeOfInt (-(p : ℤ))*τ) := by
+      simp [h.cast_weight_eq, h.inducedPlace_placeOfInt_neg_mul, hmem]
+    simp [liftWeight_eq, Nat.cast_injective hw, h.inducedPlace_placeOfInt_neg_mul]
+
+open scoped Classical in
+/-- For a prime `l` in a marked set, summing `F` of the lift weight over the places inducing
+`l` gives the same result as summing over the places inducing its conjugate. -/
+lemma IsMarked.sum_inducedPlace_eq_sum_star {B : Type*} [AddCommMonoid B] (h : D.IsMarked Λ)
+    {l : FinPlace D.E} (hl : l ∈ Λ) (j : ℕ) (F : ℕ → B) :
+    ∑ τ : D.Φ with inducedPlace τ = l, F (D.liftWeight j τ) =
+      ∑ τ : D.Φ with inducedPlace τ = star l, F (D.liftWeight j τ) := by
+  have singleton := h.of_subset (singleton_subset_iff.2 hl)
+  simpa [placesInducing, placesInducingConj, star_eq_iff_star_eq, eq_comm (a := star l)] using
+    singleton.sum_placesInducing_eq_sum_placesInducingConj j (fun c _ ↦ F c)
 
 open scoped Classical in
 /-- The balance `IsMarked.sum_placesInducing_eq_sum_placesInducingConj` as one sum over all infinite
