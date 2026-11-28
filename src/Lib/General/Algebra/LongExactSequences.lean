@@ -4,6 +4,8 @@ public import Mathlib.Algebra.Homology.DerivedCategory.Ext.EnoughInjectives -- s
 import Mathlib.Algebra.Homology.DerivedCategory.Ext.EnoughProjectives
 import Mathlib.CategoryTheory.Abelian.Exact
 import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
+import TauCeti.Algebra.Homology.Ext.Basic
+import TauCeti.CategoryTheory.Abelian.FunctorCohomology.Basic
 public import Lib.Cohomology.Etale.Basic
 
 /-!
@@ -421,14 +423,9 @@ lemma isCohomEquiv_iff_subsingleton (hS : S.ShortExact) :
 /-- For a short exact sequence 0 → X₁ → X₂ → X₃ → 0 of functors with Extⁿ(X₁,F) = 0 for all n,
 the pull-back Extⁿ(X₃,F) → Extⁿ(X₂,F) is bijective for all n. -/
 lemma isCohomEquiv_quotient_of_acyclic (hS : S.ShortExact)
-    (hX₁ : ∀ (n : ℕ) (x : H S.X₁ F n), x = 0) : IsCohomEquiv F S.g := by
-  -- the pull-back along `S.g` is the first map of `contravariant hS F`, whose third terms vanish
-  intro n
-  have h_bij (L : LongExactSeq) (hC : ∀ m : ℕ, Subsingleton (L.C m)) : Bijective (L.f n) :=
-    ⟨L.f_injective_of_g_surjective fun m _ z ↦ ⟨0, (hC m).elim _ _⟩,
-      fun y ↦ (L.exact_f_g n y).1 ((hC n).elim _ _)⟩
-  have hb := h_bij (contravariant hS F) fun m ↦ ⟨fun x y ↦ (hX₁ m x).trans (hX₁ m y).symm⟩
-  exact ⟨fun x y hxy ↦ hb.1 hxy, fun y ↦ hb.2 y⟩
+    (hX₁ : ∀ (n : ℕ) (x : H S.X₁ F n), x = 0) : IsCohomEquiv F S.g := fun n ↦
+  ⟨hS.precomp_mk₀_g_injective F fun m _ _ ↦ ⟨0, (hX₁ m _).trans (hX₁ m _).symm⟩,
+    fun x ↦ contravariant_sequence_exact₂ hS F x (hX₁ n _)⟩
 
 end New.Variety
 
@@ -436,7 +433,7 @@ end New.Variety
 
 section DisjointUnions
 
-open CategoryTheory Abelian.Ext Function New.Variety Comparison LongExactSeq ShortComplex
+open CategoryTheory Function New.Variety
 
 /-- Let Y = `New.Variety.sigma X` be the disjoint union of a family of set-valued functors X_i.
 Write ℤ[Y] = `freeAb.obj Y` for the free abelian functor on Y and H^n(Y, F) for Ext^n(ℤ[Y], F).
@@ -445,36 +442,12 @@ the family of its pull-backs (`H.map`) along the maps ℤ[X_i] → ℤ[Y] induce
 lemma New.Variety.H.sigma_bijective {C : Type 1} [Category C] {ι : Type 1} (X : ι → C ⥤ Type 1)
     (F : AbFunctor C) (n : ℕ) :
     Bijective fun (x : H (freeAb.obj (sigma X)) F n) (i : ι) ↦
-      map F (freeAb.map (sigma.ι (C := C) (J := ι) X i)) n x := by
-  -- Dimension shifting: induction on `n`, for all coefficients `F` at once.
-  induction n generalizing F with
-  | zero =>
-    -- In degree zero, `H (freeAb.obj Y) F 0` is the set of maps from `Y` to `F ⋙ forget _`.
-    let e (Y : C ⥤ Type 1) : (Y ⟶ F ⋙ forget _) ≃ H (freeAb.obj Y) F 0 :=
-      ((homEquiv₀ (C := AbFunctor C)).trans (freeAb.homEquiv Y F)).symm
-    -- A map out of the disjoint union is the same as a family of maps out of the `X i`.
-    have h_bij : Bijective fun (f : sigma X ⟶ F ⋙ forget Ab) (i : ι) ↦ sigma.ι X i ≫ f :=
-      (Equiv.mk (fun f (i : ι) ↦ sigma.ι X i ≫ f) sigma.desc (fun f ↦ rfl) fun f ↦ rfl).bijective
-    -- Under `e`, pull-back along `sigma.ι X i` is composition with it.
-    refine (bijective_iff_of_comm_sq (fun f ↦ funext fun i ↦ ?_) (e _).bijective
-      (.piMap fun _ ↦ (e _).bijective)).1 h_bij
-    change map F (freeAb.map (sigma.ι X i)) 0 (e (sigma X) f) = e (X i) (sigma.ι X i ≫ f)
-    simp +instances [e, Adjunction.homEquiv, map, freeAb]
-  | succ n ih =>
-    -- Embed `F` in the injective `Injective.under F` and compare the long exact sequences of
-    -- 0 → F → Injective.under F → cokernel → 0.
-    have hS : (ShortComplex.mk _ _ (Limits.cokernel.condition (Injective.ι F))).ShortExact :=
-      ⟨exact_cokernel _⟩
-    -- The connecting maps are onto because `Injective.under F` has no cohomology in degree
-    -- `n + 1`.
-    have δ_surj (N : AbFunctor C) : Surjective ((LongExactSeq.covariant hS N).δ n) :=
-      fun y ↦ (exact_delta_f _ n y).1 (eq_zero_of_injective _)
-    -- write the pull-backs as comparison maps `pull` along the identity comparison
-    simp only [← id_pull] at ih ⊢
-    -- Pull-back is a morphism of long exact sequences (`pull_hom_covariant`), so the claim in
-    -- degree n for `Injective.under F` and for the cokernel gives it in degree n + 1 for F.
-    exact Hom.bijective_succ_family (fun _ ↦ pull_hom_covariant (φ := 𝟭 C) hS hS (𝟙 _) _) (ih _)
-      (ih _) (δ_surj _) fun _ ↦ δ_surj _
+      map F (freeAb.map (sigma.ι (C := C) (J := ι) X i)) n x :=
+  let hc := Limits.Cofan.IsColimit.mk (Limits.Cofan.mk (sigma X) (sigma.ι X))
+    (fun s ↦ sigma.desc s.inj) (fun _ _ ↦ rfl) fun _ _ hm ↦ congrArg sigma.desc (funext hm)
+  (show (extFreeCoproductAddEquiv hc F n : _ → _) = _ from
+    funext fun x ↦ funext fun i ↦ extFreeCoproductAddEquiv_apply hc F n x i) ▸
+    (extFreeCoproductAddEquiv hc F n).bijective
 
 end DisjointUnions
 
