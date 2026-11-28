@@ -657,6 +657,19 @@ lemma weylOn_apply_of_not_swapped {p : ℕ → A} (i : 𝔰.BesselIndex) {k : �
   simp only [weylOn, Pi.star_apply, isUnit_star, star_star, of_apply, hk, ↓reduceIte,
     Matrix.one_apply]
 
+open scoped Classical in
+/-- Right multiplication by a Weyl element exchanges and scales the selected columns of `M`
+and leaves every other column in place. -/
+lemma mul_weylOn_apply {ι : Type*} (M : Matrix ι 𝔰.BesselIndex A)
+    (P : ℕ → Prop) (p : ℕ → A) (i : ι) (k : 𝔰.BesselIndex) :
+    (M * (weylOn P p : T.G).val.val) i k =
+      if P (floorOf k) ∧ floorOf k < 𝔰.ϱ ∧ IsUnit (p (floorOf k)) then
+        M i (oppositeIndex k) * (if level k < 𝔰.ϱ then p (floorOf k) else (star (p (floorOf k)))⁻¹ʳ)
+      else M i k := by
+  by_cases hk : P (floorOf k) ∧ floorOf k < 𝔰.ϱ ∧ IsUnit (p (floorOf k))
+  · simp [hk, Matrix.mul_apply, weylOn_apply_of_swapped _ hk, mul_ite]
+  · simp [hk, Matrix.mul_apply, weylOn_apply_of_not_swapped _ hk, Matrix.one_apply, mul_ite]
+
 /-- The Weyl element of floor `l` fixes the basis vectors of floor below `l`. -/
 @[simp]
 lemma floorWeyl_mem_floorGroup {c : A} : floorWeyl l c ∈ T.floorGroup l :=
@@ -778,16 +791,16 @@ lemma weylElem_succ : (weylElem (l + 1) p : T.G) = floorWeyl l (p l).val * weylE
         Units.val_mul, Matrix.mul_apply, hk, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
         Finset.mem_univ]
 
+/-- A Weyl element depends only on the parameters of the pairs it exchanges. -/
+lemma weylElem_eq_of_agree {q : ℕ → Aˣ} (h : ∀ a < l, p a = q a) :
+    (weylElem l p : T.G) = weylElem l q := by
+  ext i k
+  by_cases hk : floorOf k < l <;> simp [weylElem, weylOn, *]
+
 /-- The Weyl element of length `l` does not depend on the parameter `p l`. -/
 @[simp]
-lemma weylElem_update (c : Aˣ) : (weylElem l (Function.update p l c) : T.G) = weylElem l p := by
-  ext i k
-  by_cases hk : floorOf k < l ∧ floorOf k < 𝔰.ϱ
-  · simp only [weylElem, weylOn, Units.isUnit, and_true, ↓inverse_star_unit, Pi.star_apply,
-      isUnit_star, star_star, inverse_invertible, invOf_units, of_apply,
-      Function.update_of_ne hk.left.ne]
-  · simp only [weylElem, weylOn, Units.isUnit, and_true, ↓inverse_star_unit, Pi.star_apply,
-      isUnit_star, star_star, inverse_invertible, invOf_units, of_apply, hk, ↓reduceIte]
+lemma weylElem_update (c : Aˣ) : (weylElem l (Function.update p l c) : T.G) = weylElem l p :=
+  weylElem_eq_of_agree fun _ ha ↦ Function.update_of_ne ha.ne ..
 
 /-- The Weyl element of length `l` commutes with the fixer of the floors below `l`. -/
 lemma commute_weylElem (hs : s ∈ floorGroup l) : Commute (weylElem l p) s :=
@@ -831,12 +844,7 @@ lemma frameGram_eq_form_orbitPoint :
 is `c`. -/
 lemma frameGram_floorWeyl (c : Aˣ) :
     T.frameGram (floorWeyl a c : T.G).val a.castSucc a.castSucc = c := by
-  simp only [frameGram, floorWeyl, weylOn, Units.isUnit, and_true, level,
-    ↓inverse_star_unit, Pi.star_apply, isUnit_star, star_star, inverse_invertible,
-    invOf_units, submatrix_apply, besselFrame_castSucc, Matrix.mul_apply, of_apply,
-    floorOf, Fin.is_lt, true_or, splitGram_eq_ite_oppositeIndex, oppositeIndex, and_self,
-    ↓reduceIte, elim_inl, mul_ite, one_mul, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ]
+  simp [frameGram, floorWeyl, mul_weylOn_apply, level, splitGram_eq_ite_oppositeIndex]
 
 /-! ### Leading minors of the products of the frame vectors -/
 

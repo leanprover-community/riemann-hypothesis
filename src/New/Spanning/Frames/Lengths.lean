@@ -156,58 +156,14 @@ lemma coe_weylRatio :
   ext i k
   rw [weylRatio, ← weylElem_star]
   change ((weylElem j (star q) : T.G).val.val * (weylElem j p : T.G).val.val) i k = _
-  rw [Matrix.mul_apply]
-  obtain ⟨h_invol, h_floor, h_level⟩ := oppositeIndex_involutive_and_floorOf_level k
+  simp only [weylElem, mul_weylOn_apply]
   by_cases hk : floorOf k < j ∧ floorOf k < 𝔰.ϱ
-  · have h_swap : level (oppositeIndex k) < 𝔰.ϱ ↔ ¬level k < 𝔰.ϱ := by
-      rcases floorOf_level_cases k with ⟨h1 | h1, h2⟩ | ⟨h1, h2, _⟩ <;> omega
-    have h_col (m : 𝔰.BesselIndex) : (weylElem j p : T.G).val.val m k =
-        if m = oppositeIndex k then
-          if level k < 𝔰.ϱ then (p (floorOf k)).val else Ring.inverse (star (p (floorOf k)).val)
-        else 0 :=
-      weylOn_apply_of_swapped m ⟨hk.1, hk.2, (p (floorOf k)).isUnit⟩
-    rw [Finset.sum_eq_single (oppositeIndex k)
-      (fun m _ hm ↦ by rw [h_col m, ite_eq_right_iff.2 fun h ↦ absurd h hm, mul_zero])
-      (fun hm ↦ absurd (Finset.mem_univ _) hm), h_col, ite_eq_left_iff.2 fun h ↦ absurd rfl h]
-    have h_row : (weylElem j (star q) : T.G).val.val i (oppositeIndex k) =
-        if i = k then
-          if level (oppositeIndex k) < 𝔰.ϱ then (star q (floorOf k)).val
-          else Ring.inverse (star (star q (floorOf k)).val)
-        else 0 := by
-      have h := weylOn_apply_of_swapped (T := T) (P := (· < j))
-        (p := fun n ↦ (star q n : A)) i (k := oppositeIndex k)
-        ⟨h_floor ▸ hk.1, h_floor ▸ hk.2, (star q (floorOf (oppositeIndex k))).isUnit⟩
-      rw [h_invol, h_floor] at h
-      exact h
-    rw [h_row]
-    obtain rfl | hik := eq_or_ne i k
-    · have hk_min : floorOf i < j ⊓ 𝔰.ϱ := lt_inf_iff.2 hk
-      rw [ite_eq_left_iff.2 fun h ↦ absurd rfl h, diagonal_apply_eq,
-        ite_eq_left_iff.2 fun h ↦ absurd hk_min h]
-      by_cases hi : level i < 𝔰.ϱ
-      · have hhi : ¬level (oppositeIndex i) < 𝔰.ϱ := fun h ↦ h_swap.1 h hi
-        rw [ite_eq_left_iff.2 fun h ↦ absurd hi h, ite_eq_left_iff.2 fun h ↦ absurd hi h,
-          ite_eq_right_iff.2 fun h ↦ absurd h hhi, Pi.star_apply, Units.coe_star, star_star,
-          Ring.inverse_unit, ← Units.val_mul, ← div_eq_inv_mul]
-      · rw [ite_eq_right_iff.2 fun h ↦ absurd h hi, ite_eq_right_iff.2 fun h ↦ absurd h hi,
-          ite_eq_left_iff.2 fun h ↦ absurd (h_swap.2 hi) h, Pi.star_apply, Units.coe_star,
-          inverse_star_unit, ← star_mul, mul_comm (p _ : Aˣ)⁻¹.val, ← Units.val_mul,
-          ← div_eq_mul_inv]
-    · rw [ite_eq_right_iff.2 fun h ↦ absurd h hik, zero_mul, diagonal_apply_ne _ hik]
-  · have h_col (m : 𝔰.BesselIndex) : (weylElem j p : T.G).val.val m k =
-        (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) m k :=
-      weylOn_apply_of_not_swapped m fun h ↦ hk ⟨h.1, h.2.1⟩
-    rw [Finset.sum_eq_single k
-      (fun m _ hm ↦ by rw [h_col m, one_apply_ne hm, mul_zero])
-      (fun hm ↦ absurd (Finset.mem_univ _) hm), h_col, one_apply_eq, mul_one]
-    have h_row : (weylElem j (star q) : T.G).val.val i k =
-        (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) i k :=
-      weylOn_apply_of_not_swapped i fun h ↦ hk ⟨h.1, h.2.1⟩
-    rw [h_row]
-    obtain rfl | hik := eq_or_ne i k
-    · have hk_min : ¬floorOf i < j ⊓ 𝔰.ϱ := fun h ↦ hk (lt_inf_iff.1 h)
-      rw [one_apply_eq, diagonal_apply_eq, ite_eq_right_iff.2 fun h ↦ absurd h hk_min]
-    · rw [one_apply_ne hik, diagonal_apply_ne _ hik]
+  · have reflect : level (oppositeIndex k) < 𝔰.ϱ ↔ ¬level k < 𝔰.ϱ := by
+      have := level_oppositeIndex_add_level k
+      rcases floorOf_level_cases k with ⟨h | h, _⟩ | ⟨_, h, _⟩ <;> omega
+    by_cases hl : level k < 𝔰.ϱ <;> obtain rfl | hne := eq_or_ne i k <;>
+      simp [weylOn, floorOf_oppositeIndex, oppositeIndex_oppositeIndex, *, div_eq_mul_inv, mul_comm]
+  · obtain rfl | hne := eq_or_ne i k <;> simp [weylOn, *]
 
 /-- The inverse of w_q⁻¹ w_p is w_p⁻¹ w_q. -/
 lemma weylRatio_inv : (weylRatio j p q : T.G)⁻¹ = weylRatio j q p := by
