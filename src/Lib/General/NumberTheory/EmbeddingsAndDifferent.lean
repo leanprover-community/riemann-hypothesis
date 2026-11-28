@@ -94,10 +94,9 @@ lemma one_le_rootDiscr : 1 ≤ rootDiscr K := by
   rw [rootDiscr_def, Int.cast_abs]
   exact one_le_rpow h_one (by positivity)
 
-/-- The root discriminant `|disc K| ^ (1 / [K : ℚ])` of a totally complex field is positive. -/
-lemma rootDiscr_pos : 0 < rootDiscr K := by
-  rw [rootDiscr_def]
-  exact rpow_pos_of_pos (by simp [discr_ne_zero]) _
+/-- The root discriminant `|disc K| ^ (1 / [K : ℚ])` of a number field is positive. -/
+lemma rootDiscr_pos : 0 < rootDiscr K :=
+  zero_lt_one.trans_le (one_le_rootDiscr K)
 
 /-- For a totally complex number field `K` with `r` infinite places and root discriminant `rd`,
 the absolute discriminant is `(rd ^ r) ^ 2`. -/
