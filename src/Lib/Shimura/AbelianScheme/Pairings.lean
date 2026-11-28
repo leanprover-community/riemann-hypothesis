@@ -64,23 +64,19 @@ lemma Variety.locallyQuasiFinite_of_pull_picClass [IsSeparated B.hom] {ι : Type
   -- global functions. They embed `X` as a closed subscheme of affine space, so `X` is affine.
   have hN_pow : (N.pow m).IsProjEmbedding A.hom := hN.pow hm
   have h_lin : (N.pow m).IsLinearSystem := hN_pow.isLinearSystem
-  have hA_proper : IsProper A.hom := hN.isProper
-  have hf_proper : IsProper f.left := by
-    have h_comp : IsProper (f.left ≫ B.hom) := by rwa [f.w]
-    exact IsProper.of_comp f.left B.hom
+  have : IsProper A.hom := hN.isProper
   refine locallyQuasiFinite_iff_isFinite_fiber.mpr fun b ↦ ?_
   suffices h_fibre_finite : ∀ {X : Scheme} {p : X ⟶ A.left} {s : X ⟶ Spec (B.left.residueField b)},
       IsPullback p s f.left (B.left.fromSpecResidueField b) → IsFinite s from
     h_fibre_finite (IsPullback.of_hasPullback f.left (B.left.fromSpecResidueField b))
   intro X p s h_fibre
-  have hs_proper : IsProper s := of_isPullback h_fibre hf_proper
+  have hs_proper : IsProper s := of_isPullback h_fibre inferInstance
   refine iff_isProper_and_isAffineHom.mpr ⟨hs_proper, ?_⟩
   -- The class of `N.pow m` on `X` comes from the spectrum of a field, so it vanishes.
   have h_class : ((N.pow m).pull p).picClass = 0 := by
     simpa [c.pull_comp, ← picClass_pow, eq_zero_of_isLocalRing, hf] using
       congrArg (fun g ↦ Pic.pull g c) h_fibre.w
-  obtain ⟨u, hu⟩ : ∃ u : (Fin m → ι) → PointFn X, ((N.pow m).pull p).IsFrame u :=
-    exists_isFrame_of_picClass_eq_zero h_class
+  obtain ⟨u, hu⟩ := exists_isFrame_of_picClass_eq_zero h_class
   -- The `j`-th section of the system is a global function `a j` times the frame `u`.
   have h_coords (j : Fin m → ι) : ∃ a : Γ(X, ⊤), ∀ (i : Fin m → ι) (R : CommRingCat)
       (t : Spec R ⟶ X), LandsIn t (((N.pow m).pull p).opens i) →
@@ -258,19 +254,16 @@ lemma New.Variety.exists_eq_lift_of_comp_whiskerRight_eq {S : Scheme.{0}} {A A�
     ∃ (s : Y ⟶ S) (x y : Over.mk s ⟶ A) (z : Over.mk s ⟶ A'),
       x ≫ f = y ≫ f ∧ (lift x z).left = t ∧ (lift y z).left = t' := by
   let s : Y ⟶ S := t ≫ (A ⊗ A').hom
-  have ht' : t' ≫ (A ⊗ A').hom = s := by
-    rw [← Over.w (f ▷ A'), ← reassoc_of% same_image, Over.w]
   -- `t` and `t'` underlie points `u` and `u'` over `s`; take their components
-  obtain ⟨u, hu⟩ : ∃ u : Over.mk s ⟶ A ⊗ A', u.left = t := ⟨homMk t, rfl⟩
-  obtain ⟨u', hu'⟩ : ∃ u' : Over.mk s ⟶ A ⊗ A', u'.left = t' := ⟨homMk t' ht', rfl⟩
-  have h_image : u ≫ f ▷ A' = u' ≫ f ▷ A' := by
-    apply OverMorphism.ext
-    rw [comp_left, comp_left, hu, hu', same_image]
-  have h_fst : (u ≫ fst A A') ≫ f = (u' ≫ fst A A') ≫ f := by simpa using h_image =≫ fst A₁ A'
+  let u : Over.mk s ⟶ A ⊗ A' := homMk t rfl
+  let u' : Over.mk s ⟶ A ⊗ A' := homMk t' <| by
+    rw [← Over.w (f ▷ A'), ← reassoc_of% same_image, Over.w]
+    rfl
+  have h_image : u ≫ f ▷ A' = u' ≫ f ▷ A' := OverMorphism.ext same_image
   have h_snd : u ≫ snd A A' = u' ≫ snd A A' := by simpa using h_image =≫ snd A₁ A'
-  refine ⟨s, u ≫ fst A A', u' ≫ fst A A', u ≫ snd A A', h_fst, ?_, ?_⟩
-  · rw [lift_comp_fst_snd, hu]
-  · rw [h_snd, lift_comp_fst_snd, hu']
+  exact ⟨s, u ≫ fst A A', u' ≫ fst A A', u ≫ snd A A',
+    by simpa using h_image =≫ fst A₁ A', by simp [lift_comp_fst_snd, u],
+    by simp [h_snd, lift_comp_fst_snd, u']⟩
 
 variable {k : Type} [Field k]
   {A₀ : Over (Spec ⟨k⟩)} [IsAbelianScheme A₀] [IsIntegral A₀.left] {S : Scheme}
@@ -292,8 +285,7 @@ lemma New.Variety.exists_apply_lift_eq_mul_of_isFrame (hp : IsPullback p A'.hom 
       (L.pull ((y ≫ f) ▷ A').left).IsFrame fun j : ι ↦ (u j).pull (w ▷ A').left := by
     rw [← hw, comp_whiskerRight]
     exact hu.pull (w ▷ A').left
-  obtain ⟨h_section_x, -⟩ := frame x hxy
-  obtain ⟨r, hr⟩ := (frame y rfl).exists_eq_mul h_section_x
+  obtain ⟨r, hr⟩ := (frame y rfl).exists_eq_mul (frame x hxy).1
   have const : HasConstFunctions (X := (Over.mk s ⊗ A').left) (Limits.pullback.fst s A'.hom) :=
     hasConstFunctions_of_isPullback (.paste_horiz (.flip (.of_hasPullback ..)) hp)
   have h_over (a : Over.mk s ⟶ A') :
@@ -323,20 +315,19 @@ lemma New.Variety.eq_pull_zero_section (hp : IsPullback p A'.hom A₀.hom q) (f 
   -- change `u` by a global function on a base change of `A'`, which is constant along `A'` and
   -- cancels.
   obtain ⟨ι, L⟩ := c
-  obtain ⟨u, hu⟩ : ∃ u : ι → PointFn (A ⊗ A').left, (L.pull (f ▷ A').left).IsFrame u :=
-    exists_isFrame_of_picClass_eq_zero hc
+  obtain ⟨u, hu⟩ := exists_isFrame_of_picClass_eq_zero hc
   have zero_frame : ((L.pull (A₁ ◁ (0 : A' ⟶ A')).left).pull (f ▷ A').left).IsFrame
       fun j : ι ↦ (u j).pull (A ◁ (0 : A' ⟶ A')).left := by
     rw [← LineBundle.pull_comp, ← comp_left, ← whisker_exchange f 0, comp_left,
       LineBundle.pull_comp]
     exact hu.pull _
-  -- `u (x, z) / u (x, 0)` is a frame of the pullback of `L ⊗ ((A₁ ◁ 0)^* L)⁻¹`
-  have normalised := hu.mul zero_frame.inv
-  have h_flat : Flat (f ▷ A').left := MorphismProperty.overPullbackMap A'.hom f inferInstance
-  have h_surj : Surjective (f ▷ A').left := MorphismProperty.overPullbackMap A'.hom f inferInstance
-  have h_qc : QuasiCompact (f ▷ A').left := MorphismProperty.overPullbackMap A'.hom f inferInstance
+  have : Flat (f ▷ A').left := MorphismProperty.overPullbackMap A'.hom f inferInstance
+  have : Surjective (f ▷ A').left := MorphismProperty.overPullbackMap A'.hom f inferInstance
+  have : QuasiCompact (f ▷ A').left := MorphismProperty.overPullbackMap A'.hom f inferInstance
+  -- `u (x, z) / u (x, 0)` is a frame of the pullback of `L ⊗ ((A₁ ◁ 0)^* L)⁻¹`;
   -- by fpqc descent it suffices that its values at `t`, `t'` agree when their images agree
-  refine picClass_eq_iff.mpr (exists_isFrame_of_fpqc _ normalised fun i R t t' same_image hi ↦ ?_)
+  refine picClass_eq_iff.mpr
+    (exists_isFrame_of_fpqc _ (hu.mul zero_frame.inv) fun i R t t' same_image hi ↦ ?_)
   -- write `t = (x, z)` and `t' = (y, z)` as points over `s` with `x ≫ f = y ≫ f`
   obtain ⟨s, x, y, z, hxy, rfl, rfl⟩ := exists_eq_lift_of_comp_whiskerRight_eq f same_image
   obtain ⟨r, ratio⟩ := exists_apply_lift_eq_mul_of_isFrame hp hu hxy
@@ -345,20 +336,17 @@ lemma New.Variety.eq_pull_zero_section (hp : IsPullback p A'.hom A₀.hom q) (f 
     rw [← comp_left, lift_whiskerLeft, comp_zero]
   have h_image : (lift x z).left ≫ (f ▷ A').left = (lift (y ≫ f) z).left := by
     rw [lift_left_comp_whiskerRight_left, hxy]
-  obtain ⟨h₁, h₂⟩ : LandsIn ((lift x z).left ≫ (f ▷ A').left) (L.opens i.1) ∧
-      LandsIn (((lift x z).left ≫ (f ▷ A').left) ≫ (A₁ ◁ (0 : A' ⟶ A')).left) (L.opens i.2) :=
-    landsIn_inf.1 hi
-  obtain ⟨-, u_unit⟩ := hu
-  have h_unit : IsUnit (u i.1 R (lift x z).left) := u_unit i.1 R (lift x z).left h₁
-  rw [h_image] at h₁
-  rw [h_image, h_zero] at h₂
+  obtain ⟨h₁, h₂⟩ := landsIn_inf.1 hi
+  have h₁' : LandsIn (lift (y ≫ f) z).left (L.opens i.1) := by
+    simpa [pull_opens, landsIn_preimage, -lift_left, h_image] using h₁
+  have h₂' : LandsIn (lift (y ≫ f) 0).left (L.opens i.2) := by
+    simpa [pull_opens, landsIn_preimage, -lift_left, reassoc_of% h_image, h_zero] using h₂
   -- the factor `r` is a unit, so it cancels between `a = z` and `a = 0`
-  have hr_unit : IsUnit r := by
-    rw [ratio i.1 z h₁] at h_unit
-    exact isUnit_of_mul_isUnit_left h_unit
+  have hr_unit : IsUnit r :=
+    isUnit_of_mul_isUnit_left (ratio i.1 z h₁' ▸ hu.2 i.1 R (lift x z).left h₁)
   change u i.1 R (lift x z).left * Ring.inverse (u i.2 R ((lift x z).left ≫ (A ◁ 0).left)) =
     u i.1 R (lift y z).left * Ring.inverse (u i.2 R ((lift y z).left ≫ (A ◁ 0).left))
-  rw [h_zero, h_zero, ratio i.1 z h₁, ratio i.2 0 h₂, Ring.mul_inverse_rev]
+  rw [h_zero, h_zero, ratio i.1 z h₁', ratio i.2 0 h₂', Ring.mul_inverse_rev]
   linear_combination (u i.1 R (lift y z).left * Ring.inverse (u i.2 R (lift y 0).left)) *
     Ring.mul_inverse_cancel r hr_unit
 
