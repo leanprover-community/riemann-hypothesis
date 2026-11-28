@@ -337,19 +337,27 @@ lemma IsLaplaceDatum.norm_laplaceIntegrand_le_mul_re_add (h_datum : IsLaplaceDat
   have hT_one : 1 ≤ T := by
     have h_card : (1 : ℝ) ≤ card n + card m := mod_cast Nat.add_pos_left Fintype.card_pos _
     nlinarith
-  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℝ, T * ρ = 1e-13 := ⟨1e-13 / T, by field_simp⟩
+  have hT_pos : 0 < T := zero_lt_one.trans_le hT_one
+  let ρ : ℝ := 1e-13 / T
+  have hρ : T * ρ = 1e-13 := mul_div_cancel₀ _ hT_pos.ne'
   rcases le_total (‖noncompactPart ε (j s).1‖ ^ 2 + ‖noncompactPart η (j s).2‖ ^ 2) (ρ ^ 2) with
     h_near | h_far
   · -- By localization the value at `s` is also taken at a `t` with `j t` within `4 ρ` of `1`.
-    have hρ_pos : 0 < ρ := by nlinarith
-    have hρ_le : ρ ≤ 6⁻¹ := by nlinarith
+    have h_cutoff_pos : (0 : ℝ) < 1e-13 := by norm_num
+    have hρ_pos : 0 < ρ := div_pos h_cutoff_pos hT_pos
+    have hρ_le : ρ ≤ 6⁻¹ := calc
+      ρ ≤ 1e-13 := div_le_self h_cutoff_pos.le hT_one
+      _ ≤ 6⁻¹ := by norm_num
     obtain ⟨t, hθ, h_fst, h_snd⟩ : ∃ t : S,
         l.laplaceIntegrand k j φ s = l.laplaceIntegrand k j φ t ∧
         ‖(subOnePair j t).1‖ ≤ 4 * ρ ∧ ‖(subOnePair j t).2‖ ≤ 4 * ρ :=
       h_datum.exists_laplaceIntegrand_eq_and_norm_subOnePair_le ρ hB hρ_pos hρ_le s h_near
+    have h_radius : 4 * ρ * T ≤ 1e-12 := by
+      rw [mul_assoc, mul_comm ρ T, hρ]
+      norm_num
     rw [hθ]
     exact h_datum.norm_laplaceIntegrand_le_mul_re_add_of_near hl hk hl_le hk_le hβ_le h_log_β hT
-      (by linarith : 4 * ρ * T ≤ 1e-12) h_fst h_snd
+      h_radius h_fst h_snd
   · -- Away from the maximal compact subgroups the gap makes the value itself small.
     have h_small : ‖l.laplaceIntegrand k j φ s‖ ≤ rexp (-100 * T) :=
       h_datum.norm_laplaceIntegrand_le_of_far hl hk hT_one hρ hh h_far
