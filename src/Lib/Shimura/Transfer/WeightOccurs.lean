@@ -102,8 +102,8 @@ lemma New.Variety.asAlgebraHom_prod_map_tauHecke_apply {E : Type} [Field E] [Num
   induction L with
   | nil => simp
   | cons s L ih =>
-    have h_head : π.asAlgebraHom (tauHecke s).val φ = ↿θ s • φ := h_eig s.1 s.2
-    simp [ih, h_head, smul_smul, mul_comm, -SubmonoidClass.coe_list_prod]
+    simp [ih, show π.asAlgebraHom (tauHecke s).val φ = ↿θ s • φ from h_eig s.1 s.2,
+      smul_smul, mul_comm, -SubmonoidClass.coe_list_prod]
 
 /-- The local terms of a regular element `y`, summed over the marked eigenvalue. Let `q` be the
 Schur polynomial of `l` at `Φ v₀`, and `(-X 0) ^ m` (for `a` odd, the `m`-th power of the product of
@@ -150,8 +150,7 @@ lemma New.Variety.sum_basis_comp_mul_prod_rootCoeffEval_eq {E : Type} [Field E] 
   have h_other (k : Fin a) (v : {v // v ≠ v₀}) :
       rootCoeffEval (lieRoots P (r k) (Φ v.val)) (q (Φ v.val)) = X ^ (m * a) * C (s (Φ v.val)) := by
     simp [s, hq_other v v.prop, lieRoots, IsLieRoot, v.prop, h_roots,
-      rootCoeffEval_X_zero_of_odd ha,
-      mul_pow, prod_mul_distrib, -univ_val_map]
+      rootCoeffEval_X_zero_of_odd ha, mul_pow, prod_mul_distrib, -univ_val_map]
     -- what is left is `A ^ m * (X ^ a) ^ m = X ^ (m * a) * A ^ m`
     ring
   have h_other_conj (k : Fin a) (v : {v // v ≠ v₀}) :
@@ -221,8 +220,7 @@ lemma New.Variety.trace_definiteForms_rep_eq_zero_of_isNullHecke {E : Type} [Fie
   have h_weight (y : GL (Fin a) E) (hy : y.val.charpoly.Separable) :
       (ξ y⁻¹).trace ℂ W = ∑ k, w y.val.charpoly k := by
     rw [← sum_div, ← finsetSum_coeff, sum_basis_comp_mul_prod_rootCoeffEval_eq ha hq hq_conj
-      hq_other hy, ← h_char y hy,
-      eq_div_iff h_mult]
+      hq_other hy, ← h_char y hy, eq_div_iff h_mult]
     simp [d, mult]
   have h_both : ∀ ε : Prop, (countTerm ε f 1).support.Finite :=
     Prop.forall.mpr ⟨finite_support_countTerm_definite hN f 1, h_fin⟩
@@ -246,16 +244,12 @@ lemma New.Variety.trace_definiteForms_rep_eq_zero_of_isNullHecke {E : Type} [Fie
   let L : (h_fin.toFinset → ℂ[X]) →ₗ[ℂ] ℂ :=
     dotProductBilin ℂ ℂ (fun c : h_fin.toFinset ↦ countTerm True f 1 c) ∘ₗ
       (lcoeff ℂ d).compLeft h_fin.toFinset ∘ₗ mulLeft ℂ fun c ↦ lagrange (P c) (μ c)
-  have h_card (c : h_fin.toFinset) (σ : E →+* ℂ) :
-      (lieRoots (P c) (numberedRoots (Φ v₀) (P c) (μ c)) σ).card = a := by
-    simp [P, lieRoots, card_roots_eq_natDegree]
-  have h_degree (σ : E →+* ℂ) :
-      (q σ).totalDegree ≤ Fintype.card (Fin (∑ τ, (q τ).totalDegree + 1)) := by
-    simp [sum_eq_add_sum_subtype_ne _ σ, add_assoc]
   change L (fun c ↦ ∏ σ, rootCoeffEval
     (lieRoots (P c) (numberedRoots (Φ v₀) (P c) (μ c)) σ) (q σ)) = 0
-  exact map_prod_rootCoeffEval_eq_zero h_degree algebraicIndependent_embedding_two_mul h_card L
-    h_sum
+  exact map_prod_rootCoeffEval_eq_zero
+    (fun σ ↦ by simp [sum_eq_add_sum_subtype_ne _ σ, add_assoc])
+    algebraicIndependent_embedding_two_mul
+    (fun c σ ↦ by simp [P, lieRoots, card_roots_eq_natDegree]) L h_sum
 
 /-- `φ` is a definite form of level `𝔑` with coefficients in `ξ`, a test vector, and an
 eigenvector of the Hecke operators at the safe places with eigenvalues `θ`. -/
@@ -313,11 +307,7 @@ lemma New.Variety.occursInWeight_of_isTestEigenform {E : Type} [Field E] [CMBase
     simp [hp, asAlgebraHom_prod_map_tauHecke_apply h_form.heckeSum_apply, hc, smul_smul,
       ← Finset.sum_smul, -SubmonoidClass.coe_list_prod]
   -- No power of `b * p` kills `φ`; the positive ones are regular and of type `χ` at `w₀`.
-  obtain ⟨b, hb⟩ : ∃ b : heckeAlgebra (Fin a) ℂ 𝔑, ∀ m : ℕ,
-      (rightRegular ℂ (GL (Fin a) (𝔸f E)) W).asAlgebraHom ((b * p) ^ m).val φ ≠ 0 ∧
-        IsRegularHecke ((b * p) ^ (m + 1)) ∧
-        ((b * p) ^ (m + 1)).val ∈ fixedToEigen (levelGU (Fin a) 𝔑) (conjAtSplit w₀) J χ :=
-    exists_test_function (Submodule.mem_inf.mp hφ).right h_test h_supp h_fix
+  obtain ⟨b, hb⟩ := exists_test_function (Submodule.mem_inf.mp hφ).right h_test h_supp h_fix
   have h_finite_forms : Module.Finite ℂ (definiteForms 𝔑 ξ) := finite_definiteForms ξ hN
   have h_nilpotent : IsNilpotent (definiteForms.rep 𝔑 ξ (b * p)) := by
     refine LinearMap.isNilpotent_iff_forall_trace_pow_eq_zero.2 fun k hk ↦ ?_
@@ -325,8 +315,7 @@ lemma New.Variety.occursInWeight_of_isTestEigenform {E : Type} [Field E] [CMBase
     obtain ⟨-, h_reg, h_type⟩ := hb k
     rw [← map_pow]
     refine trace_definiteForms_rep_eq_zero_of_isNullHecke ha h_char hq hq_conj hq_other hN h_reg
-      h_test.isCuspidalType h_type
-      (j := j) ?_
+      h_test.isCuspidalType h_type (j := j) ?_
     rw [pow_succ, ← mul_assoc]
     exact h_null _
   obtain ⟨k, hk⟩ := h_nilpotent
@@ -352,13 +341,11 @@ lemma New.Variety.rootCoeffEval_genericSchur_mul_det_zpow {a : ℕ} {r : Fin a �
     {l : Fin a → ℕ} {m : ℕ} {k : Fin a → ℤ} (hl : ∀ j : Fin a, (l j : ℤ) = m + k j) :
     rootCoeffEval (univ.val.map r) (genericSchur l) * (of fun i j : Fin a ↦ r i ^ (j : ℤ)).det =
       univ.prod r ^ m * (of fun i j : Fin a ↦ r i ^ k j).det := by
-  have h_exponents :
-      (of fun i j : Fin a ↦ r i ^ l j) = of fun i j : Fin a ↦ r i ^ ((m : ℤ) + k j) := by
-    simp_rw [← zpow_natCast, hl]
-  have h_vandermonde : vandermonde r = of fun i j : Fin a ↦ r i ^ (j : ℤ) := by
-    simp [vandermonde]
-  rw [← h_vandermonde, rootCoeffEval_genericSchur_mul_det, h_exponents, det_zpow_add h_ne,
-    zpow_natCast]
+  rw [show (of fun i j : Fin a ↦ r i ^ (j : ℤ)) = vandermonde r by simp [vandermonde],
+    rootCoeffEval_genericSchur_mul_det,
+    show (of fun i j : Fin a ↦ r i ^ l j) = of fun i j : Fin a ↦ r i ^ ((m : ℤ) + k j) by
+      simp_rw [← zpow_natCast, hl],
+    det_zpow_add h_ne, zpow_natCast]
 
 open scoped Classical in
 /-- Weyl's character formula for a twist of `weylRep κ.1 κ.2`, for `a` odd. At the places `v` with
@@ -391,12 +378,9 @@ lemma New.Variety.mul_trace_weylRep_eq_prod_rootCoeffEval {E : Type} [Field E] [
     spectrum.ne_zero_of_mem_of_unit (mem_spectrum_of_isRoot_charpoly (isRoot_numberedRoots hy σ i))
   have h_det (σ : E →+* ℂ) : σ y.val.det = univ.prod (r σ) := by
     simp [RingHom.map_det, det_eq_prod_roots_charpoly, charpoly_map, h_roots, List.prod_ofFn]
-  have hx_inj (v : InfinitePlace E) :
-      Function.Injective fun i : Fin a ↦ if p v then (r (Φ v) i.rev)⁻¹ else r (star (Φ v)) i := by
-    intro i j
-    by_cases hv : p v <;> simp [hv]
   let x (v : InfinitePlace E) : Fin a ↪ ℂ :=
-    ⟨fun i ↦ if p v then (r (Φ v) i.rev)⁻¹ else r (star (Φ v)) i, hx_inj v⟩
+    ⟨fun i ↦ if p v then (r (Φ v) i.rev)⁻¹ else r (star (Φ v)) i,
+      fun _ _ ↦ by by_cases hv : p v <;> simp [hv]⟩
   have hx_root (v : InfinitePlace E) (i : Fin a) : IsRoot
       (if p v then y⁻¹.map (Φ v) else transposeGL (y.map (star (Φ v)))).val.charpoly (x v i) := by
     by_cases hv : p v
@@ -454,8 +438,8 @@ lemma New.Variety.weylRep_of_scalar {E : Type} [Field E] [NumberField E] {a : �
 open scoped Classical in
 /-- The complex embeddings of `QuadField d₀` are `s₀` and its conjugate. -/
 lemma New.Variety.pair_star_eq_univ {d₀ : ℕ} [Fact (d₀ % 4 = 3)] (s₀ : QuadField d₀ →+* ℂ) :
-    ({star s₀, s₀} : Finset (QuadField d₀ →+* ℂ)) = univ := by
-  exact eq_univ_of_card _ (by simp [Embeddings.card, finrank_eq_two])
+    ({star s₀, s₀} : Finset (QuadField d₀ →+* ℂ)) = univ :=
+  eq_univ_of_card _ (by simp [Embeddings.card, finrank_eq_two])
 
 private lemma New.Variety.eq_star_or_eq {d₀ : ℕ} [Fact (d₀ % 4 = 3)] (s s₀ : QuadField d₀ →+* ℂ) :
     s = star s₀ ∨ s = s₀ := by
@@ -473,11 +457,8 @@ open scoped Classical in
 lemma New.Variety.apply_eq_ite_comp_eq {E : Type} [Field E] {d₀ : ℕ} [Fact (d₀ % 4 = 3)]
     (i : QuadField d₀ →+* E) (s₀ : QuadField d₀ →+* ℂ) (σ : E →+* ℂ) (x : QuadField d₀) :
     σ (i x) = if σ.comp i = s₀ then s₀ x else star s₀ x := by
-  have h_ne : star s₀ ≠ s₀ := by simp
   rw [← RingHom.comp_apply σ i x]
-  rcases eq_star_or_eq (σ.comp i) s₀ with h_star | h_self
-  · simp [h_star, h_ne]
-  · simp [h_self]
+  rcases eq_star_or_eq (σ.comp i) s₀ with h | h <;> simp [h]
 
 open scoped Classical in
 /-- An extension to `GL (Fin a) E` of the embedding of the unitary group at the infinite places:
@@ -558,12 +539,9 @@ lemma New.Variety.exists_twistedWeylRep_scalar {E : Type} [Field E] [CMType E] {
     -- With `mul_inv_rev`, simp inverts the product in the other order, against the right side.
     simp [hz, prod_pow, h_norm, hμ, -_root_.mul_inv_rev, ← pow_mul, mul_comm, mul_left_comm,
       mul_assoc]
-  have h_exponent :
-      (s₀ x * star s₀ x)⁻¹ ^ μ * star s₀ x ^ B = star s₀ x ^ (-(μ - B)) * s₀ x ^ (-μ : ℤ) := by
-    simp [zpow_sub₀, div_eq_mul_inv, mul_pow, mul_comm, mul_assoc]
   simp only [twistedWeylRep, twistedWeylMatrix, MonoidHom.comp_apply, MonoidHom.coe_mk,
-    OneHom.coe_mk, p, h_weight, h_twist, smul_smul, h_exponent]
-  simp
+    OneHom.coe_mk, p, h_weight, h_twist, smul_smul]
+  simp [zpow_sub₀, div_eq_mul_inv, mul_pow, mul_comm, mul_assoc]
 
 /-- Let `i` embed the imaginary quadratic field `QuadField d₀` in `E`, and let `s₀` be a complex
 embedding of `QuadField d₀`. The representation `ξ` extends the weight `κ` to `GL (Fin a) E`. The
@@ -688,7 +666,6 @@ lemma New.Variety.exists_isCoefficientSystem {E : Type} [Field E] [CMType E] {a 
   · obtain ⟨j, hj⟩ := h_jump _ z hz
     rintro Ψ rfl hΨ 𝔑 hN φ θ h_form
     rw [hj, Int.toNat_natCast]
-    refine occursInWeight_of_isTestEigenform ha h_char (ite_eq_left hσ) (ite_eq_right ?_)
-      (fun v hv ↦ ite_eq_right (hΨ v hv)) hN
-      h_form j
-    simpa [conjugate_eq_iff_ne] using hσ
+    exact occursInWeight_of_isTestEigenform ha h_char (ite_eq_left hσ)
+      (ite_eq_right (by simpa [conjugate_eq_iff_ne] using hσ))
+      (fun v hv ↦ ite_eq_right (hΨ v hv)) hN h_form j
