@@ -74,14 +74,8 @@ variable {n : Type*} [Fintype n] [DecidableEq n] {P X Y : Matrix n n ℂ} {ρ : 
 /-- The Cauchy–Schwarz inequality for the trace form: `‖tr (X * Y)‖` is at most the product of the
 Hilbert–Schmidt norms of `X` and `Y`. -/
 lemma norm_trace_mul_le_norm_mul_norm (X Y : Matrix n n ℂ) : ‖(X * Y).trace‖ ≤ ‖X‖ * ‖Y‖ := by
-  -- The trace is the inner product of `Xᴴ` and `Y` as vectors of entries.
-  let vec (M : Matrix n n ℂ) : PiLp 2 fun _ : n ↦ EuclideanSpace ℂ n :=
-    WithLp.toLp 2 fun i ↦ WithLp.toLp 2 (M i)
-  have h_vec (M : Matrix n n ℂ) : ‖vec M‖ = ‖M‖ := rfl
-  calc ‖(X * Y).trace‖ = ‖inner ℂ (vec (star X)) (vec Y)‖ := by
-        rw [trace_mul_comm]
-        simp [vec, inner, trace, Matrix.mul_apply]
-    _ ≤ ‖X‖ * ‖Y‖ := by grw [norm_inner_le_norm, h_vec, h_vec, norm_star]
+  simpa only [frobenius_inner_eq_trace_conjTranspose_mul, conjTranspose_conjTranspose,
+    frobenius_norm_conjTranspose] using norm_inner_le_norm (𝕜 := ℂ) Xᴴ Y
 
 lemma norm_trace_mul_le {X Y : Matrix n n ℂ} {ρ σ : ℝ} (hX : ‖X‖ ≤ ρ) (hY : ‖Y‖ ≤ σ) :
     ‖(X * Y).trace‖ ≤ ρ * σ := by
@@ -89,8 +83,8 @@ lemma norm_trace_mul_le {X Y : Matrix n n ℂ} {ρ σ : ℝ} (hX : ‖X‖ ≤ �
   exact (norm_nonneg X).trans hX
 
 lemma trace_star_mul_self_eq_norm_sq : (Xᴴ * X).trace = ((‖X‖ ^ 2 : ℝ) : ℂ) := by
-  rw [frobenius_norm_sq_eq_sum_norm_sq, Finset.sum_comm]
-  simp [trace, Matrix.mul_apply, conj_mul']
+  rw [← frobenius_inner_eq_trace_conjTranspose_mul, inner_self_eq_norm_sq_to_K, Complex.ofReal_pow]
+  rfl
 
 /-- Left multiplication by a unitary matrix preserves the Hilbert–Schmidt norm. -/
 lemma frobenius_norm_mul_of_unitary (hX : Xᴴ * X = 1) (Y : Matrix n n ℂ) : ‖X * Y‖ = ‖Y‖ := by
