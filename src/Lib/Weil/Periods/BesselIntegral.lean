@@ -539,6 +539,77 @@ abbrev Survives (D : ι' → ℤ) (w : Matrix ι' ι (𝔸 E)) : Prop :=
     V.homBicharacter V' (Y.stringMap Y' * V.ratCoordMatrix u) (Y.stringMap Y') =
       V.homBicharacter V' (w * V.ratCoordMatrix u) w
 
+/-- Evaluating `V.homBicharacter V' (y * u) y` at the Eichler map `u` determined by `v` and `x`
+reduces to `stdAddChar E (j * star x ⬝ᵥ (yᴴ * V'.J * y) *ᵥ v)`: in the trace of `y† y u` plus its
+conjugate, the identity and `star x ⬝ᵥ J *ᵥ x` terms cancel while the `x`–`v` pairings add up. -/
+private lemma homBicharacter_mul_eichlerMap (V : Space E ι ε) (V' : Space E ι' ε')
+    (y : Matrix ι' ι (𝔸 E)) (v x : ι → 𝔸 E) :
+    V.homBicharacter V'
+        (y * eichlerMap (V.J.map toAdele) v x (toAdele 2⁻¹ * star x ⬝ᵥ V.J.map toAdele *ᵥ x)) y =
+      stdAddChar E (toAdele j * star x ⬝ᵥ (yᴴ * V'.J.map toAdele * y) *ᵥ v) := by
+  let u := eichlerMap (V.J.map toAdele) v x (toAdele 2⁻¹ * star x ⬝ᵥ V.J.map toAdele *ᵥ x)
+  -- `stdAddChar a` depends only on `a + star a` (`stdAddChar_inv_two_mul_add_star`); compare these
+  -- sums.
+  suffices h_sum : toAdele ((j : E) / 2) * (V.formAdjoint V' y * (y * u)).trace +
+        star (toAdele ((j : E) / 2) * (V.formAdjoint V' y * (y * u)).trace) =
+      toAdele (j : E) * star x ⬝ᵥ (yᴴ * V'.J.map toAdele * y) *ᵥ v +
+        star (toAdele (j : E) * star x ⬝ᵥ (yᴴ * V'.J.map toAdele * y) *ᵥ v) by
+    rw [homBicharacter_eq, ← stdAddChar_inv_two_mul_add_star,
+      ← stdAddChar_inv_two_mul_add_star (toAdele j * star x ⬝ᵥ (yᴴ * V'.J.map toAdele * y) *ᵥ v)]
+    exact congrArg (fun z ↦ (stdAddChar E (toAdele 2⁻¹ * z) : ℂ)) h_sum
+  have h_half : toAdele ((j : E) / 2) + toAdele ((j : E) / 2) = toAdele (j : E) := by
+    rw [← map_add, add_halves]
+  simp [u, formAdjoint, ← dotProduct_mulVec, dotProduct_comm _ (_ ᵥ* _), ← Matrix.mul_assoc,
+    mul_eq_one_symm V.map_J_inv_mul_map_J, (isHermitian_J _).eq, ← trace_conjTranspose,
+    conjTranspose_nonsing_inv, trace_mul_comm _ (map _ _), Matrix.mulVec_add, Matrix.mulVec_smul,
+    Matrix.mul_add, eichlerMap, mul_sub, mul_vecMulVec,
+    star_dotProduct_mulVec_comm, neg_div, ← h_half]
+  ring
+
+omit [WeilData E] [Fintype ι'] [DecidableEq ι'] in
+/-- Under the weight-support assumptions of `formAdjoint_mul_self_mulVec_apply_eq_of_survives`, the
+Eichler map `u` built from `v` and `x = Pi.single (Y.stringReversal k) c` satisfies that `u - 1` has
+degree at least `2` and `w * (u - 1)` has degree at least `1` for target weights `D`. -/
+private lemma hasDegreeGe_eichlerMap_sub_one_and_mul (w : Matrix ι' ι (𝔸 E)) (D : ι' → ℤ)
+    (v : ι → 𝔸 E) (k : ι) (c : 𝔸 E)
+    (hv : ∀ p : ι, Y.gradeOf p < 1 ⊔ (2 + Y.gradeOf k) → v p = 0)
+    (hwv : ∀ p : ι', D p ≤ Y.gradeOf k ⊔ -1 → (w *ᵥ v) p = 0)
+    (hw_col : ∀ (p : ι') (q : ι), D p + Y.gradeOf q ≤ 0 → w p (Y.stringReversal k) = 0 ∨ v q = 0) :
+    let x : ι → 𝔸 E := Pi.single (Y.stringReversal k) c
+    let u := eichlerMap (V.J.map toAdele) v x (toAdele 2⁻¹ * star x ⬝ᵥ V.J.map toAdele *ᵥ x)
+    HasDegreeGe Y.gradeOf Y.gradeOf 2 (u - 1) ∧ HasDegreeGe D Y.gradeOf 1 (w * (u - 1)) := by
+  intro x u
+  -- The entries are terms in `v`, `x` and `w *ᵥ v` at weights that `hv`, `hwv` and `hw_col`
+  -- exclude.
+  simp [u, Y.vecMul_J_apply, vecMulVec_apply, x, -single_vecMul, Pi.single_apply,
+    Matrix.one_apply, sub_eq_zero, Matrix.mulVec_add, Matrix.mulVec_smul, Matrix.mul_sub,
+    Matrix.mul_add, HasDegreeGe, eichlerMap, mul_vecMulVec]
+  -- The `x` terms need `σ a = σ k`, so `a` has the weight of `k`; the `star v` terms need
+  -- `v (σ a) ≠ 0`, so `a` has weight at most `-max 1 (2 + weight k)`.
+  have h_dual {a : ι} (h : Y.stringReversal a = Y.stringReversal k) :
+      Y.gradeOf a = Y.gradeOf k := by
+    simpa [gradeOf_stringReversal] using congrArg Y.gradeOf h
+  have h_va {a : ι} (h : v (Y.stringReversal a) ≠ 0) :
+      max 1 (2 + Y.gradeOf k) ≤ -Y.gradeOf a := by
+    have := mt (hv _) h
+    rw [gradeOf_stringReversal] at this
+    omega
+  have h_rev {b : ι} (h : Y.gradeOf b ≠ -Y.gradeOf k) : b ≠ Y.stringReversal k := by
+    rintro rfl
+    exact h (gradeOf_stringReversal _ _)
+  refine ⟨fun b a hba ↦ ?_, fun b a hba ↦ ?_⟩
+  · rcases eq_or_ne (v (Y.stringReversal a)) 0 with hva | hva
+    · simp only [hva, star_zero, zero_mul, mul_zero, sub_zero, add_eq_left, ite_eq_right_iff]
+      exact fun h ↦ by rw [hv b (by have := h_dual h; omega), zero_mul]
+    · have ha := h_va hva
+      simp [h_rev (b := b) (by omega), hv b (by omega)]
+  · rcases eq_or_ne (v (Y.stringReversal a)) 0 with hva | hva
+    · simp only [hva, star_zero, zero_mul, mul_zero, sub_zero, add_eq_left, ite_eq_right_iff]
+      exact fun h ↦ by rw [hwv b (by have := h_dual h; omega), zero_mul]
+    · have ha := h_va hva
+      have hwbk := (hw_col b _ (by rw [gradeOf_stringReversal]; omega)).resolve_right hva
+      simp [hwv b (by omega), hwbk]
+
 omit [Fintype X'] in
 /-- Let `T` be `Y.stringMap Y'`, the rational map V → V' that kills `X` and the last string vector
 and sends each other string vector to a multiple of the string vector of `V'` with the same number.
@@ -559,74 +630,24 @@ lemma formAdjoint_mul_self_mulVec_apply_eq_of_survives {w : Matrix ι' ι (𝔸 
   -- Test with the Eichler map `u` of `v` and a multiple `x` of the basis vector dual to `k`: the
   -- phases of `u` at `Y.stringMap Y'` and at `w` agree, and `stdAddChar` is nondegenerate.
   refine sub_eq_zero.mp (eq_zero_of_forall_stdAddChar_eq_one fun t ↦ ?_)
-  let x : ι → 𝔸 E :=
-    Pi.single (Y.stringReversal k) (star (↑(j⁻¹ * V.J⁻¹ k (Y.stringReversal k)) * t))
+  let c : 𝔸 E := star (↑(j⁻¹ * V.J⁻¹ k (Y.stringReversal k)) * t)
+  let x : ι → 𝔸 E := Pi.single (Y.stringReversal k) c
   have v_supp (p : ι) (hp : Y.gradeOf p ≤ 0 ⊔ Y.gradeOf k) : v p = 0 := hv p (by omega)
   have x_supp (q : ι) (hq : Y.gradeOf q ≠ -Y.gradeOf k) : x q = 0 :=
     Pi.single_eq_of_ne (ne_of_apply_ne Y.gradeOf (by rwa [gradeOf_stringReversal])) _
   obtain ⟨u, u_mem, u_mat⟩ : ∃ u ∈ Y.unipotent, V.ratCoordMatrix u =
       eichlerMap (V.J.map toAdele) v x (toAdele 2⁻¹ * star x ⬝ᵥ V.J.map toAdele *ᵥ x) :=
     Y.exists_ratCoordMatrix_eq_eichlerMap v x (Y.gradeOf k) v_supp x_supp
-  -- `stdAddChar a` depends only on `a + star a` (`stdAddChar_inv_two_mul_add_star`); compare these
-  -- sums.
-  have phase (y : Matrix ι' ι (𝔸 E)) :
-      V.homBicharacter V' (y * V.ratCoordMatrix u) y =
-        stdAddChar E (toAdele j * star x ⬝ᵥ (yᴴ * V'.J.map toAdele * y) *ᵥ v) := by
-    suffices h_sum : toAdele ((j : E) / 2) * (V.formAdjoint V' y * (y * V.ratCoordMatrix u)).trace +
-          star (toAdele ((j : E) / 2) * (V.formAdjoint V' y * (y * V.ratCoordMatrix u)).trace) =
-        toAdele (j : E) * star x ⬝ᵥ (yᴴ * V'.J.map toAdele * y) *ᵥ v +
-          star (toAdele (j : E) * star x ⬝ᵥ (yᴴ * V'.J.map toAdele * y) *ᵥ v) by
-      rw [homBicharacter_eq, ← stdAddChar_inv_two_mul_add_star,
-        ← stdAddChar_inv_two_mul_add_star (toAdele j * star x ⬝ᵥ (yᴴ * V'.J.map toAdele * y) *ᵥ v)]
-      exact congrArg (fun z ↦ (stdAddChar E (toAdele 2⁻¹ * z) : ℂ)) h_sum
-    have h_half : toAdele ((j : E) / 2) + toAdele ((j : E) / 2) = toAdele (j : E) := by
-      rw [← map_add, add_halves]
-    simp [u_mat, formAdjoint, ← dotProduct_mulVec, dotProduct_comm _ (_ ᵥ* _), ← Matrix.mul_assoc,
-      mul_eq_one_symm V.map_J_inv_mul_map_J, (isHermitian_J _).eq, ← trace_conjTranspose,
-      conjTranspose_nonsing_inv, trace_mul_comm _ (map _ _), Matrix.mulVec_add, Matrix.mulVec_smul,
-      Matrix.mul_add, eichlerMap, mul_sub, mul_vecMulVec,
-        star_dotProduct_mulVec_comm, neg_div, ← h_half]
-    -- The trace terms and the terms in `star x ⬝ᵥ J *ᵥ x` cancel; the pairings of `x` with `v`
-    -- add up.
-    ring
   have u_deg :
       HasDegreeGe Y.gradeOf Y.gradeOf 2 (V.ratCoordMatrix u - 1) ∧
       HasDegreeGe D Y.gradeOf 1 (w * (V.ratCoordMatrix u - 1)) := by
-    -- The entries are terms in `v`, `x` and `w *ᵥ v` at weights that `hv`, `hwv` and `hw_col`
-    -- exclude.
-    simp [u_mat, Y.vecMul_J_apply, vecMulVec_apply, x, -single_vecMul, Pi.single_apply,
-      Matrix.one_apply, sub_eq_zero, Matrix.mulVec_add, Matrix.mulVec_smul, Matrix.mul_sub,
-      Matrix.mul_add, HasDegreeGe, eichlerMap, mul_vecMulVec, mulVec_neg]
-    -- The `x` terms need `σ a = σ k`, so `a` has the weight of `k`; the `star v` terms need
-    -- `v (σ a) ≠ 0`, so `a` has weight at most `-max 1 (2 + weight k)`.
-    have h_dual {a : ι} (h : Y.stringReversal a = Y.stringReversal k) :
-        Y.gradeOf a = Y.gradeOf k := by
-      simpa [gradeOf_stringReversal] using congrArg Y.gradeOf h
-    have h_va {a : ι} (h : v (Y.stringReversal a) ≠ 0) :
-        max 1 (2 + Y.gradeOf k) ≤ -Y.gradeOf a := by
-      have := mt (hv _) h
-      rw [gradeOf_stringReversal] at this
-      omega
-    have h_rev {b : ι} (h : Y.gradeOf b ≠ -Y.gradeOf k) : b ≠ Y.stringReversal k := by
-      rintro rfl
-      exact h (gradeOf_stringReversal _ _)
-    refine ⟨fun b a hba ↦ ?_, fun b a hba ↦ ?_⟩
-    · rcases eq_or_ne (v (Y.stringReversal a)) 0 with hva | hva
-      · simp only [hva, star_zero, zero_mul, mul_zero, sub_zero, add_eq_left, ite_eq_right_iff]
-        exact fun h ↦ by rw [hv b (by have := h_dual h; omega), zero_mul]
-      · have ha := h_va hva
-        simp [h_rev (b := b) (by omega), hv b (by omega)]
-    · rcases eq_or_ne (v (Y.stringReversal a)) 0 with hva | hva
-      · simp only [hva, star_zero, zero_mul, mul_zero, sub_zero, add_eq_left, ite_eq_right_iff]
-        exact fun h ↦ by rw [hwv b (by have := h_dual h; omega), zero_mul]
-      · have ha := h_va hva
-        have hwbk := (hw_col b _ (by rw [gradeOf_stringReversal]; omega)).resolve_right hva
-        simp [hwv b (by omega), hwbk]
+    rw [u_mat]
+    exact Y.hasDegreeGe_eichlerMap_sub_one_and_mul w D v k c hv hwv hw_col
   have h_phase : V.homBicharacter V' (Y.stringMap Y' * V.ratCoordMatrix u) (Y.stringMap Y') =
       V.homBicharacter V' (w * V.ratCoordMatrix u) w :=
     survives u u_mem u_deg
-  rw [phase, phase] at h_phase
-  simpa [x, AddChar.map_sub_eq_div, div_eq_one, Circle.ext_iff, ← mul_assoc, ← map_mul,
+  rw [u_mat, homBicharacter_mul_eichlerMap V V', homBicharacter_mul_eichlerMap V V'] at h_phase
+  simpa [x, c, AddChar.map_sub_eq_div, div_eq_one, Circle.ext_iff, ← mul_assoc, ← map_mul,
     formAdjoint, Y.J_inv_eq_gradedGram, map_gradedGram_mul_apply, mulVec_apply_eq_sum, mul_sum,
     mul_comm t (toAdele _), j_ne_zero, Matrix.mul_assoc, mul_sub] using h_phase
 
