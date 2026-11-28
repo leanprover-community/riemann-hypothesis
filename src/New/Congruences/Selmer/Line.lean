@@ -77,17 +77,10 @@ lemma exists_smul_eq_zero_of_mem_selmerModule (ρ : Gal(Ω/E) → Matrix n n O) 
     (L : Set (Gal(Ω/E) →₀ Matrix n n O)) (z : selmerModule ρ S L (DivisibleQuot O)) :
     ∃ a : O, a ≠ 0 ∧ a • z = 0 := by
   obtain ⟨z, hz⟩ := z
-  choose d hd_ne hd using exists_smul_eq_zero_divisibleQuot (O := O)
   obtain ⟨-, -, -, h_const⟩ := mem_selmerModule_iff.1 hz
-  -- The product of the denominators `d y` of all coordinates `y` of all values of `z`.
-  let a : O := ∏ u ∈ h_const.range_finite.toFinset, ∏ i : n, d (u i)
-  have ha : a ≠ 0 := by simp [a, Finset.prod_ne_zero_iff, hd_ne]
-  have h_smul (g : Gal(Ω/E)) (i : n) : a • z g i = 0 := by
-    obtain ⟨c, hc⟩ : d (z g i) ∣ a :=
-      calc d (z g i) ∣ ∏ j : n, d (z g j) := Finset.dvd_prod_of_mem _ (Finset.mem_univ i)
-        _ ∣ a := Finset.dvd_prod_of_mem (fun u : n → DivisibleQuot O ↦ ∏ j : n, d (u j)) (by simp)
-    rw [hc, mul_comm, mul_smul, hd, smul_zero]
-  exact ⟨a, ha, Subtype.ext (funext₂ h_smul)⟩
+  have := h_const.range_finite.to_subtype
+  obtain ⟨a, ha, h⟩ := exists_common_denominator (fun p : Set.range z × n ↦ p.1.val p.2)
+  exact ⟨a, ha, Subtype.ext (funext₂ fun g i ↦ h (⟨z g, g, rfl⟩, i))⟩
 
 /-- Let `O` be a discrete valuation ring with valuation `v = addVal O` and let `a ∈ O` be nonzero.
 Consider the Selmer groups of locally constant cocycles for `ρ` that are unramified outside `S` and

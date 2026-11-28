@@ -436,9 +436,6 @@ lemma exists_smul_eq_zero_of_mem_ribetCocyclesIn [DVR O] [Fintype Y] {r : Type} 
     (hc : c ∈ ribetCocyclesIn u ρ (DivisibleQuot O)) : ∃ a : O, a ≠ 0 ∧ a • c = 0 := by
   classical
   obtain ⟨-, h_rel⟩ := (mem_ribetCocyclesIn_iff u).1 hc
-  have exists_d (y : DivisibleQuot O) : ∃ d : O, d ≠ 0 ∧ d • y = 0 :=
-    exists_smul_eq_zero_divisibleQuot y
-  choose d hd_ne hd using exists_d
   obtain ⟨s₀, z, hz⟩ : ∃ (s₀ : Finset G) (z : G → Empty ⊕ s₀ ⊕ (∅ : Finset G) → O),
       AreCoordinates u (ribetGenerators Empty.elim s₀ ∅) z :=
         exists_areCoordinates_ribetGenerators u Empty.elim ∅
@@ -453,14 +450,11 @@ lemma exists_smul_eq_zero_of_mem_ribetCocyclesIn [DVR O] [Fintype Y] {r : Type} 
       simp [map_sub, map_sum, Finsupp.linearCombination_single, ← h_g,
         Fintype.linearCombination_apply]
     simpa [map_sub, map_sum, Finsupp.linearCombination_single, sub_eq_zero] using h_rel _ hθ
-  let a : O := ∏ i : Empty ⊕ s₀ ⊕ (∅ : Finset G), ∏ k : r, d (c (gen i) k)
-  refine ⟨a, by simp [a, Finset.prod_ne_zero_iff, hd_ne], funext fun g ↦ funext fun k ↦ ?_⟩
+  obtain ⟨a, ha, h⟩ := exists_common_denominator
+    (fun p : (Empty ⊕ s₀ ⊕ (∅ : Finset G)) × r ↦ c (gen p.1) p.2)
+  refine ⟨a, ha, funext fun g ↦ funext fun k ↦ ?_⟩
   simp only [Pi.smul_apply, Pi.zero_apply, h_val g, Finset.sum_apply, Finset.smul_sum]
-  refine Finset.sum_eq_zero fun i _ ↦ ?_
-  obtain ⟨e, he⟩ : ∃ e : O, a = d (c (gen i) k) * e :=
-    (Finset.dvd_prod_of_mem _ (Finset.mem_univ k)).trans
-      (Finset.dvd_prod_of_mem (fun i ↦ ∏ k : r, d (c (gen i) k)) (Finset.mem_univ i))
-  rw [smul_comm, he, mul_comm, mul_smul, hd, smul_zero, smul_zero]
+  exact Finset.sum_eq_zero fun i _ ↦ by rw [smul_comm a, h (i, k), smul_zero]
 
 /-- From coefficients modulo powers of `p` to coefficients in `K/O = Frac(O) / O`. Let `u x` be a
 finite family of representations of `G` over `O`. Consider the cocycles `c` of `ρ` that vanish on
