@@ -1083,10 +1083,9 @@ lemma exists_skew_isUnit_add_smul [WeilData E] [DecidableEq p] {a c : Matrix p p
     rintro ⟨v, hv_ne, hv⟩
     have h_form (m : Matrix p p E) : star (m *ᵥ v) ⬝ᵥ m *ᵥ v = star v ⬝ᵥ (mᴴ * m) *ᵥ v := by
       rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec]
-    let u : p ⊕ p → E := Sum.elim (a *ᵥ v) (c *ᵥ v)
-    have h_zero : u = 0 := eq_zero_of_star_dotProduct_self <|
-      calc star u ⬝ᵥ u
-        _ = star (a *ᵥ v) ⬝ᵥ a *ᵥ v + star (c *ᵥ v) ⬝ᵥ c *ᵥ v := by simp [u, dotProduct]
+    have h_zero : Sum.elim (a *ᵥ v) (c *ᵥ v) = 0 := eq_zero_of_star_dotProduct_self <|
+      calc star (Sum.elim (a *ᵥ v) (c *ᵥ v)) ⬝ᵥ Sum.elim (a *ᵥ v) (c *ᵥ v)
+        _ = star (a *ᵥ v) ⬝ᵥ a *ᵥ v + star (c *ᵥ v) ⬝ᵥ c *ᵥ v := by simp [dotProduct]
         _ = star ((a + c) *ᵥ v) ⬝ᵥ (a + c) *ᵥ v := by
           simp only [h_form, h_gram, add_mulVec (aᴴ * a), dotProduct_add]
         _ = 0 := by rw [hv, dotProduct_zero]
@@ -1100,8 +1099,7 @@ lemma exists_skew_isUnit_add_smul [WeilData E] [DecidableEq p] {a c : Matrix p p
   have h_inf : (Set.range fun m : ℕ ↦ (m : E) * WeilData.j).Infinite :=
     Set.infinite_range_of_injective
       ((mul_left_injective₀ WeilData.j_ne_zero).comp Nat.cast_injective)
-  obtain ⟨t, ⟨m, rfl⟩, h_root⟩ : ∃ t ∈ Set.range fun m : ℕ ↦ (m : E) * WeilData.j, ¬P.IsRoot t :=
-    h_inf.exists_notMem_finite (finite_setOfPred_isRoot h_ne)
+  obtain ⟨_, ⟨m, rfl⟩, h_root⟩ := h_inf.exists_notMem_finite (finite_setOfPred_isRoot h_ne)
   have h_det : (a + ((m : E) * WeilData.j) • c).det ≠ 0 := by rwa [← h_eval]
   exact ⟨m * WeilData.j, by simp [WeilData.star_j], (isUnit_iff_isUnit_det _).2 h_det.isUnit⟩
 
@@ -1191,8 +1189,7 @@ lemma siegelParabolic_sup_symm_eq_top [WeilData E] :
       _ = ((g.val.val * D.l)ᴴ * V.J) *ᵥ (g.val.val * D.k) *ᵥ v := by
         rw [mulVec_mulVec, U.gram_invariant, D.gram_lk, one_mulVec]
       _ = 0 := by simp [hg, add_mulVec, ← mulVec_mulVec, hav, hcv]
-  obtain ⟨t, ht, h_unit⟩ : ∃ t : E, star t = -t ∧ IsUnit (a + t • c) :=
-    exists_skew_isUnit_add_smul (conjTranspose_mul_add_eq_zero hg) h_ker
+  obtain ⟨t, ht, h_unit⟩ := exists_skew_isUnit_add_smul (conjTranspose_mul_add_eq_zero hg) h_ker
   obtain ⟨u, hu, hu_k, hu_l⟩ : ∃ u ∈ D.siegelParabolic,
       u.val.val * D.k = D.k ∧ u.val.val * D.l = D.l + D.k * (t • 1) :=
     D.exists_mem_siegelParabolic_mul_l_eq (by simp [ht])
@@ -1200,8 +1197,7 @@ lemma siegelParabolic_sup_symm_eq_top [WeilData E] :
     rw [Subgroup.coe_mul, Units.val_mul, Matrix.mul_assoc, hg, Matrix.mul_add,
       ← Matrix.mul_assoc, ← Matrix.mul_assoc, hu_k, hu_l]
     simp [Matrix.add_mul, Matrix.mul_add, add_assoc, add_comm (D.l * c)]
-  obtain ⟨v, hv, h_vug⟩ : ∃ v ∈ D.symm.siegelParabolic, v * (u * g) ∈ D.siegelParabolic :=
-    exists_mul_mem_siegelParabolic h_ug h_unit
+  obtain ⟨v, hv, h_vug⟩ := exists_mul_mem_siegelParabolic h_ug h_unit
   rw [← mul_mem_cancel_left (Subgroup.mem_sup_left hu),
     ← mul_mem_cancel_left (Subgroup.mem_sup_right hv)]
   exact Subgroup.mem_sup_left h_vug

@@ -909,32 +909,27 @@ lemma integral_continuousMap_frameChar_eq_zero {T : Set (FinPlace E)} {Z : Type}
     Integrable (fun g : Z ↦ χ (frameChar T (x g)) * w g) ν ∧
       ∫ g : Z, χ (frameChar T (x g)) * w g ∂ν = 0 := by
   have w_int : Integrable w ν := by simpa [frameChar] using hw_int 0
-  have integrable (χ : C((n × n₁ → 𝔸 E) → Circle, ℂ)) :
+  have h_int (χ : C((n × n₁ → 𝔸 E) → Circle, ℂ)) :
       Integrable (fun g ↦ χ (frameChar T (x g)) * w g) ν :=
     w_int.bdd_mul (by fun_prop) (.of_forall fun g ↦ χ.norm_coe_le_norm _)
   -- The integral is a continuous functional `Λ` of `χ`.
   let Λ : C((n × n₁ → 𝔸 E) → Circle, ℂ) →L[ℂ] ℂ :=
     strongIntegral ν fun g ↦ (evalCLM (M := ℂ) ℂ (frameChar T (x g))).smulRight (w g)
-  have Λ_apply (χ : C((n × n₁ → 𝔸 E) → Circle, ℂ)) :
-      Λ χ = ∫ g, χ (frameChar T (x g)) * w g ∂ν := strongIntegral_apply _ _ integrable χ
+  have Λ_apply (χ) : Λ χ = ∫ g, χ (frameChar T (x g)) * w g ∂ν := strongIntegral_apply _ _ h_int χ
   -- The functions that agree with some `ψ_u` on frames form a monoid that is closed under
   -- conjugation and separates points, and `Λ` vanishes on it.
   let chars : Submonoid C((n × n₁ → 𝔸 E) → Circle, ℂ) :=
-    { carrier := {χ | ∃ u : n × n₁ → 𝔸 E, ∀ y : Matrix n n₁ (𝔸 E),
-        χ (frameChar T y) = frameChar T y u}
+    { carrier := {χ | ∃ u, ∀ y, χ (frameChar T y) = frameChar T y u}
       mul_mem' := fun ⟨u, hu⟩ ⟨v, hv⟩ ↦
         ⟨u + v, by simp [hu, hv, frameChar, mul_add, map_add_eq_mul]⟩
       one_mem' := ⟨0, by simp [frameChar]⟩ }
   have dense : Dense (Submodule.span ℂ (chars : Set C((n × n₁ → 𝔸 E) → Circle, ℂ)) :
-      Set C((n × n₁ → 𝔸 E) → Circle, ℂ)) := by
-    refine stone_weierstrass_span chars ?_ ?_
-    · rintro χ ⟨u, hu⟩
-      exact ⟨-u, by simp [frameChar, hu, map_neg_eq_inv, ← Circle.coe_inv_eq_conj]⟩
-    · intro z z' hz
-      funext u
-      exact Circle.ext (hz ⟨fun c ↦ c u, by fun_prop⟩ ⟨u, fun _ ↦ rfl⟩)
-  have Λ_zero : Λ = 0 := Λ.ext_on dense fun χ ⟨u, hu⟩ ↦ by simpa [Λ_apply, hu] using hw_zero u
-  exact ⟨integrable χ, by simp [← Λ_apply, Λ_zero]⟩
+      Set C((n × n₁ → 𝔸 E) → Circle, ℂ)) :=
+    stone_weierstrass_span chars
+      (fun _ ⟨u, hu⟩ ↦ ⟨-u, by simp [frameChar, hu, map_neg_eq_inv, ← Circle.coe_inv_eq_conj]⟩)
+      (fun _ _ hz ↦ funext fun u ↦ Circle.ext (hz ⟨fun c ↦ c u, by fun_prop⟩ ⟨u, fun _ ↦ rfl⟩))
+  have Λ_zero : Λ = 0 := Λ.ext_on dense fun _ ⟨u, hu⟩ ↦ by simpa [Λ_apply, hu] using hw_zero u
+  exact ⟨h_int χ, by simp [← Λ_apply, Λ_zero]⟩
 
 /-- From descents to periods. Let `Y` be a continuous function on `[U(n)]` that is right invariant
 (`HasLevel`) under the elements of `stdLevel E n` with component 1 at every place outside `T` and
@@ -959,10 +954,7 @@ lemma integral_blockEmb_eq_zero_of_descentsVanish {T : Set (FinPlace E)} {Y : G 
   let I (g : G E (1 : n → ℤˣ)) : ℂ := blockPeriod o hs Y h₁ (g₀⁻¹ * g)
   have I_cont : Continuous I :=
     (continuous_blockPeriod o hs hY_cont hY_inv h₁).comp (continuous_const_mul g₀⁻¹)
-  obtain ⟨χ, hχ⟩ : ∃ χ : C((n × n₁ → 𝔸 E) → Circle, ℂ), ∀ h : G E (1 : n → ℤˣ),
-      frameWeight (movedFrame o h) ≠ 0 →
-        χ (frameChar T (movedFrame o h)) = star (blockPeriod o hs Y h₁ h) :=
-    exists_continuousMap_eq_conj_blockPeriod o hs hY_cont hY_inv h₁ hY_level
+  obtain ⟨χ, hχ⟩ := exists_continuousMap_eq_conj_blockPeriod o hs hY_cont hY_inv h₁ hY_level
   have h_orth (u : n × n₁ → 𝔸 E) :
       Integrable (fun g ↦ frameChar T (x g) u * frameWeight (x g) • I g) (blockQuotMeasure o hs) ∧
         ∫ g, frameChar T (x g) u * frameWeight (x g) • I g ∂blockQuotMeasure o hs = 0 :=
