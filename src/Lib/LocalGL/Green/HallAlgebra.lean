@@ -99,6 +99,7 @@ variable {k}
 by choosing a basis of V. -/
 def simClassOf : SimClass k := Quot.mk _ ⟨finrank k V, (finBasis k V).equivFun.conj g⟩
 
+/-- The similarity class of the representative `c.out.2` is the class `c` itself. -/
 @[simp]
 lemma simClassOf_out : simClassOf c.out.2 = c := (sound ⟨_, rfl⟩).symm.trans c.out_eq
 
@@ -203,6 +204,8 @@ lemma simClassOf_eq_iff :
   · rintro ⟨e, he⟩
     exact ⟨b.symm ≪≫ₗ e ≪≫ₗ c, by simp [DFunLike.ext_iff, he]⟩
 
+/-- Endomorphisms conjugate by a linear isomorphism `e` (that is, `e ∘ g = g' ∘ e`)
+have the same similarity class. -/
 lemma simClassOf_eq_of_equiv (e : V ≃ₗ[k] V') (he : ∀ x : V, e (g x) = g' (e x)) :
     simClassOf g = simClassOf g' :=
   simClassOf_eq_iff.mpr ⟨e, he⟩
@@ -214,6 +217,7 @@ lemma exists_equiv_simClassOf_out (g : End k V) :
       e ((simClassOf g).out.2 x) = g (e x) :=
   simClassOf_eq_iff.mp (simClassOf_out (simClassOf g))
 
+/-- The dimension of `simClassOf g` equals the finite rank of `V` over `k`. -/
 @[simp]
 lemma dim_simClassOf : (simClassOf g).dim = finrank k V :=
   SimClass.dim_mk (k := k) _
