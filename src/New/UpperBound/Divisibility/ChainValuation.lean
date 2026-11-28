@@ -73,7 +73,7 @@ lemma natCast_notMem_and_star_notMem_piNPlaces_of_ne (hp : p ≠ D.N) {w : FinPl
   -- A place of `piNPlaces` contains `N`, and `N` is fixed by conjugation.
   suffices hN : ↑D.N ∉ w.asIdeal from
     ⟨hN, fun h ↦ hN (by simpa using D.isSplitLevel_piNPlaces.natCast_level_mem _ h)⟩
-  simp [w.natCast_mem_iff_dvd hw, Nat.prime_dvd_prime_iff_eq, Fact.out, hp]
+  exact fun hN ↦ hp ((w.natCast_prime_mem_iff_eq hw).mp hN)
 
 /-- Let x be an admissible tuple of translations for q (the `x_j` become integral at the places
 prime to q after multiplication by the image of `New.Data.piMBar`), and S a set of places such that

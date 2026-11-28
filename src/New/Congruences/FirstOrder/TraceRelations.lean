@@ -670,7 +670,7 @@ lemma isTameType_of_mem_placesAboveM {V : DescentPair D.E r n}
           IsKilledBy (decompRep R (placeOver v.val)) s 0 (Q.map O.val.val) := by
   let ⟨k, hk⟩ :
       ∃ k : Fin 2, (D.levelPrime k : NumberField.RingOfIntegers D.E) ∈ v.val.asIdeal := hv
-  have hℓ : D.levelPrime k = ℓ := (v.val.charP_quotient hk).eq _ (v.val.charP_quotient v.property)
+  have hℓ : D.levelPrime k = ℓ := (v.val.natCast_prime_mem_iff_eq hk).mp v.property
   refine ⟨k, hℓ.symm, fun s hs ↦ ?_⟩
   obtain ⟨γ, -, hγ⟩ := exists_inertiaGroup_isInertiaSpectrum n hc hk v.val.isPlaceOver_placeOver t
   obtain ⟨μ, hμ, -⟩ := hγ s ((localChart ℓ D.E v).isWeilPair_zero_iff.1 hs)

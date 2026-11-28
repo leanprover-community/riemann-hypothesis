@@ -322,6 +322,12 @@ protected lemma natCast_mem_iff_dvd (hw : (p : 𝓞 F) ∈ w.asIdeal) {n : ℕ} 
   rw [← (w.charP_quotient hw).cast_eq_zero_iff, ← map_natCast (Ideal.Quotient.mk _),
     eq_zero_iff_mem]
 
+/-- A finite place containing a rational prime `p` contains a rational prime `q` if and only if
+`p = q`. -/
+protected lemma natCast_prime_mem_iff_eq (hw : (p : 𝓞 F) ∈ w.asIdeal) {q : ℕ}
+    [hq : Fact q.Prime] : (q : 𝓞 F) ∈ w.asIdeal ↔ p = q :=
+  (w.natCast_mem_iff_dvd hw).trans (Nat.prime_dvd_prime_iff_eq hp.out hq.out)
+
 /-- If the finite place `w` lies above the prime `p`, its absolute norm `w.q` is `p ^ f`, where
 `f = w.asIdeal.inertiaDeg ℤ` is the residue degree of `w`. -/
 lemma q_eq_pow_inertiaDeg (hw : (p : 𝓞 F) ∈ w.asIdeal) : w.q = p ^ w.asIdeal.inertiaDeg ℤ := by

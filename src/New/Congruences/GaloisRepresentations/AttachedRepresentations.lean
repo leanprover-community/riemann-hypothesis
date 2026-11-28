@@ -273,7 +273,7 @@ lemma exists_chosen_notMem_placesDividing {P : Parameters} (D : Data P) (ℓ : �
   obtain ⟨w, hw, hwi⟩ : D.ChosenPlace i := D.chosenEquiv i 1
   -- A place above both primes would have a residue field of two characteristics.
   have h_off : w ∉ placesDividing D.E ℓ :=
-    fun hℓ ↦ hi ((charP_quotient w hwi).eq _ (charP_quotient w hℓ))
+    fun hℓ ↦ hi ((w.natCast_prime_mem_iff_eq hwi).mp hℓ)
   exact ⟨w, i, hw, ⟨⟨i, hwi⟩, h_off⟩, D.q_eq_levelPrime hwi⟩
 
 variable {D ℓ} {R : AbsGal D →* GL n (PadicAlgCl ℓ)} {u : AbsGal D →* Matrix n n O}

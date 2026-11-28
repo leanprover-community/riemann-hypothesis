@@ -612,7 +612,7 @@ lemma IsRepOfType.isMainSummandLike (hc : IsLiftSetting O c ϑ) {R : GalRep ℓ 
   let w : FinPlace D.E := O.chosenPlace i
   obtain ⟨A, hA⟩ : ∃ A : ClosurePlace, IsPlaceOver A w := ⟨_, w.isPlaceOver_placeOver⟩
   have hwℓ : w ∉ placesDividing D.E ℓ :=
-    fun hw ↦ hl ((FinPlace.charP_quotient w hli).eq _ (FinPlace.charP_quotient w hw))
+    fun hw ↦ hl ((w.natCast_prime_mem_iff_eq hli).mp hw)
   have hwM : w ∈ placesAboveM D := ⟨l, hli⟩
   have h_val : A.valuation ℓ = 1 := hA.valuation_natCast_eq_one_iff.2 hwℓ
   -- `τ ξ` is an eigenvalue of `R s`
