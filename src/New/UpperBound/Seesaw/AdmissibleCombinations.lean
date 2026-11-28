@@ -291,6 +291,193 @@ lemma isHermitian_map_gradedGram_natCast (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S 
 
 variable [Fintype X] [Fintype ι]
 
+/-- The Gram matrix of a block lower triangular matrix `fromBlocks A 0 C D` for a block diagonal
+form `fromBlocks 1 0 0 G`, by blocks. -/
+private lemma gram_fromBlocks_zero₁₂ {m n : Type*} [Fintype m] [Fintype n] [DecidableEq m]
+    [StarRing R] (A : Matrix m m R) (C : Matrix n m R) (D G : Matrix n n R) :
+    (fromBlocks A 0 C D)ᴴ * fromBlocks 1 0 0 G * fromBlocks A 0 C D =
+      fromBlocks (Aᴴ * A + Cᴴ * G * C) (Cᴴ * G * D) (Dᴴ * G * C) (Dᴴ * G * D) := by
+  simp only [fromBlocks_conjTranspose, conjTranspose_zero, fromBlocks_multiply, mul_one,
+    Matrix.mul_zero, add_zero, zero_add, Matrix.mul_one, Matrix.zero_mul]
+
+/-- The block on `X ⊕ Unit` of the Gram matrix of `New.gradedLatticeBasis`, for the form that is
+the identity on `X ⊕ Unit` and pairs string vectors `b` and `s - 1 - b` to `1`, or to `-p` if they
+are equal. If `p = π π̄`, it is the identity, except that for odd `s` the vector
+`y / π̄ + u z / (π π̄)`, with `y` the vector of `Unit` and `z` the middle string vector, has norm
+`(π π̄)⁻¹ - p (π π̄)⁻² = 0`. -/
+private lemma gram_gradedLatticeBasis_inl_inl [StarRing R] {p : R} {π : Rˣ} (u : unitary R)
+    (hp : p = π * star (π : R)) :
+    (if Odd s then diagonal ((1 : X → R) ⊕ᵥ fun _ : Unit ↦ ((star π)⁻¹ : Rˣ).val) else 1)ᴴ *
+        (if Odd s then diagonal ((1 : X → R) ⊕ᵥ fun _ : Unit ↦ ((star π)⁻¹ : Rˣ).val) else 1) +
+      (of fun b : Fin s ↦ (0 : X → R) ⊕ᵥ fun _ : Unit ↦
+          if b = b.rev then (u : R) * ((star π * π)⁻¹ : Rˣ).val else 0)ᴴ *
+        (of fun b c : Fin s ↦ if b = c.rev then (if b = c then -p else 1) else 0) *
+        (of fun b : Fin s ↦ (0 : X → R) ⊕ᵥ fun _ : Unit ↦
+          if b = b.rev then (u : R) * ((star π * π)⁻¹ : Rˣ).val else 0) =
+      diagonal (1 ⊕ᵥ fun _ ↦ if Odd s then 0 else 1) := by
+  have hu : star (u : R) * u = 1 := Unitary.coe_star_mul_self u
+  have hπ1 : ((star π)⁻¹ : Rˣ).val * star (π : R) = 1 := (star π).inv_mul
+  have hπ2 : (π⁻¹ : Rˣ).val * (π : R) = 1 := π.inv_mul
+  set G : Matrix (Fin s) (Fin s) R :=
+    of fun b c ↦ if b = c.rev then (if b = c then -p else 1) else 0 with hG
+  by_cases hs : Odd s
+  · simp only [hs, ↓reduceIte, diagonal, Units.coe_star_inv, eq_rev_iff_of_odd hs,
+      _root_.mul_inv_rev, Units.val_mul, ← ext_iff, Matrix.add_apply, Matrix.mul_apply,
+      conjTranspose_apply, of_apply, apply_ite star, star_zero, mul_ite, ite_mul, zero_mul,
+      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, Sum.forall, Sum.elim_inl, Pi.one_apply,
+      star_one, mul_one, Pi.zero_apply, Finset.sum_const_zero, add_zero, Sum.elim_inr,
+      star_star, Sum.inl.injEq, reduceCtorEq, implies_true, star_mul', forall_const,
+      true_and]
+    refine ⟨fun a ↦ ⟨fun a1 ↦ by simp only [eq_comm], ?_⟩, ?_⟩
+    · trivial
+    · simp only [hG, of_apply, eq_rev_iff_of_odd hs, ↓reduceIte, hp, ← Units.coe_star_inv π]
+      calc (π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val +
+            star (u : R) * (((star π)⁻¹ : Rˣ).val * (π⁻¹ : Rˣ).val) * -((π : R) * star (π : R)) *
+              ((u : R) * ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val))
+          = (π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val - (star (u : R) * (u : R)) *
+              ((π⁻¹ : Rˣ).val * (π : R)) * (((star π)⁻¹ : Rˣ).val * star (π : R)) *
+              ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val) := by ring
+        _ = 0 := by rw [hu, hπ2, hπ1]; ring
+  · simp only [hs, ↓reduceIte, conjTranspose_one, mul_one, ne_rev_of_not_odd hs, diagonal,
+      ← ext_iff, Matrix.add_apply, Matrix.one_apply, Matrix.mul_apply, conjTranspose_apply,
+      of_apply, Sum.forall, Sum.elim_inl, Pi.zero_apply, mul_zero, Finset.sum_const_zero,
+      add_zero, Sum.elim_inr, Sum.inl.injEq, Pi.one_apply, implies_true, reduceCtorEq,
+      and_self]
+
+omit [DecidableEq X] [Fintype X] in
+/-- The block of the Gram matrix of `New.gradedLatticeBasis` pairing `X ⊕ Unit` with the string,
+for the form that pairs string vectors `b` and `s - 1 - b` to `1`, or to `-p` if they are equal.
+If `p = π π̄`, its only nonzero entry is for odd `s`: the vector `y / π̄ + u z / (π π̄)`, with `y`
+the vector of `Unit` and `z` the middle string vector, pairs to `-p (π π̄)⁻¹ = -1` with `u z`. -/
+private lemma gram_gradedLatticeBasis_inl_inr [StarRing R] {p : R} (a : Rˣ) {π : Rˣ}
+    (u : unitary R) (hp : p = π * star (π : R)) :
+    (of fun b : Fin s ↦ (0 : X → R) ⊕ᵥ fun _ : Unit ↦
+        if b = b.rev then (u : R) * ((star π * π)⁻¹ : Rˣ).val else 0)ᴴ *
+      (of fun b c : Fin s ↦ if b = c.rev then (if b = c then -p else 1) else 0) *
+      (diagonal fun b : Fin s ↦ (u : R) *
+        if Odd s then 1 else if 2 * (b : ℕ) < s then (a⁻¹ : Rˣ).val else star (a : R)) =
+      of (0 ⊕ᵥ fun _ b ↦ if b = b.rev then -1 else 0) := by
+  have hu : star (u : R) * u = 1 := Unitary.coe_star_mul_self u
+  have hπ1 : ((star π)⁻¹ : Rˣ).val * star (π : R) = 1 := (star π).inv_mul
+  have hπ2 : (π⁻¹ : Rˣ).val * (π : R) = 1 := π.inv_mul
+  set G : Matrix (Fin s) (Fin s) R :=
+    of fun b c ↦ if b = c.rev then (if b = c then -p else 1) else 0 with hG
+  by_cases hs : Odd s
+  · simp only [eq_rev_iff_of_odd hs, _root_.mul_inv_rev, Units.val_mul, Units.coe_star_inv,
+      diagonal, hs, ↓reduceIte, mul_one, ← ext_iff, Matrix.mul_apply, conjTranspose_apply,
+      of_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, Sum.forall,
+      Sum.elim_inl, Pi.zero_apply, star_zero, zero_mul, Finset.sum_const_zero, implies_true,
+      Sum.elim_inr, apply_ite star, star_mul', star_star, ite_mul, forall_const, true_and]
+    let m : Fin s := ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
+    have hm : m.rev = m := ((eq_rev_iff_of_odd hs m).2 rfl).symm
+    dsimp only [m] at hm
+    have h_mid : star (u : R) * (((star π)⁻¹ : Rˣ).val * (π⁻¹ : Rˣ).val) *
+        -((π : R) * star (π : R)) * (u : R) = -1 := by
+      calc _ = -(star (u : R) * (u : R)) *
+            (((star π)⁻¹ : Rˣ).val * star (π : R)) * ((π⁻¹ : Rˣ).val * (π : R)) := by ring
+        _ = -1 := by rw [hu, hπ1, hπ2]; ring
+    intro j
+    simp only [← Units.coe_star_inv π]
+    by_cases hj : j = m
+    · dsimp only [m] at hj; subst hj
+      simp only [hG, of_apply, ↓reduceIte, hm, hp, h_mid]
+    · dsimp only [m] at hj
+      have hjr : (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s) ≠ j.rev :=
+        fun h ↦ hj ((Fin.rev_eq_iff.mp h.symm).trans hm)
+      simp only [hG, of_apply, hj, hjr, ↓reduceIte, mul_zero, zero_mul]
+  · simp only [ne_rev_of_not_odd hs, ↓reduceIte, ← ext_iff, Matrix.mul_apply,
+      conjTranspose_apply, of_apply, Sum.forall, Sum.elim_inl, Pi.zero_apply, star_zero,
+      zero_mul, Finset.sum_const_zero, implies_true, Sum.elim_inr, and_self]
+
+omit [DecidableEq X] [Fintype X] in
+/-- The block of the Gram matrix of `New.gradedLatticeBasis` pairing the string with `X ⊕ Unit`,
+for the form that pairs string vectors `b` and `s - 1 - b` to `1`, or to `-p` if they are equal.
+If `p = π π̄`, its only nonzero entry is for odd `s`: with `y` the vector of `Unit` and `z` the
+middle string vector, `u z` pairs to `-1` with the vector `y / π̄ + u z / (π π̄)`. -/
+private lemma gram_gradedLatticeBasis_inr_inl [StarRing R] {p : R} (a : Rˣ) {π : Rˣ}
+    (u : unitary R) (hp : p = π * star (π : R)) :
+    (diagonal fun b : Fin s ↦ (u : R) *
+        if Odd s then 1 else if 2 * (b : ℕ) < s then (a⁻¹ : Rˣ).val else star (a : R))ᴴ *
+      (of fun b c : Fin s ↦ if b = c.rev then (if b = c then -p else 1) else 0) *
+      (of fun b : Fin s ↦ (0 : X → R) ⊕ᵥ fun _ : Unit ↦
+        if b = b.rev then (u : R) * ((star π * π)⁻¹ : Rˣ).val else 0) =
+      (of (0 ⊕ᵥ fun _ b ↦ if b = b.rev then -1 else 0))ᵀ := by
+  have hu : star (u : R) * u = 1 := Unitary.coe_star_mul_self u
+  have hπ1 : ((star π)⁻¹ : Rˣ).val * star (π : R) = 1 := (star π).inv_mul
+  have hπ2 : (π⁻¹ : Rˣ).val * (π : R) = 1 := π.inv_mul
+  set G : Matrix (Fin s) (Fin s) R :=
+    of fun b c ↦ if b = c.rev then (if b = c then -p else 1) else 0 with hG
+  by_cases hs : Odd s
+  · simp only [eq_rev_iff_of_odd hs, _root_.mul_inv_rev, Units.val_mul, Units.coe_star_inv,
+      diagonal, hs, ↓reduceIte, mul_one, ← ext_iff, Matrix.mul_apply, conjTranspose_apply,
+      of_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, Sum.forall,
+      Sum.elim_inl, Pi.zero_apply, star_zero, zero_mul, Finset.sum_const_zero, implies_true,
+      Sum.elim_inr, apply_ite star, ite_mul, forall_const, true_and, transpose_of,
+      Function.swap]
+    let m : Fin s := ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
+    have hm : m.rev = m := ((eq_rev_iff_of_odd hs m).2 rfl).symm
+    dsimp only [m] at hm
+    have h_mid' : star (u : R) * -((π : R) * star (π : R)) *
+        ((u : R) * ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val)) = -1 := by
+      calc _ = -(star (u : R) * (u : R)) *
+            (((star π)⁻¹ : Rˣ).val * star (π : R)) * ((π⁻¹ : Rˣ).val * (π : R)) := by ring
+        _ = -1 := by rw [hu, hπ1, hπ2]; ring
+    intro i
+    simp only [← Units.coe_star_inv π]
+    by_cases hi : i = m
+    · dsimp only [m] at hi; subst hi
+      simp only [hG, of_apply, ↓reduceIte, hm, hp, h_mid']
+    · dsimp only [m] at hi
+      have hir : i ≠ (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s).rev :=
+        fun h ↦ hi (h.trans hm)
+      simp only [hG, of_apply, hi, hir, ↓reduceIte, mul_zero, zero_mul]
+  · simp only [ne_rev_of_not_odd hs, ↓reduceIte, ← ext_iff, Matrix.mul_apply,
+      conjTranspose_apply, of_apply, Sum.forall, Sum.elim_inl, Pi.zero_apply,
+      Finset.sum_const_zero, implies_true, Sum.elim_inr, and_self, transpose_of, Function.swap,
+      mul_zero]
+
+/-- The string block of the Gram matrix of `New.gradedLatticeBasis` is the form on the string that
+pairs `b` and `s - 1 - b` to `1`, or to `-p` if they are equal: the unit `u` drops out as
+`ū u = 1`, and for even `s` the factors `a⁻¹` and `ā` of partner vectors cancel. -/
+private lemma gram_gradedLatticeBasis_inr_inr [StarRing R] {p : R} (a : Rˣ) (u : unitary R) :
+    (diagonal fun b : Fin s ↦ (u : R) *
+        if Odd s then 1 else if 2 * (b : ℕ) < s then (a⁻¹ : Rˣ).val else star (a : R))ᴴ *
+      (of fun b c : Fin s ↦ if b = c.rev then (if b = c then -p else 1) else 0) *
+      (diagonal fun b : Fin s ↦ (u : R) *
+        if Odd s then 1 else if 2 * (b : ℕ) < s then (a⁻¹ : Rˣ).val else star (a : R)) =
+      of fun b c : Fin s ↦ if b = c.rev then (if b = c then -p else 1) else 0 := by
+  have hu : star (u : R) * u = 1 := Unitary.coe_star_mul_self u
+  set G : Matrix (Fin s) (Fin s) R :=
+    of fun b c ↦ if b = c.rev then (if b = c then -p else 1) else 0 with hG
+  simp only [diagonal, mul_ite, mul_one, ← ext_iff, Matrix.mul_apply, conjTranspose_apply,
+    of_apply, apply_ite star, star_mul', star_star, star_zero, ite_mul, zero_mul,
+    Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, mul_zero]
+  intro b c
+  by_cases hrev : b = c.rev
+  · simp only [hG, of_apply, hrev, ↓reduceIte]
+    by_cases hs : Odd s
+    · simp only [hs, ↓reduceIte]
+      calc star (u : R) * (if c.rev = c then -p else 1) * (u : R)
+          = (star (u : R) * (u : R)) * (if c.rev = c then -p else 1) := by ring
+        _ = if c.rev = c then -p else 1 := by rw [hu, one_mul]
+    · have hne : c.rev ≠ c := (ne_rev_of_not_odd hs c).symm
+      have hlt : 2 * (c.rev : ℕ) < s ↔ ¬ 2 * (c : ℕ) < s := by
+        obtain ⟨k, rfl⟩ := Nat.not_odd_iff_even.mp hs
+        have hc := c.isLt
+        rw [Fin.val_rev]; omega
+      simp only [hs, ↓reduceIte, hne, hlt]
+      by_cases hc : 2 * (c : ℕ) < s
+      · simp only [hc, ↓reduceIte, not_true_eq_false]
+        calc star (u : R) * (a : R) * 1 * ((u : R) * (a⁻¹ : Rˣ).val)
+            = (star (u : R) * (u : R)) * ((a : R) * (a⁻¹ : Rˣ).val) := by ring
+          _ = 1 := by rw [hu, a.mul_inv, one_mul]
+      · simp only [hc, ↓reduceIte, not_false_eq_true]
+        calc star (u : R) * star (a⁻¹ : Rˣ).val * 1 * ((u : R) * star (a : R))
+            = (star (u : R) * (u : R)) * star ((a : R) * (a⁻¹ : Rˣ).val) := by
+              rw [star_mul]; ring
+          _ = 1 := by rw [hu, a.mul_inv, star_one, mul_one]
+  · simp only [hG, of_apply, hrev, ↓reduceIte, mul_zero, zero_mul, ite_self]
+
 omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`. Let `J = New.gradedGram e N` be the
 form that is the identity on `X ⊕ Unit` and pairs string vectors `b` and `s - 1 - b` to `1`, or to
@@ -308,144 +495,14 @@ lemma gram_gradedLatticeBasis_eq_gluedGram
     (gradedLatticeBasis e a π u)ᴴ * (gradedGram e (N : S)).map f * gradedLatticeBasis e a π u =
       reindex e e (gluedGram (N : R) 0) := by
   have := Fintype.ofFinite X
-  -- The blocks of the basis are `T`, `0`, `Z`, `D`; the form is `G` on the string.
-  let T : Matrix (X ⊕ Unit) (X ⊕ Unit) R :=
-    if Odd s then diagonal (1 ⊕ᵥ fun _ : Unit ↦ ((star π)⁻¹ : Rˣ).val) else 1
-  let Z : Matrix (Fin s) (X ⊕ Unit) R := of fun b : Fin s ↦
-    0 ⊕ᵥ fun _ : Unit ↦ if b = b.rev then (u : R) * ((star π * π)⁻¹ : Rˣ).val else 0
-  let D : Matrix (Fin s) (Fin s) R := diagonal fun b : Fin s ↦
-    (u : R) * if Odd s then 1 else if 2 * (b : ℕ) < s then (a⁻¹ : Rˣ).val else star (a : R)
-  let G : Matrix (Fin s) (Fin s) R :=
-    of fun b c ↦ f (if b = c.rev then (if b = c then -(N : S) else 1) else 0)
-  let C : Matrix (X ⊕ Unit) (Fin s) R := of (0 ⊕ᵥ fun _ b ↦ if b = b.rev then -1 else 0)
-  -- The unit `u` drops out as `ū u = 1`. For even `s` the factors `a⁻¹` and `ā` on partners in
-  -- the string cancel; for odd `s` the last vector of `X ⊕ Unit` is glued, by `π π̄ = N`.
-  have hu : star (u : R) * u = 1 := Unitary.coe_star_mul_self u
-  have hu : star (u : R) * u = 1 := Unitary.coe_star_mul_self u
-  have hπ1 : ((star π)⁻¹ : Rˣ).val * star (π : R) = 1 := (star π).inv_mul
-  have hπ2 : (π⁻¹ : Rˣ).val * (π : R) = 1 := π.inv_mul
-  have h_star_inv (z : Rˣ) : star (z⁻¹ : Rˣ).val = ((star z)⁻¹ : Rˣ).val := by
-    have h : star (z⁻¹ : Rˣ).val * star (z : R) = 1 := by rw [← star_mul, z.mul_inv, star_one]
-    calc star (z⁻¹ : Rˣ).val = star (z⁻¹ : Rˣ).val * 1 := (mul_one _).symm
-      _ = star (z⁻¹ : Rˣ).val * (star (z : R) * ((star z)⁻¹ : Rˣ).val) := by
-          rw [← (star z).mul_inv, Units.coe_star]
-      _ = (star (z⁻¹ : Rˣ).val * star (z : R)) * ((star z)⁻¹ : Rˣ).val := (mul_assoc _ _ _).symm
-      _ = ((star z)⁻¹ : Rˣ).val := by rw [h, one_mul]
-  have h_X : Tᴴ * T + Zᴴ * G * Z = diagonal (1 ⊕ᵥ fun _ ↦ if Odd s then 0 else 1) := by
-    by_cases hs : Odd s
-    · simp only [hs, ↓reduceIte, diagonal, Units.coe_star_inv, eq_rev_iff_of_odd hs,
-        _root_.mul_inv_rev, Units.val_mul, ← ext_iff, Matrix.add_apply, Matrix.mul_apply,
-        conjTranspose_apply, of_apply, apply_ite star, star_zero, mul_ite, ite_mul, zero_mul,
-        mul_zero, Finset.sum_ite_eq', Finset.mem_univ, Sum.forall, Sum.elim_inl, Pi.one_apply,
-        star_one, mul_one, Pi.zero_apply, Finset.sum_const_zero, add_zero, Sum.elim_inr,
-        star_star, Sum.inl.injEq, reduceCtorEq, implies_true, star_mul', forall_const,
-        true_and, T, Z, G]
-      refine ⟨fun a ↦ ⟨fun a1 ↦ by simp only [eq_comm], ?_⟩, ?_⟩
-      · trivial
-      · have hm : (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s).rev =
-            ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ :=
-          ((eq_rev_iff_of_odd hs _).2 rfl).symm
-        simp only [map_neg, hN, h_star_inv π]
-        calc (π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val +
-              star (u : R) * (((star π)⁻¹ : Rˣ).val * (π⁻¹ : Rˣ).val) * -((π : R) * star (π : R)) *
-                ((u : R) * ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val))
-            = (π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val - (star (u : R) * (u : R)) *
-                ((π⁻¹ : Rˣ).val * (π : R)) * (((star π)⁻¹ : Rˣ).val * star (π : R)) *
-                ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val) := by ring
-          _ = 0 := by rw [hu, hπ2, hπ1]; ring
-    · simp only [hs, ↓reduceIte, conjTranspose_one, mul_one, ne_rev_of_not_odd hs, diagonal,
-        ← ext_iff, Matrix.add_apply, Matrix.one_apply, Matrix.mul_apply, conjTranspose_apply,
-        of_apply, Sum.forall, Sum.elim_inl, Pi.zero_apply, mul_zero, Finset.sum_const_zero,
-        add_zero, Sum.elim_inr, Sum.inl.injEq, Pi.one_apply, implies_true, reduceCtorEq,
-        and_self, T, Z, G]
-  have h_mixed : Zᴴ * G * D = C ∧ Dᴴ * G * Z = Cᵀ := by
-    by_cases hs : Odd s
-    · simp only [eq_rev_iff_of_odd hs, _root_.mul_inv_rev, Units.val_mul, Units.coe_star_inv,
-        diagonal, hs, ↓reduceIte, mul_one, ← ext_iff, Matrix.mul_apply, conjTranspose_apply,
-        of_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, Sum.forall,
-        Sum.elim_inl, Pi.zero_apply, star_zero, zero_mul, Finset.sum_const_zero, implies_true,
-        Sum.elim_inr, apply_ite star, star_mul', star_star, ite_mul, forall_const, true_and,
-        transpose_of, Function.swap, Z, G, D, C]
-      let m : Fin s := ⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩
-      have hm : m.rev = m := ((eq_rev_iff_of_odd hs m).2 rfl).symm
-      dsimp only [m] at hm
-      have h_mid : star (u : R) * (((star π)⁻¹ : Rˣ).val * (π⁻¹ : Rˣ).val) *
-          -((π : R) * star (π : R)) * (u : R) = -1 := by
-        calc _ = -(star (u : R) * (u : R)) *
-              (((star π)⁻¹ : Rˣ).val * star (π : R)) * ((π⁻¹ : Rˣ).val * (π : R)) := by ring
-          _ = -1 := by rw [hu, hπ1, hπ2]; ring
-      have h_mid' : star (u : R) * -((π : R) * star (π : R)) *
-          ((u : R) * ((π⁻¹ : Rˣ).val * ((star π)⁻¹ : Rˣ).val)) = -1 := by
-        calc _ = -(star (u : R) * (u : R)) *
-              (((star π)⁻¹ : Rˣ).val * star (π : R)) * ((π⁻¹ : Rˣ).val * (π : R)) := by ring
-          _ = -1 := by rw [hu, hπ1, hπ2]; ring
-      refine ⟨fun j ↦ ?_, fun i ↦ ?_⟩
-      · simp only [h_star_inv π]
-        by_cases hj : j = m
-        · dsimp only [m] at hj; subst hj
-          simp only [↓reduceIte, hm, map_neg, hN, h_mid]
-        · dsimp only [m] at hj
-          have hjr : (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s) ≠ j.rev :=
-            fun h ↦ hj ((Fin.rev_eq_iff.mp h.symm).trans hm)
-          simp only [hj, hjr, ↓reduceIte, map_zero, mul_zero, zero_mul]
-      · simp only [h_star_inv π]
-        by_cases hi : i = m
-        · dsimp only [m] at hi; subst hi
-          simp only [↓reduceIte, hm, map_neg, hN, h_mid']
-        · dsimp only [m] at hi
-          have hir : i ≠ (⟨s / 2, by obtain ⟨k, rfl⟩ := hs; omega⟩ : Fin s).rev :=
-            fun h ↦ hi (h.trans hm)
-          simp only [hi, hir, ↓reduceIte, map_zero, mul_zero, zero_mul]
-    · simp only [ne_rev_of_not_odd hs, ↓reduceIte, ← ext_iff, Matrix.mul_apply,
-        conjTranspose_apply, of_apply, Sum.forall, Sum.elim_inl, Pi.zero_apply, star_zero,
-        zero_mul, Finset.sum_const_zero, implies_true, Sum.elim_inr, and_self, transpose_of,
-        Function.swap, mul_zero, Z, C]
-  have h_string : Dᴴ * G * D =
-      of fun b c ↦ if b = c.rev then (if b = c then -(N : R) else 1) else 0 := by
-    simp only [diagonal, mul_ite, mul_one, ← ext_iff, Matrix.mul_apply, conjTranspose_apply,
-      of_apply, apply_ite star, star_mul', star_star, star_zero, ite_mul, zero_mul,
-      Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, mul_zero, D, G]
-    intro b c
-    by_cases hrev : b = c.rev
-    · simp only [hrev, ↓reduceIte]
-      by_cases hs : Odd s
-      · simp only [hs, ↓reduceIte, apply_ite f, map_neg, map_natCast, map_one]
-        calc star (u : R) * (if c.rev = c then -(N : R) else 1) * (u : R)
-            = (star (u : R) * (u : R)) * (if c.rev = c then -(N : R) else 1) := by ring
-          _ = if c.rev = c then -(N : R) else 1 := by rw [hu, one_mul]
-      · have hne : c.rev ≠ c := (ne_rev_of_not_odd hs c).symm
-        have hlt : 2 * (c.rev : ℕ) < s ↔ ¬ 2 * (c : ℕ) < s := by
-          obtain ⟨k, rfl⟩ := Nat.not_odd_iff_even.mp hs
-          have hc := c.isLt
-          rw [Fin.val_rev]; omega
-        simp only [hs, ↓reduceIte, hne, map_one, hlt]
-        by_cases hc : 2 * (c : ℕ) < s
-        · simp only [hc, ↓reduceIte, not_true_eq_false]
-          calc star (u : R) * (a : R) * 1 * ((u : R) * (a⁻¹ : Rˣ).val)
-              = (star (u : R) * (u : R)) * ((a : R) * (a⁻¹ : Rˣ).val) := by ring
-            _ = 1 := by rw [hu, a.mul_inv, one_mul]
-        · simp only [hc, ↓reduceIte, not_false_eq_true]
-          calc star (u : R) * star (a⁻¹ : Rˣ).val * 1 * ((u : R) * star (a : R))
-              = (star (u : R) * (u : R)) * star ((a : R) * (a⁻¹ : Rˣ).val) := by
-                rw [star_mul]; ring
-            _ = 1 := by rw [hu, a.mul_inv, star_one, mul_one]
-    · simp only [hrev, ↓reduceIte, map_zero, mul_zero, zero_mul, ite_self]
-  have h_basis : gradedLatticeBasis e a π u = reindex e e (fromBlocks T 0 Z D) := rfl
-  have h_form : (gradedGram e (N : S)).map f = reindex e e (fromBlocks 1 0 0 G) := by
-    simp only [gradedGram, apply_ite f, map_neg, map_natCast, map_one, map_zero,
-      reindex_apply, ← ext_iff, map_apply, submatrix_apply, reindex_equiv e,
-      Equiv.symm_apply_apply, Sum.forall, fromBlocks_apply₁₁, Matrix.one_apply,
-      implies_true, and_self, fromBlocks_apply₁₂, Matrix.zero_apply, fromBlocks_apply₂₁,
-      fromBlocks_apply₂₂, of_apply, G]
-  have h_blocks : (fromBlocks T 0 Z D)ᴴ * fromBlocks 1 0 0 G * fromBlocks T 0 Z D =
-      fromBlocks (Tᴴ * T + Zᴴ * G * Z) (Zᴴ * G * D) (Dᴴ * G * Z) (Dᴴ * G * D) := by
-    simp only [fromBlocks_conjTranspose, conjTranspose_zero, fromBlocks_multiply, mul_one,
-      Matrix.mul_zero, add_zero, zero_add, Matrix.mul_one, Matrix.zero_mul]
-  have h_gram : (fromBlocks T 0 Z D)ᴴ * fromBlocks 1 0 0 G * fromBlocks T 0 Z D =
-      gluedGram (N : R) 0 := by
-    simp only [h_blocks, h_X, h_mixed, h_string, gluedGram, C]
-  simp only [h_basis, h_form, reindex_apply, conjTranspose_submatrix, submatrix_mul_equiv,
-    ← h_gram]
+  rw [map_natCast] at hN
+  -- By blocks, the basis is lower triangular and the form is `1` on `X ⊕ Unit` plus the string
+  -- form; the four blocks of the Gram matrix are those of `gluedGram N 0`.
+  rw [map_gradedGram, map_natCast, gradedLatticeBasis, gradedGram, reindex_apply, reindex_apply,
+    conjTranspose_submatrix, submatrix_mul_equiv, submatrix_mul_equiv, gram_fromBlocks_zero₁₂,
+    gram_gradedLatticeBasis_inl_inl u hN, gram_gradedLatticeBasis_inl_inr a u hN,
+    gram_gradedLatticeBasis_inr_inl a u hN, gram_gradedLatticeBasis_inr_inr a u]
+  rfl
 
 variable [DecidableEq ι]
 
