@@ -684,6 +684,79 @@ private lemma OpenSubgroup.exists_le_normal_mem_coprime_index {G : Type} [Group 
     rwa [relIndex_mul_index le_normalizer]
   exact ⟨B, le_normalizer, normal_in_normalizer, hz, coprime_mul_iff_right.mp hcop_mul⟩
 
+/-- Lifting trivialized cocycles along short exact sequences of modules killed by `l`. Let `K` be
+totally complex, let `S` be split places for `l` and `N`, and let `z` be central modulo `U` and fix
+the `l`-th roots of unity. Under the root-detection condition `hfix`, for every short exact sequence
+`W₁ → W → W₂` with `W` finite, killed by `l`, fixed by `U`, and with `z - 1` injective, every
+trivialized cocycle of `W₂` lifts to `W`.
+
+The proof passes to an open subgroup `B` normalizing an `l`-Sylow subgroup `P / U`, obtains the
+upper bound over `B` by `P`-dévissage, squeezes cocycles to lift over `B`, and returns to `G` by
+corestriction. -/
+private lemma New.IsLargeLevel.SplitPlaces.map_range_eq_top_of_central {K R ι : Type} [Field K]
+    [EmbeddedNumberField K] [CommRing R] {l N : ℕ} [Fact l.Prime] [NeZero N] {I : Set Gal(Ω/K)}
+    [Fintype ι] [IsTotallyComplex K] {U : OpenNormalSubgroup Gal(Ω/K)}
+    (S : SplitPlaces l N I U ι) {z : Gal(Ω/K)} (hz : (cyclotomicCharMod Ω l z).val = (1 : ℕ))
+    (hcentral : ∀ g : Gal(Ω/K), ⁅z, g⁆ ∈ U)
+    (hfix : ∀ x : DiscreteUnits Ω, l • x ∈ fixedSUnits N U → (∀ i : ι, unitsRep (S.φ i) x = x) →
+      ∀ g : Gal(Ω/K), unitsRep g (l • x) = l • x →
+        unitsRep g (unitsRep z x - 1 • x) = unitsRep z x - 1 • x)
+    {W₁ W W₂ : DiscreteModule R Gal(Ω/K)} {j : W₁.Hom W} {π : W.Hom W₂}
+    (hses : IsShortExact j π) (hW : W.FiniteKilledFixedInj l U z 1) :
+    (map (PlaceAboveLevel N) I π).range = ⊤ := by
+  classical
+  obtain ⟨P, hUP, hcop : l.Coprime P.toSubgroup.index, hP : ∀ g ∈ P, ∃ k, g ^ l ^ k ∈ U⟩ :=
+    exists_open_sylow l U
+  -- Choose an open subgroup `B` normalizing `P` and containing `z`, whose commutators lie in `U`.
+  obtain ⟨B, hPB, hnormal, hzB, hcopP, hcopB⟩ : ∃ B : OpenSubgroup Gal(Ω/K), P ≤ B ∧
+      (P.toSubgroup.subgroupOf B).Normal ∧ z ∈ B ∧
+      l.Coprime (P.toSubgroup.subgroupOf B).index ∧ l.Coprime B.toSubgroup.index :=
+    P.exists_le_normal_mem_coprime_index hcop fun g ↦ hUP (hcentral g)
+  have hUB : (U : Subgroup Gal(Ω/K)) ≤ B := hUP.trans hPB
+  -- The data over the fixed field of `B`, where each split place has one place above it for each
+  -- coset of `B`.
+  let U' : OpenNormalSubgroup B.1 := ⟨U.1.comap _ (by fun_prop), U.2.subgroupOf B⟩
+  let I' : Set B.toSubgroup := (↑) ⁻¹' I
+  let z' : B.toSubgroup := ⟨z, hzB⟩
+  let k := Fintype.card (ι × Gal(Ω/K) ⧸ B.toSubgroup) + 1
+  -- Upper bound over `B`: filter by `P`-invariants; `P`-fixed modules are projective over `B / P`.
+  have hupper : ∀ (X : DiscreteModule R B.toSubgroup) (_ : X.FiniteKilledFixedInj l U' z' 1),
+      X.HasFewCocycles (PlaceAboveLevel N) I' k := by
+    refine devissage_induction l.pow_one (P.1.subgroupOf B) U' (fun g ↦ hP g) (fun X _ hX ↦ ?_)
+      fun hses _ h₁ h₂ ↦ (hasFewCocycles_of_isShortExact hses h₁ h₂).1
+    have h_finite_index : Finite (B.toSubgroup ⧸ P.toSubgroup.subgroupOf B) :=
+      (P.toSubgroup.subgroupOf B).quotient_finite_of_isOpen P.isOpen'.preimage_val
+    refine (S.card_trivialized_restrict_of_isHigmanProjective hz hfix hUB hzB
+      ⟨⟨_, P.isOpen'.preimage_val⟩, hnormal⟩ (fun g hg ↦ hUP hg) (fun g hg ↦ ?_) hX
+      (hX.isHigmanProjective_of_coprime hcopP)).1
+    -- A power `g ^ l ^ i` lies in `U`, and `t ^ l ^ i = t` in `ZMod l`.
+    obtain ⟨i, hi⟩ : ∃ i : ℕ, (g : Gal(Ω/K)) ^ l ^ i ∈ U := hP g hg
+    change cyclotomicCharMod Ω l (g : Gal(Ω/K)) = 1
+    simpa [← Units.val_eq_one] using S.cyclotomicCharMod_eq_one _ hi
+  -- Projective modules over `B / U` attain the bound, so cocycles lift over `B`.
+  have hproj (F : DiscreteModule R B.toSubgroup) (hF : F.FiniteKilledFixedInj l U' z' 1)
+      (hhig : F.IsHigmanProjective U') :
+      Nat.card F ^ k ≤ Nat.card (F.trivializedCocycles (PlaceAboveLevel N) I') := by
+    have h_card : Nat.card (F.trivializedCocycles (PlaceAboveLevel N) I') = Nat.card F ^ k :=
+      (S.card_trivialized_restrict_of_isHigmanProjective hz hfix hUB hzB U' le_rfl
+        (fun g ↦ S.cyclotomicCharMod_eq_one g) hF hhig).right
+    exact h_card.ge
+  have hWB : (W.restrictTo B).FiniteKilledFixedInj l U' z' 1 :=
+    ⟨hW.finite, hW.nsmul_eq_zero, fun g hg ↦ hW.trivialOn g hg, hW.injective⟩
+  have hI (g : Gal(Ω/K)) (hg : g ∈ I) : g ∈ B ∧ ∀ t : Gal(Ω/K), t⁻¹ * g * t ∈ I :=
+    (S.mem_and_conj_mem g hg).imp_left fun hgU ↦ hUB hgU
+  let πB : (W.restrictTo B).Hom (W₂.restrictTo B) := ⟨π.toLinearMap, fun g ↦ π.isIntertwining' g⟩
+  have hliftB : (map (PlaceAboveLevel N) I' πB).range = ⊤ :=
+    map_range_eq_top_of_hasFewCocycles (U := U') (z := z') (fun g ↦ hcentral g) hupper hproj
+      (hses.restrictAlong _) hWB
+  -- Return from `B` to `Gal(Ω/K)` by corestriction.
+  have hsurj : Surjective π := hses.right.right
+  have hI_fix (g : Gal(Ω/K)) (hg : g ∈ I) (m : W) : W.ρ g m = m :=
+    hW.trivialOn g (S.mem_and_conj_mem g hg).left m
+  have hkill : ∀ u : W₂, l • u = 0 := (hW.right_of_isShortExact hses).nsmul_eq_zero
+  have hπB (m : W) : πB m = π m := rfl
+  exact map_range_eq_top_of_restrictTo hI hcopB hsurj hI_fix hkill hπB hliftB
+
 /-- Let `K` be totally complex and `r ≠ 0`, and let `s` be split places for `U` indexed by the
 finite type `ι`, at levels `l ^ r` and `N`: distinct primes prime to `N` with Frobenii `s.φ i` in
 `U`, where `I` is the union of the inertia groups above the other primes prime to `N`. Let `V` be
@@ -703,17 +776,12 @@ theorem New.IsLargeLevel.SplitPlaces.hasFewCocycles_of_central {K R ι : Type} [
     (hV : V.FiniteKilledFixedInj (l ^ r) U z 1) (hcyc : cyclotomicChar Ω l z = 1)
     (hcentral : ∀ g : Gal(Ω/K), ⁅z, g⁆ ∈ U) (hdetect : s.FrobeniiDetectRoots) :
     V.HasFewCocycles (PlaceAboveLevel N) I (Fintype.card ι + 1) := by
-  classical
-  -- Over a group `B` normalising an `l`-Sylow group `P/U` the count of trivialised cocycles of a
-  -- module killed by `l` is squeezed to its maximum, so they lift along exact sequences, over `B`
-  -- and by corestriction over the whole group. The count is then multiplicative, hence exact by
-  -- `IsMultiplicative.eq_one_of_eq_one_on_isHigmanProjective`; finally `V` is filtered by modules
-  -- killed by `l`.
+  -- Reduce the split places from `l ^ r` to `l`, then filter `V` by modules killed by `l`; for
+  -- those, cocycles lift (`map_range_eq_top_of_central`), so the count is multiplicative and hence
+  -- exact by `IsMultiplicative.eq_one_of_eq_one_on_isHigmanProjective`.
   have hlr : l ∣ l ^ r := dvd_pow_self l hr
   have hz : (cyclotomicCharMod Ω l z).val = (1 : ℕ) :=
     cyclotomicCharMod_eq_of_dvd hlr (by simp [cyclotomicCharMod_prime_pow_eq, hcyc])
-  obtain ⟨P, hUP, hcop : l.Coprime P.toSubgroup.index, hP : ∀ g ∈ P, ∃ k, g ^ l ^ k ∈ U⟩ :=
-    exists_open_sylow l U
   have hfix (x : DiscreteUnits Ω) (hx : l • x ∈ fixedSUnits N U)
       (hφ : ∀ i : ι, unitsRep (s.φ i) x = x) :
       ∀ g : Gal(Ω/K), unitsRep g (l • x) = l • x →
@@ -725,66 +793,12 @@ theorem New.IsLargeLevel.SplitPlaces.hasFewCocycles_of_central {K R ι : Type} [
       dvd_level := hlr.trans s.dvd_level,
       cyclotomicCharMod_eq_one g hg := cyclotomicCharMod_eq_one_of_dvd hlr
         (s.cyclotomicCharMod_eq_one g hg) }
-  -- An open subgroup `B` normalises `P` and contains `z`, whose commutators lie in `U ≤ P`.
-  obtain ⟨B, hPB, hnormal, hzB, hcopP, hcopB⟩ : ∃ B : OpenSubgroup Gal(Ω/K), P ≤ B ∧
-      (P.toSubgroup.subgroupOf B).Normal ∧ z ∈ B ∧
-      l.Coprime (P.toSubgroup.subgroupOf B).index ∧ l.Coprime B.toSubgroup.index :=
-    P.exists_le_normal_mem_coprime_index hcop fun g ↦ hUP (hcentral g)
-  have hUB : (U : Subgroup Gal(Ω/K)) ≤ B := hUP.trans hPB
-  -- The data over the fixed field of `B`, where each split place has one place above it for each
-  -- coset of `B`.
-  let U' : OpenNormalSubgroup B.1 := ⟨U.1.comap _ (by fun_prop), U.2.subgroupOf B⟩
-  let I' : Set B.toSubgroup := (↑) ⁻¹' I
-  let z' : B.toSubgroup := ⟨z, hzB⟩
-  let k := Fintype.card (ι × Gal(Ω/K) ⧸ B.toSubgroup) + 1
-  -- Upper bound: filter by `P`-invariants; modules fixed by `P` are projective over `B/P`, whose
-  -- order is prime to `l`.
-  have hupper : ∀ (W : DiscreteModule R B.toSubgroup) (_ : W.FiniteKilledFixedInj l U' z' 1),
-      W.HasFewCocycles (PlaceAboveLevel N) I' k := by
-    refine devissage_induction l.pow_one (P.1.subgroupOf B) U' (fun g ↦ hP g) (fun W _ hW ↦ ?_)
-      fun hses _ h₁ h₂ ↦ (hasFewCocycles_of_isShortExact hses h₁ h₂).1
-    have h_finite_index : Finite (B.toSubgroup ⧸ P.toSubgroup.subgroupOf B) :=
-      (P.toSubgroup.subgroupOf B).quotient_finite_of_isOpen P.isOpen'.preimage_val
-    refine (S.card_trivialized_restrict_of_isHigmanProjective hz hfix hUB hzB
-      ⟨⟨_, P.isOpen'.preimage_val⟩, hnormal⟩ (fun g hg ↦ hUP hg) (fun g hg ↦ ?_) hW
-      (hW.isHigmanProjective_of_coprime hcopP)).1
-    -- A power `g ^ l ^ i` lies in `U`, and `t ^ l ^ i = t` in `ZMod l`.
-    obtain ⟨i, hi⟩ : ∃ i : ℕ, (g : Gal(Ω/K)) ^ l ^ i ∈ U := hP g hg
-    change cyclotomicCharMod Ω l (g : Gal(Ω/K)) = 1
-    simpa [← Units.val_eq_one] using S.cyclotomicCharMod_eq_one _ hi
-  -- Modules that are projective over `B/U` attain the bound.
-  have hproj (F : DiscreteModule R B.toSubgroup) (hF : F.FiniteKilledFixedInj l U' z' 1)
-      (hhig : F.IsHigmanProjective U') :
-      Nat.card F ^ k ≤ Nat.card (F.trivializedCocycles (PlaceAboveLevel N) I') := by
-    have h_card : Nat.card (F.trivializedCocycles (PlaceAboveLevel N) I') = Nat.card F ^ k :=
-      (S.card_trivialized_restrict_of_isHigmanProjective hz hfix hUB hzB U' le_rfl
-        (fun g ↦ S.cyclotomicCharMod_eq_one g) hF hhig).right
-    exact h_card.ge
-  -- So cocycles lift over `B`, hence by corestriction over the whole group.
-  have hlift {W₁ W W₂ : DiscreteModule R Gal(Ω/K)} {j : W₁.Hom W} {π : W.Hom W₂}
-      (hses : IsShortExact j π) (hW : W.FiniteKilledFixedInj l U z 1) :
-      (map (PlaceAboveLevel N) I π).range = ⊤ := by
-    have hWB : (W.restrictTo B).FiniteKilledFixedInj l U' z' 1 :=
-      ⟨hW.finite, hW.nsmul_eq_zero, fun g hg ↦ hW.trivialOn g hg, hW.injective⟩
-    have hI (g : Gal(Ω/K)) (hg : g ∈ I) : g ∈ B ∧ ∀ t : Gal(Ω/K), t⁻¹ * g * t ∈ I :=
-      (s.mem_and_conj_mem g hg).imp_left fun hgU ↦ hUB hgU
-    let πB : (W.restrictTo B).Hom (W₂.restrictTo B) := ⟨π.toLinearMap, fun g ↦ π.isIntertwining' g⟩
-    have hliftB : (map (PlaceAboveLevel N) I' πB).range = ⊤ :=
-      map_range_eq_top_of_hasFewCocycles (U := U') (z := z') (fun g ↦ hcentral g) hupper hproj
-        (hses.restrictAlong _) hWB
-    -- Corestriction from `B` to the whole group.
-    have hsurj : Surjective π := hses.right.right
-    have hI_fix (g : Gal(Ω/K)) (hg : g ∈ I) (m : W) : W.ρ g m = m :=
-      hW.trivialOn g (s.mem_and_conj_mem g hg).left m
-    have hkill : ∀ u : W₂, l • u = 0 := (hW.right_of_isShortExact hses).nsmul_eq_zero
-    have hπB (m : W) : πB m = π m := rfl
-    exact map_range_eq_top_of_restrictTo hI hcopB hsurj hI_fix hkill hπB hliftB
-  -- Filter `V` by modules killed by `l`; for those the count is exact.
   refine devissage_induction rfl U U (fun g hg ↦ ⟨0, by simpa⟩) (fun W hW hW' ↦ ?_)
     (fun hses _ h₁ h₂ ↦ (hasFewCocycles_of_isShortExact hses h₁ h₂).1) V hV
   have h_count : Nat.card (W.trivializedCocycles (PlaceAboveLevel N) I) =
       Nat.card W ^ (Fintype.card ι + 1) :=
-    S.card_trivialized_eq_of_map_range_eq_top hz hcentral hfix hlift W hW'
+    S.card_trivialized_eq_of_map_range_eq_top hz hcentral hfix
+      (S.map_range_eq_top_of_central hz hcentral hfix) W hW'
   exact mem_of_eq_of_mem h_count ⟨by simp [hW.finite], le_rfl⟩
 
 end GreenbergWilesBound
