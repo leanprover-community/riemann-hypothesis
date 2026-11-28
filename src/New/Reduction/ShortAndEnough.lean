@@ -133,8 +133,19 @@ lemma norm_invGainFactor (l : ℕ) [hl : Fact l.Prime] :
     simp [gainExponent, h_gain, h_loss]
 
 /-- A non-zero constant `c_ss` for which the seesaw identity `New.Data.seesaw_identity` holds with
-the linear form `D.besselForm` and the archimedean point `D.besselPoint`. -/
+the linear form `D.besselForm` and the archimedean point `D.besselPoint`, chosen by that theorem.
+Its defining property is `exists_lowerChain_poincare_eq_seesawConst_smul`. -/
 def seesawConst : ℂˣ := (D.seesaw_identity D.besselForm D.besselPoint).choose
+
+/-- The seesaw identity with the constant `c_ss = D.seesawConst`: each twist `ϑ` has a chain datum
+`Ψ` with `ι_ϑ (𝒫 φ) = c_ss • B_ϑ φ` for all ramified source forms `φ`. Here `𝒫 = D.poincare` is the
+Poincaré map, `ι_ϑ = D.lowerChain ϑ.toTameChar` the lower chain of lifts and
+`B_ϑ = compositeLift ϑ.toTameChar Ψ` the upper chain of lifts with data `Ψ`. -/
+lemma exists_lowerChain_poincare_eq_seesawConst_smul (ϑ : D.Twist) :
+    ∃ Ψ : D.Translations →₀ ℂ, IsChainDatum ϑ Ψ ∧ ∀ φ : D.ramifiedSourceForms,
+      D.lowerChain ϑ.toTameChar (D.poincare φ) =
+        (D.seesawConst : ℂ) • compositeLift ϑ.toTameChar Ψ φ :=
+  (D.seesaw_identity D.besselForm D.besselPoint).choose_spec ϑ
 
 /-- The inclusion of the ramified source forms, times the number `c_ss⁻¹` of the seesaw
 identity. -/
@@ -167,10 +178,7 @@ lemma exists_lowerChain_poincare_eq (ϑ : D.Twist) :
     ∃ Ψ : D.Translations →₀ ℂ, IsChainDatum ϑ Ψ ∧ ∀ φ : D.ramifiedSourceForms,
       D.lowerChain ϑ.toTameChar (D.poincare (D.scaledInclusion φ)) =
         compositeLift ϑ.toTameChar Ψ φ := by
-  obtain ⟨Ψ, hΨ, h_eq⟩ : ∃ Ψ : D.Translations →₀ ℂ, IsChainDatum ϑ Ψ ∧ ∀ φ : D.ramifiedSourceForms,
-      D.lowerChain ϑ.toTameChar (D.poincare φ) =
-        (D.seesawConst : ℂ) • compositeLift ϑ.toTameChar Ψ φ :=
-    (D.seesaw_identity D.besselForm D.besselPoint).choose_spec ϑ
+  obtain ⟨Ψ, hΨ, h_eq⟩ := D.exists_lowerChain_poincare_eq_seesawConst_smul ϑ
   exact ⟨Ψ, hΨ, fun φ ↦ by simp [scaledInclusion, h_eq]⟩
 
 /-- The map `D.normalizedPoincare s` is `c_B = D.invGainFactor` times `D.projectedPoincare s`, the
