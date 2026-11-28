@@ -189,27 +189,13 @@ lemma Space.finsum_finHeisenbergOp_unit_smul (a : (Ô E)ˣ) (g : Gf E n) :
     ∑ᶠ q : stdLattice E n ⧸
         ((stdLattice E n).comap g.val.val.mulVecLin).addSubgroupOf (stdLattice E n),
       V.finHeisenbergOp (g.val.val *ᵥ q.out.val) V.vacElem := by
-  let Λ : AddSubgroup (n → 𝔸f E) := stdLattice E n
-  let Λ' : AddSubgroup Λ := (Λ.comap g.val.val.mulVecLin).addSubgroupOf Λ
-  -- Multiplication by `a` is an automorphism `mulUnit` of `Λ` that preserves `Λ' = Λ ∩ g⁻¹ Λ`.
-  let mulUnit : Λ ≃+ Λ :=
-    { toFun x := ⟨a.val.val • x.val, smul_mem_stdLattice a.val.property x.property⟩
-      invFun x := ⟨a⁻¹.val.val • x.val, smul_mem_stdLattice a⁻¹.val.property x.property⟩
-      left_inv x := Subtype.ext (inv_smul_smul a x.val)
-      right_inv x := Subtype.ext (smul_inv_smul a x.val)
-      map_add' x y := Subtype.ext (smul_add a.val.val x.val y.val) }
-  have h_map : Λ'.map mulUnit = Λ' := AddSubgroup.ext fun x ↦ by
-    rw [AddSubgroup.map_equiv_eq_comap_symm]
-    change g.val.val *ᵥ a⁻¹.val.val • x.val ∈ Λ ↔ g.val.val *ᵥ x.val ∈ Λ
-    rw [mulVec_smul]
-    exact ⟨fun h ↦ by simpa [smul_smul,
-      ← Subring.coe_mul] using smul_mem_stdLattice a.val.property h,
-      smul_mem_stdLattice a⁻¹.val.property⟩
-  -- The term at a coset times `a` is the term at the coset moved by `mulUnit`.
-  let perm : Λ ⧸ Λ' ≃+ Λ ⧸ Λ' := QuotientAddGroup.congr Λ' Λ' mulUnit h_map
+  let Λ := intVectors (Ô E) n
+  let Λ' := (preimageLattice (Ô E) g.val.val).comap Λ.subtype
+  -- The quotient is an Ô-module, so multiplication by a unit permutes its cosets.
+  let perm := LinearEquiv.smulOfUnit (M := Λ ⧸ Λ') a
   have h_term (q : Λ ⧸ Λ') : V.finHeisenbergOp (a.val.val • g.val.val *ᵥ q.out.val) V.vacElem =
       V.finHeisenbergOp (g.val.val *ᵥ (perm q).out.val) V.vacElem := by
-    have h_rep : QuotientAddGroup.mk (mulUnit q.out) = perm q := congrArg perm q.out_eq'
+    have h_rep : QuotientAddGroup.mk (a • q.out : Λ) = perm q := congrArg perm q.out_eq'
     rw [← mulVec_smul]
     exact (V.finHeisenbergOp_mulVec_out_vacElem h_rep).symm
   exact finsum_eq_of_bijective perm perm.bijective h_term
