@@ -145,6 +145,18 @@ lemma sum_card_boxes_le {j r : ℕ} (T : WeylIndex (D.X (j + 1)) D.columnCount) 
   grw [sum_le_sum fun h _ ↦ h_height h]
   simp only [h_top, lowColumns, mul_sum, ← card_X, sum_range, sum_add_distrib, le_refl]
 
+/-- At a place inducing a marked prime and a place inducing its conjugate, a box index
+is charged exactly once when the marked side has height one. An unmarked index is charged at
+`σ` and a marked index at `τ`. -/
+lemma IsMarked.neighborCharge_add_of_conjugate (hΛ : D.IsMarked Λ) {ι : Type}
+    (J : FinPlace D.E → Finset ι) {σ τ : D.Φ} (hσ : inducedPlace σ ∈ Λ)
+    (hτ : inducedPlace τ = star (inducedPlace σ)) (h : ℕ) (b : ι) :
+    neighborCharge Λ J σ 1 b + neighborCharge Λ J τ h b = 1 := by
+  classical
+  have hs := hΛ.star_notMem _ hσ
+  by_cases hb : b ∈ J (inducedPlace σ) <;>
+    simp [neighborCharge, markedIndices, hτ, hσ, hs, hb]
+
 /-- Let `J l` be a set of indices for each prime `l`, and let `τ' = -p ^ e τ` be the partner of the
 infinite place `τ` for an exponent `e` in `partnerExponents P.d p`. Suppose that the prime induced
 by `τ` lies in `Λ`, or that `h = 1` and the prime induced by `τ'` lies in `Λ`. Then the index `b` is
@@ -158,30 +170,14 @@ lemma IsMarked.neighborCharge_ne_zero_or_partner (hΛ : D.IsMarked Λ) {ι : Typ
   have h_odd : Odd e := by rwa [partnerExponents_of_inert h_inert] at he
   have h_conj : inducedPlace (P.partner D.towerExp p e τ) = star (inducedPlace τ) :=
     D.inducedPlace_neg_pow_mul_of_odd h_inert h_odd τ
-  have h_same (hτ : τ ∈ placesInducing Λ ∨ τ ∈ placesInducingConj Λ) :
-      markedIndices Λ J (P.partner D.towerExp p e τ) = markedIndices Λ J τ := by
-    simp only [mem_filter, mem_univ, true_and] at hτ
-    grind [markedIndices, hΛ.star_notMem, star_star]
-  have h_unmarked {σ : D.Φ} (hσ : σ ∈ placesInducing Λ) (hb : b ∉ markedIndices Λ J σ) :
-      neighborCharge Λ J σ 1 b ≠ 0 :=
-    (ite_eq_left (.inl ⟨hσ, rfl, hb⟩)).trans_ne one_ne_zero
-  have h_marked {σ : D.Φ} (hσ : σ ∈ placesInducingConj Λ) (hb : b ∈ markedIndices Λ J σ) (h' : ℕ) :
-      neighborCharge Λ J σ h' b ≠ 0 :=
-    (ite_eq_left (.inr ⟨hσ, hb⟩)).trans_ne one_ne_zero
-  -- The other place induces the conjugate prime and has the same marked indices. An index that is
-  -- not marked is charged at the place inducing a prime of `Λ`, a marked one at the place inducing
-  -- its conjugate.
-  obtain hτ | ⟨rfl, h_partner⟩ := h_inducing
-  · have h_partner : P.partner D.towerExp p e τ ∈ placesInducingConj Λ :=
-      (hΛ.neg_pow_mul_mem_placesInducingConj_iff h_odd τ).2 hτ
-    by_cases hb : b ∈ markedIndices Λ J τ
-    · exact .inr (h_marked h_partner (by rwa [h_same (.inl hτ)]) h)
-    · exact .inl (h_unmarked hτ hb)
-  · have hτ : τ ∈ placesInducingConj Λ :=
-      (hΛ.neg_pow_mul_mem_placesInducing_iff h_odd τ).1 h_partner
-    by_cases hb : b ∈ markedIndices Λ J τ
-    · exact .inl (h_marked hτ hb 1)
-    · exact .inr (h_unmarked h_partner (by rwa [h_same (.inr hτ)]))
+  have total : neighborCharge Λ J τ 1 b +
+      neighborCharge Λ J (P.partner D.towerExp p e τ) h b = 1 := by
+    obtain hτ | ⟨rfl, h_partner⟩ := h_inducing
+    · exact hΛ.neighborCharge_add_of_conjugate J (by simpa using hτ) h_conj h b
+    · rw [add_comm]
+      exact hΛ.neighborCharge_add_of_conjugate J (by simpa using h_partner)
+        (by rw [h_conj, star_star]) 1 b
+  omega
 
 /-- Suppose that each component `g l` lies in the double coset `basicDoubleCoset ι l i` of
 `diag(ϖ 1_i, 1)` under the group `localIntGL` of integral invertible matrices, for some `i ≤ 𝔯`.
