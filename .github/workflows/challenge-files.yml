@@ -132,7 +132,9 @@ jobs:
           head, *forks = sys.argv[1:]
           # What a pull request may change in lakefile.toml, besides the `rev` of a `require`.
           FREE = {"leanOptions", "defaultTargets", "lean_exe", "cache"}
-          TRUSTED = ("https://github.com/leanprover-community/", "https://github.com/leanprover/")
+          # The whole address has to match, not a prefix of it: git clones
+          # https://github.com/leanprover/../someone/repository, and gets someone's repository.
+          TRUSTED = re.compile(r"https://github\.com/(leanprover-community|leanprover)/(?!\.\.?$)[A-Za-z0-9._-]+")
           # Repositories outside those two that a maintainer has agreed to depend on, each by its
           # exact address as it appears in lake-manifest.json. See the note at the top of this file.
           TRUSTED_REPOS = {"https://github.com/TauCetiProject/TauCeti"}
@@ -180,7 +182,7 @@ jobs:
                       error("lake-manifest.json", "This pull request changes where Mathlib comes from.")
               for name, package in packages.items():
                   url = str(package.get("url"))
-                  if package.get("type") != "git" or not (url.startswith(TRUSTED) or url in TRUSTED_REPOS):
+                  if package.get("type") != "git" or not (TRUSTED.fullmatch(url) or url in TRUSTED_REPOS):
                       error("lake-manifest.json", f"The package {name} is not a Git repository of leanprover-community or leanprover on GitHub, nor one listed in TRUSTED_REPOS in challenge-files.yml.")
               toolchain = (read(head, "lean-toolchain") or "").strip()
               if not re.fullmatch(r"leanprover/lean4:v[0-9][0-9A-Za-z.+-]*", toolchain):
