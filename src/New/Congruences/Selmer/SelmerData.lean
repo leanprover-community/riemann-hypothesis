@@ -568,14 +568,6 @@ lemma bijective_γ_smul_sub (T : SelmerDatum ℓ S₀ g₀ O n) {B : Type} [AddC
     [Module O B] : Function.Bijective fun b : n → B ↦ T.ρ T.γ • b - b := by
   simpa [T.ρ_γ, sub_smul] using T.isUnit_ζ_sub_one.smul_bijective (β := n → B)
 
-/-- Let `z` be a cocycle with values in `B ^ n` for the action `T.ρ`. If `h` acts trivially, then
-`z (g h g⁻¹) = g z(h)`. -/
-lemma cocycle_conj_of_fixed {z : Gal(Ω/E) → n → B}
-    (hz : ∀ g h : Gal(Ω/E), z (g * h) = z g + T.ρ g • z h) (g : Gal(Ω/E)) {h : Gal(Ω/E)}
-    (hh : ∀ b : n → B, T.ρ h • b = b) : z (g * h * g⁻¹) = T.ρ g • z h := by
-  have h_inv : T.ρ g • z g⁻¹ = -z g := by simp [cocycle_apply_inv hz, ← mul_smul, ← map_mul]
-  simp [hz, mul_smul, hh, h_inv]
-
 /-- Sah's identity `z [g, γ_*] = (1 - ζ_*) z(g)` for a cocycle `z` that vanishes at `γ_* = T.γ`,
 which acts by the scalar `ζ_* = T.ζ`. -/
 lemma cocycle_commutator_γ {z : Gal(Ω/E) → n → B}
@@ -638,7 +630,7 @@ lemma span_image_sahGroup_eq_top {T : SelmerDatum ℓ S₀ g₀ O n} {a : O}
   have h_stable (g : Gal(Ω/E)) : ∀ u ∈ X, T.ρ g • u ∈ X := by
     refine fun _ ↦ smul_mem_span_of_forall_smul_mem (T.ρ g) ?_
     rintro _ ⟨h, hh, rfl⟩
-    rw [← cocycle_conj_of_fixed hz g (by simp [ρ_eq_one_of_mem_sahGroup hh])]
+    rw [← cocycle_conj_eq_smul hz (γ := g) (g := h) (by simp [ρ_eq_one_of_mem_sahGroup hh])]
     exact h_mem (Normal.conj_mem h hh g)
   -- It contains a vector with a unit coordinate.
   obtain ⟨h, hh, j, h_unit⟩ := exists_mem_sahGroup_isUnit_apply hz hγ hz_unit

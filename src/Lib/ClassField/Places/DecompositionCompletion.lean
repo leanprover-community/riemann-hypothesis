@@ -524,28 +524,21 @@ lemma sah (c : ∀ g k : G, x (g * k) = x g + a g • x k) (γ g : G)
   rw [sub_smul, sub_smul, one_smul, one_smul, sub_eq_sub_iff_add_eq_add]
   simpa only [add_comm] using h_expand.symm
 
-/-- Let x : G → M satisfy the cocycle relation c : x(gk) = x(g) + a(g)x(k), with scalars a(g) in
-the ring R. If a(g) fixes x(γ⁻¹), then x(γgγ⁻¹) = a(γ)x(g). -/
-lemma cocycle_conj_eq_smul (c : ∀ g k : G, x (g * k) = x g + a g • x k) {g γ : G}
+/-- If `a g` fixes the single value `x γ⁻¹` of a cocycle, then `x (γ * g * γ⁻¹) = a γ • x g`.
+The scalar maps only need to distribute over addition. -/
+lemma cocycle_conj_eq_smul {G R M : Type*} [Group G] [AddCancelCommMonoid M] [DistribSMul R M]
+    {a : G → R} {x : G → M} (c : ∀ g k : G, x (g * k) = x g + a g • x k) {g γ : G}
     (h_fix : a g • x γ⁻¹ = x γ⁻¹) : x (γ * g * γ⁻¹) = a γ • x g := by
-  -- Expand `x (γ * (g * γ⁻¹))` by the cocycle relation twice; `a g` fixes `x γ⁻¹`.
-  have h_expand : x (γ * g * γ⁻¹) = x γ + a γ • x g + a γ • x γ⁻¹ := by
-    rw [mul_assoc, c γ (g * γ⁻¹), c g γ⁻¹, h_fix, smul_add, add_assoc]
-  -- `x γ + a γ • x γ⁻¹ = x (γ * γ⁻¹) = x 1`, which vanishes.
-  have h_one : x γ + a γ • x γ⁻¹ = 0 := by
-    have h_fix_one : a 1 • x γ⁻¹ = x γ⁻¹ := by
-      have h1 : x g + x γ⁻¹ = x g + a 1 • x γ⁻¹ :=
-        calc x g + x γ⁻¹ = x (1 * (g * γ⁻¹)) := by rw [one_mul, c g γ⁻¹, h_fix]
-          _ = x 1 + a 1 • (x g + x γ⁻¹) := by rw [c 1 (g * γ⁻¹), c g γ⁻¹, h_fix]
-          _ = (x 1 + a 1 • x g) + a 1 • x γ⁻¹ := by rw [smul_add, add_assoc]
-          _ = x g + a 1 • x γ⁻¹ := by rw [← c 1 g, one_mul]
-      exact (add_left_cancel h1).symm
-    have hx1 : x 1 = 0 := by
-      have h1 := c 1 γ⁻¹
-      rw [one_mul, h_fix_one, right_eq_add] at h1
-      exact h1
-    rw [← c γ γ⁻¹, mul_inv_cancel, hx1]
-  rw [h_expand, add_right_comm, h_one, zero_add]
+  have h_sum : x (g * γ⁻¹) = x g + x γ⁻¹ := by rw [c, h_fix]
+  -- The affine map y ↦ x 1 + a 1 • y fixes each reading. Here it also fixes their sum.
+  have at_one (k : G) : x 1 + a 1 • x k = x k := by simpa only [one_mul] using (c 1 k).symm
+  have h_pair := at_one (g * γ⁻¹)
+  rw [h_sum, smul_add, ← add_assoc, at_one g] at h_pair
+  have fixed : a 1 • x γ⁻¹ = x γ⁻¹ := add_left_cancel h_pair
+  have base : x 1 = 0 := by simpa only [fixed, add_eq_right] using at_one γ⁻¹
+  -- Expanding the inverse pair now gives zero.
+  have cancel : x γ + a γ • x γ⁻¹ = 0 := (c γ γ⁻¹).symm.trans (by simpa using base)
+  rw [mul_assoc, c γ _, h_sum, smul_add, add_left_comm, cancel, add_zero]
 
 namespace IsPlaceOver
 

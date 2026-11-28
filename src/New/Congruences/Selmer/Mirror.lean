@@ -508,7 +508,8 @@ lemma mirrorForm_conj_γ_left {hp : IsTiedPrimes ℓ S₀ V W N P₀ J x}
     (hh : h ∈ T.reductionKer M N) (hh_conj : conjGal h ∈ T.reductionKer M N) (h' : Gal(Ω/E)) :
     mirrorForm z y t (T.γ * h * T.γ⁻¹) h' = mirrorForm z y (T.ζ * t) h h' := by
   have hz_conj : z (T.γ * h * T.γ⁻¹) = T.ζ • z h := by
-    rw [cocycle_conj_of_fixed hz _ (T.smul_eq_self_of_mem_reductionKer ha hh), T.ρ_γ, smul_one_smul]
+    rw [cocycle_conj_eq_smul hz (T.smul_eq_self_of_mem_reductionKer ha hh _), T.ρ_γ,
+      smul_one_smul]
   have hy_conj (b : n → QuotSpan a) :
       y (conjGal (T.γ * h * T.γ⁻¹)) b = y (conjGal h) (T.ζ • b) := by
     simp [apply_conj_of_mem_dualSelmer hy _ hh_conj, T.ρ_conjGal_γ_inv, T.cyclotomicChar_γ]
@@ -538,7 +539,7 @@ lemma mirrorForm_conj_γ_right {hp : IsTiedPrimes ℓ S₀ V W N P₀ J x}
   have hz_conj : T.ζ • z (conjGal (T.γ * h * T.γ⁻¹)) = z (conjGal h) :=
     calc T.ζ • z (conjGal (T.γ * h * T.γ⁻¹)) = T.ζ • T.ρ (conjGal T.γ) • z (conjGal h) := by
           rw [map_mul, map_mul, map_inv,
-            cocycle_conj_of_fixed hz _ (T.smul_eq_self_of_mem_reductionKer ha hh_conj)]
+            cocycle_conj_eq_smul hz (T.smul_eq_self_of_mem_reductionKer ha hh_conj _)]
       _ = T.ρ (conjGal T.γ)⁻¹⁻¹ • T.ζ • z (conjGal h) := by rw [inv_inv, smul_comm]
       _ = z (conjGal h) := h_inv T.ρ_conjGal_γ_inv _
   calc mirrorForm z y (T.ζ * t) h' (T.γ * h * T.γ⁻¹)
@@ -644,8 +645,8 @@ lemma mem_conjDualHom_of_apply_eq {hp : IsTiedPrimes ℓ S₀ V W N P₀ J x}
   | mem u hu =>
     obtain ⟨h, hh, rfl⟩ := hu
     intro m
-    have h_fix (b : n → QuotSpan a) : T.ρ h • b = b := by simp [ρ_eq_one_of_mem_sahGroup hh]
-    calc η (T.ρ g • z h) m = η (z (g * h * g⁻¹)) m := by rw [cocycle_conj_of_fixed hz g h_fix]
+    have h_fix : T.ρ h • z g⁻¹ = z g⁻¹ := by simp [ρ_eq_one_of_mem_sahGroup hh]
+    calc η (T.ρ g • z h) m = η (z (g * h * g⁻¹)) m := by rw [cocycle_conj_eq_smul hz h_fix]
       _ = y (conjGal g * conjGal h * (conjGal g)⁻¹) m := by
         rw [hη _ (Normal.conj_mem h hh g), map_mul, map_mul, map_inv]
       _ = η (z h) ((cyclotomicCharIn O Ω ℓ (conjGal g) : O) • T.ρ (conjGal g)⁻¹ • m) := by

@@ -155,8 +155,9 @@ lemma apply_eq_zero_of_mem_obeying_crysRelations {e ν : ℕ}
       .single ⟨s * g * s⁻¹, h_dec'⟩ 1
     simpa [rel] using mem_obeying.1 h_crys _
       ⟨_, ⟨vℓ, rfl⟩, rel, fun y hy ↦ by simp [rel, h_zero y hy], rfl⟩
-  -- Compute `z (s⁻¹ * (s * g * s⁻¹)) = z (g * s⁻¹)` in two ways.
-  simpa [← mul_assoc, h_coc g, h_one, h_conj] using h_coc s⁻¹ (s * g * s⁻¹)
+  -- Conjugating by s transports the cocycle value by a unit, so zero is detected on either side.
+  exact ((Group.isUnit s).map (tateTwist ℓ E O e)).smul_eq_zero.mp <|
+    (cocycle_conj_eq_smul h_coc (γ := s) (g := g) (by rw [h_one, one_smul])).symm.trans h_conj
 
 /-- Let the places `w j` off `ℓ`, with tame generators `τ j`, elements `φ j` and exponents
 `0 < ty j < t`, form a triangle of primes for `g₀` (`IsPrimeTriangle`). The following is used:
