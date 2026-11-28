@@ -153,12 +153,12 @@ theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
     exact Z1.eq_zero_on_decompGroup z (hA v) (h_frob v) hz_inertia hz_frob g hg
   -- So the vectors `a w` extend to a trivialisation of `y` at all places of `Ω` above them.
   choose f hf h_val using fun x : F.ker ↦
-    exists_trivialization_of_mem hA hcM s hT x.1.1.2 x.1.2 (h_dec x.1.1 x.1.2 x.2)
+    exists_trivialization_of_mem hA hcM s hT x.val.1.2 x.val.2 (h_dec x.val.1 x.val.2 x.property)
   -- The trivialisation determines `y` and all the vectors `a w`.
   have h_inj : Injective fun x : F.ker ↦
       (⟨(f x, x.val.1.val), hf x⟩ : M.trivializedCocycles (PlaceAboveLevel N) I) := by
     intro x x' h
-    obtain ⟨h_f, h_y⟩ : f x = f x' ∧ x.1.1.1 = x'.1.1.1 := Prod.mk.inj (congrArg Subtype.val h)
+    obtain ⟨h_f, h_y⟩ : f x = f x' ∧ x.1.1.1 = x'.val.1.val := Prod.mk.inj (congrArg Subtype.val h)
     exact Subtype.ext (Prod.ext (Subtype.ext h_y) (funext fun i ↦ by rw [← h_val, h_f, h_val]))
   have h_ker : Nat.card F.ker ≤ Nat.card M ^ k :=
     (Nat.card_le_card_of_injective _ h_inj).trans h_few
@@ -356,7 +356,7 @@ lemma exists_three_values {m : ℕ} [NeZero m] [Module (ZMod m) M] {q : ℕ}
     {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)} {J : Type} [NeZero q] [Fintype J]
     [DecidableEq J] (s : SplitPlaces m q I U J)
     {γ : J → Gal(Ω/K)} (hγ : ∀ i : J, IsTameGeneratorFor (K := K) m (s.valuationSubring i) (γ i))
-    (hU : M.TrivialOn U.1.1) (hc : ∀ {c : Gal(Ω/K)}, IsComplexConj c → c ∉ U) {i j k : J}
+    (hU : M.TrivialOn U.1.toSubgroup) (hc : ∀ {c : Gal(Ω/K)}, IsComplexConj c → c ∉ U) {i j k : J}
     {g : Gal(Ω/K)} (hφ : ∀ y : DiscreteUnits Ω, m • y ∈ fixedSUnits q U →
       unitsRep (s.φ j * (g * s.φ k * g⁻¹)) y = unitsRep (s.φ i) y) (a : M) :
     ∃ P ∈ M.trivializedCocycles (PlaceAboveLevel q) I, ∀ n : J, P.2 (γ n) =
@@ -386,14 +386,14 @@ lemma exists_three_values {m : ℕ} [NeZero m] [Module (ZMod m) M] {q : ℕ}
     simp
   let χ : ZMod m := cyclotomicCharMod Ω m g
   let f : J × (Gal(Ω/K) ⧸ U.toOpenSubgroup.toSubgroup) → ZMod m :=
-    Pi.single (i, 1) 1 - Pi.single (j, 1) 1 - Pi.single (k, (g : Gal(Ω/K) ⧸ U.1.1)⁻¹) χ
+    Pi.single (i, 1) 1 - Pi.single (j, 1) 1 - Pi.single (k, (g : Gal(Ω/K) ⧸ U.1.toSubgroup)⁻¹) χ
   -- By `symbol`, `f` is a relation; so `P.2 (γ n) = ∑ δ, δ (f (n, δ) • a)` for some cocycle `P`.
   -- (The finite sum over `J × (Gal(Ω/K) ⧸ U)` in the relation is evaluated by `simp`.)
   obtain ⟨P, hP, P_val⟩ := exists_cocycle h_complex f
     (fun y ↦ by simp [f, χ, mul_comm (b _ _), sub_mul, symbol y, single_apply]) a
   refine ⟨P, hP, fun n ↦ ?_⟩
   -- The representative of the coset of `x` acts on `M` as `x` does.
-  have out_act (x : Gal(Ω/K)) (b : M) : M.ρ (x : Gal(Ω/K) ⧸ U.1.1).out b = M.ρ x b := by
+  have out_act (x : Gal(Ω/K)) (b : M) : M.ρ (x : Gal(Ω/K) ⧸ U.1.toSubgroup).out b = M.ρ x b := by
     obtain ⟨u, hu⟩ := mk_out_eq_mul U.toOpenSubgroup.toSubgroup x
     simp [hu, hU u u.property]
   -- In the sum over cosets only the coset of `1` and, for `k`, that of `g⁻¹` contribute.
