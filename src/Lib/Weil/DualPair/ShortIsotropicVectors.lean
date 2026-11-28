@@ -246,13 +246,12 @@ lemma Space.mem_adelicPoints_span_range_iff {E n ι : Type} [Field E] [CMType E]
     [DecidableEq n] [Fintype ι] {s : n → ℤˣ} (V : Space E n s) (z : ι → n → E) (x : n → 𝔸 E) :
     x ∈ V.adelicPoints (Submodule.span E (Set.range z)) ↔
       ∃ c : ι → 𝔸 E, ∑ i : ι, c i • V.vecAtPoint (z i) = x := by
-  let W : Submodule (𝔸 E) (n → 𝔸 E) := .span (𝔸 E) (Set.range fun i : ι ↦ V.vecAtPoint (z i))
-  have h_le : Submodule.span E (Set.range z) ≤ W.comap V.vecAtPoint :=
-    Submodule.span_le.2 (Set.range_subset_iff.2 fun i ↦ Submodule.subset_span ⟨i, rfl⟩)
-  have h_span : V.adelicPoints (Submodule.span E (Set.range z)) = W := by
-    refine le_antisymm (Submodule.span_le.2 (Set.image_subset_iff.2 h_le)) (Submodule.span_mono ?_)
-    exact Set.range_subset_iff.2 fun i ↦ ⟨z i, Submodule.subset_span ⟨i, rfl⟩, rfl⟩
-  rw [h_span, Submodule.mem_span_range_iff_exists_fun]
+  have h_span : V.adelicPoints (Submodule.span E (Set.range z)) =
+      .span (𝔸 E) (V.vecAtPoint '' Set.range z) :=
+    le_antisymm (Submodule.span_le.2 (Submodule.image_span_subset_span _ _))
+      (Submodule.span_mono (Set.image_mono Submodule.subset_span))
+  rw [h_span, ← Set.range_comp, Submodule.mem_span_range_iff_exists_fun]
+  rfl
 
 /-- There is `R > 0` such that, for every nonzero natural number `M`, every adele is congruent
 modulo `E` to `M` times an adele with integral finite part and infinite components of modulus at
@@ -285,10 +284,8 @@ lemma Space.continuous_adelicCombination {E n ι : Type} [Field E] [CMType E] [F
 /-- Every adelic point of the span of the `z i` is an adelic combination of the `z i`. -/
 lemma Space.adelicCombination_surjective {E n ι : Type} [Field E] [CMType E] [Fintype n]
     [DecidableEq n] [Fintype ι] {s : n → ℤˣ} (V : Space E n s) (z : ι → n → E) :
-    Function.Surjective (V.adelicCombination z) := by
-  intro x
-  obtain ⟨c, hc⟩ := (V.mem_adelicPoints_span_range_iff z x).1 x.prop
-  exact ⟨c, Subtype.ext hc⟩
+    Function.Surjective (V.adelicCombination z) := fun x ↦
+  ((V.mem_adelicPoints_span_range_iff z x).1 x.prop).imp fun _ ↦ Subtype.ext
 
 /-- The map `c ↦ ∑ c i • z i` carries rational coefficients to rational points of the span. -/
 lemma Space.ratVectors_le_comap_adelicCombination {E n ι : Type} [Field E] [CMType E] [Fintype n]
@@ -306,13 +303,10 @@ lemma Space.compactSpace_adelicPoints_quotient {E n : Type} [Field E] [CMType E]
   -- For generators `z i` of `Z`, the map `c ↦ ∑ c i • z i` makes it a quotient of `𝔸 ^ m ⧸ E ^ m`.
   obtain ⟨m, z, rfl⟩ : ∃ (m : ℕ) (z : Fin m → n → E), Submodule.span E (Set.range z) = Z :=
     Submodule.fg_iff_exists_fin_generating_family.1 (IsNoetherian.noetherian Z)
-  let Z : Submodule E (n → E) := Submodule.span E (Set.range z)
-  let ψ : (Fin m → 𝔸 E) ⧸ New.ratVectors E (Fin m) →+ V.adelicPoints Z ⧸ V.ratPoints Z :=
-    QuotientAddGroup.map _ _ (V.adelicCombination z) (V.ratVectors_le_comap_adelicCombination z)
-  have hψ_onto : Function.Surjective ψ :=
-    (QuotientAddGroup.mk_surjective.comp (V.adelicCombination_surjective z)).of_comp
-      (g := QuotientAddGroup.mk)
-  exact hψ_onto.compactSpace <| QuotientAddGroup.isOpenQuotientMap_mk.continuous_comp_iff.1
+  have h_onto := QuotientAddGroup.map_surjective_of_surjective _ _ _
+    (QuotientAddGroup.mk_surjective.comp (V.adelicCombination_surjective z))
+    (V.ratVectors_le_comap_adelicCombination z)
+  exact h_onto.compactSpace <| QuotientAddGroup.isOpenQuotientMap_mk.continuous_comp_iff.1
     (QuotientAddGroup.continuous_mk.comp (V.continuous_adelicCombination z))
 
 /-- The mean of a function `F` on adelic vectors over the adelic points of a subspace `Z` of `V`
@@ -422,8 +416,7 @@ lemma Space.exists_rho_nsmul_eq_self {E n : Type} [Field E] [CMType E] [WeilData
   have h_vec : (fun k : n ↦ (0, ((M • u) k).2)) =
       finVec ((M : 𝔸f E) • (α (E := E))⁻¹.val • fun k : n ↦ (u k).2) :=
     funext fun k ↦ by simp [finVec, mul_left_comm (α (E := E)).val]
-  have h_zero : finVec (0 : n → 𝔸f E) = 0 := funext fun k ↦ by simp [finVec]
-  rw [h_vec, h_near _ ⟨fun k ↦ (u k).2, hu, rfl⟩, h_zero, Rep.rho_zero_apply]
+  rw [h_vec, h_near _ ⟨fun k ↦ (u k).2, hu, rfl⟩, finVec_zero, Rep.rho_zero_apply]
 
 /-- Let `f₀` lie in the finite part of `𝒮 V` and let `ι` be a finite index type. There is `C` as
 follows. Let the vectors `z i` lie in the lattice at `g` with lengths at most `δ ≥ 0`
@@ -441,18 +434,14 @@ lemma Space.exists_rho_eq_realHeisenbergOp {E n : Type} [Field E] [CMType E] [We
         ∀ v : fockSpace (realSigns E s),
           V.ϱ (g⁻¹.adeleMatrix *ᵥ (V.vecAtPoint γ + x)) (V.integrated v f₀) =
             V.integrated (realHeisenbergOp y v) f₀ := by
-  obtain ⟨M, hM, h_fix⟩ : ∃ M : ℕ, M ≠ 0 ∧ ∀ u : n → 𝔸 E, (∀ k : n, (u k).2 ∈ Ô E) →
-      V.ϱ (fun k : n ↦ (0, ((M • u) k).2)) f₀ = f₀ := exists_rho_nsmul_eq_self hf₀
+  obtain ⟨M, hM, h_fix⟩ := exists_rho_nsmul_eq_self hf₀
   obtain ⟨R, hR, h_reduce⟩ := exists_toAdele_add_eq_nsmul E
   let σ : NumberField.InfinitePlace E → ℂ := fst (scaleIdele E).val
   refine ⟨M * Fintype.card ι * R * ‖σ⁻¹‖, by positivity, fun g δ z hδ hz x hx ↦ ?_⟩
   -- Write `x = ∑ c i • z i` and reduce the coefficients modulo `E` to `M • w i`.
   obtain ⟨c, rfl⟩ := (V.mem_adelicPoints_span_range_iff z x).1 hx
-  have h_coeff (i : ι) :
-      ∃ (a : E) (w : 𝔸 E), toAdele a + c i = M • w ∧ ‖w.1‖ ≤ R ∧ w.2 ∈ Ô E := h_reduce M hM (c i)
-  choose a w h_eq hw_le hw_int using h_coeff
-  obtain ⟨hz_int, hz_le⟩ : (∀ i : ι, z i ∈ (V.move g).baseLattice) ∧
-      ∀ i : ι, ‖(V.move g).archCoords (z i)‖ ≤ δ := forall_and.1 hz
+  choose a w h_eq hw_le hw_int using fun i ↦ h_reduce M hM (c i)
+  obtain ⟨hz_int, hz_le⟩ := forall_and.1 hz
   let u : n → 𝔸 E := ∑ i : ι, w i • (V.move g).vecAtPoint (z i)
   have h_point : g⁻¹.adeleMatrix *ᵥ (V.vecAtPoint (∑ i : ι, a i • z i) +
       ∑ i : ι, c i • V.vecAtPoint (z i)) = M • u := by
