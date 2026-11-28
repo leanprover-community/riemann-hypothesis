@@ -464,41 +464,41 @@ private lemma one_sub_dvd_natCast_sub_geom_sum {R : Type*} [Ring R] (x : R) (r :
   rw [show (r : R) - ∑ i ∈ range r, x ^ i = ∑ i ∈ range r, (1 - x ^ i) by simp]
   exact dvd_sum fun i _ ↦ one_sub_dvd_one_sub_pow x i
 
-/-- Let `T` be an endomorphism of a complex vector space with `T ^ r = 1`, where `r ≠ 0`. The
-vectors `T ^ i φ`, `0 ≤ i < r`, have sum `0` if and only if `φ = ψ - T ψ` for some vector `ψ`. -/
-lemma sum_pow_apply_eq_zero_iff_exists_eq_sub {V : Type*} [AddCommGroup V] [Module ℂ V]
-    {T : Module.End ℂ V} {r : ℕ} (hr : (r : ℂ) ≠ 0) (hT : T ^ r = 1) (φ : V) :
+/-- Let `T` be an endomorphism over a field `F`, with `T ^ r = 1` and `(r : F) ≠ 0`.
+The vectors `T ^ i φ`, `0 ≤ i < r`, sum to `0` if and only if `φ = ψ - T ψ` for some `ψ`. -/
+lemma sum_pow_apply_eq_zero_iff_exists_eq_sub {F V : Type*} [Field F] [AddCommGroup V] [Module F V]
+    {T : Module.End F V} {r : ℕ} (hr : (r : F) ≠ 0) (hT : T ^ r = 1) (φ : V) :
     ∑ i ∈ range r, (T ^ i) φ = 0 ↔ ∃ ψ : V, φ = ψ - T ψ := by
   rw [← LinearMap.sum_apply]
   constructor
   · intro h_sum
     -- The operator `r - ∑ T ^ i` is the scalar `r` on `φ`, and `1 - T` divides it.
     obtain ⟨S, hS⟩ := one_sub_dvd_natCast_sub_geom_sum T r
-    have h_scalar : (r : ℂ) • φ = S φ - T (S φ) :=
+    have h_scalar : (r : F) • φ = S φ - T (S φ) :=
       calc
-        (r : ℂ) • φ = ((r : Module.End ℂ V) - ∑ i ∈ range r, T ^ i) φ := by
+        (r : F) • φ = ((r : Module.End F V) - ∑ i ∈ range r, T ^ i) φ := by
           simp [h_sum, Nat.cast_smul_eq_nsmul]
         _ = S φ - T (S φ) := by simp [hS]
-    refine ⟨(r : ℂ)⁻¹ • S φ, ?_⟩
+    refine ⟨(r : F)⁻¹ • S φ, ?_⟩
     rw [map_smul, ← smul_sub, ← h_scalar, inv_smul_smul₀ hr]
   · rintro ⟨ψ, rfl⟩
     calc
       (∑ i ∈ range r, T ^ i) (ψ - T ψ) = ((∑ i ∈ range r, T ^ i) * (1 - T)) ψ := by simp
       _ = 0 := by rw [geom_sum_mul_neg, hT, sub_self, LinearMap.zero_apply]
 
-/-- Let `π` be a complex representation of a commutative group and `z w` a finite family of
-elements with `π (z w) ^ r = 1`, where `r ≠ 0`. The vectors whose translates by `z w ^ i`,
+/-- Let `π` be a representation of a commutative group over a field `F` and `z w` a finite family
+with `π (z w) ^ r = 1` and `(r : F) ≠ 0`. The vectors whose translates by `z w ^ i`,
 `0 ≤ i < r`, have sum `0` for each `w` are the image of the product of the operators `1 - z w`. -/
-lemma iInf_ker_sum_pow_eq_range {G V ι : Type*} [CommGroup G] [AddCommGroup V] [Module ℂ V]
-    [Fintype ι] (π : Representation ℂ G V) (z : ι → G) {r : ℕ} (hr : (r : ℂ) ≠ 0)
+lemma iInf_ker_sum_pow_eq_range {F G V ι : Type*} [Field F] [CommGroup G] [AddCommGroup V]
+    [Module F V] [Fintype ι] (π : Representation F G V) (z : ι → G) {r : ℕ} (hr : (r : F) ≠ 0)
     (hz : ∀ w : ι, π (z w) ^ r = 1) :
     ⨅ w : ι, LinearMap.ker (∑ i ∈ range r, π (z w) ^ i) =
-      (π.asAlgebraHom (∏ w : ι, (1 - .of ℂ G (z w)))).range := by
+      (π.asAlgebraHom (∏ w : ι, (1 - .of F G (z w)))).range := by
   classical
   -- Compute in the commutative group algebra, with `σ w = ∑ i < r, z w ^ i`.
-  let ρ : MonoidAlgebra ℂ G →ₐ[ℂ] Module.End ℂ V := π.asAlgebraHom
-  let y (w : ι) : MonoidAlgebra ℂ G := .of ℂ G (z w)
-  let σ (w : ι) : MonoidAlgebra ℂ G := ∑ i ∈ range r, y w ^ i
+  let ρ : MonoidAlgebra F G →ₐ[F] Module.End F V := π.asAlgebraHom
+  let y (w : ι) : MonoidAlgebra F G := .of F G (z w)
+  let σ (w : ι) : MonoidAlgebra F G := ∑ i ∈ range r, y w ^ i
   have h_mem (φ : V) :
       φ ∈ ⨅ w : ι, LinearMap.ker (∑ i ∈ range r, π (z w) ^ i) ↔ ∀ w, ρ (σ w) φ = 0 := by
     simp only [Submodule.mem_iInf, LinearMap.mem_ker, ρ, σ, y, map_sum, map_pow,
@@ -506,11 +506,11 @@ lemma iInf_ker_sum_pow_eq_range {G V ι : Type*} [CommGroup G] [AddCommGroup V] 
   change _ = (ρ (∏ w, (1 - y w))).range
   refine le_antisymm (fun φ hφ ↦ ?_) ?_
   · -- On a vector killed by `σ w` the element `r - σ w` is the scalar `r`; `1 - z w` divides it.
-    have h_scalar (s : Finset ι) : ρ (∏ w ∈ s, (↑r - σ w)) φ = (r : ℂ) ^ #s • φ := by
+    have h_scalar (s : Finset ι) : ρ (∏ w ∈ s, (↑r - σ w)) φ = (r : F) ^ #s • φ := by
       induction s using cons_induction with
       | empty => simp
       | cons w s hw ih =>
-        have h_factor : ρ (↑r - σ w) φ = (r : ℂ) • φ := by
+        have h_factor : ρ (↑r - σ w) φ = (r : F) • φ := by
           simp [(h_mem φ).1 hφ w, Nat.cast_smul_eq_nsmul]
         simp only [prod_cons, map_mul, mul_apply_eq_comp, ih, map_smul, h_factor, card_cons,
           pow_succ, mul_smul]
