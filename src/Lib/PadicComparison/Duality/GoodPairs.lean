@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.RingTheory.Etale.StandardEtale
+import Mathlib.Algebra.Polynomial.Identities
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
 public import Lib.Cohomology.ProjectiveLine.TiltedLineFormula
@@ -386,20 +387,18 @@ private lemma exists_eq_add_mul_and_sub_derivative_mem {P : StandardEtalePair R}
     {t : c.obj} {m : Ideal c.obj} (w : AdjoinRoot P.f →ₐ[A] c.obj) (ψ : R[X] →ₐ[A] c.obj)
     (ht : t ∈ m) (hX : ψ X = w (root P.f) + t) (hC : ∀ r : R, w r = ψ (C r)) (p : R[X]) :
     ∃ s : c.obj, ψ p = w (AdjoinRoot.mk P.f p) + s * t ∧ s - ψ (derivative p) ∈ m := by
-  induction p using Polynomial.recOnHorner with
-  | M0 => exact ⟨0, by simp⟩
-  | MC p a _h_coeff _h_ne ih => simpa [hC, add_right_comm _ (ψ (C a))] using ih
-  | MX p _h_ne ih =>
-    obtain ⟨s, h_eq, h_slope⟩ := ih
-    refine ⟨s * w (root P.f) + ψ p, ?_, ?_⟩
-    · simp only [map_mul, AdjoinRoot.mk_X, hX, h_eq]
-      ring
-    · have h_diff : s * w (root P.f) + ψ p - ψ (derivative (p * X)) =
-          (s - ψ (derivative p)) * w (root P.f) - ψ (derivative p) * t := by
-        rw [derivative_mul, derivative_X, mul_one, map_add, map_mul, hX]
-        ring
-      rw [h_diff]
-      exact sub_mem (m.mul_mem_right _ h_slope) (m.mul_mem_left _ ht)
+  let coeff := ψ.toRingHom.comp C
+  have eval_at (φ : R[X] →+* c.obj) (hφ : φ.comp C = coeff) (q : R[X]) :
+      (q.map coeff).eval (φ X) = φ q := by
+    rw [eval_map, ← hφ, ← hom_eval₂, eval₂_C_X]
+  have eval_ψ (q : R[X]) : (q.map coeff).eval (ψ X) = ψ q := eval_at ψ.toRingHom rfl q
+  have eval_w : (p.map coeff).eval (w (root P.f)) = w (AdjoinRoot.mk P.f p) :=
+    eval_at (w.toRingHom.comp (AdjoinRoot.mk P.f)) (RingHom.ext hC) p
+  obtain ⟨k, hk⟩ := (p.map coeff).binomExpansion (ψ X) (-t)
+  simp only [show ψ X + -t = w (root P.f) by simp [hX], eval_w, derivative_map, eval_ψ] at hk
+  refine ⟨ψ (derivative p) - k * t, ?_, ?_⟩
+  · linear_combination -hk
+  · simpa using m.neg_mem (m.mul_mem_left k ht)
 
 /-- Near the prime `m` of the test ring, the pair `(w, ψ)` lies in `rootPairs P`: `w` is a root of
 `P.f`, `ψ` a point of `Spec R[X]`, they agree on `R` (`hC`), `ψ X = w (root P.f) + t` with
