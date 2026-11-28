@@ -100,10 +100,7 @@ lemma rescale_translatedY_mem_integralSeriesRing {C' : CMLattice d} {a : ℂ} {N
     simp (disch := fun_prop) only [taylorVia, taylorAtZero_mul, taylorAtZero_pow, map_mul, map_pow,
       C'.taylorAtZero_congr fun _ hz ↦ C'.translatedYThetaCube_eq_translatedY_mul_theta_cube hz]
   -- Both theta series have constant term `1`, so `R₁` is a unit of `𝒪[[y]]`, with inverse `S`.
-  have hθ_const (D : CMLattice d) : constantCoeff (taylorVia ιₚ D.θ) = 1 := by
-    rw [constantCoeff_taylorVia, theta_zero, map_one]
-  have h_const : constantCoeff R₁ = 1 := by
-    simpa [constantCoeff_rescale, hθ_const] using (congrArg constantCoeff hθ).symm
+  have h_const : constantCoeff R₁ = 1 := by simpa using (congrArg constantCoeff hθ).symm
   obtain ⟨S, hS, h_inv⟩ : ∃ S ∈ C.integralSeriesRing, R₁ * S = 1 :=
     C.isSeriesGenerator_translatedY.exists_mul_eq_one hR₁ (by rw [h_const, norm_one])
   have hθ_ne : (taylorVia ιₚ C.θ ^ N) ^ 3 ≠ 0 :=
@@ -147,12 +144,8 @@ lemma exists_rescale_twistedTranslate_eq_theta_pow_mul {δ v : ℂ} {N : ℕ}
   have hN : conj δ * δ = N := by
     have h_area : (C.area : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (area_pos C.periodPair).ne'
     simpa only [Complex.conj_conj] using mul_right_cancel₀ h_area h_degree
-  have h_torsion : C.IsTorsion v := by
-    have hN₀ : N ≠ 0 := by
-      rintro rfl
-      simp [hδ₀] at hN
-    refine ⟨N, hN₀, ?_⟩
-    simpa only [← hN, mul_assoc] using h_maps (δ * v) hv
+  have h_torsion : C.IsTorsion v :=
+    ⟨N, fun hN₀ ↦ by simp [hN₀, hδ₀] at hN, by simpa only [← hN, mul_assoc] using h_maps (δ * v) hv⟩
   have h_le (z : ℂ) : ‖ιₚ (C.twistedTranslate 1 v C.θ (conj δ * z))‖ ≤ C.naiveHeight z ^ N := by
     simpa only [one_mul] using C.norm_twistedTranslate_mul_le (m := 1) h_isog h_torsion
       (fun w ↦ by simpa only [pow_one] using C.norm_theta_le_naiveHeight w) z
