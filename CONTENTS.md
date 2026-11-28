@@ -283,7 +283,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `New/Determinant/Exchange/MatchingPartners` (413): Matched functions, sections over GL cosets and same-section pairs of matrix functions
 - `New/Determinant/Exchange/EquivariantDifference` (223): The difference in the exchange identity as an equivariant lift
 - `New/Determinant/Exchange/StableSpacesStandardData` (563): Criteria for a function with a matched function to lie in a stable space; vanishing of lifts
-- `New/Determinant/Exchange/ConeImage` (319): The image of the cone integral
 - `New/Determinant/Exchange/LargeTriple` (763): Parabolic theta terms, equal ranks, and the exchange identity for the large triple
 - `New/Determinant/Exchange/RealVectors` (539): Smooth local Witt theorem and the exchange identity for `V' ⊕ W₁` and `V'`
 - `New/Determinant/Exchange/RemovingPlanes` (434): Change of point and sign, and descent of the exchange identity by removing hyperbolic planes
@@ -434,10 +433,9 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 - `New/Appendix/DiscreteSeries/SteepParameters` (49): Steep parameters and the setting of Laplace's method
 - `New/Appendix/DiscreteSeries/Localization` (497): Localizing products of discrete series coefficients near the compact subgroups
-- `New/Appendix/DiscreteSeries/MinorSecondOrder` (410): One minor of a product of three exponentials, to second order
 - `New/Appendix/DiscreteSeries/Positions` (306): Positions of a smaller unitary group, and the two traces
 - `New/Appendix/DiscreteSeries/StationaryPosition` (501): The stationary position
-- `New/Appendix/DiscreteSeries/OneMinor` (429): One minor near the identity
+- `New/Appendix/DiscreteSeries/MinorExpansion` (367): One minor near the identity
 - `New/Appendix/DiscreteSeries/GaussianShape` (271): The Gaussian shape of the coefficient
 - `New/Appendix/DiscreteSeries/Periods` (366): Lower bounds for periods by Laplace's method
 - `New/Appendix/DiscreteSeries/PositionGroup` (499): The group of a position
@@ -529,7 +527,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 **Witt**: Witt's theorem, Eichler maps and Iwasawa decomposition
 
 - `Lib/Adelic/Witt/WittTheorem` (461): Witt's theorem over fields and over Ô; quasi-reflections, Eichler maps, frames
-- `Lib/Adelic/Witt/SmoothWitt` (73): Smooth families of isometries that carry an isotropic vector to its neighbours
 - `Lib/Adelic/Witt/IwasawaDecomposition` (439): Maximal compact subgroup, splittings of isotropic frames and the Iwasawa decomposition
 
 ### Analytic: Analytic number theory
@@ -793,7 +790,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `Lib/GLn/SchurModule/TensorModel` (195): The Weyl module inside the tensors of its diagram
 - `Lib/GLn/SchurModule/WeylKernel` (408): The Weyl kernel and its Gram matrix: the hook number bound, positivity, Schur's lemma
 - `Lib/GLn/SchurModule/GramMatrix` (438): Fock pairing, Hermitian norm and Cartan products for the Gram matrix of the Weyl kernel
-- `Lib/GLn/SchurModule/LeadingRows` (320): Fillings whose columns begin with the leading rows
 - `Lib/GLn/SchurModule/SchurOrthogonality` (173): Algebraic representations of GL(n) on unitary groups: Schur orthogonality
 - `Lib/GLn/SchurModule/Polarisation` (197): Irreducibility under U(n)^Φ, polarisation and averaging of determinant polynomials
 - `Lib/GLn/SchurModule/SchurNorm` (227): Norm bound for Schur matrices and basic facts on the weight representations
@@ -1114,11 +1110,12 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 ### SiegelWeil: Siegel–Weil and Rallis formulas
 
-- `Lib/SiegelWeil/NeighbourLattices` (472): Neighbours of the standard lattice
 - `Lib/SiegelWeil/Mass` (292): Masses of definite hermitian lattices and ideal zeta bounds for adelic Gauss sums
 - `Lib/SiegelWeil/UnramifiedSeries/VacuumCoefficients` (447): Vacuum coefficients, coset representatives and the weight of steps through neighbours
 - `Lib/SiegelWeil/UnramifiedSeries/RallisSeries` (429): The series of translates weighted by the coefficients of the vacuum
 - `Lib/SiegelWeil/RallisInner/Doubling` (435): Doubling: clean data, the doubling identity and the inner product formula
+- `Lib/SiegelWeil/RallisInner/DualDatum` (275): The dual datum of a vacuum
+- `Lib/SiegelWeil/RallisInner/VacuumSummability` (97): Summability of the vacuum coefficients from the doubling formula
 - `Lib/SiegelWeil/RallisInner/SharpData` (641): Rallis' inner product formula for sharp data and injectivity of the theta lift
 - `Lib/SiegelWeil/Reproduction` (288): Holomorphic Fock vectors and a reproducing formula by theta lifts
 
@@ -1131,9 +1128,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 **OneVector**: Siegel's formula for representation numbers
 
 - `Lib/SiegelWeil/OneVector/FinitePlaceDensity` (489): Local measure bounds and local densities at a finite place
-- `Lib/SiegelWeil/OneVector/ResidueClasses` (42): Classes modulo a lattice at a finite place
-- `Lib/SiegelWeil/OneVector/ClassGaussSums` (172): Gauss sums of classes modulo a lattice at a finite place
-- `Lib/SiegelWeil/OneVector/SemilocalDensityBounds` (156): Bounds for local densities at finitely many finite places
 - `Lib/SiegelWeil/OneVector/StandardQuadrics` (114): The quadrics of the standard form at a finite place
 - `Lib/SiegelWeil/OneVector/SiegelClassSum` (649): Siegel–Weil for one vector, Siegel's class sum formula and the ratio of masses
 
@@ -1152,7 +1146,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `Lib/SiegelWeil/Tower/FiniteTateIntegral` (226): Products of `L`-values and Tate's integral at the finite places
 - `Lib/SiegelWeil/Tower/TestVector` (261): The test vector of the zeta integral
 - `Lib/SiegelWeil/Tower/LargeSideConstantTerm` (609): Removing a plane: the constant term on the side of the large space
-- `Lib/SiegelWeil/Tower/FunctionalEquation` (302): The functional equation of the `L`-function of a tamely ramified character
 
 ### Weil: The Weil representation and theta lifts
 
@@ -1215,7 +1208,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `Lib/Weil/MixedModel/ThetaInvariance` (407): Mixed model of the Weil representation: Levi intertwining and invariance of θ
 - `Lib/Weil/MixedModel/AdaptedSplitting` (177): Adapted splittings: hyperbolic polarisation, Hom spaces, composition and stages
 - `Lib/Weil/MixedModel/Slices` (404): Real, named and finite slices of data in the mixed model of an adapted splitting
-- `Lib/Weil/MixedModel/TargetZeroTerm` (224): Zero terms of the mixed models of the Weil representation at the real places
 
 **Periods**: Bessel periods and unfolding of theta integrals
 
