@@ -361,6 +361,59 @@ lemma gram_linkMetric_eq_gram_toRows₁ {m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.M
 
 end
 
+omit [HasPrimitiveRoot5040 E] in
+/-- If both `z`-forms vanish, level lifts of `m a` give columns in the term lattice after
+projection to `X₀`. The projections are integral, and orthogonality expresses their frame
+pairings using the lift's `A` coordinates, which are divisible by the level. -/
+private lemma HasLevelLifts.colLattice_le_termLattice {c : S.Classes} {γ : S.G E}
+    {r : ℕ} {m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin r) E}
+    (hm_forms : zRowBlockDiagonal (S.ratMiddle E) * m = 0)
+    {a : GL (Fin r) (𝔸f E)} (h_lift : HasLevelLifts c γ (finAdeleMatrix m * a.val))
+    (c' : S.Classes) :
+    colLattice (Ô E) (finAdeleMatrix m.toRows₁.toRows₁ * a.val) ≤ S.termLattice c c' γ := by
+  let k : S.GFin := S.translateByClassReps c c' γ
+  let T : 𝔰.Form (𝔸f E) := S.latticeMiddle (𝔸f E)
+  let X := S.classCoordX₀ c * (finAdeleMatrix m.toRows₁.toRows₁ * a.val)
+  let Y := (frameMiddle (k : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (𝔸f E)))ᴴ * T
+  obtain ⟨ρ, _, t, w, h_orth, hn_int, hn_level, h_eq⟩ := h_lift
+  set n : Matrix 𝔰.BesselIndex (Fin r) (𝔸f E) := S.classCoord c * finAdeleMatrix t * w
+  have hn_z : zRowBlockDiagonal T * linkMatrix k * n =
+      finAdeleMatrix (zRowBlockDiagonal (S.ratMiddle E)) * (finAdeleMatrix m * a.val) := by
+    rw [← h_eq]
+    exact zRowBlockDiagonal_mul_linkMatrix_mul_classCoord c c' γ t w
+  have hn_orth : (isotropicFramePair k)ᴴ * T.splitGram * n = 0 :=
+    isotropicFramePair_mul_classCoord_eq_zero c c' h_orth w
+  have h_middle : n.toRows₂.toRows₁ = X := by
+    dsimp only [X]
+    apply toRows_classCoord_mul (γ := γ)
+    rw [h_eq]
+    exact toRows₁_mul_eq_fromRows_zero hm_forms a.val
+  have h_int : IsIntMatrix (Ô E) X := by
+    rw [← h_middle]
+    exact fun i ↦ hn_int (.inr (.inl i))
+  -- `n` is orthogonal to both frames, so the products of its middle part with the frame of `γ` are
+  -- those of its part in `A`, up to sign, and this part is divisible by `M`.
+  have hn_forms : zRowBlockDiagonal T * linkMatrix k * n = 0 := by
+    rw [hn_z]
+    simp [← Matrix.mul_assoc, ← Matrix.map_mul, hm_forms]
+  have h_products : (isotropicRows (T.frameGram k))ᴴ * -n.toRows₁ = Y * n.toRows₂.toRows₁ :=
+    isotropicRows_conjTranspose_mul_eq hn_orth hn_forms
+  refine le_inf (colLattice_le_preimageLattice_iff.mpr h_int) (colLattice_le fun i ↦ ?_)
+  change (Y * S.classCoordX₀ c) *ᵥ (finAdeleMatrix m.toRows₁.toRows₁ * a.val).col i ∈
+    S.ideleM • colLattice (Ô E) (isotropicRows (T.frameGram k))ᴴ
+  rw [← Matrix.col_mul_eq_mulVec_col, Matrix.mul_assoc]
+  change (Y * X).col i ∈ S.ideleM • colLattice (Ô E) (isotropicRows (T.frameGram k))ᴴ
+  let u : Fin 𝔰.ϱ → 𝔸f E := -(S.ideleM⁻¹ • n.toRows₁.col i)
+  have hu_mem : (isotropicRows (T.frameGram k))ᴴ *ᵥ u ∈ colLattice (Ô E)
+    (isotropicRows (T.frameGram k))ᴴ :=
+    ⟨u, fun b ↦ hn_level.neg b i, rfl⟩
+  have h_col : S.ideleM • ((isotropicRows (T.frameGram k))ᴴ *ᵥ u) =
+      ((isotropicRows (T.frameGram k))ᴴ * -n.toRows₁).col i := by
+    rw [← mulVec_smul, smul_neg, smul_inv_smul]
+    rfl
+  rw [← h_middle, ← h_products, ← h_col]
+  exact smul_mem_pointwise_smul _ _ _ hu_mem
+
 /-- **The part in `X₀`.** Let `m` have a left inverse. Let its columns span a subspace of `link γ`
 on which both `z`-forms vanish: `zRowBlockDiagonal (S.ratMiddle E) * m = 0`, the rows indexed by `z`
 in each copy. Let `p = m.toRows₁.toRows₁` be the parts in `X₀`. Let the lattice with basis `m a` lie
@@ -380,8 +433,8 @@ lemma HasLevelLifts.discriminant_sq_le {c : S.Classes} {γ : S.G E} {r : ℕ}
     r = finrank E V ∧
       IsLatticeOfRank (finrank E V) L ∧
       discriminant (finrank E V) L ^ 2 ≤ S.linkDiscSq m a := by
-  -- The integral lifts `n` of `m a` show that the columns of `p a` lie in `L`. So `L` has finite
-  -- index in the saturated lattice of `V`, and its discriminant is at most that of `p a`.
+  -- The projected columns of `m a` span a sublattice of the term lattice. Compare its
+  -- discriminant with that of the intersection `L` inside the saturated lattice of `V`.
   intro V L
   let p : Matrix 𝔰.κ (Fin r) E := m.toRows₁.toRows₁
   have h_gram : mᴴ * S.linkMetric * m = pᴴ * p := gram_linkMetric_eq_gram_toRows₁ hm_link hm_forms
@@ -393,44 +446,19 @@ lemma HasLevelLifts.discriminant_sq_le {c : S.Classes} {γ : S.G E} {r : ℕ}
   have h_disc : S.linkDiscSq m a =
       genIndex (finAdeleMatrix (pᴴ * p)).det * genIndex a.val.det ^ 2 := by
     simp [← genIndex_algebraMap, RingHom.map_det, linkDiscSq, h_gram]
-  obtain ⟨ρ, _, t, w, h_orth, hn_int, hn_level, h_eq⟩ := h_lift
-  set n : Matrix 𝔰.BesselIndex (Fin r) (𝔸f E) := S.classCoord c * finAdeleMatrix t * w
   let k : S.GFin := S.translateByClassReps c c' γ
   let T : 𝔰.Form (𝔸f E) := S.latticeMiddle (𝔸f E)
-  have hn_z : zRowBlockDiagonal T * linkMatrix k * n =
-      finAdeleMatrix (zRowBlockDiagonal (S.ratMiddle E)) * (finAdeleMatrix m * a.val) := by
-    rw [← h_eq]
-    exact zRowBlockDiagonal_mul_linkMatrix_mul_classCoord c c' γ t w
-  have hn_orth : (isotropicFramePair k)ᴴ * T.splitGram * n = 0 :=
-    isotropicFramePair_mul_classCoord_eq_zero c c' h_orth w
   let Y : Matrix (Fin (𝔰.ϱ + 1)) 𝔰.MiddleIndex (𝔸f E) :=
     (frameMiddle (k : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (𝔸f E)))ᴴ * T
-  have h_middle : n.toRows₂.toRows₁ = S.classCoordX₀ c * (finAdeleMatrix p * a.val) := by
-    apply toRows_classCoord_mul (γ := γ)
-    rw [h_eq]
-    exact toRows₁_mul_eq_fromRows_zero hm_forms a.val
-  have h_int : IsIntMatrix (Ô E) (S.classCoordX₀ c * (finAdeleMatrix p * a.val)) := by
-    rw [← h_middle]
-    exact fun i ↦ hn_int (.inr (.inl i))
-  -- `n` is orthogonal to both frames, so the products of its middle part with the frame of `γ` are
-  -- those of its part in `A`, up to sign, and this part is divisible by `M`.
-  have hn_forms : zRowBlockDiagonal T * linkMatrix k * n = 0 := by
-    rw [hn_z]
-    simp [← Matrix.mul_assoc, ← Matrix.map_mul, hm_forms]
-  have h_products : (isotropicRows (T.frameGram k))ᴴ * -n.toRows₁ = Y * n.toRows₂.toRows₁ :=
-    isotropicRows_conjTranspose_mul_eq hn_orth hn_forms
+  have h_columns : colLattice (Ô E) (finAdeleMatrix p * a.val) ≤ S.termLattice c c' γ :=
+    h_lift.colLattice_le_termLattice hm_forms c'
+  have h_int := colLattice_le_preimageLattice_iff.mp (h_columns.trans inf_le_left)
   have h_mem (i : Fin r) : (Y * (S.classCoordX₀ c * (finAdeleMatrix p * a.val))).col i ∈
       S.ideleM • colLattice (Ô E) (isotropicRows (T.frameGram k))ᴴ := by
-    let u : Fin 𝔰.ϱ → 𝔸f E := -(S.ideleM⁻¹ • n.toRows₁.col i)
-    have hu_mem : (isotropicRows (T.frameGram k))ᴴ *ᵥ u ∈ colLattice (Ô E)
-      (isotropicRows (T.frameGram k))ᴴ :=
-      ⟨u, fun b ↦ hn_level.neg b i, rfl⟩
-    have h_col : S.ideleM • ((isotropicRows (T.frameGram k))ᴴ *ᵥ u) =
-        ((isotropicRows (T.frameGram k))ᴴ * -n.toRows₁).col i := by
-      rw [← mulVec_smul, smul_neg, smul_inv_smul]
-      rfl
-    rw [← h_middle, ← h_products, ← h_col]
-    exact smul_mem_pointwise_smul _ _ _ hu_mem
+    have h_col : (Y * S.classCoordX₀ c) *ᵥ (finAdeleMatrix p * a.val).col i ∈
+        S.ideleM • colLattice (Ô E) (isotropicRows (T.frameGram k))ᴴ :=
+      (h_columns (col_mem_colLattice i)).2
+    rwa [← Matrix.col_mul_eq_mulVec_col, Matrix.mul_assoc] at h_col
   -- `L` has finite index in the saturated lattice `Λ` of `V`.
   let Λ : Submodule (Ô E) (𝔰.κ → 𝔸f E) := saturatedLattice (S.gram_classCoordX₀ c) V
   have h_index : submoduleIndex L Λ = sublatticeIndex (S.gram_classCoordX₀ c) V Y
