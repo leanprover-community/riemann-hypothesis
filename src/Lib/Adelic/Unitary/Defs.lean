@@ -203,9 +203,11 @@ instance : ContinuousSMul (Gf E n) (n → 𝔸f E) := ⟨.matrix_mulVec (by fun_
 variable [IsEmpty n] in
 deriving instance Subsingleton for Gf E n
 
+/-- The inclusion of `Gf E n` in `GL n (𝔸f E)` preserves multiplication. -/
 @[simp]
 lemma Gf.coe_mul (g k : Gf E n) : (g * k).val = g.val * k.val := rfl
 
+/-- The inclusion of `Gf E n` in `GL n (𝔸f E)` preserves inverses. -/
 @[simp]
 lemma Gf.coe_inv (g : Gf E n) : g⁻¹.val = g.val⁻¹ := rfl
 
