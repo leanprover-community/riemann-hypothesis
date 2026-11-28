@@ -275,8 +275,10 @@ lemma New.one_add_norm_le_norm_I_add_inner {V : Type*} [NormedAddCommGroup V]
     [InnerProductSpace ℝ V] (b : V) :
     1 + ‖b‖ ≤ ‖(Complex.I + 2 * π * Complex.I * inner ℝ b (‖b‖⁻¹ • b) : ℂ)‖ := by
   have h_inner : inner ℝ b (‖b‖⁻¹ • b) = ‖b‖ := by simp [inner_smul_right, field]
+  have hπ : 1 ≤ 2 * π := by linarith only [two_le_pi]
   calc 1 + ‖b‖
-    _ ≤ 1 + 2 * π * ‖b‖ := by nlinarith [norm_nonneg b, two_le_pi]
+    _ ≤ 1 + 2 * π * ‖b‖ :=
+      add_le_add_right (le_mul_of_one_le_left (norm_nonneg b) hπ) 1
     _ = (Complex.I + 2 * π * Complex.I * inner ℝ b (‖b‖⁻¹ • b) : ℂ).im := by simp [h_inner]
     _ ≤ _ := im_le_norm _
 
