@@ -1,7 +1,7 @@
 module
 
 import Mathlib.Data.Rat.Cast.OfScientific
-public import New.Congruences.GaloisRepresentations.SelmerHypotheses
+public import New.Congruences.GaloisRepresentations.LocalData
 public import New.Congruences.Selmer.AuxiliaryPrimes
 public import New.OneLift.HeckeValues.AlgebraicPartIntegrality
 public import New.OneLift.HeckeValues.PeriodAtOne

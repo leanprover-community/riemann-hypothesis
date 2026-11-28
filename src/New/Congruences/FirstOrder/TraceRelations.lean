@@ -7,6 +7,7 @@ import Mathlib.Data.Rat.Cast.OfScientific
 import Mathlib.Topology.Algebra.Module.Compact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import New.Congruences.GaloisRepresentations.SelmerHypotheses
 public import New.Congruences.LocalLoss.LocalLattices
 public import New.Congruences.FirstOrder.EvenClasses
 public import New.Congruences.FirstOrder.FittingBlock

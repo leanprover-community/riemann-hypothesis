@@ -2,7 +2,8 @@ module
 
 import Mathlib.Algebra.Module.StablyFree.Basic
 import TauCeti.LinearAlgebra.Pi
-public import New.Congruences.GaloisRepresentations.SelmerHypotheses
+public import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+public import New.Congruences.GaloisRepresentations.LocalData
 public import New.Congruences.LocalLoss.CrystallineCocycles
 import Lib.PadicHodge.Crystalline.HodgeTateForms
 import Lib.PadicHodge.Crystalline.Regularity
