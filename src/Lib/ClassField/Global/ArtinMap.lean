@@ -170,9 +170,8 @@ lemma abelianLift_artinAt_of_inertiaGroup_le_ker (h_unr : inertiaGroup Γ A ≤ 
   -- unramified `χ` kills the symbol of a unit.
   let u : (LocField v)ˣ := ideleAt v (principalIdele x) * π ^ (v.valuation K x).log
   have hu : Valued.v u.val = 1 := by
-    have h_cancel : v.valuation K x * WithZero.exp (-(v.valuation K x).log) = 1 := by
-      rw [WithZero.exp_neg, WithZero.exp_log (by simp), mul_inv_cancel₀ (by simp)]
-    simpa [u, ideleAt, hπ_val] using h_cancel
+    simpa [u, ideleAt] using
+      v_mul_uniformizer_zpow_log_eq_one (ideleAt v (principalIdele x)) hπ_val
   have h_unit_symbol : abelianLift χ (New.artinAt Γ v u) = 1 :=
     (h.artinAt_units_trivial_iff_inertiaGroup_le χ).mpr h_unr u hu
   simpa [u, h_art_π, mul_inv_eq_one] using h_unit_symbol

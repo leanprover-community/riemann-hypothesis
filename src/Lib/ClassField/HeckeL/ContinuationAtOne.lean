@@ -82,8 +82,7 @@ raised to the order `-log (v x)` of `x`. -/
 lemma CharUnramifiedAt.apply_locIdele_eq_zpow {w : FinPlace K} (hψ : CharUnramifiedAt ψ w)
     (x : (LocField w)ˣ) :
     ψ (locIdele w x) = ψ (locIdele w (uniformizer w)) ^ (-(v x.val).log) := by
-  have h_unit : v (x * uniformizer w ^ (v x.val).log).val = 1 := by
-    simp [-WithZero.inv_exp, WithZero.exp_neg]
+  have h_unit := v_mul_uniformizer_zpow_log_eq_one x (v_uniformizer w)
   simpa [← div_eq_one] using hψ (x * uniformizer w ^ (v x.val).log) h_unit
 
 /-- For a Haar measure `μ` and an open set `V` containing `1`, the volume of `Ô^× ∩ V` is nonzero.

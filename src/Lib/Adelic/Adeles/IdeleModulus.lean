@@ -182,6 +182,12 @@ variable {E n : Type*} [Field E] [NumberField E] [Fintype n] [DecidableEq n] {w 
 
 /-! ### Valuations and absolute values at a finite place -/
 
+/-- Multiplying a nonzero local element by `π ^ log (v x)` gives a unit of the valuation ring
+when `π` is a uniformiser. -/
+lemma v_mul_uniformizer_zpow_log_eq_one (x : (LocField w)ˣ) {π : (LocField w)ˣ}
+    (hπ : v π.val = exp (-1)) : v (x * π ^ (v x.val).log).val = 1 := by
+  simp [hπ, WithZero.exp_neg, -WithZero.inv_exp]
+
 /-- An element `y` of `E_w` has valuation less than `1` if and only if its quotient by the chosen
 uniformiser is integral. -/
 lemma v_uniformizer_inv_mul_le_one_iff {y : IsDedekindDomain.HeightOneSpectrum.adicCompletion E w} :

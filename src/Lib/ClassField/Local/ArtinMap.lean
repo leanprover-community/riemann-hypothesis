@@ -702,11 +702,9 @@ lemma exists_localArtin_eq_of_isFrob_pow {g : Γ} {n : ℕ} (hg : IsFrob A (w.q 
       hχ _ ⟨u, ⟨locIdele w u, locIdele_mem_idelesUnitOff hu, ideleAt_locIdele ..⟩, rfl⟩
     exact hψu.trans hχu.symm
   -- Every `x` is a unit times a power of `uniformizer w`.
-  have cancel_log (x : (LocField w)ˣ) : v x.val * exp (-(v x.val).log) = 1 := by
-    rw [exp_neg, exp_log (by simp), mul_inv_cancel₀ (by simp)]
   have mem_E (x : (LocField w)ˣ) : x ∈ E :=
     (mul_mem_cancel_right (zpow_mem unif_mem (v x.val).log)).mp
-      (unit_mem _ (by simpa using cancel_log x))
+      (unit_mem _ (v_mul_uniformizer_zpow_log_eq_one x (v_uniformizer w)))
   have agree : ∀ σ : TopologicalAbelianization (decompGroup Γ A),
       abelianLift ψ σ = abelianLift χ σ := h.denseRange_localArtin.eq mem_E
   exact (agree s).symm.trans (ψ_unr s s_mem)
