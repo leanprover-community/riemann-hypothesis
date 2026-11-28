@@ -186,11 +186,7 @@ lemma ComparedTheory.mem_of_isClosedClass_of_isCharting [PreValuationRing A]
       fun x ↦ ⟨(x, 1), by simp⟩
     · exact Set.forall_mem_range.2 fun y ↦ h_piece y.1 y.2
     · rintro _ ⟨⟨x, f⟩, rfl⟩ _ ⟨⟨y, f'⟩, rfl⟩
-      -- The unit locus of a product is the intersection of the unit loci.
-      have h_inf : (testUnitLocus (a x * (f * a y * f')) : Subfunctor (testSpec A B)) =
-          testUnitLocus (a x * f) ⊓ testUnitLocus (a y * f') := by
-        simp [Subfunctor.ext_iff, funext_iff, Set.ext_iff, testUnitLocus, and_assoc]
-      exact ⟨(x, f * a y * f'), h_inf⟩
+      exact ⟨(x, f * a y * f'), by simp only [← testUnitLocus_mul, mul_assoc]⟩
 
 /-- Let `A` be a valuation ring of `Ω` (a `ClosurePlace`) with the prime `p` in its maximal ideal.
 Then `A` has rank one: for every nonzero `a ∈ A`, the maximal ideal lies in the radical of `(a)`. -/

@@ -111,6 +111,12 @@ def testUnitLocus (a : T) : Subfunctor (testSpec A T) where
   obj _ := {ψ | IsUnit (testSpec.asAlgHom ψ a)}
   map f _ h_unit := h_unit.map f.hom.hom
 
+/-- The unit locus of a product is the intersection of the unit loci of its factors. -/
+lemma testUnitLocus_mul (a b : T) :
+    (testUnitLocus (a * b) : Subfunctor (testSpec A T)) = testUnitLocus a ⊓ testUnitLocus b := by
+  ext c ψ
+  simp [testUnitLocus, IsUnit.mul_iff]
+
 open IsLocalization Away Algebra in
 /-- Let `L` be a localization of `T` away from `a` (`Localization.Away a` unless `L` is given). Then
 the functor of points of `L` on tests over `A` is isomorphic to the unit locus `testUnitLocus a` of
@@ -662,16 +668,16 @@ lemma isFiniteLerayHirsch_offClosedFiber_sup_testUnitLocus_preimage
       ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d) := (testUnitLocus x).ι ≫ affineToLines e
   let W (x : R[X]) : Subfunctor (ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)) :=
     Subfunctor.range (j x) ⊔ offClosedFiber (ringOf (𝟭 _) ⋙ projLinePow (Fin d))
+  have h_range_le : Subfunctor.range (j (P.g * P.f)) ≤ Subfunctor.range (j P.g) := by
+    simp only [j, range_comp, range_ι, testUnitLocus_mul]
+    exact fun _ _ ⟨ψ, hψ, h_eq⟩ ↦ ⟨ψ, hψ.1, h_eq⟩
   have h_sup : Subfunctor.range (j P.g) ⊔ W (P.g * P.f) = W P.g := by
-    ext c q
-    simp only [W, j, range_comp, range_ι, testUnitLocus, map_mul, IsUnit.mul_iff]
-    exact ⟨fun h ↦ h.elim .inl fun h ↦ h.elim (fun ⟨ψ, ⟨hg, _⟩, hq⟩ ↦ .inl ⟨ψ, hg, hq⟩) .inr,
-      fun h ↦ h.elim .inl (.inr ∘ .inr)⟩
+    simp only [W, ← sup_assoc, sup_eq_left.2 h_range_le]
   have h_pre : (W (P.g * P.f)).preimage (j P.g) =
       (offClosedFiber (testSpec A R[X]) ⊔ testUnitLocus P.f).preimage
         (testUnitLocus (A := A) P.g).ι := by
     ext c ⟨ψ, hψg⟩
-    simp only [W, j, range_comp, range_ι, testUnitLocus, map_mul, IsUnit.mul_iff]
+    simp only [W, j, range_comp, range_ι, testUnitLocus_mul]
     constructor
     · rintro (⟨ψ', ⟨_, hψ'f⟩, h_eq⟩ | h)
       · have hψ_eq : ψ' = ψ := injective_of_mono ((affineToLines e).app c) h_eq
