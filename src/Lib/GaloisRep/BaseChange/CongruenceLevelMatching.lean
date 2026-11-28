@@ -47,6 +47,8 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 
 @[expose] public section
 
+open MonoidHom (twistedNorm)
+
 /-!
 ## Matching pairs at a congruence level over a profinite ring
 
@@ -176,7 +178,7 @@ lemma New.exists_twisted_root_of_smul_sub_one {O R n : Type} [CommRing O] [CommR
     ∃ z z' : O[X], ∀ {k : Type} [Fintype k] [DecidableEq k] {B : Matrix k k R},
       aeval B g.val.val.charpoly = 0 →
       let B' := v • (B - 1)
-      let T := aeval B' (twistedNorm (.map τ) p (1 + m • z))
+      let T := aeval B' (twistedNorm (mapRingHom τ) p (1 + m • z))
       aeval B' ((1 + m • z') * (1 + m • z)) = 1 ∧
       (star B' * (1 + m • B') = -B' → (1 + m • B') * star T = T) := by
   set ι : O →+* R := algebraMap O R
@@ -292,10 +294,10 @@ lemma New.exists_isNormRoot_and_mem_of_mem {O R n : Type} [CommRing O] [CommRing
     -- `q` commutes with taking norms, as `σ` fixes `v`
     have hq (r : O[X]) : q (r.map τ) = (q r).map σ := by
       simp [q, hσv, Polynomial.map_map, show ι.comp τ = σ.comp ι from RingHom.ext hιτ, map_comp]
-    have hT : aeval γ.val.val (twistedNorm (.map σ) p (q (1 + m • z))) =
-        aeval (v • (γ.val.val - 1)) (twistedNorm (.map τ) p (1 + m • z)) := by
+    have hT : aeval γ.val.val (twistedNorm (mapRingHom σ) p (q (1 + m • z))) =
+        aeval (v • (γ.val.val - 1)) (twistedNorm (mapRingHom τ) p (1 + m • z)) := by
       simpa [q, ι, aeval_comp] using
-        congrArg (aeval γ.val.val) (map_twistedNorm q.toMonoidHom hq p (1 + m • z)).symm
+        congrArg (aeval γ.val.val) (MonoidHom.map_twistedNorm q.toMonoidHom hq p (1 + m • z)).symm
     rw [IsRootQuotient, hT, ← hmv, mul_smul, algebraMap_smul]
     exact (h_at (h_self γ hγ)).2 hB
   -- If `γ ∈ L`, multiply `a * Zᴴ = Z` on the `u`-part, `Z = (1 + m z) (Y γ)`, by the adjoint of the
@@ -397,8 +399,8 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
           map_smul' (hf := map_mul σ), ← RingHom.mapMatrix_apply σ 1, map_one, map_sub,
           map_one, hσu]))
     have h_norm : e (twistedNorm (mapEnd hτ) p (S s hs)) = e 1 := by
-      rw [map_twistedNorm (σ := mapEnd hσ) e h_e_comm, hS_cut,
-        ← map_twistedNorm (cutAt hu hu_star) h_cut_comm, hN, map_one, map_one]
+      rw [MonoidHom.map_twistedNorm (τ' := mapEnd hσ) e h_e_comm, hS_cut,
+        ← MonoidHom.map_twistedNorm (cutAt hu hu_star) h_cut_comm, hN, map_one, map_one]
     obtain ⟨t, W, ht : S s hs * mapEnd hτ t = t, hW : t.val.val = 1 + m • W⟩ :=
       unitary_hilbert90_at_level hO hτ_tame hc h_unit hτ (S s hs) hm_star hm_tame (hS s hs)
         (map_injective h_inj (congrArg (fun x : U (1 : Matrix n n R) ↦ x.val.val) h_norm))

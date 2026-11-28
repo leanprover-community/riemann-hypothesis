@@ -43,6 +43,8 @@ Known; see `Lib.GaloisRep.Hilbert90.TameActions` for sources.
 
 @[expose] public section
 
+open MonoidHom (twistedNorm)
+
 /-!
 ## Hilbert 90 for unitary groups over profinite rings
 -/
@@ -103,7 +105,7 @@ structure IsTwistedRoot (τ : O →+* O) (p : ℕ) (m : O) (k : ℕ) {A : Type w
   aeval_mul_eq_one : IsTameAtLevel τ p m → aeval B ((1 + m • z') * (1 + m • z)) = 1
   /-- If `τ` is tame at level `m`, then `T` is the value of the twisted norm of `1 + m z`. -/
   aeval_twistedNorm_eq : IsTameAtLevel τ p m →
-    aeval B (twistedNorm (Polynomial.map τ) p (1 + m • z)) = aeval B (1 + m • (X ^ (1 - k) * y))
+    aeval B (twistedNorm (mapRingHom τ) p (1 + m • z)) = aeval B (1 + m • (X ^ (1 - k) * y))
   /-- If `B⋆ (1 + m B) ^ k = (-1) ^ k B`, then `T ^ (1 - k) (1 + m B) T⋆ = T ^ k`. -/
   pow_mul_star_eq_pow : star B * (1 + m • B) ^ k = (-1) ^ k * B →
     aeval B (1 + m • (X ^ (1 - k) * y)) ^ (1 - k) * (1 + m • B) *
@@ -312,7 +314,7 @@ lemma unitary_hilbert90_at_level (hO : IsProfiniteRing O) {m c : O}
   -- Split `s` in `GL n O` by some `k ≡ 1 mod m`, then correct `k` to a unitary `k * g` by a
   -- `τ`-fixed orthonormal frame `g` of the hermitian matrix `kᴴ * k`.
   have h_norm : twistedNorm (GeneralLinearGroup.map τ) p (s : GL n O) = 1 :=
-    (map_twistedNorm (U 1).subtype (fun g ↦ rfl) p s).symm.trans (Units.ext hs_norm)
+    (MonoidHom.map_twistedNorm (U 1).subtype (fun g ↦ rfl) p s).symm.trans (Units.ext hs_norm)
   obtain ⟨k, W, hk_cob, hk⟩ := h_tame.hilbert90_gl (.inr hO) (s : GL n O) hs h_norm
   -- `kᴴ * k` is fixed by `τ` because `sᴴ * s = 1`.
   have h_prod : ((s : Matrix n n O) * k.val.map τ)ᴴ * ((s : Matrix n n O) * k.val.map τ) =

@@ -51,6 +51,8 @@ fondamental pour le changement de base stable, Duke Math. J. 61, 1990.
 
 @[expose] public section
 
+open MonoidHom (twistedNorm)
+
 namespace New
 
 open NumberField Filter Module End Gf Submodule Set

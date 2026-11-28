@@ -41,7 +41,7 @@ Notions from other files:
 * `levelSpace π L`: the vectors fixed by `π k` for every `k ∈ L`.
 * `New.IsOperatorOf π L T φ`: `T` is the Hecke operator of `φ` on the `L`-fixed vectors.
 * `New.stdSpace`: the definite space `I_n`, the sum of `n` norms with its standard lattice.
-* `New.twistedNorm τ p δ`: the product `δ * τ δ * ⋯ * τ^[p - 1] δ`.
+* `MonoidHom.twistedNorm τ p δ` (Tau Ceti): the product `δ * τ δ * ⋯ * τ^[p - 1] δ`.
 
 ## Relation to the literature
 
@@ -49,6 +49,8 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
 
 @[expose] public section
+
+open MonoidHom (twistedNorm)
 
 /-! ## Double counting of moves between weighted samples of pairs -/
 
@@ -431,7 +433,8 @@ lemma New.exists_trace_mul_weightRep_eq_of_twistedNorm_eq [DecidableEq n] (hσ :
       of_apply, A.forall_congr_left, apply_symm_apply, G]
     exact fun _ _ ↦ rfl
   have h_norm (m : ℕ) (δ : U (1 : Matrix n n E')) :
-      twistedNorm ω (m + 1) δ = δ * twistedNorm ω m (ω δ) := by simp [twistedNorm]
+      twistedNorm ω (m + 1) δ = δ * twistedNorm ω m (ω δ) := by
+    rw [MonoidHom.twistedNorm_succ, ω.map_twistedNorm (fun _ ↦ rfl)]
   -- Summing over the inner vertices of a cycle multiplies the matrices.
   have h_cycle (m : ℕ) (δ : U (1 : Matrix n n E'))
       (M : Matrix (WeylIndex n κ.fst) (WeylIndex n κ.fst) ℂ) :
@@ -440,12 +443,12 @@ lemma New.exists_trace_mul_weightRep_eq_of_twistedNorm_eq [DecidableEq n] (hσ :
           M (x (last m)) (x 0) * ∏ l : Fin m, G (l + 1) δ (x l.castSucc) (x l.succ) := by
     induction m generalizing δ M with
     | zero =>
-      simp [twistedNorm, trace, reindex_equiv (consEquiv _), Fintype.sum_prod_type_right,
+      simp [trace, reindex_equiv (consEquiv _), Fintype.sum_prod_type_right,
         univ_eq_empty]
     | succ m ih =>
       -- Use `ih` for `ω δ` and `M * G 0 (ω δ)`; by definition `G l (ω δ) = G (l + 1) δ`.
-      simp [h_norm, ← (consEquiv fun _ : Fin (m + 2) ↦ _).sum_comp, ← mul_assoc, Matrix.mul_apply,
-        sum_mul, Fintype.sum_prod_type_right, prod_univ_succ, ih]
+      simp [h_norm, -MonoidHom.twistedNorm_succ, ← (consEquiv fun _ : Fin (m + 2) ↦ _).sum_comp,
+        ← mul_assoc, Matrix.mul_apply, sum_mul, Fintype.sum_prod_type_right, prod_univ_succ, ih]
       rfl
   -- `s` permutes the basis by rotating the index `Fin (k + 1)`.
   refine ⟨(submatrix 1 (A.trans ((finRotate _).piCongrLeft' _)) A).toLin',
@@ -755,7 +758,7 @@ private lemma New.IsBaseChangeMaps.twistedNorm_conj [IsGalois E E']
     (H : New.IsBaseChangeMaps σ j ω e) (x : Gf E' n) (δ : U (1 : Matrix n n E')) :
     twistedNorm (galoisGf σ) (finrank E E') (x⁻¹ * e δ * galoisGf σ x) =
       x⁻¹ * e (twistedNorm ω (finrank E E') δ) * x := by
-  rw [map_twistedNorm e H.map_apply_eq_galoisGf, twistedNorm_inv_mul_mul_galoisGf]
+  rw [MonoidHom.map_twistedNorm e H.map_apply_eq_galoisGf, twistedNorm_inv_mul_mul_galoisGf]
 
 /-- A rational point `δ` over `E'` and its twisted norm `ν` for `ω` satisfy `δ * ω ν = ν * δ`. -/
 private lemma New.IsBaseChangeMaps.semiconjBy_twistedNorm [IsGalois E E']
@@ -767,7 +770,8 @@ private lemma New.IsBaseChangeMaps.semiconjBy_twistedNorm [IsGalois E E']
       e δ * ((e δ)⁻¹ * e (twistedNorm ω (finrank E E') δ) * e δ) := by
     rw [H.twistedNorm_conj]
   rw [inv_mul_cancel, one_mul, ← H.map_apply_eq_galoisGf,
-    ← map_twistedNorm e H.map_apply_eq_galoisGf, ← map_twistedNorm ω (fun _ ↦ rfl),
+    ← MonoidHom.map_twistedNorm e H.map_apply_eq_galoisGf,
+    ← MonoidHom.map_twistedNorm ω (fun _ ↦ rfl),
     mul_assoc (e δ)⁻¹, mul_inv_cancel_left, ← map_mul, ← map_mul] at h_conj
   exact h_conj
 
@@ -791,7 +795,7 @@ private lemma New.IsMatchingRoots.twistedNorm_inv (R : New.IsMatchingRoots σ K 
     twistedNorm ω (finrank E E') (A (j γ))⁻¹ = j γ := by
   apply H.e_injective
   rw [R.map_twistedNorm_eq h_good (R.semiconjBy_inv H h_good)]
-  simp [twistedNorm]
+  simp
 
 /-- For a good base change `j γ` and `x` over `E`, the value of `f` at `x⁻¹ * γ * x` is the value of
 `φ` at the twisted conjugate of `e (A (j γ))⁻¹` by `y = (B (j γ))⁻¹ * baseChangeGf x`. -/
@@ -890,11 +894,11 @@ private lemma New.exists_isMatchingRoots (hσ : σ ≠ 1) {μ : (𝔸f E)ˣ →*
     obtain ⟨-, h_norm_root⟩ := hz (q ν) hν_C
     obtain ⟨-, h_root_norm⟩ := h_norm_root (e ν) (charpoly_e ν)
     have h_pol : IsRootQuotient (e ν)
-        (twistedNorm (Polynomial.map (adeleMap ↑σ)) (finrank E E') (z (q ν))) (e ν) := by
+        (twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) (finrank E E') (z (q ν))) (e ν) := by
       simpa using h_root_norm
     have h_comm : e ν * e δ = e δ * galoisGf σ (e ν) := by
       rw [← H.map_apply_eq_galoisGf, (hν.map e).eq]
-    rw [← H.twistedNorm_conj, ← hrδ, map_twistedNorm e H.map_apply_eq_galoisGf]
+    rw [← H.twistedNorm_conj, ← hrδ, MonoidHom.map_twistedNorm e H.map_apply_eq_galoisGf]
     exact IsRootQuotient.twistedNorm_eq_mul h_pol h_comm hr h_unit
   · -- What `IsMatchingPair` says at a conjugate `y⁻¹ * e ν * y`, whose root for `z` is
     -- `y⁻¹ * r * y`.
@@ -983,7 +987,7 @@ private lemma New.IsMatchingRoots.exists_bijOn_of_ne_zero [IsGalois E E']
     have h_semi : a⁻¹ * j p.2 = ν * a⁻¹ := H.e_injective <| by
       -- `-map_inv` with `e.map_inv a`: of the inverses under `e`, only that of `a` is pulled out.
       simp [hν_def, ← ha_δ, H.map_apply_eq_galoisGf, H.twistedNorm_conj, -map_inv, e.map_inv a,
-        map_twistedNorm e H.map_apply_eq_galoisGf, R.twistedNorm_inv H hp_good]
+        MonoidHom.map_twistedNorm e H.map_apply_eq_galoisGf, R.twistedNorm_inv H hp_good]
     obtain ⟨-, hA, hB⟩ := R.good_and_conj_of_semiconjBy _ hp_good h_semi
     obtain ⟨a', ha'_j⟩ : ∃ a' : U (1 : Matrix n n E), j a' = (a * g)⁻¹ :=
       H.exists_j_eq _ (by simp [hg, ← ha_δ, hA, mul_assoc])

@@ -42,6 +42,8 @@ sources.
 
 @[expose] public section
 
+open MonoidHom (twistedNorm)
+
 namespace New
 
 section MatchedPlacePairs
@@ -68,7 +70,8 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
     {p : ℕ} {P z : (𝔸f E')[X]} [NeZero p]
     (hz : ∀ u : FinPlace E', u.below E ∉ T → z.map (evalAt u) = 1)
     (hP : ∀ u : FinPlace E', u.below E ∈ T →
-      P.map (evalAt u) ∣ (twistedNorm (Polynomial.map (adeleMap σ)) p z).map (evalAt u) - X) :
+      P.map (evalAt u) ∣
+        (twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) p z).map (evalAt u) - X) :
     IsNormRoot n (adeleMap σ) p (idem B) (kerCompNorm E' μ) P z ∧
       ∀ γ a : Gf E' n, IsRootQuotient γ (idem B • z) a → ∀ u : FinPlace E', u.below E ∈ T →
         (a.atPlace u : Matrix n n (LocField u)) =
@@ -89,13 +92,13 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
     · have hz_u : z.map (evalAt u) = 1 := hz u fun hu ↦ huB ((mem_B u).2 (.inl hu))
       simp [← evalAt_apply, ← coeff_map, ev_idem, huB, hz_u]
   · rintro g rfl
-    have h_norm : (twistedNorm (Polynomial.map (adeleMap σ)) p z).aeval g.val.val =
+    have h_norm : (twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) p z).aeval g.val.val =
         cutGL (idem_mul_self (FinPlace.below E ⁻¹' T)) g.val := by
       refine matrix_ext_evalAt fun u ↦ ?_
       by_cases hu : u.below E ∈ T
       · -- the norm is `X` modulo the characteristic polynomial; use Cayley–Hamilton
         obtain ⟨q, hq⟩ := hP u hu
-        have h_norm_u : (twistedNorm (Polynomial.map (adeleMap σ)) p z).map (evalAt u) =
+        have h_norm_u : (twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) p z).map (evalAt u) =
             g.val.val.charpoly.map (evalAt u) * q + X := sub_eq_iff_eq_add.1 hq
         rw [map_aeval_matrix, h_norm_u]
         simp [ev_idem, hu, aeval_self_charpoly, ← charpoly_map, cutGL, Matrix.map_add, map_smul']
@@ -422,8 +425,8 @@ lemma isMatchingPairAbove_of_mem_biInvariantPairs {μ : (𝔸f E)ˣ →* ℂˣ} 
     simp [huV]
   -- at a Galois conjugate of a place of `V` one factor of the norm is `X`, the others are `1`
   have h_dvd (u : FinPlace E') (hu : u.below E ∈ FinPlace.below E '' V) :
-      P.map (evalAt u) ∣ (twistedNorm (Polynomial.map (adeleMap σ)) (finrank E E')
-        (1 + idem V • (X - 1))).map (evalAt u) - X := by
+      P.map (evalAt u) ∣ (twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) (finrank E E')
+        (1 + idem V • (X - 1) : (𝔸f E')[X])).map (evalAt u) - X := by
     obtain ⟨v, hv, h_below⟩ := hu
     obtain ⟨i, rfl⟩ := h_surj.exists.1 (FinPlace.exists_gal_comap_eq h_below.symm)
     simp [Finset.prod_range, add_ite, h_unique hv, h_inj.eq_iff, twistedNorm_map_eq_prod,
@@ -460,7 +463,8 @@ lemma isMatchingPairAbove_of_mem_biInvariantPairs {μ : (𝔸f E)ˣ →* ℂˣ} 
   -- second clause, `a⁻¹ * δ ∈ B`: at `A` both factors are integral; at `V` it is `(γ⁻¹ * a)⁻¹`
   -- divided by the product of those conjugates, as `γ` is `δ` times that product
   have h_at_V : a⁻¹ * δ ∈ localLevel n V := by
-    simpa [twistedNorm, mul_div_assoc] using div_mem (inv_mem haV) h_rest
+    simpa [twistedNorm_eq_list_prod, -MonoidHom.twistedNorm_succ, mul_div_assoc] using
+      div_mem (inv_mem haV) h_rest
   have h_at_A : a⁻¹ * δ ∈ localLevel n A := mul_mem (inv_mem haA) hδ
   exact hB.2 ⟨h_at_V, h_at_A⟩
 

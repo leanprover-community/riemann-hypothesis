@@ -54,6 +54,8 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 
 @[expose] public section
 
+open MonoidHom (twistedNorm)
+
 /-!
 ## The Hasse principle for ideles in one CM field
 
@@ -381,8 +383,8 @@ lemma IsMatchingPair.mul {A : Type*} {j : A → U (1 : Matrix n n R)}
   · -- `(1 + u (γ - 1)) (1 + v (γ - 1)) = 1 + (u + v) (γ - 1)`.
     obtain ⟨-, hz_norm⟩ := hz_root γ hγ
     obtain ⟨-, hw_norm⟩ := hw_root γ hγ
-    have h_norm_mul : twistedNorm (Polynomial.map σ) p (z * w) =
-        twistedNorm (Polynomial.map σ) p z * twistedNorm (Polynomial.map σ) p w := by
+    have h_norm_mul : twistedNorm (mapRingHom σ) p (z * w) =
+        twistedNorm (mapRingHom σ) p z * twistedNorm (mapRingHom σ) p w := by
       simp only [twistedNorm_map_eq_prod, Polynomial.map_mul, Finset.prod_mul_distrib]
     have h_factor : (1 + u • (γ.val.val - 1)) * (1 + v • (γ.val.val - 1)) =
         1 + (u + v) • (γ.val.val - 1) := by
@@ -432,44 +434,45 @@ lemma IsMatchingPair.mul {A : Type*} {j : A → U (1 : Matrix n n R)}
         (hw_match γ r hγ hr_v).2 δ hδ (right_ne_zero_of_mul hne)⟩
 
 /-- Let `z(γ)` be invertible, and let `a * z(γ)ᴴ = z(γ)`. Let `γ * N(γ)ᴴ = N(γ)` for
-`N = twistedNorm (.map σ) p z = z * σ(z) * ⋯ * σ^(p-1)(z)` (likewise `twistedNorm (mapEnd hσ) p
-c = c * σ(c) * ⋯ * σ^(p-1)(c)`), and let `c` conjugate `σ γ` to `γ`. Then the twisted norm of `c` is
-`γ` times that of `a⁻¹ * c`. -/
+`N = twistedNorm (mapRingHom σ) p z = z * σ(z) * ⋯ * σ^(p-1)(z)` (likewise
+`twistedNorm (mapEnd hσ) p c = c * σ(c) * ⋯ * σ^(p-1)(c)`), and let `c` conjugate `σ γ` to `γ`. Then
+the twisted norm of `c` is `γ` times that of `a⁻¹ * c`. -/
 lemma IsRootQuotient.twistedNorm_eq_mul
-    (h_norm : IsRootQuotient γ (twistedNorm (Polynomial.map σ) p z) γ)
+    (h_norm : IsRootQuotient γ (twistedNorm (mapRingHom σ) p z) γ)
     (h_conj : γ * c = c * mapEnd hσ γ) (h_root_a : IsRootQuotient γ z a)
     (h_isUnit : IsUnit (aeval γ.val.val z)) :
     twistedNorm (mapEnd hσ) p c = γ * twistedNorm (mapEnd hσ) p (a⁻¹ * c) := by
   -- By induction on `q`, the quotient of the two norms of length `q` is the root for the norm
   -- of `z` of length `q`, whose value at `γ` is a unit. For `q = p` roots are unique.
   have h_quotient_root (q : ℕ) :
-      IsUnit (aeval γ.val.val (twistedNorm (.map σ) q z)) ∧
-      IsRootQuotient γ (twistedNorm (.map σ) q z)
+      IsUnit (aeval γ.val.val (twistedNorm (mapRingHom σ) q z)) ∧
+      IsRootQuotient γ (twistedNorm (mapRingHom σ) q z)
         ↑(twistedNorm (mapEnd hσ) q c * (twistedNorm (mapEnd hσ) q (a⁻¹ * c))⁻¹) := by
     induction q with
-    | zero => simp [twistedNorm, IsRootQuotient]
+    | zero => simp [IsRootQuotient]
     | succ q ih =>
       obtain ⟨ih_unit, ih_root⟩ := ih
       -- Apply `σ`, conjugate by `c` back to `γ`, and multiply by the root `a` of `z`.
-      have h_unit : IsUnit (c.val.val * σ.mapMatrix (aeval γ.val.val (twistedNorm (.map σ) q z))) :=
+      have h_unit :
+          IsUnit (c.val.val * σ.mapMatrix (aeval γ.val.val (twistedNorm (mapRingHom σ) q z))) :=
         c.val.isUnit.mul (ih_unit.map σ.mapMatrix)
       have h_root :
-          IsRootQuotient γ ((twistedNorm (.map σ) q z).map σ * z)
+          IsRootQuotient γ ((twistedNorm (mapRingHom σ) q z).map σ * z)
             ((c *
               mapEnd hσ (twistedNorm (mapEnd hσ) q c * (twistedNorm (mapEnd hσ) q (a⁻¹ * c))⁻¹) *
               c⁻¹).val.val * a.val.val) :=
         (isRootQuotient_conj h_conj (isRootQuotient_map hσ ih_root)).mul h_root_a
-      have h_succ : twistedNorm (Polynomial.map σ) (q + 1) z =
-          (twistedNorm (Polynomial.map σ) q z).map σ * z :=
-        (twistedNorm_succ' (mapRingHom σ).toMonoidHom q z).trans (mul_comm _ _)
+      have h_succ : twistedNorm (mapRingHom σ) (q + 1) z =
+          (twistedNorm (mapRingHom σ) q z).map σ * z :=
+        (MonoidHom.twistedNorm_succ (mapRingHom σ) q z).trans (mul_comm _ _)
       rw [h_succ]
       have h_semiconj : SemiconjBy c.val.val (γ.val.val.map σ) γ.val.val :=
         congrArg (fun g : U (1 : Matrix n n R) ↦ g.val.val) h_conj.symm
       refine ⟨?_, ?_⟩
       · rw [map_mul]
-        have h_unit' : IsUnit (aeval γ.val.val ((twistedNorm (.map σ) q z).map σ)) := by
-          have h_conj_eq : aeval γ.val.val ((twistedNorm (.map σ) q z).map σ) =
-              c.val.val * σ.mapMatrix (aeval γ.val.val (twistedNorm (.map σ) q z)) *
+        have h_unit' : IsUnit (aeval γ.val.val ((twistedNorm (mapRingHom σ) q z).map σ)) := by
+          have h_conj_eq : aeval γ.val.val ((twistedNorm (mapRingHom σ) q z).map σ) =
+              c.val.val * σ.mapMatrix (aeval γ.val.val (twistedNorm (mapRingHom σ) q z)) *
                 c.val⁻¹.val := by
             rw [RingHom.mapMatrix_apply, map_aeval_matrix, aeval_semiconj h_semiconj,
               mul_assoc, Units.mul_inv, mul_one]
@@ -480,8 +483,8 @@ lemma IsRootQuotient.twistedNorm_eq_mul
             (c * mapEnd hσ (twistedNorm (mapEnd hσ) q c * (twistedNorm (mapEnd hσ) q (a⁻¹ * c))⁻¹) *
               c⁻¹) * a =
             twistedNorm (mapEnd hσ) (q + 1) c * (twistedNorm (mapEnd hσ) (q + 1) (a⁻¹ * c))⁻¹ := by
-          rw [twistedNorm_succ', twistedNorm_succ', map_mul, map_inv, _root_.mul_inv_rev,
-            _root_.mul_inv_rev, inv_inv]
+          rw [MonoidHom.twistedNorm_succ, MonoidHom.twistedNorm_succ, map_mul, map_inv,
+            _root_.mul_inv_rev, _root_.mul_inv_rev, inv_inv]
           group
         rw [← h_grp]
         exact h_root
@@ -737,7 +740,7 @@ lemma New.IsNormRoot.dvd_pow_of_charpoly_eq {R n : Type} [CommRing R] [StarRing 
     (hz : IsNormRoot n σ p 1 D P z) {γ : U (1 : Matrix n n R)}
     (hγ : (γ : Matrix n n R).charpoly = P)
     {v v' : R[X]} (hv : v' * P + v * X = 1) :
-    P ∣ (X * ((twistedNorm (.map σ) p z).map conj).comp v - twistedNorm (.map σ) p z) ^
+    P ∣ (X * ((twistedNorm (mapRingHom σ) p z).map conj).comp v - twistedNorm (mapRingHom σ) p z) ^
       Fintype.card n := by
   obtain ⟨-, hz_roots⟩ := hz
   obtain ⟨-, h_quot⟩ := hz_roots γ hγ
@@ -745,7 +748,7 @@ lemma New.IsNormRoot.dvd_pow_of_charpoly_eq {R n : Type} [CommRing R] [StarRing 
   have v_inv : aeval (γ : Matrix n n R) v * (γ : Matrix n n R) = 1 := by
     have h_bezout : aeval (γ : Matrix n n R) (v' * P + v * X) = 1 := by rw [hv, map_one]
     simpa [cayley] using h_bezout
-  have h_quot_γ : IsRootQuotient γ (twistedNorm (.map σ) p z) (γ : Matrix n n R) := by
+  have h_quot_γ : IsRootQuotient γ (twistedNorm (mapRingHom σ) p z) (γ : Matrix n n R) := by
     simpa using h_quot
   rw [← hγ]
   exact IsRootQuotient.charpoly_dvd_pow v_inv h_quot_γ
@@ -793,13 +796,14 @@ private lemma New.IsStep.exists_isSelfAdjoint_principalIdele_of_dvd_pow {E E' : 
     {T : (𝔸f E')[X] → (𝔸f E')[X]}
     (hT : T = fun c : (𝔸f E')[X] ↦ z * mapRingHom (adeleMap σ.toRingHom) c) {m : ℕ}
     (h_dvd : q.map (algebraMap E' (𝔸f E')) ∣
-      (X * ((twistedNorm (.map (adeleMap σ)) p z).map conj).comp
-        (v.map (algebraMap E' (𝔸f E'))) - twistedNorm (.map (adeleMap σ)) p z) ^ m)
+      (X * ((twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) p z).map conj).comp
+          (v.map (algebraMap E' (𝔸f E'))) -
+        twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) p z) ^ m)
     {l : ℕ} (hl : σ • q = q ∧ l = 1 ∨ l = p) :
     ∃ (y : (AdjoinRoot q)ˣ) (c : (𝔸f E')[X]), IsUnit (θ c) ∧
       IsSelfAdjoint (star (θ c) * ((principalIdele y).val * θ (T^[l] c))) := by
   -- the twisted norm `N` of `z` is `T^[p] 1`
-  have norm_eq : T^[p] 1 = twistedNorm (.map (adeleMap σ)) p z := by
+  have norm_eq : T^[p] 1 = twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) p z := by
     rw [hT, iterate_mul_apply, map_one, mul_one, twistedNorm_map_eq_prod]
     exact Finset.prod_congr rfl fun i _ ↦ Polynomial.mapRingHom_pow_apply _ i z
   -- the adeles of `L` have no nilpotents, so `N = root * star N` holds in them
@@ -1026,8 +1030,9 @@ lemma New.exists_global_root {E E' n : Type} [Field E] [CMType E] [Field E'] [Nu
   -- the twisted norm `N` of `z` has `N = X * N̄(v)` at `γ₀`; `P` divides a power of the difference
   have hv_map : v'.map k * P.map k + v.map k * X = 1 := by
     simpa using congrArg (Polynomial.map k) hv
-  have norm_dvd : P.map k ∣ (X * ((twistedNorm (.map (adeleMap σ)) p z).map conj).comp (v.map k) -
-      twistedNorm (.map (adeleMap σ)) p z) ^ Fintype.card n :=
+  have norm_dvd : P.map k ∣
+      (X * ((twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) p z).map conj).comp (v.map k) -
+        twistedNorm (mapRingHom (adeleMap (σ : E' →+* E'))) p z) ^ Fintype.card n :=
     IsNormRoot.dvd_pow_of_charpoly_eq hz hγ₀ hv_map
   -- the roots of `P` have absolute value `1`, so each `L q` is a CM field
   have unit_root (q : primeFactors P) (φ : E' →+* ℂ) (x : ℂ) (hx : x ∈ (q.val.map φ).roots) :

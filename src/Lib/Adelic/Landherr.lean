@@ -65,6 +65,8 @@ Sem. Hamburg 11 (1936) 245-248; M. Kneser, Lectures on Galois cohomology of clas
 
 @[expose] public section
 
+open MonoidHom (twistedNorm)
+
 /-!
 ## A totally positive number as a sum of two squares
 
@@ -494,8 +496,8 @@ end New
 /-!
 ## Galois descent and the Hasse principle for unitary cocycles
 
-`New.twistedNorm τ p δ` is the twisted norm `δ · τ δ ⋯ τ^(p-1) δ`; `New.U.mapEnd` and `New.galoisGf`
-are the entrywise actions of `σ` on rational and finite adelic unitary matrices.
+`MonoidHom.twistedNorm τ p δ` (Tau Ceti) is the twisted norm `δ · τ δ ⋯ τ^(p-1) δ`; `New.U.mapEnd`
+and `New.galoisGf` are the entrywise actions of `σ` on rational and finite adelic unitary matrices.
 -/
 
 section UnitaryHassePrinciple
@@ -567,7 +569,7 @@ lemma U.hasse_principle_coboundary [IsCMField E']
   have h_norm : twistedNorm (GeneralLinearGroup.map (σ : E' →+* E')) (orderOf σ) s.val = 1 := by
     rw [orderOf_eq_prime (p := finrank E E') (by simp [← card_aut_eq_finrank]) hσ,
       ← map_one (U (1 : Matrix n n E')).subtype, ← hs_norm]
-    exact (map_twistedNorm (U (1 : Matrix n n E')).subtype (fun _ ↦ rfl) _ s).symm
+    exact (MonoidHom.map_twistedNorm (U (1 : Matrix n n E')).subtype (fun _ ↦ rfl) _ s).symm
   -- Hilbert 90 at level `1`, where the congruence condition always holds
   obtain ⟨g, -, hg : s.val.val * g.val.map (σ : E' →+* E') = g.val, -⟩ :=
     (isTameAtLevel_gal σ).hilbert90_gl (Y := s.val.val - 1) (.inl inferInstance) s.val

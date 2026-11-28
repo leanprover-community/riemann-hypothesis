@@ -41,6 +41,8 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 
 @[expose] public section
 
+open MonoidHom (twistedNorm)
+
 namespace New
 
 open NumberField Representation Function ComplexConjugate FiniteField Module
@@ -180,7 +182,7 @@ lemma exists_mk_reduceGL_pow_eq_mk_reduceGL_twistedNorm {σ : Gal(E'/E)} (hσ_u 
   -- turns `σ` into `φ`, and `⟨x, φ⟩ * ⟨y, φ ^ m⟩ = ⟨x * φ y, φ ^ (m + 1)⟩`.
   induction m with
   | zero =>
-    have h_one : (twistedNorm (galoisGf σ) 0 a).atPlace u = 1 := by simp [twistedNorm]
+    have h_one : (twistedNorm (galoisGf σ) 0 a).atPlace u = 1 := by simp
     have h_int : (twistedNorm (galoisGf σ) 0 a).atPlace u ∈ intGL n Valued.v.integer := by
       rw [h_one]
       exact one_mem _
@@ -197,7 +199,7 @@ lemma exists_mk_reduceGL_pow_eq_mk_reduceGL_twistedNorm {σ : Gal(E'/E)} (hσ_u 
     have hσN_reduce : reduceGL ⟨σN, hσN_int⟩ = (reduceGL ⟨N, hN_int⟩).map φ :=
       reduceGL_map_locMap hσ_u φ hσ N hσN_int
     have h_succ : (twistedNorm (galoisGf σ) (m + 1) a).atPlace u = a.atPlace u * σN := by
-      rw [twistedNorm_succ', map_mul, atPlace_galoisGf (h := hσ_u)]
+      rw [MonoidHom.twistedNorm_succ, map_mul, atPlace_galoisGf (h := hσ_u)]
     have h_int : (twistedNorm (galoisGf σ) (m + 1) a).atPlace u ∈ intGL n Valued.v.integer := by
       rw [h_succ]
       exact mul_mem ha hσN_int

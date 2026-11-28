@@ -19,10 +19,10 @@ import Lib.PadicComparison.Descent.TestCategory
 
 `F` is a valued field with compact ring of integers, and `σ` is an isometric endomorphism with
 `σ ^ p = 1`. `New.proIwahori` is the pro-`p` Iwahori subgroup of `GL n F`, the matrices that are
-upper unitriangular modulo the maximal ideal. `New.twistedNorm τ p δ = δ * τ δ * ⋯ * τ ^ (p - 1) δ`
-is the twisted norm. The file proves a Hilbert 90 statement and a matching of dominant double cosets
-for this group. These local results give matching local data at a place with exactly one place above
-it.
+upper unitriangular modulo the maximal ideal. Tau Ceti's
+`MonoidHom.twistedNorm τ p δ = δ * τ δ * ⋯ * τ ^ (p - 1) δ` is the twisted norm. The file proves a
+Hilbert 90 statement and a matching of dominant double cosets for this group. These local results
+give matching local data at a place with exactly one place above it.
 
 ## Main definitions and results
 
@@ -54,6 +54,8 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
 
 @[expose] public section
+
+open MonoidHom (twistedNorm)
 
 namespace New
 
@@ -90,20 +92,23 @@ lemma v_ringHom_pow_apply (hv : ∀ x : F, v (σ x) = v x) (i : ℕ) (x : F) :
 /-- Hilbert 90 for the pro-`p` Iwahori subgroup `New.proIwahori` of `GL N F`. Let `σ` be an
 endomorphism of `F` that keeps the valuation, with `σ ^ p = 1`, and let `c` be an integer of `F`
 with trace `∑ i < p, σ ^ i c = 1`. If `s ∈ proIwahori` has twisted norm
-`s * σ s * ⋯ * σ ^ (p - 1) s = 1` (`New.twistedNorm`, with `σ` acting on the entries), then
+`s * σ s * ⋯ * σ ^ (p - 1) s = 1` (`MonoidHom.twistedNorm`, with `σ` acting on the entries), then
 `s * σ t = t` for some `t ∈ proIwahori`. -/
 lemma exists_coboundary_proIwahori (hv : ∀ x : F, v (σ x) = v x) (hσ : σ ^ p = 1) {c : F}
     (hc_int : v c ≤ 1) (hc_trace : ∑ i ∈ range p, (σ ^ i) c = 1)
-    {s : GL (Fin N) F} (hs_mem : s ∈ proIwahori) (hs_norm : twistedNorm (.map σ) p s = 1) :
+    {s : GL (Fin N) F} (hs_mem : s ∈ proIwahori)
+    (hs_norm : twistedNorm (GeneralLinearGroup.map σ) p s = 1) :
     ∃ t ∈ proIwahori, s * t.map σ = t := by
   -- Take `t = ∑ l < p, σ ^ l c • n l`, where `n l` is the partial twisted norm of `s` of length
   -- `l`. Every `n l` lies in `proIwahori`, which gives three conditions on its entries.
   have hn (l : ℕ) := mem_proIwahori.mp <| twistedNorm_mem (GeneralLinearGroup.map σ) l
     (fun _ ↦ (map_mem_proIwahori_iff_of_isometry hv).mpr) hs_mem
-  let a (l : ℕ) : Matrix (Fin N) (Fin N) F := (σ ^ l) c • (twistedNorm (.map σ) l s).val
+  let a (l : ℕ) : Matrix (Fin N) (Fin N) F :=
+    (σ ^ l) c • (twistedNorm (GeneralLinearGroup.map σ) l s).val
   let M := ∑ l ∈ range p, a l
   have hc_pow (l : ℕ) : v ((σ ^ l) c) ≤ 1 := by rwa [v_ringHom_pow_apply hv]
-  have hM (i j : Fin N) : M i j = ∑ l ∈ range p, (σ ^ l) c * twistedNorm (.map σ) l s i j := by
+  have hM (i j : Fin N) :
+      M i j = ∑ l ∈ range p, (σ ^ l) c * twistedNorm (GeneralLinearGroup.map σ) l s i j := by
     simp [M, a, Matrix.sum_apply]
   -- Modulo the maximal ideal `M` is upper triangular, with diagonal entries `∑ σ ^ l c = 1`.
   obtain ⟨t, ht, htM⟩ := exists_proIwahori_coe_eq_of_residue_unitriangular M
@@ -112,7 +117,8 @@ lemma exists_coboundary_proIwahori (hv : ∀ x : F, v (σ x) = v x) (hσ : σ ^ 
     (fun i j hij ↦ hM i j ▸ v.map_sum_lt one_ne_zero fun l _ ↦
       (v.map_mul _ _).trans_lt (mul_lt_of_le_one_of_lt (hc_pow l) ((hn l).2.1 i j hij)))
     (fun i ↦ by
-      rw [show M i i - 1 = ∑ l ∈ range p, (σ ^ l) c * (twistedNorm (.map σ) l s i i - 1) by
+      rw [show M i i - 1 =
+          ∑ l ∈ range p, (σ ^ l) c * (twistedNorm (GeneralLinearGroup.map σ) l s i i - 1) by
         simp [hM, mul_sub_one, hc_trace, -RingHom.coe_pow]]
       exact v.map_sum_lt one_ne_zero fun l _ ↦
         (v.map_mul _ _).trans_lt (mul_lt_of_le_one_of_lt (hc_pow l) ((hn l).2.2 i)))
@@ -121,17 +127,17 @@ lemma exists_coboundary_proIwahori (hv : ∀ x : F, v (σ x) = v x) (hσ : σ ^ 
     (AddMonoidHom.mulLeft s.val).comp σ.mapMatrix.toAddMonoidHom
   have h_period : a p = a 0 := by
     simp only [a, hσ, hs_norm]
-    simp [twistedNorm]
+    simp
   refine ⟨t, ht, Units.ext ?_⟩
   change τ t.val = t.val
   rw [htM, fixed_sum τ a h_period fun l ↦ by
-    simp [a, τ, pow_succ', twistedNorm_succ', map_smul', -RingHom.coe_pow]]
+    simp [a, τ, pow_succ', map_smul', -RingHom.coe_pow]]
 
 /-- Let `σ` be a continuous endomorphism of `F` that keeps the valuation, with `σ ^ p = 1` for some
 `p > 0`, and let `t` be diagonal with `v (t i)` strictly increasing. Let `K` be the pro-`p` Iwahori
 subgroup `New.proIwahori`. Every `δ` in the double coset `K t K` (`New.iwahoriDoubleCoset t`) is
 `σ`-conjugate to `t * d` for some `d` diagonal in `K`: `k⁻¹ * δ * σ k = t * d` with `k ∈ K`. The
-same `k` conjugates the twisted norm of `δ` (`New.twistedNorm`) to that of `t * d`. -/
+same `k` conjugates the twisted norm of `δ` (`MonoidHom.twistedNorm`) to that of `t * d`. -/
 private lemma exists_twisted_conj_diag_and_twistedNorm_conj [CompactSpace 𝒪[F]]
     (hv : ∀ x : F, v (σ x) = v x)
     (hσ : σ ^ p = 1) (hp : 0 < p) (hσ_cont : Continuous σ) {t : Fin N → Fˣ}
@@ -139,7 +145,8 @@ private lemma exists_twisted_conj_diag_and_twistedNorm_conj [CompactSpace 𝒪[F
     (hδ : δ ∈ iwahoriDoubleCoset t) :
     ∃ k ∈ proIwahori, ∃ d : Fin N → Fˣ, diagGL d ∈ proIwahori ∧
       k⁻¹ * δ * k.map σ = diagGL (t * d) ∧
-      k⁻¹ * twistedNorm (.map σ) p δ * k = twistedNorm (.map σ) p (diagGL (t * d)) := by
+      k⁻¹ * twistedNorm (GeneralLinearGroup.map σ) p δ * k =
+        twistedNorm (GeneralLinearGroup.map σ) p (diagGL (t * d)) := by
   -- As `σ ^ p = 1` with `p > 0`, `σ` acts on `GL N F` with period `p`, hence onto.
   have h_iterate (i : ℕ) (k : GL (Fin N) F) : (map (n := Fin N) σ)^[i] k = k.map (σ ^ i) := by
     induction i generalizing k with
@@ -154,7 +161,7 @@ private lemma exists_twisted_conj_diag_and_twistedNorm_conj [CompactSpace 𝒪[F
   rw [← h_conj, twistedNorm_conj (GeneralLinearGroup.map σ) p (h_period k)]
 
 /-- A point `x` of the double coset `K' s K'` over `F'` (`New.iwahoriDoubleCoset s`) is sent by `ι`
-to a conjugate, by some `k ∈ New.proIwahori`, of the twisted norm (`New.twistedNorm`) of
+to a conjugate, by some `k ∈ New.proIwahori`, of the twisted norm (`MonoidHom.twistedNorm`) of
 `diagGL (t * d)` with `diagGL d ∈ New.proIwahori`. This uses that `ι s` is the twisted norm of
 `diagGL t` (`hs_norm`) and that the `1`-units of `F'` are norms of `1`-units of `F` (`h_norms`). -/
 private lemma exists_conj_map_eq_twistedNorm_diagGL {ι : F' →+* F} (h_val : (v.comap ι).IsEquiv v)
@@ -164,7 +171,7 @@ private lemma exists_conj_map_eq_twistedNorm_diagGL {ι : F' →+* F} (h_val : (
     (hs_norm : (diagGL s).map ι = twistedNorm (GeneralLinearGroup.map σ) p (diagGL t))
     {x : GL (Fin N) F'} (hx : x ∈ iwahoriDoubleCoset s) :
     ∃ k ∈ proIwahori, ∃ d : Fin N → Fˣ, diagGL d ∈ proIwahori ∧
-      k⁻¹ * x.map ι * k = twistedNorm (.map σ) p (diagGL (t * d)) := by
+      k⁻¹ * x.map ι * k = twistedNorm (GeneralLinearGroup.map σ) p (diagGL (t * d)) := by
   -- With the trivial twist, `x` is conjugate to `diagGL (s * e)` with `e` diagonal in `K'`. The
   -- entries of `ι e` are norms of units `d i`, and then `ι (s * e)` is the twisted norm of
   -- `diagGL (t * d)`.
@@ -200,18 +207,18 @@ omit [Valued F ℤᵐ⁰] in
 /-- Let `σ ^ p = 1`, and let the values `c i = ∏ l < p, σ ^ l (e i)` be distinct. If the polynomial
 `z` takes the value `e i` at `c i` for every `i`, then the characteristic polynomial
 `∏ i, (X - c i)` of `diagonal c` divides `N(z) - X`, where `N(z) = ∏ l < p, σ ^ l z` is the
-twisted norm (`New.twistedNorm`) of `z`. -/
+twisted norm (`MonoidHom.twistedNorm`) of `z`. -/
 private lemma charpoly_diagonal_dvd_twistedNorm_sub_X (hσ : σ ^ p = 1) {c e : Fin N → F}
     (hc_inj : Injective c) (hc : ∀ i : Fin N, c i = ∏ l ∈ range p, (σ ^ l) (e i)) {z : F[X]}
     (hz : ∀ i : Fin N, z.eval (c i) = e i) :
-    (diagonal c).charpoly ∣ twistedNorm (Polynomial.map σ) p z - X := by
+    (diagonal c).charpoly ∣ twistedNorm (mapRingHom σ) p z - X := by
   -- The roots `c i` are distinct, so it suffices that each is a root of `N(z) - X`. As `c i` is a
   -- norm, it is fixed by `σ`, so `(σ ^ l z) (c i) = σ ^ l (z (c i)) = σ ^ l (e i)`.
   rw [charpoly_diagonal]
   refine Fintype.prod_dvd_of_coprime (pairwise_coprime_X_sub_C hc_inj) fun i ↦ ?_
   have h_eval_map (l : ℕ) : (z.map (σ ^ l)).eval (c i) = (σ ^ l) (e i) := by
     rw [← hz, ← eval_map_apply, σ.coe_pow, hc, (isFixedPt_prod_range_pow_apply hσ).iterate]
-  have h_eval_norm : (twistedNorm (Polynomial.map σ) p z).eval (c i) = c i := by
+  have h_eval_norm : (twistedNorm (mapRingHom σ) p z).eval (c i) = c i := by
     rw [twistedNorm_map_eq_prod, eval_prod]
     exact (prod_congr rfl fun l _ ↦ h_eval_map l).trans (hc i).symm
   rw [dvd_iff_isRoot, IsRoot.def, eval_sub, eval_X, h_eval_norm, sub_self]
@@ -245,8 +252,8 @@ private lemma aeval_eq_conj_diagonal_eval {c c' : Fin N → F} {k γ : GL (Fin N
 omit [CompactSpace 𝒪[F']] in
 /-- Descent for clause (a) of `New.proIwahori_doubleCoset_match`. Let `σ` preserve `v` and let the
 `σ`-fixed elements of `F` lie in the range of `ι : F' →+* F`, with `v ∘ ι` equivalent to `v`. Let
-`ι (diagGL s)` be the twisted norm (`New.twistedNorm`, over `σ`, `p` factors) of `diagGL t`, and let
-`k, diagGL d ∈ New.proIwahori`, `a = k * diagGL (t * d₀) * k⁻¹` and
+`ι (diagGL s)` be the twisted norm (`MonoidHom.twistedNorm`, over `σ`, `p` factors) of `diagGL t`,
+and let `k, diagGL d ∈ New.proIwahori`, `a = k * diagGL (t * d₀) * k⁻¹` and
 `k⁻¹ * a * σ k = diagGL (t * d)`. If `k⁻¹ * ι x * k` is the twisted norm of `diagGL (t * d)`, then
 `x` lies in `I₁ diag(s) I₁` over `F'` (`New.iwahoriDoubleCoset s`). -/
 private lemma mem_iwahoriDoubleCoset_of_conj_map_eq_twistedNorm (hv : ∀ x : F, v (σ x) = v x)
@@ -255,7 +262,8 @@ private lemma mem_iwahoriDoubleCoset_of_conj_map_eq_twistedNorm (hv : ∀ x : F,
     (hs_norm : (diagGL s).map ι = twistedNorm (GeneralLinearGroup.map σ) p (diagGL t))
     {k a : GL (Fin N) F} (hk : k ∈ proIwahori) {d₀ d : Fin N → Fˣ} (hd : diagGL d ∈ proIwahori)
     (h_twist : k⁻¹ * a * k.map σ = diagGL (t * d)) (ha : k * diagGL (t * d₀) * k⁻¹ = a)
-    {x : GL (Fin N) F'} (hx : k⁻¹ * x.map ι * k = twistedNorm (.map σ) p (diagGL (t * d))) :
+    {x : GL (Fin N) F'}
+    (hx : k⁻¹ * x.map ι * k = twistedNorm (GeneralLinearGroup.map σ) p (diagGL (t * d))) :
     x ∈ iwahoriDoubleCoset s := by
   -- Let `e` be the diagonal of `k`. As `σ` multiplies each column of `k` by a scalar,
   -- `k * diagGL e⁻¹` is fixed by `σ`, so it is `ι g` for some `g` over `F'`. Then `x = g * s * r`,
@@ -281,11 +289,12 @@ private lemma mem_iwahoriDoubleCoset_of_conj_map_eq_twistedNorm (hv : ∀ x : F,
     simp only [map_mul, map_inv, hg]
     group
   -- The diagonal matrices `diagGL e`, `N(t)` and `N(d)` commute, and `N(t * d) = N(t) * N(d)`.
-  have h_diag_eq : diagGL e * twistedNorm (.map σ) p (diagGL (t * d)) =
-      (diagGL s).map ι * (diagGL e * twistedNorm (.map σ) p (diagGL d)) := by
+  have h_diag_eq : diagGL e * twistedNorm (GeneralLinearGroup.map σ) p (diagGL (t * d)) =
+      (diagGL s).map ι * (diagGL e * twistedNorm (GeneralLinearGroup.map σ) p (diagGL d)) := by
     simp only [hs_norm, Units.ext_iff, Units.val_mul, twistedNorm_diagGL]
     simp [prod_mul_distrib, mul_left_comm]
-  have hr : ((g * diagGL s)⁻¹ * x).map ι = diagGL e * twistedNorm (.map σ) p (diagGL d) * k⁻¹ := by
+  have hr : ((g * diagGL s)⁻¹ * x).map ι =
+      diagGL e * twistedNorm (GeneralLinearGroup.map σ) p (diagGL d) * k⁻¹ := by
     rw [h_map_r, hx, h_diag_eq, inv_mul_cancel_left]
   have hg_mem : g ∈ proIwahori := by
     rw [← map_mem_proIwahori_iff_of_isEquiv h_val, hg, map_inv]
@@ -315,13 +324,13 @@ private lemma inv_mul_mem_proIwahori_of_twisted_conj (hv : ∀ x : F, v (σ x) =
 variable (σ p) in
 /-- The polynomial `z` over `F` matches the double cosets `K' s K'` over `F'` and `K t K` over `F`
 at the polynomial `P`. Here `K`, `K'` are the pro-`p` Iwahori subgroups `New.proIwahori`, the
-double cosets are `New.iwahoriDoubleCoset`, twisted norms (`New.twistedNorm`) are taken with the
-endomorphism `σ` of `F` and length `p`, and `ι : F' →+* F`. In the last two fields `γ` has
+double cosets are `New.iwahoriDoubleCoset`, twisted norms (`MonoidHom.twistedNorm`) are taken with
+the endomorphism `σ` of `F` and length `p`, and `ι : F' →+* F`. In the last two fields `γ` has
 characteristic polynomial `P` and `a = z γ`. -/
 structure IsIwahoriMatchingPolynomial (ι : F' →+* F) (s : Fin N → F'ˣ) (t : Fin N → Fˣ)
     (P z : F[X]) : Prop where
   /-- The twisted norm `z * σ z * ⋯ * σ ^ (p - 1) z` is `X` modulo `P`. -/
-  dvd_twistedNorm_sub_X : P ∣ twistedNorm (Polynomial.map σ) p z - X
+  dvd_twistedNorm_sub_X : P ∣ twistedNorm (mapRingHom σ) p z - X
   /-- If `γ = ι x` and `γ` is the twisted norm of `a`, then `x ∈ K' s K'` exactly when
   `a ∈ K t K`. -/
   mem_iwahoriDoubleCoset_iff : ∀ γ a : GL (Fin N) F, γ.val.charpoly = P → a.val = aeval γ.val z →
@@ -337,8 +346,8 @@ valuation, with `σ ^ p = 1` and `p > 0`. Let `ι : F' →+* F` be a map whose i
 fixed by `σ` (`h_range`), along which `v` restricts to a valuation equivalent to that of `F'`
 (`h_val`), and such that every `x` with `v (ι x - 1) < 1` has `ι x = ∏ i < p, σ ^ i y` for a unit
 `y` with `v (y - 1) < 1` (`h_norms`). Let `t` over `F` and `s` over `F'` have strictly increasing
-valuations, with `ι (diagGL s)` the twisted norm (`New.twistedNorm`) of `diagGL t`. Let `P` be the
-characteristic polynomial of `ι x` for `x` in `K' s K'`, or of the twisted norm of a point of
+valuations, with `ι (diagGL s)` the twisted norm (`MonoidHom.twistedNorm`) of `diagGL t`. Let `P` be
+the characteristic polynomial of `ι x` for `x` in `K' s K'`, or of the twisted norm of a point of
 `K t K` (`New.iwahoriDoubleCoset`, with `K`, `K'` the groups `New.proIwahori`). Then some polynomial
 `z` matches the two double cosets at `P` (`New.IsIwahoriMatchingPolynomial`): its twisted norm is
 `X` modulo `P`, and for `γ` with characteristic polynomial `P` and `a = z γ`, (a) if `γ = ι x` is
@@ -361,12 +370,13 @@ lemma proIwahori_doubleCoset_match [CompactSpace 𝒪[F]]
   -- `proIwahori` to diagonal matrices `ν d`, the norms of `diagGL (t * d)` with
   -- `diagGL d ∈ proIwahori`. The entries `ρ d i` of `ν d` are told apart by their valuations, so
   -- `P` determines them, and `z` interpolates from the entries of `ν d₀` to those of `t * d₀`.
-  let ν (d : Fin N → Fˣ) : GL (Fin N) F := twistedNorm (.map σ) p (diagGL (t * d))
+  let ν (d : Fin N → Fˣ) : GL (Fin N) F := twistedNorm (GeneralLinearGroup.map σ) p (diagGL (t * d))
   let ρ (d : Fin N → Fˣ) (i : Fin N) : F := ∏ l ∈ range p, (σ ^ l) ((t * d) i)
   have hν (d : Fin N → Fˣ) : ν d = diagonal (ρ d) := twistedNorm_diagGL (t * d) p
   -- A norm `γ` of `δ ∈ K t K` is conjugated to `ν d` by the `k` that twists `δ` to `t * d`.
   have h_of_norm {γ δ : GL (Fin N) F} (hδ : δ ∈ iwahoriDoubleCoset t)
-      (hδ_norm : twistedNorm (.map σ) p δ = γ) : ∃ k ∈ proIwahori, ∃ d : Fin N → Fˣ,
+      (hδ_norm : twistedNorm (GeneralLinearGroup.map σ) p δ = γ) :
+      ∃ k ∈ proIwahori, ∃ d : Fin N → Fˣ,
         diagGL d ∈ proIwahori ∧ k⁻¹ * δ * k.map σ = diagGL (t * d) ∧ k⁻¹ * γ * k = ν d := by
     subst hδ_norm
     exact exists_twisted_conj_diag_and_twistedNorm_conj hv hσ hp hσ_cont ht_mono hδ
@@ -555,8 +565,8 @@ private lemma cocyclesSplit_comap_proIwahori {τ : Gal(E'/E)} (hτ : τ ≠ 1) (
     rwa [zero_dvd_iff, sub_eq_zero] at hc_dvd
   have h_trace : ∑ i ∈ range (Module.finrank E E'), (σ ^ i) (c.val u) = 1 := by
     simpa [iterate_adeleMap_apply hs] using congrArg (fun b : Ô E' ↦ evalAt u (b : 𝔸f E')) hc_sum
-  have hδ_norm : twistedNorm (.map σ) (Module.finrank E E') (ρ δ) = 1 := by
-    rw [← map_twistedNorm ρ hρ_gal, h_cocycle, map_one]
+  have hδ_norm : twistedNorm (GeneralLinearGroup.map σ) (Module.finrank E E') (ρ δ) = 1 := by
+    rw [← MonoidHom.map_twistedNorm ρ hρ_gal, h_cocycle, map_one]
   obtain ⟨t, ht, ht_eq⟩ : ∃ t ∈ proIwahori, ρ δ * t.map σ = t :=
     exists_coboundary_proIwahori (v_locMap_eq_of_surjective _ hs τ.surjective)
       (locMap_pow_finrank_eq_one hs) (mem_Ô.mp c.prop u) h_trace hδ hδ_norm
@@ -576,8 +586,9 @@ private lemma cocyclesSplit_comap_proIwahori {τ : Gal(E'/E)} (hτ : τ ≠ 1) (
 under the local action `locMap τ hs` of `y` read at `u`. -/
 private lemma map_evalAt_twistedNorm_one_add_idem_smul {τ : Gal(E'/E)} (hs : u.comap τ = u)
     (p : ℕ) (y : (𝔸f E')[X]) :
-    (twistedNorm (.map (adeleMap (τ : E' →+* E'))) p (1 + idem {u} • (y - 1))).map (evalAt u) =
-      twistedNorm (.map (locMap (τ : E' →+* E') hs)) p (y.map (evalAt u)) := by
+    (twistedNorm (mapRingHom (adeleMap (τ : E' →+* E'))) p (1 + idem {u} • (y - 1))).map
+        (evalAt u) =
+      twistedNorm (mapRingHom (locMap (τ : E' →+* E') hs)) p (y.map (evalAt u)) := by
   -- Both sides are products of conjugates; compare them factor by factor and coefficient by
   -- coefficient.
   simp only [twistedNorm_map_eq_prod, Polynomial.map_prod]
@@ -624,14 +635,15 @@ private lemma isMatchingPairAbove_proIwahori
     have hNt_mono : StrictMono fun i ↦ v ((localNorm E u ∘ t) i : LocField (u.below E)) := by
       simpa [StrictMono, ← toNormedField.norm_lt_iff] using ht
     have h_Nm : (diagGL (localNorm E u ∘ t)).map ι =
-        twistedNorm (.map σ) (Module.finrank E E') (diagGL t) :=
+        twistedNorm (GeneralLinearGroup.map σ) (Module.finrank E E') (diagGL t) :=
       Units.ext (by simp [ι, σ, locMap_localNorm_eq_prod hτ hs])
     -- At `u`, the element `g` comes from the double coset of `N(t)` or is a norm from that of `t`.
     have hg_mem : ρ g ∈ .map ι '' iwahoriDoubleCoset (localNorm E u ∘ t) ∪
-        twistedNorm (.map σ) (Module.finrank E E') '' iwahoriDoubleCoset t := by
+        twistedNorm (GeneralLinearGroup.map σ) (Module.finrank E E') '' iwahoriDoubleCoset t := by
       rcases hg with ⟨x, hx, rfl⟩ | ⟨δ, hδ, rfl⟩
       · exact Or.inl ⟨r x, Set.mem_of_indicator_ne_zero hx, (hρ_baseChange x).symm⟩
-      · exact Or.inr ⟨ρ δ, Set.mem_of_indicator_ne_zero hδ, (map_twistedNorm ρ hρ_gal _ δ).symm⟩
+      · exact Or.inr
+          ⟨ρ δ, Set.mem_of_indicator_ne_zero hδ, (MonoidHom.map_twistedNorm ρ hρ_gal _ δ).symm⟩
     -- So there is a polynomial `z` over `LocField u` of norm `X` modulo the characteristic
     -- polynomial of `ρ g`, such that `γ ↦ z(γ)` matches the two double cosets.
     obtain ⟨z, hz_dvd, hz_iff, hz_coset⟩ :=
@@ -642,7 +654,8 @@ private lemma isMatchingPairAbove_proIwahori
     -- Lift `z` to an adelic `y`; `1 + idem {u} • (y - 1)` is `y` at `u` and `1` elsewhere.
     obtain ⟨y, rfl⟩ := map_surjective (evalAt u) (fun x ↦ ⟨singleAdele u x, by simp⟩) z
     have h_dvd : (↑↑g : Matrix m m (𝔸f E')).charpoly.map (evalAt u) ∣
-        (twistedNorm (.map (adeleMap τ)) (Module.finrank E E') (1 + idem {u} • (y - 1))).map
+        (twistedNorm (mapRingHom (adeleMap (τ : E' →+* E'))) (Module.finrank E E')
+          (1 + idem {u} • (y - 1))).map
           (evalAt u) - X := by
       rwa [map_evalAt_twistedNorm_one_add_idem_smul hs]
     have hz_off : ∀ u' : FinPlace E', u'.below E ∉ ({u.below E} : Set (FinPlace E)) →
@@ -659,8 +672,8 @@ private lemma isMatchingPairAbove_proIwahori
     have hγ_u : (ρ γ).val.charpoly = (↑↑g : Matrix m m (𝔸f E')).charpoly.map (evalAt u) := by
       rw [hρ_charpoly, hγ]
     have h_norm_u (b : Gf E' m) (hb : twistedNorm (galoisGf τ) (Module.finrank E E') b = γ) :
-        twistedNorm (.map σ) (Module.finrank E E') (ρ b) = ρ γ := by
-      rw [← map_twistedNorm ρ hρ_gal, hb]
+        twistedNorm (GeneralLinearGroup.map σ) (Module.finrank E E') (ρ b) = ρ γ := by
+      rw [← MonoidHom.map_twistedNorm ρ hρ_gal, hb]
     refine ⟨fun x hx hNm ↦ ?_, fun δ hδ_norm hδ_ne ↦ ?_⟩
     · -- (a): `x` is in the double coset of `N(t)` at `w` iff `a` is in that of `t` at `u`
       exact if_congr

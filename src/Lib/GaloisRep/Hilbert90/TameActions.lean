@@ -18,7 +18,8 @@ endomorphism `σ` of finite order of a finite, Artinian or profinite ring. It pr
 modulo `m`, and no `σ ^ i` with `0 < i < p` is trivial modulo a prime not containing `m`.
 `New.IsProfiniteRing R` means: every sequence `x` has a unique `L` with `x N ≡ L` modulo each
 natural number `M ≠ 0`, for `N` in a set of the hyperfilter.
-`New.twistedNorm τ p δ` is the twisted norm `δ · τ δ ⋯ τ^(p-1) δ` of `δ` in a monoid.
+`MonoidHom.twistedNorm τ p δ` (Tau Ceti) is the twisted norm `δ · τ δ ⋯ τ^(p-1) δ` of `δ` in a
+monoid.
 
 ## Main definitions and results
 
@@ -43,6 +44,8 @@ P. Scholze, The Langlands-Kottwitz approach for some simple Shimura varieties, 2
 -/
 
 @[expose] public section
+
+open MonoidHom (twistedNorm)
 
 section TameDescent
 
@@ -518,10 +521,10 @@ lemma IsTameAtLevel.hilbert90_gl_of_isArtinianRing (h_tame : IsTameAtLevel σ p 
   have hτ (i : ℕ) (v : Matrix n n R) :
       τ^[i] v = twistedNorm (GeneralLinearGroup.map σ) i c * v.map (σ ^ i) := by
     induction i with
-    | zero => simp [twistedNorm]
+    | zero => simp
     | succ i ih =>
       rw [iterate_succ_apply', ih, hτ_apply]
-      simp [twistedNorm_succ', Matrix.map_mul, Matrix.map_map, mul_assoc,
+      simp [Matrix.map_mul, Matrix.map_map, mul_assoc,
         (Function.Commute.self_iterate σ i).comp_eq]
   have hτ_period (v : Matrix n n R) : τ^[p] v = v := by simp [hτ, hc, h_tame.pow_eq_one]
   obtain ⟨g, ⟨hg, W, hW⟩, hmax⟩ := exists_maximalFor_of_wellFoundedGT
@@ -589,7 +592,7 @@ lemma IsTameAtLevel.hilbert90_gl (h_tame : IsTameAtLevel σ p m)
     GeneralLinearGroup.ext fun _ _ ↦ rfl
   have hc_map (N : ℕ) :
       twistedNorm (GeneralLinearGroup.map (q N !)) p (GeneralLinearGroup.map (π N) c) = 1 := by
-    rw [← map_twistedNorm _ (h_comm N), hc, map_one]
+    rw [← MonoidHom.map_twistedNorm _ (h_comm N), hc, map_one]
   choose k W hk hW using fun N ↦
     (htame N).hilbert90_gl_of_isArtinianRing inferInstance _ (hY_map N) (hc_map N)
   -- `L` is the `R`-algebra map from families of matrices over the quotients to matrices over `R`

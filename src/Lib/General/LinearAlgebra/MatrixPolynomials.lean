@@ -29,10 +29,13 @@ freeness condition on a family of integers.
   ring map whose image contains the fixed points of `σ`.
 
 Notions from other files:
-* `New.twistedNorm τ p δ`: the product `δ · τ(δ) ⋯ τ^(p-1)(δ)` in a monoid `M`, for `τ : M → M`.
+* `MonoidHom.twistedNorm τ p δ` (Tau Ceti): the product `δ · τ(δ) ⋯ τ^(p-1)(δ)` in a monoid `M`,
+  for `τ : M →* M`.
 -/
 
 @[expose] public section
+
+open MonoidHom (twistedNorm)
 
 /-! ## A nonvanishing minor of the matrix of variables -/
 
@@ -143,8 +146,8 @@ lemma map_aeval_matrix (ψ : R →+* S) (Y : Matrix n n R) (z : R[X]) :
 /-- The twisted norm `z · σ(z) ⋯ σ^(p-1)(z)` of a polynomial `z`, with `σ` acting on coefficients,
 is the product of the polynomials `z.map (σ ^ i)` for `i < p`. -/
 lemma twistedNorm_map_eq_prod {σ : R →+* R} (p : ℕ) (z : R[X]) :
-    twistedNorm (Polynomial.map σ) p z = ∏ i ∈ range p, z.map (σ ^ i) := by
-  rw [twistedNorm, ← List.prod_toFinset _ List.nodup_range, List.toFinset_range]
+    twistedNorm (Polynomial.mapRingHom σ) p z = ∏ i ∈ range p, z.map (σ ^ i) := by
+  rw [MonoidHom.twistedNorm_ringHom_eq_prod_pow]
   exact Finset.prod_congr rfl fun i _ ↦ Polynomial.mapRingHom_pow_apply σ i z
 
 /-- If `c` intertwines the square matrices `x` and `y`, then it intertwines `q(x)` and `q(y)`. -/
@@ -205,11 +208,11 @@ lemma twistedNorm_diagGL {σ : R →+* R} (d : n → Rˣ) (p : ℕ) :
     ((twistedNorm (GeneralLinearGroup.map σ) p (diagGL d) : GL n R) : Matrix n n R) =
       diagonal fun i : n ↦ ∏ l ∈ range p, (σ ^ l) (d i : R) := by
   induction p with
-  | zero => simp [twistedNorm]
+  | zero => simp
   | succ p ih =>
     have h_prod (a : R) : ∏ l ∈ range (p + 1), (σ ^ l) a = a * σ (∏ l ∈ range p, (σ ^ l) a) := by
       simp [prod_range_succ', Function.iterate_succ_apply', mul_comm]
-    rw [twistedNorm_succ', Units.val_mul, GeneralLinearGroup.val_map_apply, ih, coe_diagGL,
+    rw [MonoidHom.twistedNorm_succ, Units.val_mul, GeneralLinearGroup.val_map_apply, ih, coe_diagGL,
       diagonal_map (map_zero σ), diagonal_mul_diagonal]
     simp only [h_prod]
 

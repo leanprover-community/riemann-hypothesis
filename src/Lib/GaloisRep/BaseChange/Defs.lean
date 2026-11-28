@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.Algebra.Group.Hom.TwistedNorm
 public import Lib.Adelic.Unitary.Defs
 
 /-!
@@ -12,9 +13,10 @@ extension `E'/E` of CM fields.
 
 ## Main definitions and results
 
-* `New.twistedNorm`: the twisted norm `δ · τ δ ⋯ τ^(p-1) δ` in a monoid. `New.twistedNorm_conj`
-  shows that twisted conjugation of `δ` conjugates the norm. `New.twistedNorm_mem` and
-  `New.map_twistedNorm` show that it respects stable subgroups and equivariant maps.
+* `New.twistedNorm_eq_list_prod`: the twisted norm `δ · τ δ ⋯ τ^(p-1) δ` (Tau Ceti's
+  `MonoidHom.twistedNorm`) as a product of iterates. `New.twistedNorm_conj` shows that twisted
+  conjugation of `δ` conjugates the norm, and `New.twistedNorm_mem` that the norm respects stable
+  subgroups.
 * `New.IsTameAtLevel`: the conditions on a ring endomorphism `σ` and a level `m` under which descent
   works.
 * `New.IsRootQuotient`, `New.IsNormRoot`: a polynomial `z`, depending only on the characteristic
@@ -25,6 +27,9 @@ extension `E'/E` of CM fields.
 * `New.baseChangeGf`: the map `Gf E n → Gf E' n` induced by the inclusion of finite adeles.
 
 Notions from other files:
+* `MonoidHom.twistedNorm τ p δ` (Tau Ceti): the twisted norm `δ · τ δ ⋯ τ^(p-1) δ` of `δ` for a
+  monoid endomorphism `τ`; `MonoidHom.map_twistedNorm` says that equivariant homomorphisms respect
+  it.
 * `New.U J`: the unitary group of a matrix `J` over a commutative ring with involution, the `g` in
   `GL_n(R)` with `gᴴ J g = J`. In this file `J = 1`.
 * `New.U.map`: for a ring homomorphism `f` commuting with the involutions and carrying `J` to `J'`,
@@ -40,23 +45,16 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 
 @[expose] public section
 
+open MonoidHom (twistedNorm)
+
 namespace New
 
 /-! ## Twisted norms, tame actions and profinite rings -/
 
 section TwistedNorm
 
-variable {G R n M Γ : Type*} [Group G] [Monoid M] [Monoid Γ] [CommRing R] [Fintype n]
-  [DecidableEq n] (τ : M →* M) (σ : R →+* R) (p : ℕ) [StarRing R]
-
-/-- The twisted norm `δ · τ(δ) ⋯ τ^{p−1}(δ)` of `δ` in a monoid `M`: the product, in order, of the
-first `p` iterates `τ^[i] δ`. Here `τ : M → M` is any map. -/
-@[local simp]
-def twistedNorm (τ : M → M) (p : ℕ) (δ : M) : M := ((List.range p).map fun i ↦ τ^[i] δ).prod
-
-lemma twistedNorm_succ (τ : M → M) (p : ℕ) (δ : M) :
-    twistedNorm τ (p + 1) δ = twistedNorm τ p δ * τ^[p] δ := by
-  simp [twistedNorm, List.range_add]
+variable {G R n : Type*} [Group G] [CommRing R] [Fintype n] [DecidableEq n] (σ : R →+* R) (p : ℕ)
+  [StarRing R]
 
 /-- The ring endomorphism `σ` acts tamely at level `m`: (a) `σ m = m`; (b) some `e` has trace
 `∑ i < p, (σ ^ i) e` congruent to `1` modulo `m`; (c) `σ ^ p = 1`; (d) `0 < p`; (e) for `0 < i < p`,
@@ -82,6 +80,24 @@ noncomputable abbrev U.mapEnd {σ : R →+* R} (hσ : ∀ x : R, σ (star x) = s
     U (1 : Matrix n n R) →* U (1 : Matrix n n R) :=
   map σ hσ (one_map_ringHom σ)
 
+/-- The twisted norm `δ · τ δ ⋯ τ^(p-1) δ` is the product, in order, of the iterates `τ^[i] δ` for
+`i < p`. -/
+lemma twistedNorm_eq_list_prod {M : Type*} [Monoid M] (τ : M →* M) (p : ℕ) (δ : M) :
+    twistedNorm τ p δ = ((List.range p).map fun i ↦ τ^[i] δ).prod := by
+  induction p with
+  | zero => simp
+  | succ p ih =>
+    rw [MonoidHom.twistedNorm_succ, ih, map_list_prod, List.range_succ_eq_map]
+    simp only [List.map_cons, List.prod_cons, List.map_map, Function.comp_def,
+      Function.iterate_zero_apply, Function.iterate_succ_apply']
+
+/-- The twisted norm of `1` is `1`. -/
+@[simp]
+lemma twistedNorm_one {M : Type*} [Monoid M] (τ : M →* M) (p : ℕ) : twistedNorm τ p 1 = 1 := by
+  induction p with
+  | zero => simp
+  | succ p ih => simp [ih]
+
 /-- For a group endomorphism `τ` and an element `y` with `τ^[p] y = y`, the twisted conjugate
 `y⁻¹ * δ * τ y` of `δ` has twisted norm `y⁻¹ * twistedNorm τ p δ * y`. -/
 lemma twistedNorm_conj (τ : G →* G) (p : ℕ) {y : G} (hy : τ^[p] y = y) (δ : G) :
@@ -90,36 +106,20 @@ lemma twistedNorm_conj (τ : G →* G) (p : ℕ) {y : G} (hy : τ^[p] y = y) (δ
   have h_partial (k : ℕ) :
       twistedNorm τ k (y⁻¹ * δ * τ y) = y⁻¹ * twistedNorm τ k δ * τ^[k] y := by
     induction k with
-    | zero => simp [twistedNorm]
+    | zero => simp
     | succ k ih =>
-      have h_factor : τ^[k] (y⁻¹ * δ * τ y) = (τ^[k] y)⁻¹ * τ^[k] δ * τ^[k + 1] y := by
-        rw [iterate_map_mul, iterate_map_mul, iterate_map_inv, Function.iterate_succ_apply]
-      rw [twistedNorm_succ, twistedNorm_succ, ih, h_factor]
+      rw [MonoidHom.twistedNorm_succ, MonoidHom.twistedNorm_succ, ih, map_mul, map_mul, map_inv,
+        Function.iterate_succ_apply']
       group
   rw [h_partial, hy]
 
 /-- If `τ` maps the subgroup `K` into itself, then the twisted norm of every `δ ∈ K` lies in `K`. -/
-lemma twistedNorm_mem {K : Subgroup G} (τ : G → G) (p : ℕ) (hK : ∀ k ∈ K, τ k ∈ K) {δ : G}
-    (hδ : δ ∈ K) : twistedNorm τ p δ ∈ K :=
-  -- Every factor `τ^[i] δ` of the product lies in `K`, as `τ` and its iterates map `K` into `K`.
-  Subgroup.list_prod_mem _ (List.forall_mem_map.2 fun i _ ↦ Set.MapsTo.iterate hK i hδ)
-
-/-- A monoid homomorphism `e` that intertwines `τ` on `Γ` with `σ` on `M` (`e (τ δ) = σ (e δ)`)
-carries twisted norms for `τ` to twisted norms for `σ`. -/
-lemma map_twistedNorm {σ : M → M} {τ : Γ → Γ} (e : Γ →* M)
-    (h_comm : ∀ δ : Γ, e (τ δ) = σ (e δ)) (p : ℕ) :
-    ∀ δ : Γ, e (twistedNorm τ p δ) = twistedNorm σ p (e δ) := by
-  intro δ
-  -- `e` intertwines every iterate of the two maps, hence each factor of the product.
-  have h_iterate (i : ℕ) : e (τ^[i] δ) = σ^[i] (e δ) := Function.Semiconj.iterate_right h_comm i δ
-  simp only [twistedNorm, map_list_prod, List.map_map, Function.comp_def, h_iterate]
-
-/-- Splitting off the first factor of the twisted norm, for the monoid endomorphism `τ`. -/
-lemma twistedNorm_succ' (δ : M) : twistedNorm τ (p + 1) δ = δ * τ (twistedNorm τ p δ) := by
-  -- The factors after `δ` form the twisted norm of `τ δ`, which is `τ` of the twisted norm of `δ`.
-  have h_tail : twistedNorm τ (p + 1) δ = δ * twistedNorm τ p (τ δ) := by
-    simp [twistedNorm, List.range_succ_eq_map, Function.comp_def, Function.iterate_succ_apply]
-  rw [h_tail, map_twistedNorm τ (fun x : M ↦ rfl) p δ]
+lemma twistedNorm_mem {K : Subgroup G} (τ : G →* G) (p : ℕ) (hK : ∀ k ∈ K, τ k ∈ K) {δ : G}
+    (hδ : δ ∈ K) : twistedNorm τ p δ ∈ K := by
+  -- The twisted norm `δ * τ (N δ)` is built from `δ` by multiplying and applying `τ`.
+  induction p with
+  | zero => simp
+  | succ p ih => simpa using K.mul_mem hδ (hK _ ih)
 
 end TwistedNorm
 
@@ -128,7 +128,7 @@ end TwistedNorm
 
 This section states when test functions on a set `A` (a unitary group over the base, mapped by `j`)
 and on the unitary group over `R` match in base change. Here `σ` is a ring endomorphism of `R` that
-commutes with `star`. `New.U.mapEnd h` is the action of `σ` on the unitary group, `New.twistedNorm`
+commutes with `star`. `New.U.mapEnd h` is the action of `σ` on the unitary group, `twistedNorm`
 is the twisted norm of length `q`, and `u : R` selects the places concerned. "The support of `u`"
 means where `u` is `1`, as for an idempotent, though nothing here assumes `u * u = u`. The
 conditions multiply by `u` or by `1 - u`.
@@ -159,7 +159,7 @@ def IsNormRoot : Prop :=
   ∀ γ : U (1 : Matrix n n R), γ.val.val.charpoly = P →
     (∀ (m : ℕ) (A : Matrix (Fin m) (Fin m) R), P.aeval A = 0 →
       (z.aeval A).det ∈ D.toSubmonoid.map (Units.coeHom R)) ∧
-    IsRootQuotient γ (twistedNorm (Polynomial.map σ) q z) (1 + u • (γ - 1))
+    IsRootQuotient γ (twistedNorm (Polynomial.mapRingHom σ) q z) (1 + u • (γ - 1))
 
 /-- `f` and `φ` match, with `Nm = twistedNorm (mapEnd h) q`: `φ` is invariant under
 `δ ↦ k⁻¹ * δ * σ(k)` for `k ∈ K`, and each `σ`-fixed characteristic polynomial `P` of some `j g`
@@ -180,7 +180,7 @@ def IsMatchingPair (f : A → ℂ) (φ : U (1 : Matrix n n R) → ℂ) : Prop :=
 under `τ` is `1` has some `t ∈ K` with `(1 - u) • t = (1 - u) • 1` (`t` is `1` off the support of
 `u`) and `u • (t⁻¹ * s * τ t) = u • 1` (on the support of `u`, `s = t * (τ t)⁻¹`). Here `.val.val`
 is the matrix of an element of the unitary group. -/
-def CocyclesSplit (τ : U (1 : Matrix n n R) → U (1 : Matrix n n R)) : Prop :=
+def CocyclesSplit (τ : U (1 : Matrix n n R) →* U (1 : Matrix n n R)) : Prop :=
   ∀ s ∈ K, twistedNorm τ q s = 1 → ∃ t ∈ K,
     (1 - u) • t.val.val = (1 - u) • 1 ∧ u • (t⁻¹ * s * τ t).val.val = u • 1
 
