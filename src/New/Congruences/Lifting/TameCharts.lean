@@ -95,6 +95,12 @@ namespace TameChart
 
 open scoped TensorProduct
 
+/-- `FrobGroup.inr g` acts on `DiagTensor.mk 1 t` by `overZp L.ρ g` on the second factor. -/
+lemma inr_smul_diagTensor_mk {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {d : TameChart Γ}
+    {O : d.Coeffs} {L : d.JumpLattice O} (g : Γ) (t : L.Carrier) :
+    inr g • (DiagTensor.mk 1 t : L.Ambient) = DiagTensor.mk 1 (overZp L.ρ g t) := by
+  simp
+
 /-- Let `Γ` be a group with a map to `G_p = Gal(ℚ̄_p/ℚ_p)` of open image, and let `d` be a tame
 chart for it. In particular, `d` gives a normal subgroup `Γ'` of `Γ` of index prime to `p`. Let `O`
 be a finite free `ℤ_p`-algebra and `L` a finite free `O`-module with an action of `Γ` whose
@@ -111,7 +117,8 @@ lemma conjForm_mem_crysForms {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {d : Ta
   let l' : L.Carrier →ₗ[ℤ_[p]] Bmax :=
     DistribSMul.toLinearMap ℤ_[p] Bmax (toGp g)⁻¹ ∘ₗ l ∘ₗ overZp L.ρ g
   have hl' (t : L.Carrier) : conjForm μ g (DiagTensor.mk 1 t) = algebraMap Bmax BdR (l' t) := by
-    simp [l', hl]
+    rw [conjForm_apply, inr_smul_diagTensor_mk, hl, smul_algebraMap_eq_algebraMap_smul]
+    rfl
   exact ⟨conjForm_mem_forms h_normal h_equiv, l', hl'⟩
 
 /-- Let `d` be a tame chart for a group `Γ → G_p`, with subgroup `Γ'` and inertia element
@@ -142,7 +149,10 @@ lemma sum_coeff_smul_conjForm_apply_eq_zero {p : ℕ} [ThePrime p] [Γ : GroupOv
     (DistribSMul.toLinearMap ℤ_[p] Bmax (toGp g)⁻¹ ∘ₗ l ∘ₗ overZp L.ρ g).liftBaseChange Bmax
   have hℓ_tmul (g : Γ) (t : L.Carrier) :
       algebraMap Bmax BdR (ℓ g (1 ⊗ₜ t)) = conjForm μ g (DiagTensor.mk 1 t) := by
-    simp [ℓ, hl]
+    rw [conjForm_apply, inr_smul_diagTensor_mk, hl, smul_algebraMap_eq_algebraMap_smul]
+    change algebraMap Bmax BdR (liftBaseChange Bmax _ (1 ⊗ₜ t)) = _
+    rw [liftBaseChange_tmul, one_smul]
+    rfl
   have hℓ_act (g g' : Γ) (y : Bmax ⊗[ℤ_[p]] L.Carrier) :
       ℓ g' (tensorAction Bmax (toGp g) (L.ρ g) y) = toGp g • ℓ (g' * g) y := by
     induction y with
@@ -153,7 +163,9 @@ lemma sum_coeff_smul_conjForm_apply_eq_zero {p : ℕ} [ThePrime p] [Γ : GroupOv
     have h_equiv : conjForm μ u (DiagTensor.mk 1 (L.ρ g t)) =
         toGp g.val • conjForm μ u (DiagTensor.mk 1 t) :=
       conjForm_mem_forms (fun h hh ↦ d.normal.conj_mem h hh u) hμ_equiv t g
-    simpa [ℓ, hl, mul_smul, inv_smul_eq_iff, -map_pow] using h_equiv
+    rw [← hℓ_tmul, ← hℓ_tmul, smul_algebraMap_eq_algebraMap_smul] at h_equiv
+    have h_eq := FaithfulSMul.algebraMap_injective Bmax BdR h_equiv
+    simpa [ℓ, mul_smul, inv_smul_eq_iff, -map_pow] using h_eq
   -- The relation is tested on the vectors `y` fixed near `1`, which span.
   have hℓ_rel : ∑ k ∈ range (q.natDegree + 1), q.coeff k • ℓ (d.tameGen ^ k) = 0 := by
     refine ext_on h_crys fun y hy ↦ ?_
@@ -362,14 +374,15 @@ lemma aeval_tameMultiplier_pow_mul_mem_liftIdeal {p : ℕ} [ThePrime p] [Γ : Gr
       simp [a, v', w', -map_pow, hz, fixesLambda_tameGen_pow, smul_sub, mul_assoc, mul_comm]
     have h_letter : S.trivialLattice.letterProj i (S.constantAt i c) = S.constantAt i c :=
       mem_letterPart_iff_letterProj.1 letterProj_mem_letterPart
-    simp [hx_proj, frobGroup_smul_smul, h_fix, ← h_scalar, h_letter, -map_pow]
+    rw [S.projTrivial.wittMap_smul, hx_proj, frobGroup_smul_smul, h_fix, inr_smul, h_scalar,
+      LinearMap.map_smul_of_tower, h_letter]
   refine ⟨S.extensionLattice.letterProj i y, letterProj_mem_withOrders (frobKisinAinf_zero.ge hy),
     ?_⟩
   -- Cancel `z`, which is a unit of `W(C^♭)`.
   suffices h : d.z.val • S.projTrivial.wittMap (S.extensionLattice.letterProj i y) =
       d.z.val • b • S.constantAt i c from
     (isUnit_algebraMap_wittCFlat_of_not_p_dvd d.not_p_dvd_z).smul_left_cancel.1
-      (by simpa [b] using h)
+      (by rw [algebraMap_smul WittCFlat, algebraMap_smul WittCFlat]; exact h)
   calc d.z.val • S.projTrivial.wittMap (S.extensionLattice.letterProj i y)
       = S.trivialLattice.letterProj i (S.projTrivial.wittMap (d.z.val • y)) := by simp
     _ = (∑ j ∈ range (Q.natDegree + 1), Q.coeff j • a j) • S.constantAt i c := by
@@ -404,7 +417,10 @@ lemma killsCokernel_of_isKilledBy {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
   obtain ⟨ν, hzν, hν_le⟩ : ∃ ν : ℕ, (∀ i : Letter, d.z.val ^ ν ∈ S.liftIdeal (p ^ (κ + 1)) 0 i) ∧
       (p - 1) * ν ≤ d.e * (n + κ) :=
     exists_z_pow_mem_liftIdeal h_jumps κ
-  have hν : ν < d.e := by nlinarith [NeZero.pos d.e, (by omega : n + κ < p - 1)]
+  have hν : ν < d.e := Nat.lt_of_mul_lt_mul_left (a := p - 1) <|
+    hν_le.trans_lt <| by
+      rw [mul_comm (p - 1)]
+      exact Nat.mul_lt_mul_of_pos_left (by omega) (NeZero.pos d.e)
   let Q : ℤ_[p][X] := q * (X - Polynomial.C 1)
   have hQ_kills : aeval (linearFrob S.extensionLattice.ρ d.tameGen 0) Q = 0 := by
     simpa only [Q, C_1] using aeval_linearFrob_extensionLattice_eq_zero hY_killed
@@ -435,7 +451,7 @@ lemma killsCokernel_of_isKilledBy {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
         p_pow_mul_z_pow_pred_mem_liftIdeal k.succ_pos h_ideal
       have h_lower : p ^ (t + m) * d.z.val ^ k ∈ S.liftIdeal (p ^ (κ + 1)) 0 i :=
         Ideal.mem_of_dvd _ (mul_dvd_mul_right (pow_dvd_pow _ (by omega)) _) h_down
-      exact ih hk.le (t + m) (by lia) h_lower
+      exact ih hk.le (t + m) (by rw [mul_add, mul_one] at ht; omega) h_lower
     · -- Free step: `Q(tameMultiplier ^ (k + 1))` is a unit.
       have h_unit : IsUnit (algebraMap (WittFq d.f) Ainf (aeval (d.tameMultiplier ^ (k + 1)) Q)) :=
         (isUnit_of_coeff_zero_ne_zero _ h_bad).map _
