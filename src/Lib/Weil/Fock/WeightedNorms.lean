@@ -236,8 +236,6 @@ lemma pow_mul_realVac_mul_realVac_mul_exp_le (y w : ι → ℂ) :
   -- Completing the square bounds the bracket by the Gaussian at `u`, `u i = ‖y i‖ - ‖w i‖`.
   let u : ι → ℂ := fun i ↦ ‖y i‖ - ‖w i‖
   -- In the coordinates, `‖realVac x‖ = exp (-∑ ‖x i‖² / 2)`, and `|ζ(y)* ζ(w)| ≤ ∑ ‖y i‖ ‖w i‖`.
-  have h_norm_realVac (x : ι → ℂ) : ‖realVac x‖ = rexp (-(∑ i, ‖x i‖ ^ 2) / 2) := by
-    simp [realVac, norm_exp, star_dotProduct_self_eq_sum, neg_div, -ofReal_pow]
   have h_s_le : ‖Star.star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε w‖ ≤ ∑ i,
     ‖y i‖ * ‖w i‖ := by
     grw [dotProduct, norm_sum_le]
@@ -250,7 +248,7 @@ lemma pow_mul_realVac_mul_realVac_mul_exp_le (y w : ι → ℂ) :
   have h_sq :
       ‖realVac w‖ * ‖realVac y‖ * rexp ‖Star.star (holomorphicCoord ε y) ⬝ᵥ holomorphicCoord ε w‖ ≤
         ‖realVac u‖ := by
-    simp only [h_norm_realVac, ← Real.exp_add, Real.exp_le_exp]
+    simp only [norm_realVac, ← Real.exp_add, Real.exp_le_exp]
     linarith only [h_s_le, h_sum_u]
   have h_tri : 1 + ‖w‖ ≤ (‖u‖ + 1) * (1 + ‖y‖) := by
     have h_norm_w_le : ‖w‖ ≤ ‖y‖ + ‖u‖ := by

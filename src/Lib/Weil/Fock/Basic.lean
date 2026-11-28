@@ -106,6 +106,13 @@ def realHeisenberg : Heisenberg (ι → ℂ) where
 /-- The function on ℂ^ι sending x to exp(−|x|²/2). -/
 def realVac : ℂ := Complex.exp (-(star x ⬝ᵥ x) / 2)
 
+omit [DecidableEq ι] in
+/-- The real vacuum has modulus `exp (-|x|² / 2)`. -/
+lemma _root_.New.norm_realVac (y : ι → ℂ) :
+    ‖realVac y‖ = Real.exp (-(∑ i : ι, ‖y i‖ ^ 2) / 2) := by
+  rw [realVac, star_dotProduct_self_eq_sum, Complex.norm_exp]
+  norm_cast
+
 /-- The diagonal complex matrix P₊ with entry 1 where ε_i = 1 and 0 elsewhere; for −ε it is the
 projection P₋ on the negative coordinates. -/
 def posProj : Matrix ι ι ℂ := diagonal fun i ↦ if ε i = 1 then 1 else 0

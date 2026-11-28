@@ -550,12 +550,6 @@ lemma norm_integral_normalizedVolume_le {ι : Type} [Fintype ι] {a C : ℝ}
   exact .of_integral_ne_zero ((integral_exp_neg_inv_mul_normalizedVolume ha).trans_ne
     (by positivity))
 
-/-- The vacuum `realVac y` has modulus `exp (-|y|² / 2)`. -/
-lemma norm_realVac {ι : Type} [Fintype ι] (y : ι → ℂ) :
-    ‖realVac y‖ = exp (-(∑ i : ι, ‖y i‖ ^ 2) / 2) := by
-  rw [realVac, star_dotProduct_self_eq_sum, Complex.norm_exp]
-  norm_cast
-
 /-- A factor `c` in the scale of the Taylor series can be moved into the differential operator: the
 jet along `Q` at scale `c * a` is the jet along `Q (c z)` at scale `a`. Here the jet `jet ℂ Q G` of
 a power series `G` along a polynomial `Q` is `Q(∂) G` at `0`, and `V.jetSeries a F` is the Taylor
