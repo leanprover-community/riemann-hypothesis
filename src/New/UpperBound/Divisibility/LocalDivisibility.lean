@@ -429,40 +429,34 @@ theorem exists_colengthDvd_gaugeLe_compositeLift {P : Parameters} {D : Data P} {
       ∀ (ϑ : D.Twist) (Ψ : D.Translations →₀ ℂ), IsChainDatum ϑ Ψ → p.Coprime ϑ.normQ →
         ∀ φ ∈ S, φ ∈ D.ramifiedSourceForms →
           GaugeLe 1 (p ^ (D.allowedLoss p - D.gain p)) (compositeLift ϑ Ψ φ) := by
-  -- There are four cases: `p ≠ N` split or at least `x₁`; `p < x₁` non-split and not exceptional;
-  -- `p < x₁` exceptional; and `p = N`. Away from `N`, a chain datum expands into a weak chain
-  -- datum.
+  -- There are three cases. If `p ≠ N` is split or at least `x₁`, or if `p < x₁` is non-split and
+  -- not exceptional, every integral source form works: away from `N`, a chain datum expands into
+  -- a weak chain datum. The other two cases are `p < x₁` exceptional and `p = N`.
   have h_loss : 0 ≤ D.loss p := le_trans (by positivity) (D.le_loss p)
-  have h_cases : (p ∉ D.smallNonsplitPrimes ∧ p ≠ D.N) ∨
-    (p ∈ D.smallNonsplitPrimes ∧ ¬D.IsExceptional p) ∨
-      (p ∈ D.smallNonsplitPrimes ∧ D.IsExceptional p) ∨ (p ∉ D.smallNonsplitPrimes ∧ p = D.N) := by
+  have h_cases : ((p ∉ D.smallNonsplitPrimes ∧ p ≠ D.N) ∨
+      (p ∈ D.smallNonsplitPrimes ∧ ¬D.IsExceptional p)) ∨
+    (p ∈ D.smallNonsplitPrimes ∧ D.IsExceptional p) ∨ (p ∉ D.smallNonsplitPrimes ∧ p = D.N) := by
     tauto
-  obtain ⟨h_mem, hN⟩ | ⟨h_mem, h_exc⟩ | ⟨h_mem, h_exc⟩ | ⟨h_mem, hN⟩ := h_cases
-  · -- `p ≠ N` is split or at least `x₁`, so it differs from `d` and has no gain.
-    obtain ⟨h_gain, h_loss_zero⟩ := gain_allowedLoss_eq_zero h_mem hN
-    rw [h_loss_zero]
-    have hd : p ≠ P.d := by
-      rintro rfl
-      exact h_mem (mem_smallNonsplitPrimes_iff_isSmallNonsplit.2
-        ⟨D.lt_of_hasLogBound, by simp [chiK, ZMod.natCast_self]⟩)
-    refine ⟨0, D.integralSourceForms, by simp, .of_le le_rfl, fun ϑ Ψ hΨ hQ φ hφ _ ↦ ?_⟩
-    obtain ⟨Ψ', hΨ', h_eq⟩ : ∃ Ψ' : D.Translations →₀ ℂ, IsWeakChainDatum ϑ Ψ' ∧
-        ∀ φ : D.SourceForm, compositeLift ϑ Ψ φ = restrictedChain ϑ Ψ' φ :=
-      hΨ.exists_isWeakChainDatum_compositeLift_eq
-    rw [h_eq, h_gain, sub_zero, rpow_zero]
-    exact hΨ'.gaugeLe_restrictedChain_one hQ hφ hN hd
-  · -- `p < x₁` is not exceptional: the loss pays for the collisions on all integral source forms.
-    rw [allowedLoss, ite_eq_left h_mem]
-    have h_nonsplit : D.IsSmallNonsplit p := mem_smallNonsplitPrimes_iff_isSmallNonsplit.1 h_mem
-    have h_collision_budget : D.m * D.collisionSum p ∅ ≤ D.loss p :=
-      mul_collisionSum_le_loss h_nonsplit h_exc
-    refine ⟨0, D.integralSourceForms, mod_cast by positivity, .of_le le_rfl,
-      fun ϑ Ψ hΨ hQ φ hφ _ ↦ ?_⟩
-    obtain ⟨Ψ', hΨ', h_eq⟩ : ∃ Ψ' : D.Translations →₀ ℂ, IsWeakChainDatum ϑ Ψ' ∧
-        ∀ φ : D.SourceForm, compositeLift ϑ Ψ φ = restrictedChain ϑ Ψ' φ :=
-      hΨ.exists_isWeakChainDatum_compositeLift_eq
+  obtain h_full | ⟨h_mem, h_exc⟩ | ⟨h_mem, hN⟩ := h_cases
+  · -- For split or large primes away from `N`, and for non-exceptional small primes, every
+    -- integral source form satisfies the bound after expansion into a weak chain datum.
+    refine ⟨0, D.integralSourceForms,
+      by simpa using mul_nonneg (D.allowedLoss_nonneg p) (Nat.cast_nonneg _),
+      .of_le le_rfl, fun ϑ Ψ hΨ hQ φ hφ _ ↦ ?_⟩
+    obtain ⟨Ψ', hΨ', h_eq⟩ := hΨ.exists_isWeakChainDatum_compositeLift_eq
     rw [h_eq]
-    exact (hΨ'.gaugeLe_restrictedChain_collisionSum hQ hφ h_nonsplit).rpow_mono (by linarith)
+    obtain ⟨h_mem, hN⟩ | ⟨h_mem, h_exc⟩ := h_full
+    · obtain ⟨h_gain, h_loss_zero⟩ := gain_allowedLoss_eq_zero h_mem hN
+      have hd : p ≠ P.d := by
+        rintro rfl
+        exact h_mem (mem_smallNonsplitPrimes_iff_isSmallNonsplit.2
+          ⟨D.lt_of_hasLogBound, by simp [chiK, ZMod.natCast_self]⟩)
+      rw [h_gain, h_loss_zero, sub_zero, rpow_zero]
+      exact hΨ'.gaugeLe_restrictedChain_one hQ hφ hN hd
+    · rw [allowedLoss, ite_eq_left h_mem]
+      have h_nonsplit := mem_smallNonsplitPrimes_iff_isSmallNonsplit.1 h_mem
+      have h_collision_budget := mul_collisionSum_le_loss h_nonsplit h_exc
+      exact (hΨ'.gaugeLe_restrictedChain_collisionSum hQ hφ h_nonsplit).rpow_mono (by linarith)
   · -- `p < x₁` is exceptional: for a full mark `Λ` with operator `Y`, the module is
     -- `Y ^ m M + p ^ j_p M`, where `M` is the module of integral source forms.
     rw [allowedLoss, ite_eq_left h_mem]
