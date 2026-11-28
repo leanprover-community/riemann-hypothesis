@@ -14,7 +14,6 @@ import Lib.GaloisRep.Main.SplitCase
 import Lib.General.LinearAlgebra.Eigenvalues
 import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.PadicComparison.ToricTower
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Attached Galois representations in odd rank and their descent along weak base change

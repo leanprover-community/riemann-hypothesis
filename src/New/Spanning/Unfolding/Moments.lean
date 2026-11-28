@@ -11,7 +11,6 @@ public import Lib.General.Groups.CharacterTheory
 public import Lib.Shimura.ComplexTheta.AppellHumbertData
 public import New.Spanning.Frames.FixedLines
 public import New.Spanning.RemainingTerms.Size
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import New.Spanning.Frames.FiniteDepth
 import New.Spanning.Frames.FiniteShells
 import New.Spanning.MainTerm.GlobalToLocal

@@ -9,7 +9,6 @@ public import Lib.CM.FormalGroup.IntegralParameter
 import Lib.CM.Integrality.IsogenyIntegrality
 import Lib.General.Algebra.SeriesBounds
 import Lib.General.NumberTheory.SUnitsAndClassNumber
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # The logarithm of the theta function of a CM lattice and the integral group law

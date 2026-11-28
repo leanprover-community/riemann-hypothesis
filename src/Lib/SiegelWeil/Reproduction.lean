@@ -15,7 +15,6 @@ import Lib.DiscreteSeries.Theta.LocalCorrespondence
 import Lib.GLn.SchurModule.WeylKernel
 import Lib.General.LinearAlgebra.BlockEmbeddings
 import Lib.PadicComparison.Descent.TestCategory
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.SiegelWeil.RallisInner.SharpData
 
 /-!

@@ -13,7 +13,6 @@ import Lib.DiscreteSeries.Theta.FockJointHarmonics
 import Lib.DiscreteSeries.Theta.LocalCorrespondence
 import Lib.GLn.SchurModule.SchurNorm
 import Lib.PadicComparison.Descent.TestCategory
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Descent pairs: descent data for theta lifts to definite unitary groups

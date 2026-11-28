@@ -11,7 +11,6 @@ import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
 import Lib.DiscreteSeries.Haar.TotalMass
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import New.Appendix.DiscreteSeries.StationaryPosition
 
 /-!

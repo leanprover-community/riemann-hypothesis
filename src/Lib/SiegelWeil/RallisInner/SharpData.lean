@@ -15,7 +15,6 @@ import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.General.Algebra.LevelModulus
 import Lib.General.LinearAlgebra.HermiteForm
 import Lib.General.LinearAlgebra.PartnerAlgebra
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.SiegelWeil.RallisInner.DualDatum
 import Lib.SiegelWeil.RallisInner.VacuumSummability
 import Lib.Weil.Unramified.HeckeTransfer

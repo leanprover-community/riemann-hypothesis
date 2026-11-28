@@ -21,7 +21,6 @@ import Lib.General.LinearAlgebra.Eigenvalues
 import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.PadicComparison.Descent.TestCategory
 import Lib.PadicHodge.Limit.TraceLimit
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Isotypic spaces of eigenforms and attached Galois representations in every positive rank

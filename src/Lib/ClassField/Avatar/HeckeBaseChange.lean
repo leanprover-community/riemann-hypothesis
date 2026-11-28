@@ -12,7 +12,6 @@ import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
 import Lib.PadicHodge.Characters
 import Lib.PadicHodge.Crystalline.HodgeTateJumps
 import Lib.PadicHodge.Crystalline.Regularity
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Base change of U(1) and Hecke characters, their L-functions and parallel twists
