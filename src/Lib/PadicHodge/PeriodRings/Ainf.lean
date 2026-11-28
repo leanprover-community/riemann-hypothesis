@@ -231,7 +231,11 @@ lemma xi_eq_sum : xi = ∑ i ∈ Finset.range p, WittVector.teichmuller p epsRoo
 
 /-- In `A_inf`, ξ·τ = μ, where μ = [ε] − 1, τ = [ε^{1/p}] − 1 and ξ = Σ_{0≤i<p} [ε^{1/p}]^i, the
 brackets denoting Teichmüller lifts. -/
-lemma xi_mul_tau : xi * tau = mu := by rw [xi_eq_sum, tau, geom_sum_mul, mu_eq, epsTilt, map_pow]
+lemma xi_mul_tau : xi * tau = mu := by
+  have h := (TauCeti.WittVector.cyclotomicMu_eq_cyclotomicXi_mul p epsTilt).symm
+  rw [TauCeti.WittVector.frobeniusEquiv_symm_cyclotomicMu, frobeniusEquiv_symm_epsTilt,
+    TauCeti.WittVector.cyclotomicMu_def p epsRoot, ← tau] at h
+  exact h
 
 /-- Let `g` be a monic polynomial of degree `d` over `O_C / p`, and let `w`, `b` be in `O^♭`. Then
 some `a` in `O^♭` is near `w`, in that `g (w.coeff n)` divides `(w - a).coeff n ^ d`, and either
