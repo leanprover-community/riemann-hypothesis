@@ -355,6 +355,7 @@ abbrev stdOrdersPart (l : ℕ) (i : Letter) : Submodule k.S L.Ambient :=
 variable {a i c} {L' : JumpLattice O} {c' : ℕ → ℤ → ℤ} {μ : L.Functional} {x : L.Ambient}
   {g : k.galMonoid}
 
+/-- `L.valueAt a μ x` is the form `μ` evaluated at `φ^{-a} x`. -/
 lemma valueAt_def : L.valueAt a μ x = μ ((φ ^ a)⁻¹ • x) := rfl
 
 @[simp]
