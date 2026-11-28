@@ -1,21 +1,13 @@
 module
 
 public import Mathlib.RepresentationTheory.Invariants
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.GroupTheory.IndexNSmul
-import Mathlib.GroupTheory.Nilpotent
 import Mathlib.LinearAlgebra.Dimension.Torsion.Basic
 import Mathlib.LinearAlgebra.Eigenspace.Zero
 import Mathlib.NumberTheory.NumberField.Cyclotomic.Ideal
 import Mathlib.RepresentationTheory.Homological.GroupCohomology.Hilbert90
-import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Topology.Sheaves.Presheaf
 public import Lib.Speed
-import Lib.ClassField.Places.DecompositionCyclotomic
 import Lib.ClassField.Places.ProfiniteGalois
 
 /-!
@@ -351,7 +343,10 @@ lemma New.Tate.index_formula {B C : Type} [AddCommGroup B] [AddCommGroup C] (s :
   let N : Submodule ℤ B := (σ - 1).range
   let σN : End ℤ N := σ.restrict (show ∀ x ∈ N, σ x ∈ N by simp [N])
   let t : End ℤ N := (σ - 1).rangeRestrict ∘ₗ N.subtype
-  obtain ⟨ζ, hζ⟩ : ∃ ζ : cycloField l, IsPrimitiveRoot ζ l := ⟨_, zeta_spec l ℚ _⟩
+  have : NeZero (l : ℚ) := ⟨Nat.cast_ne_zero.mpr (Nat.Prime.ne_zero Fact.out)⟩
+  have : IsCyclotomicExtension {l} ℚ (CyclotomicField l ℚ) :=
+    CyclotomicField.isCyclotomicExtension l ℚ
+  obtain ⟨ζ, hζ⟩ : ∃ ζ : CyclotomicField l ℚ, IsPrimitiveRoot ζ l := ⟨_, zeta_spec l ℚ _⟩
   -- `1 + σ + ⋯ + σ ^ (l - 1)` kills `N`, as its product with `σ - 1` is `σ ^ l - 1 = 0`. This is
   -- the minimal polynomial of `ζ`, so `N` is a `ℤ[ζ]`-module with `ζ` acting as `σ`.
   have minpoly_eq : cyclotomic l ℤ = minpoly ℤ hζ.toInteger := by
