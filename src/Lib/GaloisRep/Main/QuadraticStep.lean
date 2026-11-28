@@ -136,7 +136,7 @@ open NumberField IsDedekindDomain HeightOneSpectrum Ideal Nat ZMod decompGroup Q
 
 /-- For `R ≠ 0` divisible by `4` and `n ≠ 0` there is `D ≡ -1 (mod R)` that is a norm `α * star α`
 from `𝓞 E` and such that `-D` is a uniformiser at some place `P` prime to `n`. -/
-lemma exists_norm_uniformiser (E : Type*) [Field E] [NumberField E] [IsCMField E]
+lemma exists_norm_uniformizer (E : Type*) [Field E] [NumberField E] [IsCMField E]
     [HasPrimitiveRoot5040 E] {R n : ℕ} (hR : R ≠ 0) (h4 : 4 ∣ R) (hn : n ≠ 0) :
     ∃ (D : ℕ) (α : 𝓞 E) (P : FinPlace E),
       R ∣ D + 1 ∧ α * star α = D ∧ ↑n ∉ P.asIdeal ∧
@@ -251,7 +251,7 @@ private lemma mem_ker_sqrtChar_iff (hb : b ^ 2 = algebraMap E Ω x) (hb_ne : b �
   change signToQZ (sqrtSign hb hb_ne g) = 1 ↔ _
   rw [signToQZ_eq_one_iff]; simp [sqrtSign]
 
-private lemma symmetrise_sqrtChar_eq_zero_iff [IsCMField E] (hb : b ^ 2 = algebraMap E Ω x)
+private lemma symmetrize_sqrtChar_eq_zero_iff [IsCMField E] (hb : b ^ 2 = algebraMap E Ω x)
     (hb_ne : b ≠ 0) (g : Gal(Ω/E)) :
     (symmetrize (sqrtChar hb hb_ne)).val g = 0 ↔
       sqrtSign hb hb_ne g * sqrtSign hb hb_ne (conjGal g) = 1 := by
@@ -261,12 +261,12 @@ private lemma symmetrise_sqrtChar_eq_zero_iff [IsCMField E] (hb : b ^ 2 = algebr
   rw [ofAdd_add, ofAdd_toAdd, ofAdd_toAdd, ← map_mul, signToQZ_eq_one_iff]
 
 /-- `symmetrize (sqrtChar hb hb_ne)` vanishes at `g` iff `g` fixes `c * b * cmConj b`. -/
-private lemma symmetrise_sqrtChar_apply_eq_zero_iff [IsCMField E] (hb : b ^ 2 = algebraMap E Ω x)
+private lemma symmetrize_sqrtChar_apply_eq_zero_iff [IsCMField E] (hb : b ^ 2 = algebraMap E Ω x)
     (hb_conj : cmConj b ^ 2 = algebraMap E Ω (star x)) (hb_ne : b ≠ 0) {a : E} (ha : a ≠ 0)
     (g : Gal(Ω/E)) :
     (symmetrize (sqrtChar hb hb_ne)).val g = 0 ↔
       g (algebraMap E Ω a * b * cmConj b) = algebraMap E Ω a * b * cmConj b := by
-  rw [symmetrise_sqrtChar_eq_zero_iff, sqrtSign_conjGal hb hb_conj hb_ne]
+  rw [symmetrize_sqrtChar_eq_zero_iff, sqrtSign_conjGal hb hb_conj hb_ne]
   have h_act : g (algebraMap E Ω a * b * cmConj b) =
       ((↑(sqrtSign hb hb_ne g * sqrtSign hb_conj (by simpa using hb_ne) g) : ℤ) : Ω) *
         (algebraMap E Ω a * b * cmConj b) := by
@@ -278,7 +278,7 @@ private lemma symmetrise_sqrtChar_apply_eq_zero_iff [IsCMField E] (hb : b ^ 2 = 
       (by simpa using h)⟩
 
 /-- Inertia at `P` and `star P` surjects onto `{±1}²` under `g ↦ (sqrtSign g, sqrtSign gᶜ)`. -/
-private lemma exists_mul_mem_ker_symmetrise_inf_ker [IsCMField E] (hb : b ^ 2 = algebraMap E Ω x)
+private lemma exists_mul_mem_ker_symmetrize_inf_ker [IsCMField E] (hb : b ^ 2 = algebraMap E Ω x)
     (hb_ne : b ≠ 0) {n : ℕ} {P : FinPlace E} (hnP : ↑n ∉ P.asIdeal)
     {σ : decompGroup Gal(Ω/E) (placeOver P)}
     (hσ_inertia : σ ∈ inertiaGroup (decompGroup Gal(Ω/E) (placeOver P)) (placeOver P))
@@ -292,7 +292,7 @@ private lemma exists_mul_mem_ker_symmetrise_inf_ker [IsCMField E] (hb : b ^ 2 = 
     hH ⟨star P, by simp [hnP], _, P.isPlaceOver_placeOver.conjPlace_star,
       hσ_inertia.conjPlace_conjGal⟩
   have hσ_ne : s σ ≠ s (conjGal σ) := fun h_eq ↦
-    hσ_sym ((symmetrise_sqrtChar_eq_zero_iff hb hb_ne σ).mpr (by rw [h_eq, Int.units_mul_self]))
+    hσ_sym ((symmetrize_sqrtChar_eq_zero_iff hb hb_ne σ).mpr (by rw [h_eq, Int.units_mul_self]))
   have ⟨he₁, he₂⟩ : ((-1, 1) : ℤˣ × ℤˣ) ∈ H.map Ψ ∧ ((1, -1) : ℤˣ × ℤˣ) ∈ H.map Ψ := by
     by_cases h_one : s σ = 1
     · have h_neg := (Int.units_eq_one_or (s (conjGal σ))).resolve_left (h_one ▸ hσ_ne.symm)
@@ -314,7 +314,7 @@ private lemma exists_mul_mem_ker_symmetrise_inf_ker [IsCMField E] (hb : b ^ 2 = 
   have hΨ_mul : Ψ (g * h) = 1 := by rw [_root_.map_mul, hΨ, mul_inv_cancel]
   have hs₁ : s (g * h) = 1 := congrArg Prod.fst hΨ_mul
   have hs₂ : s (conjGal (g * h)) = 1 := congrArg Prod.snd hΨ_mul
-  exact ⟨h, hh, (symmetrise_sqrtChar_eq_zero_iff hb hb_ne _).mpr (by rw [hs₁, hs₂, one_mul]),
+  exact ⟨h, hh, (symmetrize_sqrtChar_eq_zero_iff hb hb_ne _).mpr (by rw [hs₁, hs₂, one_mul]),
     by change signToQZ (s (g * h)) = 1; rw [hs₁, map_one]⟩
 
 end KummerSign
@@ -416,7 +416,7 @@ structure IsQuadraticStep (E : Type) [Field E] [EmbeddedNumberField E] [IsCMFiel
   isSplitPrimeToDisc_below : ∀ u : FinPlace (stepField χ), ↑n ∈ u.asIdeal →
     IsSplitPrimeToDisc (u.below (QuadField D))
   /-- At a place over `n`, the decomposition group fixes `stepField χ`. -/
-  decompGroup_le_ker_symmetrise : ∀ {A : ClosurePlace} {w : FinPlace E}, IsPlaceOver A w →
+  decompGroup_le_ker_symmetrize : ∀ {A : ClosurePlace} {w : FinPlace E}, IsPlaceOver A w →
     ↑n ∈ w.asIdeal → decompGroup Gal(Ω/E) A ≤ ker (symmetrize χ)
   /-- At a place over `n`, the inertia group fixes `stepField χ`, and `χ` vanishes on it. -/
   inertiaGroup_le_ker_inf : ∀ {A : ClosurePlace} {w : FinPlace E}, IsPlaceOver A w →
@@ -441,7 +441,7 @@ lemma exists_isQuadraticStep (E : Type) [Field E] [EmbeddedNumberField E] [IsCMF
   have hk (w : FinPlace E) : 4 ∉ w.asIdeal ^ k := fun h_mem ↦
     not_le.mpr (Nat.lt_pow_self w.one_lt_q) <| by
       simpa [k] using Int.natAbs_le_of_dvd_ne_zero (absNorm_dvd_norm_of_mem h_mem) (by simp)
-  obtain ⟨D, α, P, ⟨M, hM⟩, hα, hnP, hP⟩ := exists_norm_uniformiser E (R := 4 * n * (2 * n) ^ k)
+  obtain ⟨D, α, P, ⟨M, hM⟩, hα, hnP, hP⟩ := exists_norm_uniformizer E (R := 4 * n * (2 * n) ^ k)
     (by positivity) ((dvd_mul_right 4 n).mul_right _) hn
   have hD_mod_four : Fact (D % 4 = 3) := ⟨by rw [mul_assoc, mul_assoc] at hM; omega⟩
   have hD (w : FinPlace E) (hw : 2 ∈ w.asIdeal ∨ ↑n ∈ w.asIdeal) : ↑(D + 1) ∈ w.asIdeal ^ k := by
@@ -461,7 +461,7 @@ lemma exists_isQuadraticStep (E : Type) [Field E] [EmbeddedNumberField E] [IsCMF
   have hb_ne : b ≠ 0 := right_ne_zero_of_mul (left_ne_zero_of_mul hy_ne)
   let χ : QZChar Gal(Ω/E) := sqrtChar hb hb_ne
   have h_sym (g : Gal(Ω/E)) : (symmetrize χ).val g = 0 ↔ g y = y :=
-    symmetrise_sqrtChar_apply_eq_zero_iff hb hb_conj hb_ne (by simp [hi, ht]) g
+    symmetrize_sqrtChar_apply_eq_zero_iff hb hb_conj hb_ne (by simp [hi, ht]) g
   have h_dec {A : ClosurePlace} {w : FinPlace E} (hA : IsPlaceOver A w)
       (hw : 2 ∈ w.asIdeal ∨ ↑n ∈ w.asIdeal) : decompGroup Gal(Ω/E) A ≤ ker (symmetrize χ) :=
     fun g hg ↦ (h_sym g).mpr <|
@@ -484,10 +484,10 @@ lemma exists_isQuadraticStep (E : Type) [Field E] [EmbeddedNumberField E] [IsCMF
   refine ⟨χ, D, h_quad,
     { isStep := h_step
       exists_mul_mem_of_inertiaAbove_subset := ⟨P.q, fun H hH g ↦
-        exists_mul_mem_ker_symmetrise_inf_ker hb hb_ne hnP hσ_inertia hσ_sym hH g⟩
+        exists_mul_mem_ker_symmetrize_inf_ker hb hb_ne hnP hσ_inertia hσ_sym hH g⟩
       isSplitPrimeToDisc_below := by
         simp +contextual [IsSplitPrimeToDisc.of_mem, hM, mul_assoc, mul_mem_right]
-      decompGroup_le_ker_symmetrise := fun hA hw ↦ h_dec hA (.inr hw)
+      decompGroup_le_ker_symmetrize := fun hA hw ↦ h_dec hA (.inr hw)
       inertiaGroup_le_ker_inf := fun {A w} hA hw g hg ↦
         ⟨h_dec hA (.inr hw) hg.1, (mem_ker_sqrtChar_iff hb hb_ne g).mpr ?_⟩
       decompGroup_le_ker_inf_of_isSplit := fun {A w} hA hw h_split g hg ↦

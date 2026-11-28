@@ -793,7 +793,7 @@ lemma isFiniteTypeAt_and_polyKillsAt_of_mem_conjClosure [DecidableEq n] [Nonempt
         simp only [Nat.succ_eq_add_one, Nat.reduceAdd, h_tamePart, Matrix.injective_pair_iff_ne,
           ne_eq, one_eq_inv, hw, ϑ.tamePart_ne_one, not_false_eq_true]) (by simp)
     exact ⟨_, by simpa only [scaleRoots_one, map_one, Units.val_one, h_tamePart] using h_lab⟩
-  obtain ⟨h_fin, -, h_labelled⟩ := hR.isLabelledAt f.prop he h_lab hA
+  obtain ⟨h_fin, -, h_labelled⟩ := hR.isLabeledAt f.prop he h_lab hA
   refine ⟨h_fin, fun s hs ↦ ?_⟩
   -- with `a` the tame exponent of `s`, the roots of the label give the eigenvalues of `s`
   obtain ⟨a, ha, -⟩ := (GaloisRep.exists_isTameExponent T hA (card Empty)).2 s hs

@@ -221,7 +221,7 @@ lemma isLabeledAt_avatar {a : AutChar D.E} {e : NumberField.InfinitePlace D.E �
     {ψ : (w : FinPlace D.E) → MulChar (ResField w) ℂ} (ha : a.HasWeight e ψ) (k j : ℤ)
     {w : FinPlace D.E} {A : ClosurePlace} {f : ℕ} (hψ_star : ψ (star w) = 1) (hw : w.IsSplit) :
     let T : MulChar (AlgebraicClosure (ResField w)) ℂ := faithfulChar (ResField w)
-    IsLabelledAt A T f (PolyKillsAt ((scalar (Fin 1)).comp (ha.toAlgebraic k j).avatar) A)
+    IsLabeledAt A T f (PolyKillsAt ((scalar (Fin 1)).comp (ha.toAlgebraic k j).avatar) A)
       (X - C (charName T (ψ w)).val) := by
   -- Let `s` have tame exponent `y`; it lies in inertia. By
   -- `avatarCompatAt_of_hasPrimitiveRoot5040`, `s` is the Artin image of a local unit `x` and is
@@ -611,9 +611,9 @@ def IsMainSummand (z : FinPlace D.E → ℕ → ℂ) (R : GalRep ℓ D.E r) : Pr
 roots of the label `c i`, a polynomial over the residue field. -/
 structure IsRepOfType extends IsConjSelfDualOfLevel (n := m) D k J S R where
   /-- At each place `A`, an element of inertia over `O.chosenPlace i` is killed by the polynomial
-  that `IsLabelledAt` makes from the label `c i` and the tame exponent at level `(card r)!`. -/
+  that `IsLabeledAt` makes from the label `c i` and the tame exponent at level `(card r)!`. -/
   labeled ⦃i : O.ChosenIndex⦄ ⦃A : ClosurePlace⦄ :
-      IsLabelledAt A (faithfulChar (ResField (O.chosenPlace i))) (card r).factorial
+      IsLabeledAt A (faithfulChar (ResField (O.chosenPlace i))) (card r).factorial
         (PolyKillsAt R A) (c i)
 
 end AptTupleDefs

@@ -27,19 +27,19 @@ multiplicative character of an algebraically closed extension `K` of `k_w`.
 
 * `New.GaloisRep.IsTameExponent w A T f s a`: the inertial element `s` moves a `(q ^ f - 1)`-th root
   of a uniformiser by the root of unity that `T` reads as `exp (2πi a / (q ^ f - 1))`.
-* `New.GaloisRep.IsLabelledAt`: for a polynomial `c` over the residue field, the polynomial with
+* `New.GaloisRep.IsLabeledAt`: for a polynomial `c` over the residue field, the polynomial with
   roots `ιℓ ((T ^ a) x)` satisfies a given condition at each such `s`. Here `x` runs over the roots
   of `c`, `ιℓ` is the fixed map from `ℂ` to `PadicAlgCl ℓ`, and `T ^ a` is the `a`-th power of the
   character `T`.
 * `New.GaloisRep.IsTameExponent.pow_apply_charName`: comparison with the local Artin map, for
   characters of `k_wˣ`.
 * `New.GaloisRep.exists_isTameExponent`: exponents exist when `f` is a factorial.
-* `New.GaloisRep.Attached.isLabelledAt`: if an eigenform has, at a split place `w`, a type for
+* `New.GaloisRep.Attached.isLabeledAt`: if an eigenform has, at a split place `w`, a type for
   `GL n` of the residue field given by a label (`New.HasProductLabel`: a polynomial `c` of degree
   `d` and characters `χ l` with multiplicities `t l`, where `d + ∑ l, t l` is the rank and the roots
   of `c` and the names of the `χ l` are all distinct), then inertia at `w` acts on the attached
   Galois representation through the tame characters given by the roots of the polynomial of the
-  label (`New.GaloisRep.IsLabelledAt`, `New.GaloisRep.IsTameExponent`). The proof uses base changes
+  label (`New.GaloisRep.IsLabeledAt`, `New.GaloisRep.IsTameExponent`). The proof uses base changes
   of prime degree in which `w` is inert to reduce to the case where `c` splits into linear factors.
   That case follows from `New.GaloisRep.Attached.local_global_of_eigencharacter` applied to local
   units.
@@ -85,10 +85,10 @@ lemma exists_resField_hom {R : Type*} [Field R] (g : 𝓞 E →+* R) (h_le_ker :
 
 /-- Witness data for `New.GaloisRep.IsTameExponent`. -/
 structure IsTameWitness (φ : 𝓞 Ω →+* K) (π : E) (z : Ω) (t : 𝓞 Ω) : Prop where
-  centrePrime_le_ker : centerPrime Ω A ≤ ker φ
+  centerPrime_le_ker : centerPrime Ω A ≤ ker φ
   commutes (x : 𝓞 E) : φ (algebraMap (𝓞 E) (𝓞 Ω) x) =
     algebraMap (ResField w) K (algebraMap (𝓞 E) (ResField w) x)
-  isUniformiser : IsUniformizer A π
+  isUniformizer : IsUniformizer A π
   pow_eq : z ^ (w.q ^ f - 1) = algebraMap E Ω π
   coe_eq : (t : Ω) = s z / z
   map_eq : T (φ t) = Complex.exp (2 * Real.pi * Complex.I / (w.q ^ f - 1 : ℕ)) ^ a
@@ -108,7 +108,7 @@ open Nat
 
 /-- Inertia acts through the tame characters of level `f` given by the roots of `c`: whenever `s`
 has tame exponent `a`, `P` holds for `s` and `∏ x, (X - ιℓ ((T ^ a) x))` over the roots of `c`. -/
-def IsLabelledAt {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] (A : ClosurePlace) (T : MulChar K ℂ) (f : ℕ)
+def IsLabeledAt {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] (A : ClosurePlace) (T : MulChar K ℂ) (f : ℕ)
     (P : Gal(Ω/E) → (PadicAlgCl ℓ)[X] → Prop) (c : (ResField w)[X]) : Prop :=
   ∀ ⦃s : Gal(Ω/E)⦄ ⦃a : ℕ⦄,
     IsTameExponent w A T f s a → P s ((c.aroots K).map fun x : K ↦ X - C (ιℓ ((T ^ a) x))).prod
@@ -127,11 +127,11 @@ lemma IsTameExponent.pow_apply_charName [IsFaithfulMulChar K T]
   obtain ⟨x, hx⟩ := algebraMap_ResField_surjective w (residue (LocInt w) ⟨u, hu.le⟩)
   have h_res : ρ t ^ k = algebraMap (ResField w) K (residue (LocInt w) ⟨u, hu.le⟩) := by
     have h_sym : A.valuation (s (z ^ k) / z ^ k - algebraMap E Ω x) < 1 :=
-      (h_exp.isPlaceOver.valuation_sub_lt_one_iff_of_localArtin_eq hw.isUniformiser hu h_artin
+      (h_exp.isPlaceOver.valuation_sub_lt_one_iff_of_localArtin_eq hw.isUniformizer hu h_artin
         (by rw [← pow_mul', ← hk, hw.pow_eq])).1 (residue_eq_iff_valuation_sub_lt_one.1 hx.symm)
     rw [map_pow, ← div_pow, ← hw.coe_eq] at h_sym
     have h_cong : t ^ k - algebraMap (𝓞 E) (𝓞 Ω) x ∈ centerPrime Ω A := mem_centerPrime.2 h_sym
-    simpa [← hx, hw.commutes, sub_eq_zero] using hw.centrePrime_le_ker h_cong
+    simpa [← hx, hw.commutes, sub_eq_zero] using hw.centerPrime_le_ker h_cong
   rw [← thetaChar_charName T χ, ← h_res]
   exact (thetaChar_apply_pow T Finite.one_lt_card (algebraMap_pow_card_pred_eq_one _)
     (Nat.sub_ne_zero_of_lt (Nat.one_lt_pow h_exp.level_ne_zero w.one_lt_q))
@@ -154,7 +154,7 @@ lemma _root_.New.IsLabel.root_pow_eq_one {c : (ResField w)[X]} {r : ℕ} (h_labe
     P.natDegree, ⟨hP.natDegree_pos, hd_le⟩, h_pow hP.natDegree_pos.ne' dvd_rfl⟩
 
 /-- Extend `ResField w →+* K` to `𝓞 Ω →+* K` killing `centerPrime Ω A` when `K` is alg. closed. -/
-private lemma exists_ringHom_centrePrime_le_ker [IsAlgClosed K] (hA : IsPlaceOver A w) :
+private lemma exists_ringHom_centerPrime_le_ker [IsAlgClosed K] (hA : IsPlaceOver A w) :
     ∃ ρ : 𝓞 Ω →+* K, centerPrime Ω A ≤ ker ρ ∧ ∀ x : 𝓞 E,
       ρ (algebraMap (𝓞 E) (𝓞 Ω) x) =
         algebraMap (ResField w) K (algebraMap (𝓞 E) (ResField w) x) := by
@@ -179,7 +179,7 @@ lemma exists_isTameExponent [IsFaithfulMulChar K T] (hA : IsPlaceOver A w) (f : 
   have hN : NeZero N := hN_res.of_neZero_natCast
   have hN_val : A.valuation N = 1 := hA.valuation_natCast_eq_one_iff.2 fun hmem ↦
     hN_res.out (mod_cast algebraMap_ResField_eq_zero.2 hmem)
-  obtain ⟨ρ, hρ_cen, hρ_int⟩ := exists_ringHom_centrePrime_le_ker (K := K) hA
+  obtain ⟨ρ, hρ_cen, hρ_int⟩ := exists_ringHom_centerPrime_le_ker (K := K) hA
   obtain ⟨π, z, hπz⟩ := hA.exists_isPrimitiveRoot_tameGenerator_smul_div hN_val
   obtain ⟨hπ, hz, hζ⟩ := hπz
   have hρζ : IsPrimitiveRoot (ρ hζ.toInteger) N := isRoot_cyclotomic_iff.1 <|
@@ -193,7 +193,7 @@ lemma exists_isTameExponent [IsFaithfulMulChar K T] (hA : IsPlaceOver A w) (f : 
       (hsa : ((hA.tameGenerator • z / z) ^ j) ^ a = s.val z / z) :
       IsTameExponent w A T f.factorial s a :=
     ⟨hA, f.factorial_ne_zero, s.property, ρ, ⟨π, z, (hζ.toInteger ^ j) ^ a,
-      { centrePrime_le_ker := hρ_cen, commutes := hρ_int, isUniformiser := hπ,
+      { centerPrime_le_ker := hρ_cen, commutes := hρ_int, isUniformizer := hπ,
         pow_eq := hz, coe_eq := hsa, map_eq := by simp only [map_pow, hTj, N] }⟩⟩
   refine ⟨⟨hA.tameGenerator ^ j, tame_of_eq _ 1 <|
     (pow_one _).trans (inertia_pow_smul_div hA.tameGenerator.2 hN_val hz j).symm⟩, fun s hs ↦ ?_⟩
@@ -215,14 +215,14 @@ private lemma IsTameExponent.of_unramified {L : Type} [Field L] [EmbeddedNumberF
   obtain ⟨ρ, hρ⟩ := h_exp.exists_witness
   obtain ⟨π, z, t, hw⟩ := hρ
   obtain ⟨i, hi⟩ := exists_resField_hom u (ρ.comp (algebraMap (𝓞 L) (𝓞 Ω))) <| by
-    rw [hAu.centerPrime_liesOver.over]; exact fun _ hx ↦ hw.centrePrime_le_ker hx
+    rw [hAu.centerPrime_liesOver.over]; exact fun _ hx ↦ hw.centerPrime_le_ker hx
   algebraize [i]
   refine ⟨i.toAlgebra, .of_algebraMap_eq fun y ↦ ?_,
     ⟨hAu, right_ne_zero_of_mul h_exp.level_ne_zero, h_exp.mem_inertiaGroup,
       ρ, ⟨algebraMap E L π, z, t,
-        { centrePrime_le_ker := hw.centrePrime_le_ker, commutes := fun x ↦ (hi x).symm,
-          isUniformiser := by rw [hAu.isUniformizer_iff, ← (u.below E).valuation_liesOver L,
-            h_exp.isPlaceOver.isUniformizer_iff.1 hw.isUniformiser, h_ram, pow_one],
+        { centerPrime_le_ker := hw.centerPrime_le_ker, commutes := fun x ↦ (hi x).symm,
+          isUniformizer := by rw [hAu.isUniformizer_iff, ← (u.below E).valuation_liesOver L,
+            h_exp.isPlaceOver.isUniformizer_iff.1 hw.isUniformizer, h_ram, pow_one],
           pow_eq := by rw [← hq, ← pow_mul, hw.pow_eq, IsScalarTower.algebraMap_apply E L Ω],
           coe_eq := hw.coe_eq, map_eq := by rw [← hq, ← pow_mul, hw.map_eq] }⟩⟩⟩
   obtain ⟨x, rfl⟩ := algebraMap_ResField_surjective _ y
@@ -282,14 +282,14 @@ variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E n : Type} [Nonempty n] [Fi
   [Algebra (ResField w) K] {T : MulChar K ℂ} [IsFaithfulMulChar K T] {s d : ℕ}
   {c : (ResField w)[X]} {χ : Fin s → MulChar (ResField w) ℂ} {t : Fin s → ℕ} [WeilData E]
 
-/-- Level-`1` case of `New.GaloisRep.Attached.isLabelledAt`, where `c` splits linearly. -/
-private lemma New.GaloisRep.Attached.isLabelledAt_one (hf : f ∈ (stdSpace E n).forms κ)
+/-- Level-`1` case of `New.GaloisRep.Attached.isLabeledAt`, where `c` splits linearly. -/
+private lemma New.GaloisRep.Attached.isLabeledAt_one (hf : f ∈ (stdSpace E n).forms κ)
     (he : IsEigenform f P) (hr : Attached P r) (hA : IsPlaceOver A w)
     (h_prod_label : HasProductLabel f hw T d c χ t)
     (h_roots : ∀ x : K, aeval x c = 0 → x ^ (w.q - 1) = 1) :
     IsFiniteTypeAt r A ∧
     HasJumpsAt r A (jumps κ (Fintype.card n)) ∧
-    IsLabelledAt A T 1 (PolyKillsAt r A)
+    IsLabeledAt A T 1 (PolyKillsAt r A)
       (c * ∏ l : Fin s, (X - C (charName T (χ l)).val) ^ t l) := by
   obtain ⟨h_label, h_sep, h_deg, h_has⟩ := h_prod_label
   obtain ⟨ψ, rfl⟩ := h_label.exists_eq_prod_charName_of_root_pow_card_eq T fun y hy ↦ by
@@ -331,18 +331,18 @@ private lemma New.GaloisRep.Attached.isLabelledAt_one (hf : f ∈ (stdSpace E n)
   exact (hr.local_global_of_eigencharacter h_eig hez h_sorted hA
     ⟨σ, hσ.1⟩ x 0 (inv_mem hσ) hxσ hx).2.2
 
-/-- Level-`g` case (`g ≠ 0`) of `New.GaloisRep.Attached.isLabelledAt`. -/
-private lemma New.GaloisRep.Attached.isLabelledAt_of_root_pow_eq_one {g : ℕ}
+/-- Level-`g` case (`g ≠ 0`) of `New.GaloisRep.Attached.isLabeledAt`. -/
+private lemma New.GaloisRep.Attached.isLabeledAt_of_root_pow_eq_one {g : ℕ}
     (hf : f ∈ (stdSpace E n).forms κ) (he : IsEigenform f P) (hr : Attached P r)
     (hA : IsPlaceOver A w) (h_prod_label : HasProductLabel f hw T d c χ t) (hg : g ≠ 0)
     (h_roots : ∀ x : K, aeval x c = 0 → x ^ (w.q ^ g - 1) = 1) :
     IsFiniteTypeAt r A ∧
     HasJumpsAt r A (jumps κ (Fintype.card n)) ∧
-    IsLabelledAt A T g (PolyKillsAt r A)
+    IsLabeledAt A T g (PolyKillsAt r A)
       (c * ∏ l : Fin s, (X - C (charName T (χ l)).val) ^ t l) := by
   induction g using induction_on_primes generalizing E with
   | zero => exact absurd rfl hg
-  | one => exact hr.isLabelledAt_one hf he hA h_prod_label (by simpa using h_roots)
+  | one => exact hr.isLabeledAt_one hf he hA h_prod_label (by simpa using h_roots)
   | prime_mul p g hp ih =>
     obtain ⟨h_label, h_sep, h_deg, h_has⟩ := h_prod_label
     obtain ⟨μ, u, ⟨_, h_step⟩, h_inert⟩ := exists_inertStep hw hA hp
@@ -363,7 +363,7 @@ private lemma New.GaloisRep.Attached.isLabelledAt_of_root_pow_eq_one {g : ℕ}
     have descend [Algebra (ResField u) K] [IsScalarTower (ResField w) (ResField u) K] :
         (IsFiniteTypeAt r A ∧ HasJumpsAt r A (jumps κ (Fintype.card n))) ∧
         ∃ r' : GalRep ℓ (stepField μ) n, DescendsAt μ r' r A ∧
-          IsLabelledAt A T g (PolyKillsAt r' A)
+          IsLabeledAt A T g (PolyKillsAt r' A)
             ((c * ∏ l, (X - C (charName T (χ l)).val) ^ t l).map j) := by
       let χ' (l : Fin s) : MulChar (ResField u) ℂ :=
         (charName T).symm (Units.map j.toMonoidHom (charName T (χ l)))
@@ -424,13 +424,13 @@ a split place and to depth-zero types.
 Clause (c) is a weak form of what this compatibility (Barnet-Lamb–Gee–Geraghty–Taylor, Caraiani)
 gives together with the description of the inertial parameters of depth-zero representations of
 `GL_n` (see Emerton–Gee–Herzig). -/
-lemma New.GaloisRep.Attached.isLabelledAt (hf : f ∈ (stdSpace E n).forms κ) (he : IsEigenform f P)
+lemma New.GaloisRep.Attached.isLabeledAt (hf : f ∈ (stdSpace E n).forms κ) (he : IsEigenform f P)
     (hr : Attached P r) (h_prod_label : HasProductLabel f hw T d c χ t) (hA : IsPlaceOver A w) :
     IsFiniteTypeAt r A ∧
     HasJumpsAt r A (jumps κ (Fintype.card n)) ∧
-    IsLabelledAt A T d.factorial (PolyKillsAt r A)
+    IsLabeledAt A T d.factorial (PolyKillsAt r A)
       (c * ∏ l : Fin s, (X - C (charName T (χ l)).val) ^ t l) :=
-  hr.isLabelledAt_of_root_pow_eq_one hf he hA h_prod_label d.factorial_ne_zero
+  hr.isLabeledAt_of_root_pow_eq_one hf he hA h_prod_label d.factorial_ne_zero
     fun _ hx ↦ (h_prod_label.1.root_pow_eq_one hx).1
 
 end LabelCompatibility

@@ -50,7 +50,7 @@ Frobenii `s` at places `w` (`New.mostFrobenii`).
   the sense of `New.GaloisRep.PolyKillsAt`, each `s` in the decomposition group with `s⁻¹` the
   `q^k`-th power on the residue field (`q` the residue cardinality, `k ≥ 0`). Here `x ∈ E_wˣ` has
   order `k` and local Artin symbol the class of `s`.
-* `New.GaloisRep.Attached.isLabelledAt`: the first two conclusions also hold if `f` has a
+* `New.GaloisRep.Attached.isLabeledAt`: the first two conclusions also hold if `f` has a
   `New.HasProductLabel` at `w`. Then a polynomial built from the values of the label's tame
   characters kills each element of inertia, in the same sense.
 

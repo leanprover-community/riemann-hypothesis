@@ -680,11 +680,11 @@ theorem isRepOfType_of_hasProductLabel {O : DescentPair D.E r n} {ϑ : D.Twist}
   -- The annihilator records the label without identifying the characteristic polynomial.
   have h_lab (i : O.ChosenIndex) {A : ClosurePlace} (hA : IsPlaceOver A (O.chosenPlace i)) :
       IsFiniteTypeAt R A ∧ HasJumpsAt R A (jumps κ (card m)) ∧
-        IsLabelledAt A (faithfulChar (ResField (O.chosenPlace i))) (card r).factorial
+        IsLabeledAt A (faithfulChar (ResField (O.chosenPlace i))) (card r).factorial
           (PolyKillsAt R A)
           (c i * ∏ l : Fin s, (X - C (charName (faithfulChar (ResField (O.chosenPlace i)))
             (1 : MulChar (ResField (O.chosenPlace i)) ℂ)).val) ^ t l) :=
-    hR.isLabelledAt hf h_eigen (h_prod i) hA
+    hR.isLabeledAt hf h_eigen (h_prod i) hA
   refine ⟨⟨isConjSelfDual_of_attached h_eigen hR, fun v hv A hA ↦ ?_⟩, fun i A s a hs ↦ ?_⟩
   · obtain ⟨i, rfl⟩ | ⟨i, hi⟩ | hv' :
         v ∈ Set.range O.chosenPlace ∨

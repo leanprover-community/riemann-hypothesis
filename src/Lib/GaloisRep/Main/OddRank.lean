@@ -503,7 +503,7 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
     -- Step `T` is unramified at `x`, so `F T` is spherical above `x`.
     have h_unram : IsStepUnramifiedAt (stepField (χ T)) (ideleChar (χ T)) x :=
       isStepUnramifiedAt_of_decompGroup_le (h_quad T).isStep hA
-        ((h_quad T).decompGroup_le_ker_symmetrise hA hx)
+        ((h_quad T).decompGroup_le_ker_symmetrize hA hx)
         (((h_quad T).inertiaGroup_le_ker_inf hA hx).trans inf_le_right)
     exact (h_split_case T hA hx).isCompatibleAt (F T).prop (hF T) (hr T)
       (((h_bc T).2 x nofun _ (h_below T hA)).1 h_unram hfx) (hu T hA)
