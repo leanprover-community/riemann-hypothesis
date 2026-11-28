@@ -79,8 +79,6 @@ lemma LValueData.inner_normalizedCentralOp (z : Gf D.E Unit) (x y : Y.descentPai
   simp only [normalizedCentralOp, LinearMap.smul_apply, inner_smul_left, inner_smul_right, h_adj,
     h_conj]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- For lift data `Y` and `z`, `g` in `Gf D.E Unit` (the finite adelic `U(1)`), the normalized
 translation `normalizedCentralOp` at `z⁻¹` carries the theta kernel at `g`, as a form on `U(n)`
 (`kernelForm`), to the kernel at `g * z`. -/

@@ -142,8 +142,6 @@ lemma exists_eq_smul_of_intertwines {σ : ι ⊕ Unit ≃ X} (hσ : (1 : X → �
     _ = conjWeylMatrix κ₀ e₀ y * B := hB y
     _ = weylRep κ₀ e₀ g * B := by rw [conjWeylMatrix_eq_weylRep_map_conj, hy]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 /-- Let `V` be standard, `diag = G.blockEmb hσ` the embedding of the product of the block and the
 rank-one group, and `A` a matrix of which every intertwiner from weight `(κ, e)` to weight
 `(κ₀, e₀)` is a multiple (`SpansBranchingMaps`). For a linear form `t` and a vector `c` there is

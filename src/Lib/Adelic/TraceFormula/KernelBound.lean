@@ -277,8 +277,6 @@ lemma majorant_le_mul_majorant_mul {φ : Gf E n → ℂ} {J : Subgroup (Gf E n)}
     _ = (2 ^ Core.numInfPlaces E) ^ A * majorant φ A (y * z) := by
         rw [majorant, Prod.snd_mul, h_invariant _ hz_fin, mul_left_comm]
 
--- Sealed so that definitional checks do not unfold the products over the infinite places.
-seal Finset.univ in
 /-- The majorant `|φ(y_fin)| ‖y_∞‖ ^ (-A)` of a test function `φ` is integrable for the volume on
 the adelic group as soon as its exponent `A` exceeds `8 n²`. -/
 lemma integrable_majorant (φ : TestFunction (Gf E n)) {A : ℕ} (hA : 8 * card n ^ 2 < A) :
