@@ -251,6 +251,18 @@ class Sweep(unittest.TestCase):
         sweep(gh)
         self.assertEqual(gh.writes, [("remove", 1, "alpoge-inbox")])
 
+    def test_a_stale_closed_search_does_not_remove_the_inbox_after_reopening(self):
+        gh = Fake([waiting(1, state="CLOSED")])
+        gh.later[1] = waiting(1, events=[("reopened", 3)])
+        sweep(gh)
+        self.assertEqual(gh.writes, [])
+
+    def test_closed_search_skips_a_pull_request_whose_label_is_already_gone(self):
+        gh = Fake([waiting(1, state="CLOSED")])
+        gh.later[1] = node(1, state="CLOSED")
+        sweep(gh)
+        self.assertEqual(gh.writes, [])
+
     def test_drafts_batches_and_decided_pull_requests_come_out(self):
         gh = Fake([waiting(1, draft=True), waiting(2, ref="batch/x"),
                    waiting(3, labels=["batch queue"]), waiting(4, labels=["batch-building"])])

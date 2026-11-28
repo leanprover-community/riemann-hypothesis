@@ -389,6 +389,10 @@ def sync(gh, number=None, log=None):
         for name in INBOXES.values():
             try:
                 for closed in gh.closed_in_inbox(name):
+                    # Search may still call a recently reopened pull request closed.
+                    current = gh.pull(closed)
+                    if current is None or current["open"] or name not in current["labels"]:
+                        continue
                     gh.label(closed, False, name)
                     log.append(f"#{closed}: taken out of {where(name)}, because it is closed")
             except RuntimeError as error:
