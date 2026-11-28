@@ -68,6 +68,11 @@ of p-adic groups I, 1980; Clozel–Harris–Taylor, Automorphy for some l-adic l
 @[expose] public section
 
 open Pi Fintype Polynomial Nat Group Submodule ComplexOrder
+open TauCeti (IsReductionMod exists_isReductionMod weightedNorm weightedNorm_mul cosetNorm
+  cosetNorm_def cosetNormInv cosetNormInv_def cosetDerivative cosetDerivative_def
+  map_cosetNorm_mul_weightedNorm_mul_cosetNormInv map_sub_one_mul_weightedNorm_valMinAbs
+  sum_monoidHom_mul exists_map_nsmul_mul_sub_one_eq_sum_mul exists_empty_eq_sum_and_insert_eq_mul
+  exists_map_pow_mul_family_eq_mul_norm map_top_coeff_mul_C_sub_X_mul_C_eq_zero)
 
 attribute [local instance low] Fintype.ofFinite
 
@@ -161,15 +166,20 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
   obtain ⟨P⟩ := Q.nonempty_localChoice j
   have hσ_char : ((ℓ ^ ν : ℕ) : R) = 0 := hσ.natCast_eq_zero
   let ρ : GL (Fin (card n)) (ResField (Q.place j)) →* D.integralEnd Q.place := D.placeRep Q j
-  let K : Subgroup _ := residueLineStabilizer (ResField (Q.place j)) (card n)
+  let K : Subgroup _ := TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n))
   let p : EllAdicIntegers[X] := (X - C ((Q.place j).q ^ t' : EllAdicIntegers)) * H
-  obtain ⟨B, B_mem, hB⟩ := exists_aevalHecke_weightedSum (a := a) hQ P p
+  obtain ⟨B, B_mem, hB⟩ := exists_aevalHecke_weightedNorm (a := a) hQ P p
   have ρ_mem (k : GL (Fin (card n)) (ResField (Q.place j))) : ρ k ∈ D.localOperators Q j :=
     residueRep_mem_localOperators hQ k
-  have Tr_mem : cosetNorm ρ K ∈ D.localOperators Q j := sum_mem fun _ _ ↦ ρ_mem _
-  have Tr'_mem : cosetNormInv ρ K ∈ D.localOperators Q j := sum_mem fun _ _ ↦ ρ_mem _
-  have der_mem : cosetDerivative ρ K B ∈ D.localOperators Q j :=
-    neg_mem (mul_mem (mul_mem Tr_mem (B_mem _)) Tr'_mem)
+  have Tr_mem : cosetNorm ρ K ∈ D.localOperators Q j := by
+    rw [cosetNorm_def]
+    exact sum_mem fun _ _ ↦ ρ_mem _
+  have Tr'_mem : cosetNormInv ρ K ∈ D.localOperators Q j := by
+    rw [cosetNormInv_def]
+    exact sum_mem fun _ _ ↦ ρ_mem _
+  have der_mem : cosetDerivative ρ K B ∈ D.localOperators Q j := by
+    rw [cosetDerivative_def]
+    exact neg_mem (mul_mem (mul_mem Tr_mem (B_mem _)) Tr'_mem)
   refine ⟨cosetDerivative ρ K B, der_mem,
     norm_mul_traceElement_tameGenerator_eq_zero hQ hN ha j, fun g ↦ ?_, fun g ↦ ?_⟩
   · -- Replace `p(Ũ)` by `p(φ)`, sum the logarithms over the lines to that of the determinant,
@@ -182,19 +192,19 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
     rw [← tameTrace_one]
     calc _ = -(σ (cosetNorm ρ K) * σ (B ZMod.valMinAbs * heckeAction (tameTrace Q hN j 1 g)) *
             σ (cosetNormInv ρ K)) := by
-          simp only [cosetDerivative, neg_mul, map_neg, map_mul, mul_assoc, (comm _).eq]
-      _ = -(σ (cosetNorm ρ K * weightedSum (D.lineRep Q j) P.indLine ZMod.valMinAbs *
+          simp only [cosetDerivative_def, neg_mul, map_neg, map_mul, mul_assoc, (comm _).eq]
+      _ = -(σ (cosetNorm ρ K * weightedNorm (D.lineRep Q j) P.indLine ZMod.valMinAbs *
             cosetNormInv ρ K) * σ (heckeAction (tameTrace Q hN j p g))) := by
           rw [map_aevalHecke_valMinAbs_mul_tameTrace hQ hN ha hB hσ]
           simp only [map_mul, mul_assoc, (comm _).eq]
-      _ = -σ (weightedSum ρ P.indDet ZMod.valMinAbs * heckeAction (tameTrace Q hN j p g)) := by
-          rw [lineRep, map_cosetNorm_mul_weightedSum_mul_cosetNormInv ρ hσ_char, P.transfer_indLine,
-            map_mul]
-      _ = -(σ ((ρ P.diamond - 1) * weightedSum ρ P.indDet ZMod.valMinAbs) *
+      _ = -σ (weightedNorm ρ P.indDet ZMod.valMinAbs * heckeAction (tameTrace Q hN j p g)) := by
+          rw [lineRep, map_cosetNorm_mul_weightedNorm_mul_cosetNormInv ρ hσ_char,
+            P.transfer_indLine, map_mul]
+      _ = -(σ ((ρ P.diamond - 1) * weightedNorm ρ P.indDet ZMod.valMinAbs) *
             σ (heckeAction (traceElement hN p (Q.frobData j).frob g))) := by
-          rw [weightedSum_indDet_mul_tameTrace hQ hN ha, map_mul]
+          rw [weightedNorm_indDet_mul_tameTrace hQ hN ha, map_mul]
       _ = _ := by
-          rw [map_sub_one_mul_weightedSum_valMinAbs ρ hσ_char _ P.indDet_diamond,
+          rw [map_sub_one_mul_weightedNorm_valMinAbs ρ hσ_char _ P.indDet_diamond,
             map_traceElement_sub_pow_mul Q hN σ q_one H t' g, neg_mul, neg_neg, map_mul]
           rfl
   · -- The stabiliser of the line fixes `U' = B 1`, so `c U'` is a norm, and `δ Nm U' = 0`.
@@ -203,7 +213,7 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
     have B_shift (f : ZMod (ℓ ^ ν) → ℤ) (k : K) :
         B f * ρ k = B fun s ↦ f (s - (P.indLine k).toAdd) := by
       ext y : 3
-      rw [hB, ← weightedSum_mul]
+      rw [hB, ← weightedNorm_mul]
       exact hB f _
     have norm_inv (k : GL (Fin (card n)) (ResField (Q.place j))) :
         heckeAction δ * (∑ g, D.residueRep Q g) * ρ k = heckeAction δ * ∑ g, D.residueRep Q g :=
