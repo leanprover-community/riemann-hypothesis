@@ -17,6 +17,8 @@ import Mathlib.Topology.Sheaves.Presheaf
 public import Lib.Speed
 import Lib.ClassField.Places.DecompositionCyclotomic
 import Lib.ClassField.Places.ProfiniteGalois
+import TauCeti.Algebra.Module.Torsion.EulerQuotient
+import TauCeti.GroupTheory.Index.Exact
 
 /-!
 # Coker/ker indices and Tate's index formula for cyclic actions of prime order
@@ -101,6 +103,19 @@ lemma cokerKerIndex_comp :
     have t_ne : (t : ℚ) ≠ 0 := fun ht0 ↦ by simp [ht0] at h_ne
     field_simp
 
+open scoped Pointwise in
+/-- The index of multiplication by `l` is the Euler quotient of `l`-torsion. -/
+private lemma cokerKerIndex_natCast (M : Type) [AddCommGroup M] :
+    cokerKerIndex (l : End ℤ M) =
+      (Nat.card (QuotSMulTop (l : ℤ) M) : ℚ) / Nat.card (torsionBy ℤ M (l : ℤ)) := by
+  have h_mul : (l : End ℤ M) = DistribSMul.toLinearMap ℤ M (l : ℤ) := by
+    ext m
+    simp [natCast_zsmul]
+  have h_ker := (TauCeti.exact_subtype_torsionBy (l : ℤ) M).linearMap_ker_eq
+  have h_range : range (DistribSMul.toLinearMap ℤ M (l : ℤ)) = (l : ℤ) • (⊤ : Submodule ℤ M) := by
+    rw [Submodule.pointwise_smul_def, Submodule.map_top]
+  rw [cokerKerIndex, h_mul, h_ker, Submodule.range_subtype, h_range]
+
 /-- For a short exact sequence `0 → A → B → C → 0` of abelian groups given by `f` and `g`, let
 q_X = #(X/lX) / #X[l] be the rational cokernel-over-kernel index of multiplication by `l` on X,
 taken to be 0 if either group is infinite. If q_A ≠ 0, meaning A/lA and A[l] are both finite, then
@@ -108,52 +123,32 @@ q_B = q_A · q_C. -/
 lemma cokerKerIndex_mul_of_exact (hf : Function.Injective f) (h_exact : Exact f g)
     (hg : Surjective g) (hA : cokerKerIndex (l : End ℤ A) ≠ 0) :
     cokerKerIndex (l : End ℤ B) = cokerKerIndex (l : End ℤ A) * cokerKerIndex (l : End ℤ C) := by
-  -- Multiplication by `l` on `B` factors through the range `X` of `ψ (b, a) = (l b - f a, g b)` as
-  -- `B → X → B`. The first map has the index of `l` on `A`, the second that of `l` on `C`; both
-  -- are read off from the exact sequence `A → B × A → B × C → C` by the first part of
-  -- `cokerKerIndex_comp`.
-  let ψ : B × A →ₗ[ℤ] B × C := (coprod (l : End ℤ B) (-f)).prod (g ∘ₗ fst ℤ B A)
-  have exact_left : Exact (f.prod (l : End ℤ A)) ψ := by
-    suffices h_iff : ∀ (b : B) (a : A),
-        (l • b + -f a = 0 ∧ ∃ y : A, f y = b) ↔ ∃ y : A, f y = b ∧ l • f y = f a by
-      simpa [Exact, ψ, h_exact _, ← hf.eq_iff] using h_iff
-    grind
-  have exact_right : Exact ψ (coprod (-g) (l : End ℤ C)) := by
-    -- If `g b = l • g x`, then `l • x - b` lies in the range of `f`; take `b' = x`.
-    have h_iff (b x : B) :
-        -g b + l • g x = 0 ↔ ∃ b' : B, (∃ a : A, l • b' + -f a = b) ∧ g b' = g x := by
-      grind [Exact, h_exact (l • x - b)]
-    simpa [Exact, ψ, hg.forall] using h_iff
-  let α : B →ₗ[ℤ] ψ.range := ψ.rangeRestrict ∘ₗ inl ℤ B A
-  let β : ψ.range →ₗ[ℤ] B := fst ℤ B C ∘ₗ ψ.range.subtype
-  have h_factor : (l : End ℤ B) = β ∘ₗ α := by aesop
-  -- Write `l = snd ∘ (f, l)` on `A`: both indices compare `B × 0` with `ker ψ` inside `B × A`.
-  have idx_α : cokerKerIndex (l : End ℤ A) = cokerKerIndex α := by
-    rw [← snd_prod f (l : End ℤ A), (cokerKerIndex_comp (f.prod (l : End ℤ A)) (snd ℤ B A)).left,
-      (cokerKerIndex_comp (inl ℤ B A) ψ.rangeRestrict).left]
-    simp_all [exact_iff, range_inl, ← ker_eq_bot, sup_comm, inf_comm, bot_inf_eq]
-  -- Write `l = coprod (-g) l ∘ inr` on `C`: both compare `0 × C` with `range ψ` in `B × C`.
-  have idx_β : cokerKerIndex (l : End ℤ C) = cokerKerIndex β := by
-    rw [← coprod_inr (-g) (l : End ℤ C),
-      (cokerKerIndex_comp (inr ℤ B C) (coprod (-g) (l : End ℤ C))).left,
-      (cokerKerIndex_comp ψ.range.subtype (fst ℤ B C)).left]
-    simp_all [exact_iff, range_inr, ← range_eq_top, range_coprod, sup_comm, inf_comm]
-  -- The index is multiplicative in `l = β ∘ α`, since `α` has nonzero index.
-  rw [idx_α, idx_β, h_factor]
-  exact (cokerKerIndex_comp α β).right (.inl (by rwa [← idx_α]))
+  rw [cokerKerIndex_natCast] at hA
+  have hA_finite :
+      Nat.card (QuotSMulTop (l : ℤ) A) ≠ 0 ∧ Nat.card (torsionBy ℤ A (l : ℤ)) ≠ 0 := by
+    simpa only [div_ne_zero_iff, Nat.cast_ne_zero] using hA
+  have : Finite (torsionBy ℤ A (l : ℤ)) := Nat.finite_of_card_ne_zero hA_finite.2
+  have : Finite (QuotSMulTop (l : ℤ) A) := Nat.finite_of_card_ne_zero hA_finite.1
+  simp only [cokerKerIndex_natCast]
+  by_cases hC : Finite (torsionBy ℤ C (l : ℤ))
+  · exact TauCeti.natCard_quotSMulTop_div_natCard_torsionBy_of_exact _ h_exact hf hg
+  · -- The connecting map to the finite quotient of `A` shows that `B[l]` is infinite too.
+    have hB : ¬ Finite (torsionBy ℤ B (l : ℤ)) := fun h_fin ↦
+      hC (TauCeti.exact_torsionByMap_torsionByδ (r := (l : ℤ)) h_exact hf hg).finite
+    have : Infinite (torsionBy ℤ B (l : ℤ)) := not_finite_iff_infinite.mp hB
+    have : Infinite (torsionBy ℤ C (l : ℤ)) := not_finite_iff_infinite.mp hC
+    simp only [Nat.card_eq_zero_of_infinite, Nat.cast_zero, div_zero, mul_zero]
 
 /-- If `f : A → B` has finite kernel and cokernel, then `#(A/lA) / #A[l] = #(B/lB) / #B[l]`, each
 side read as `0` when one of its groups is infinite. -/
 lemma cokerKerIndex_natCast_eq_of_ne_zero (h : cokerKerIndex f ≠ 0) :
     cokerKerIndex (l : End ℤ A) = cokerKerIndex (l : End ℤ B) := by
-  -- Take indices in `f ∘ l = l ∘ f` and cancel the nonzero index of `f`.
-  have h_comm : f ∘ₗ (l : End ℤ A) = (l : End ℤ B) ∘ₗ f := by aesop
-  apply mul_right_cancel₀ h
-  calc cokerKerIndex (l : End ℤ A) * cokerKerIndex f
-    _ = cokerKerIndex (f ∘ₗ (l : End ℤ A)) :=
-      ((cokerKerIndex_comp (l : End ℤ A) f).right (.inr h)).symm
-    _ = cokerKerIndex (l : End ℤ B) * cokerKerIndex f := by
-      rw [h_comm, (cokerKerIndex_comp f (l : End ℤ B)).right (.inl h), mul_comm]
+  have h_finite : Nat.card (B ⧸ range f) ≠ 0 ∧ Nat.card (ker f) ≠ 0 := by
+    simpa only [cokerKerIndex, div_ne_zero_iff, Nat.cast_ne_zero] using h
+  have : Finite (ker f) := Nat.finite_of_card_ne_zero h_finite.2
+  have : Finite (B ⧸ range f) := Nat.finite_of_card_ne_zero h_finite.1
+  simpa only [cokerKerIndex_natCast] using
+    TauCeti.natCard_quotSMulTop_div_natCard_torsionBy_eq_of_finite_ker_of_finite_coker (l : ℤ) f
 
 variable [NeZero l] [Module.Finite ℤ A]
 
