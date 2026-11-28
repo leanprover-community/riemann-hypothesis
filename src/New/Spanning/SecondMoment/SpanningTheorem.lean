@@ -321,17 +321,13 @@ lemma comap_scaledPoincare_eq_comap_goodPoincare (s : D.chosenGL) (F : Submodule
       (F.comap (D.goodPoincare s)).comap D.sourceFormCoords.symm.toLinearMap := by
   have h_scale : (D.poincareScale : ℂ) ≠ 0 := mod_cast D.poincareScale_pos.ne'
   have h_card : (Nat.card D.chosenGL : ℂ) ≠ 0 := mod_cast Nat.card_pos.ne'
-  ext φ
-  set e := ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀).rangeRestrict
-  let y : D.targetForms := e (D.principalRep (D.spaceY 0) s
-    (D.poincare (D.sourceFormCoords.symm φ)))
-  have h_scaled : (e ∘ₗ D.principalRep (D.spaceY 0) s ∘ₗ D.scaledPoincare) φ =
-      (D.poincareScale : ℂ) • y := by
-    rw [scaledPoincare, LinearMap.comp_smul, LinearMap.comp_smul]
-    rfl
-  -- by definition `D.goodPoincare s` takes the value `#Ḡ • y` here
-  change _ ∈ F ↔ (Nat.card D.chosenGL : ℂ) • y ∈ F
-  rw [h_scaled, F.smul_mem_iff h_scale, F.smul_mem_iff h_card]
+  let T : D.SourceForm →ₗ[ℂ] D.targetForms :=
+    ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀).rangeRestrict ∘ₗ
+      D.principalRep (D.spaceY 0) s ∘ₗ D.poincare
+  rw [scaledPoincare, LinearMap.comp_smul, LinearMap.comp_smul]
+  exact (Submodule.comap_smul (T ∘ₗ D.sourceFormCoords.symm.toLinearMap) F _ h_scale).trans
+    (congrArg (Submodule.comap D.sourceFormCoords.symm.toLinearMap)
+      (Submodule.comap_smul T F _ h_card).symm)
 
 /-- **One translate.** For `s` in the finite group `Ḡ = D.chosenGL`, the map `D.goodPoincare s` is
 `#Ḡ · e₀ s Π`: the unscaled Poincaré map `Π = D.poincare` from the source forms `D.SourceForm` to
