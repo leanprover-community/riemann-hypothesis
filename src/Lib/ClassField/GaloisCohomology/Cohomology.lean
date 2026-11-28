@@ -105,10 +105,6 @@ def smulRingHom (n : ℕ) : R →+* AddMonoid.End (A.H n) where
 -- This belongs in Tau Ceti: the `R`-module structure on the cohomology of a discrete `R`-module.
 instance (n : ℕ) : Module R (A.H n) := Module.compHom (A.H n) (A.smulRingHom n)
 
-lemma smul_def (n : ℕ) (r : R) (x : A.H n) :
-    r • x = (TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) n).hom x :=
-  rfl
-
 /-! ### Degree zero -/
 
 -- This belongs in Tau Ceti: the `R`-linear form of `explicitH0IsoContinuousCohomology`.
