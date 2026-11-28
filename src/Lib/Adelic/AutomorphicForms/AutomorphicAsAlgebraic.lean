@@ -76,14 +76,9 @@ lemma isStd_signedSpace [HasPrimitiveRoot5040 E] (hs : s = 1) : (signedSpace E s
 
 /-- The matrix `conjWeylMatrix κ e x` depends continuously on the archimedean point `x`. -/
 lemma continuous_conjWeylMatrix (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ)
-    (s : n → ℤˣ) : Continuous fun x : GInf E s ↦ conjWeylMatrix κ e x := by
-  -- Column `b` is the image of the `b`-th basis vector under `conjWeylRep κ e x`.
-  refine continuous_matrix fun a b ↦ ?_
-  have h_entry (x : GInf E s) :
-      conjWeylMatrix κ e x a b = conjWeylRep κ e x (Pi.single b 1) a :=
-    (congrFun (Matrix.mulVec_single_one (conjWeylMatrix κ e x) b) a).symm
-  simp only [h_entry]
-  exact (continuous_apply a).comp (continuous_conjWeylRep (Pi.single b 1))
+    (s : n → ℤˣ) : Continuous fun x : GInf E s ↦ conjWeylMatrix κ e x :=
+  continuous_iff_continuousAt.2 fun _ ↦
+    Matrix.tendsto_iff_forall_tendsto_mulVec.2 fun v ↦ (continuous_conjWeylRep v).continuousAt
 
 namespace Space
 
