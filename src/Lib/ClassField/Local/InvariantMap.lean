@@ -160,7 +160,7 @@ lemma exists_isClassOfInvariant :
   -- unramified character with value `r` at the Frobenius element.
   obtain ⟨π, hπ⟩ : ∃ π : (unitsModule Γ).H0, ordRat k A π.val = 1 :=
     ⟨_, L.exists_isUniformizer.choose_spec.ordRat_eq_one L⟩
-  obtain ⟨φ₀, hφ₀⟩ : ∃ φ : Γ, IsFrob A (residueCard k A) φ := L.frobenius_spec.left
+  obtain ⟨φ₀, hφ₀⟩ := L.exists_isFrob
   choose c hc c_unique using existsUnique_unramified_char hφ₀
   -- If `(χ, w) = 0` then `w` is a norm from the fixed field of `χ`. For unramified `χ`, the order
   -- of a norm is a sum of `[Γ : ker χ]` equal integers.
@@ -248,8 +248,8 @@ lemma pairMapH2_classOfInvariant_of_ordRat_eq (φ : Γ' →ₜ* Γ) (j : Ω →+
   -- Write `r = χ σ` with `χ` unramified and `σ` a Frobenius, so the class is the cyclic class
   -- `(χ, w)`. Its image is the cyclic class of `χ ∘ φ` and `j w`; here `j w` has order `e`, and
   -- `χ ∘ φ` takes the value `f • r` on a Frobenius `τ` of `k'`.
-  obtain ⟨σ, hσ⟩ : ∃ σ : Γ, IsFrob A (residueCard k A) σ := L.frobenius_spec.left
-  obtain ⟨τ, hτ⟩ : ∃ τ : Γ', IsFrob A' (residueCard k' A') τ := L'.frobenius_spec.left
+  obtain ⟨σ, hσ⟩ := L.exists_isFrob
+  obtain ⟨τ, hτ⟩ := L'.exists_isFrob
   obtain ⟨χ, χ_unr, rfl⟩ : ∃ χ : QZChar Γ, (∀ g ∈ inertiaGroup Γ A, χ.val g = 0) ∧ χ.val σ = r :=
     (existsUnique_unramified_char hσ r).exists
   subst hA

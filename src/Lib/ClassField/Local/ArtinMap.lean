@@ -183,7 +183,7 @@ lemma New.IsLocalArtin.exists_frob_of_isUniformizer {Γ k Ω : Type} [Group Γ] 
     [L : IsLocalGalois Γ k A] {π : kˣ} {F : kˣ →* TopologicalAbelianization Γ}
     (hF : IsLocalArtin Γ k A F) (h : IsUniformizer A π.val) :
     ∃ φ : Γ, IsFrob A (residueCard k A) φ ∧ F π = φ⁻¹ := by
-  obtain ⟨⟨φ, hφ⟩, -, -⟩ := L.frobenius_spec
+  obtain ⟨φ, hφ⟩ := L.exists_isFrob
   obtain ⟨h_inj, h_unram⟩ := L.isClassOfInvariant_classOfInvariant
   -- An unramified character takes the same value at `φ⁻¹` and at `F π`, so `φ⁻¹ / F π` lies in the
   -- closed image of inertia (characters separate a closed subgroup from a point outside it).
@@ -844,8 +844,8 @@ lemma valuation_smul_div_sub_lt_one {G k E : Type} [Group G] [TopologicalSpace G
   -- `k` contains the `n`-th roots of unity: `cyclotomicCharMod` is trivial on inertia and at `φ`,
   -- and the products `φ ^ m * i` with `i` in inertia are dense.
   have h_cyc : ∀ g : G, cyclotomicCharMod E n g = 1 := by
-    obtain ⟨-, h_dense, -⟩ := L.frobenius_spec
-    refine (h_dense hφ).eq ?_ (.of_isOpen_ker _ isOpen_ker_cyclotomicCharMod.out)
+    refine (L.denseRange_frob_pow_mul_inertia hφ).eq ?_
+      (.of_isOpen_ker _ isOpen_ker_cyclotomicCharMod.out)
     simp [cyclotomicCharMod_eq_one_of_mem_inertiaGroup _ hn_unit, hφ.cyclotomicCharMod_eq hn_unit,
       hq, ← val_inj, ZMod.natCast_self]
   -- For `x` in `kˣ`, `a x` is an `n`-th root of `x` and `f x : G → ZMod n` its Kummer character.

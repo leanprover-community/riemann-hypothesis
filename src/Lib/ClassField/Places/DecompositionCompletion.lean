@@ -678,9 +678,7 @@ lemma ordRat_fixedFieldOf_decompGroup (h : IsPlaceOver A v) :
 and acts as x ↦ x ^ v.q modulo the maximal ideal of A (`IsFrob`). -/
 lemma exists_isFrob (h : IsPlaceOver A v) : ∃ φ : Γ, IsFrob A v.q φ := by
   -- A Frobenius of the decomposition field, for its residue order `v.q`, is one in `Γ`.
-  obtain ⟨φ, hφ⟩ :
-      ∃ φ : decompGroup Γ A, IsFrob A (residueCard (fixedFieldOf (decompGroup Γ A)) A) φ :=
-    (h.isLocalGalois_decompGroup Γ).frobenius_spec.left
+  obtain ⟨φ, hφ⟩ := (h.isLocalGalois_decompGroup Γ).exists_isFrob
   rw [h.residueCard_fixedFieldOf_decompGroup Γ] at hφ
   exact ⟨φ, hφ⟩
 
@@ -887,10 +885,7 @@ lemma decompGroup_le (h : IsPlaceOver A v) {φ : Γ} (hφ : IsFrob A v.q φ) {U 
   let φ' : decompGroup Γ A := ⟨φ, hφ.left⟩
   have hφ' : IsFrob A (residueCard (fixedFieldOf (decompGroup Γ A)) A) φ' := by
     rwa [h.residueCard_fixedFieldOf_decompGroup Γ]
-  obtain ⟨-, h_gen, -⟩ := (h.isLocalGalois_decompGroup Γ).frobenius_spec
-  have h_dense : DenseRange fun p : ℕ × inertiaGroup (decompGroup Γ A) A ↦
-      φ' ^ p.fst * (p.snd : decompGroup Γ A) :=
-    h_gen hφ'
+  have h_dense := (h.isLocalGalois_decompGroup Γ).denseRange_frob_pow_mul_inertia hφ'
   have h_closed : IsClosed {g : decompGroup Γ A | (g : Γ) ∈ U} :=
     (U.isClosed_of_isOpen hU).preimage_val
   have h_mem (p : ℕ × inertiaGroup (decompGroup Γ A) A) :
