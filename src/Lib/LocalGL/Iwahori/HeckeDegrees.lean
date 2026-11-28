@@ -798,14 +798,14 @@ lemma IsExponent.apply_partialHecke (hϖ : v ϖ.val = exp (-1)) {x : V}
     simp [esymm, sum_map_mul_left, Nat.choose, ← cons_coe, pow_add, div_eq_mul_inv]
     ring
 
-/-- Duality of lattices. Let `ϖ` be a uniformiser, `x` a vector fixed by `GL N (𝒪)`, and
-`m + i + j = N`. The operator `partialHecke _ m j` of the representation `g ↦ ρ (gᵀ)⁻¹` sends `x`
-to `partialHecke ρ m i x` followed by the diagonal matrix with `m` entries `1` and then `ϖ⁻¹`. -/
-lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
-    (hx : x ∈ levelSpace ρ (localIntGL (Fin N) w)) (i : ℕ) (h_sum : m + (i + j) = N) :
-    partialHecke (ρ.comp invTransposeGL.toMonoidHom) m j x =
-      ρ (diagGL fun a : Fin N ↦ if a.val < m then 1 else ϖ⁻¹) (partialHecke ρ m i x) := by
-  classical
+/-- Duality on `partialCosets`: for a uniformiser `ϖ`, `m + (i + j) = N`, and the diagonal matrix
+`c = diag (1, …, 1, ϖ⁻¹, …, ϖ⁻¹)` with `m` entries equal to `1`, the involution
+`g ↦ c⁻¹ * (gᵀ)⁻¹` maps `partialCosets m j` into `partialCosets m i` and back. -/
+lemma mem_partialCosets_invTransposeGL_iff (hϖ : v ϖ.val = exp (-1)) {i : ℕ}
+    (h_sum : m + (i + j) = N) :
+    g ∈ partialCosets m j ↔
+      (diagGL fun a : Fin N ↦ if a.val < m then 1 else ϖ⁻¹)⁻¹ * invTransposeGL g ∈
+        partialCosets m i := by
   set c := diagGL (fun a : Fin N ↦ if a.val < m then 1 else ϖ⁻¹) with hc
   -- `g ↦ c⁻¹ * invTransposeGL g` matches the cosets of `partialCosets m j` with those of
   -- `partialCosets m i`: both conditions unfold to the same bounds on the entries of `g`, `g⁻¹` and
@@ -866,20 +866,30 @@ lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
       congr 1; push_cast; ring
     · simp only [h_im, hb, ↓reduceIte, mul_one]; exact hg1 b a
   -- Dualizing twice recovers the original lattice. For the converse, exchange the two indices.
-  have dual (g : GL (Fin N) (LocField w)) :
-      g ∈ partialCosets m j ↔ c⁻¹ * invTransposeGL g ∈ partialCosets m i := by
-    refine ⟨forward i j h_sum g, fun h ↦ ?_⟩
-    have hc_inv : invTransposeGL c = c⁻¹ := Units.ext (Matrix.diagonal_transpose _)
-    have h_back := forward j i (by rwa [Nat.add_comm j i]) _ h
-    rwa [map_mul, map_inv, hc_inv, inv_inv, ← mul_assoc, inv_mul_cancel, one_mul,
-      show invTransposeGL (invTransposeGL g) = g from invTransposeGL.symm_apply_apply g] at h_back
+  refine ⟨forward i j h_sum g, fun h ↦ ?_⟩
+  have hc_inv : invTransposeGL c = c⁻¹ := Units.ext (Matrix.diagonal_transpose _)
+  have h_back := forward j i (by rwa [Nat.add_comm j i]) _ h
+  rwa [map_mul, map_inv, hc_inv, inv_inv, ← mul_assoc, inv_mul_cancel, one_mul,
+    show invTransposeGL (invTransposeGL g) = g from invTransposeGL.symm_apply_apply g] at h_back
+
+/-- Duality of lattices. Let `ϖ` be a uniformiser, `x` a vector fixed by `GL N (𝒪)`, and
+`m + i + j = N`. The operator `partialHecke _ m j` of the representation `g ↦ ρ (gᵀ)⁻¹` sends `x`
+to `partialHecke ρ m i x` followed by the diagonal matrix with `m` entries `1` and then `ϖ⁻¹`. -/
+lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
+    (hx : x ∈ levelSpace ρ (localIntGL (Fin N) w)) (i : ℕ) (h_sum : m + (i + j) = N) :
+    partialHecke (ρ.comp invTransposeGL.toMonoidHom) m j x =
+      ρ (diagGL fun a : Fin N ↦ if a.val < m then 1 else ϖ⁻¹) (partialHecke ρ m i x) := by
+  classical
+  set c := diagGL (fun a : Fin N ↦ if a.val < m then 1 else ϖ⁻¹)
   -- The two side conditions of `heckeFun_comp` are the right invariance of the translated
-  -- indicator and `dual` read on indicators.
+  -- indicator and `mem_partialCosets_invTransposeGL_iff` read on indicators.
   calc
     _ = heckeFun ρ (localIntGL (Fin N) w) (fun g ↦ (partialCosets m i).indicator 1 (c⁻¹ * g)) x :=
       heckeFun_comp _ (by simp [← mul_assoc, Set.indicator]) hx hasFiniteCosets_partialCosets
         invTransposeGL.surjective invTransposeGL_mem_intGL (fun _ ↦ rfl)
-        (fun g ↦ by simp only [Set.indicator_apply, MulEquiv.coe_toMonoidHom, dual, Pi.one_apply])
+        (fun g ↦ by
+          simp only [Set.indicator_apply, MulEquiv.coe_toMonoidHom,
+            mem_partialCosets_invTransposeGL_iff hϖ h_sum, c, Pi.one_apply])
     _ = _ := heckeFun_comp_inv_mul hasFiniteCosets_partialCosets (by simp [Set.indicator]) hx c
 
 end New
