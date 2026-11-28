@@ -578,16 +578,22 @@ lemma rank_isotropicFramePair_add_finrank_commonIsotropic (γ : S.G E) :
   rw [← finrank_range_mulVecLin, ← colSpan, colSpan_isotropicFramePair, commonIsotropic,
     Submodule.finrank_sup_add_finrank_inf_eq, h_one, finrank_isotropicSpan_coe, two_mul]
 
+/-- The column rank of a matrix and the dimension of its orthogonal complement for
+the nonsingular form `S.ratGram` add up to the ambient dimension. -/
+lemma rank_add_finrank_ker_perp (S : Filling E 𝔰) {ι : Type} [Fintype ι]
+    (M : Matrix 𝔰.BesselIndex ι E) :
+    M.rank + finrank E (Mᴴ * S.ratGram).mulVecLin.ker = 𝔰.r := by
+  have h_unit : IsUnit S.ratGram.det := (isUnit_iff_isUnit_det _).1 Floors.IsHermitianUnit.isUnit
+  simpa only [finrank_range_mulVecLin, rank_mul_eq_left_of_isUnit_det _ _ h_unit,
+    rank_conjTranspose_of_field, finrank_fintype_fun_eq_card, Shape.r] using
+    (Mᴴ * S.ratGram).mulVecLin.finrank_range_add_finrank_ker
+
 /-- Let `A = ⟨e_1, …, e_ϱ⟩`. The rank of `A + γ A`, which is the column space of
 `isotropicFramePair γ`, plus the rank of its orthogonal complement `isotropicPerp γ` equals the rank
 `𝔰.r` of the whole space. -/
 lemma rank_add_finrank_isotropicPerp (γ : S.G E) :
     (isotropicFramePair γ).rank + finrank E (isotropicPerp γ) = 𝔰.r := by
-  have h_unit : IsUnit S.ratGram.det := (isUnit_iff_isUnit_det _).1 Floors.IsHermitianUnit.isUnit
-  have h_rank : ((isotropicFramePair γ)ᴴ * S.ratGram).rank = (isotropicFramePair γ).rank := by
-    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_of_field]
-  rw [← h_rank, Shape.r, ← finrank_fintype_fun_eq_card E, ← finrank_range_mulVecLin]
-  exact ((isotropicFramePair γ)ᴴ * S.ratGram).mulVecLin.finrank_range_add_finrank_ker
+  exact S.rank_add_finrank_ker_perp (isotropicFramePair γ)
 
 /-- The rank of `link γ` plus the rank of `commonIsotropic γ` (the space `I_γ = A ∩ γ A`, with
 `A = ⟨e_1, …, e_ϱ⟩`) equals the rank of `isotropicPerp γ = (A + γ A)^⊥`. So the link has the rank of

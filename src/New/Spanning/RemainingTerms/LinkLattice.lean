@@ -67,21 +67,10 @@ lemma IsOrthogonalLift.exists_basis_orthogonal {v : Matrix (𝔰.MiddleIndex ⊕
   have h_det : ((eStarCols E j)ᴴ * S.ratGram * u.toCols₁).det ≠ 0 := by simp [h_dual]
   obtain ⟨r, y, h⟩ := exists_isKernelExtension h_det h_le
   refine ⟨r, y, h.hasLeftInv, mul_eq_zero_of_colSpan_le_ker h.colSpan_fromCols.le, ?_⟩
-  have h_right : u.toCols₁ᴴ * S.ratGram * eStarCols E j = 1 := by
-    simpa [Matrix.mul_assoc, Floors.IsHermitianUnit.conjTranspose_eq] using congrArg conjTranspose
-      h_dual
-  have h_range : φ.range = ⊤ := by
-    refine LinearMap.range_eq_top.2 fun x ↦ ⟨eStarCols E j *ᵥ x, ?_⟩
-    rw [mulVecLin_apply, mulVec_mulVec, h_right, one_mulVec]
-  have h_ker : Module.finrank E φ.ker = card (IndexNotBelow j ⊕ Fin r) := by
-    rw [card_eq_finrank_colSpan h.hasLeftInv, h.colSpan_fromCols]
-  calc
-    card 𝔰.BesselIndex = Module.finrank E (𝔰.BesselIndex → E) :=
-      (Module.finrank_fintype_fun_eq_card E).symm
-    _ = Module.finrank E φ.range + Module.finrank E φ.ker :=
-      φ.finrank_range_add_finrank_ker.symm
-    _ = card (IndexNotBelow j ⊕ Fin r) + card (IndexNotBelow j) := by
-      rw [h_range, finrank_top, h_ker, Module.finrank_fintype_fun_eq_card, add_comm]
+  have h_cols : HasLeftInv u.toCols₁ := ⟨_, h_dual⟩
+  rw [card_eq_finrank_colSpan h.hasLeftInv, h.colSpan_fromCols, card_eq_finrank_colSpan h_cols,
+    colSpan, finrank_range_mulVecLin, add_comm]
+  exact (S.rank_add_finrank_ker_perp u.toCols₁).symm
 
 section Classes
 

@@ -398,12 +398,8 @@ lemma finrank_colSpan_frameImage (γ : S.G E) :
 `γ`) and of its orthogonal complement `framePerp γ` add up to `𝔰.r`, the rank of the whole space. -/
 lemma finrank_frameSum_add_finrank_framePerp (γ : S.G E) :
     finrank E (frameSum γ) + finrank E (framePerp γ) = 𝔰.r := by
-  have h_unit : IsUnit S.ratGram.det := (isUnit_iff_isUnit_det _).1 Floors.IsHermitianUnit.isUnit
-  have h_rank : ((framePair γ)ᴴ * S.ratGram).rank = finrank E (frameSum γ) := by
-    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_of_field, ← colSpan_framePair,
-      ← finrank_range_mulVecLin]
-  rw [← h_rank, Shape.r, ← finrank_fintype_fun_eq_card E, framePerp, ← finrank_range_mulVecLin]
-  exact ((framePair γ)ᴴ * S.ratGram).mulVecLin.finrank_range_add_finrank_ker
+  rw [← colSpan_framePair, colSpan, finrank_range_mulVecLin]
+  exact S.rank_add_finrank_ker_perp (framePair γ)
 
 /-- The space `X₀^γ` of the vectors of `X₀` that the link of `γ` maps into `X₀` has the rank of
 `(A⁺_γ)^⊥ / I_γ`, where `A⁺_γ = A⁺ + γ A⁺` and `I_γ = A ∩ γ A`. -/
