@@ -3,10 +3,8 @@ module
 public import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.Topology.Algebra.Group.Units
-public import Lib.General.Measure.HaarModulus
 public import Lib.Adelic.Adeles.Basic
 public import Lib.General.Topology
-import Lib.Adelic.Adeles.StrongApproximation
 import Lib.General.Groups.ProfiniteCharacters
 
 /-!
@@ -22,7 +20,8 @@ finite index.
 
 ## Main definitions and results
 
-* `New.principalIdele`, `New.locIdele`, `New.ideleAt`: the principal idele of an element of `Kˣ`,
+* `New.principalIdele`, `New.unitsMapNonUnital`, `New.locIdele`, `New.ideleAt`: the principal
+  idele of an element of `Kˣ`, units along a non-unital ring map,
   the idele with one given component and `1` elsewhere, and the component at a place.
 * `New.idelesUnitOff`: the ideles that are units outside `S`; open (`New.isOpen_idelesUnitOff`), and
   compact for `S = ∅` (`New.isCompact_idelesUnitOff_empty`).
@@ -71,6 +70,16 @@ variable {K : Type*} [Field K] [NumberField K]
 abbrev principalIdele : Kˣ →* (𝔸f K)ˣ := map (algebraMap K (𝔸f K)).toMonoidHom
 
 variable (S : Set (FinPlace K)) (a : (𝔸f K)ˣ) (v : FinPlace K)
+
+/-- For a ring homomorphism `f : K → R` that need not preserve `1`, the homomorphism of unit groups
+`x ↦ 1 + f (x - 1)`. -/
+@[simps! apply_val]
+def unitsMapNonUnital {K R : Type*} [Ring K] [Ring R] (f : K →ₙ+* R) : Kˣ →* Rˣ :=
+  Units.map
+    { toFun (x : K) := 1 + f (x - 1)
+      map_one' := by simp
+      -- with `a = x - 1` and `b = y - 1`: `(1 + f a) (1 + f b) = 1 + f (a + b + a b)`
+      map_mul' := by noncomm_ring [← map_mul, ← map_add, implies_true] }
 
 /-- The homomorphism sending x ∈ K_v^× to the finite idele with component x at v and 1
 elsewhere. -/
@@ -349,6 +358,31 @@ lemma exists_valuation_eq_of_mem_sup {a : (𝔸f K)ˣ}
   obtain ⟨_, ⟨x, rfl⟩, u, hu, rfl⟩ := mem_sup.mp ha
   exact ⟨x, fun w hw ↦ by simp [mem_idelesUnitOff.mp hu w hw, principalIdele]⟩
 
+/-- By the Chinese remainder theorem, a nonzero integer of `K` can realize prescribed
+nonnegative orders at finitely many finite places. -/
+private lemma exists_intValuation_eq_exp_neg {T : Set (FinPlace K)} (hT : T.Finite)
+    (e : FinPlace K → ℕ) :
+    ∃ a : 𝓞 K, a ≠ 0 ∧ ∀ w ∈ T, w.intValuation a = exp (-(e w : ℤ)) := by
+  classical
+  rcases T.eq_empty_or_nonempty with rfl | ⟨w₀, hw₀⟩
+  · exact ⟨1, one_ne_zero, by simp⟩
+  choose π hπ using fun w : FinPlace K ↦ w.intValuation_exists_uniformizer
+  obtain ⟨a, ha⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := hT.toFinset)
+    (fun w ↦ w.asIdeal) (fun w ↦ e w + 1) (fun w _ ↦ w.prime)
+    (fun _ _ _ _ hne ↦ by simpa [IsDedekindDomain.HeightOneSpectrum.ext_iff] using hne)
+    (fun w ↦ π w.val ^ e w.val)
+  have hval (w : FinPlace K) (hw : w ∈ T) : w.intValuation a = exp (-(e w : ℤ)) := by
+    have h2 : w.intValuation (π w ^ e w) = exp (-(e w : ℤ)) := by
+      rw [map_pow, hπ w, ← WithZero.exp_nsmul]; simp
+    have hsub : w.intValuation (a - π w ^ e w) < w.intValuation (π w ^ e w) := by
+      have h1 : w.intValuation (a - π w ^ e w) ≤ exp (-((e w + 1 : ℕ) : ℤ)) :=
+        (w.intValuation_le_pow_iff_mem _ _).mpr (ha w (hT.mem_toFinset.mpr hw))
+      rw [h2]; exact lt_of_le_of_lt h1 (WithZero.exp_lt_exp.mpr (by omega))
+    rw [← h2, ← sub_add_cancel a (π w ^ e w)]
+    exact Valuation.map_add_eq_of_lt_right _ hsub
+  refine ⟨a, fun ha0 ↦ ?_, hval⟩
+  have h0 := hval w₀ hw₀; rw [ha0, map_zero] at h0; exact WithZero.exp_ne_zero h0.symm
+
 /-- For finite sets `R`, `R'` of finite places there is a finite set `T` that contains `R`, meets
 `R'` only inside `R`, and is such that every finite idele is a principal idele times an idele
 that is a unit outside `T`. -/
@@ -360,14 +394,21 @@ lemma exists_sup_idelesUnitOff_eq_top (hR : R.Finite) (R' : Set (FinPlace K)) (h
   -- the places where one of these quotients is not a unit.
   obtain ⟨c, hc⟩ := exists_idele_classGroup_hom (K := K)
   let r : ClassGroup (𝓞 K) → (𝔸f K)ˣ := invFun c
-  -- By density of `K` in the finite adeles, `r y` has the same valuations on `R'` as some `x y`.
+  -- By weak approximation (CRT in `𝓞 K`), `r y` has the same valuations on `R'` as some `x y`.
   have h_approx (y : ClassGroup (𝓞 K)) :
       ∃ x : Kˣ, ∀ w ∈ R', w.valuation K x.val = v ((r y).val w) := by
-    have h_near : ∀ᶠ z in nhds (r y).val, z ≠ 0 ∧ ∀ w ∈ R', v (z w) = v ((r y).val w) := by
-      refine (eventually_ne_nhds (r y).ne_zero).and (hR'.eventually_all.mpr fun w _ ↦ ?_)
-      -- the valuation at `w` is locally constant away from `0`
-      exact (continuous_evalAt w).tendsto _ (locally_const (by simp [isUnit_iff.mp]))
-    simpa [exists0] using denseRange_algebraMap_finAdele.mem_nhds h_near
+    let e (w : FinPlace K) : ℤ := -log (v ((r y).val w))
+    obtain ⟨a, ha0, ha⟩ := exists_intValuation_eq_exp_neg hR' (fun w ↦ (e w).toNat)
+    obtain ⟨b, hb0, hb⟩ := exists_intValuation_eq_exp_neg hR' (fun w ↦ (-e w).toNat)
+    have haK : (algebraMap (𝓞 K) K a : K) ≠ 0 := by simpa using ha0
+    have hbK : (algebraMap (𝓞 K) K b : K) ≠ 0 := by simpa using hb0
+    refine ⟨Units.mk0 (algebraMap (𝓞 K) K a / algebraMap (𝓞 K) K b) (div_ne_zero haK hbK),
+      fun w hw ↦ ?_⟩
+    simp only [Units.val_mk0, map_div₀, IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap,
+      ha w hw, hb w hw, ← exp_sub]
+    have he : -(((e w).toNat : ℤ)) - -(((-e w).toNat : ℤ)) = -e w := by omega
+    rw [he]
+    simp [e, isUnit_iff.mp]
   choose x hx using h_approx
   let q (y : ClassGroup (𝓞 K)) : (𝔸f K)ˣ := (principalIdele (x y))⁻¹ * r y
   let T : Set (FinPlace K) := R ∪ ⋃ y, {w | v ((q y).val w) ≠ 1}
@@ -411,7 +452,12 @@ lemma finiteIndex_idele_subgroup_of_isOpen (H : Subgroup (𝔸f K)ˣ) (h_open : 
   refine mul_ne_zero ?_ (mul_ne_zero ?_
     (finiteIndex_of_le (hc.trans_le (sup_le_sup_right le_sup_right _))).index_ne_zero)
   · simpa [P, ← index_comap] using (sgn.ker.finiteIndex_of_le h_ker_le).index_ne_zero
-  · simpa using isCompact_idelesUnitOff_empty.relIndex_ne_zero (isOpen_mono le_sup_left h_open)
+  · have : CompactSpace (idelesUnitOff (K := K) ∅) :=
+      isCompact_iff_compactSpace.1 isCompact_idelesUnitOff_empty
+    rw [Subgroup.relIndex_sup_left]
+    simpa only [Subgroup.relIndex, Subgroup.index] using
+      (quotient_finite_of_isOpen ((H ⊔ P).subgroupOf (idelesUnitOff ∅))
+        (isOpen_mono le_sup_left h_open).preimage_val).card_pos.ne'
 
 /-- The finite ideles form a nonarchimedean group: they have the compact open subgroup
 `idelesUnitOff ∅`. -/

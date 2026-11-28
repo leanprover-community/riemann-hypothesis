@@ -9,6 +9,7 @@ import Mathlib.RingTheory.TotallySplit
 public import Lib.Weil.Construction.WeilData
 public import Lib.DiscreteSeries.FlenstedJensen.Defs
 public import Lib.General.Analysis.GaussianIntegral
+public import Lib.General.LinearAlgebra.IntegralLattices
 import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 
 /-!

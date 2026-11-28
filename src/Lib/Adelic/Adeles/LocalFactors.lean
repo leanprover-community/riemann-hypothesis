@@ -4,6 +4,7 @@ import Mathlib.Algebra.Order.Star.Int
 public import Mathlib.Topology.Algebra.Valued.WithZeroMulInt -- shake: keep (needed public by an exposed definition)
 import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.General.Analysis.FiniteFourier
+public import Lib.General.LinearAlgebra.IntegralLattices
 public import Lib.Weil.Construction.WeilData
 import Lib.Adelic.Adeles.IdeleModulus
 import Lib.Adelic.Adeles.StrongApproximation

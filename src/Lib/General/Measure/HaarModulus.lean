@@ -47,23 +47,12 @@ Notions from other files:
 @[expose] public section
 
 /-!
-## Units along non-unital ring maps and invertible matrices from spanning sets
+## Invertible matrices from spanning sets
 
-`New.unitsMapNonUnital` maps units along a ring map that need not preserve 1.
 `New.exists_GL_col_mem_of_span` picks the columns of an invertible matrix from a spanning set.
 -/
 
-section NonUnitalUnits
-
-/-- For a ring homomorphism `f : K → R` that need not preserve `1`, the homomorphism of unit groups
-`x ↦ 1 + f (x - 1)`. -/
-@[simps! apply_val]
-def New.unitsMapNonUnital {K R : Type*} [Ring K] [Ring R] (f : K →ₙ+* R) : Kˣ →* Rˣ :=
-  Units.map
-    { toFun (x : K) := 1 + f (x - 1)
-      map_one' := by simp
-      -- with `a = x - 1` and `b = y - 1`: `(1 + f a) (1 + f b) = 1 + f (a + b + a b)`
-      map_mul' := by noncomm_ring [← map_mul, ← map_add, implies_true] }
+section SpanningColumns
 
 open Matrix Module Basis Submodule
 
@@ -79,7 +68,7 @@ lemma New.exists_GL_col_mem_of_span {K n : Type*} [Field K] [Fintype n] [Decidab
   exact ⟨h_unit.unit, fun i ↦ ofSpan_subset h_span
     (by simp [b, Function.swap_def])⟩
 
-end NonUnitalUnits
+end SpanningColumns
 
 /-! ## Haar pushforwards and the modulus of a matrix -/
 

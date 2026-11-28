@@ -8,6 +8,7 @@ import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.Algebra.Group.Units
 public import Lib.ClassField.Places.Ideles
+public import Lib.General.Measure.HaarModulus
 public import Lib.General.NumberTheory.EmbeddingsAndDifferent
 import Lib.Adelic.Adeles.StrongApproximation
 
