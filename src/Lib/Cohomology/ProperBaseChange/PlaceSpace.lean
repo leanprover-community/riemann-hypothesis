@@ -146,6 +146,11 @@ lemma isCoprime_denominator_numerator : IsCoprime (f (denominator t)) (f (numera
   · simp [numerator, denominator, h_mem, mul_inv_cancel₀
     (ne_zero_of_notMem_valuationSubring t j h_mem)]
 
+/-- The image of the denominator is a unit exactly when it divides the image of the numerator. -/
+lemma isUnit_denominator_iff_dvd_numerator :
+    IsUnit (f (denominator t)) ↔ f (denominator t) ∣ f (numerator t) :=
+  ⟨IsUnit.dvd, (isCoprime_denominator_numerator f t).isUnit_of_dvd⟩
+
 /-- For `f : ∏ O → C`, the subring of pairs `(t, c)` in `P × C` with the following property: there
 are `r`, `r'` in the product of the valuation rings such that `f r` is a unit, `r · t = r'` in
 `∏ κ(q)`, and `f r · c = f r'`. -/
@@ -196,7 +201,7 @@ lemma mem_fractionGraph {c : C} :
     -- witness is `denominator t`, `numerator t`
     intro h
     have h_unit : IsUnit (f (denominator t)) :=
-      (isCoprime_denominator_numerator f t).isUnit_of_dvd ⟨c, h⟩
+      (isUnit_denominator_iff_dvd_numerator f t).2 ⟨c, h⟩
     refine ⟨_, ⟨⟨denominator t, rfl⟩, h_unit⟩, numerator t, Prod.ext ?_ h⟩
     -- at each place `numerator t = t * denominator t`
     ext j
@@ -299,7 +304,7 @@ lemma placeGraph_unique {c d : C} (hc : (t, c) ∈ placeGraph x) (hd : (t, d) �
   -- `f (denominator t)` divides `f (numerator t)` and is coprime to it, so it is a unit and cancels
   have hc_eq : f (numerator t) = f (denominator t) * c := mem_fractionGraph.mp hc
   have h_unit : IsUnit (f (denominator t)) :=
-    (isCoprime_denominator_numerator f t).isUnit_of_dvd ⟨c, hc_eq⟩
+    (isUnit_denominator_iff_dvd_numerator f t).2 ⟨c, hc_eq⟩
   exact h_unit.mul_left_cancel (hc_eq.symm.trans (mem_fractionGraph.mp hd))
 
 /-- For an ideal `I` of `P`, the inclusion of the places that give every `t ∈ I` the value `0`
@@ -324,8 +329,8 @@ lemma mem_finiteValueSubring_iff {f : prodValuationRing (baseRingMap s ξ) ⟶ C
     have h_diff : t - u ∈ q := by simp_all [← algebraMap_residueField_eq_zero]
     have h_sum : (u, c) + (t - u, 0) ∈ fractionGraph f := add_mem huc (h_kill _ h_diff)
     have h_mem : (t, c) ∈ fractionGraph f := by simpa using h_sum
-    exact (isCoprime_denominator_numerator f t).isUnit_of_dvd ⟨c, mem_fractionGraph.mp h_mem⟩
-  · obtain ⟨c, hc⟩ : f (denominator t) ∣ f (numerator t) := h_unit.dvd
+    exact (isUnit_denominator_iff_dvd_numerator f t).2 ⟨c, mem_fractionGraph.mp h_mem⟩
+  · obtain ⟨c, hc⟩ := (isUnit_denominator_iff_dvd_numerator f t).1 h_unit
     exact ⟨⟨(t, c), mem_fractionGraph.mpr hc⟩, rfl⟩
 
 /-- Through the place `j`, an element `t` with residue in the valuation ring of `j` has as value the
