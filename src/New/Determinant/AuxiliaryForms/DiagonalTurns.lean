@@ -1,8 +1,6 @@
 module
 
-import Std.Tactic.BVDecide.Normalize.BitVec
 public import New.Determinant.AuxiliaryForms.Turns
-import Lib.Adelic.Unitary.RationalPoints
 import Lib.General.Algebra.MultivariatePolynomials
 import New.Determinant.Exchange.OneSquare
 
