@@ -84,6 +84,23 @@ lemma partnerDegree_apply {pr : ℕ → Φ → Φ} {Φ₀ : Finset Φ} {e j : Φ
     partnerDegree pr Φ₀ e j (t, ()) = ∑ τ ∈ Φ₀ with pr (e τ) τ = t, j τ := by
   simp [partnerDegree, Finsupp.finsetSum_apply, Finsupp.single_apply, Finset.sum_filter]
 
+/-- If the selected partners are distinct, the degree at a partner is the multiplicity of
+its unique start. -/
+lemma partnerDegree_apply_of_injOn {pr : ℕ → Φ → Φ} {Φ₀ : Finset Φ} {e j : Φ → ℕ}
+    (hinj : Set.InjOn (fun τ ↦ pr (e τ) τ) Φ₀) {τ : Φ} (hτ : τ ∈ Φ₀) :
+    partnerDegree pr Φ₀ e j (pr (e τ) τ, ()) = j τ := by
+  classical
+  rw [partnerDegree_apply]
+  exact Finset.sum_eq_single_of_mem τ (Finset.mem_filter.2 ⟨hτ, rfl⟩)
+    fun a ha hne ↦ (hne (hinj (Finset.mem_filter.1 ha).1 hτ (Finset.mem_filter.1 ha).2)).elim
+
+/-- A place outside the image of the selected partners has degree zero. -/
+lemma partnerDegree_apply_of_notMem_image {pr : ℕ → Φ → Φ} {Φ₀ : Finset Φ} {e j : Φ → ℕ}
+    [DecidableEq Φ] {t : Φ} (ht : t ∉ Φ₀.image (fun τ ↦ pr (e τ) τ)) :
+    partnerDegree pr Φ₀ e j (t, ()) = 0 := by
+  rw [partnerDegree_apply, Finset.filter_eq_empty_iff.2
+    (fun τ hτ h ↦ ht (Finset.mem_image.2 ⟨τ, hτ, h⟩)), Finset.sum_empty]
+
 lemma degree_powerDegree {p : ℕ} {Φ₀ : Finset Φ} {e j : Φ → ℕ} :
     (powerDegree p Φ₀ e j).degree = ∑ τ ∈ Φ₀, p ^ e τ * j τ := by
   simp only [powerDegree, map_sum, Finsupp.degree_single]

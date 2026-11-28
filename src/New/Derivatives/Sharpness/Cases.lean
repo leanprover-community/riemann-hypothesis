@@ -449,32 +449,28 @@ lemma powerDegree_add_partnerDegree_le_of_isNearPair (D : Data P) {p : ℕ} [hp 
     powerDegree p Φ₀ e j + partnerDegree (P.partner D.towerExp p) Φ₀ e j ≤ l := by
   classical
   rintro ⟨t, ⟨⟩⟩
-  rw [Finsupp.add_apply, partnerDegree_apply]
-  set ends : Finset D.Φ := {τ ∈ Φ₀ | P.partner D.towerExp p (e τ) τ = t}
-  by_cases ht : t ∈ Φ₀
-  · -- A start is not an end.
-    have h_zero : ∑ τ ∈ ends, j τ = 0 := sum_eq_zero fun τ hτ ↦
-      absurd (mem_filter.1 hτ).2
-        ((he τ (mem_filter.1 hτ).1).end_ne_start hp.out h_nonsplit hk (he t ht))
-    simpa [powerDegree_apply_of_mem ht, hj t ht, h_zero] using mul_div_le _ _
-  rw [powerDegree_apply_of_notMem ht, zero_add]
-  rcases ends.eq_empty_or_nonempty with h_empty | ⟨τ, hτ⟩
-  · simp [h_empty]
-  -- At the end of the one near pair `(τ, e τ)` the degree is `j τ ≤ 2 b / p ^ e τ ≤ b ≤ l t`.
-  obtain ⟨hτ₀, h_end⟩ := mem_filter.1 hτ
-  have h_single : ∑ τ' ∈ ends, j τ' = j τ := by
-    refine sum_eq_single_of_mem τ hτ fun τ' hτ' hne ↦ ?_
-    obtain ⟨hτ'₀, h_end'⟩ := mem_filter.1 hτ'
-    exact absurd ((he τ' hτ'₀).eq_and_eq_of_partner_eq hp.out h_nonsplit hk (he τ hτ₀)
-      (h_end'.trans h_end.symm)).1 hne
-  have h_pow : (2 : ℝ) ≤ p ^ e τ :=
-    mod_cast hp.out.two_le.trans (le_self_pow (he τ hτ₀).pos.ne' p)
-  have h_end_bPlace : t ∈ D.bPlaces := by simpa only [h_end] using (he τ hτ₀).end_mem
-  rw [h_single, ← cast_le (α := ℝ)]
-  calc (j τ : ℝ) ≤ 2 * D.b / 2 := by
-        grw [hj τ hτ₀, cast_div_le, D.le_two_mul_b hl, cast_pow, ← h_pow]
-    _ ≤ D.weight t := by linarith [D.b_le_weight h_end_bPlace]
-    _ ≤ l (t, ()) := hl.weight_le t
+  rw [Finsupp.add_apply]
+  let dest := fun τ ↦ P.partner D.towerExp p (e τ) τ
+  have inj : Set.InjOn dest Φ₀ := fun a ha b hb h ↦
+    ((he a ha).eq_and_eq_of_partner_eq hp.out h_nonsplit hk (he b hb) h).1
+  by_cases reached : t ∈ Φ₀.image dest
+  · obtain ⟨τ, hτ, rfl⟩ := mem_image.1 reached
+    -- A partner is not a start, so its entire degree comes from its unique incoming pair.
+    have outside : dest τ ∉ Φ₀ := fun h ↦
+      (he τ hτ).end_ne_start hp.out h_nonsplit hk (he _ h) rfl
+    rw [powerDegree_apply_of_notMem outside, zero_add, partnerDegree_apply_of_injOn inj hτ,
+      ← cast_le (α := ℝ)]
+    have h_pow : (2 : ℝ) ≤ p ^ e τ :=
+      mod_cast hp.out.two_le.trans (le_self_pow (he τ hτ).pos.ne' p)
+    -- At the partner, j τ ≤ 2 b / p ^ (e τ) ≤ b ≤ l (dest τ, ()).
+    calc (j τ : ℝ) ≤ 2 * D.b / 2 := by
+           grw [hj τ hτ, cast_div_le, D.le_two_mul_b hl, cast_pow, ← h_pow]
+      _ ≤ D.weight (dest τ) := by linarith [D.b_le_weight (he τ hτ).end_mem]
+      _ ≤ l (dest τ, ()) := hl.weight_le _
+  · rw [partnerDegree_apply_of_notMem_image reached, add_zero]
+    by_cases ht : t ∈ Φ₀
+    · simpa [powerDegree_apply_of_mem ht, hj t ht] using mul_div_le (l (t, ())) (p ^ e t)
+    · simp [powerDegree_apply_of_notMem ht]
 
 /-- The map `τ ↦ -p ^ e * τ` from a place to its partner is a bijection. -/
 lemma partner_bijective (D : Data P) (p e : ℕ) : Function.Bijective (P.partner D.towerExp p e) :=
@@ -498,8 +494,7 @@ lemma powerDegree_add_partnerDegree_le_of_k_lt (D : Data P) {p : ℕ}
   have h_partner : j τ ≤ min D.lossFactorCount (l (P.partner D.towerExp p 1 τ, ())) := by
     grw [hj, D.div_le_lossFactorCount hl hk (τ, ())]
   have h_end : partnerDegree (P.partner D.towerExp p) univ 1 j (P.partner D.towerExp p 1 τ, ()) =
-      j τ := by
-    simp [partnerDegree_apply, (D.partner_bijective p 1).injective.eq_iff, filter_eq']
+      j τ := partnerDegree_apply_of_injOn (D.partner_bijective p 1).injective.injOn (mem_univ τ)
   rw [Finsupp.add_apply, powerDegree_apply_of_mem (mem_univ _), h_end, Pi.one_apply, pow_one]
   lia
 
