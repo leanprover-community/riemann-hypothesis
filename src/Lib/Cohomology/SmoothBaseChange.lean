@@ -109,7 +109,7 @@ variable {C : Type _} [Category C] {ℓ : ℕ} {R : CommRingCat} {A : Type} [Com
 /-- Let `A` be a valuation ring (`PreValuationRing`) and a `k`-algebra in which `ℓ` is a unit, `D` a
 compared theory along `g`, and `P` a closed class of functors on tests over `A` that contains
 `ℤ[Hom(A, -)]` and holds at `ℤ[Y]`, for each functor `Y` on tests over `A`, exactly when
-`D.IsFiniteLerayHirsch` holds for `ℤ[Y] / ℤ[offClosedFibre Y]`. If the functor `X` on `k`-algebras
+`D.IsFiniteLerayHirsch` holds for `ℤ[Y] / ℤ[offClosedFiber Y]`. If the functor `X` on `k`-algebras
 is charted by some `V` (`New.Variety.IsCharting`: `V` is Zariski locally all of `X`, and `ℤ[V]` lies
 in every closed class containing `ℤ[Spec R]` for each chart `R` of `X` étale over a torus), then `P`
 holds at `ℤ[X]`, restricted to tests over `A`. -/
@@ -213,7 +213,7 @@ private lemma maximalIdeal_le_radical_span {A : ClosurePlace} {p : ℕ} [Fact p.
 /-- Let `A` be a valuation ring of `Ω` (a `ClosurePlace`) with the prime `p` in its maximal ideal,
 and `ℓ` a unit in `A`. For a functor `X` on tests over `A`, restriction of the mod `ℓ` cohomology
 from tests over `A` to tests over `Ω` (`New.Variety.TestOver.restrictScalars`) is bijective on
-`ℤ[X]` exactly when `ℤ[X] / ℤ[offClosedFibre X]` has no cohomology. -/
+`ℤ[X]` exactly when `ℤ[X] / ℤ[offClosedFiber X]` has no cohomology. -/
 private lemma isBijective_restrict_restrictScalars_iff {A : ClosurePlace} {p : ℕ} [Fact p.Prime]
     (hp : A.valuation p < 1) [InvertsPrime A ℓ] {X : TestOver A ⥤ Type 1} :
     (Comparison.restrict (TestOver.restrictScalars A Ω)
