@@ -114,6 +114,7 @@ jobs:
         run: python3 scripts/tauceti-cache-get.py
 
       - name: Restore this project's cache
+        id: cache
         if: steps.queue.outputs.tested != 'true'
         # Exit 0: the exact build inputs were restored, and nothing should compile.
         # Exit 4: a baseline was restored, and lake build compiles what changed since.
@@ -123,16 +124,23 @@ jobs:
           status=0
           python3 scripts/ci-cache-get.py --baseline refs/ci/cache-baseline || status=$?
           case "$status" in
-            0) echo "::notice::Restored the cache for these exact build inputs." ;;
-            4) echo "::notice::Restored a baseline cache; lake build compiles the modules that changed since and the modules that import them." ;;
-            3) echo "::warning::No cache record matches these build inputs or any baseline; lake build compiles every module." ;;
+            0) kind=exact
+               echo "::notice::Restored the cache for these exact build inputs." ;;
+            4) kind=baseline
+               echo "::notice::Restored a baseline cache; lake build compiles the modules that changed since and the modules that import them." ;;
+            3) kind=none
+               echo "::warning::No cache record matches these build inputs or any baseline; lake build compiles every module." ;;
             *) exit "$status" ;;
           esac
+          printf 'kind=%s\n' "$kind" >> "$GITHUB_OUTPUT"
 
       - name: lake build
         if: steps.queue.outputs.tested != 'true'
+        env:
+          PROJECT_CACHE_KIND: ${{ steps.cache.outputs.kind }}
         run: |
           set -o pipefail
+          start=$SECONDS
           if [[ "$STAGE" == true ]]; then
             # As the hand publisher builds: -o writes Lake's map of every module's artifact, and
             # packs each module's .ltar under .lake/build/ir.
@@ -141,6 +149,15 @@ jobs:
           else
             lake build 2>&1 | tee build.log
           fi
+          build_seconds=$((SECONDS - start))
+          {
+            printf '### Lake build timing\n\n'
+            printf '| Commit | Toolchain | Runner pool | CPUs | Project cache | Lake wall seconds |\n'
+            printf '| --- | --- | --- | ---: | --- | ---: |\n'
+            printf '| `%s` | `%s` | %s | %s | %s | %s |\n' \
+              "$GITHUB_SHA" "$(cat lean-toolchain)" "${RH_RUNNER_LABEL:-unknown}" \
+              "$(nproc)" "$PROJECT_CACHE_KIND" "$build_seconds"
+          } >> "$GITHUB_STEP_SUMMARY"
           # Lake replays the saved messages of the modules it did not compile, so this covers
           # restored modules too.
           if grep -n -e 'declaration uses `sorry`' -e "declaration uses 'sorry'" build.log; then
