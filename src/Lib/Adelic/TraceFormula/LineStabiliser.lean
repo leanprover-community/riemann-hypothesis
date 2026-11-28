@@ -89,6 +89,7 @@ lemma asAlgebraHom_doubleCosetSum
   ext y
   simp [doubleCosetSum_eq_sum h_fin, heckeCoset, heckeFun_eq_sum_toFinset h_fin]
 
+/-- Every element of `J` fixes every vector of `levelSpace ρ J`. -/
 lemma apply_of_mem_levelSpace (hy : y ∈ levelSpace ρ J) {g : G} (hg : g ∈ J) : ρ g y = y := by
   simpa using mem_levelSpace.1 hy ⟨g, hg⟩
 
@@ -164,6 +165,7 @@ def hyperplaneStabilizer : Subgroup (GL n (LocField w)) :=
 elsewhere. -/
 def lineElement : GL n (LocField w) := diagGL fun j : n ↦ if j = i then uniformizer w else 1
 
+/-- The line stabilizer subgroup is contained in the local integral general linear group. -/
 lemma lineStabilizer_le_localIntGL : lineStabilizer w i ≤ localIntGL n w :=
   Subgroup.map_subtype_le _
 
@@ -186,10 +188,12 @@ lemma isHeckeFunction_indicator_doubleCoset (t : GL n (LocField w)) :
       (lineStabilizer w i)).indicator (1 : GL n (LocField w) → ℂ)) :=
   isHeckeFunction_doubleCoset (isOpen_lineStabilizer w i) t
 
+/-- The matrix of `lineElement w i` is `diag (ϖ, 1, …, 1)` with `ϖ` at `i`. -/
 lemma coe_lineElement :
     (lineElement w i).val = diagonal fun j : n ↦ if j = i then (uniformizer w).val else 1 := by
   simp [lineElement, apply_ite Units.val]
 
+/-- The matrix of the inverse of `lineElement w i` is `diag (ϖ⁻¹, 1, …, 1)` with `ϖ⁻¹` at `i`. -/
 lemma coe_lineElement_inv :
     (lineElement w i)⁻¹.val = diagonal fun j : n ↦ if j = i then (uniformizer w).val⁻¹ else 1 := by
   simp [lineElement, ← map_inv, apply_ite Units.val, apply_ite Inv.inv]
