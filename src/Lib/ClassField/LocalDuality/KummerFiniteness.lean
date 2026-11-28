@@ -2,7 +2,7 @@ module
 
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.GroupTheory.FiniteAbelian.Duality
-import Mathlib.RingTheory.LocalRing.Quotient
+import TauCeti.RingTheory.DiscreteValuationRing.Basic
 public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
 public import Lib.ClassField.GaloisCohomology.TateIndexFormula
 import Lib.ClassField.Places.LocalFields
@@ -114,11 +114,7 @@ lemma New.IsLocalGalois.finite_quotient_span_singleton {Γ L Ω : Type} [Group �
     Finite (valRingBelow L A ⧸ span {x}) := by
   have h_dvr : IsDiscreteValuationRing (valRingBelow L A) := hLocal.isDiscreteValuationRing
   have h_residue : Finite (ResidueField (valRingBelow L A)) := hLocal.finite_residue
-  -- The ideal is a power of the maximal ideal, whose quotient is finite.
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, span {x} = maximalIdeal (valRingBelow L A) ^ k :=
-    exists_maximalIdeal_pow_eq_of_principal _ inferInstance (span {x})
-      (span_singleton_eq_bot.ne.mpr hx)
-  exact finite_quotient_iff.mpr ⟨k, hk.ge⟩
+  exact Ring.HasFiniteQuotients.finiteQuotient (span_singleton_eq_bot.ne.mpr hx)
 
 /-- Let `A` be a valuation subring of `Ω` and `L → Ω` a field embedding. An `l`-th root of unity
 `u` in `L` with `|u - 1| < |l|` (for the valuation of `A`) is `1`. -/
