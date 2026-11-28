@@ -74,15 +74,17 @@ open Matrix GeneralLinearGroup Fintype WeilData Exchange Finset Gf stdLattice Sp
   SemilocalField
 open scoped TensorProduct
 
-variable {E n n' : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
-  [DecidableEq n] [Fintype n'] [DecidableEq n'] {P S : Finset (FinPlace E)} {N : ℕ} [Fact N.Prime]
-  {m : Type} [Fintype m] [DecidableEq m]
+variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype n']
+  [DecidableEq n'] {P S : Finset (FinPlace E)} {N : ℕ} {m : Type} [Fintype m] [DecidableEq m]
 
-omit [WeilData E] in
 /-- The component at a finite place `w` of the scalar element `ν` is the scalar matrix `ν w`. -/
 @[simp] lemma scalarFin_atPlace (ν : unitary (𝔸f E)) (w : FinPlace E) :
     ((scalarFin n ν).atPlace w).val = diagonal fun _ : n ↦ ν.val w :=
   diagonal_map rfl
+
+section
+
+variable [WeilData E] [Fact N.Prime]
 
 /-- Let `ν`, `ν'` be finite adeles of norm one. The Weil action with characters `a`, `b` of the pair
 of scalar matrices `(ν, ν')` on the finite part for the standard spaces on `n` and `n'` is the value
@@ -141,6 +143,8 @@ abbrev Space.vacuumProjFinPart {s : n → ℤˣ} (V : Space E n s) (S : Set (Fin
     Module.End ℂ V.finitePart :=
   (V.projOn S).toLinearMap.restrict fun _ ↦ projOn_mem_finitePart
 
+end
+
 namespace IsSplitLevel
 
 /-- The character `g ↦ χ (det g) |det g| ^ (-k / 2)` of `GL n` over `LocProd P`, the product of the
@@ -148,6 +152,7 @@ completions of `E` at the places of `P`. -/
 def detCharAt (χ : HeckeChar E) (k : ℕ) : GL n (LocProd P) →* ℂˣ :=
   (localChar P χ (-k)).toUnitHom.comp det
 
+variable [WeilData E] in
 /-- The operator `v ↦ Ψ ⊗ v` of the Schrödinger model at `P` on the finite part for the standard
 spaces on `n` and `n'`, as a linear function of the function `Ψ` of matrices over `LocProd P`. Here
 `Ψ` is read as a function of finite adelic matrices through their components at `P`. -/
@@ -158,6 +163,8 @@ def schrodingerOpAt : (Matrix n' n (LocProd P) → ℂ) →ₗ[ℂ]
       v.property⟩)
     (by simp [Pi.add_comp]) (by simp [Pi.smul_comp]) (by simp) (by simp)
 
+section
+
 variable [h : IsSplitLevel P N]
 
 /-- The element of the finite adelic unitary group that is supported above `N` and has the given
@@ -165,7 +172,6 @@ components at `P`. -/
 def embedGL : GL n (LocProd P) →* Gf E n :=
   (ofSplitPlaces h.star_notMem).comp (.pi fun w ↦ map (Pi.evalRingHom _ w))
 
-omit [WeilData E] [Fact N.Prime] in
 @[simp] lemma atPlaces_embedGL (g : GL n (LocProd P)) : atPlaces P (embedGL g) = g := by
   ext i j w : 3
   have h_at : (embedGL g).atPlace w = GeneralLinearGroup.map (Pi.evalRingHom _ w) g :=
@@ -173,7 +179,7 @@ omit [WeilData E] [Fact N.Prime] in
   exact congrArg (fun k : GL n (LocField w.val) ↦ k i j) h_at
 
 open scoped Classical in
-omit [WeilData E] in
+variable [Fact N.Prime] in
 /-- At a place `w` of `P`, the component `atPlace w` of `embedGL (diagN (P := P) (N := N) n S)` is
 `diag (1, …, 1, N)` if `w` is in `S`, and `1` otherwise. -/
 lemma atPlace_embedGL_diagN (w : P) : (embedGL (diagN (P := P) (N := N) n S)).atPlace w =
@@ -181,16 +187,10 @@ lemma atPlace_embedGL_diagN (w : P) : (embedGL (diagN (P := P) (N := N) n S)).at
       if i.isLeft then 1 else if ↑w ∈ S then .mk0 (N : LocField w.val) NeZero.out else 1 :=
   (atPlace_ofSplitPlaces star_notMem _ w).trans (by simp [diagN, Units.ext_iff])
 
-omit [WeilData E] [Fact N.Prime] in
 lemma embedGL_mem_supportedOn (g : GL n (LocProd P)) : embedGL g ∈ supportedOn n P :=
   ofSplitPlaces_mem_supportedOn star_notMem _
 
-include h
-
-section
-
-omit [WeilData E] [Fact N.Prime]
-
+include h in
 lemma isConjDisjoint : Set.IsConjDisjoint (E := E) P := by grind [star_notMem]
 
 lemma natCast_level_mem : ∀ w ∈ P, ↑N ∈ w.asIdeal := fun w hw ↦ (h.natCast_mem_iff w).2 (.inl hw)
@@ -208,11 +208,7 @@ lemma mem_integralAbove_of_inclGL_eq {g : Gf E n} {a : GL n (O (F := LocProd P))
   -- A place above `N` or its conjugate lies in `P`, and integrality passes to the conjugate.
   exact ((h.natCast_mem_iff w).1 hw).elim (h_at w) (atPlace_star_mem_iff.1 <| h_at _ ·)
 
-end
-
-section
-
-omit [WeilData E]
+variable [Fact N.Prime]
 
 /-- Let `x` be the component at `P` of `N u`, assumed integral. Its reduction modulo `N` is `c`
 exactly when `u - c / N` is integral at `P`, with `c / N = residueOverN c`. -/
@@ -221,13 +217,12 @@ lemma reduction_eq_iff_idem_mul_mem {x : O (F := LocProd P)} {c : P → ZMod N} 
     h.reduction x = c ↔ idem P * (u - residueOverN c) ∈ Ô E := by
   simp +contextual [hx, reduction_eq_iff, sub_div, idem_mul_mem_Ô, NeZero.ne]
 
-omit h in
 /-- Let `P` hold one place of each conjugate pair above the prime `N`, all unramified of degree one
 (`IsSplitLevel P N`), and let `w` be in `P`. Let `ν` be an integral finite adele of norm one that
 is `1` away from `w` and `w̄`. Then there is a unit `x` of the integers at `P`, with reduction `1`
 modulo `N` at the places of `P` other than `w`, such that the scalar matrix `ν` is the unitary
 element `embedGL` supported above `N` whose component at `P` is the scalar matrix `x`. -/
-lemma exists_embedGL_scalar_eq_scalarFin [h : IsSplitLevel P N] {ν : unitary (𝔸f E)} (w : P)
+lemma exists_embedGL_scalar_eq_scalarFin {ν : unitary (𝔸f E)} (w : P)
     (h_int : ν.val ∈ Ô E) (h_supp : ∀ v : FinPlace E, v ≠ w.val → star v ≠ w.val → ν.val v = 1) :
     ∃ x : (O (F := LocProd P))ˣ, (∀ v : P, v ≠ w → h.reduction x v = 1) ∧
       h.embedGL (inclGL (scalar n x)) = scalarFin n ν := by
@@ -246,14 +241,14 @@ lemma exists_embedGL_scalar_eq_scalarFin [h : IsSplitLevel P N] {ν : unitary (�
   · simp +contextual (disch := grind) [Units.ext_iff, h_supp]
   · simp [x, Subtype.forall', embedGL, Units.ext_iff]
 
-omit h [DecidableEq n] [DecidableEq n'] in
+omit [DecidableEq n] [DecidableEq n'] in
 /-- Let `P` hold one place of each conjugate pair above the prime `N`, all unramified of degree one
 (`IsSplitLevel P N`), so that `residueEquiv` identifies the residue fields at `P` with `ZMod N`.
 Let `f` be a function of matrices modulo `N`, and `h.liftFn f` the function of matrices at `P` that
 is `f` of the reduction on integral matrices and zero elsewhere. Evaluated on finite adelic matrices
 through their components at `P`, it is the residue datum of `f`: the value of `f` at the residues
 at `P` if the matrix is integral there, and zero otherwise. -/
-lemma liftFn_eq_residueDatum [h : IsSplitLevel P N] (f : Matrix n' n (P → ZMod N) → ℂ) :
+lemma liftFn_eq_residueDatum (f : Matrix n' n (P → ZMod N) → ℂ) :
     (h.liftFn f ∘ fun T : n' × n → 𝔸f E ↦ (vecToMatrix T).map (evalPlaces P)) =
     residueDatum (fun w : P ↦ w.val) fun T : (w : P) → Matrix n' n (ResField w.val) ↦
       f (of fun (i : n') (j : n) (w : P) ↦ residueEquiv w (T w i j)) := by
@@ -273,13 +268,12 @@ instance isSchwartzBruhat_liftFn (f : Matrix n' n (P → ZMod N) → ℂ) :
   simpa [liftFn_eq_residueDatum] using
     isSchwartzBruhat_residueDatum (w := fun w : P ↦ w.val) _ (by grind [star_notMem])
 
-omit h in
 /-- Let `P` hold one place of each conjugate pair above the prime `N`, all unramified of degree one
 (`IsSplitLevel P N`). Let `f` be a function of matrices modulo `N`, and `h.liftFn f` the function of
 matrices at `P` that is `f` of the reduction on integral matrices and zero elsewhere. For invertible
 matrices `g` and `k` at `P`, the function `T ↦ h.liftFn f (k⁻¹ T g)` of finite adelic matrices, read
 through their components at `P`, is Schwartz–Bruhat at `P`. -/
-lemma isSchwartzBruhat_liftFn_mul [h : IsSplitLevel P N] (g : GL n (LocProd P))
+lemma isSchwartzBruhat_liftFn_mul (g : GL n (LocProd P))
     (f : Matrix n' n (P → ZMod N) → ℂ) (k : GL n' (LocProd P)) :
     IsSchwartzBruhat P fun T : n' × n → 𝔸f E ↦
       h.liftFn f (k⁻¹.val * (vecToMatrix T).map (evalPlaces P) * g.val) := by
@@ -290,9 +284,10 @@ lemma isSchwartzBruhat_liftFn_mul [h : IsSplitLevel P N] (g : GL n (LocProd P))
     using!
     (h.isSchwartzBruhat_liftFn f).comp_mulVec M
 
-end
+section
 
-omit h in
+variable [WeilData E]
+
 /-- Let `P` hold one place of each conjugate pair above the prime `N`, all unramified of degree one
 (`IsSplitLevel P N`). Let `Ψ = liftFn f` be `f` of the reduction modulo `N` on integral matrices at
 `P` and zero elsewhere. Let `v` lie in the finite part of the Schwartz space of
@@ -303,7 +298,7 @@ into `(T ↦ Ψ (k⁻¹ T g)) ⊗ v`, times a scalar. The scalar is a quotient o
 `detCharAt χ l : x ↦ χ (det x) |det x| ^ (-l / 2)`, for `χ = c.spaceChar l` the base change of `c`
 divided by `υ ^ l`, with `υ` the splitting character: the value at `k` for `c = a`, `l = card n`,
 over the value at `g` for `c = b`, `l = card n'`. -/
-lemma pairWeilFinite_schrodingerOpAt [h : IsSplitLevel P N] (g : GL n (LocProd P))
+lemma pairWeilFinite_schrodingerOpAt (g : GL n (LocProd P))
     (f : Matrix n' n (P → ZMod N) → ℂ) (a b : AutChar E) (k : GL n' (LocProd P))
     (v : ((stdSpace E n).hom (stdSpace E n')).finitePart) :
     pairWeilFinite (stdSpace E n) (stdSpace E n') a b (h.embedGL g, h.embedGL k)
@@ -323,7 +318,6 @@ lemma pairWeilFinite_schrodingerOpAt [h : IsSplitLevel P N] (g : GL n (LocProd P
   congr 1
   simp [-atPlaces_embedGL, field]
 
-omit h [Fact N.Prime] in
 /-- Suppose the base change of `a` is unramified at every place of `P`. Let
 `χ = a.spaceChar i` be this base change divided by the `i`-th power of the splitting character `υ`.
 The character `detCharAt χ k: x ↦ χ (det x) |det x| ^ (-k / 2)` of the invertible matrices at `P` is
@@ -341,18 +335,15 @@ lemma detCharAt_inclGL (a : AutChar E)
   ext
   simp [detCharAt, localChar, g.map_det, norm_locField_eq_q_zpow, h_unit, h_space]
 
-section
+end
 
-omit [WeilData E]
-
-omit h in
 /-- Let `P` hold one place of each conjugate pair above the prime `N`, all unramified of degree one
 (`IsSplitLevel P N`). The character `detCharAt χ k` is `g ↦ χ (det g) |det g| ^ (-k / 2)` over the
 completions at `P`, and `diagN (P := P) (N := N) n S` is `diag (1, …, 1, N)` at `P ∩ S` and `1` at
 `P \ S`. For an embedding `ι` of `ℂ` into `ℂ_[N]` and `k ≤ k'`, the `N`-adic size of
 `detCharAt χ k'` at this matrix is at most that of `detCharAt χ k`, whatever the sizes of the two
 matrices. -/
-lemma norm_detCharAt_diagN_anti [h : IsSplitLevel P N] {ι : ℂ →+* ℂ_[N]} {χ : HeckeChar E}
+lemma norm_detCharAt_diagN_anti {ι : ℂ →+* ℂ_[N]} {χ : HeckeChar E}
     {k k' : ℕ} (hk : k ≤ k') :
     ‖ι (detCharAt χ k' (diagN (P := P) (N := N) n S))‖ ≤
       ‖ι (detCharAt χ k (diagN (P := P) (N := N) n' S))‖ := by
@@ -390,13 +381,12 @@ lemma diagN_eq_sdiff_mul (S : Finset (FinPlace E)) :
       diagN (P := P) (N := N) n (P \ S) * diagN (P := P) (N := N) n S := by
   simp +contextual [diagN, ← map_mul, Pi.mul_def]
 
-omit h in
 /-- Let `P` hold one place of each conjugate pair above the prime `N`, all unramified of degree one
 (`IsSplitLevel P N`). An adele is integral at `P` if it lies in the integral adeles `Ô E` after
 multiplication by `idem P`, the adele that is `1` at `P` and `0` elsewhere. If `N z` is integral at
 `P`, then `z - y / N` is integral at `P` for exactly one class `y` modulo `N`, and otherwise for
 none. -/
-lemma exists_sub_residueOverN_mem_iff [h : IsSplitLevel P N] (z : 𝔸f E) :
+lemma exists_sub_residueOverN_mem_iff (z : 𝔸f E) :
     ∃ b : P → ZMod N, ∀ y : P → ZMod N,
       idem P * (z - residueOverN y) ∈ Ô E ↔ idem P * ((N : 𝔸f E) * z) ∈ Ô E ∧ b = y := by
   -- `b` is the residue of `N z` at `P` when `N z` is integral there.
@@ -422,9 +412,6 @@ end
 
 section Glued
 
-omit h
-
-omit [WeilData E] [Fact N.Prime] in
 /-- The idempotent of the places in `P` and their conjugates is that of the places in `S` and their
 conjugates, both being the places above `N`. -/
 lemma idem_add_star_eq [hP : IsSplitLevel P N] (hS : IsSplitLevel S N) :
@@ -433,7 +420,8 @@ lemma idem_add_star_eq [hP : IsSplitLevel P N] (hS : IsSplitLevel S N) :
   simp [idem_apply]
   grind [hP.star_notMem w, hS.star_notMem w, hP.natCast_mem_iff w, hS.natCast_mem_iff w]
 
-omit [WeilData E] in
+variable [Fact N.Prime]
+
 /-- Let `P` and `S` each hold one place of every conjugate pair above the prime `N`, all unramified
 of degree one (`IsSplitLevel`). Let `y / N = residueOverN y` run over the classes with simple poles
 at `S`. Let `p` be `N` at `S` and `1` elsewhere, so that `N + 1 - p` is `1` at `S` and `N`
@@ -458,6 +446,8 @@ lemma exists_sub_mem_and_sub_star_mem_iff [hP : IsSplitLevel P N] (hS : IsSplitL
   simp only [z, hp, star_sub, star_add, star_mul', star_star, star_one, star_natCast] at h_sub h_mul
   grind [hb y, idem_mul_star hP.isConjDisjoint, idem_mul_star hS.isConjDisjoint,
     hP.idem_add_star_eq hS, idem_mul_residueOverN, idem_mul_self, star_mul']
+
+variable [WeilData E]
 
 open scoped Classical in
 /-- Let `P` and `S` each hold one place of every conjugate pair above the prime `N`, all unramified

@@ -162,7 +162,6 @@ lemma firstBlockHom_conj_mem_descentResidueLevel (s : S.ChosenGL r)
 end
 
 variable (E r n : Type) [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
-  [WeilData E]
 
 /-! ### Descent pairs and their forms on V -/
 
@@ -242,7 +241,6 @@ def residueLevelChar : descentResidueLevel O.toLevelPlaces O.incl →* ℂ where
     obtain ⟨-, h_parabolic⟩ := (mem_descentResidueLevel_iff O.toLevelPlaces O.incl).1 g.prop
     simp [submatrix_mul_of_mem_rangeParabolic _ (h_parabolic _), Finset.prod_mul_distrib, -elim_inr]
 
-omit [WeilData E] in
 /-- `O.residueLevelChar g` is the product over the places w = `O.placeAt (inr i)` of Q of
 `O.tamePart⁻¹` at w, applied to the determinant of the block of the component of g at w on the basis
 vectors indexed by `O.incl`. -/
@@ -250,7 +248,6 @@ lemma residueLevelChar_apply (g : descentResidueLevel O.toLevelPlaces O.incl) :
     O.residueLevelChar g = ∏ i : O.TwistIndex,
       O.tamePart⁻¹ (O.placeAt (inr i)) ((g.val (Sum.inr i)).val.submatrix O.incl O.incl).det := rfl
 
-omit [WeilData E] in
 /-- The character `New.DescentPair.residueLevelChar` is invariant under conjugation by the image of
 `New.firstBlockHom`, as it only reads the components at the places of Q. -/
 lemma residueLevelChar_firstBlockHom_conj (s : O.ChosenGL r)
@@ -304,7 +301,6 @@ def tensorPoly : (WeylIndex n O.colsPlus × WeylIndex n O.colsMinus → ℂ) →
     letterPoly O.signs O.numbering 1 O.colsPlus (Pi.single p.1 1) *
       letterPoly O.signs O.numbering (-1) O.colsMinus (Pi.single p.2 1)
 
-omit [WeilData E] in
 /-- The value of `New.DescentPair.tensorPoly` at a pure tensor a ⊗ b, the vector with entry a_i b_j
 at (i, j) (that is, `(vecMulVec b a).vec`), is the product of the polynomials (`New.letterPoly`) of
 a and b in the variables of the positive, resp. negative, sign. -/
@@ -325,6 +321,8 @@ reads the resulting tensor as a polynomial in the Fock variables by `New.Descent
 def fockPoly : (WeylIndex n (mixedWeight n O.colsPlus O.colsMinus) → ℂ) →ₗ[ℂ]
     MvPolynomial (InfinitePlace E × n × r) ℂ :=
   O.tensorPoly ∘ₗ ((mixedCartan n O.colsPlus O.colsMinus).matrix.map (↑)).mulVecLin
+
+variable [WeilData E]
 
 /-- The character ν_W of U(1)(𝔸) attached to W: `upsilonU1` raised to the number r₋ of basis
 vectors of W with sign −1. It belongs to the standard splitting character υ^{2r₋ − r} of W, with υ

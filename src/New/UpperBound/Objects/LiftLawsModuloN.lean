@@ -79,8 +79,6 @@ lemma idem_mul_residueOverN (y : P → ZMod N) : idem P * residueOverN y = resid
   refine DFunLike.ext _ _ fun w ↦ ?_
   by_cases hw : w ∈ P <;> simp [hw]
 
-variable [WeilData E]
-
 namespace IsSplitLevel
 
 open scoped Classical in
@@ -101,10 +99,6 @@ def residueEquiv (w : P) : ResField w.val ≃+* ZMod N :=
 /-- Reduction modulo `N` of the integers at `P`. -/
 def reduction : O (F := LocProd P) →+* (P → ZMod N) :=
   RingHom.pi fun w : P ↦ (Λ.residueEquiv w).toRingHom.comp (residueAt w)
-
-section
-
-omit [WeilData E]
 
 /-- An integer `x` at `P` reduces to `c` modulo `N` exactly if `(x - c) / N` is integral at each
 place `w` of `P`, where `c w` is read in `[0, N)`. -/
@@ -144,11 +138,10 @@ abbrev liftGL : GL n (P → ZMod N) → GL n (O (F := LocProd P)) :=
 
 lemma reductionGL_liftGL (k : GL n (P → ZMod N)) : reductionGL (Λ.liftGL k) = k := surjInv_eq _ k
 
-end
-
 /-- The matrix `diag (1, …, 1, N⁻¹)` at all places of `P`. -/
 abbrev diagNInv : GL (n ⊕ Unit) (LocProd P) := (diagN (N := N) n P)⁻¹
 
+variable [WeilData E] in
 /-- The character `ψ_N (y) = ψ (-y / N)` of the residues at `P`, where `ψ` is the additive character
 `stdLattice.selfDualAddChar E` of the finite adeles and `y / N` is the adele `residueOverN y`. -/
 def psiN (y : P → ZMod N) : ℂ := stdLattice.selfDualAddChar E (-residueOverN y)
@@ -177,10 +170,6 @@ both `y` modulo `N`. -/
 def lastRowColGL (y : n ⊕ Unit → P → ZMod N) : GL (n ⊕ Unit) (O (F := LocProd P)) :=
   Λ.liftGL (exists_GL_last_col_and_row.choose y)
 
-section
-
-omit [WeilData E]
-
 /-- If the last entry of `y` is a unit, then `y` is both the last column and the last row of
 `lastRowColGL y` modulo `N`. -/
 lemma lastRowColGL_col_and_row {y : n ⊕ Unit → P → ZMod N} (hy : IsUnit (y (.inr ()))) :
@@ -201,6 +190,7 @@ lemma lastBasisVector_vecMul_lastRowColGL {y : n ⊕ Unit → P → ZMod N} (hy 
   simpa using (lastRowColGL_col_and_row hy).right
 
 open scoped Classical in
+variable [WeilData E] in
 /-- The operator `Up = π (D) ∑ y, ψ_N (y_last) π (lastRowColGL y)`, where `D = diagNInv` and `y`
 runs over the vectors modulo `N` whose last entry `y_last` is a unit. The matrix `D` replaces the
 standard lattice by the lattice enlarged by the last basis vector divided by `N`. -/
@@ -251,8 +241,6 @@ lemma liftFn_inclGL (f : Matrix n n (P → ZMod N) → ℂ) (k : GL n (O (F := L
     Λ.liftFn f (inclGL k).val = f (reductionGL k).val :=
   dite_eq_left fun i j ↦ (k.val i j).property
 
-end
-
 /-- The indicator of the integral matrices whose last row is the last basis vector modulo `N`. -/
 def lastRowDatum : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ :=
   Λ.liftFn fun T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (P → ZMod N) ↦
@@ -261,6 +249,10 @@ def lastRowDatum : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ :=
 /-- The indicator of the integral matrices whose last column is `y` modulo `N`. -/
 def lastColDatum (y : n' → P → ZMod N) : Matrix n' (n ⊕ Unit) (LocProd P) → ℂ :=
   Λ.liftFn fun T : Matrix n' (n ⊕ Unit) (P → ZMod N) ↦ if Tᵀ (.inr ()) = y then 1 else 0
+
+section
+
+variable [WeilData E]
 
 /-- On integral matrices, `ψ_N` of the last row paired with `y`. -/
 def charDatum (y : n → P → ZMod N) : Matrix (n' ⊕ Unit) n (LocProd P) → ℂ :=
@@ -293,6 +285,8 @@ lemma gluedDatum_eq_sum (T : Matrix n' (n ⊕ Unit) (LocProd P))
   simp only [gluedDatum, lastColDatum, liftFn_apply]
   split_ifs <;> simp [-transpose_of]
 
+end
+
 open scoped Classical in
 /-- The vectors modulo `N` that are non-zero at every place of `P`. -/
 abbrev primitiveVectors (n : Type) [Fintype n] [DecidableEq n] : Finset (n → P → ZMod N) :=
@@ -320,14 +314,12 @@ variable {π π'} {φ : π}
 
 /-! ## The direct datum in terms of valuations -/
 
-omit [WeilData E] in
 /-- An integer at `P` reduces to zero modulo `N` exactly if `N` divides it at every place. -/
 lemma reduction_eq_zero_iff {x : O (F := LocProd P)} :
     Λ.reduction x = 0 ↔ ∀ w : P, v ((x : LocProd P) w) ≤ exp (-1) := by
   simp only [reduction_eq_iff, Pi.zero_apply, ZMod.val_zero, Nat.cast_zero, sub_zero, map_div₀,
     SetLike.coe_mem, Λ.v_natCast, Int.reduceNeg, exp_pos, div_le_one₀, Subtype.forall]
 
-omit [WeilData E] in
 /-- An integer `x` at `P` reduces to one modulo `N` exactly if `N` divides `x - 1` at every
 place. -/
 lemma reduction_eq_one_iff {x : O (F := LocProd P)} :
@@ -335,7 +327,7 @@ lemma reduction_eq_one_iff {x : O (F := LocProd P)} :
   simp only [reduction_eq_iff, Pi.one_apply, ZMod.val_one, Nat.cast_one, map_div₀, SetLike.coe_mem,
     Λ.v_natCast, Int.reduceNeg, exp_pos, div_le_one₀, Subtype.forall]
 
-omit [Fintype n] [WeilData E] in
+omit [Fintype n] in
 /-- An integral vector is the last basis vector modulo `N` exactly if, at every place of `P`, `N`
 divides its entries other than the last and the last entry minus one. -/
 lemma reduction_comp_eq_lastBasisVector_iff {x : n ⊕ Unit → O (F := LocProd P)} :
@@ -346,7 +338,7 @@ lemma reduction_comp_eq_lastBasisVector_iff {x : n ⊕ Unit → O (F := LocProd 
     Pi.single_eq_of_ne, reduction_eq_zero_iff, Int.reduceNeg, Subtype.forall, Pi.single_eq_same,
     reduction_eq_one_iff, Unique.forall_iff, PUnit.default_eq_unit]
 
-omit [DecidableEq n] [DecidableEq n'] [WeilData E] in
+omit [DecidableEq n] [DecidableEq n'] in
 /-- Let `p` be a condition on matrices modulo `N`, and let `Q` be equivalent, when `T` is integral,
 to `p` for the reduction of `T`. Then the lift of the indicator of `p` is `1` at `T` if `T` is
 integral and `Q` holds, and `0` otherwise. -/
@@ -363,7 +355,7 @@ lemma liftFn_indicator_apply {p : Matrix n' n (P → ZMod N) → Prop} [Decidabl
   · rw [dite_eq_right h_int, ite_eq_right fun h ↦ h_int fun i j ↦ mem_O_locProd.2 (h.1 i j)]
 
 open scoped Classical in
-omit [DecidableEq n'] [WeilData E] in
+omit [DecidableEq n'] in
 /-- `lastRowDatum` in terms of valuations: it is the indicator of the matrices `T` with integral
 entries whose last row is congruent to the last basis vector modulo the uniformiser `N`. -/
 lemma lastRowDatum_apply (T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P)) :
@@ -374,7 +366,7 @@ lemma lastRowDatum_apply (T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P)) :
   liftFn_indicator_apply T fun _ ↦ reduction_comp_eq_lastBasisVector_iff
 
 open scoped Classical in
-omit [DecidableEq n] [WeilData E] in
+omit [DecidableEq n] in
 /-- `directDatum` in terms of valuations: it is the indicator of the matrices `T` with integral
 entries whose last column is congruent to the last basis vector modulo the uniformiser `N`. -/
 lemma directDatum_apply (T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P)) :
@@ -384,7 +376,6 @@ lemma directDatum_apply (T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P)) :
         ∀ w : P, v (T (.inr ()) (.inr ()) w - 1) ≤ exp (-1) then 1 else 0 :=
   liftFn_indicator_apply T fun _ ↦ reduction_comp_eq_lastBasisVector_iff
 
-omit [WeilData E] in
 /-- The two descriptions of the direct datum agree. Let `D = diagNInv = diag (1, …, 1, N⁻¹)`. Then
 `D⁻¹ T D` is integral with last row the last basis vector modulo `N` (`lastRowDatum`) exactly if
 `T` is integral with last column the last basis vector modulo `N` (`directDatum`). -/
@@ -433,7 +424,6 @@ lemma lastRowDatum_conj_diagNInv (T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd
 
 /-! ## The stabilisers fix the direct and the mirror datum -/
 
-omit [WeilData E] in
 /-- Let `liftFn f` be the extension by zero of `f` from integral matrices modulo `N`. If it is
 non-zero at `g` and at `g⁻¹`, then `g` comes from an integral invertible matrix `k` (`inclGL k = g`)
 and `f` is non-zero at the reduction of `k`. -/
@@ -446,7 +436,6 @@ lemma exists_inclGL_eq {f : Matrix n n (P → ZMod N) → ℂ} {g : GL n (LocPro
   obtain ⟨k, rfl⟩ : g ∈ intGL n O := mem_intGL.2 ⟨h_int hg, h_int hg_inv⟩
   exact ⟨k, by rwa [liftFn_inclGL] at hg, rfl⟩
 
-omit [WeilData E] in
 /-- The direct datum does not vanish on `mirabolic`, the integral invertible matrices whose last
 column is the last basis vector modulo `N`. -/
 lemma directDatum_ne_zero_of_mem_mirabolic {g : GL (n ⊕ Unit) (LocProd P)} (hg : g ∈ Λ.mirabolic) :
@@ -457,7 +446,6 @@ lemma directDatum_ne_zero_of_mem_mirabolic {g : GL (n ⊕ Unit) (LocProd P)} (hg
   rw [directDatum, lastColDatum, liftFn_inclGL, ite_eq_left h_col]
   exact one_ne_zero
 
-omit [WeilData E] in
 /-- Let `g` lie in `mirabolic`, that is, `g` is integral invertible with last column the last basis
 vector modulo `N`. Then its conjugate `D⁻¹ g D` by `D = diagNInv = diag (1, …, 1, N⁻¹)` is an
 integral invertible matrix whose last row is the last basis vector modulo `N`. -/
@@ -478,7 +466,6 @@ lemma exists_inclGL_eq_conj_diagNInv {g : GL (n ⊕ Unit) (LocProd P)} (hg : g �
     (f := fun T ↦ if T (.inr ()) = lastBasisVector then 1 else 0) (h_conj hg) h_conj_inv
   exact ⟨k, by simpa using hk_row, hk⟩
 
-omit [WeilData E] in
 /-- Let `g` and `h` lie in `mirabolic`. Then `directDatum`, the indicator of the integral matrices
 whose last column is the last basis vector modulo `N`, is invariant under `T ↦ h⁻¹ T g`. -/
 lemma directDatum_mul_mul_of_mem_mirabolic {g : GL (n ⊕ Unit) (LocProd P)}
@@ -507,7 +494,21 @@ lemma directDatum_mul_mul_of_mem_mirabolic {g : GL (n ⊕ Unit) (LocProd P)}
           then 1 else 0) T := (congrFun (liftFn_comp_mul _ a b) T).symm
     _ = Λ.directDatum T := by simp only [h_col, directDatum, lastColDatum]
 
+/-- A linear map `T` from `π` to `π'` that commutes with integral unit scalars sends ramified
+vectors to ramified vectors. -/
+lemma map_mem_ramified (T : π →ₗ[ℂ] π')
+    (hT : ∀ (x : (O (F := LocProd P))ˣ) (ψ : π),
+      π'.ρ (inclGL (scalar (n' ⊕ Unit) x)) (T ψ) = T (π.ρ (inclGL (scalar (n ⊕ Unit) x)) ψ))
+    (hφ : φ ∈ ramified π) : T φ ∈ ramified π' := by
+  intro w
+  obtain ⟨x, hx_one, ψ, rfl⟩ := hφ w
+  exact ⟨x, hx_one, T ψ, (congrArg (T ψ - ·) (hT x ψ)).trans (map_sub T ψ _).symm⟩
+
 /-! ## The operator `Up` -/
+
+section
+
+variable [WeilData E]
 
 /-- `Up` preserves the vectors fixed by `mirabolic`, the group of integral invertible matrices at
 `P` whose last column is the last basis vector modulo `N`. -/
@@ -553,17 +554,6 @@ lemma scalar_commute_upOperator (x : (O (F := LocProd P))ˣ) :
     rw [map_scalar]
     exact (show Commute _ g from GeneralLinearGroup.scalar_commute _ g).map π.ρ
 
-omit [WeilData E] in
-/-- A linear map `T` from `π` to `π'` that commutes with integral unit scalars sends ramified
-vectors to ramified vectors. -/
-lemma map_mem_ramified (T : π →ₗ[ℂ] π')
-    (hT : ∀ (x : (O (F := LocProd P))ˣ) (ψ : π),
-      π'.ρ (inclGL (scalar (n' ⊕ Unit) x)) (T ψ) = T (π.ρ (inclGL (scalar (n ⊕ Unit) x)) ψ))
-    (hφ : φ ∈ ramified π) : T φ ∈ ramified π' := by
-  intro w
-  obtain ⟨x, hx_one, ψ, rfl⟩ := hφ w
-  exact ⟨x, hx_one, T ψ, (congrArg (T ψ - ·) (hT x ψ)).trans (map_sub T ψ _).symm⟩
-
 /-- `Up` (`upOperator`) commutes with integral unit scalars, so it preserves ramified vectors. -/
 lemma upOperator_mem_ramified (hφ : φ ∈ ramified π) : upOperator π φ ∈ ramified π :=
   map_mem_ramified _ (fun x ψ ↦ LinearMap.congr_fun (scalar_commute_upOperator x).eq ψ) hφ
@@ -575,9 +565,10 @@ lemma upOperator_pow_mem_ramified (hφ : φ ∈ ramified π) (q : ℕ) :
   | zero => exact hφ
   | succ q ih => simpa [pow_succ'] using upOperator_mem_ramified ih
 
+end
+
 /-! ## Cutting a datum into pieces, and consequences of the lift law -/
 
-omit [WeilData E] in
 /-- Let `L` be linear in its datum. If the datum is `g (r T)` for a function `r` of the matrix `T`
 modulo `N` with finitely many values, then the lift is the sum over the values `y` of `g y` times
 the lift by the indicator of `r T = y`. -/
@@ -589,7 +580,7 @@ lemma liftFn_comp_eq_sum_smul {ι : Type} [Fintype ι] [DecidableEq ι]
   have h_sort : (fun T ↦ g (r T)) = ∑ y : ι, g y • fun T ↦ if r T = y then 1 else 0 := by ext; simp
   simp only [h_sort, map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply]
 
-omit [CMType E] [WeilData E] [IsSplitLevel P N] in
+omit [CMType E] [IsSplitLevel P N] in
 /-- A vector modulo `N` that is non-zero at every place of `P` is the image of the last basis
 vector under an invertible matrix modulo `N`. -/
 lemma exists_GL_smul_lastBasisVector {y : n ⊕ Unit → P → ZMod N}
@@ -606,10 +597,6 @@ lemma exists_GL_smul_lastBasisVector {y : n ⊕ Unit → P → ZMod N}
     of_apply, h_entry]
 
 namespace LiftLaw
-
-section
-
-omit [WeilData E]
 
 /-- Let the lift `L Ψ : π → π'`, linear in its datum `Ψ`, obey the lift law. Then the lift by any
 function `f` of matrices modulo `N`, extended by zero off the integral matrices (`liftFn f`),
@@ -679,7 +666,7 @@ lemma inclGL_lastColDatum (H : LiftLaw π π' L γ) (k : GL (n' ⊕ Unit) (O (F 
   refine .trans ?_ (H.integral_equivariant 1 k _ φ)
   simp only [lastColDatum, map_one, Units.val_one, Matrix.mul_one, h_col, one_apply_eq_self]
 
-end
+variable [WeilData E]
 
 /-- Let the lift `L Ψ : π → π'` be linear in its datum `Ψ` and obey the lift law `H`; in particular
 integral invertible matrices move freely between the datum and the two representations. Let `k` be
@@ -848,8 +835,8 @@ end
 
 namespace IsSplitLevel
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {P : Finset (FinPlace E)}
-  {N : ℕ} [Fact N.Prime] [Λ : IsSplitLevel P N]
+variable {E : Type} [Field E] [CMType E] {P : Finset (FinPlace E)} {N : ℕ} [Fact N.Prime]
+  [Λ : IsSplitLevel P N]
 
 -- A chain: `L j` is a lift from `π j` to `π (j + 1)`, with factor `γ j` in its lift law.
 variable {X : ℕ → Type} [∀ j : ℕ, Fintype (X j)] [∀ j : ℕ, DecidableEq (X j)]
@@ -858,7 +845,6 @@ variable {X : ℕ → Type} [∀ j : ℕ, Fintype (X j)] [∀ j : ℕ, Decidable
     (Matrix (X (j + 1) ⊕ Unit) (X j ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π j →ₗ[ℂ] π (j + 1)}
   {γ : ℕ → ℂ}
 
-omit [WeilData E] in
 /-- If each `L j`, a lift from `π j` to `π (j + 1)` for places `P` above the split prime `N`, obeys
 the lift law, then the composite of the first `j` direct lifts preserves ramified vectors. -/
 lemma compUpTo_direct_mem_ramified (law : ∀ j : ℕ, LiftLaw (π j) (π (j + 1)) (L j) (γ j))
@@ -867,6 +853,8 @@ lemma compUpTo_direct_mem_ramified (law : ∀ j : ℕ, LiftLaw (π j) (π (j + 1
   induction j with
   | zero => exact hφ
   | succ j ih => exact (law j).mem_ramified _ ih
+
+variable [WeilData E]
 
 /-- Let each lift `L j Ψ : π j → π (j + 1)` obey the lift law with factor `γ j`. On ramified vectors
 `Up` (`upOperator`) moves through the composite `L (j - 1) Ψ ∘ ⋯ ∘ L 0 Ψ` of the first `j` lifts by
