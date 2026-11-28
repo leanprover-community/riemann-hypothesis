@@ -63,10 +63,9 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `New/Derivatives/Vacuum/TightFrames` (558): Scale of theta Taylor series, tight frames, jet series along lines
 - `New/Derivatives/Vacuum/IntegralVacuum` (357): The integral vacuum θ°: integrality and bounds of its values, standard data at p
 - `New/Derivatives/Vacuum/JetIntegrality` (191): Integrality of jets of theta products and stability of standard data
-- `New/Derivatives/Vacuum/Scale` (77): The scale of the Taylor series of a vector
 - `New/Derivatives/Vacuum/ShortVectors` (538): Tight frames in `𝔞₀`
 - `New/Derivatives/Vacuum/StandardDataProducts` (355): Standard data as products of theta functions of the curve
-- `New/Derivatives/Vacuum/Divisibility` (133): Integrality and divisibility of the derivatives of standard data
+- `New/Derivatives/Vacuum/Divisibility` (206): Scale, integrality and divisibility of the derivatives of standard data
 
 **The bound is attained**
 
