@@ -2,6 +2,8 @@ module
 
 import TauCeti.Analysis.Contour.Residue.LogDeriv
 import TauCeti.Analysis.LaplaceTransform.Elementary
+import TauCeti.NumberTheory.DirichletCharacter.Conductor
+import TauCeti.NumberTheory.DirichletCharacter.Quadratic
 public import Mathlib.Analysis.Meromorphic.Basic
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.NumberTheory.LSeries.Nonvanishing
@@ -60,21 +62,25 @@ lemma quadTwist_apply (n : ℤ) : quadTwist χ d n = χ n * legendreSym d n := b
       apply_eq_zero_iff]
     rwa [Nat.cast_mul, IsCoprime.mul_right_iff, not_and_or] at h_cop
 
+/-- Twisting by the Legendre character of an odd prime coprime to the conductor multiplies the
+conductor by that prime. -/
+lemma conductor_quadTwist (hd : d ≠ 2) (hχ : χ.conductor.Coprime d) :
+    (quadTwist χ d).conductor = χ.conductor * d := by
+  obtain rfl | hN := eq_zero_or_neZero N
+  · simp [conductor_eq_zero_iff_level_eq_zero.mpr]
+  have hε : (changeLevel (dvd_mul_left d N)
+      ((chiK d).ringHomComp (algebraMap ℤ ℂ))).conductor = d :=
+    conductor_changeLevel_quadraticChar (by norm_num) hd _
+  rw [quadTwist, conductor_mul_of_coprime, conductor_changeLevel, hε]
+  simpa only [conductor_changeLevel χ, hε] using hχ
+
 /-- For a Dirichlet character `χ` mod `N` and an odd prime `d` coprime to `N`, the twist of `χ` by
 the Legendre symbol `(·/d)`, a character mod `N * d`, is not principal. -/
 lemma quadTwist_ne_one (hd : d ≠ 2) (hN : N.Coprime d) : quadTwist χ d ≠ 1 := by
-  -- Take a non-residue `a` mod `d`, and `n` with `n ≡ 1` mod `N` and `n ≡ a` mod `d`. The twist is
-  -- `-1` at `n`, while a value `x` of the trivial character satisfies `x * x = x`.
-  intro h_one
-  obtain ⟨a, ha⟩ := quadraticChar_exists_neg_one (F := ZMod d) (by rwa [ZMod.ringChar_zmod_n])
-  obtain ⟨n, (hn_N : n ≡ 1 [MOD N]), (hn_d : n ≡ a.val [MOD d])⟩ := chineseRemainder hN 1 a.val
-  have hn_one : (n : ZMod N) = 1 := by simpa [← ZMod.natCast_eq_natCast_iff] using hn_N
-  have hn_a : (n : ZMod d) = a := by simpa [← ZMod.natCast_eq_natCast_iff] using hn_d
-  have h_val : quadTwist χ d n = -1 := by
-    simpa [hn_one, legendreSym, hn_a, ha] using quadTwist_apply χ d n
-  have h_sq : quadTwist χ d n * quadTwist χ d n = quadTwist χ d n := by
-    simp [← MulChar.mul_apply, h_one]
-  norm_num [h_val] at h_sq
+  have : NeZero N := ⟨fun h ↦ (Fact.out : d.Prime).ne_one (by simpa [h] using hN)⟩
+  rw [ne_eq, eq_one_iff_conductor_eq_one,
+    conductor_quadTwist χ d hd (hN.of_dvd_left χ.conductor_dvd_level)]
+  simp [(Fact.out : d.Prime).ne_one]
 
 /-! ### Polar functions and Laplace integrals -/
 

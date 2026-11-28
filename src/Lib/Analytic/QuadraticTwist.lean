@@ -657,16 +657,8 @@ lemma legendreSym_eq_jacobiSym_ordCompl {d : ℕ} [Fact d.Prime] (h8 : d % 8 = 7
 prime `d` that does not divide `M` is primitive. -/
 lemma isPrimitive_quadTwist {M d : ℕ} [NeZero M] [Fact d.Prime] {ψ : DirichletCharacter ℂ M}
     (hψ : ψ.IsPrimitive) (h2 : d ≠ 2) (hM : M.Coprime d) : (quadTwist ψ d).IsPrimitive := by
-  -- The twist is the product of `ψ` and the Legendre character `ε` mod `d`, whose conductors `M`
-  -- and `d` are coprime, so its conductor is `M * d`.
-  let ε : DirichletCharacter ℂ d := (chiK d).ringHomComp (algebraMap ℤ ℂ)
-  have h_twist (χ : DirichletCharacter ℂ M) :
-      quadTwist χ d = χ.changeLevel ⟨d, rfl⟩ * ε.changeLevel (by simp) := rfl
-  have hε_ne : ε ≠ 1 := fun h ↦ quadTwist_ne_one 1 d h2 hM (by simp [h_twist, h])
-  have hε : ε.conductor = d := isPrimitive_of_ne_one_of_prime Fact.out hε_ne
-  change (ψ.changeLevel _ * ε.changeLevel _).conductor = M * d
-  rw [conductor_mul_of_coprime, conductor_changeLevel, conductor_changeLevel, hψ, hε]
-  simpa only [conductor_changeLevel, show ψ.conductor = M from hψ, hε] using hM
+  change (quadTwist ψ d).conductor = M * d
+  rw [conductor_quadTwist ψ d h2 (hM.of_dvd_left ψ.conductor_dvd_level), hψ]
 
 /-- The number `d` is a prime, and the `L`-function of the twist `ψ (·/d)` (`quadTwist ψ d`) has a
 zero in the box `re s ≥ β`, `|im s| ≤ H`. -/
