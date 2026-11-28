@@ -223,9 +223,9 @@ lemma irreducible_cyclotomic : Irreducible (cyclotomic (P.q₁ s) P.K) := by
   let M : IntermediateField ℚ Ω := cycloField P.d
   let L : Type := CyclotomicField (P.q₁ s) M
   have hζ : IsPrimitiveRoot (zeta (P.q₁ s) M L) (P.q₁ s) := zeta_spec (P.q₁ s) M L
+  have hM := IsCyclotomicExtension.Rat.finrank P.d M
   have h_deg : P.d.totient * (P.q₁ s).totient ≤ P.d.totient * Module.finrank M L := by
-    rw [← IsCyclotomicExtension.Rat.finrank P.d M, Module.finrank_mul_finrank,
-      IsCyclotomicExtension.Rat.finrank P.d M]
+    rw [← hM, Module.finrank_mul_finrank, hM]
     exact totient_mul_totient_le_finrank _ _ (P.coprime_q₁_d s) hζ
       ((zeta_spec P.d ℚ M).map_of_injective (algebraMap M L).injective)
   -- Irreducibility descends along the embedding of `K` in `M` given by the Gauss sum.
@@ -267,6 +267,8 @@ the bijection that sends g to the place of a fixed embedding of E over K compose
 instance : CommGroup (P.Φ s) :=
   (Equiv.ofBijective (fun g : Gal(P.E s/P.K) ↦ InfinitePlace.mk (lift.comp g.toAlgHom).toRingHom)
     (by
+      let : Module.IsTorsionFree P.K (P.E s) := DivisionSemiring.to_moduleIsTorsionFree
+      let : Module.IsTorsionFree P.K ℂ := DivisionSemiring.to_moduleIsTorsionFree
       refine ⟨fun g g' h ↦ AlgEquiv.ext fun x ↦ ?_, fun w ↦ ?_⟩
       · exact lift.injective (AlgHom.congr_fun (P.algHom_eq_of_mk_eq s h) x)
       · -- All infinite places of `E` lie above the one infinite place of `K`, so they are
@@ -302,7 +304,10 @@ def ζ : P.E s := zeta (P.q₁ s) P.K (P.E s)
 the automorphism `New.Parameters.galOfPlace` s v. -/
 instance : CMType (P.E s) where
   Φ v := (lift.comp (P.galOfPlace s v).toAlgHom).toRingHom
-  mk_Φ := (P.galOfPlace s).left_inv
+  mk_Φ := by
+    let : Module.IsTorsionFree P.K (P.E s) := DivisionSemiring.to_moduleIsTorsionFree
+    let : Module.IsTorsionFree P.K ℂ := DivisionSemiring.to_moduleIsTorsionFree
+    exact (P.galOfPlace s).left_inv
 
 /-- For each infinite place `v` of `E`, the embedding `Φ v` of `E` into `ℂ` chosen at `v` restricts
 on `K` to the inclusion of `K` in `ℂ`: `Φ v (algebraMap K E x) = x`. -/
