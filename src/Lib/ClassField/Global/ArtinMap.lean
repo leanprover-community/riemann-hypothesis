@@ -37,6 +37,8 @@ Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 
 @[expose] public section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 namespace New
 
 open Module QZChar Set FinPlace IsGalois
@@ -118,11 +120,11 @@ lemma range_abelianLift_comp_artinAt :
     rfl
   · -- `localArtin` has dense range, so it meets the open fibre of `χ` through `g`.
     rintro _ ⟨g, hg, rfl⟩
-    let ψ := comap (subgroupIncl (decompGroup Γ A)) χ
+    let ψ := comap (subgroupSubtype (decompGroup Γ A)) χ
     obtain ⟨x, hx⟩ := h.denseRange_localArtin.exists_mem_open
       ((continuous_abelianLift ψ).isOpen_preimage {toHom χ g} trivial)
       ⟨⟦⟨g, hg⟩⟧, by
-        simp [ψ, QZChar.comap, subgroupIncl]
+        simp [ψ, QZChar.comap]
         rfl⟩
     exact ⟨x, (h.abelianLift_artinAt χ x).trans hx⟩
 

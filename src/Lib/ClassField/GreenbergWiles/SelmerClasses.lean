@@ -35,6 +35,8 @@ Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` for sources.
 
 noncomputable section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 namespace New
 
 open NumberField DiscreteModule Finset
@@ -55,11 +57,11 @@ def selmerH1 (S : Set (FinPlace K)) (A : FinPlace K → ClosurePlace)
     (L : ∀ v : FinPlace K, Submodule R (decompGroup Gal(Ω/K) (A v) → M)) (P : Set (FinPlace K)) :
     Submodule R (M.H 1) :=
   (⨅ v ∈ (S ∪ P)ᶜ, ⨅ (B : ClosurePlace) (_ : IsPlaceOver B v),
-      LinearMap.ker (M.resH1 (subgroupIncl (inertiaGroup Gal(Ω/K) B)))) ⊓
+      LinearMap.ker (M.resH1 (subgroupSubtype (inertiaGroup Gal(Ω/K) B)))) ⊓
     (⨅ v ∈ S, (classCondition M (L v)).comap
-      (M.resH1 (subgroupIncl (decompGroup Gal(Ω/K) (A v))))) ⊓
+      (M.resH1 (subgroupSubtype (decompGroup Gal(Ω/K) (A v))))) ⊓
     ⨅ (c : Gal(Ω/K)) (_ : IsComplexConj c),
-      LinearMap.ker (M.resH1 (subgroupIncl (Subgroup.zpowers c)))
+      LinearMap.ker (M.resH1 (subgroupSubtype (Subgroup.zpowers c)))
 
 namespace selmerH1
 
@@ -68,7 +70,7 @@ variable {M}
 /-- On a subgroup `U` that acts trivially, a cocycle has zero class in `H¹(U, M)` exactly when it
 vanishes on `U`. -/
 lemma resH1_π₁_eq_zero_iff {U : Subgroup Gal(Ω/K)} (hU : ∀ g ∈ U, M.ρ g = 1) (z : Z1 M.ρ) :
-    M.resH1 (subgroupIncl U) (M.π₁ z) = 0 ↔ ∀ g ∈ U, (z : Gal(Ω/K) → M) g = 0 := by
+    M.resH1 (subgroupSubtype U) (M.π₁ z) = 0 ↔ ∀ g ∈ U, (z : Gal(Ω/K) → M) g = 0 := by
   rw [resH1_π₁, ← LinearMap.mem_ker, ker_π₁, mem_B1_iff]
   constructor
   · rintro ⟨m, hm⟩ g hg
@@ -98,22 +100,22 @@ lemma apply_zpow_eq_zero (z : Z1 M.ρ) {c : Gal(Ω/K)} (h : (z : Gal(Ω/K) → M
 `z` to `D` lies in the class condition of `L` exactly when the restriction lies in `L`. -/
 lemma resH1_π₁_mem_classCondition_iff {D : Subgroup Gal(Ω/K)} {L : Submodule R (D → M)}
     (hL : LinearMap.range (coboundaryMap (M.restrictTo D).ρ) ≤ L) (z : Z1 M.ρ) :
-    M.resH1 (subgroupIncl D) (M.π₁ z) ∈ classCondition M L ↔
+    M.resH1 (subgroupSubtype D) (M.π₁ z) ∈ classCondition M L ↔
       (fun g : D ↦ (z : Gal(Ω/K) → M) g) ∈ L := by
   rw [resH1_π₁]
   constructor
   · rintro ⟨y, hy, h_eq⟩
-    have h_sub : M.resZ1 (subgroupIncl D) z - y ∈ B1 (M.restrictTo D).ρ := by
+    have h_sub : M.resZ1 (subgroupSubtype D) z - y ∈ B1 (M.restrictTo D).ρ := by
       rw [← ker_π₁, LinearMap.mem_ker, map_sub, ← h_eq, sub_self]
     obtain ⟨m, hm⟩ := mem_B1_iff.1 h_sub
-    have h_cob : ((M.resZ1 (subgroupIncl D) z - y : Z1 (M.restrictTo D).ρ) : D → M) ∈ L :=
+    have h_cob : ((M.resZ1 (subgroupSubtype D) z - y : Z1 (M.restrictTo D).ρ) : D → M) ∈ L :=
       hL ⟨m, funext hm⟩
     convert L.add_mem h_cob hy using 1
     ext g
     simp
     rfl
   · intro h
-    exact ⟨M.resZ1 (subgroupIncl D) z, h, rfl⟩
+    exact ⟨M.resZ1 (subgroupSubtype D) z, h, rfl⟩
 
 variable {S : Set (FinPlace K)} {A : FinPlace K → ClosurePlace}
   {L : ∀ v : FinPlace K, Submodule R (decompGroup Gal(Ω/K) (A v) → M)} {P : Set (FinPlace K)}
@@ -130,7 +132,7 @@ theorem comap_π₁_eq (hu : ∀ g ∈ inertiaAbove Sᶜ, M.ρ g = 1)
   ext z
   -- Each condition on the class of `z` is the corresponding condition on `z`.
   have h_unr : (∀ v ∈ (S ∪ P)ᶜ, ∀ B : ClosurePlace, IsPlaceOver B v →
-      M.resH1 (subgroupIncl (inertiaGroup Gal(Ω/K) B)) (M.π₁ z) = 0) ↔
+      M.resH1 (subgroupSubtype (inertiaGroup Gal(Ω/K) B)) (M.π₁ z) = 0) ↔
       ∀ g ∈ inertiaAbove (S ∪ P)ᶜ, (z : Gal(Ω/K) → M) g = 0 := by
     constructor
     · rintro h g ⟨v, hv, B, hB, hg⟩
@@ -139,12 +141,12 @@ theorem comap_π₁_eq (hu : ∀ g ∈ inertiaAbove Sᶜ, M.ρ g = 1)
     · intro h v hv B hB
       exact (resH1_π₁_eq_zero_iff (fun g' hg' ↦ hu g' ⟨v, fun h ↦ hv (.inl h), B, hB, hg'⟩) z).2
         fun g hg ↦ h g ⟨v, hv, B, hB, hg⟩
-  have h_loc : (∀ v ∈ S, M.resH1 (subgroupIncl (decompGroup Gal(Ω/K) (A v))) (M.π₁ z) ∈
+  have h_loc : (∀ v ∈ S, M.resH1 (subgroupSubtype (decompGroup Gal(Ω/K) (A v))) (M.π₁ z) ∈
       classCondition M (L v)) ↔
       ∀ v ∈ S, (fun g : decompGroup Gal(Ω/K) (A v) ↦ (z : Gal(Ω/K) → M) g) ∈ L v :=
     forall₂_congr fun v hv ↦ resH1_π₁_mem_classCondition_iff (hL v hv) z
   have h_conj : (∀ c : Gal(Ω/K), IsComplexConj c →
-      M.resH1 (subgroupIncl (Subgroup.zpowers c)) (M.π₁ z) = 0) ↔
+      M.resH1 (subgroupSubtype (Subgroup.zpowers c)) (M.π₁ z) = 0) ↔
       ∀ c : Gal(Ω/K), IsComplexConj c → (z : Gal(Ω/K) → M) c = 0 := by
     refine forall₂_congr fun c hc ↦ ?_
     have h_triv : ∀ g ∈ Subgroup.zpowers c, M.ρ g = 1 := fun g hg ↦

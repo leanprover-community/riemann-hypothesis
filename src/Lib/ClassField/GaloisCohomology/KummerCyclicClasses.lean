@@ -70,6 +70,8 @@ Atiyah–Wall in Cassels–Fröhlich (1967), IV §8.
 
 noncomputable section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 /-!
 ## Elementary lemmas on the multiplicative group written additively
 
@@ -707,7 +709,7 @@ lemma QZChar.cyclicClass_spec (χ : ↥(QZChar Γ)) :
   · -- The symbol of `y` on `U` belongs to the zero character, so it is the restriction of the
     -- zero class, and the symbol of the norm of `y` is the index of `U` times that class.
     rintro ⟨y, hy⟩
-    have h_zero : QZChar.comap (subgroupIncl U) χ = 0 :=
+    have h_zero : QZChar.comap (subgroupSubtype U) χ = 0 :=
       Subtype.ext (funext fun u : U.toSubgroup ↦ u.property)
     rw [cyclicClass_corestrictH0 U χ y hy 0, smul_zero]
     rw [h_zero, map_zero, map_zero, AddMonoidHom.zero_apply]

@@ -43,6 +43,8 @@ Known; see `Lib.ClassField.LocalDuality.CrystallineDuality` for sources.
 
 @[expose] public section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 namespace New
 
 open DiscreteUnits Cohomology DFunLike DiscreteModule QZChar NeZero QZ Ideal AddSubgroup
@@ -90,7 +92,7 @@ lemma DiscreteModule.HoldsCorestrictions.pairingAnnihilator_le {U : OpenSubgroup
   intro z hz
   -- The restriction of `z` to `U` is orthogonal to `Y'`, hence lies in `X'`.
   let z' : Z1 (M.restrictTo (U : Subgroup Γ)).ρ :=
-    pairMapZ1 (subgroupIncl (U : Subgroup Γ)) .id (fun _ _ ↦ rfl) z
+    pairMapZ1 (subgroupSubtype (U : Subgroup Γ)) .id (fun _ _ ↦ rfl) z
   have h_res_mem : z' ∈ X' := by
     refine h_ann fun y hy ↦ ?_
     -- `y` is the Shapiro image of a cocycle `F` in functions on `Γ ⧸ U` with sum in `Y`.

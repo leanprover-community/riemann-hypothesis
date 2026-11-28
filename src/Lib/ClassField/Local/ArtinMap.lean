@@ -74,6 +74,8 @@ See also `Lib.ClassField.Avatar.LocalGlobalCompatibility` and `Lib.ClassField.Pl
 
 noncomputable section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 /-!
 ## The global Artin map and algebraic Hecke characters
 
@@ -499,7 +501,7 @@ lemma localArtin_localNorm_eq_of_isCompletionEmb {p : ℕ} [Fact p.Prime]
   refine abelianization_ext fun χ ↦ Multiplicative.ext (inj_u ?_)
   let Φ : D →ₜ* D' := ⟨φ, φ_cont⟩
   obtain ⟨r, hr⟩ := emb_u.exists_resH2_classOfInvariant_eq U
-    (cyclicClass _ (comap (subgroupIncl U.toSubgroup) χ) (DiscreteUnits.ofBase _ _ (.ofMul y)))
+    (cyclicClass _ (comap (subgroupSubtype U.toSubgroup) χ) (DiscreteUnits.ofBase _ _ (.ofMul y)))
   have cor : cyclicClass _ χ (DiscreteUnits.ofBase _ _ (.ofMul (y.map (Algebra.norm V)))) =
       classOfInvariant D' V (intQpBar p) (U.toSubgroup.index • r) :=
     (DiscreteModule.cyclicClass_corestrictH0 U χ _ (corestrictH0_ofBase_eq_norm U y) _ hr).trans
@@ -777,12 +779,12 @@ lemma artinAt_eq_of_localArtin_eq {x : (IsDedekindDomain.HeightOneSpectrum.adicC
   exact (congrArg _ h_conj).trans (mul_inv_cancel_comm (t : TopologicalAbelianization Γ) g)
 
 /-- Let `A` lie over `w`. The value of a character `χ` of `Γ` at `New.artinAt Γ w x` equals the
-value of its restriction `QZChar.comap (subgroupIncl _) χ` to the decomposition group of `A` at
+value of its restriction `QZChar.comap (subgroupSubtype _) χ` to the decomposition group of `A` at
 the local symbol of `x`. -/
 lemma abelianLift_artinAt (χ : ↥(QZChar Γ))
     (x : (IsDedekindDomain.HeightOneSpectrum.adicCompletion K w)ˣ) :
     abelianLift χ (New.artinAt Γ w x) =
-      abelianLift (QZChar.comap (subgroupIncl (decompGroup Γ A)) χ) (localArtin Γ A w x) := by
+      abelianLift (QZChar.comap (subgroupSubtype (decompGroup Γ A)) χ) (localArtin Γ A w x) := by
   obtain ⟨g, hg⟩ := Quot.exists_rep (localArtin Γ A w x)
   rw [h.artinAt_eq_of_localArtin_eq hg.symm, ← hg]
   -- Both sides are `χ g`.
@@ -801,7 +803,7 @@ lemma abelianLift_artinAt_principal (χ : ↥(QZChar Γ)) (x : Kˣ) :
   rw [h.abelianLift_artinAt]
   -- The formula over the decomposition field, for the restriction of `χ`; restricting `(χ, x)` is
   -- the same as pairing the restricted character with `x`.
-  exact (h.isLocalArtin_localArtin emb).right (QZChar.comap (subgroupIncl (decompGroup Γ A)) χ) x
+  exact (h.isLocalArtin_localArtin emb).right (QZChar.comap (subgroupSubtype (decompGroup Γ A)) χ) x
 
 /-- Let `A` lie over `w`, `χ` a character of `Γ` and `x` in `K^×`. Then `χ` kills
 `New.artinAt Γ w x` if and only if the global class `(χ, x) = δχ ∪ x` restricts to zero on the

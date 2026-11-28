@@ -76,6 +76,8 @@ Bloch and Kato, Clay Summer School notes (2009), Prop. 2.8, Thm 2.1.
 
 noncomputable section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 /-!
 ## Crystalline cocycles: functoriality, coboundaries and saturation
 
@@ -558,7 +560,7 @@ lemma IsPotentiallyCrystalline.holdsCorestrictions
     have h_coc (x : Γ ⧸ (U : Subgroup Γ)) : V.ρ (s x) (y (u x g * u (g⁻¹ • x) g')) =
         V.ρ (s x) (y (u x g) + (V.restrictTo U).ρ (u x g) (y (u (g⁻¹ • x) g'))) := by
       rw [y_coc]
-    simpa [u, mul_assoc, mul_smul, subgroupIncl, -ContinuousMonoidHom.coe_toMonoidHom] using!
+    simpa [u, mul_assoc, mul_smul, subgroupSubtype, -ContinuousMonoidHom.coe_toMonoidHom] using!
       funext h_coc
   · -- It restricts to `y`, as `s` is `1` on the trivial coset.
     ext g

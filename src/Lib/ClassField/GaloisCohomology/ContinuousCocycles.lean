@@ -6,6 +6,7 @@ public import Mathlib.Topology.Algebra.Group.TopologicalAbelianization
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.ClassField.Places.GaloisDefs
+public import TauCeti.Topology.Algebra.ContinuousMonoidHom.Basic
 
 /-!
 # Continuous cohomology of discrete modules: cocycles, H², cyclic classes, local Artin map
@@ -49,6 +50,8 @@ sources.
 @[expose] public section
 
 noncomputable section
+
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
 
 /-!
 ## Continuous cocycles, H² and compatible pairs
@@ -517,9 +520,6 @@ structure New.DiscreteModule where of ::
     simp [continuous_prod_of_discrete_right, LinearMap.pi, LinearMap.restrict_apply]
     fun_prop
 
-/-- The inclusion of a subgroup U in G, as a continuous homomorphism. -/
-def New.subgroupIncl (U : Subgroup G) : U →ₜ* G := ContinuousMonoidHom.mk U.subtype
-
 end DiscreteModule
 
 namespace New.DiscreteModule
@@ -560,11 +560,11 @@ G-module through φ. -/
 abbrev restrictAlong : DiscreteModule R G := of (A.ρ.comp φ.toMonoidHom)
 
 /-- For a subgroup U of Γ, the discrete Γ-module A viewed as a discrete U-module. -/
-abbrev restrictTo (U : Subgroup Γ) : DiscreteModule R U := A.restrictAlong (subgroupIncl U)
+abbrev restrictTo (U : Subgroup Γ) : DiscreteModule R U := A.restrictAlong (subgroupSubtype U)
 
 /-- For a subgroup U of Γ, the restriction map H²(Γ,A) → H²(U,A). -/
 abbrev resH2 (U : Subgroup Γ) : A.H2 →ₗ[R] (A.restrictTo U).H2 :=
-  pairMapH2 (subgroupIncl U) LinearMap.id
+  pairMapH2 (subgroupSubtype U) LinearMap.id
 
 /-- The linear map H²(Γ,M) → H²(Γ,N) induced by composing cocycles with a Γ-equivariant linear
 map M → N. -/

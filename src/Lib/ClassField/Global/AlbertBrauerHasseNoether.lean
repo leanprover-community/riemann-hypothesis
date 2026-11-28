@@ -60,6 +60,8 @@ See also `Lib.ClassField.Places.LocalFields` and `Lib.ClassField.HeckeL.Continua
 
 @[expose] public section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 /-!
 ## Symbols of totally positive elements at the real places
 
@@ -446,7 +448,7 @@ lemma exists_localNorm_of_abelianLift_artinAt {w : FinPlace L} {x : (LocField (w
     aesop
   exact (w.isPlaceOver_placeOver.isNormCompatible (ker χ).subtype 1 (fun _ _ ↦ rfl)
     (IsScalarTower.algebraMap_apply K L Ω)).exists_localNorm_eq
-    (χ := QZChar.comap (subgroupIncl _) χ) h_ker hx
+    (χ := QZChar.comap (subgroupSubtype _) χ) h_ker hx
 
 open InfinitePlace Subgroup Finset Nat SUnit DiscreteModule MulSemiringAction Function
 

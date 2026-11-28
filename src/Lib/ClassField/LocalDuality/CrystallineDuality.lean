@@ -77,6 +77,8 @@ See also `Lib.PadicHodge.Crystalline.Regularity` and `Lib.PadicHodge.ArtinSchrei
 
 noncomputable section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 /-!
 ## Classes of Galois lattices under duals and tensor products; pairings
 
@@ -768,10 +770,9 @@ lemma Period.IsPotentiallyCrystalline.card_pairingAnnihilator_mul_card_dvd
       (W : AddSubgroup (Z1 (V.restrictTo U).ρ))
       (hXW : X ≤ pairingAnnihilator (V.restrictTo U).evalCup.flip W) :
       Nat.card X * Nat.card W ≤ Nat.card Z' * Nat.card Z := by
-    have h_incl (g : (U : Subgroup Γ)) : subgroupIncl (U : Subgroup Γ) g = (g : Γ) := rfl
     have hV : (V.restrictTo U).FiniteKilledFixedInj (ℓ ^ (m * finrank ℤ_[ℓ] L))
         (Q.subgroupOf U) 1 0 :=
-      ⟨inferInstance, by simp [pow_mul, ← h_card], fun g hg ↦ by simpa [h_incl] using hQ g hg,
+      ⟨inferInstance, by simp [pow_mul, ← h_card], fun g hg ↦ by simpa using hQ g hg,
         fun _ ↦ by simp⟩
     calc Nat.card X * Nat.card W ≤ Nat.card V ^ (2 + J.toGp.range.index) :=
         card_mul_card_le_of_orthogonal (J := isLocalGalois_of_isOpenEmbedding (j := J.toGp) hU) _

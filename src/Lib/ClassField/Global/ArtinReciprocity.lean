@@ -87,6 +87,8 @@ Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 
 @[expose] public section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 namespace New
 
 open NumberField Set Subgroup QZChar QZ Nat Algebra IsCyclotomicExtension Cohomology
@@ -387,11 +389,11 @@ lemma resH2_ker_cyclicClass_eq_zero {ξ χ : QZChar Γ} {x : Kˣ} (U : OpenSubgr
   let s (v : FinPlace K) : Multiplicative QZ :=
     abelianLift ξ (artinAt Γ v (ideleAt v (principalIdele x)))
   refine albert_brauer_hasse_noether _ (fun {A w} hw ↦ ?_)
-    (U.comap _ (subgroupIncl _).continuous_toFun) (fun g ↦ hU g)
+    (U.comap _ (subgroupSubtype _).continuous_toFun) (fun g ↦ hU g)
     (DiscreteModule.resH2_subgroupOf_eq_zero_symm (congrArg _ h_res) :)
   let v : FinPlace K := w.below K
   have hv : IsPlaceOver A v := hw.isPlaceOver_below
-  let V : OpenSubgroup (decompGroup Γ A) := ⟨_, isOpen_ker (comap (subgroupIncl _) χ)⟩
+  let V : OpenSubgroup (decompGroup Γ A) := ⟨_, isOpen_ker (comap (subgroupSubtype _) χ)⟩
   -- The group `χ (decompGroup Γ A)` depends on `v` only, being the range of `χ` on the local
   -- symbols, and so contains `χ (σ v)`. Its order is the index of `V`.
   have h_frob_mem : toHom χ (σ v) ∈ (decompGroup Γ A).map (toHom χ) :=

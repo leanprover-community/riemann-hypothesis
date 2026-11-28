@@ -48,6 +48,8 @@ Known; see `Lib.ClassField.GaloisCohomology.KummerCyclicClasses` for sources.
 
 noncomputable section
 
+open TauCeti.ContinuousMonoidHom (subgroupSubtype)
+
 /-!
 ## Shapiro's lemma, norms and corestriction for open subgroups
 
@@ -101,13 +103,13 @@ lemma funModule_apply_one (u : U.toSubgroup) (F : (M.funModule U).V) :
 /-- The Shapiro map on continuous 1-cocycles, Z¹(Γ, Fun(Γ/U, M)) → Z¹(U, M): restrict to U and
 evaluate at the trivial coset. -/
 abbrev shapiroZ1 : ↥(Z1 (M.funModule U).ρ) →+ ↥(Z1 (M.restrictTo U).ρ) :=
-  pairMapZ1 (ρ := (M.funModule U).ρ) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
+  pairMapZ1 (ρ := (M.funModule U).ρ) (subgroupSubtype U.toSubgroup) (LinearMap.proj ⟦1⟧)
     (M.funModule_apply_one U)
 
 /-- The linear map H²(Γ, Fun(Γ/U,M)) → H²(U,M) given by restriction to U followed by evaluation
 at the identity coset. -/
 abbrev shapiroH2 : New.H2 (M.funModule U).ρ →ₗ[R] New.H2 (M.restrictTo U).ρ :=
-  pairMapH2 (ρ := (M.funModule U).ρ) (subgroupIncl U.toSubgroup) (LinearMap.proj ⟦1⟧)
+  pairMapH2 (ρ := (M.funModule U).ρ) (subgroupSubtype U.toSubgroup) (LinearMap.proj ⟦1⟧)
     (M.funModule_apply_one U)
 
 /-- The norm of a U-invariant y of M: the sum of g·y over the cosets gU in Γ/U. -/
@@ -239,11 +241,11 @@ lemma mapH2_sum_eq_index_smul (β : New.H2 (M.funModule U).ρ) (α : M.H2) :
   exact index_smul_eq_sum_const U (x.val p)
 
 /-- The projection formula for symbols. Suppose `v` is the norm of the `U`-invariant `w`, and the
-restriction of `α` to `U` is `(χ|U, w)`. Here `χ|U` is `QZChar.comap (subgroupIncl U) χ`, `χ`
+restriction of `α` to `U` is `(χ|U, w)`. Here `χ|U` is `QZChar.comap (subgroupSubtype U) χ`, `χ`
 composed with the inclusion `U → Γ`, and `H0` denotes invariants. Then `(χ, v)` is `[Γ : U] α`. -/
 lemma cyclicClass_corestrictH0 (χ : ↥(QZChar Γ))
     (w : ↥(M.restrictTo U).H0) {v : M.H0} (h_norm : M.corestrictH0 U w = v) (α : M.H2)
-    (h_res : M.resH2 U α = cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupIncl U) χ) w) :
+    (h_res : M.resH2 U α = cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupSubtype U) χ) w) :
     cyclicClass M.ρ χ v = U.index • α := by
   -- Since `w` is `U`-invariant, `g w` depends only on the coset `gU`.
   have h_out (g : Γ) : M.ρ (g : Γ ⧸ U.toSubgroup).out w = M.ρ g w := by
@@ -253,7 +255,7 @@ lemma cyclicClass_corestrictH0 (χ : ↥(QZChar Γ))
   let F : (M.funModule U.toSubgroup).H0 := ⟨fun x : Γ ⧸ U.toSubgroup ↦ M.ρ x.out w,
     by simp [funext_iff, forall_mk, h_out]⟩
   -- The value of `F` at the coset `U` is `w`.
-  have h_value : cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupIncl U) χ) w =
+  have h_value : cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupSubtype U) χ) w =
       M.shapiroH2 U (cyclicClass (M.funModule U).ρ χ F) := by
     have h_F_one : F.val ⟦1⟧ = (w : M.V) := by simpa using h_out 1
     refine congrArg (Quotient.mk _) (Subtype.ext (funext fun p ↦ ?_))
@@ -285,11 +287,11 @@ lemma resH2_cyclicClass_eq_zero_of_nsmul_eq {χ : ↥(QZChar Γ)} {k : ℕ} {r :
   obtain rfl : k • r = w := h_w
   -- On `U` the element `r` is itself invariant, and the restricted character is killed by `k`.
   let r' : (M.restrictTo U).H0 := ⟨r, h_fix⟩
-  have hχ : k • QZChar.comap (subgroupIncl U) χ = 0 := Subtype.ext (funext h_kχ)
+  have hχ : k • QZChar.comap (subgroupSubtype U) χ = 0 := Subtype.ext (funext h_kχ)
   -- The symbol is additive in both arguments: `(χ, k • r) = (k • χ, r)` on `U`. The first step
   -- holds by definition: restricting a symbol restricts the character and the invariant.
-  calc _ = cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupIncl U) χ) (k • r') := rfl
-    _ = cyclicClass (M.restrictTo U).ρ (k • QZChar.comap (subgroupIncl U) χ) r' := by
+  calc _ = cyclicClass (M.restrictTo U).ρ (QZChar.comap (subgroupSubtype U) χ) (k • r') := rfl
+    _ = cyclicClass (M.restrictTo U).ρ (k • QZChar.comap (subgroupSubtype U) χ) r' := by
       simp only [map_nsmul, nsmul_apply]
     _ = 0 := by rw [hχ, map_zero, AddMonoidHom.zero_apply]
 
