@@ -111,13 +111,6 @@ lemma New.det_one_sub_smul_eq_prod_roots_of_isAlgClosed {k ι : Type*} [Field k]
   -- Evaluate the polynomial `1 + c X` at `-N` and at `-x`.
   simpa [sub_eq_add_neg] using (det_aeval_neg_eq_prod_roots N (1 + c • Polynomial.X) :)
 
-/-- For a complex square matrix N and a complex number c, det (1 − c N) is the product of 1 − c x
-over the roots x of the characteristic polynomial of N, counted with multiplicity. -/
-lemma New.det_one_sub_smul_eq_prod_roots {ι : Type*} [Fintype ι] [DecidableEq ι] (N : Matrix ι ι ℂ)
-    (c : ℂ) :
-    (1 - c • N).det = (N.charpoly.roots.map fun x : ℂ ↦ 1 - c * x).prod :=
-  det_one_sub_smul_eq_prod_roots_of_isAlgClosed N c
-
 /-! ## Sorting by adjacent swaps and common eigenvectors -/
 
 section CommonEigenvectors

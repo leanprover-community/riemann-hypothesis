@@ -909,7 +909,7 @@ private lemma det_one_sub_smul_ballEnd {ν : ℕ} (μ : ℂ)
           (piMap fun v : {v // v ≠ v₀} ↦
             1 - t • (Φ v.val (α i : E) • z.val.map (Φ v.val)).toLin')) := rfl
   simp [h_block, det_prodMap, det_pi, piMap, ← det_toMatrix', map_smul,
-    det_one_sub_smul_eq_prod_roots, charpoly_map, prod_mul_distrib, smul_smul]
+    det_one_sub_smul_eq_prod_roots_of_isAlgClosed, charpoly_map, prod_mul_distrib, smul_smul]
 
 /-- Let μ be the j-th root (`New.Variety.numberedRoots`) under Φ_{v₀} of the separable
 characteristic polynomial P of z, let every root r of P under Φ_{v₀} have r·r̄ = μ·μ̄, and let the

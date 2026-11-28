@@ -282,7 +282,7 @@ private lemma eval_one_localTerm {b : heckeAlgebra n ℂ 𝔑} {α : Fin ν → 
   simp [frameLattice_le_solutionLattice_and_card ht.heckeCosetFn_ne_zero, lieRoots, apply_ite,
     RingHom.map_det, localTerm,
     (numberedRoots _ _).injective, eval_prod, eval_multiset_prod, Nat.card_pi, Matrix.map_sub,
-    map_smul', det_one_sub_smul_eq_prod_roots, charpoly_map]
+    map_smul', det_one_sub_smul_eq_prod_roots_of_isAlgClosed, charpoly_map]
 
 /-- For `γ` with representative in `GUPlus E n`, the point `p · (γ, 2 α)` is isomorphic to `p` by
 `z` exactly when `invAutInFrame z p.frame` lies in the coset `γ`, `z` fixes the reflection of `p`,
