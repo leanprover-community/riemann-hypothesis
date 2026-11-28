@@ -3,9 +3,9 @@ module
 import TauCeti.NumberTheory.Padics.Factorial
 public import Mathlib.RingTheory.PowerSeries.Exp
 public import Mathlib.RingTheory.MvPowerSeries.Rename
-import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
 import Mathlib.Topology.Algebra.Valued.LocallyCompact
 import TauCeti.RingTheory.MvPowerSeries.Derivative
+import TauCeti.RingTheory.MvPowerSeries.Substitution
 public import Lib.GLn.SchurModule.Basic
 public import Lib.General.Algebra.AdicCompletion
 
@@ -125,10 +125,8 @@ lemma New.jet_subst_linearSeries {ι κ R : Type} [CommRing R] [Fintype ι] [Fin
   | C c =>
     intro F
     have h_const : constantCoeff (subst (fun i : ι ↦ linearSeries (M i)) F) = constantCoeff F := by
-      rw [constantCoeff_subst hM, finsum_eq_single _ 0 fun d hd ↦ ?_]
-      · simp
-      obtain ⟨i, hi⟩ : ∃ i : ι, d i ≠ 0 := Finsupp.ne_iff.1 hd
-      simp [Finsupp.prod_fintype, prod_eq_zero (mem_univ i), hi]
+      simpa using constantCoeff_subst_of_constantCoeff_zero hM
+        (fun i ↦ constantCoeff_linearSeries (M i)) F
     simp [jet_eq_sum, h_const]
   | add P Q hP hQ => simp [hP, hQ]
   | mul_X P k hP =>
