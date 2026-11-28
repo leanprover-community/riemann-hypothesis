@@ -116,7 +116,7 @@ lemma isSeparatingFamily_atGeneric_of_surjective [Smooth A.hom] [IsProper A.hom]
     -- `convert`: the two sides differ only in the point of the one-point space `Spec ℂ`
     convert (ValuativeArc.genericPt (O := O)).denseRange
     exact congrArg _ (by subsingleton)
-  refine h_dense.of_fibres A.hom fun _ y hy ↦ ?_
+  refine h_dense.of_fibres A.hom A.hom.isOpenMap fun _ y hy ↦ ?_
   -- by the valuative criterion every complex point over `genericPt` comes from a section
   obtain ⟨z, hz⟩ := bijective_restrict_genericPt.surjective.comp hs_surj (homMk y hy)
   exact ⟨z, congrArg (fun g ↦ g.left) hz⟩

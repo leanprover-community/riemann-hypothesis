@@ -30,8 +30,9 @@ separating over a stalk of the base and on a product of flat schemes.
 
 * `New.exists_section_mem`, `New.exists_point_mem`: a nonempty locally closed set in a scheme
   locally of finite type over `k` contains a `k`-point.
-* `New.IsDenseFamily.of_fibres`: if the complex points `η i` are dense in `S` and `A` is smooth over
-  `S`, a family containing every complex point of `A` over the `η i` is dense in `A`.
+* `New.IsDenseFamily.of_fibres`: if the complex points `η i` are dense in `S` and `A ⟶ S` is open
+  and locally of finite type, a family containing every complex point of `A` over the `η i` is
+  dense in `A`.
 * `New.AddObj.property_of_isOpenImmersion`: take a commutative group scheme (`New.AddObj`) locally
   of finite type over `k`. A property induced by a property of ring maps spreads from a nonempty
   open part to the whole scheme, by translation.
@@ -90,16 +91,17 @@ lemma exists_point_mem {k : Type*} [Field k] [IsAlgClosed k] (X : Over (Spec (.o
   obtain ⟨x, hx_section, hx_mem⟩ := exists_section_mem X.hom hS hS_ne
   exact ⟨homMk x hx_section, hx_mem⟩
 
-/-- Let `f : A ⟶ S` be smooth and `η i` complex points with dense images in `S`
-(`New.IsDenseFamily`). If every complex point of `A` over some `η i` is one of the points `ξ z`,
+/-- Let `f : A ⟶ S` be open and locally of finite type, and let `η i` be a dense family of
+complex points of `S`. If every complex point of `A` over some `η i` is one of the points `ξ z`,
 then the `ξ z` have dense images in `A`. -/
 lemma IsDenseFamily.of_fibres {A S : Scheme} {κ Z : Type} {η : κ → (Spec (.of ℂ) ⟶ S)}
-    (hη : IsDenseFamily η) (f : A ⟶ S) [s : Smooth f] {ξ : Z → (Spec (.of ℂ) ⟶ A)}
+    (hη : IsDenseFamily η) (f : A ⟶ S) [LocallyOfFiniteType f] (h_open : IsOpenMap f)
+    {ξ : Z → (Spec (.of ℂ) ⟶ A)}
     (h_all : ∀ (i : κ) (y : Spec (.of ℂ) ⟶ A), y ≫ f = η i → ∃ z : Z, ξ z = y) :
     IsDenseFamily ξ := by
   -- As `f` is open, the points of `A` over the `η i` are dense; so it suffices to see that each
   -- of them lies in the closure of the `ξ z`.
-  refine (hη.preimage f.isOpenMap).induction (fun x ⟨i, hx⟩ ↦ mem_closure_iff.2 fun U hU hxU ↦ ?_)
+  refine (hη.preimage h_open).induction (fun x ⟨i, hx⟩ ↦ mem_closure_iff.2 fun U hU hxU ↦ ?_)
     isClosed_closure
   -- An open neighbourhood `U` of `x` contains a complex point over `η i`, which is some `ξ z`.
   let V : A.Opens := ⟨U, hU⟩
