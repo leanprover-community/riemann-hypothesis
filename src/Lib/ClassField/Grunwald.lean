@@ -18,6 +18,7 @@ import Lib.ClassField.Global.NormTheorems
 import Lib.General.NumberTheory.CMFields
 import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.General.NumberTheory.SUnitsAndClassNumber
+import TauCeti.RingTheory.DedekindDomain.Different.Tower
 
 /-!
 # Grunwald's theorem in prime degree and CM steps with prescribed local behaviour
@@ -623,24 +624,6 @@ lemma New.multiplicity_star_differentIdeal {L : Type} [Field L] [CMType L] (u : 
     simpa [hg_val, ← evalAt_apply _ g⁻¹.val, ← log_le_log] using mem_Ô.mp hg_star u'
   exact (h_star_le u).antisymm (by simpa only [star_star] using h_star_le (star u))
 
-/-- Let `u` be a finite place of `L` that does not divide the relative different of `L / E`. Then
-the multiplicity of `u` in the different of `L` is the ramification index of `u` over the place
-`w` of `E` below it times the multiplicity of `w` in the different of `E`. -/
-lemma New.multiplicity_differentIdeal_eq_ramificationIdx'_mul_of_not_dvd {E L : Type} [Field E]
-    [NumberField E] [Field L] [NumberField L] [Algebra E L] (u : FinPlace L)
-    (h_not_dvd : ¬u.asIdeal ∣ differentIdeal (𝓞 E) (𝓞 L)) :
-    multiplicity u.asIdeal (differentIdeal ℤ (𝓞 L)) =
-      (u.below E).asIdeal.ramificationIdx' u.asIdeal *
-        multiplicity (u.below E).asIdeal (differentIdeal ℤ (𝓞 E)) := by
-  -- the different of `L` is that of `E`, pushed to `L`, times the relative one, which is prime
-  -- to `u`; the first factor has multiplicity `e * ord_w` at `u`
-  apply multiplicity_eq_of_emultiplicity_eq_some
-  rw [differentIdeal_eq_differentIdeal_mul_differentIdeal ℤ (𝓞 E) (𝓞 L),
-    emultiplicity_mul u.prime, emultiplicity_eq_zero.mpr h_not_dvd]
-  simp [emultiplicity_eq_multiplicity, ne_bot,
-    emultiplicity_map_eq_ramificationIdx'_mul _ (u.below E).irreducible u.irreducible, prime,
-    differentIdeal_ne_bot, of_prime_left]
-
 /-- Let `E` carry Weil data and let the finite place `w` be fixed by complex conjugation. Then the
 log of the valuation of `j` at `w` is the multiplicity of `w` in the different of `E` minus twice
 the log of the valuation of `α` at `w` (this is the condition `self_dual` at `w`, where `α` and
@@ -696,12 +679,10 @@ lemma New.nonempty_weilData_of_not_dvd_differentIdeal {E L : Type} [Field E] [CM
     have hj : (w.valuation E j).log =
         multiplicity w.asIdeal (differentIdeal ℤ (𝓞 E)) - 2 * (v (α.val w)).log :=
       WeilData.log_valuation_j_of_star_eq w hw_fix
-    have h_tower : multiplicity u.asIdeal (differentIdeal ℤ (𝓞 L)) =
-        w.asIdeal.ramificationIdx' u.asIdeal * multiplicity w.asIdeal (differentIdeal ℤ (𝓞 E)) :=
-      multiplicity_differentIdeal_eq_ramificationIdx'_mul_of_not_dvd u (h_unram u hu_fix)
-    refine ⟨-(w.asIdeal.ramificationIdx' u.asIdeal * (v (α.val w)).log), ?_⟩
-    rw [hs_ord, h_tower, ← w.valuation_liesOver L, log_pow, hj,
-      ← w.asIdeal.ramificationIdx'_eq_ramificationIdx u.asIdeal w.ne_bot]
+    have h_tower := TauCeti.multiplicity_differentIdeal_tower ℤ w u
+    rw [multiplicity_eq_zero_of_not_dvd (h_unram u hu_fix), zero_add] at h_tower
+    refine ⟨-(u.asIdeal.ramificationIdx (𝓞 E) * (v (α.val w)).log), ?_⟩
+    rw [hs_ord, h_tower, ← w.valuation_liesOver L, log_pow, hj]
     push_cast
     ring
   -- an auxiliary order decides which of `u`, `star u` gets the larger half
