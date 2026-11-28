@@ -206,23 +206,23 @@ lemma repOff_eq_of_mem_trivialOn (k : Gf E n) (hk : k ∈ trivialOn n D.places) 
 /-- The `New.Patching.EllAdicIntegers`-algebra of ℂ-linear endomorphisms of the space of forms
 `New.Patching.BaseLevel.formsOfLevel` attached to the base data D and the family of finite places
 L. -/
-def FormEnd [ThePrime ℓ] : Type := End ℂ (D.formsOfLevel L)
+def FormEnd : Type := End ℂ (D.formsOfLevel L)
   deriving Semiring, Ring
 
 instance [ThePrime ℓ] [PadicIso ℓ] : Algebra EllAdicIntegers (D.FormEnd L) :=
   inferInstanceAs (Algebra EllAdicIntegers (End ℂ (D.formsOfLevel L)))
 
-instance [ThePrime ℓ] :
+instance :
     FunLike (D.FormEnd L) (D.formsOfLevel L) (D.formsOfLevel L) :=
   inferInstanceAs (FunLike (End ℂ (D.formsOfLevel L)) _ _)
 
-instance [ThePrime ℓ] :
+instance :
     LinearMapClass (D.FormEnd L) ℂ (D.formsOfLevel L) (D.formsOfLevel L) :=
   inferInstanceAs (LinearMapClass (End ℂ (D.formsOfLevel L)) ℂ _ _)
 
 namespace FormEnd
 
-variable {L} [ThePrime ℓ]
+variable {L}
 
 /-- View a `ℂ`-linear endomorphism of `D.formsOfLevel L` as an element of `D.FormEnd L`. -/
 def ofEnd (T : End ℂ (D.formsOfLevel L)) : D.FormEnd L := T
@@ -257,7 +257,8 @@ lemma nsmul_apply (k : ℕ) (a : D.FormEnd L) (y : D.formsOfLevel L) : (k • a)
 
 
 @[simp]
-lemma smul_apply [PadicIso ℓ] (r : EllAdicIntegers) (a : D.FormEnd L) (y : D.formsOfLevel L) :
+lemma smul_apply [ThePrime ℓ] [PadicIso ℓ] (r : EllAdicIntegers) (a : D.FormEnd L)
+    (y : D.formsOfLevel L) :
     (r • a) y = r • a y := rfl
 
 @[simp]
@@ -269,7 +270,7 @@ lemma intCast_apply (k : ℤ) (y : D.formsOfLevel L) : (k : D.FormEnd L) y = k �
   intCast_apply_eq_smul (F := Module.End ℂ ↥(D.formsOfLevel L)) k y
 
 @[simp]
-lemma algebraMap_apply [PadicIso ℓ] (r : EllAdicIntegers) (y : D.formsOfLevel L) :
+lemma algebraMap_apply [ThePrime ℓ] [PadicIso ℓ] (r : EllAdicIntegers) (y : D.formsOfLevel L) :
     algebraMap EllAdicIntegers (D.FormEnd L) r y = r • y := rfl
 
 @[simp]
@@ -499,7 +500,7 @@ lemma formsOfLevel_le_of_eigensystem {N : Submodule ℂ (V.forms κ)}
     have hx : x ∈ D.Eigensystem L := ⟨f, ⟨hfx, hf⟩, hf_ne⟩
     exact hN ⟨x, hx⟩ ⟨hfx, hf⟩
 
-omit [PadicIso ℓ] in
+omit [ThePrime ℓ] [PadicIso ℓ] in
 /-- Two endomorphisms of the space `New.Patching.BaseLevel.formsOfLevel` L are equal if they agree
 on every form that lies in an isotypic space of a system of level L. -/
 lemma formEnd_ext {a b : D.FormEnd L}
