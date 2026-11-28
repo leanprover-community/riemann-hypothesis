@@ -245,11 +245,8 @@ lemma eq_zero_of_small_mesh (hf : Continuous f)
 lemma eq_zero_of_torsionPoints (hf : Differentiable ℂ f) (h_zero : ∀ x : torsionPoints L, f x = 0) :
     f = 0 := by
   -- The zero set of `f` contains `n⁻¹ L` for all `n ≠ 0`, lattices of mesh tending to 0.
-  have h_mesh : Tendsto (fun n : ℕ ↦ (n : ℝ)⁻¹ • (1 : V →L[ℂ] V)) atTop (nhds 0) := by
-    have h_cont : Continuous (fun r : ℝ ↦ r • (1 : V →L[ℂ] V)) := by
-      simp only [continuous_clm_apply, smul_apply]
-      fun_prop
-    exact (h_cont.tendsto' 0 0 (zero_smul ℝ _)).comp tendsto_inv_atTop_nhds_zero_nat
+  have h_mesh : Tendsto (fun n : ℕ ↦ (n : ℝ)⁻¹ • (1 : V →L[ℂ] V)) atTop (nhds 0) :=
+    tendsto_inv_atTop_nhds_zero_nat.zero_smul_const _
   -- for `d = n⁻¹ • 1` take `c = n • 1`: it inverts `d`, and `f` vanishes where `c y ∈ L`
   have h_small : ∃ᶠ d : V →L[ℂ] V in nhds 0, ∃ c : V →L[ℂ] V,
       (∀ y : V, c (d y) = y) ∧ ∀ y : V, c y ∈ L → f y = 0 := by
@@ -532,11 +529,8 @@ m ≠ 0 and the Riemann form of m • B − A is positive. -/
 lemma IsAmpleType.eventually_isPosRiemann_smul_sub (h_ample : IsAmpleType B χ) (A : LatticeForm L) :
     ∀ᶠ m : ℕ in atTop, m ≠ 0 ∧ IsPosRiemann (m • B + -A) := by
   -- For large `m` the form `B - m⁻¹ A` is positive; multiply it by `m`.
-  have h_tend : Tendsto (fun m : ℕ ↦ (m : ℝ)⁻¹ • A) atTop (nhds 0) := by
-    have h_cont : Continuous (fun r : ℝ ↦ r • A) := by
-      simp only [continuous_clm_apply, smul_apply]
-      fun_prop
-    exact (h_cont.tendsto' 0 0 (zero_smul ℝ A)).comp tendsto_inv_atTop_nhds_zero_nat
+  have h_tend : Tendsto (fun m : ℕ ↦ (m : ℝ)⁻¹ • A) atTop (nhds 0) :=
+    tendsto_inv_atTop_nhds_zero_nat.zero_smul_const A
   have h_pos : ∀ᶠ m : ℕ in atTop, IsPosRiemann (B + -((m : ℝ)⁻¹ • A)) :=
     h_tend.eventually h_ample.isPosRiemann.eventually_add_neg
   filter_upwards [h_pos, eventually_ne_atTop 0] with m hm hm0
