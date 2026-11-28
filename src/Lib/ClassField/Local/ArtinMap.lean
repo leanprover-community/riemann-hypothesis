@@ -6,6 +6,7 @@ import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Algebra.Ring.Compact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.NumberTheory.NumberField.Global.Adeles.Norm.Continuity
 import TauCeti.RingTheory.Valuation.ValuationSubring
 public import Lib.Adelic.Adeles.IdeleModulus
 public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
@@ -357,6 +358,7 @@ lemma isLocalArtin_localArtin {p : ℕ} [Fact p.Prime] [Algebra (LocField w) (Pa
   rw [← agree] at hf
   exact ⟨hf, spec⟩
 
+open scoped AdicCompletionExtension in
 omit h [Algebra K Ω] in
 /-- Let `k` be a number field below `K` and `u` the place of `k` below `w`. The completion `K_w` is
 finite over `k_u`, along `New.locMap`, the map of completions induced by `k → K`, and the local norm
@@ -366,42 +368,34 @@ lemma finite_and_localNorm_eq_norm (k : Type) [Field k] [NumberField k] [Algebra
     letI : Algebra (LocField (w.below k)) (LocField w) := (locMap (algebraMap k K) rfl).toAlgebra
     Module.Finite (LocField (w.below k)) (LocField w) ∧
     ∀ y : (LocField w)ˣ, localNorm k w y = y.map (Algebra.norm (LocField (w.below k))) := by
-  set u : FinPlace k := w.below k
-  let V := LocField u
-  let W := LocField w
-  -- `K_w` is the quotient of `k_u ⊗[𝔸f k] 𝔸f K` by the kernel of `π`.
-  algebraize [locMap _ (refl u), evalAt u, (locMap _ rfl).comp (evalAt u)]
-  let evalAlg : 𝔸f K →ₐ[𝔸f k] LocField w := ⟨evalAt w, by aesop⟩
-  let π : TensorProduct (𝔸f k) V (𝔸f K) →ₗ[V] LocField w := evalAlg.toLinearMap.liftBaseChange V
-  have π_single (x : LocField w) : π ((1 : V) ⊗ₜ[𝔸f k] singleAdele w x) = x := by aesop
-  let ε : (TensorProduct (𝔸f k) V (𝔸f K) ⧸ π.ker) ≃ₗ[V] LocField w :=
-    π.quotKerEquivOfSurjective fun x ↦ ⟨_, π_single x⟩
-  refine ⟨Finite.equiv ε, fun y ↦ ?_⟩
-  -- Multiplication `M` by `locIdele w y` is the identity on `ker π` (the places other than `w`)
-  -- and is multiplication by `y` on the quotient, so `det M` is the local norm.
-  let M : TensorProduct (𝔸f k) V (𝔸f K) →ₗ[V] TensorProduct (𝔸f k) V (𝔸f K) :=
-    (mulLeft (𝔸f k) (locIdele w y).val).baseChange V
-  have one_tmul_surj : Function.Surjective (TensorProduct.mk (𝔸f k) V (𝔸f K) 1) :=
-    TensorProduct.mk_surjective (R := 𝔸f k) (S := V) (M := 𝔸f K) fun x ↦
-      ⟨singleAdele u x, dite_eq_left rfl⟩
-  have fixes_ker : ∀ x ∈ π.ker, M x = x := by
-    refine one_tmul_surj.forall.mpr fun z hz ↦ ?_
-    -- `z` has component `0` at `w`, and `locIdele w y` has component `1` at the other places
-    have h_fix : (locIdele w y).val * z = z := ext_iff.mpr ((and_forall_ne w).mp (by aesop))
-    exact congrArg (TensorProduct.mk (𝔸f k) V (𝔸f K) 1) h_fix
-  have stable : ∀ x ∈ π.ker, M x ∈ π.ker := by grind
-  have on_ker : M.restrict stable = 1 :=
-    LinearMap.ext fun x ↦ Subtype.ext (fixes_ker x x.property)
-  have on_quot : π.ker.mapQ π.ker M stable = ε.symm ∘ₗ Algebra.lmul V W y ∘ₗ ε.symm.symm := by
-    ext z
-    have h_mul : π ((1 : V) ⊗ₜ[𝔸f k] ((locIdele w y).val * z)) =
-        (y : LocField w) * π ((1 : V) ⊗ₜ[𝔸f k] z) := by aesop
-    exact ε.eq_symm_apply.mpr h_mul
-  -- `det M` is the determinant of multiplication by `y`, and it is the `u`-component of the adelic
-  -- norm of `locIdele w y`.
-  have h_det : M.det = (Algebra.lmul V W y).det := by
-    rw [M.det_eq_det_mul_det π.ker stable, on_ker, on_quot, map_one, one_mul, det_conj]
-  exact ext ((det_baseChange _).symm.trans h_det)
+  let u := w.below k
+  let P (a : Algebra (LocField u) (LocField w)) : Prop :=
+    letI := a
+    Module.Finite (LocField u) (LocField w) ∧
+      ∀ y : (LocField w)ˣ, localNorm k w y = y.map (Algebra.norm (LocField u))
+  have h_alg : (locMap (algebraMap k K) (rfl : w.comap (algebraMap k K) = u)).toAlgebra =
+      IsDedekindDomain.HeightOneSpectrum.adicCompletionExtensionAlgebra k K u w := by
+    refine Algebra.algebra_ext _ _ fun x ↦ ?_
+    rw [RingHom.algebraMap_toAlgebra,
+      IsDedekindDomain.HeightOneSpectrum.algebraMap_adicCompletionExtensionAlgebra]
+    exact RingHom.congr_fun
+      (IsDedekindDomain.HeightOneSpectrum.eq_adicCompletionExtension_of_continuous k K u w
+        (continuous_locMap _ _) (fun z ↦ locMap_algebraMap _ _ z)) x
+  change P _
+  rw [h_alg]
+  refine ⟨inferInstance, fun y ↦ Units.ext ?_⟩
+  have h_norm (x : 𝔸f K) :
+      adeleNorm k K x = TauCeti.GlobalNumberFields.finiteAdeleNorm k K x :=
+    denseRange_algebraMap_finAdele.eq (fun z ↦
+      (adeleNorm_algebraMap k K z).trans
+        (TauCeti.GlobalNumberFields.finiteAdeleNorm_algebraMap k K z).symm)
+      (continuous_adeleNorm k K) (TauCeti.GlobalNumberFields.continuous_finiteAdeleNorm k K) x
+  change adeleNorm k K (locIdele w y).val u = Algebra.norm (LocField u) y.val
+  rw [h_norm, TauCeti.GlobalNumberFields.finiteAdeleNorm_apply,
+    finprod_eq_single _ ⟨w, inferInstance⟩]
+  · rw [locIdele_apply_self]
+  · rintro ⟨v, hv⟩ hne
+    rw [locIdele_apply_of_ne (fun h ↦ hne (Subtype.ext h)), map_one]
 
 omit h in
 /-- Let `j : Ω → Ω` extend `k → K`. An embedding of `K_w` in `ℚ̄_p` that induces `A` along `i`
