@@ -1,6 +1,7 @@
 module
 
 public import TauCeti.Analysis.Matrix.Frobenius
+import TauCeti.Analysis.Normed.Algebra.MatrixExponential
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.Analysis.Matrix.Order
@@ -14,8 +15,7 @@ public import Lib.General.Analysis.GaussianIntegral
 # Matrices near the identity: Jacobi's formula and norm estimates
 
 This file collects known facts on complex matrices near the identity.
-It proves Jacobi's formula for the derivative of the determinant at the identity and
-`det (exp M) = exp (tr M)`.
+It proves Jacobi's formula for the derivative of the determinant at the identity.
 Estimates in the Hilbert–Schmidt norm, which is the norm of all matrices in this file, control the
 inverse and the logarithm of `1 + X`.
 A matrix at distance less than `1` from the identity is accretive.
@@ -181,33 +181,6 @@ lemma integral_trace_mul_inv_one_add_smul_mul (hX : ‖X‖ ≤ 2⁻¹) (D : Mat
   (traceLinearMap n ℂ ℂ ∘ₗ .mulLeft ℂ D).toContinuousLinearMap.intervalIntegral_comp_comm
     (continuousOn_inv_one_add_smul_mul hX).intervalIntegrable
 
-/-- Jacobi's formula along `t ↦ exp (t • M)`: the derivative of `det (exp (t • M))` at `s` is
-`det (exp (s • M)) * tr M`. -/
-lemma hasDerivAt_det_exp_smul (M : Matrix n n ℂ) (s : ℝ) :
-    HasDerivAt (fun t : ℝ ↦ (NormedSpace.exp (t • M)).det)
-      ((NormedSpace.exp (s • M)).det * M.trace) s := by
-  have h_path : HasDerivAt (fun t : ℝ ↦ NormedSpace.exp ((t - s) • M)) M s := by
-    -- `using!`: the two instances of the topology on matrices agree only up to defeq.
-    simpa using! (hasDerivAt_exp_smul_const M (s - s)).comp_sub_const s s
-  have h_split (t : ℝ) : NormedSpace.exp (t • M) =
-      NormedSpace.exp (s • M) * NormedSpace.exp ((t - s) • M) := by
-    simp [← Matrix.exp_add_of_commute _ _ (((Commute.refl M).smul_left s).smul_right _), ← add_smul]
-  simpa only [← det_mul, ← h_split] using
-    (hasDerivAt_det_of_eq_one (by simp) h_path).const_mul (NormedSpace.exp (s • M)).det
-
-/-- The determinant of the exponential of a matrix is the exponential of its trace. -/
-lemma det_exp (M : Matrix n n ℂ) : (NormedSpace.exp M).det = cexp M.trace := by
-  -- The function `t ↦ det (exp (t M)) * exp (-t tr M)` has derivative zero, by Jacobi's formula,
-  -- so it takes equal values at `1` and `0`.
-  have h_deriv (s : ℝ) : HasDerivAt
-      (fun t : ℝ ↦ (NormedSpace.exp (t • M)).det * cexp (-(t * M.trace))) 0 s := by
-    have h_scalar : HasDerivAt (fun t : ℝ ↦ cexp (-(t * M.trace)))
-        (cexp (-(s * M.trace)) * -M.trace) s := by
-      simpa using ((ofRealCLM.hasDerivAt (x := s)).mul_const M.trace).neg.cexp
-    exact ((hasDerivAt_det_exp_smul M s).fun_mul h_scalar).congr_deriv (by ring)
-  simpa [Complex.exp_neg, mul_inv_eq_one₀] using
-    is_const_of_deriv_eq_zero (fun s ↦ (h_deriv s).differentiableAt) (fun s ↦ (h_deriv s).deriv) 1 0
-
 /-- If `L` has derivative `L'` at `s` and `L s` commutes with `L t` for all `t ∈ S`, then
 `exp (-L t)` has derivative `exp (-L s) * -L'` at `s` within `S`. -/
 lemma hasDerivWithinAt_exp_neg_of_commute {L : ℝ → Matrix n n ℂ} {L' : Matrix n n ℂ} {S : Set ℝ}
@@ -265,7 +238,7 @@ lemma exp_logOneAdd (hX : ‖X‖ ≤ 2⁻¹) : NormedSpace.exp (logOneAdd X) = 
 
 lemma det_one_add_eq_exp_trace_logOneAdd (hX : ‖X‖ ≤ 2⁻¹) :
     (1 + X).det = cexp (logOneAdd X).trace := by
-  rw [← det_exp, exp_logOneAdd hX]
+  rw [← exp_logOneAdd hX, Matrix.det_exp, ← Complex.exp_eq_exp_ℂ]
 
 /-- If `X` has Hilbert–Schmidt norm at most `1 / 2`, then `logOneAdd X`, the integral of
 `(1 + s • X)⁻¹ * X` over `[0, 1]`, has norm at most `2 * ‖X‖`. -/
