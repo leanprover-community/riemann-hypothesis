@@ -71,6 +71,7 @@ variable {Φ : Type} {R : Type _} [CommRing R] [Fintype Φ] [DecidableEq Φ]
   {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] {κ : Φ → ℕ → ℕ}
   (ξ η : WeylIndexFamily n κ → R)
 
+omit [∀ τ : Φ, DecidableEq (n τ)] in
 /-- The Fock pairing of the polynomial Σ_i (Gξ)_i b_i attached to ξ with b_k is the coordinate k of
 HᵀGξ, where G is the Gram matrix and H the integer matrix of the Fock pairings ⟨b_i, b_j⟩. -/
 lemma fockPairing_toPoly_nablaBasis_eq_mulVec (k : WeylIndexFamily n κ) :
