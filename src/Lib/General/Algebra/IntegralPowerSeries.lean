@@ -71,6 +71,17 @@ noncomputable def linearSeries {ι R : Type*} [Fintype ι] [CommSemiring R] (c :
     MvPowerSeries ι R :=
   ∑ i : ι, c i • MvPowerSeries.X i
 
+/-- Scaling the coefficients of a linear form scales its power series by the same scalar. -/
+lemma linearSeries_smul {ι R : Type*} [Fintype ι] [CommSemiring R] (a : R) (c : ι → R) :
+    linearSeries (a • c) = a • linearSeries c := by
+  simp [linearSeries, Finset.smul_sum, mul_smul]
+
+/-- Summing the coefficients of finitely many linear forms sums their power series. -/
+lemma linearSeries_sum {ι J R : Type*} [Fintype ι] [CommSemiring R] (s : Finset J) (c : J → ι → R) :
+    linearSeries (∑ j ∈ s, c j) = ∑ j ∈ s, linearSeries (c j) := by
+  simp only [linearSeries, Finset.sum_apply, Finset.sum_smul]
+  rw [Finset.sum_comm]
+
 variable {σ : Type*} {R S : Type*} [CommRing R] [CommRing S] {p : ℕ} [Fact p.Prime]
 
 /-- A power series `f` in one variable over `ℂ_[p]` comes from a series over the ring of integers

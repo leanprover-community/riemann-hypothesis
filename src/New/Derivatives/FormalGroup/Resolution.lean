@@ -131,8 +131,9 @@ lemma IsResolution.sum_smul_linearSeries [PadicPlace p] [Fintype n] {u : J → n
   have h_entry (y : InfinitePlace E × n) : ∑ j, m j * ν j * μ j y = if x = y then 1 else 0 := by
     ext
     simpa [hν, hμ, daggerForms, mul_assoc, apply_ite] using congrArg ιₚ (hu x y)
-  simp [linearSeries, Finset.smul_sum, smul_smul, Finset.sum_comm (γ := J), ← Finset.sum_smul,
-    h_entry]
+  simp_rw [← linearSeries_smul]
+  rw [← linearSeries_sum]
+  simp [linearSeries, Finset.sum_apply, h_entry]
 
 /-- The product `∏ θ(μ_j z) ^ m j` of copies of the theta function `C.θ` along linear forms `μ_j`,
 as a power series with coefficients in `ℂ_p`. Here `C` is a lattice in `ℂ` with a point `t` of

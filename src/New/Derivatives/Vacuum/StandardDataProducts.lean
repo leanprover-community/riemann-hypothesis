@@ -121,9 +121,7 @@ lemma CMLattice.exists_prod_twistedTranslate_eq_thetaProd_mul {d : ℕ} [PrimeSe
     prod_mem fun i _ ↦ subst_mem_multiSeriesRing μ (hu i) i, ?_⟩
   rw [CMLattice.thetaProd, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun i _ ↦ ?_
-  have h_smul : linearSeries (ιₚ (conj δ) • μ i) = ιₚ (conj δ) • linearSeries (μ i) := by
-    simp [linearSeries, Finset.smul_sum, mul_smul]
-  rw [h_smul, ← subst_rescale_eq_subst_smul _ (hasSubst_linearSeries _), h_factor,
+  rw [linearSeries_smul, ← subst_rescale_eq_subst_smul _ (hasSubst_linearSeries _), h_factor,
     PowerSeries.subst_mul (hasSubst_linearSeries _),
     PowerSeries.subst_pow (hasSubst_linearSeries _)]
 
