@@ -43,6 +43,13 @@ open Variety
 variable {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
   {v w : FinPlace E}
 
+/-- If `K` contains the maximal compact subgroup at the split place `w`, it contains the image of
+`GL_n(𝒪_w)` under `ofSplitPlace`. -/
+lemma ofSplitPlace_mem_of_maxCompactAt_le (hw : w.IsSplit) {K : Subgroup (Gf E n)}
+    (hK : maxCompactAt n w ≤ K) {x : GL n (LocField w)} (hx : x ∈ localIntGL n w) :
+      ofSplitPlace hw x ∈ K :=
+  hK ((map_localIntGL_ofSplitPlace hw).le ⟨x, hx, rfl⟩)
+
 /-- The homomorphism that removes from an element its components at the split place `v` and at
 the conjugate of `v`. -/
 noncomputable def offPlace (hv : v.IsSplit) : Gf E n →* Gf E n :=
@@ -84,7 +91,7 @@ lemma convIndicator_mapDomain_offPlace {hK_open : IsOpen (K : Set (Gf E n))}
   | mem a ha =>
     obtain ⟨x, hx, rfl⟩ : ∃ x : Gf E n, x.atPlace v ∈ localIntGL n v ∧ of ℂ (Gf E n) x = a := ha
     have h_mem : ofSplitPlace hv (x.atPlace v) ∈ K :=
-      hK_max ⟨(ofSplitPlace_mem_stdLevel hv _).2 hx, ofSplitPlace_mem_supportedOn hv _⟩
+      ofSplitPlace_mem_of_maxCompactAt_le hv hK_max hx
     have h_coset : (offPlace hv x)⁻¹ * g ∈ K ⊓ J.comap (Gf.atPlace v) ↔
         g.atPlace v ∈ J ∧ x⁻¹ * g ∈ K := by
       simp [offPlace_apply, mul_assoc, K.mul_mem_cancel_left h_mem, and_comm]

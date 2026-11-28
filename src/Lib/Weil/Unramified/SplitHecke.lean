@@ -74,6 +74,15 @@ variable (n w) in
 /-- The subgroup of K₀ of elements whose components away from w and w̄ are 1. -/
 noncomputable abbrev maxCompactAt : Subgroup (Gf E n) := stdLevel E n ⊓ supportedOn n {w}
 
+/-- At a split place the standard compact subgroup supported there is the image of
+`GL_n(O_w)`. -/
+lemma map_localIntGL_ofSplitPlace (hw : w.IsSplit) :
+    (localIntGL n w).map (ofSplitPlace hw) = maxCompactAt n w := by
+  have h_comap : (stdLevel E n).comap (ofSplitPlace hw) = localIntGL n w := by
+    ext x
+    exact ofSplitPlace_mem_stdLevel hw x
+  rw [← h_comap, Subgroup.map_comap_eq, range_ofSplitPlace, inf_comm]
+
 /-- The Hecke operator `T_{w,j}` at a split place `w`: the operator of the double coset of
 `diag (ϖ 1_j, 1)` in `GL_n(E_w)`, acting through the embedding `ofSplitPlace hw` of `GL_n(E_w)` in
 the finite adelic unitary group. -/
@@ -114,7 +123,7 @@ lemma levelSpace_le_sphericalAt {S : Finset (FinPlace E)} (hw : w ∉ S) (hw' : 
 /-- At a split place, spherical means fixed by `GL_n(O_w)` acting through `New.ofSplitPlace`. -/
 lemma mem_sphericalAt_iff (hw : w.IsSplit) :
     v ∈ sphericalAt π w ↔ v ∈ levelSpace (π.comp (ofSplitPlace hw)) (localIntGL n w) := by
-  simp [inf_comm (stdLevel E n), ← range_ofSplitPlace hw]
+  simp [sphericalAt, ← map_localIntGL_ofSplitPlace hw, Subgroup.mem_map]
 
 /-- A semilinear map `L` that intertwines, on `v`, the actions of the elements supported at
 `w, w̄` intertwines the Hecke operators `T_{w,j}` on `v`. -/

@@ -62,13 +62,6 @@ lemma commute_offPlace_ofSplitPlace (hw : w.IsSplit) (g : Gf E n) (x : GL n (Loc
   refine (Gf.commute_supportedOn_trivialOn (ofSplitPlace_mem_supportedOn hw x) ?_).symm
   simp [Gf.mem_trivialOn, atPlace_offPlace]
 
-/-- If `K` contains the maximal compact subgroup at the split place `w`, it contains the image of
-`GL_n(𝒪_w)` under `ofSplitPlace`. -/
-lemma ofSplitPlace_mem_of_maxCompactAt_le (hw : w.IsSplit) {K : Subgroup (Gf E n)}
-    (hK : maxCompactAt n w ≤ K) {x : GL n (LocField w)} (hx : x ∈ localIntGL n w) :
-      ofSplitPlace hw x ∈ K :=
-  hK ⟨(ofSplitPlace_mem_stdLevel hw x).2 hx, ofSplitPlace_mem_supportedOn hw x⟩
-
 section Algebraic
 
 variable (hw : w.IsSplit) {K : Subgroup (Gf E n)} {J : Subgroup (GL n (LocField w))}
