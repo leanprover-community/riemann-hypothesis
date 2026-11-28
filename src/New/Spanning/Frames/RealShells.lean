@@ -7,7 +7,6 @@ import Mathlib.RingTheory.PiTensorProduct
 public import New.Spanning.Frames.RealPlaceGauge
 public import New.Spanning.Frames.Shells
 import Lib.General.Analysis.GaussianIntegral
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.Bessel.Orthonormality
 import New.Spanning.Frames.Gains
 import New.Spanning.Frames.QuadricPlancherel

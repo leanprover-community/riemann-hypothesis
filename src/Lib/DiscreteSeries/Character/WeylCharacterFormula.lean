@@ -19,7 +19,6 @@ import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
 import Lib.GLn.SchurModule.SchurOrthogonality
 import Lib.GLn.SchurModule.WeylKernel
 import Lib.General.LinearAlgebra.Eigenvalues
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Laurent polynomials on the torus and Weyl's character and dimension formulas

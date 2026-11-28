@@ -7,7 +7,6 @@ import Mathlib.Topology.Algebra.Group.Units
 public import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
 public import Lib.Adelic.AutomorphicForms.Basic
 import Lib.Adelic.Adeles.StrongApproximation
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import Lib.SiegelWeil.RallisInner.VacuumSummability
 
 /-!

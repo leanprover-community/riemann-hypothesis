@@ -22,7 +22,6 @@ public import Lib.DiscreteSeries.Bruhat.SphereFibres -- shake: keep (needed publ
 import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
 public import Lib.DiscreteSeries.Haar.TotalMass -- shake: keep (needed public by an exposed definition)
 public import Lib.General.Analysis.GaussianIntegral -- shake: keep (needed public by an exposed definition)
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.Bessel.Basic
 
 /-!
