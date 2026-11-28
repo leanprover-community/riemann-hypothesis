@@ -90,6 +90,7 @@ theorem mul_joinCols {l : Type} [Fintype ι] (e : n₁ ⊕ n₂ ≃ n) (A : Matr
 def toCol (κ R : Type) [TopologicalSpace R] : (κ → R) ≃ₜ Matrix κ Unit R :=
   .piCongrRight fun _ ↦ (Homeomorph.funUnique Unit R).symm
 
+/-- Pointwise evaluation of the one-column matrix associated to a vector. -/
 @[simp]
 theorem toCol_apply {κ R : Type} [TopologicalSpace R] (v : κ → R) (i : κ) (u : Unit) :
     toCol κ R v i u = v i := rfl
@@ -103,9 +104,11 @@ theorem measurePreserving_toCol (κ R : Type) [Fintype κ] [TopologicalSpace R] 
 def toCorner (κ : Type) : ((κ → ℂ) × ℝ) ≃ₜ Matrix κ Unit ℂ × Matrix Unit Unit ℝ :=
   (toCol κ ℂ).prodCongr ((Homeomorph.funUnique Unit ℝ).symm.trans (toCol Unit ℝ))
 
+/-- Evaluation of `toCorner` on a vector and real scalar pair. -/
 theorem toCorner_apply {κ : Type} (v : κ → ℂ) (r : ℝ) :
     toCorner κ (v, r) = (toCol κ ℂ v, toCol Unit ℝ fun _ : Unit ↦ r) := rfl
 
+/-- The homeomorphism `toCorner` preserves volume. -/
 theorem measurePreserving_toCorner [Fintype n] : MeasurePreserving (toCorner n) :=
   (measurePreserving_toCol n ℂ).prod
     ((measurePreserving_toCol Unit ℝ).comp (volume_preserving_funUnique Unit ℝ).symm)
