@@ -126,6 +126,7 @@ def RealComplexForm.riemannForm : RealComplexForm V →+ LinearMap.BilinForm ℝ
 `New.RealComplexForm.riemannForm` of B. -/
 abbrev RealComplexForm.riemannPhase : ℂ := 𝐞 (B.riemannForm u v)
 
+/-- Definition of the Riemann form associated to a sesquilinear form `B`. -/
 lemma riemannForm_def : B.riemannForm u v = (B u v - B v u).im / (2 * π) := rfl
 
 /-- Appell–Humbert data: Re B is symmetric, and on L one has |χ| = 1 and
@@ -182,10 +183,12 @@ lemma riemannForm_pullForm (u v : V') :
 
 variable {B} {B' : RealComplexForm V} {f g : V → ℂ} (n : ℕ)
 
+/-- Skew-symmetry of the Riemann form. -/
 lemma riemannForm_swap : B.riemannForm v u = -B.riemannForm u v := by simp [riemannForm, fieldEq]
 
 @[simp] lemma riemannForm_self : B.riemannForm u u = 0 := by simp [riemannForm]
 
+/-- Pointwise evaluation of the theta translation `B.thetaShift a f` at `z`. -/
 lemma thetaShift_apply_apply (a z : V) :
     B.thetaShift a f z = exp (-(B a z + B a a / 2)) * f (z + a) :=
   rfl
