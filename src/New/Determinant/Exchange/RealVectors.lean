@@ -319,19 +319,16 @@ smooth on all matrices. -/
 lemma exists_contDiff_eventuallyEq_inv {A₀ : Matrix b b ℂ} (hdet : A₀.det ≠ 0) :
     ∃ γ : Matrix b b ℂ → Matrix b b ℂ,
       ContDiff ℝ ∞ γ ∧ γ =ᶠ[nhds A₀] fun A : Matrix b b ℂ ↦ A⁻¹ := by
-  -- The inverse is the adjugate, a polynomial in the entries, divided by the determinant.
-  have det_smooth : ContDiffAt ℝ ω (fun A : Matrix b b ℂ ↦ A.det) A₀ :=
-    (contDiff_mat_det contDiff_id).contDiffAt
-  have adjugate_smooth : ContDiffAt ℝ ω (fun A : Matrix b b ℂ ↦ A.adjugate) A₀ := by
-    refine (contDiff_pi.2 fun i : b ↦ contDiff_pi.2 fun j : b ↦ ?_).contDiffAt
-    simp only [adjugate_apply]
-    refine contDiff_mat_det (contDiff_pi.2 fun r ↦ contDiff_pi.2 fun c ↦ ?_)
-    simp only [updateRow_apply]
-    split_ifs
-    · exact contDiff_const
-    · exact (contDiff_pi.1 (contDiff_pi.1 contDiff_id r) c)
-  simp only [Matrix.inv_def, Ring.inverse_eq_inv']
-  exact exists_contDiff_eventuallyEq ((det_smooth.inv hdet).smul adjugate_smooth)
+  obtain ⟨u, rfl⟩ := (isUnit_iff_isUnit_det A₀).2 hdet.isUnit
+  apply exists_contDiff_eventuallyEq
+  simp only [nonsing_inv_eq_ringInverse]
+  -- Transport smoothness of ring inversion from the operator norm to the entrywise norm.
+  open Norms.Operator in
+  exact
+    let e : (b → b → ℂ) ≃L[ℝ] Matrix b b ℂ := .refl ..
+    let x : b → b → ℂ := (u : Matrix b b ℂ)
+    show ContDiffAt ℝ ω (e.symm ∘ Ring.inverse ∘ e) x from
+      e.symm.contDiff.comp_contDiffAt x ((contDiffAt_ringInverse ℝ u).comp x e.contDiff.contDiffAt)
 
 /-- If `x * A` has an invertible Gram matrix for `J` and equals `g * x₀ * c` with `g` in the unitary
 group `U J`, then `x` has the same form `g * x₀ * c'`, and `c'` carries the Gram matrix of `x₀` to
