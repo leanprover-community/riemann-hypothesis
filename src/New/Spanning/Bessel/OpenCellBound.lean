@@ -792,6 +792,65 @@ private lemma cast_frameRank_le_rank {𝔰 : New.Shape} : (𝔰.n : ℝ) ≤ �
   Nat.cast_le.2 (by simpa only [Fintype.card_fin] using
     Fintype.card_le_of_injective 𝔰.besselFrame New.besselFrame_injective)
 
+/-- The mass of `‖W‖²` on a tube, for the uncut function `W = X.besselFn .full` of a Bessel system
+`X`. Let `A` be a tube of size `T ≥ 3` over a set `Ω` of the frame-fixing unipotent subgroup
+`besselU0` (`IsTube`), and let all `y ∈ A` have operator norm at most `R`, where `1 ≤ R`. Then for
+`M ≥ 2` the integral of `‖W‖²` over `A` is at most `T · besselHaar₀ Ω · (M R²) ^ (2 n²) · |I|`,
+where `n = ϱ + 1` and `I = X.Index`. -/
+private lemma New.BesselSystem.lintegral_indicator_mul_enorm_sq_le_of_isTube {𝔰 : Shape} {B : ℝ}
+    {f : ℕ} (X : BesselSystem 𝔰 B f) {T M R : ℝ} {A : Set 𝔰.G₁}
+    {Ω : Set (𝔰.middleGram (1 : ℂ)).besselU0} (h_tube : IsTube T A Ω) (hT : 3 ≤ T) (hM : 2 ≤ M)
+    (hR : 1 ≤ R) (hA_norm : ∀ y ∈ A, ‖(y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ R) :
+    ∫⁻ y, A.indicator 1 y * ‖X.besselFn .full y‖ₑ ^ 2 ≤
+      .ofReal T * 𝔰.besselHaar₀ Ω * .ofReal ((M * (R * R)) ^ (2 * 𝔰.n ^ 2)) * card X.Index := by
+  have hR_sq : 0 ≤ R * R := mul_nonneg (zero_le_one.trans hR) (zero_le_one.trans hR)
+  refine (X.lintegral_indicator_mul_enorm_sq_le h_tube.isCompact.measurableSet hR hA_norm
+    h_tube.lintegral_indicator_le).trans (mul_le_mul' (mul_le_mul' ?_ ?_) le_rfl)
+  · exact mul_le_mul' (ofNat_le_ofReal.2 hT) le_rfl
+  · exact ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ (mul_nonneg (by norm_num) hR_sq)
+      (mul_le_mul_of_nonneg_right hM hR_sq) _)
+
+/-- A tube contains the points of the open cell bound. Let `8 n ≤ M`, where `n = ϱ + 1`, let
+`M⁻¹ ≤ gramDiscReal Z = |det Z|² − |D_ϱ|²`, D_ϱ the leading principal minor of order ϱ, and let the
+entries of `Z` have norm at most `M ^ 2`. Let `A` be a tube of size `M₀ ^ 5` over `Ω`, where
+`M₀ = M ^ (9 n)`, and let `s` lie in the Bessel subgroup `besselS`, `v` in `Ω` and `h` in `U(κ)`.
+Then `A` contains every `z` in `frameBox M` with `besselLength (s γ_Z (v h)⁻¹ z) ≤ M`, where
+`γ_Z = gramSection Z`. -/
+private lemma New.RealPlace.IsTube.mem_of_besselLength_le {𝔰 : Shape} {M : ℝ} {Z : 𝔰.FrameMatrix}
+    {A : Set 𝔰.G₁} {Ω : Set (𝔰.middleGram (1 : ℂ)).besselU0}
+    (h_tube : IsTube ((M ^ (9 * 𝔰.n)) ^ 5) A Ω) (hM_eight : 8 * (𝔰.ϱ + 1) ≤ M)
+    (h_disc : M⁻¹ ≤ gramDiscReal Z) (hZ : ∀ a c : Fin (𝔰.ϱ + 1), ‖Z a c‖ ≤ M ^ 2) {s : 𝔰.G₁}
+    (hs : s ∈ besselS) {v : (𝔰.middleGram (1 : ℂ)).besselU0} (hv : v ∈ Ω)
+    {h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)} {z : 𝔰.G₁} (hz : z ∈ frameBox M)
+    (hgz : besselLength (s * (gramSection Z * (v * embedH h)⁻¹) * z) ≤ M) : z ∈ A := by
+  -- since `z = v * (v⁻¹ * z)` and `‖v⁻¹ * z‖ ≤ M₀ ^ 5`, the tube property applies
+  have hM_one : 1 ≤ M := by linarith
+  have h_cell : IsBoundedInCell Z (M ^ (9 * 𝔰.n)) := isBoundedInCell_of_inv_le_gramDiscReal h_disc
+    ((Nat.cast_succ 𝔰.ϱ).trans_le (by linarith)) hZ
+    (pow_le_pow_right₀ hM_one (by dsimp only [Shape.n]; omega))
+  have hmem := h_tube.mul_mem v hv ((v : 𝔰.G₁)⁻¹ * z)
+    (norm_inv_mul_le_of_besselLength_le hM_eight le_rfl h_disc h_cell.norm_inv_le hs v.prop hz hgz)
+  rwa [mul_inv_cancel_left] at hmem
+
+/-- The volume of `Ω` and the scales cancel in the mass of the bounding measure. Let `1 ≤ M`,
+`M₀ = M ^ (9 n)` and `P = (M₀ ^ 5) ^ n`, let `c, δ > 0` and let `ω` be finite and nonzero. If
+`m ≤ M₀ ^ 5 · ω · (M P²⁰ P²⁰) ^ (2 n²) · d`, then
+`(c ω)⁻¹ · (P ^ (2000 n²) · (δ⁻¹ d)) · m ≤ M ^ (10⁵ n⁴) · (d² / (δ c))` as reals. -/
+private lemma New.toReal_inv_mul_mul_le_pow {m ω : ℝ≥0∞} {M M₀ P c δ : ℝ} {n d : ℕ} (hM : 1 ≤ M)
+    (hM₀ : M₀ = M ^ (9 * n)) (hP : P = (M₀ ^ 5) ^ n) (hc : 0 < c) (hδ : 0 < δ)
+    (hω_zero : ω ≠ 0) (hω_top : ω ≠ ∞)
+    (hm : m ≤ .ofReal (M₀ ^ 5) * ω * .ofReal ((M * (P ^ 20 * P ^ 20)) ^ (2 * n ^ 2)) * d) :
+    ((.ofReal c * ω)⁻¹ * (.ofReal (P ^ (2000 * n ^ 2)) * (.ofReal δ⁻¹ * d)) * m).toReal ≤
+      M ^ (10 ^ 5 * n ^ 4) * (d ^ 2 / (δ * c)) := by
+  have hM₀_nonneg : 0 ≤ M₀ := hM₀ ▸ pow_nonneg (zero_le_one.trans hM) _
+  have hP_nonneg : 0 ≤ P := hP ▸ pow_nonneg (pow_nonneg hM₀_nonneg 5) _
+  refine (toReal_inv_mul_mul_le (pow_nonneg hM₀_nonneg 5)
+    (pow_nonneg (mul_nonneg (zero_le_one.trans hM)
+      (mul_nonneg (pow_nonneg hP_nonneg 20) (pow_nonneg hP_nonneg 20))) _)
+    hc (pow_nonneg hP_nonneg _) hδ hω_zero hω_top hm).trans ?_
+  exact mul_le_mul_of_nonneg_right (scale_mul_le_pow hM hM₀ hP)
+    (div_nonneg (sq_nonneg _) (mul_pos hδ hc).le)
+
 /-- The open cell bound at the section `γ_Z = gramSection Z`, for the uncut function
 `W = X.besselFn .full` of a Bessel system `X` with scale `B`. Here `n = ϱ + 1` and `I = X.Index`.
 
@@ -838,16 +897,9 @@ lemma New.BesselSystem.exists_isKernelBound_gramSection {𝔰 : Shape} {B M : �
         (pow_le_pow_right₀ hP_one (by norm_num)))
   have h_mass : ∫⁻ y, A.indicator 1 y * ‖X.besselFn .full y‖ₑ ^ 2 ≤
       .ofReal (M₀ ^ 5) * 𝔰.besselHaar₀ Ω * .ofReal ((M * (P ^ 20 * P ^ 20)) ^ (2 * 𝔰.n ^ 2)) *
-        card X.Index := by
-    have h1 := X.lintegral_indicator_mul_enorm_sq_le h_tube.isCompact.measurableSet
-      (one_le_pow₀ hP_one) hA_norm h_tube.lintegral_indicator_le
-    refine h1.trans (mul_le_mul' (mul_le_mul' ?_ ?_) le_rfl)
-    · exact mul_le_mul' (ofNat_le_ofReal.2 (by linarith)) le_rfl
-    · refine ENNReal.ofReal_le_ofReal (pow_le_pow_left₀
-        (mul_nonneg (by norm_num) (mul_nonneg (pow_nonneg (zero_le_one.trans hP_one) 20)
-          (pow_nonneg (zero_le_one.trans hP_one) 20)))
-        (mul_le_mul_of_nonneg_right hM_two (mul_nonneg (pow_nonneg (zero_le_one.trans hP_one) 20)
-          (pow_nonneg (zero_le_one.trans hP_one) 20))) _)
+        card X.Index :=
+    X.lintegral_indicator_mul_enorm_sq_le_of_isTube h_tube (by linarith) hM_two
+      (one_le_pow₀ hP_one) hA_norm
   -- `μ` is the measure and `K` the constant of Schur's bound
   set c : ℝ := 𝔰.openCellConst * (gramDiscReal Z / 2) ^ (𝔰.k - 1) with hc_def
   have hc : 0 < c := mul_pos 𝔰.openCellConst_pos (pow_pos h_disc_half _)
@@ -886,26 +938,13 @@ lemma New.BesselSystem.exists_isKernelBound_gramSection {𝔰 : Shape} {B M : �
         ∫⁻ y, A.indicator 1 y * ‖X.besselFn .full y‖ₑ ^ 2).toReal := by
       rw [Measure.real_def, smul_apply, smul_eq_mul,
         withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
-    have h_deg : 0 < X.deg := X.deg_pos
     rw [hν, hμΩ, mul_assoc X.deg, ← hc_def]
-    refine (toReal_inv_mul_mul_le (pow_nonneg (by linarith) 5)
-      (pow_nonneg (mul_nonneg (zero_le_one.trans hM_one)
-        (mul_nonneg (pow_nonneg (zero_le_one.trans hP_one) 20)
-          (pow_nonneg (zero_le_one.trans hP_one) 20))) _)
-      hc (pow_nonneg (zero_le_one.trans hP_one) _) h_deg
-      h_tube.measure_ne_zero h_tube.measure_ne_top h_mass).trans ?_
-    exact mul_le_mul_of_nonneg_right (scale_mul_le_pow hM_one hM₀_def hP_def)
-      (div_nonneg (sq_nonneg _) (mul_pos h_deg hc).le)
-  · -- since `z = v * (v⁻¹ * z)` and `‖v⁻¹ * z‖ ≤ M₀ ^ 5`, the tube property applies
-    have h_cell : IsBoundedInCell Z M₀ := isBoundedInCell_of_inv_le_gramDiscReal h_disc
-      ((Nat.cast_succ 𝔰.ϱ).trans_le (by linarith)) hZ
-      (pow_le_pow_right₀ hM_one (by dsimp only [Shape.n]; omega))
+    exact toReal_inv_mul_mul_le_pow hM_one hM₀_def hP_def hc X.deg_pos h_tube.measure_ne_zero
+      h_tube.measure_ne_top h_mass
+  · -- for almost every `x = (h, v)` of the conditioned measure, `v ∈ Ω`
     filter_upwards [ae_cond_mem (.prod .univ h_tube.measurableSet)] with ⟨h, v⟩ ⟨_, hv⟩ z hz hgz
     rw [hg_eq] at hgz
-    have hmem := h_tube.mul_mem v hv ((v : 𝔰.G₁)⁻¹ * z)
-      (norm_inv_mul_le_of_besselLength_le hM_eight le_rfl h_disc h_cell.norm_inv_le hs v.prop hz
-        hgz)
-    rwa [mul_inv_cancel_left] at hmem
+    exact h_tube.mem_of_besselLength_le hM_eight h_disc hZ hs hv hz hgz
 
 /-- The open cell bound, for the uncut function `W = X.besselFn .full` of a Bessel system `X` of
 scale `B`. Let `Z = realFrameGram γ`, the matrix of products of the frame `f_a` with its translate
