@@ -72,15 +72,6 @@ lemma finMean_isUnit_indicator {n R : Type} [Fintype n] [DecidableEq n] [CommRin
   simp [finMean, card_congr of.symm, sq, pow_mul, ↓finsum_eq_sum_of_fintype,
     (card_congr (.ofInjective _ Units.val_injective)).trans (card_subtype IsUnit)]
 
-/-- The edges of a first column in the two grids are disjoint. -/
-lemma disjoint_edges_column {D : Data P} {b : ℕ} (hb : b ≤ D.m) :
-    Disjoint ((GridPath.column hb).edges false) ((GridPath.column hb).edges true) := by
-  rw [disjoint_left]
-  rintro ⟨u, v⟩ h_false h_true
-  have hu_false : u.1 = false := (GridPath.eq_and_le_of_mem_edges h_false).1
-  have hu_true : u.1 = true := (GridPath.eq_and_le_of_mem_edges h_true).1
-  simp [hu_false] at hu_true
-
 /-- Reduction modulo `𝔪₀ = π_M Q` from the residue ring of `𝔪 = 𝔟Q` (`reduceToTriangle ϑ false`, for
 the grid of the `Y`) is a local homomorphism, because the two moduli have the same primes. -/
 instance (D : Data P) (ϑ : D.MFoldTwist) : IsLocalHom (reduceToTriangle ϑ false) where
@@ -378,7 +369,7 @@ lemma diagonalPeriodForm_tupleAction {D : Data P} {ϑ : D.MFoldTwist} {g : NodeF
   let p : GridPath 0 D.m 0 0 := .column D.m.zero_le
   have h_char : edgeCharProd g (TwoGridPath.first D.m).edges =
       edgeCharProd g (p.edges false) * edgeCharProd g (p.edges true) :=
-    prod_union (disjoint_edges_column _)
+    prod_union (p.disjoint_edges_of_ne p Bool.false_ne_true)
   have h_false : (D.gridSpace 0 false 0 0).formRep (D.gridKernel false 0 0 true) u.val
         (p.formMap (tupleAction g S) false y') =
       edgeCharProd g (p.edges false) • p.formMap S false y' :=
@@ -609,7 +600,8 @@ lemma pairing_transposedChain_eq_sum {ϑ : D.MFoldTwist}
           B ((GridPath.column D.m.zero_le).formMap S false y')
             ((GridPath.column D.m.zero_le).formMap S true φ) := by
   set p : GridPath 0 D.m 0 0 := .column D.m.zero_le
-  have h_disjoint : Disjoint (p.edges false) (p.edges true) := disjoint_edges_column _
+  have h_disjoint : Disjoint (p.edges false) (p.edges true) :=
+    p.disjoint_edges_of_ne p Bool.false_ne_true
   have h_glue_true (S S' : EdgeTuple ϑ) :
       ∀ e ∈ p.edges true, (p.edges false).piecewise S S' e = S' e :=
     fun e he ↦ piecewise_eq_of_notMem _ _ _ (disjoint_right.1 h_disjoint he)

@@ -741,14 +741,32 @@ lemma eq_and_le_of_mem_edges {p : GridPath a₀ b₀ a b} {u v : GridNode} (he :
     · obtain ⟨hu, hv, h_lower, h_step, h_upper⟩ := ih h_old
       exact ⟨hu, hv, h_lower, h_step, h_upper.trans (by simp)⟩
 
-/-- A path from `(a₀, b₀)` to `(a, b)` has at most `(a - a₀) + (b₀ - b)` edges, stated without
+/-- A path from `(a₀, b₀)` to `(a, b)` has exactly `(a - a₀) + (b₀ - b)` edges, stated without
 subtraction. -/
-lemma card_edges_le (p : GridPath a₀ b₀ a b) : #(p.edges z) + a₀ + b ≤ a + b₀ := by
+lemma card_edges (p : GridPath a₀ b₀ a b) : #(p.edges z) + a₀ + b = a + b₀ := by
   induction p with
   | nil => simp [edges]
-  | down p ih | right p ih =>
-    grw [edges, card_insert_le]
+  | @down a b p ih =>
+    have h_new : columnEdge z a b ∉ p.edges z := by
+      intro he
+      obtain ⟨-, -, h_lower, -, -⟩ := eq_and_le_of_mem_edges he
+      exact (Nat.lt_succ_self b).not_ge h_lower.2
+    rw [edges, card_insert_of_notMem h_new]
     omega
+  | @right a b p ih =>
+    have h_new : rowEdge z a b ∉ p.edges z := by
+      intro he
+      obtain ⟨-, -, -, -, h_upper⟩ := eq_and_le_of_mem_edges he
+      exact (Nat.lt_succ_self a).not_ge h_upper.1
+    rw [edges, card_insert_of_notMem h_new]
+    omega
+
+/-- Paths in different grids have disjoint edge sets. -/
+lemma disjoint_edges_of_ne {c₀ d₀ c d : ℕ} (p : GridPath a₀ b₀ a b) (q : GridPath c₀ d₀ c d)
+    {z' : Bool} (hz : z ≠ z') : Disjoint (p.edges z) (q.edges z') := by
+  rw [disjoint_left]
+  rintro ⟨u, v⟩ hp hq
+  exact hz ((eq_and_le_of_mem_edges hp).1.symm.trans (eq_and_le_of_mem_edges hq).1)
 
 end GridPath
 
@@ -757,22 +775,28 @@ the grid `z` from the node `(0, m)` to the diagonal node `(Γ.diagonalIndex, Γ.
 def TwoGridPath.edges (Γ : TwoGridPath m) : Finset (GridNode × GridNode) :=
   (Γ.half false).edges false ∪ (Γ.half true).edges true
 
+/-- Each half has `m` edges, whichever diagonal node it ends at. -/
+lemma TwoGridPath.card_edges (Γ : TwoGridPath m) : #Γ.edges = 2 * m := by
+  rw [TwoGridPath.edges, card_union_of_disjoint
+    ((Γ.half false).disjoint_edges_of_ne (Γ.half true) Bool.false_ne_true)]
+  have h₀ := (Γ.half false).card_edges (z := false)
+  have h₁ := (Γ.half true).card_edges (z := true)
+  omega
+
 namespace Data
 
-/-- A path `Γ` through the two grids `Y` and `Ỹ` has at most `2 * D.m` edges. So there are at most
+/-- A path `Γ` through the two grids `Y` and `Ỹ` has `2 * D.m` edges. So there are at most
 `edgeMatrixCountBound ϑ ^ (2 * D.m)` tuples `tuplesOn ϑ Γ.edges`, which carry a matrix on each edge
 of `Γ` and are zero elsewhere. -/
 lemma card_tuplesOn_edges_le (Γ : TwoGridPath D.m) :
     #(tuplesOn ϑ Γ.edges) ≤ edgeMatrixCountBound ϑ ^ (2 * D.m) := by
-  refine (card_tuplesOn_le ?_).trans (Nat.pow_le_pow_right (pow_pos Fintype.card_pos _) ?_)
-  · intro p q hpq
-    obtain ⟨z, hz⟩ : ∃ z, (p, q) ∈ (Γ.half z).edges z := by simpa [TwoGridPath.edges] using hpq
-    obtain ⟨-, -, -, hp, hq⟩ := GridPath.eq_and_le_of_mem_edges hz
-    have hq' : q.2 ≤ (D.m, D.m) := hq.trans ⟨Γ.diagonalIndex_le, le_rfl⟩
-    exact ⟨hp.trans hq', hq'⟩
-  · have := (Γ.half false).card_edges_le (z := false)
-    have := (Γ.half true).card_edges_le (z := true)
-    exact (card_union_le _ _).trans (by omega)
+  rw [← Γ.card_edges]
+  apply card_tuplesOn_le
+  intro p q hpq
+  obtain ⟨z, hz⟩ : ∃ z, (p, q) ∈ (Γ.half z).edges z := by simpa [TwoGridPath.edges] using hpq
+  obtain ⟨-, -, -, hp, hq⟩ := GridPath.eq_and_le_of_mem_edges hz
+  have hq' : q.2 ≤ (D.m, D.m) := hq.trans ⟨Γ.diagonalIndex_le, le_rfl⟩
+  exact ⟨hp.trans hq', hq'⟩
 
 /-- The period of a conjugate form on `Y^j_j` and a form on `Ỹ^j_j` along `U(Y^j_j) → U(Ỹ^j_j)`. The
 second form is translated by a real point `g` of `U(Ỹ^j_j)` and, on the added line, by the `j`-th
