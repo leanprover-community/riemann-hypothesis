@@ -110,13 +110,9 @@ lemma summable_norm_vacuumCoeff_univ (h_rank : 2 * card n < card m) :
   have h_pos : 0 < I := by
     rw [setIntegral_pos_iff_support_of_nonneg_ae (.of_forall fun _ ↦ norm_nonneg _)
       h_coeff.norm.integrableOn]
-    let U : Set (G E (1 : n → ℤˣ)) := (L : Set _) ∩ {g | weilMatrixCoeff 1 f f g ≠ 0}
-    have hU_open : IsOpen U := hL_open.inter (isOpen_ne_fun h_cont continuous_const)
-    have h_mem : (1 : G E (1 : n → ℤˣ)) ∈ U :=
-      ⟨one_mem L, by simp [weilMatrixCoeff, f, Prod.mk_one_one, dataInner_vacElem_vacElem]⟩
-    refine (hU_open.measure_pos _ ⟨1, h_mem⟩).trans_le (measure_mono ?_)
-    rintro g ⟨hg_L, hg⟩
-    exact ⟨norm_ne_zero_iff.2 hg, hg_L⟩
+    exact (h_cont.norm.isOpen_support.inter hL_open).measure_pos volume
+      ⟨1, by simp [Function.mem_support, weilMatrixCoeff, f, Prod.mk_one_one,
+        dataInner_vacElem_vacElem], L.one_mem⟩
   exact (summable_mul_right_iff h_pos.ne').1 (h_sum.congr_fun fun q ↦ (h_terms q).symm).summable
 
 /-- For `2 * card n < card m`, consider the numbers `vacuumCoeff (card m) b g = (b(det g) *
