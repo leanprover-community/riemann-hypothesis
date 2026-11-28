@@ -490,8 +490,8 @@ end
 
 section Cocycles
 
-variable {O : Type} [CommRing O] {B : ClosurePlace} {M N l n e : ℕ} [NeZero N] [Fact l.Prime]
-  [Algebra ℤ_[l] O] {ψ : DirichletCharacter O N} [Algebra (ZMod (l ^ n)) (QuotSpan (l ^ n : O))]
+variable {O : Type} [CommRing O] {B : ClosurePlace} {M N l n e : ℕ} [NeZero N]
+  {ψ : DirichletCharacter O N} [Algebra (ZMod (l ^ n)) (QuotSpan (l ^ n : O))]
   {L : ∀ q : Nat.Primes, (ZMod q)ˣ →* Multiplicative (ZMod (l ^ n))}
   {p : Nat.Primes} {c : ℕ} {γ : Gal(Ω/ℚ)} {y : QZ → DiscreteUnits Ω} [NeZero M]
 
@@ -523,7 +523,6 @@ on `μ_M` by `a`; `J x` is a unit at places prime to `p` and has order `floorDif
 fixed primitive `lⁿ`-th root of unity `ζ`.
 -/
 
-omit [Fact l.Prime] in
 /-- Let `lⁿ • y` be a Jacobi family at level `M`. If `σ` raises the `M`-th roots of unity to the
 power `a`, then `σ (y x) / y (a x)` is an `lⁿ`-th root of unity, for every `x` killed by `M`. -/
 private lemma nsmul_galUnitsRep_sub_eq_zero_of_isJacobiFamily
@@ -532,6 +531,8 @@ private lemma nsmul_galUnitsRep_sub_eq_zero_of_isJacobiFamily
     l ^ n • (galUnitsRep σ (y x) - y (a • x)) = 0 := by
   rw [smul_sub, ← map_nsmul, sub_eq_zero]
   exact hJ.galUnitsRep_apply hx σ a ha
+
+variable [Fact l.Prime] [Algebra ℤ_[l] O]
 
 /-- Let `lⁿ • y` be a Jacobi family at level `M` and let `x` be killed by `M`. Then `commutatorLog`
 names the root of unity `γ y(x) / (g γ g⁻¹) y(x)`: its image under `rootPowHom Ω (l ^ n)` is this
