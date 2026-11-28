@@ -1,0 +1,9 @@
+# The works cited with `@[cite]` under `src/`, in the format of Mathlib's `docs/references.bib`.
+#
+# To normalize:
+# bibtool --preserve.key.case=on --preserve.keys=on --pass.comments=on --print.use.tab=off -s -i docs/references.bib -o docs/references.bib
+#
+# Please only use alphanumeric characters, '-', '_', and ':' for the key of bibliography items.
+#
+# To cite an entry, give the declaration the attribute `cite "bibkey" "location"` (see
+# `src/Lib/Cite.lean`). A cited entry needs a `doi`, `zbl`, `mrnumber` or arXiv `eprint`.

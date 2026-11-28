@@ -1,0 +1,94 @@
+% The entries cited by scripts/cite/Test.lean. They are not works: their identifiers have the
+% right shape and nothing more.
+
+@Misc{            testDoi,
+  author        = {Reader, Anne and Writer, Bo},
+  title         = {A test entry with a {DOI}},
+  year          = {2001},
+  doi           = {10.5555/test-entry}
+}
+
+@Misc{            testZbl,
+  title         = {A test entry with a zbMATH number},
+  zbl           = {0000.00000}
+}
+
+@Misc{            testArxiv,
+  title         = {A test entry with an arXiv identifier},
+  eprint        = {2101.00001v2},
+  archiveprefix = {arXiv}
+}
+
+@Misc{            testOldArxiv,
+  title         = {A test entry with an old arXiv identifier},
+  eprint        = {math.AG/0601001}
+}
+
+@Misc{            testResolver,
+  title         = {A test entry whose DOI is an address},
+  doi           = {https://doi.org/10.5555/resolved}
+}
+
+@Misc{            testMr,
+  title         = {A test entry with a MathSciNet number},
+  mrnumber      = {MR0000001}
+}
+
+@Misc{            testZbmath,
+  title         = {A test entry with only a zbMATH document number},
+  zbmath        = {123}
+}
+
+@Misc{            testBadArxiv,
+  title         = {A test entry with a malformed arXiv identifier},
+  eprint        = {2101.1}
+}
+
+@Misc{            testBadZbl,
+  title         = {A test entry with a malformed zbMATH number},
+  zbl           = {940.14012}
+}
+
+@Misc{            testNone,
+  title         = {A test entry without an identifier},
+  url           = {https://example.com/none}
+}
+
+@Misc{            testBadDoi,
+  title         = {A test entry with a malformed DOI},
+  doi           = {11.5555/bad}
+}
+
+@Misc{            testOtherArchive,
+  title         = {A test entry with an eprint of another archive},
+  eprint        = {hal-00000000},
+  archiveprefix = {HAL}
+}
+
+@Article{         testArticle,
+  author        = {Reader, Anne},
+  title         = {A test article with a volume and a number},
+  journal       = {Journal of Tests},
+  volume        = {12},
+  number        = {3},
+  pages         = {45--67},
+  year          = {2002},
+  doi           = {10.5555/test-article}
+}
+
+@Article{         testNumberOnly,
+  title         = {A test article with a number and no volume},
+  journal       = {Journal of Tests},
+  number        = {3},
+  doi           = {10.5555/test-number-only}
+}
+
+@Book{            testSeries,
+  title         = {A test book with a number in a series},
+  series        = {Tests in Mathematics},
+  number        = {7},
+  publisher     = {Test Press},
+  doi           = {10.5555/test-series}
+}
+
+% Text between entries may hold @[cite "key" "location"]: no entry type follows that sign.

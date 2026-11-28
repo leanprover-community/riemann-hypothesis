@@ -24,6 +24,8 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/Analytic/Primes.lean` | `New.hasSum_residueClass_one` | `ArithmeticFunction.vonMangoldt.residueClass_eq`, `ArithmeticFunction.vonMangoldt.LSeries_residueClass_eq` | `Mathlib/NumberTheory/LSeries/PrimesInAP.lean` |
 | `src/Lib/Analytic/ZeroSymmetry.lean` | `New.prod_euler_factor_ne_zero` | `DirichletCharacter.LFunction_changeLevel` | `Mathlib/NumberTheory/LSeries/DirichletContinuation.lean` |
 | `src/Lib/CM/Integrality/LogTheta.lean` | `New.CMLattice.subst_mem_multiSeriesRing` | `PowerSeries.subst_toMvPowerSeries` | `Mathlib/RingTheory/MvPowerSeries/Equiv.lean` |
+| `src/Lib/Cite.lean` | `Lib.Cite.citeExt` | `Mathlib.CrossRef.tagExt` | `Mathlib/Tactic/CrossRefAttribute.lean` |
+| `src/Lib/Cite.lean` | `Lib.Cite.appendDocString` | `Mathlib.CrossRef.addCrossRefDoc` | `Mathlib/Tactic/CrossRefAttribute.lean` |
 | `src/Lib/ClassField/GaloisCohomology/ContinuousCocycles.lean` | `New.DiscreteModule.quotient` | `Submodule.continuousSMul_quotient` | `Mathlib/Topology/Algebra/Module/Basic.lean` |
 | `src/Lib/ClassField/Global/AlbertBrauerHasseNoether.lean` | `New.albert_brauer_hasse_noether` | `IsTopologicalGroup.exist_openNormalSubgroup_sub_clopen_nhds_of_one` | `Mathlib/Topology/Algebra/ClopenNhdofOne.lean` |
 | `src/Lib/ClassField/Global/ArtinReciprocity.lean` | `New.exists_prime_dvd_orderOf` | `Nat.exists_prime_gt_modEq_one` | `Mathlib/NumberTheory/PrimesCongruentOne.lean` |
@@ -235,6 +237,7 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `Mathlib/RingTheory/Valuation/LocalSubring.lean` | Copyright (c) 2024 Andrew Yang, Yaël Dillies, Javier López-Contreras, Daniel Funck, Junyan Xu. All rights reserved. | Authors: Andrew Yang, Yaël Dillies, Javier López-Contreras, Daniel Funck, Junyan Xu |
 | `Mathlib/RingTheory/WittVector/IsPoly.lean` | Copyright (c) 2020 Johan Commelin. All rights reserved. | Authors: Johan Commelin, Robert Y. Lewis |
 | `Mathlib/RingTheory/WittVector/TeichmullerSeries.lean` | Copyright (c) 2025 Jiedong Jiang. All rights reserved. | Authors: Jiedong Jiang |
+| `Mathlib/Tactic/CrossRefAttribute.lean` | Copyright (c) 2024 Damiano Testa. All rights reserved. | Authors: Damiano Testa |
 | `Mathlib/Topology/Algebra/ClopenNhdofOne.lean` | Copyright (c) 2024 Nailin Guan. All rights reserved. | Authors: Nailin Guan, Yi Song, Xuchun Li, Bryan Wang |
 | `Mathlib/Topology/Algebra/Module/Basic.lean` | Copyright (c) 2019 Sébastien Gouëzel. All rights reserved. | Authors: Jan-David Salchow, Sébastien Gouëzel, Jean Lo, Yury Kudryashov, Frédéric Dupuis, Heather Macbeth |
 | `Mathlib/Topology/Algebra/Valued/WithZeroMulInt.lean` | Copyright (c) 2025 Salvatore Mercuri. All rights reserved. | Authors: Salvatore Mercuri |
