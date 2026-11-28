@@ -2,7 +2,7 @@ module
 
 import Mathlib.Data.Rat.Cast.OfScientific
 import Mathlib.Topology.MetricSpace.Ultra.Pi
-public import New.UpperBound.Size.Estimates
+public import New.UpperBound.Size.IndexLoss
 public import New.Reduction.Lattices.Colength
 public import New.UpperBound.Divisibility.MarkedPrimes
 public import New.UpperBound.Kernels.ThetaLiftGauge
@@ -50,9 +50,10 @@ row, the exponents below are built from the following numbers.
   source forms and is onto modulo `p ^ j_p` up to a small colength.
 * `New.Data.exists_colengthDvd_gaugeLe_compositeLift`: there is a module of source forms whose
   integral members have colength at most l in the integral source forms, with
-  l ≤ allowedLoss(p) · dim (source forms), and on whose ramified members the composite lift of a
+  l ≤ indexLoss(p) · dim (source forms), and on whose ramified members the composite lift of a
   chain datum has valuation at least gain(p) − allowedLoss(p).
-  The sum of these explicit losses is bounded by `New.Data.sum_allowedLoss_mul_log_le`.
+  The determinant and gauge bounds sum using `New.Data.sum_indexLoss_mul_log_le` and
+  `New.Data.sum_allowedLoss_mul_log_le`, respectively.
 
 Notions from other files:
 * `New.GaugeLe d c φ`: for every `g`, the p-adic gauge of the value `φ g` at `g * d` is at most `c`.
@@ -295,53 +296,61 @@ theorem IsWeakChainDatum.gaugeLe_restrictedChain_of_isFullMark (hΨ : IsWeakChai
 
 /-! ## The index of the image of the scaled Hecke operators -/
 
-/-- Let `Λ` be a marked set of primes of `E` above the exceptional non-split prime `p < x₁`: it is
-disjoint from its conjugate and each of its primes is induced by an a-place. Let
-`A_l = heckeScalingExponent l`, which is `a` times the number of a-places that induce `l`,
-`j_p = collisionExponent p = ⌈2 m f a / p⌉`, `m` the number of lifts and `f` the number of infinite
-places of `E`. Then `m` times the sum over `l ∈ Λ` of `12 A_l / (m p) + j_p / (m ^ 2 f)`, the
-colength exponent per dimension of the scaled Hecke operator at `l`, is at most `loss p`, which is
-`f a (log b)² / p`, times `m` if `p ≡ ±1` modulo `m`. -/
-lemma IsMarked.mul_sum_heckeScalingExponent_le_loss (hΛ : D.IsMarked Λ) :
+/-- The colength costs of all marked Hecke operators, each repeated `m` times, sum to at most
+`indexLoss p` per source dimension. At most half of the a-places contribute scaling exponents.
+The rounding of `collisionExponent p` contributes at most `1 / m`. -/
+lemma IsMarked.mul_sum_heckeScalingExponent_le_indexLoss (h : D.IsMarked Λ) :
     D.m * ∑ l ∈ Λ, (12 * D.heckeScalingExponent l / (D.m * p) +
-      1 / (D.m ^ 2 * D.f) * D.collisionExponent p : ℝ) ≤ D.loss p := by
-  have hp_pos : (0 : ℝ) < p := mod_cast hp.out.pos
-  have hm_pos : (0 : ℝ) < D.m := HasLogBound.pos D
-  -- Each a-place induces one prime, so the `A_l` add up to at most `a f`.
-  have h_sum : ∑ l ∈ Λ, heckeScalingExponent l ≤ D.a * D.f :=
-    (sum_heckeScalingExponent Λ).trans_le (Nat.mul_le_mul_left _ (card_le_univ _))
-  have h_exponent : (D.collisionExponent p : ℝ) ≤ 2 * D.m * D.f * D.a / p + 1 := by
+      1 / (D.m ^ 2 * D.f) * D.collisionExponent p : ℝ) ≤
+      D.indexLoss p := by
+  classical
+  have hsmall : p ∈ D.smallNonsplitPrimes := by
+    simpa [Nat.lt_ceil, hp.out] using h.isSmallNonsplit
+  rw [indexLoss, ite_eq_left ⟨hsmall, h.isExceptional⟩,
+    ite_eq_right h.not_dvd_M_mul_N.2.1, add_zero]
+  let c : ℝ := #(D.aPlaces ∩ placesInducing Λ)
+  have hc : (#Λ : ℝ) ≤ c := by
+    dsimp only [c]
+    exact_mod_cast h.card_le_aPlaces_inter
+  have hhalf : 2 * c ≤ (#D.aPlaces : ℝ) := by
+    dsimp only [c]
+    exact_mod_cast h.two_mul_card_aPlaces_inter_le
+  have hcf : c ≤ D.f := by
+    dsimp only [c]
+    exact_mod_cast (show #(D.aPlaces ∩ placesInducing Λ) ≤ D.f from card_le_univ _)
+  have hp' : (0 : ℝ) < p := by exact_mod_cast hp.out.pos
+  have hm : (0 : ℝ) < D.m := HasLogBound.pos D
+  have hf : (0 : ℝ) < D.f := HasLogBound.pos D
+  have hcpos : 0 ≤ c := by dsimp [c]; positivity
+  -- The scaling exponents count exactly the selected a-places.
+  have hmass : ∑ l ∈ Λ, (D.heckeScalingExponent l : ℝ) = D.a * c := by
+    dsimp only [c]
+    exact_mod_cast sum_heckeScalingExponent Λ
+  have hj : (D.collisionExponent p : ℝ) ≤ 2 * D.m * D.f * D.a / p + 1 := by
     rw [collisionExponent]
     exact (Nat.ceil_lt_add_one (by positivity)).le.trans_eq (by ring)
-  have h_size : (14 * D.f * D.a + p / D.m : ℝ) ≤ D.f * D.logB ^ 2 * D.a := by
-    -- The size of `p < x₁`, as an instance for `D.le_of_hasLogBound`.
-    have hp_size : D.HasLogUpper p D.logX₁ :=
-      D.hasLogUpper_of_le_of_nonneg hΛ.isSmallNonsplit.1.le p.cast_nonneg
-    exact D.le_of_hasLogBound
-  calc D.m * ∑ l ∈ Λ, (12 * D.heckeScalingExponent l / (D.m * p) +
-          1 / (D.m ^ 2 * D.f) * D.collisionExponent p : ℝ)
-      = D.m * (12 * (∑ l ∈ Λ, heckeScalingExponent l : ℕ) / (D.m * p) +
-          #Λ * (1 / (D.m ^ 2 * D.f) * D.collisionExponent p)) := by
-        rw [sum_add_distrib, ← sum_div, ← mul_sum, sum_const, nsmul_eq_mul, Nat.cast_sum]
-    _ ≤ D.m * (12 * (D.a * D.f : ℕ) / (D.m * p) +
-          D.f * (1 / (D.m ^ 2 * D.f) * (2 * D.m * D.f * D.a / p + 1))) := by
-        gcongr
-        exact hΛ.card_le
-    _ = (14 * D.f * D.a + p / D.m) / p := by
-        push_cast
-        field
-    _ ≤ D.f * D.logB ^ 2 * D.a / p := div_le_div_of_nonneg_right h_size hp_pos.le
-    _ ≤ D.loss p := (mul_div_assoc _ _ _).trans_le (D.le_loss p)
+  calc
+    _ = D.m * (12 * (D.a * c) / (D.m * p) +
+        #Λ * (1 / (D.m ^ 2 * D.f) * D.collisionExponent p)) := by
+      rw [sum_add_distrib, ← sum_div, ← mul_sum, hmass, sum_const, nsmul_eq_mul]
+    _ ≤ D.m * (12 * (D.a * c) / (D.m * p) +
+        c * (1 / (D.m ^ 2 * D.f) * (2 * D.m * D.f * D.a / p + 1))) := by gcongr
+    _ = 7 * (2 * c) * D.a / p + (c / D.f) / D.m := by
+      field_simp
+      ring
+    _ ≤ _ := by
+      have hratio : c / D.f ≤ 1 := (div_le_one hf).2 hcf
+      gcongr
 
 /-- **Colength.** Let `Λ` be a marked set of primes above the exceptional non-split prime `p < x₁`,
 `Y` the product over `l ∈ Λ` of the Hecke operators at `l` scaled by `p ^ heckeScalingExponent l`,
 and `M` the module of integral source forms. Then `Y ^ m`, with `m` the number of lifts, keeps `M`,
 and the index of `Y ^ m M + p ^ j_p M` in `M` divides `p ^ c` for some natural number
-`c ≤ loss p * dim (source forms)`. -/
+`c ≤ indexLoss p * dim (source forms)`. -/
 theorem IsMarked.isOntoUpToColength_prod_scaledHeckeOperator_pow (hΛ : D.IsMarked Λ) :
     IsOntoUpToColength ↑p D.integralSourceForms (D.collisionExponent p)
       ((Λ.attach.toList.map hΛ.scaledHeckeOperator).prod ^ D.m)
-        (D.loss p * finrank ℂ D.SourceForm) := by
+        (D.indexLoss p * finrank ℂ D.SourceForm) := by
   -- Exponents add under products, and `Y ^ m` is the product over `m` copies of `Λ`.
   let L : List Λ := (List.replicate D.m Λ.attach.toList).flatten
   let cost (l : FinPlace D.E) : ℝ :=
@@ -361,7 +370,7 @@ theorem IsMarked.isOntoUpToColength_prod_scaledHeckeOperator_pow (hΛ : D.IsMark
   rw [h_prod, h_cost] at h_onto
   obtain ⟨h_stable, c, hc, h_index⟩ := h_onto
   exact ⟨h_stable, c, hc.trans
-    (mul_le_mul_of_nonneg_right hΛ.mul_sum_heckeScalingExponent_le_loss (Nat.cast_nonneg _)),
+    (mul_le_mul_of_nonneg_right hΛ.mul_sum_heckeScalingExponent_le_indexLoss (Nat.cast_nonneg _)),
       h_index⟩
 
 omit [PadicPlace p] in
@@ -416,7 +425,7 @@ lemma IsChainDatum.gaugeLe_compositeLift_of_isFullMark (hΨ : IsChainDatum ϑ Ψ
 
 end FixedPrime
 
-/-- The divisibility at one prime. There are a natural number `l ≤ allowedLoss p * dim`, where `dim`
+/-- The divisibility at one prime. There are a natural number `l ≤ indexLoss p * dim`, where `dim`
 is the dimension of the space of source forms, and a module `S` of source forms whose integral
 members have index dividing `p ^ l` in the integral source forms (`New.ColengthDvd`), such that for
 every twist `ϑ` of level prime to `p` and every chain datum `Ψ` (`New.Data.IsChainDatum`) the
@@ -424,7 +433,7 @@ composite lift of a ramified source form in `S` has valuation at least `gain p -
 theorem exists_colengthDvd_gaugeLe_compositeLift {P : Parameters} {D : Data P} {p : ℕ}
     [hp : Fact p.Prime] [PadicPlace p] :
     ∃ (l : ℕ) (S : Submodule embValRing D.SourceForm),
-      l ≤ D.allowedLoss p * finrank ℂ D.SourceForm ∧
+      l ≤ D.indexLoss p * finrank ℂ D.SourceForm ∧
       ColengthDvd D.integralSourceForms S (p ^ l) ∧
       ∀ (ϑ : D.Twist) (Ψ : D.Translations →₀ ℂ), IsChainDatum ϑ Ψ → p.Coprime ϑ.normQ →
         ∀ φ ∈ S, φ ∈ D.ramifiedSourceForms →
@@ -432,7 +441,8 @@ theorem exists_colengthDvd_gaugeLe_compositeLift {P : Parameters} {D : Data P} {
   -- There are four cases: `p ≠ N` split or at least `x₁`; `p < x₁` non-split and not exceptional;
   -- `p < x₁` exceptional; and `p = N`. Away from `N`, a chain datum expands into a weak chain
   -- datum.
-  have h_loss : 0 ≤ D.loss p := le_trans (by positivity) (D.le_loss p)
+  have hi : (0 : ℝ) ≤ D.indexLoss p * finrank ℂ D.SourceForm :=
+    mul_nonneg (D.indexLoss_nonneg p) (Nat.cast_nonneg _)
   have h_cases : (p ∉ D.smallNonsplitPrimes ∧ p ≠ D.N) ∨
     (p ∈ D.smallNonsplitPrimes ∧ ¬D.IsExceptional p) ∨
       (p ∈ D.smallNonsplitPrimes ∧ D.IsExceptional p) ∨ (p ∉ D.smallNonsplitPrimes ∧ p = D.N) := by
@@ -445,7 +455,8 @@ theorem exists_colengthDvd_gaugeLe_compositeLift {P : Parameters} {D : Data P} {
       rintro rfl
       exact h_mem (mem_smallNonsplitPrimes_iff_isSmallNonsplit.2
         ⟨D.lt_of_hasLogBound, by simp [chiK, ZMod.natCast_self]⟩)
-    refine ⟨0, D.integralSourceForms, by simp, .of_le le_rfl, fun ϑ Ψ hΨ hQ φ hφ _ ↦ ?_⟩
+    refine ⟨0, D.integralSourceForms, by simpa only [Nat.cast_zero] using hi,
+      .of_le le_rfl, fun ϑ Ψ hΨ hQ φ hφ _ ↦ ?_⟩
     obtain ⟨Ψ', hΨ', h_eq⟩ : ∃ Ψ' : D.Translations →₀ ℂ, IsWeakChainDatum ϑ Ψ' ∧
         ∀ φ : D.SourceForm, compositeLift ϑ Ψ φ = restrictedChain ϑ Ψ' φ :=
       hΨ.exists_isWeakChainDatum_compositeLift_eq
@@ -456,8 +467,8 @@ theorem exists_colengthDvd_gaugeLe_compositeLift {P : Parameters} {D : Data P} {
     have h_nonsplit : D.IsSmallNonsplit p := mem_smallNonsplitPrimes_iff_isSmallNonsplit.1 h_mem
     have h_collision_budget : D.m * D.collisionSum p ∅ ≤ D.loss p :=
       mul_collisionSum_le_loss h_nonsplit h_exc
-    refine ⟨0, D.integralSourceForms, mod_cast by positivity, .of_le le_rfl,
-      fun ϑ Ψ hΨ hQ φ hφ _ ↦ ?_⟩
+    refine ⟨0, D.integralSourceForms, by simpa only [Nat.cast_zero] using hi,
+      .of_le le_rfl, fun ϑ Ψ hΨ hQ φ hφ _ ↦ ?_⟩
     obtain ⟨Ψ', hΨ', h_eq⟩ : ∃ Ψ' : D.Translations →₀ ℂ, IsWeakChainDatum ϑ Ψ' ∧
         ∀ φ : D.SourceForm, compositeLift ϑ Ψ φ = restrictedChain ϑ Ψ' φ :=
       hΨ.exists_isWeakChainDatum_compositeLift_eq
@@ -472,28 +483,18 @@ theorem exists_colengthDvd_gaugeLe_compositeLift {P : Parameters} {D : Data P} {
     obtain ⟨-, l, hl, h_colength⟩ :
         IsOntoUpToColength ↑p D.integralSourceForms (D.collisionExponent p)
         ((Λ.attach.toList.map hΛ.scaledHeckeOperator).prod ^ D.m)
-          (D.loss p * finrank ℂ D.SourceForm) :=
+          (D.indexLoss p * finrank ℂ D.SourceForm) :=
       hΛ.isOntoUpToColength_prod_scaledHeckeOperator_pow
-    have h_colength_budget :
-        D.loss p * finrank ℂ D.SourceForm ≤ 2 * D.loss p * finrank ℂ D.SourceForm := by
-      gcongr
-      linarith
-    exact ⟨l, _, hl.trans h_colength_budget, h_colength, fun ϑ Ψ hΨ hQ φ hφ _ ↦
+    exact ⟨l, _, hl, h_colength, fun ϑ Ψ hΨ hQ φ hφ _ ↦
       hΨ.gaugeLe_compositeLift_of_isFullMark hQ hΛ hφ⟩
   · -- `p = N`: the module consists of the source forms in `upIntegralForms`, and `x₁ ≤ N` makes the
     -- gain zero.
     rw [allowedLoss, ite_eq_right h_mem, ite_eq_left hN]
     subst hN
-    obtain ⟨l, hl, h_colength⟩ : ∃ l : ℕ, l ≤ D.m * D.f * D.b * finrank ℂ D.SourceForm ∧
-        ColengthDvd (integralFormsAt D.SourceForm 1) D.upIntegralForms (D.N ^ l) :=
-      D.exists_colengthDvd_upIntegralForms_pow
-    have h_colength_budget :
-        D.m * D.f * D.b * finrank ℂ D.SourceForm ≤ 2 * D.m * D.f * D.b * finrank ℂ
-          D.SourceForm := by
-      gcongr
-      linarith
+    obtain ⟨l, hl, h_colength⟩ := D.exists_colengthDvd_upIntegralForms_pow
     refine ⟨l, D.upIntegralForms.comap (D.SourceForm.subtype.restrictScalars embValRing),
-      hl.trans h_colength_budget, h_colength.comap _ le_rfl fun _ _ ↦ mem_comap.2,
+      by simpa [indexLoss, h_mem] using hl,
+      h_colength.comap _ le_rfl fun _ _ ↦ mem_comap.2,
       fun ϑ Ψ hΨ _ φ hφ h_ram ↦ ?_⟩
     rw [D.gain_eq_zero (.inr D.le_of_hasLogBound), sub_zero]
     exact D.gaugeLe_compositeLift_at_N hΨ h_ram hφ

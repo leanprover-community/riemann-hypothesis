@@ -28,7 +28,7 @@ Notions from other files:
 * `D.normalizedPoincare g`: the translate `g 𝔭` by `g : D.chosenGL` of a fixed linear map `𝔭` from
   the source `D.ramifiedSourceForms` to the target `D.targetForms`.
 * `D.integralRamified`: the source forms that are integral at every `ι : PrimePadicIso`.
-* `D.errorUnit`: the unit of loss `f a log³ b`.
+* `#D.aPlaces`: the number of infinite places of class `1` modulo `q₀`. It enters the index bound.
 
 ## The inputs
 
@@ -60,11 +60,11 @@ Notions from other files:
 
 ## The errors per dimension
 
-| source   | where             | amount                              |
-|----------|-------------------|-------------------------------------|
-| size     | Theorem A (a)     | `f a log⁴ b`                        |
-| index    | Theorems A (b), B | `20 log (1 + 2 b²) · f a log³ b`    |
-| covolume | Theorem C         | `3 f a log⁴ b`                      |
+| source   | where             | amount                                       |
+|----------|-------------------|----------------------------------------------|
+| size     | Theorem A (a)     | `f a log⁴ b`                                 |
+| index    | Theorems A (b), B | `320 log (1 + 2 b²) · #aPlaces · a · log x₁` |
+| covolume | Theorem C         | `3 f a log⁴ b`                               |
 
 The index enters twice, and the table shows the doubled amount. The family has `n ≥ dim / 2`
 members, so `m rem` is at most twice the sum, and twice the sum is at most `f a log⁵ b`. The scales
@@ -101,7 +101,7 @@ theorem star_inequality {P : Parameters} (D : Data P) :
     D.enough_forms
   let sizeError : ℝ := D.f * D.a * D.logB ^ 4
   let logNormBound : ℝ := D.mainAmount - D.m * D.totalRemainder + sizeError
-  let indexBudgetPerDim : ℝ := 10 * log (1 + 2 * D.b ^ 2) * D.errorUnit
+  let indexBudgetPerDim : ℝ := 160 * log (1 + 2 * D.b ^ 2) * #D.aPlaces * D.a * D.logX₁
   let short : Set D.ramifiedSourceForms :=
     {φ ∈ D.integralRamified | ∀ (g : D.chosenGL) (σ : ℂ ≃+* ℂ),
       (D.Θ 1 (D.normalizedPoincare g φ)).normSqAt σ ≤ exp logNormBound}
@@ -123,15 +123,16 @@ theorem star_inequality {P : Parameters} (D : Data P) :
     obtain ⟨g, -, φ, ⟨-, hφ_short⟩, hφ_eq⟩ := h_image_short i
     rw [normSqAt_targetLattice, ← hφ_eq]
     exact hφ_short g σ
-  -- Index: each translate in `t` contributes `2 · errorUnit` per dimension of the source.
+  -- Each translate contributes `32 · #aPlaces · a · log x₁` per dimension of the ramified source.
   have h_index_upper : D.targetLattice.IndexLe y (D.targetDim * indexBudgetPerDim) := by
-    have h_errorUnit_nonneg : 0 ≤ D.errorUnit := (HasLogBound.pos D).le
+    have hL : 0 ≤ D.logX₁ := (HasLogBound.pos D).le
     have hy_int (i : Fin n) : ∃ g ∈ t, y i ∈ D.normalizedPoincare g '' D.integralRamified := by
       obtain ⟨g, hg, φ, ⟨hφ_int, -⟩, hφ_eq⟩ := h_image_short i
       exact ⟨g, hg, φ, hφ_int, hφ_eq⟩
     refine (D.indexLe_normalizedPoincare t hy_int).mono ?_
-    calc #t * finrank ℂ D.ramifiedSourceForms * (2 * D.errorUnit)
-        ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) * (2 * D.errorUnit) := by grw [h_translate_budget]
+    calc #t * finrank ℂ D.ramifiedSourceForms * (32 * #D.aPlaces * D.a * D.logX₁)
+        ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) * (32 * #D.aPlaces * D.a * D.logX₁) := by
+          grw [h_translate_budget]
       _ = D.targetDim * indexBudgetPerDim := by ring
   -- C: apply the lower bound to the same family. The index is counted twice (the two Gram
   -- variables); the nonnegative main amount cancels using `n ≤ targetDim`.

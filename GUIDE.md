@@ -39,7 +39,8 @@ in the sense of [`ColengthDvd`](src/New/Reduction/Lattices/Colength.lean).
 to the product of the marked operators raised to the number of lifts, and combines it
 with the valuation estimate in `exists_colengthDvd_gaugeLe_compositeLift`.
 [`ShortAndEnough`](src/New/Reduction/ShortAndEnough.lean) uses the resulting sublattice
-to bound the index in Theorem A(b).
+to bound the index in Theorem A(b). The logarithmic sum of the determinant costs is in
+[`IndexLoss`](src/New/UpperBound/Size/IndexLoss.lean).
 
 `Lib` proves parts of several standard theories, often in a weaker form that suffices here and with its own definitions. For example, Galois representations match the Hecke polynomials for most Frobenii only, up to each η > 0 (`GaloisRep.Attached`), local polynomials only kill and need not be characteristic, and no Weil–Deligne representation is built. Each has an overview in the head of the file that holds the theorem named here: class field theory and duality, `artin_reciprocity`; ℓ-adic and Hodge cohomology, `Variety.ellAdicCohom.woods_hole`; odd classes over cyclotomic fields, `exists_length_shaOdd_le`; Galois representations of eigenforms, `GaloisRep.sphericalCompat_std`; p-adic comparison, `Variety.ellAdicCohom.isCrystalline_and_linearFrob_rel`; p-adic Hodge theory, `GaloisRep.local_clauses_of_trace_limit`; Kisin modules, `Lift.KummerChart.JumpLattice.frame_theorem`; Shimura varieties, `Variety.Model.exists_galois_rep`. Other inputs: the Siegel–Weil and Rallis formulas in `Lib/SiegelWeil`, a simple trace formula in `Lib/Adelic/TraceFormula`, a Chowla–Selberg formula in `Lib/CM/ChowlaSelberg`, primes in progressions in `Lib/Analytic/PrimeNumberTheorem`, and the choice of d, a zero-density count from Pólya–Vinogradov, in `Lib/Analytic/QuadraticTwist`.
 

@@ -278,11 +278,42 @@ theorem IsExceptional.hasExceptionalOrbits (h : D.IsExceptional p) :
 
 /-! ### Properties of marked sets -/
 
+/-- Every marked prime has a preimage among the a-places that induce the mark. -/
+lemma IsMarked.card_le_aPlaces_inter (h : D.IsMarked Λ) :
+    #Λ ≤ #(D.aPlaces ∩ placesInducing Λ) := by
+  classical
+  refine card_le_card_of_surjOn inducedPlace fun l hl ↦ ?_
+  obtain ⟨τ, hτ, hτl⟩ := h.induced_by_aPlace l hl
+  exact ⟨τ, mem_inter.2 ⟨hτ, by simpa [placesInducing, hτl] using hl⟩, hτl⟩
+
+/-- At most half the a-places induce a marked prime. Multiplication by the place of
+`-p ^ o₀` preserves the a-places and sends a selected prime to its unmarked conjugate. -/
+lemma IsMarked.two_mul_card_aPlaces_inter_le (h : D.IsMarked Λ) :
+    2 * #(D.aPlaces ∩ placesInducing Λ) ≤ #D.aPlaces := by
+  classical
+  let S := D.aPlaces ∩ placesInducing Λ
+  let shift := Equiv.mulLeft (D.placeOfInt (-p ^ D.o₀ p))
+  have hmove {τ : D.Φ} (hτ : τ ∈ S) : shift τ ∈ D.aPlaces \ S := by
+    obtain ⟨ha, hm⟩ := mem_inter.1 hτ
+    have hl : inducedPlace τ ∈ Λ := by simpa [placesInducing] using hm
+    refine mem_sdiff.2 ⟨(D.placeOfInt_mul_mem_aPlaces_iff h.isExceptional.odd_o₀ τ ha).2 dvd_rfl,
+      fun hin ↦ ?_⟩
+    have hnew : inducedPlace (D.placeOfInt (-p ^ D.o₀ p) * τ) ∈ Λ := by
+      simpa [shift, placesInducing] using (mem_inter.1 hin).2
+    rw [D.inducedPlace_neg_pow_mul_of_odd h.isExceptional.chiK_eq_neg_one
+      h.isExceptional.odd_o₀] at hnew
+    exact h.star_notMem _ hl hnew
+  have hle : #S ≤ #(D.aPlaces \ S) :=
+    card_le_card_of_injOn shift (fun _ hτ ↦ hmove hτ) shift.injective.injOn
+  have hsub : S ⊆ D.aPlaces := inter_subset_left
+  have hs := card_sdiff_of_subset hsub
+  change 2 * #S ≤ #D.aPlaces
+  omega
+
 /-- A marked set has at most `f` primes, `f` being the number of infinite places of `E`: each of its
 primes is induced by one of them. -/
 lemma IsMarked.card_le (h : D.IsMarked Λ) : #Λ ≤ D.f :=
-  card_le_card_of_surjOn inducedPlace fun l hl ↦
-    (h.induced_by_aPlace l hl).imp fun τ hτ ↦ ⟨mem_univ τ, hτ.2⟩
+  h.card_le_aPlaces_inter.trans (card_le_univ _)
 
 /-- For a marked set `Λ`, the prime `p` divides neither `D.M` nor `D.M * D.N`, and differs
 from `N`. -/

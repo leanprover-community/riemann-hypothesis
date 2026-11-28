@@ -287,20 +287,19 @@ lemma normalizedPoincare_mem_integralVectors {ι : PrimePadicIso} (s : D.chosenG
 
 /-- Fix `s` in the finite group `D.chosenGL`. A finite family `y` of target forms
 `s 𝔭 φ = D.normalizedPoincare s φ`, with each `φ` a ramified source form integral at every `ι`, has
-logarithmic index at most `δ = dim src · 2 · D.errorUnit` in `D.targetLattice`. Here `src` is the
-space `D.ramifiedSourceForms`, and `D.errorUnit` is the unit of loss `D.f * D.a * D.logB ^ 3`. -/
+logarithmic index at most `32 · dim src · #aPlaces · a · log x₁` in `D.targetLattice`. Here `src`
+is the space `D.ramifiedSourceForms`. -/
 lemma indexLe_of_mem_image_normalizedPoincare (s : D.chosenGL) {n : ℕ} {y : Fin n → D.targetForms}
     (hy : ∀ i : Fin n, y i ∈ D.normalizedPoincare s '' D.integralRamified) :
-    D.targetLattice.IndexLe y (finrank ℂ D.ramifiedSourceForms * (2 * D.errorUnit)) := by
-  -- At `ι ∣ l` the map `s 𝔭` takes a submodule of colength `j ≤ err_l D_X` to integral target
-  -- forms, `D_X` being the dimension of the space of all source forms. So `e l = D_X err_l` serves,
-  -- and `D_X ≤ 2 dim src`.
+    D.targetLattice.IndexLe y
+      (finrank ℂ D.ramifiedSourceForms * (32 * #D.aPlaces * D.a * D.logX₁)) := by
+  -- The determinant cost is separate from the gauge allowance used to make each lift integral.
   refine TwistedLattice.indexLe_of_colengthDvd
-    (e := fun l ↦ finrank ℂ D.SourceForm * D.allowedLoss l)
-    (fun l ↦ mul_nonneg (by positivity) (D.allowedLoss_nonneg l)) (fun U _ ↦ ?_) fun ι ↦ ?_
-  · have h_errorUnit_nonneg : 0 ≤ D.errorUnit := (HasLogBound.pos D).le
-    simp only [mul_assoc _ (D.allowedLoss _), ← mul_sum]
-    grw [sum_allowedLoss_mul_log_le, finrank_sourceForm_le_two_mul]
+    (e := fun l ↦ finrank ℂ D.SourceForm * D.indexLoss l)
+    (fun l ↦ mul_nonneg (by positivity) (D.indexLoss_nonneg l)) (fun U _ ↦ ?_) fun ι ↦ ?_
+  · have hL : 0 ≤ D.logX₁ := (HasLogBound.pos D).le
+    simp only [mul_assoc _ (D.indexLoss _), ← mul_sum]
+    grw [sum_indexLoss_mul_log_le, finrank_sourceForm_le_two_mul]
     push_cast
     exact le_of_eq (by ring)
   let : PadicPlace ι.prime := ι.place
@@ -320,10 +319,12 @@ lemma indexLe_of_mem_image_normalizedPoincare (s : D.chosenGL) {n : ℕ} {y : Fi
 
 /-- **Theorem A (b).** A finite family `y` of target forms `s 𝔭 φ = D.normalizedPoincare s φ`, with
 `s` in a set `t` of translates and `φ` in the source `src = D.ramifiedSourceForms` integral at every
-`ι`, has logarithmic index at most `δ = #t · dim src · 2 f a log³ b` in the target lattice. -/
+`ι`, has logarithmic index at most `δ = 32 · #t · dim src · #aPlaces · a · log x₁` in the
+target lattice. -/
 theorem indexLe_normalizedPoincare (t : Finset D.chosenGL) {n : ℕ} {y : Fin n → D.targetForms}
     (hy : ∀ i : Fin n, ∃ s ∈ t, y i ∈ D.normalizedPoincare s '' D.integralRamified) :
-    D.targetLattice.IndexLe y (#t * finrank ℂ D.ramifiedSourceForms * (2 * D.errorUnit)) := by
+    D.targetLattice.IndexLe y
+      (#t * finrank ℂ D.ramifiedSourceForms * (32 * #D.aPlaces * D.a * D.logX₁)) := by
   -- Sort the family by translates; indices add over a union of families.
   rw [mul_assoc]
   exact TwistedLattice.indexLe_card_mul t

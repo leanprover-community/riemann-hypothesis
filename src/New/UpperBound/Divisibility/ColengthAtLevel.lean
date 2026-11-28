@@ -224,30 +224,25 @@ lemma colengthDvd_comap_upOperator_pow (i : ℕ) :
     refine ih.trans (D.colengthDvd_integralFormsAt_diagPointN.comap _ (fun φ hφ ↦ ?_) fun _ _ h ↦ h)
     simpa [pow_succ'] using D.upOperator_mem_integralFormsAt hφ
 
-/-- **The prime `N`, colength.** Let `𝒜_ι` be the module of source forms with `N`-integral values
-for the standard lattice, and `𝒜' = D.upIntegralForms` the module of forms `φ` on `X_0` such that
-`Up ^ (m / 2) φ` is a source form integral at `D.diagPointN 0`, with
-`Up = upOperator (D.formRepAtN 0)`. There is `e ≤ m f b D_X` such that every finite family in `𝒜_ι`
-is carried into `𝒜'` by a square matrix whose determinant divides `N ^ e`. Here `m = D.m` is the
-number of theta lifts from `X_0` to `X_m`, `f = D.f` the number of infinite places of `E`, `b = D.b`
-the value of `D.weight` on the set `D.bPlaces` of infinite places, and `D_X` the dimension of the
-space of source forms. -/
+/-- **The prime `N`, colength.** The preimage of the integral forms at `diagPointN 0` under
+`Up ^ (ϱ + 1)` has index dividing `N ^ e` in the integral source forms. There are `ϱ + 2`
+steps, each costing the degree in the last variable. That degree is at most `f a / k` per
+source dimension. -/
 lemma exists_colengthDvd_upIntegralForms_pow :
-    ∃ e : ℕ,
-      e ≤ D.m * D.f * D.b * Module.finrank ℂ D.SourceForm ∧
-      ColengthDvd (integralFormsAt D.SourceForm 1) D.upIntegralForms (D.N ^ e) := by
-  let l : ℕ := D.sumDegreeOf (.inr ())
+    ∃ e : ℕ, e ≤ ((D.ϱ + 1 + 1 : ℝ) * D.f * D.a / D.k) * Module.finrank ℂ D.SourceForm ∧
+      ColengthDvd (integralFormsAt D.SourceForm 1) D.upIntegralForms ((D.N : embValRing) ^ e) := by
+  let l := D.sumDegreeOf (.inr ())
   refine ⟨l * (D.ϱ + 1 + 1), ?_, D.colengthDvd_comap_upOperator_pow (D.ϱ + 1)⟩
-  have hl : (D.k * l : ℝ) ≤ Module.finrank ℂ D.SourceForm * (D.f * D.a) :=
-    mod_cast D.mul_sumDegreeOf_le (.inr ())
-  have h_size : (D.ϱ + 1 + 1 : ℝ) * D.a ≤ D.m * D.b * D.k := D.le_of_hasLogBound
-  refine le_of_mul_le_mul_left (a := (D.k : ℝ)) ?_ (by simp)
+  have hl : (D.k : ℝ) * l ≤ Module.finrank ℂ D.SourceForm * (D.f * D.a) := by
+    exact_mod_cast D.mul_sumDegreeOf_le (.inr ())
+  have hk : 0 < (D.k : ℝ) := HasLogBound.pos D
   push_cast
+  rw [div_mul_eq_mul_div, le_div_iff₀ hk]
   calc
-    _ ≤ Module.finrank ℂ D.SourceForm * (D.f * D.a) * (D.ϱ + 1 + 1 : ℝ) := by grw [← mul_assoc, hl]
-    _ = Module.finrank ℂ D.SourceForm * D.f * ((D.ϱ + 1 + 1 : ℝ) * D.a) := by ring
-    _ ≤ Module.finrank ℂ D.SourceForm * D.f * (D.m * D.b * D.k) := by gcongr
-    _ = D.k * (D.m * D.f * D.b * Module.finrank ℂ D.SourceForm) := by ring
+    _ = ((D.k : ℝ) * l) * (D.ϱ + 1 + 1) := by ring
+    _ ≤ (Module.finrank ℂ D.SourceForm * (D.f * D.a)) * (D.ϱ + 1 + 1) :=
+      mul_le_mul_of_nonneg_right hl (by positivity)
+    _ = _ := by ring
 
 end New.Data
 
