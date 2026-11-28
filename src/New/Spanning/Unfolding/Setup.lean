@@ -451,10 +451,14 @@ def ratTriangle (y : InfinitePlace E → 𝔰.G₁) (a b : Fin (𝔰.ϱ + 1)) (v
 def reducedPoints (D : Set (InfinitePlace E → ℂ)) : Set (InfinitePlace E → 𝔰.G₁) :=
   {y : InfinitePlace E → 𝔰.G₁ | ∀ a b : Fin (𝔰.ϱ + 1), a < b → S.ratTriangle y a b ∈ D}
 
-/-- The indicator of the reduced points for a chosen set of representatives satisfying
-`New.Filling.IsResidueDomain` (arbitrary if there is none). -/
+/-- The chosen set of representatives modulo the level lattice at the infinite places: a set
+satisfying `New.Filling.IsResidueDomain`, arbitrary if there is none. For admissible data there is
+one, so `residueDomain` satisfies it (`New.Filling.isResidueDomain_residueDomain`). -/
+def residueDomain : Set (InfinitePlace E → ℂ) := Classical.epsilon S.IsResidueDomain
+
+/-- The indicator of the reduced points for the chosen set of representatives `residueDomain`. -/
 def reducedIndicator : (InfinitePlace E → 𝔰.G₁) → ENNReal :=
-  (S.reducedPoints (Classical.epsilon S.IsResidueDomain)).indicator 1
+  (S.reducedPoints S.residueDomain).indicator 1
 
 /-- A partition of unity `ω` on G_∞ in boxes, for the group 𝖴_c(M) = `classUnipotent c` modulo its
 subgroup 𝖴⁰_c(M) = `classUnipotent₀ c` fixing the frame: `ω` is measurable, at most one and left

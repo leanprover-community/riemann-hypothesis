@@ -79,7 +79,7 @@ unity in boxes (`IsBoxPartitionOfUnity`) for every class `c`. -/
 lemma isBoxPartitionOfUnity_reducedIndicator [HasPrimitiveRoot5040 E] [S.IsAdmissible]
     (c : S.Classes) :
     S.IsBoxPartitionOfUnity c S.reducedIndicator :=
-  IsResidueDomain.isBoxPartitionOfUnity (Classical.epsilon_spec S.exists_isResidueDomain) c
+  isResidueDomain_residueDomain.isBoxPartitionOfUnity c
 
 /-- Let `ω` be a partition of unity in boxes for the class `c`: a weight whose translates under
 `S.classUnipotent c` add up to one modulo the subgroup fixing the frame, and which vanishes unless
@@ -110,7 +110,8 @@ lemma mem_frameBox_of_classCutoff_ne_zero [HasPrimitiveRoot5040 E] [S.IsAdmissib
     {v : NumberField.InfinitePlace E} {R : ℝ} (hR : 0 ≤ R)
     (h_size : besselLength (y v) ≤ S.b ^ (6 * 𝔰.n + 2) * R) :
       y v ∈ frameBox (S.frameBoxRadius * R) := by
-  rw [classCutoff] at hy
+  obtain ⟨β, hβ, -⟩ := S.exists_classCutoff_eq_mul c
+  rw [hβ] at hy
   exact (isBoxPartitionOfUnity_reducedIndicator c).mem_frameBox (right_ne_zero_of_mul hy) hR h_size
 
 /-- If the cutoff of the class `c` is not zero at `y` and all components of `y` have length at most
@@ -119,7 +120,8 @@ in the cut. -/
 lemma mem_boxedPoints_of_classCutoff_ne_zero {c : S.Classes}
     {y : NumberField.InfinitePlace E → 𝔰.G₁} (hy : S.classCutoff c y ≠ 0)
     (h_cut : ∀ v : NumberField.InfinitePlace E, InCut (y v) S.b) : y ∈ S.boxedPoints := by
-  rw [classCutoff] at hy
+  obtain ⟨β, hβ, -⟩ := S.exists_classCutoff_eq_mul c
+  rw [hβ] at hy
   exact mem_boxedPoints_of_reducedIndicator_ne_zero (right_ne_zero_of_mul hy) h_cut
 
 /-- The translates of `S.classCutoff c` under the congruence group `S.classUnipotent c` of rational

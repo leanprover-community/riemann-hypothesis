@@ -202,10 +202,8 @@ lemma mul_mem_reducedPoints_iff {s y : InfinitePlace E → 𝔰.G₁}
       frameVector_mul_of_mem_besselFixer (hs v)]
   simp only [reducedPoints, mem_ofPred_eq, h_triangle]
 
-variable (S) in
-/-- The chosen set of representatives modulo the level lattice at the infinite places. -/
-noncomputable def residueDomain : Set (InfinitePlace E → ℂ) := Classical.epsilon S.IsResidueDomain
-
+/-- For admissible data, the chosen set `residueDomain` is a set of representatives modulo the
+level lattice as in `New.Filling.IsResidueDomain`. -/
 lemma isResidueDomain_residueDomain [S.IsAdmissible] : S.IsResidueDomain S.residueDomain :=
   Classical.epsilon_spec S.exists_isResidueDomain
 
