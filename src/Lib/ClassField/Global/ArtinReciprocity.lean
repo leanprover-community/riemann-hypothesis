@@ -295,13 +295,12 @@ lemma QZChar.apply_pow (χ : QZChar Γ) (g : Γ) (n : ℕ) : χ.val (g ^ n) = n 
   apply Multiplicative.ofAdd.injective
   simpa only [ofAdd_nsmul, toHom_apply] using map_pow (toHom χ) g n
 
-/-- For a prime `l` and `a > 1` there is a prime `p > 2`, not dividing `a`, such that `l` divides
-the order of `a` modulo `p`. -/
-lemma exists_prime_dvd_orderOf {l a : ℕ} (hl : l.Prime) (ha : 1 < a) :
+/-- For `l ≠ 0` and `a > 1` there is a prime `p > 2`, not dividing `a`, such that `l` divides the
+order of `a` modulo `p`. -/
+lemma exists_prime_dvd_orderOf {l a : ℕ} (hl : l ≠ 0) (ha : 1 < a) :
     ∃ p : ℕ, p.Prime ∧ 2 < p ∧ IsUnit (a : ZMod p) ∧ l ∣ orderOf (a : ZMod p) := by
   -- By Zsigmondy's theorem, whose exceptional orders are `2` and `6`, `a` has order exactly
   -- `4 * l` modulo some prime `p`. Then `4 * l < p`.
-  have hl_two : 2 ≤ l := hl.two_le
   obtain ⟨p, hp, h_order⟩ : ∃ p : ℕ, p.Prime ∧ orderOf (a : ZMod p) = 4 * l :=
     (TauCeti.exists_prime_orderOf_eq_iff ha (by omega)).mpr
       ⟨fun ⟨h, _⟩ ↦ by omega, fun ⟨_, h⟩ ↦ by omega⟩
@@ -318,7 +317,7 @@ lemma exists_reciprocity_character {A : ClosurePlace} {v : FinPlace K} (hA : IsP
       (∀ y : Kˣ, abelianLift χ (artinMap Γ (principalIdele y)) = 1) ∧
       ∀ a : ℕ, l.Coprime a → a • m • χ.val σ ≠ 0 := by
   obtain ⟨p, hp, hp_odd, h_isUnit, h_order⟩ :=
-    exists_prime_dvd_orderOf hl (one_lt_pow (n := 2 * m) (by simpa) v.one_lt_q)
+    exists_prime_dvd_orderOf hl.ne_zero (one_lt_pow (n := 2 * m) (by simpa) v.one_lt_q)
   have : Fact p.Prime := ⟨hp⟩
   -- Twice the character `χ` that cuts out the `p`-th roots of unity satisfies the law: its value
   -- on the symbol of `y` is that of `χ` on the symbol of `y * y`, whose norm is positive.
