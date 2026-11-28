@@ -712,7 +712,7 @@ lemma enorm_amplitudeSum_le_orbitBound (hT : S.IsStable T) {j : Fin (𝔰.ϱ + 2
 /-- For a function `f` on the rational elements, the amplitude sum `S.amplitudeSum side T c s c'` is
 the sum over `i` of the amplitude sums `S.amplitudeSum side (T ∩ f ⁻¹' {i}) c s c'` of the
 fibres. -/
-lemma hasSum_amplitudeSum_fibre {side : FullOrCut} {ι : Type} (f : S.G E → ι) (c : S.Classes)
+lemma hasSum_amplitudeSum_fiber {side : FullOrCut} {ι : Type} (f : S.G E → ι) (c : S.Classes)
     (s : S.ResidueGL) (c' : S.Classes) :
     HasSum (fun i : ι ↦ S.amplitudeSum side (T ∩ f ⁻¹' {i}) c s c')
       (S.amplitudeSum side T c s c') := by
@@ -726,10 +726,10 @@ lemma hasSum_amplitudeSum_fibre {side : FullOrCut} {ι : Type} (f : S.G E → ι
 /-- For a function `f` on the rational elements, the norm of the cut amplitude sum
 `S.amplitudeSum .cut T c s c'` is at most the sum over `i` of the norms of the cut amplitude sums of
 the fibres `T ∩ f ⁻¹' {i}` at the same `c`, `s`, `c'`. -/
-lemma enorm_amplitudeSum_le_tsum_fibre {ι : Type} (f : S.G E → ι) (c : S.Classes) (s : S.ResidueGL)
+lemma enorm_amplitudeSum_le_tsum_fiber {ι : Type} (f : S.G E → ι) (c : S.Classes) (s : S.ResidueGL)
     (c' : S.Classes) :
     ‖S.amplitudeSum .cut T c s c'‖ₑ ≤ ∑' i : ι, ‖S.amplitudeSum .cut (T ∩ f ⁻¹' {i}) c s c'‖ₑ := by
-  grw [← (hasSum_amplitudeSum_fibre f c s c').tsum_eq, eNorm_tsum_le_tsum_eNorm]
+  grw [← (hasSum_amplitudeSum_fiber f c s c').tsum_eq, eNorm_tsum_le_tsum_eNorm]
 
 omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
 /-- Every element of `Γ* = S.remainingTerms` has a cell rank, namely `S.cellRank γ`. -/
@@ -756,7 +756,7 @@ theorem enorm_amplitudeSum_le_tsum_termSize (hT : S.IsStable T) (h_sub : T ⊆ S
         .ofReal (S.unipotentCovolume * S.termSize c c' γ) := by
   -- Sort the terms by their cell rank and bound each part.
   let size (γ : S.G E) : ℝ≥0∞ := .ofReal (S.unipotentCovolume * S.termSize c c' γ)
-  grw [enorm_amplitudeSum_le_tsum_fibre S.cellRank c s c', ← tsum_fiberwise _
+  grw [enorm_amplitudeSum_le_tsum_fiber S.cellRank c s c', ← tsum_fiberwise _
     fun γ : S.nearRepresentativesOver T c s c' ↦ S.cellRank γ]
   refine tsum_le_tsum fun j ↦ ?_
   let part : Set (S.G E) := T ∩ S.cellRank ⁻¹' {j}

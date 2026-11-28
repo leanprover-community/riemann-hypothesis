@@ -67,7 +67,7 @@ variable (S) in
 (`S.IsNearTermAt`), and their common lattice `S.pairLattice c c' γ γ'` is a lattice in `Λ ∩ X₀` that
 lies in the lattices `S.termLattice` of both terms and whose rank is the dimension of
 `commonLink γ γ'`, the subspace of `X₀` that the terms share. -/
-structure IsLabelledPair (c c' : S.Classes) (t : S.reducedImage besselS) (γ γ' : S.G E) : Prop where
+structure IsLabeledPair (c c' : S.Classes) (t : S.reducedImage besselS) (γ γ' : S.G E) : Prop where
   /-- The first term is near and has the label `t`. -/
   isNearTermAt_left : S.IsNearTermAt c t (c', γ)
   /-- The second term is near and has the label `t`. -/
@@ -88,9 +88,9 @@ that are near, chosen in their double cosets and of some cell rank, and lie over
 which agrees (`S.Agrees s`). Such a pair has a common label `t`, and the lattices `S.termLattice` of
 both terms contain their common lattice `S.pairLattice c c' γ γ'`. This is a lattice in
 `Λ ∩ X₀ = S.classLatticeX₀ c`. -/
-lemma exists_isLabelledPair_of_isNearPairOverAgreeingBlock {c c' : S.Classes}
+lemma exists_isLabeledPair_of_isNearPairOverAgreeingBlock {c c' : S.Classes}
     {γ γ' : S.G E} (h_pair : S.IsNearPairOverAgreeingBlock c c' (γ, γ')) :
-    ∃ t : S.reducedImage besselS, S.IsLabelledPair c c' t γ γ' := by
+    ∃ t : S.reducedImage besselS, S.IsLabeledPair c c' t γ γ' := by
   obtain ⟨⟨h_near, h_level⟩, ⟨h_near', h_level'⟩, s, hs, h_over, h_over'⟩ := h_pair
   -- The label is that of the block `(c, s, c')` over which both terms lie. The common lattice is
   -- cut out of the intersection of the lattices of the two terms, each of which lies in `Λ ∩ X₀`.
@@ -156,8 +156,8 @@ lemma sum_pairDiscriminant_inv_le_tsum [S.IsAdmissible] {c : S.Classes} {r l : �
   · -- Both terms of a pair have the label of its block, and their lattices contain the common one.
     rintro ⟨c', ⟨γ, γ'⟩, h_pair, h_link, h_disc⟩
     obtain rfl : r = finrank E (commonLink γ γ') := Nat.add_right_cancel (h_rank.trans h_link.symm)
-    obtain ⟨t, ht⟩ : ∃ t : S.reducedImage besselS, S.IsLabelledPair c c' t γ γ' :=
-      exists_isLabelledPair_of_isNearPairOverAgreeingBlock h_pair
+    obtain ⟨t, ht⟩ : ∃ t : S.reducedImage besselS, S.IsLabeledPair c c' t γ γ' :=
+      exists_isLabeledPair_of_isNearPairOverAgreeingBlock h_pair
     let L : S.ClassBoundedDiscLattice c (finrank E (commonLink γ γ')) :=
       ⟨S.pairLattice c c' γ γ', ht.isLatticeOfRank, ht.le_classLatticeX₀, h_disc⟩
     have h_left : (c', γ) ∈ terms (t, L) := ⟨ht.isNearTermAt_left, ht.le_termLattice_left⟩

@@ -360,7 +360,7 @@ lemma encard_le_of_vecMul_mem_smul {α π : Type} [Fintype π] {r l : ℕ} {B : 
   have h_class (C : Set α) (hC : C ⊆ B)
       (h_rows : ∀ a ∈ C, ∀ b ∈ C, W a - W b ∈ colLattice (Ô E) A.valᵀ) :
       C.encard ≤ ENNReal.ofReal (genIndex d.val ^ l) := by
-    refine (encard_le_of_colouring (fun a (_ : Unit) ↦ rest a) (submoduleIndex_smul_ne_zero hd)
+    refine (encard_le_of_coloring (fun a (_ : Unit) ↦ rest a) (submoduleIndex_smul_ne_zero hd)
       (fun a ha _ ↦ h_rest_int a (hC ha)) (x := 1) fun D hD _ _ h_rest ↦ ?_).trans_eq ?_
     · have h_single : D.encard ≤ 1 := Set.encard_le_one_iff.2 fun a b ha hb ↦
         h_unique a (hC (hD ha)) b (hC (hD hb)) (h_rows a (hD ha) b (hD hb)) (h_rest a ha b hb ())
@@ -368,7 +368,7 @@ lemma encard_le_of_vecMul_mem_smul {α π : Type} [Fintype π] {r l : ℕ} {B : 
     · rw [submoduleIndex_smul_intVectors hd, card_unit, pow_one, mul_one, Fintype.card_fin]
   have h_finite : submoduleIndex (colLattice (Ô E) A.valᵀ) (intVectors (Ô E) (Fin r)) ≠ 0 :=
     mod_cast h_index.trans_ne hA_pos.ne'
-  refine (encard_le_of_colouring (fun a (_ : Unit) ↦ W a) h_finite (fun a ha _ ↦ hW_int a ha)
+  refine (encard_le_of_coloring (fun a (_ : Unit) ↦ W a) h_finite (fun a ha _ ↦ hW_int a ha)
     fun C hC _ _ h_rows ↦ h_class C hC fun a ha b hb ↦ h_rows a ha b hb ()).trans_eq ?_
   rw [h_index, card_unit, pow_one, ofReal_mul hA_pos.le]
 

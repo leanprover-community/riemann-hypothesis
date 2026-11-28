@@ -480,7 +480,7 @@ lemma tsum_orbit_le_of_isLatticeTranslate (h_over : γ ∈ S.termsOver c s c')
 by packing, for `γ` over the block `(c, s, c')` and any exponent `i`, the sum of their weights
 `schurWeight` at `y` is at most `tailScale` times a common bound `C` for the products over the
 places of the powers `-(k + i)` of the ratios of the volumes (`volumeRatio`). -/
-lemma tsum_schurWeight_fibre_le {B : Set (S.G E)}
+lemma tsum_schurWeight_fiber_le {B : Set (S.G E)}
     (hB : B ⊆ doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c')) {p₀ : S.G E}
     {l : S.G E → Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E}
     (hl : ∀ p ∈ B, IsLatticeTranslate c γ p₀ p (l p))
@@ -626,7 +626,7 @@ lemma exists_tsum_schurWeight_le {B : Set (S.G E)}
     Subtype.ext (Subtype.ext (congrArg Subtype.val h_eq :))
   refine (tsum_comp_le_tsum_of_injective (f := f) hf
     fun r ↦ S.schurWeight c' r (min 𝔰.ϱ j) (u * S.eichlerShift j x * y)).trans ?_
-  refine tsum_schurWeight_fibre_le hB hl h_over q fun p hp hq ↦ ?_
+  refine tsum_schurWeight_fiber_le hB hl h_over q fun p hp hq ↦ ?_
   subst hq
   exact Finset.prod_le_prod fun v _ ↦ h_ratio hp v
 

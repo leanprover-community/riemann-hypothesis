@@ -57,7 +57,7 @@ vectors of finite adeles over the ring `Ô E` of integral finite adeles, with `K
 index in `K'`. Attach to each element of `A` a family `f a`, indexed by `ι`, of vectors of `K'`. If
 every nonempty subset of `A` whose families are congruent modulo `K` has at most `x` elements, then
 `A` has at most `[K' : K ∩ K'] ^ card ι * x` elements. -/
-lemma encard_le_of_colouring {E : Type} [Field E] [CMType E]
+lemma encard_le_of_coloring {E : Type} [Field E] [CMType E]
     {α ι σ : Type} [Fintype ι] {A : Set α} (f : α → ι → σ → 𝔸f E)
     {K K' : Submodule (Ô E) (σ → 𝔸f E)} (h_index : submoduleIndex K K' ≠ 0)
     (hf : ∀ a ∈ A, ∀ i : ι, f a i ∈ K') {x : ℝ≥0∞}
@@ -319,7 +319,7 @@ lemma IsFrameSet.encard_le_of_sharedVectors_eq (hB : S.IsFrameSet c B)
   calc (B.encard : ℝ≥0∞)
       ≤ ENNReal.ofReal (submoduleIndex (d • intVectors (Ô E) (Fin 𝔰.n))
           (intVectors (Ô E) (Fin 𝔰.n)) ^ card (Fin 𝔰.ϱ)) * 1 := by
-        refine encard_le_of_colouring block (submoduleIndex_smul_ne_zero hd_int) h_block_int
+        refine encard_le_of_coloring block (submoduleIndex_smul_ne_zero hd_int) h_block_int
           fun C hC _ _ h_congr ↦ ?_
         exact_mod_cast Set.encard_le_one_iff.2 fun p q hp hq ↦
           h_unique p (hC hp) q (hC hq) (h_congr q hq p hp)
@@ -405,7 +405,7 @@ lemma IsFrameSet.encard_le_of_conjTranspose_mul_eq (hB : S.IsFrameSet c B)
       ENNReal.ofReal ((submoduleIndex (d • P) P : ℝ) ^ card (Fin 𝔰.n)) := by
     rw [h_index, Fintype.card_fin]
   rw [h_factor]
-  refine encard_le_of_colouring (fun p i ↦ ((↑) : E → 𝔸f E) ∘ (x p - x p₀).col i) h_index_ne h_mem
+  refine encard_le_of_coloring (fun p i ↦ ((↑) : E → 𝔸f E) ∘ (x p - x p₀).col i) h_index_ne h_mem
     fun D hD p₁ hp₁ h_congr ↦ ?_
   -- In one class `D` the parts in `X₀` are congruent modulo `d`; a move removes the difference.
   have h_join : ∀ p ∈ D, ∃ u' ∈ S.classUnipotent₀ c, framePartX₀ (u' * p.2) = x p₁ := by
@@ -468,7 +468,7 @@ lemma IsFrameSet.encard_le_of_le_termLattice (hB : S.IsFrameSet c B)
         ENNReal.ofReal ((submoduleIndex K (intVectors (Ô E) (Fin r)) : ℝ) ^ card (Fin 𝔰.ϱ)) := by
     rw [h_index, Fintype.card_fin]
   rw [h_factor]
-  refine encard_le_of_colouring (fun p i ↦ (finAdeleMatrix (w p) * a.val) i) h_index_ne
+  refine encard_le_of_coloring (fun p i ↦ (finAdeleMatrix (w p) * a.val) i) h_index_ne
     (fun p hp i ↦ (hw p hp).isIntMatrix i) fun D hD p₁ hp₁ h_congr ↦ ?_
   -- In one class `D` a move gives every frame the lift of `p₁`.
   have h_join : ∀ p ∈ D, ∃ u ∈ S.classUnipotent₀ c,

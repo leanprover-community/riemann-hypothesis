@@ -392,7 +392,7 @@ vector `besselFrame l` of floor `l` added; `q` is its set of indices. If the ima
 `g ↦ g E` is at most the fibre measure of the Gram map over the Gram matrix of `E` (`LeGramFiber`),
 then the same holds for `E'` and the image of the product of `m` and `θ_l / 2` under
 `(g, σ) ↦ g σ⁻¹ E'`. -/
-lemma RealPlaceSizes.leGramFibre_mconv_floorMeasure (hF : RealPlaceSizes 𝔰 ρ s b) (l : Fin 𝔰.n)
+lemma RealPlaceSizes.leGramFiber_mconv_floorMeasure (hF : RealPlaceSizes 𝔰 ρ s b) (l : Fin 𝔰.n)
     {m : Measure 𝔰.G₁} [SFinite m] {q : 𝔰.BesselIndex → Prop} [DecidablePred q]
     (hq : ∀ i : 𝔰.BesselIndex, q i ↔ floorOf i < l ∨ i = 𝔰.besselFrame l)
     (hm : LeGramFiber 𝔰.J₁
@@ -435,7 +435,7 @@ place datum `complexData` at `ℂ`, the measure `partialGroupMeasure 0 l` is the
 `a` and `θ_a` the measure of floor `a`. Its image under `g ↦ g⁻¹ (e_0, e*_0, …, e_(l-1), e*_(l-1))`,
 divided by `2 ^ (2 l)`, is at most the fibre measure of the Gram map on the tuples with the Gram
 matrix of the first `l` hyperbolic pairs. -/
-lemma RealPlaceSizes.leGramFibre_partialGroupMeasure (hF : RealPlaceSizes 𝔰 ρ s b) {l : ℕ}
+lemma RealPlaceSizes.leGramFiber_partialGroupMeasure (hF : RealPlaceSizes 𝔰 ρ s b) {l : ℕ}
     (hl : l ≤ 𝔰.ϱ) :
     LeGramFiber 𝔰.J₁
       (inclMatrix ℂ (Subtype.val : {i : 𝔰.BesselIndex // floorOf i < l} → 𝔰.BesselIndex))
@@ -464,7 +464,7 @@ lemma RealPlaceSizes.leGramFibre_partialGroupMeasure (hF : RealPlaceSizes 𝔰 �
           (Subtype.val : {i : 𝔰.BesselIndex // floorOf i < a ∨ i = .inl a} → 𝔰.BesselIndex))
         (((2⁻¹ : ℝ≥0∞) ^ (2 * a.val) • (hF.complexData.partialGroupMeasure 0 a).inv) ∗ₘ
           ((2⁻¹ : ℝ≥0∞) • (hF.complexData.floorMeasure a).inv)) :=
-      hF.leGramFibre_mconv_floorMeasure a.castSucc (by simp) (ih a.isLt.le)
+      hF.leGramFiber_mconv_floorMeasure a.castSucc (by simp) (ih a.isLt.le)
     rw [h_split]
     refine h_frame.insert (j := eStar a) (by simp) h_index ?_ ?_
     · have h_zero : (𝔰.J₁ (eStar a) (eStar a)).re = 0 := by simp
@@ -493,7 +493,7 @@ lemma RealPlaceSizes.inv_groupMeasure_le (hF : RealPlaceSizes 𝔰 ρ s b) :
     (hF.complexData.partialGroupMeasure 0 𝔰.ϱ).inv) ∗ₘ
     ((2⁻¹ : ℝ≥0∞) • (hF.complexData.floorMeasure 𝔰.ϱ).inv)
   have h_tuple : LeGramFiber 𝔰.J₁ (inclMatrix ℂ (e ∘ inl)) m :=
-    hF.leGramFibre_mconv_floorMeasure 𝔰.top h_index (hF.leGramFibre_partialGroupMeasure le_rfl)
+    hF.leGramFiber_mconv_floorMeasure 𝔰.top h_index (hF.leGramFiber_partialGroupMeasure le_rfl)
   calc hF.complexData.groupMeasure.inv
       = (hF.complexData.partialGroupMeasure 0 𝔰.ϱ).inv ∗ₘ (hF.complexData.floorMeasure 𝔰.ϱ).inv ∗ₘ
           volume.map embedH := by simp [descConv_succ, inv_mconv, mconv_assoc]

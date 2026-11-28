@@ -408,7 +408,7 @@ with two properties. First, the matrix `t ν g` has size 1 for the gauge `Γ`. S
 the Heisenberg group with `n y` in `Γ.closeBelow a g`, some vector `v` differs from (t n₀ (t n)⁻¹ -
 1) e*_a by a combination of the e_b, b < a (`CongrBelow`), and has size 17 after division by the
 level unit `F.levelUnit`. -/
-lemma Gauge.exists_centre_of_isNear (Γ : Gauge F) (a : Fin 𝔰.ϱ) {g y n₀ ν₀ : T.G}
+lemma Gauge.exists_center_of_isNear (Γ : Gauge F) (a : Fin 𝔰.ϱ) {g y n₀ ν₀ : T.G}
     (h_near : F.IsNear (a + 1) g) (hn₀ : n₀ ∈ floorUnipotent a) (hν₀ : ν₀ ∈ unipotentBelow a)
     (hy₀ : g⁻¹ * (ν₀ * (n₀ * y)) ∈ Γ.positionsOfSize) :
     ∃ t ∈ partialUnitriangularGroup (a + 1) ⊓ floorGroup a, ∃ ν ∈ unipotentBelow (a + 1),
@@ -514,7 +514,7 @@ lemma Gauge.lintegral_cutSquare_le (Γ : Gauge F) {k : T.G → T.G → ℂ} {d :
             CongrBelow a (((t * n₀ * (t * n)⁻¹).val.val - 1) *ᵥ Pi.single (eStar a) 1) v ∧
             F.levelUnit⁻¹.val • v ∈ Γ.vecsOfSize 17 := by
       rintro n₀ ⟨hn₀, ⟨ν₀, hν₀, hy₀⟩, h_near⟩
-      obtain ⟨t, ht, ν, hν, h_size, h_lift⟩ := Γ.exists_centre_of_isNear a h_near hn₀ hν₀ hy₀
+      obtain ⟨t, ht, ν, hν, h_size, h_lift⟩ := Γ.exists_center_of_isNear a h_near hn₀ hν₀ hy₀
       exact ⟨t, ht, ν, hν, h_size, fun n ⟨hn, h_close, _⟩ ↦ h_lift n hn h_close⟩
     refine (Γ.parseval_heisenbergMeasure_le a (ξ := F.levelUnit⁻¹) (u := F.levelUnit) (ε := 0)
       (C := 1)

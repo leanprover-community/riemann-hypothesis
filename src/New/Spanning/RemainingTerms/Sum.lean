@@ -670,7 +670,7 @@ lemma enorm_amplitudeSum_sq_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S
     · exact fun p ↦ enorm_amplitudeSum_mul_le (hT.inter_piece p.val.1) (hT.inter_piece p.val.2)
         (Set.inter_subset_left.trans h_sub) (Set.inter_subset_left.trans h_sub)
   calc
-    _ ≤ (∑' κ, part κ) ^ 2 := by grw [enorm_amplitudeSum_le_tsum_fibre S.piece]
+    _ ≤ (∑' κ, part κ) ^ 2 := by grw [enorm_amplitudeSum_le_tsum_fiber S.piece]
     _ = ∑' p : Piece E 𝔰 × Piece E 𝔰, product p := by
       simp_rw [product, sq, ← ENNReal.tsum_mul_right, ← ENNReal.tsum_mul_left, ← tsum_prod]
     _ = ∑' p : diagonal, product p + ∑' p : ↥diagonalᶜ, product p :=

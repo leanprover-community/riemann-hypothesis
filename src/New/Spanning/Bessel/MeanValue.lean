@@ -33,7 +33,7 @@ coordinates as a lower bound, and the fibre measure on frames is used as an uppe
 
 * `New.RealPlace.lintegral_eq_lintegral_sphereMass_mul_dualFrameOfGram`: Lebesgue measure on the
   tuples dual to the frame, in terms of their Gram matrix and of `R°`.
-* `New.RealPlace.leGramFibre_gramSectionMeasure`: the law of `s γ_Z e`, with a density proportional
+* `New.RealPlace.leGramFiber_gramSectionMeasure`: the law of `s γ_Z e`, with a density proportional
   to `New.RealPlace.gramDiscReal Z ^ (|κ| - 1)`, is at most the fibre measure.
 * `New.RealPlace.lintegral_gramSection_le`: the mean value inequality for the integral of
   `f (s' γ_Z s)` over `s, s'` in `R°` and `Z` in `Ω`.
@@ -512,7 +512,7 @@ matrices `Y` of the size of `e`, and `dT` is Lebesgue measure in the real coordi
 (`hermOfReal`). By the definition of `LeGramFiber` this means: if `K ≥ 0` is lower semicontinuous
 and `∫_{T(Y) ∈ S} K dY ≤ C vol(S)` for all open `S` inside some neighbourhood of `T₀`, then
 `∫ K dl ≤ C`. -/
-theorem leGramFibre_gramSectionMeasure :
+theorem leGramFiber_gramSectionMeasure :
     LeGramFiber 𝔰.J₁ 𝔰.frameCols (gramSectionMeasure 𝔰) := by
   -- The tuples with `Z` in the open cell have the coordinates `tuple t (Z, s)`, with the density
   -- `density t (Z, s)` for `dt` and `μ = dZ ds`. At the coordinates `t₀` of the Gram matrix of `e`
@@ -608,7 +608,7 @@ theorem lintegral_gramSection_le {f : 𝔰.G₁ → ℝ≥0∞} (hf : Measurable
       exact lintegral_congr fun Z ↦ (lintegral_const_mul _ (by fun_prop)).symm
     _ = ∫⁻ γ, f γ ∂gramSectionMeasure 𝔰 ∗ₘ fixerHaar 𝔰 := (lintegral_mconv hf).symm
     _ ≤ ENNReal.ofReal ratio * ∫⁻ γ, f γ := by
-      grw [leGramFibre_gramSectionMeasure.mconv_fixerHaar_le, lintegral_smul_measure, smul_eq_mul]
+      grw [leGramFiber_gramSectionMeasure.mconv_fixerHaar_le, lintegral_smul_measure, smul_eq_mul]
 
 end New.RealPlace
 
