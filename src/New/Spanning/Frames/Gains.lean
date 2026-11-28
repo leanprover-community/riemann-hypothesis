@@ -34,9 +34,7 @@ Notions from other files:
   `New.Floors.Gauge.sq_lintegral_mul_comp_weylElem_inv_le_of_section`: separating the frames, also
   with a pivot on a section.
 * `New.Floors.Gauge.formIntegrandL1Norm_sq_le_of_char`: the gain from a frequency.
-* `New.Floors.Gauge.partialCorrelation_mul_eq_integral_sectionPoint`,
-  `New.Floors.Gauge.formIntegrandL1Norm_sq_le_of_heads`: the phase of the lifts and the gain from
-  two heads.
+* `New.Floors.Gauge.formIntegrandL1Norm_sq_le_of_heads`: the gain from two heads.
 * `New.Floors.PlaceData.IsPairingKernel.pivotL1Norm_le_sum_deepModulus`: the cut at the first deep
   vector.
 * `New.Floors.Gauge.pivotL1Norm_sq_le_of_deep`,
@@ -831,97 +829,6 @@ theorem Gauge.sq_lintegral_mul_comp_weylElem_inv_le_of_section (hx : x ∈ F.pos
         grw [h_first, h_second, prod_range_succ]
         exact le_of_eq (by ring)
 
-/-- The phase of the lifts. Let the place datum `F` have a gauge, let `W` be a cut Bessel function,
-`ξ = (1 / p_i - 1 / q_i) / F.levelUnit`, and let `n` lie in the Heisenberg group of floor `i`. Let
-`y'` be the point over `n` of the section `⟨e_i, y'⟩ = star p_i`. The correlation from floor `i + 1`
-on at `(n g, n g')` is the integral, over the next vector `y = σ⁻¹ e_(i+1)`, of `ψ(-ξ ⟨y', y⟩)`
-times the correlation from floor `i + 2` on at `(σ g, σ g')`, which does not depend on `y'`. -/
-lemma Gauge.partialCorrelation_mul_eq_integral_sectionPoint (Γ : Gauge F) (hk : F.IsCut W)
-    {i : Fin 𝔰.ϱ} (hξ : ξ.val = F.levelUnit⁻¹.val * ((p i)⁻¹.val - (q i)⁻¹.val)) {n : T.G}
-    (hn : n ∈ floorUnipotent i) (g g' : T.G) :
-    F.partialCorrelation (i + 1) (frameCorrelation W (weylRatio (i + 1) p q)) (n * g) (n * g') =
-      ∫ σ : T.G, ψ (-ξ.val * star (sectionPoint i (star (p i).val) n) ⬝ᵥ
-          T.splitGram *ᵥ orbitPoint i.succ σ) *
-        F.partialCorrelation (i + 1 + 1) (frameCorrelation W (weylRatio (i + 1) p q)) (σ * g)
-          (σ * g')
-          ∂F.floorMeasure (i + 1) := by
-  obtain ⟨t, rfl⟩ : ∃ t : ({k : 𝔰.BesselIndex // i + 1 ≤ floorOf k} → A) × skewAdjoint A,
-      n = P.heisenbergElem (T := T) i t := exists_eq_heisenbergElem_of_mem hn
-  let ω : 𝔰.BesselIndex → A := inclMatrix A Subtype.val *ᵥ t.1
-  obtain ⟨μ, hμ⟩ : ∃ μ : A, sectionPoint i (star (p i).val) (P.heisenbergElem (T := T) i t) =
-      star (p i).val • (Pi.single (eStar i) 1 - ω + μ • Pi.single (Sum.inl i) 1) :=
-    exists_sectionPoint_heisenbergElem_eq (star (p i).val) t
-  have h_phase : F.partialCorrelation (i + 1) (frameCorrelation W (weylRatio (i + 1) p q))
-      (P.heisenbergElem (T := T) i t * g) (P.heisenbergElem (T := T) i t * g') =
-        ∫ σ : T.G, ψ (-(F.levelUnit⁻¹.val * ((p i / q i).val - 1)) *
-            star ω ⬝ᵥ T.splitGram *ᵥ orbitPoint i.succ σ) *
-          F.partialCorrelation (i + 1 + 1) (frameCorrelation W (weylRatio (i + 1) p q)) (σ * g)
-            (σ * g')
-            ∂F.floorMeasure (i + 1) := by
-    simpa [ω] using partialCorrelation_weylRatio_heisenbergElem i (ε := 1) le_rfl le_rfl
-      (Γ.isPairingKernel_frameCorrelation hk (i + 1) p q) t g g'
-  rw [h_phase]
-  refine integral_congr_ae (ae_floorMeasure_mem.mono fun σ hσ ↦ ?_)
-  -- The next vector `y` is orthogonal to `e_i` and `e*_i`, so `⟨y', y⟩ = -p_i ⟨ω, y⟩`.
-  have h_orth (k : 𝔰.BesselIndex) (h_lt : floorOf k < i + 1) :
-      star (Pi.single k (1 : A)) ⬝ᵥ T.splitGram *ᵥ orbitPoint i.succ σ =
-        star (Pi.single k (1 : A)) ⬝ᵥ T.splitGram *ᵥ Pi.single (𝔰.besselFrame i.succ) 1 := by
-    have h_fix : (σ.val : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) *ᵥ Pi.single k 1 =
-        Pi.single k 1 := by
-      ext l
-      simpa [Pi.single_apply, Matrix.one_apply] using mem_floorGroup.1 hσ l k h_lt
-    rw [← U.form_mulVec_mulVec σ, h_fix, orbitPoint_eq_iff.1 rfl]
-  have h_floor : floorOf (𝔰.besselFrame i.succ) = i + 1 := floorOf_besselFrame
-  have h_e : star (Pi.single (Sum.inl i) (1 : A)) ⬝ᵥ T.splitGram *ᵥ orbitPoint i.succ σ = 0 := by
-    have h_ne : eStar i ≠ 𝔰.besselFrame i.succ := fun h ↦ by
-      rw [← h] at h_floor
-      exact i.val.succ_ne_self h_floor.symm
-    rw [h_orth _ (by simp)]
-    simp [h_ne]
-  have h_dual : star (Pi.single (eStar i) (1 : A)) ⬝ᵥ T.splitGram *ᵥ orbitPoint i.succ σ = 0 := by
-    have h_ne : Sum.inl i ≠ 𝔰.besselFrame i.succ := fun h ↦ by simp [← h] at h_floor
-    rw [h_orth _ (by simp)]
-    simp [h_ne]
-  have h_form : star (sectionPoint i (star (p i).val) (P.heisenbergElem (T := T) i t)) ⬝ᵥ
-        T.splitGram *ᵥ orbitPoint i.succ σ =
-      -(p i).val * star ω ⬝ᵥ T.splitGram *ᵥ orbitPoint i.succ σ := by
-    simp only [hμ, star_smul, star_add, star_sub, star_star, smul_dotProduct, add_dotProduct,
-      sub_dotProduct, h_e, h_dual, smul_eq_mul]
-    ring
-  have h_freq : -(F.levelUnit⁻¹.val * ((p i / q i).val - 1)) = -ξ.val * -(p i).val := by
-    rw [hξ, div_eq_mul_inv, Units.val_mul]
-    linear_combination -F.levelUnit⁻¹.val * (p i).inv_mul
-  simp only [h_form, h_freq, mul_assoc]
-
-/-- Plancherel's bound for a pivot on a section. Let `W` be a cut Bessel function, `p` a head of
-length `i + 1` and `ξ = (1 / p_i - 1 / q_i) / F.levelUnit`. Let `φ(σ)` be the correlation from floor
-`i + 2` on at `(σ g, σ g')`, let `y = orbitPoint i.succ σ`, and let `y'` be the point over `n` of
-the section `⟨e_i, y'⟩ = star p_i`. Over the `n` with `w_p n g` near at `i + 1`, the squared L² norm
-of `n ↦ ∫ ψ(-ξ ⟨y', y⟩) φ(σ) dθ_(i+1)(σ)` is at most
-`(P.kernelBound / P.modulus ξ) ^ card F.FreeIndex` times `F.floorModulus i (p i)⁻¹ * Γ.floorsConst`
-times that of `φ`. -/
-lemma Gauge.lintegral_section_le (hk : F.IsCut W) {i : Fin 𝔰.ϱ} (hp : Γ.IsHead (i + 1) p)
-    (hξ : ξ.val = F.levelUnit⁻¹.val * ((p i)⁻¹.val - (q i)⁻¹.val)) (g g' : T.G) :
-    ∫⁻ n in {n : T.G | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))},
-        ‖∫ σ : T.G, ψ (-ξ.val * star (sectionPoint i (star (p i).val) n) ⬝ᵥ
-            T.splitGram *ᵥ orbitPoint i.succ σ) *
-          F.partialCorrelation (i + 1 + 1) (frameCorrelation W (weylRatio (i + 1) p q)) (σ * g)
-            (σ * g')
-            ∂F.floorMeasure (i + 1)‖ₑ ^ 2 ∂heisenbergMeasure i ≤
-      (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * F.floorModulus i (p i)⁻¹ * Γ.floorsConst *
-        ∫⁻ σ : T.G, ‖F.partialCorrelation (i + 1 + 1) (frameCorrelation W (weylRatio (i + 1) p q))
-          (σ * g) (σ * g')‖ₑ ^ 2 ∂F.floorMeasure (i + 1) := by
-  have h_meas : MeasurableSet {n : T.G | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))} :=
-    ((measurable_mul_const g).const_mul _) measurableSet_isNear
-  rw [← lintegral_indicator h_meas]
-  refine (Γ.lintegral_heisenbergMeasure_le_of_heads hk i.isLt hp hξ g g' (C := 1)
-    fun n hn h_ne ↦ ?_).trans_eq (one_mul _)
-  have h_near : n ∈ {n : T.G | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))} :=
-    Set.mem_of_indicator_ne_zero h_ne
-  rw [Set.indicator_of_mem h_near, ← Γ.partialCorrelation_mul_eq_integral_sectionPoint hk hξ hn,
-    one_mul]
-  exact ⟨h_near, le_rfl⟩
-
 /-- Let `W` be a cut Bessel function, `p` a head of length j = i + 1 ≤ ϱ, `q` a second sequence of
 units, `x` a position and `F.groupMeasure` a Haar measure, and let
 `ξ = (1 / p_i - 1 / q_i) / F.levelUnit` be a unit. Then the square of the L¹ norm
@@ -957,11 +864,17 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_heads (hk : F.IsCut W) (hj : j ≤ �
         (P.kernelBound / P.modulus ξ) ^ card F.FreeIndex * F.floorModulus i (p i)⁻¹ *
           Γ.floorsConst *
           (F.weightedSquareSum k₂ x (i + 1) g / F.depthWeight (i + 1) g x) := by
-    grw [← lintegral_partialCorrelation_sq_le hj, ← Γ.lintegral_section_le hk (i := ⟨i, hj⟩) hp hξ]
-    refine le_of_eq (lintegral_congr_ae (ae_restrict_of_ae (ae_mem_floorUnipotent.mono ?_)))
-    intro n hn
-    simp only [φ₂, k₂, mul_assoc n]
-    rw [Γ.partialCorrelation_mul_eq_integral_sectionPoint hk (i := ⟨i, hj⟩) hξ hn]
+    have h_meas : MeasurableSet {n : T.G | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))} :=
+      ((measurable_mul_const g).const_mul _) measurableSet_isNear
+    rw [← lintegral_indicator h_meas]
+    refine (Γ.lintegral_heisenbergMeasure_le_of_heads hk hj hp hξ g (g * x) (C := 1)
+      fun n _ h_ne ↦ ?_).trans ?_
+    · have h_near : n ∈ {n : T.G | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))} :=
+        Set.mem_of_indicator_ne_zero h_ne
+      refine ⟨h_near, ?_⟩
+      rw [Set.indicator_of_mem h_near, one_mul]
+      simp [φ₂, k₂, mul_assoc]
+    · grw [one_mul, ← lintegral_partialCorrelation_sq_le hj]
   have h_energy : ∫⁻ g, F.weightedSquare i k₁ x g ∂descConv F.floorMeasure 0 (i + 1) ≤
       F.weightedSquareIntegral 0 k₁ x := by
     grw [← ker₁.weightedSquareIntegral_le_weightedSquareIntegral_zero (by lia : i ≤ 𝔰.n),

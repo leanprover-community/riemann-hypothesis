@@ -36,7 +36,8 @@ to 12 prepare.
 6. The mass at a real place, against the uncut Bessel function.
    `New.Floors.IsCutBessel.norm_floorForm_zero_le`.
 7. Plancherel's formula on a quadric, for the pivots and for the vectors after them.
-   `New.Floors.Gauge.fourierSqNormLe_floorQuadricMeasure`, `New.Floors.Gauge.lintegral_section_le`,
+   `New.Floors.Gauge.fourierSqNormLe_floorQuadricMeasure`,
+   `New.Floors.Gauge.lintegral_heisenbergMeasure_le_of_heads`,
    `New.Floors.Gauge.parseval_heisenbergMeasure_le`.
 8. Depth, and a subspace of large rank that looks the same from both points.
    `New.Floors.PlaceData.depth`, `New.Floors.PlaceData.depthWeight`,
