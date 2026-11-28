@@ -481,9 +481,8 @@ lemma adeleNorm_algebraMap (x : L) : adeleNorm K L x = Algebra.norm K x := by
 `a ^ [L : K]`. -/
 lemma adeleNorm_finAdeleIncl (a : 𝔸f K) :
     adeleNorm K L (finAdeleIncl K L a) = a ^ finrank K L := by
-  -- both sides are continuous, so it suffices to compare them on the dense subset `K`
-  revert a
-  exact denseRange_algebraMap_finAdele.eq (by simp) (by fun_prop) (by fun_prop)
+  simpa only [adeleNorm, algebraMap_eq_finAdeleIncl, Fintype.card_fin] using
+    norm_algebraMap_of_basis (adeleBasis (finBasis K L)) a
 
 /-- For Galois `L / K`, the norm of a finite adele `y` of `L`, included back in the adeles of `L`,
 is the product of the images of `y` under the Galois group. -/
