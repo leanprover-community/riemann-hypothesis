@@ -689,6 +689,19 @@ lemma norm_schur_inv_cols_le_weylGauge [DecidableEq l]
     _ ≤ _ * ‖w‖ := norm_mulVec_le (norm_schur_diagonal_piecewise_inv_le (M := M) S κ) w
     _ = _ := by simp [weylGauge, weylRep, w, φ, -map_inv]
 
+/-- The inverse of a block diagonal point acts on the included columns of each summand
+by the inverse of that summand's point. -/
+private lemma block_inv_columns [DecidableEq N] [DecidableEq m]
+    (e : N ⊕ m ≃ n) (h : Gf E N) (h' : Gf E m) :
+    (U.block e (h, h'))⁻¹.val.val.submatrix id (e ∘ Sum.inl) =
+      inclMatrix (𝔸f E) (e ∘ Sum.inl) * h⁻¹.val.val ∧
+    (U.block e (h, h'))⁻¹.val.val.submatrix id (e ∘ Sum.inr) =
+      inclMatrix (𝔸f E) (e ∘ Sum.inr) * h'⁻¹.val.val := by
+  rw [← map_inv, Prod.inv_mk, U.block_val]
+  constructor <;> refine Matrix.ext fun i j ↦ ?_ <;>
+    obtain ⟨i | i, rfl⟩ := e.surjective i <;>
+      simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply]
+
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
 /-- Let `V.ε : N ⊕ m ≃ n` split the indices, let `ι` be a p-adic place, and let `M ≠ 0` lie in the
@@ -715,6 +728,7 @@ lemma weylGauge_cartanProduct_le [DecidableEq m] [DecidableEq N]
   -- for each block of `V.ε`; so its norm is at most the product of their norms.
   -- `norm_schur_inv_cols_le_weylGauge` bounds each.
   set g : Gf E n := U.block V.ε (h, h') * L.point
+  obtain ⟨h_cols_big, h_cols_small⟩ := block_inv_columns V.ε h h'
   -- The block `N`: only the columns in the image of `V.dividedEmb` cost a power of `M`.
   have h_big : ‖schur O.colsPlus (fun τ : NumberField.InfinitePlace E ↦
         (g⁻¹.val.val.submatrix id (V.ε ∘ .inl)).map
@@ -722,17 +736,7 @@ lemma weylGauge_cartanProduct_le [DecidableEq m] [DecidableEq N]
       ‖(M : ℂ_[p])‖⁻¹ ^ (∑ τ : NumberField.InfinitePlace E,
           #(univ.map V.dividedEmb) * (range (card N)).sum (O.colsPlus τ)) *
         weylGauge (ι := ι) O.colsPlus 0 h y :=
-    V.norm_schur_inv_cols_le_weylGauge hM L V.hasColumnsBelow.1 hL.exists_cols_eq_zero <| by
-      rw [← map_inv, Prod.inv_mk, U.block_val]
-      refine Matrix.ext fun i j ↦ ?_
-      obtain ⟨i' | i', rfl⟩ := V.ε.surjective i
-      · simp only [submatrix_apply, id_eq, Function.comp_apply, Equiv.symm_apply_apply,
-          fromBlocks_apply₁₁, Matrix.mul_apply, inclMatrix, Matrix.one_apply,
-          EmbeddingLike.apply_eq_iff_eq, Sum.inl.injEq, ite_mul, one_mul, zero_mul,
-          Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
-      · simp only [submatrix_apply, id_eq, Function.comp_apply, Equiv.symm_apply_apply,
-          fromBlocks_apply₂₁, Matrix.zero_apply, Matrix.mul_apply, inclMatrix, Matrix.one_apply,
-          EmbeddingLike.apply_eq_iff_eq, reduceCtorEq, ↓reduceIte, zero_mul, Finset.sum_const_zero]
+    V.norm_schur_inv_cols_le_weylGauge hM L V.hasColumnsBelow.1 hL.exists_cols_eq_zero h_cols_big
   -- The block `m`, read through the conjugate embedding: every column may cost a power of `M`.
   have h_small : ‖schur O.colsMinus (fun τ : NumberField.InfinitePlace E ↦
         (g⁻¹.val.val.submatrix id (V.ε ∘ .inr)).map
@@ -741,17 +745,7 @@ lemma weylGauge_cartanProduct_le [DecidableEq m] [DecidableEq N]
           card m * (range (card m)).sum (O.colsMinus τ)) *
         weylGauge (ι := ⟨ιₚ.comp conj⟩) O.colsMinus 0 h' (star η) :=
     V.norm_schur_inv_cols_le_weylGauge (ι := ⟨ιₚ.comp conj⟩) (S := univ) hM L V.hasColumnsBelow.2
-      ⟨1, fun _ _ h ↦ (h (mem_univ _)).elim⟩ <| by
-      rw [← map_inv, Prod.inv_mk, U.block_val]
-      refine Matrix.ext fun i j ↦ ?_
-      obtain ⟨i' | i', rfl⟩ := V.ε.surjective i
-      · simp only [submatrix_apply, id_eq, Function.comp_apply, Equiv.symm_apply_apply,
-          fromBlocks_apply₁₂, Matrix.zero_apply, Matrix.mul_apply, inclMatrix, Matrix.one_apply,
-          EmbeddingLike.apply_eq_iff_eq, reduceCtorEq, ↓reduceIte, zero_mul, Finset.sum_const_zero]
-      · simp only [submatrix_apply, id_eq, Function.comp_apply, Equiv.symm_apply_apply,
-          fromBlocks_apply₂₂, Matrix.mul_apply, inclMatrix, Matrix.one_apply,
-          EmbeddingLike.apply_eq_iff_eq, Sum.inr.injEq, ite_mul, one_mul, zero_mul,
-          Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
+      ⟨1, fun _ _ h ↦ (h (mem_univ _)).elim⟩ h_cols_small
   -- Move the action of `g⁻¹` into `cartanProduct` (`weylRep_mulVec_cartanProduct`) and split the
   -- power of `M` by blocks.
   have hη : ιₚ ∘ η = ιₚ.comp conj ∘ star η :=
