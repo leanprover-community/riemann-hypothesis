@@ -355,8 +355,9 @@ lemma exists_pow_eq_mul_of_local (hts : (t * s : D) = 1)
         hN, hPQ, sup_idem]
     grw [h_le, ← κ.coe_toLinearMap, image_span_subset_span, span_span_of_tower] at h_mem
     exact (mem_span_image_finset_iff_exists_fun _).mp h_mem
+  have := IsAbsIntegrallyClosedLocal.henselianLocalRing (A := A)
   obtain ⟨x, hx⟩ : ∃ x : e → A, ∀ k : e, x k = MvPolynomial.aeval x ((ϖ • p) k) :=
-    IsAbsIntegrallyClosedLocal.multivariate_hensel fun _ _ h ↦ hϖ (isUnit_of_mul_isUnit_left h)
+    multivariate_hensel fun _ _ h ↦ hϖ (isUnit_of_mul_isUnit_left h)
   let ev : MvPolynomial e D →+* D := MvPolynomial.eval (algebraMap A D ∘ x)
   let a₀ : B := ∑ k, x k • a k
   let b₀ : C := ∑ k, x k • b k

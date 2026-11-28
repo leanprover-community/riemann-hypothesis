@@ -11,11 +11,12 @@ import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.MvPolynomial.Ideal
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.Unramified.LocalStructure
+import TauCeti.RingTheory.Henselian.Section
 public import Lib.Cohomology.Etale.Basic
 
 /-!
@@ -39,11 +40,9 @@ polynomials that vanish to high order, and homogenization along a linear form.
 * `New.exists_mem_colon_of_tangent`: a criterion for an ideal to cut out a section of an affine
   scheme of finite type near a point. Tangent vectors at a `k`-valued point `o` along the fibre are
   the `V`-algebra maps to the dual numbers `k[ε]` that reduce to `o`.
-* `New.Variety.IsAbsIntegrallyClosedLocal.multivariate_hensel` is a several-variable Hensel lemma
-  for systems `x i = p i (x)` whose coefficients lie in the maximal ideal. Over a local domain in
-  which every monic polynomial of positive degree has a root
-  (`New.Variety.IsAbsIntegrallyClosedLocal`), it follows from the local structure of étale algebras:
-  a standard étale algebra is given by a monic polynomial, whose residual root lifts.
+* `New.Variety.multivariate_hensel` solves systems `x i = p i (x)` over a Henselian local ring
+  when all coefficients of the `p i` lie in the maximal ideal. The solution lifts the origin of
+  the closed fibre of the equations after inverting their Jacobian.
 
 ## Relation to the literature
 
@@ -390,12 +389,22 @@ section MultivariateHensel
 
 open IsLocalization.Away IsLocalRing MvPolynomial Algebra Localization PreSubmersivePresentation
 
-/-- Hensel's lemma in several variables. Let `A` be an absolutely integrally closed local domain
-(`IsAbsIntegrallyClosedLocal`: a local domain in which every monic polynomial of positive degree has
-a root) and `p i` finitely many polynomials in the variables `X i` with all coefficients in the
-maximal ideal. Then the system `x i = p i (x)` has a solution `x` in `A`. -/
-lemma New.Variety.IsAbsIntegrallyClosedLocal.multivariate_hensel {A : Type*} [CommRing A]
-    [IsAbsIntegrallyClosedLocal A] {ι : Type} [Fintype ι] {p : ι → MvPolynomial ι A}
+/-- An absolutely integrally closed local domain is Henselian, since every residual root
+of a monic polynomial lifts to the domain. -/
+lemma New.Variety.IsAbsIntegrallyClosedLocal.henselianLocalRing {A : Type*} [CommRing A]
+    [IsAbsIntegrallyClosedLocal A] : HenselianLocalRing A where
+  is_henselian f hf a₀ ha _ := by
+    have h_root : f.eval₂ (residue A) (residue A a₀) = 0 := by
+      rw [Polynomial.eval₂_at_apply]
+      exact Ideal.Quotient.eq_zero_iff_mem.mpr ha
+    obtain ⟨a, ha_root, ha_residue⟩ := IsAbsIntegrallyClosed.exists_root_map_eq hf h_root
+    exact ⟨a, ha_root, Ideal.Quotient.eq.mp ha_residue⟩
+
+/-- Hensel's lemma in several variables. Over a Henselian local ring `A`, if the polynomials
+`p i` in finitely many variables have all their coefficients in the maximal ideal, the system
+`x i = p i (x)` has a solution. -/
+lemma New.Variety.multivariate_hensel {A : Type*} [CommRing A] [HenselianLocalRing A]
+    {ι : Type} [Fintype ι] {p : ι → MvPolynomial ι A}
     (hp : ∀ (i : ι) (m : ι →₀ ℕ), (p i).coeff m ∈ maximalIdeal A) :
     ∃ x : ι → A, ∀ i : ι, x i = aeval x (p i) := by
   classical
@@ -425,19 +434,11 @@ lemma New.Variety.IsAbsIntegrallyClosedLocal.multivariate_hensel {A : Type*} [Co
     change IsUnit (origin Z.jacobiMatrix.det)
     simp [origin.map_det, hjac]
   let π : Away Z.jacobian →ₐ[A] ResidueField A := liftAlgHom Z.jacobian hunit
-  -- Near that point the algebra is standard étale, given by a monic `P.f` and a `P.g` to invert.
-  obtain ⟨f, hf : π f ≠ 0, ⟨⟨P : StandardEtalePresentation A (Away f)⟩⟩⟩ :=
-    IsEtaleAt.exists_isStandardEtale (R := A) (.comap π ⊥)
-  -- As `π f ≠ 0`, `π` extends to `Away f`; the image of `P.x` is a root of `P.f` with `P.g` a unit.
-  let π' : Away f →ₐ[A] ResidueField A := liftAlgHom f (.mk0 (π f) hf)
-  obtain ⟨hroot, hg⟩ : P.HasMap (π' P.x) := P.hasMap.map π'
-  -- Lift the residual root to a root `a` of `P.f` in `A`; `P.g` is a unit at `a`.
-  obtain ⟨a, ha, hres⟩ : ∃ a : A, P.f.IsRoot a ∧ algebraMap A (ResidueField A) a = π' P.x :=
-    IsAbsIntegrallyClosed.exists_root_map_eq P.monic_f hroot
-  rw [← hres, Polynomial.aeval_algebraMap_apply] at hg
-  have hga : IsUnit (Polynomial.aeval a P.g) := isUnit_of_map_unit (residue A) _ hg
-  -- Sending `P.x` to `a` gives an `A`-point of `A[X] / (X - p)`: a solution of `X = p(X)`.
-  let σ : Q →ₐ[A] A := ((P.lift a ⟨ha, hga⟩).comp P.equivRing.toAlgHom).comp (algHom A Q (Away f))
+  -- Lift the closed-fibre point over the Henselian pair and restrict to the equations.
+  have : Algebra.Etale A (Away Z.jacobian) :=
+    Algebra.Etale.iff_isStandardSmoothOfRelativeDimension_zero.mpr inferInstance
+  obtain ⟨τ, -⟩ := (TauCeti.HenselianRing.comp_bijective (maximalIdeal A)).surjective π
+  let σ : Q →ₐ[A] A := τ.comp (algHom A Q (Away Z.jacobian))
   refine ⟨fun i ↦ σ (Z.val i), fun i ↦ ?_⟩
   have h_rel : aeval Z.val (X i - p i) = 0 := Z.aeval_val_relation i
   have h_val : Z.val i = aeval Z.val (p i) := by rwa [map_sub, aeval_X, sub_eq_zero] at h_rel
