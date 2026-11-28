@@ -151,6 +151,16 @@ lemma exists_reduction_and_idele_generator {I : Ideal (𝓞 E)} (hI : I ≠ ⊥)
     ⟨h_int, h_one, fun x ↦ h_ker.trans (h_mem_T x)⟩, h_val,
     forall_smul_mem_Ô_iff_of_map_eq_span h_int h_map⟩
 
+variable (E) in
+/-- A finite idele generating the different identifies the trace dual of the integral adeles. -/
+lemma exists_idele_generator_traceDual :
+    ∃ t : (𝔸f E)ˣ,
+      (∀ w : FinPlace E, v (t.val w) = .exp (-multiplicity w.asIdeal (differentIdeal ℤ (𝓞 E)))) ∧
+      ∀ y : 𝔸f E, (∀ u ∈ Ô E, ψf E (u * y) = 1) ↔ t.val * y ∈ Ô E := by
+  obtain ⟨-, -, -, t, -, h_val, h_gen⟩ :=
+    exists_reduction_and_idele_generator (E := E) (differentIdeal_ne_bot (A := ℤ))
+  exact ⟨t, h_val, fun y ↦ forall_ψf_mul_eq_one_iff.trans (h_gen y)⟩
+
 end
 
 variable {E : Type*} [Field E] [CMType E] [SplittingChar E]

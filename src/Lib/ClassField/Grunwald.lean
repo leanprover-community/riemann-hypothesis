@@ -603,18 +603,12 @@ lemma New.multiplicity_star_differentIdeal {L : Type} [Field L] [CMType L] (u : 
   -- when the different times `y` is, that is (`forall_ψf_mul_eq_one_iff`), when `ψf` is trivial on
   -- `Ô L * y`. As `ψf` is invariant under conjugation, `g * star g⁻¹` is integral, which bounds
   -- the multiplicity at `star u` by the one at `u`; the other bound is this one at `star u`.
-  obtain ⟨g, hg_val, hg_dual⟩ : ∃ g : (𝔸f L)ˣ,
-      (∀ u' : FinPlace L,
-        v (g.val u') = exp (-(multiplicity u'.asIdeal (differentIdeal ℤ (𝓞 L)) : ℤ))) ∧
-      ∀ y : 𝔸f L, (∀ c ∈ differentIdeal ℤ (𝓞 L), c • y ∈ Ô L) ↔ g.val * y ∈ Ô L := by
-    obtain ⟨-, -, -, g, -, hg_val, hg_dual⟩ :=
-      exists_reduction_and_idele_generator (E := L) (differentIdeal_ne_bot (A := ℤ))
-    exact ⟨g, hg_val, hg_dual⟩
+  obtain ⟨g, hg_val, hg_dual⟩ := exists_idele_generator_traceDual L
   have hg_star : g.val * star g⁻¹.val ∈ Ô L := by
     -- `ψf (a * g⁻¹) = 1` for integral `a`, as `g * g⁻¹ = 1` is integral
     have h_inv_dual : ∀ a ∈ Ô L, ψf L (a * g⁻¹.val) = 1 :=
-      forall_ψf_mul_eq_one_iff.mpr ((hg_dual g⁻¹.val).mpr (by simp))
-    refine (hg_dual _).mp (forall_ψf_mul_eq_one_iff.mp fun a ha ↦ ?_)
+      (hg_dual g⁻¹.val).mpr (by simp)
+    refine (hg_dual _).mp fun a ha ↦ ?_
     -- conjugation: `ψf (a * star g⁻¹) = ψf (g⁻¹ * star a)`, and `star a` is integral
     rw [← ψf_star, star_mul', star_star]
     exact h_inv_dual (star a) (star_mem_Ô ha)

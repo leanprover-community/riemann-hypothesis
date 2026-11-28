@@ -187,19 +187,14 @@ lemma selfDualAddChar_star (z : 𝔸f E) : selfDualAddChar E (star z) = selfDual
 `selfDualAddChar E (z * u)`. -/
 lemma forall_selfDualAddChar_mul_eq_one_iff (z : 𝔸f E) :
     (∀ u ∈ Ô E, selfDualAddChar E (z * u) = 1) ↔ z ∈ Ô E := by
-  -- The left side says that `d j α ᾱ z` is integral for all `d` in the different.
-  simp_rw [selfDualAddChar_apply, ← mul_assoc, coe_eq_one, mul_comm (_ * z),
-    forall_ψf_mul_eq_one_iff]
-  -- The different is generated in `Ô E` by an idele `t`, and `t j α ᾱ` is a unit at every place.
-  obtain ⟨-, -, -, t, -, h_val, h_gen⟩ :=
-    exists_reduction_and_idele_generator (I := differentIdeal ℤ (𝓞 E)) differentIdeal_ne_bot
+  -- Multiplication by a generator of the different identifies the trace dual with the integers.
+  obtain ⟨t, h_val, h_gen⟩ := exists_idele_generator_traceDual E
+  simp_rw [selfDualAddChar_apply, ← mul_assoc, coe_eq_one, mul_comm (_ * z)]
   refine (h_gen _).trans ?_
-  set c : 𝔸f E := algebraMap E (𝔸f E) j * α.val * star α.val
-  have h_dual (w : FinPlace E) : Valued.v (c w) =
-      WithZero.exp (multiplicity w.asIdeal (differentIdeal ℤ (𝓞 E)) : ℤ) := WeilData.self_dual w
-  -- At each place `w` the valuations of `t` and of `c = j α ᾱ` cancel.
+  -- The generator's valuation cancels that of the self-duality factor at each place.
+  set c : 𝔸f E := algebraMap E (𝔸f E) j * α.val * star α.val with hc
   have h_unit (w : FinPlace E) : Valued.v (t.val w) * Valued.v (c w) = 1 := by
-    rw [h_val, h_dual, ← WithZero.exp_add, neg_add_cancel, WithZero.exp_zero]
+    rw [h_val, hc, WeilData.self_dual, ← WithZero.exp_add, neg_add_cancel, WithZero.exp_zero]
   simp [mem_Ô, ← mul_assoc, h_unit]
 
 lemma traceOneAdele_mem : traceOneAdele ∈ Ô E := algebraMap_mem_Ô.mpr isIntegral_traceOne
