@@ -756,11 +756,8 @@ lemma weylGauge_cartanProduct_le [DecidableEq m] [DecidableEq N]
   -- power of `M` by blocks.
   have hη : ιₚ ∘ η = ιₚ.comp conj ∘ star η :=
     funext fun x ↦ congrArg ιₚ (star_star (η x)).symm
-  rw [weylGauge, map_cartanProduct V.hasColumnsBelow.1 V.hasColumnsBelow.2 (f := ιₚ), hη]
-  change ‖weylRep (mixedWeight n O.colsPlus O.colsMinus)
-      (fun τ : NumberField.InfinitePlace E ↦ -∑ i ∈ Finset.Ico 1 (card n), O.colsMinus τ i) _ *ᵥ
-    _‖ ≤ _
-  rw [weylRep_mulVec_cartanProduct V.hasColumnsBelow.1 V.hasColumnsBelow.2]
+  rw [weylGauge, map_cartanProduct V.hasColumnsBelow.1 V.hasColumnsBelow.2 (f := ιₚ), hη,
+    weylRep_mulVec_cartanProduct V.hasColumnsBelow.1 V.hasColumnsBelow.2]
   rw [denominatorExponent, sum_add_distrib, pow_add, mul_mul_mul_comm]
   refine (norm_mulVec_le (c := 1) (by simp [norm_intCast_le_one]) _).trans
     ((one_mul _).trans_le ?_)

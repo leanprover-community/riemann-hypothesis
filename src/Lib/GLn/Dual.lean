@@ -517,6 +517,19 @@ section MixedCartan
 
 open Finset Matrix Kronecker Fintype «GL»
 
+/-- The exponent of the determinant that goes with the column numbers `New.mixedWeight n kp km`: at
+`τ` it is −∑_{1 ≤ i < |n|} km_τ(i). It is irreducible, so that a power of a determinant with this
+exponent (as in `New.weylRep`) is compared without evaluating the sum. -/
+@[irreducible] def mixedDetExp {Φ : Type _} (n : Type _) [Fintype n] (km : Φ → ℕ → ℕ) (τ : Φ) : ℤ :=
+  -((∑ i ∈ Ico 1 (card n), km τ i : ℕ) : ℤ)
+
+/-- Without columns in `km`, the exponent `mixedDetExp n km` vanishes. -/
+@[simp]
+lemma mixedDetExp_zero {Φ : Type _} (n : Type _) [Fintype n] :
+    mixedDetExp n (0 : Φ → ℕ → ℕ) = 0 := by
+  funext τ
+  simp [mixedDetExp]
+
 variable {Φ : Type _} (n : Type _) [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
   (kp km l : Φ → ℕ → ℕ)
 
@@ -555,12 +568,12 @@ structure GL.MixedCartanEmbedding where
         (vecMulVec (weylEvalAt n R km fun i : Fin (Fintype.card n) ↦ (i.rev : ℕ))
           (weylEvalAt n R kp Fin.val)).vec
   /-- Over a field of characteristic zero, `M` intertwines the Schur matrix of `g` for `l`, twisted
-  by ∏_τ det(g_τ)^(-∑_{1 ≤ i < |n|} km τ i), with S_kp(g) ⊗ S_km(g⁻ᵀ). This identity of matrices is
-  stated after applying both sides to an arbitrary vector `v`. -/
+  by ∏_τ det(g_τ)^(-∑_{1 ≤ i < |n|} km τ i) (the exponent is `New.mixedDetExp`), with
+  S_kp(g) ⊗ S_km(g⁻ᵀ). This identity of matrices is stated after applying both sides to an
+  arbitrary vector `v`. -/
   intertwines {R : Type} [Field R] [CharZero R] (g : Φ → GL n R)
     (v : WeylIndexFamily (fun _ : Φ ↦ n) l → R) :
-      matrix.map ((↑) : ℤ → R) *ᵥ
-          weylRep l (fun τ : Φ ↦ -((∑ i ∈ Ico 1 (Fintype.card n), km τ i : ℕ) : ℤ)) g *ᵥ v =
+      matrix.map ((↑) : ℤ → R) *ᵥ weylRep l (mixedDetExp n km) g *ᵥ v =
         schur kp (fun τ : Φ ↦ (g τ : Matrix n n R)) ⊗ₖ schur km (fun τ : Φ ↦ (g τ)⁻¹.valᵀ) *ᵥ
           matrix.map ((↑) : ℤ → R) *ᵥ v
 
@@ -616,7 +629,7 @@ lemma nonempty_mixedCartanEmbedding :
               (J.map (Int.cast : ℤ → R) * schur kc fun τ : Φ ↦ (g τ).val) := by
           simpa [weylRep] using hJ.equivariant g
         rw [hK_map R]
-        simp [hJ_law, K, weylRep, ← (_ ⊗ₖ _).mul_assoc, ← mul_kronecker_mul,
+        simp [hJ_law, K, weylRep, mixedDetExp, ← (_ ⊗ₖ _).mul_assoc, ← mul_kronecker_mul,
           ← comulMatrix_equivariant, kronecker_smul, Matrix.mul_assoc] }
 
 /-- A chosen embedding with the properties `New.GL.MixedCartanEmbedding`, from the lattice of the
@@ -817,7 +830,7 @@ lemma mixedCartan_mulVec_cartanProduct {Φ n N m : Type} [Fintype Φ] [Decidable
   let g (τ : Φ) : GL n K := (h_unit τ).unit
   -- The tensor is the image under `mixedCartan` of the translate by `g` of the evaluation vector.
   have h_range : T y η = (mixedCartan n kp km).matrix.map (↑) *ᵥ
-      weylRep (mixedWeight n kp km) (fun τ : Φ ↦ -∑ i ∈ Ico 1 (card n), km τ i) g *ᵥ
+      weylRep (mixedWeight n kp km) (mixedDetExp n km) g *ᵥ
         weylEval (fun _ : Φ ↦ n) (mixedWeight n kp km)
           (permArray fun (_ : Φ) (a : n) ↦ (equivFin n a).val) := by
     rw [MixedCartanEmbedding.intertwines, MixedCartanEmbedding.top]
@@ -863,12 +876,12 @@ of `g` and of the `m`-columns of `g⁻ᵀ` first act on `y` and `η`. -/
 lemma weylRep_mulVec_cartanProduct (hkp : HasColumnsBelow n N kp) (hkm : HasColumnsBelow n m km)
     (ε : N ⊕ m ≃ n) {K : Type} [Field K] [CharZero K] (y : WeylIndex N kp → K)
     (η : WeylIndex m km → K) (g : Φ → GL n K) :
-    weylRep (mixedWeight n kp km) (fun τ : Φ ↦ -∑ i ∈ Ico 1 (Fintype.card n), km τ i)
-        g *ᵥ cartanProduct ε 1 y η = cartanProduct ε g y η := by
+    weylRep (mixedWeight n kp km) (mixedDetExp n km) g *ᵥ cartanProduct ε 1 y η =
+      cartanProduct ε g y η := by
   -- `MixedCartanEmbedding.intertwines` moves `g` across `mixedCartan`, and
   -- `mixedCartan_mulVec_cartanProduct` computes the vector it then acts on.
   have h_image : (mixedCartan n kp km).matrix.map (↑) *ᵥ weylRep (mixedWeight n kp km)
-      (fun τ : Φ ↦ -∑ i ∈ Ico 1 (card n), km τ i) g *ᵥ cartanProduct ε 1 y η =
+      (mixedDetExp n km) g *ᵥ cartanProduct ε 1 y η =
         (vecMulVec (schur kp (fun τ : Φ ↦ (g τ).val.submatrix id (ε ∘ inl)) *ᵥ y)
           (schur km (fun τ : Φ ↦ (g τ)⁻¹.valᵀ.submatrix id (ε ∘ inr)) *ᵥ η))ᵀ.vec := by
     calc _ = schur kp (fun τ : Φ ↦ (g τ).val) ⊗ₖ schur km (fun τ : Φ ↦ (g τ)⁻¹.valᵀ) *ᵥ

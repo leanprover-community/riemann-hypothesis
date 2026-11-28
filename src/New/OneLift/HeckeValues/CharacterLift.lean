@@ -167,6 +167,13 @@ lemma descentPair_colsPlus_apply (τ : NumberField.InfinitePlace E) (k : ℕ) :
     X.descentPair.colsPlus τ k = if k = 1 then X.rowLength τ else 0 :=
       Pi.single_apply 1 (X.rowLength τ) k
 
+omit [DecidableEq n] in
+/-- The weight of `X.descentPair` has no `colsMinus`, so the exponent `detExp` of the determinant
+vanishes at every place. -/
+@[simp]
+lemma detExp_descentPair (τ : NumberField.InfinitePlace E) : X.descentPair.detExp τ = 0 :=
+  congrFun (mixedDetExp_zero n) τ
+
 /-- The vector of derivatives, for the one-row weight of `X` and with variables scaled by `c`, of
 the theta function of the datum `ω(g, h) f`, for a finite point `(g, h)` of `U(1) × U(n)`. -/
 def kernelValue (c : ℂ) (f : 𝒮 (X.descentPair.W.hom (stdSpace E n))) (g : Gf E Unit) (h : Gf E n) :
@@ -331,8 +338,8 @@ lemma toPoly_eq_rename_fockPoly (X : LValueData E n)
   have h_intertwines := (mixedCartan n X.descentPair.colsPlus 0).intertwines g
     (weylEval (fun _ ↦ n) (mixedWeight n X.descentPair.colsPlus 0)
       (permArray fun τ i ↦ (rowEquivFin (fun _ : InfinitePlace E ↦ n) τ i : ℕ)))
-  simp only [Pi.zero_apply, Finset.sum_const_zero, Nat.cast_zero, neg_zero, weylRep,
-    MonoidHom.coe_mk, OneHom.coe_mk, zpow_zero, Finset.prod_const_one, one_smul] at h_intertwines
+  simp only [mixedDetExp_zero, Pi.zero_apply, weylRep, MonoidHom.coe_mk, OneHom.coe_mk, zpow_zero,
+    Finset.prod_const_one, one_smul] at h_intertwines
   -- `↓rowSubst_highestPoly` has to rewrite before `rowSubst` and `highestPoly` are unfolded.
   simp [DescentPair.fockPoly, -mulVec_mulVec, MixedCartanEmbedding.top, letterPoly, weylKernel,
     ↓rowSubst_highestPoly, rowSubst, fockLetters, X.one_lt_card, mixedWeight, Pi.single_apply,

@@ -542,8 +542,6 @@ theorem inner_pointForm_kernelForm (hq : q.HasEmptyRow (Fin (2 * p.z - 20)))
   · simp only [map_one, mul_one, rename_rename]
     rfl
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 open MvPolynomial Ideal.Quotient Selmer Nat LevelPlaces in
 /-- Let `l` be a prime, `p` a main pair for `j` with point `z = p.z`, whose `2 z` indices form
 blocks of sizes `12`, `4`, `4`, `2 z - 20`, and `ϑ` a twist. Let `q` be flat on the last block. Take
@@ -703,8 +701,6 @@ theorem isTestForm_trivialLiftClassSum_pointForm {l : ℕ} [Fact l.Prime]
   simp only [h_period]
   simp only [classSum, smul_zero, finsum_zero, mul_zero]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 open MvPolynomial Ideal.Quotient Selmer Nat LevelPlaces in
 /-- Seesaw factorisation. Let `l` be a prime with a chosen embedding `ℂ → ℂ_l`. Let `p` be a main
 pair for `j` with point `z = p.z`, and let `X` be the lift data of `p` at the twist `ϑ`, with `l`

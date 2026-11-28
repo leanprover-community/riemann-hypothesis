@@ -226,7 +226,7 @@ abbrev columnCount : InfinitePlace E → ℕ → ℕ := mixedWeight n O.colsPlus
 
 /-- For an infinite place τ, the integer −∑_{1 ≤ i < n} k⁻(τ, i), the power of the determinant in
 the highest weight of the forms on V. -/
-abbrev detExp (τ : InfinitePlace E) : ℤ := -((∑ i ∈ Finset.Ico 1 (card n), O.colsMinus τ i :) : ℤ)
+abbrev detExp (τ : InfinitePlace E) : ℤ := mixedDetExp n O.colsMinus τ
 
 /-- The character of `New.descentResidueLevel` sending g to ∏_{w ∈ Q} ψ_w⁻¹(det g_{w,00}). Here
 g_{w,00} is the diagonal block of the component of g at w on the basis vectors indexed by `incl`
@@ -902,7 +902,7 @@ lemma FitsParams.isJointHighest_productOfMinors {O : DescentPair E r n}
         a := by
         grind [decreasingPosition_paramV]
       rw [h_rev, sum_Ico_consecutive _ (by omega) (by omega)]
-    simp [subtype_card, Int.units_ne_iff_eq_neg, vacuumWeight, detExp, sum_Ico_reflect,
+    simp [subtype_card, Int.units_ne_iff_eq_neg, vacuumWeight, mixedDetExp, sum_Ico_reflect,
       diagramWeight_apply, ← Ico_succ_left_eq_Ioo, O.isHCParam_paramV.lowestKType_eq,
       sum_add_distrib, negCount, rankAt]
     omega

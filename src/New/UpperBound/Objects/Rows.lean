@@ -695,7 +695,7 @@ lemma hcParameter_descentPair (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex) {p
     have hL : L a = D.r - 2 * a + 2 * (D.t / 2) := by
       simp [L, ℓ, D.t_odd.pos]
     rw [hL, hcParameter, diagramWeight_apply, sum_Ioo_posRank_columnCount_descentPair,
-      DescentPair.detExp, h_card]
+      DescentPair.detExp, mixedDetExp, h_card]
     omega
   exact hcParameter_eq_of_steps τ L h_step ha h_agree p hp
 
