@@ -1,6 +1,7 @@
 module
 
 public import TauCeti.LinearAlgebra.Matrix.Rank
+import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.SubspaceOrbit
 import Mathlib.LinearAlgebra.Matrix.Module
 import Mathlib.LinearAlgebra.Projectivization.Cardinality
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
@@ -327,23 +328,18 @@ mod w. Then some k in the same double coset has kernel U mod w and lies in g GL_
 lemma exists_residueKer_eq_and_inv_mul_mem_localIntGL (hg : g ∈ basicDoubleCoset n w j)
     (h_finrank : finrank (ResField w) (residueKer g.val) = finrank (ResField w) U) :
     ∃ k ∈ basicDoubleCoset n w j, residueKer k.val = U ∧ k⁻¹ * g ∈ localIntGL n w := by
-  -- Lift an automorphism `e` of `k_w ^ n` mapping `U` to `residueKer g` to `l ∈ localIntGL n w`.
-  let f := LinearEquiv.ofFinrankEq U (residueKer g.val) h_finrank.symm
-  obtain ⟨e, he⟩ := U.exists_linearEquiv_restrict_eq f
-  obtain ⟨l, hl⟩ : ∃ l : localIntGL n w,
-      GeneralLinearGroup.toLin (reduceGL l) = .ofLinearEquiv e :=
-    GeneralLinearGroup.toLin.surjective.comp reduceGL_surjective _
-  have h_red : ((l : GL n (LocField w)).val.map residueOrZero).mulVecLin = e := by
-    refine Eq.trans (congrArg mulVecLin ?_) (congrArg Units.val hl)
-    exact Matrix.ext fun i j ↦ residueOrZero_coe ⟨(l : GL n (LocField w)) i j, l.2.isIntMatrix i j⟩
-  have h_comap : U = (residueKer g.val).comap e.toLinearMap :=
-    U.eq_of_le_of_finrank_eq
-      (fun x hx ↦ by simp [← he ⟨x, hx⟩])
-      (by rw [← h_finrank, (e.ofSubmodule' _).finrank_eq])
+  -- Move U onto the residue kernel over the residue field, then lift that matrix to GL_n(O_w).
+  obtain ⟨s, hs⟩ := GeneralLinearGroup.exists_smul_eq_of_finrank_eq h_finrank.symm
+  obtain ⟨l, rfl⟩ : ∃ l : localIntGL n w, reduceGL l = s := reduceGL_surjective s
+  have h_red : l.val.val.map residueOrZero = (reduceGL l).val :=
+    Matrix.ext fun i j ↦ residueOrZero_coe ⟨l.val i j, l.property.isIntMatrix i j⟩
   refine ⟨g * l, by simpa using mul_mul_mem_basicDoubleCoset hg (one_mem _) l.property, ?_, by simp⟩
-  -- Reduction is multiplicative, so `residueKer (g * l)` is that same preimage.
-  rw [residueKer, Units.val_mul, map_residueOrZero_mul hg.1 l.property.isIntMatrix, mulVecLin_mul,
-    h_red, h_comap, LinearMap.ker_comp]
+  rw [residueKer, Units.val_mul, map_residueOrZero_mul hg.1 l.property.isIntMatrix, h_red,
+    mulVecLin_mul, LinearMap.ker_comp]
+  ext x
+  change (reduceGL l) • x ∈ residueKer g.val ↔ x ∈ U
+  rw [← hs]
+  exact Set.smul_mem_smul_set_iff (a := reduceGL l) (s := (U : Set (n → ResField w)))
 
 omit [DecidableEq n] in
 lemma exists_card_eq_finrank : ∃ s : Finset n, #s = finrank (ResField w) U := by
