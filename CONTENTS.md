@@ -448,7 +448,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 ## Lib
 
-- `Lib/Speed` (23): Speed settings
+- `Lib/Speed` (26): Speed settings
 - `Lib/Base` (7): The adjoint of a matrix for the Hermitian dot product
 
 ### Adelic: Adeles, unitary groups and automorphic forms
