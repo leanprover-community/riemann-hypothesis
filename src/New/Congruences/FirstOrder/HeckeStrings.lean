@@ -85,9 +85,8 @@ lemma New.Selmer.exists_integral_combination_norm_ge {ℓ : ℕ} [ThePrime ℓ] 
       Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have h_eval : eval (fun p ↦ (d p : PadicAlgCl ℓ)) (F k) = ∑ p : Fin m, l p k * d p := by
     simp only [F, map_sum, smul_eq_C_mul, map_mul, eval_C, eval_X]
-  have h_le : ‖(F k).coeff (.single k 1)‖ ≤ ‖eval (fun p ↦ (d p : PadicAlgCl ℓ)) (F k)‖ :=
-    NNReal.coe_mono (hd k (.single k 1))
-  rwa [h_coeff, h_eval] at h_le
+  rw [← h_coeff, ← h_eval]
+  exact NNReal.coe_mono (hd k (.single k 1))
 
 /-- Let `Good` be a set of operators on `Z` that contains every combination of `m` of its members
 with `ℓ`-adically integral coefficients. If for each `k` the operator that is diagonal in the basis
@@ -131,12 +130,7 @@ lemma New.Selmer.pow_finrank_le_nnnorm_det {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
       (Λ.charpoly.roots.map fun μ ↦ c * ιℓ μ).prod := by
     rw [Module.End.det_eq_prod_roots_charpoly_of_splits (IsAlgClosed.splits _), map_multiset_prod,
       Multiset.prod_map_mul, Multiset.map_const', Multiset.prod_replicate, h_card]
-  have h_norm : ‖(Λ.charpoly.roots.map fun μ ↦ c * ιℓ μ).prod‖₊ =
-      (Λ.charpoly.roots.map fun μ ↦ ‖c * ιℓ μ‖₊).prod := by
-    change valuation (Λ.charpoly.roots.map fun μ ↦ c * ιℓ μ).prod = _
-    rw [map_multiset_prod, Multiset.map_map]
-    rfl
-  rw [h_det, h_norm, ← h_card, ← Multiset.card_map fun μ ↦ ‖c * ιℓ μ‖₊]
+  rw [h_det, Multiset.nnNorm_prod_map, ← h_card, ← Multiset.card_map fun μ ↦ ‖c * ιℓ μ‖₊]
   refine Multiset.pow_card_le_prod (Multiset.forall_mem_map_iff.2 fun μ hμ ↦ h_eig μ ?_)
   exact (Module.End.hasEigenvalue_iff_isRoot_charpoly Λ μ).2 (Polynomial.isRoot_of_mem_roots hμ)
 
@@ -169,9 +163,7 @@ lemma norm_coeff_lt_one_of_mul_monic {Q R : (PadicAlgCl ℓ)[X]} (hR : R.Monic)
 lemma norm_eval_one_lt_one {Q : (PadicAlgCl ℓ)[X]} (h_lt : ∀ i : ℕ, ‖Q.coeff i‖ < 1) :
     ‖Q.eval 1‖ < 1 := by
   obtain ⟨j, -, hj⟩ := exists_norm_finsetSum_le (Finset.range (Q.natDegree + 1)) Q.coeff
-  rw [eval_eq_sum_range]
-  simp only [one_pow, mul_one]
-  exact hj.trans_lt (h_lt j)
+  simpa only [eval_eq_sum_range, one_pow, mul_one] using hj.trans_lt (h_lt j)
 
 /-- Let B be monic, C integral, AB ≡ C ≡ A'B coefficientwise modulo the maximal ideal of the
 integers `intQpBar ℓ` of ℚ̄_ℓ, and ‖A'(1)‖ ≥ 1. Then A divides an integral polynomial e with
@@ -193,14 +185,13 @@ lemma exists_integral_multiple_eval_one {A A' B C : (PadicAlgCl ℓ)[X]} (hB : B
           rw [sub_mul, coeff_sub, coeff_sub, sub_add_sub_cancel]
       _ ≤ max ‖(A * B - C).coeff i‖ ‖C.coeff i - (A' * B).coeff i‖ := norm_add_le_max _ _
       _ < 1 := max_lt (hAB i) (hA'B i)
-  have h_diff_one : ‖(A' - A).eval 1‖ < 1 := by
-    have h := norm_eval_one_lt_one (norm_coeff_lt_one_of_mul_monic hB h_prod)
-    rwa [eval_sub, norm_sub_rev, ← eval_sub] at h
+  have h_diff_one : ‖(A - A').eval 1‖ < 1 :=
+    norm_eval_one_lt_one (norm_coeff_lt_one_of_mul_monic hB h_prod)
   have hA_one : 1 ≤ ‖A.eval 1‖ := by
-    contrapose! hA'_one
-    calc ‖A'.eval 1‖ = ‖(A' - A).eval 1 + A.eval 1‖ := by rw [eval_sub, sub_add_cancel]
-      _ ≤ max ‖(A' - A).eval 1‖ ‖A.eval 1‖ := norm_add_le_max _ _
-      _ < 1 := max_lt h_diff_one hA'_one
+    -- the two norms differ, so the norm of the sum is their maximum
+    have h := norm_add_eq_max_of_norm_ne_norm (h_diff_one.trans_le hA'_one).ne'
+    rw [← eval_add, add_sub_cancel] at h
+    exact h ▸ le_max_of_le_left hA'_one
   have hA_ne : A.eval 1 ≠ 0 := norm_pos_iff.1 (one_pos.trans_le hA_one)
   obtain ⟨e, he⟩ : ∃ e : (intQpBar ℓ)[X],
       e.map (intQpBar ℓ).subtype = A * Polynomial.C (A.eval 1)⁻¹ := by
@@ -239,7 +230,7 @@ lemma exists_one_le_nnnorm_one_sub_pow_mul_root {p : (PadicAlgCl ℓ)[X]} (hp : 
     exact (valuation.map_sub_lt (h_lt i) (h_lt j)).ne
       (by rw [h_factor, map_mul, h_unit, h_step, mul_one])
   exact hp <| eq_zero_of_natDegree_lt_card_of_eval_eq_zero p (Function.Injective.of_lt_imp_ne h_ne)
-    (fun i ↦ isRoot_of_mem_roots (h_root i)) (by rw [Fintype.card_fin]; exact Nat.lt_succ_self _)
+    (fun i ↦ isRoot_of_mem_roots (h_root i)) (by simp)
 
 /-- Let `P` be fixed parameters and `D` data for them, which determine a CM field E = `D.E`. Let
 `AbsGal D` = Gal(Ω/E) be its absolute Galois group, with Ω an algebraic closure of E. Let T be a
@@ -255,29 +246,17 @@ lemma exists_eventually_one_le_norm_eval_charpoly {P : Parameters} {D : Data P} 
   obtain ⟨i, hi⟩ : ∃ i : ℕ, ∀ μ ∈ A.charpoly.roots, 1 ≤ ‖1 - y ^ i * μ‖₊ :=
     exists_one_le_nnnorm_one_sub_pow_mul_root (charpoly_monic A).ne_zero fun j hj ↦
       hy j ⟨hj.1, hj.2.trans (by rw [charpoly_natDegree_eq_dim]; omega)⟩
-  have h_det : (1 - T (δ i)).det = (A.charpoly.roots.map fun μ ↦ 1 - y ^ i * μ).prod := by
-    have h_aeval := det_aeval_neg_eq_prod_roots A (1 + y ^ i • X : (PadicAlgCl ℓ)[X])
-    have h_lhs : aeval (-A) (1 + y ^ i • X : (PadicAlgCl ℓ)[X]) = 1 - T (δ i) := by
-      rw [map_add, map_one, map_smul, aeval_X, smul_neg, ← sub_eq_add_neg, hTδ]
-    have h_rhs : (fun μ ↦ eval (-μ) (1 + y ^ i • X : (PadicAlgCl ℓ)[X])) =
-        fun μ ↦ 1 - y ^ i * μ := by
-      funext μ
-      rw [eval_add, eval_one, eval_smul, eval_X, smul_eq_mul, mul_neg, ← sub_eq_add_neg]
-    rwa [h_lhs, h_rhs] at h_aeval
-  have h_one_le : 1 ≤ valuation (1 - T (δ i)).det := by
-    rw [h_det, map_multiset_prod, Multiset.map_map]
+  have h_one_le : 1 ≤ ‖(1 - T (δ i)).det‖₊ := by
+    rw [hTδ, det_one_sub_smul_eq_prod_roots_of_isAlgClosed, Multiset.nnNorm_prod_map]
     exact Multiset.one_le_prod_map hi
   -- The open unit ball is closed, so its complement pulls back to a neighbourhood of δ i.
   have h_closed : IsClosed ((fun φ : AbsGal D ↦ (1 - T φ).det) ⁻¹' Metric.ball 0 1) :=
     (isClosed_ball 0 1).preimage ((continuous_const.sub hT).matrix_det)
   have h_mem : δ i ∈ ((fun φ : AbsGal D ↦ (1 - T φ).det) ⁻¹' Metric.ball 0 1)ᶜ := by
-    rw [Set.mem_compl_iff, Set.mem_preimage, Metric.mem_ball, dist_zero_right, not_lt]
-    exact NNReal.coe_mono h_one_le
+    simpa using NNReal.coe_mono h_one_le
   use i
   filter_upwards [h_closed.compl_mem_nhds h_mem] with φ hφ
-  rw [eval_charpoly, map_one]
-  exact not_lt.1 (by rwa [Set.mem_compl_iff, Set.mem_preimage, Metric.mem_ball,
-    dist_zero_right] at hφ)
+  simpa [eval_charpoly] using hφ
 
 /-- Let M be an n × n matrix over ℚ̄_ℓ and u a number of norm one. Call two numbers congruent if
 their difference has norm less than one, that is, lies in the maximal ideal. If the i-th
@@ -343,13 +322,10 @@ lemma isRoot_hecke_chain {O : DescentPair D.E r n}
       ((S.map ιℓ.toRingHom).comp ((normalizingAvatar O s⁻¹).val⁻¹ • X)) = 0 := by
     rw [aeval_comp, map_smul, aeval_X]
     change aeval ((normalizingAvatar O s⁻¹).val⁻¹ •
-      ((normalizingAvatar O s⁻¹) • (x.galRep s⁻¹).val)) (S.map ιℓ.toRingHom) = 0
-    rw [Units.smul_def, smul_smul, inv_mul_cancel₀ (normalizingAvatar O s⁻¹).ne_zero, one_smul]
-    exact h_kill
+      (normalizingAvatar O s⁻¹).val • (x.galRep s⁻¹).val) (S.map ιℓ.toRingHom) = 0
+    rwa [inv_smul_smul₀ (normalizingAvatar O s⁻¹).ne_zero]
   have h_root : S.IsRoot (O.charW.frobValue r w) := by
-    have h_root_twist : ((S.map ιℓ.toRingHom).comp ((normalizingAvatar O s⁻¹).val⁻¹ • X)).IsRoot
-      1 :=
-      isRoot_of_isRoot_charpoly h_kill_twist (h_one s⁻¹)
+    have h_root_twist := isRoot_of_isRoot_charpoly h_kill_twist (h_one s⁻¹)
     rw [normalizingAvatar_eq_of_isFrob O hA hℓ hs_inv, IsRoot, eval_comp, eval_smul, eval_X,
       smul_eq_mul, mul_one, map_inv₀, inv_inv] at h_root_twist
     exact .of_map (f := ιℓ.toRingHom) h_root_twist ιℓ.toRingHom.injective
@@ -379,10 +355,8 @@ lemma prod_X_sub_C_dvd_comp_of_hasHeckePolyAt {O : DescentPair D.E r n}
     (pow_right_strictMono₀ (Nat.one_lt_cast.2 y.place.one_lt_q)).injective
   rw [h_chi, RingEquiv.symm_apply_apply, inv_inv]
   refine Finset.prod_dvd_of_coprime ((pairwise_coprime_X_sub_C h_inj).set_pairwise _) fun i hi ↦ ?_
-  have h_root : H.IsRoot (O.charW.frobValue r y.place * y.place.q ^ i) :=
-    isRoot_hecke_chain hf hf_ne h_one hℓ hH (Finset.mem_range.1 hi)
   rw [dvd_iff_isRoot, IsRoot, eval_comp, eval_mul, eval_C, eval_X]
-  exact h_root
+  exact isRoot_hecke_chain hf hf_ne h_one hℓ hH (Finset.mem_range.1 hi)
 
 /-- Let `O` be a descent pair, `f` a nonzero form on V in the space `x` of forms with given Hecke
 eigenvalues, and u the twist of `x.galRep` by the ℓ-adic character χ = `normalizingAvatar O`. Assume
@@ -435,9 +409,7 @@ lemma eventually_exists_hasRootChain {O : DescentPair D.E r n}
       RingHom.coe_coe, RingEquiv.apply_symm_apply]
   have hχ : ‖χ‖ = 1 := ContinuousMonoidHom.norm_apply_eq_one_of_compactSpace
     ⟨_, AlgHeckeChar.continuous_avatar _⟩ _
-  have h_twist : (normalizedRep O x.galRep y.frob).val = χ • (x.galRep y.frob).val := by
-    change (normalizingAvatar O y.frob) • (x.galRep y.frob).val = χ • (x.galRep y.frob).val
-    rw [Units.smul_def]
+  have h_twist : (normalizedRep O x.galRep y.frob).val = χ • (x.galRep y.frob).val := rfl
   have h_near (i : ℕ) : ‖(C (χ ^ card n) * T.map ιℓ.toRingHom * B -
       (normalizedRep O x.galRep y.frob).val.charpoly).coeff i‖ < 1 := by
     have h_half : ‖((x.galRep y.frob).val.charpoly - H).coeff i‖ ≤ 1 / 2 := h_att y.frob rfl i
@@ -447,10 +419,9 @@ lemma eventually_exists_hasRootChain {O : DescentPair D.E r n}
     exists_integral_multiple_eval_one (monic_prod_X_sub_C _ _) (h_charpoly_int y.frob) h_near
       h_cong hS
   -- Carry the divisibility back to ℂ along the inverse of ι.
-  have h_back : T ∣ (e.map (intQpBar ℓ).subtype).map ιℓ.symm.toRingHom := by
-    have h := Polynomial.map_dvd ιℓ.symm.toRingHom (dvd_of_mul_left_dvd h_dvd)
-    rwa [Polynomial.map_map, RingEquiv.symm_toRingHom_comp_toRingHom, Polynomial.map_id] at h
-  rw [Polynomial.map_map] at h_back
+  have h_back := Polynomial.map_dvd ιℓ.symm.toRingHom (dvd_of_mul_left_dvd h_dvd)
+  rw [Polynomial.map_map, RingEquiv.symm_toRingHom_comp_toRingHom, Polynomial.map_id,
+    Polynomial.map_map] at h_back
   -- `EllAdicIntegers` is `intQpBar ℓ`, mapped to ℂ through the inverse of ι, by definition.
   exact ⟨e, ⟨T, hT, h_back⟩, he_one⟩
 
@@ -485,10 +456,7 @@ lemma orthogonal_mem_invtSubmodule_heckePolyOnForms {P : Parameters} {D : Data P
   rw [Module.End.mem_invtSubmodule_iff_forall_mem_of_mem]
   refine fun y hy ↦ (mem_orthogonal Z _).2 fun z hz ↦ ?_
   have hS' : star w ∉ O.places.conjClosure := by
-    rintro (h | h)
-    · exact hS (.inr h)
-    · rw [Set.mem_preimage, star_star] at h
-      exact hS (.inl h)
+    rwa [Set.mem_union, Set.mem_preimage, star_star, or_comm]
   have h_adj : inner ℂ (O.heckePolyOnForms hw hS X y) z =
       inner ℂ y (O.heckePolyOnForms (star_injective.ne hw) hS' (star X) z) :=
     innerAt_heckePolyOnForms (.refl ℂ) y z hw hS hS' X
@@ -529,10 +497,7 @@ lemma le_of_isotypic_mem {P : Parameters} {D : Data P} {r n : Type} [Fintype r] 
   have h_stable (w : FinPlace D.E) (hw : star w ≠ w) (h_out : w ∉ S) (h_out' : star w ∉ S)
       (i : ℕ) : ∀ f ∈ Z', heckeSplit τ (w := w) hw i f ∈ Z' := by
     rintro _ ⟨y, hy, rfl⟩
-    have h_off : w ∉ O.places.conjClosure := by
-      rintro (h | h)
-      · exact h_out (Finset.mem_coe.1 (hS.symm ▸ h))
-      · exact h_out' (Finset.mem_coe.1 (hS.symm ▸ h))
+    have h_off : w ∉ O.places.conjClosure := hS ▸ fun h ↦ h.elim h_out h_out'
     have h_poly (X : ℂ) : heckePolyOp τ hw X (toSmoothForm y) ∈ Z' :=
       ⟨O.heckePolyOnForms hw h_off X y, hZ_stable w hw h_off X hy, rfl⟩
     -- The operators sending `toSmoothForm y` into `Z'` form a subspace with all the Hecke
