@@ -234,15 +234,14 @@ lemma fockMatrixCoeff_one_left (hd : ∀ i j : ι, d i ≠ d j → (u : Matrix �
     fockMatrixCoeff u 1 P =
       (principalMinor (u : Matrix ι ι ℂ) fun i : ι ↦ ε i = -1)⁻¹ *
         fockInner (polyVector ε 1) (polyVector ε P) := by
-  -- Induction on `P` in the subspace of polynomials for which the identity holds.
+  -- Induct on the polynomials where the vacuum functional after `u` agrees
+  -- with its scalar multiple.
   set c : ℂ := (principalMinor (u : Matrix ι ι ℂ) fun i : ι ↦ ε i = -1)⁻¹
-  let S : Submodule ℂ (MvPolynomial ι ℂ) :=
-    { carrier := {P | fockMatrixCoeff u 1 P = c * fockInner (polyVector ε 1) (polyVector ε P)}
-      add_mem' := by simp +contextual [mul_add, add_mul]
-      zero_mem' := by simp
-      smul_mem' := by simp +contextual [mul_left_comm, mul_assoc] }
+  let L := (fockInner (polyVector ε 1)).toLinearMap
+  let S := ((L.comp (realWeil u).toLinearMap).eqLocus (c • L)).comap (polyVector ε)
   -- For `P = 1` this is the overlap of the vacuum with its image.
-  have h_one : 1 ∈ S := by simp [S, c, realVac, realWeil_vacVector_apply_zero]
+  have h_one : 1 ∈ S := by
+    simp [S, L, LinearMap.mem_eqLocus, c, realVac, realWeil_vacVector_apply_zero]
   refine harmonic_induction (r := fun i j ↦ d i = d j ∧ ε i ≠ ε j) S h_one (fun j R _ hR ↦ ?_) P
     fun i j ⟨h_label, h_sign⟩ ↦ hP i j h_label h_sign
   -- Both sides vanish on `X j * R`. On the left move `u` across as `u⁻¹`, which is block diagonal
