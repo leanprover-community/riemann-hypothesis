@@ -27,6 +27,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.Algebra.Homology.ShortComplex.FunctorCategory
 import TauCeti.RingTheory.Ideal.Maps
 public import Lib.General.Algebra.AbsIntegrallyClosed
 
@@ -1222,12 +1223,7 @@ lemma exact_of_app (h : ∀ A : C, Function.Exact (α A) (g A)) :
   have h_zero : α ≫ g = 0 := by
     ext A x
     simpa using (h A).apply_apply_eq_zero x
-  refine ⟨h_zero, ?_⟩
-  -- The evaluation functors jointly reflect isomorphisms, so exactness is checked objectwise.
-  -- (The reflection stays inside the call: its target `Ab` has a universe that cannot be named.)
-  apply (JointlyReflectIsomorphisms.exact_iff (F := (evaluation C _).obj)
-    ⟨NatIso.isIso_of_isIso_app⟩ _).mpr
-  exact fun A ↦ (ab_exact_iff_function_exact _).mpr (h A)
+  exact ⟨h_zero, (ShortComplex.exact_iff_forall_function_exact _).2 h⟩
 
 /-- If at every object `A` the map `α A` is injective, the sequence `M(A) → N(A) → F(A)` is exact
 in the middle and `g A` is surjective, then `α ≫ g = 0` (the witness `w`) and the short complex
@@ -1235,12 +1231,8 @@ in the middle and `g A` is surjective, then `α ≫ g = 0` (the witness `w`) and
 lemma shortExact_of_app (h_inj : ∀ A : C, Function.Injective (α A))
     (h_exact : ∀ A : C, Function.Exact (α A) (g A)) (h_surj : ∀ A : C, Surjective (g A)) :
     ∃ w : α ≫ g = 0, ShortExact ⟨α, g, w⟩ := by
-  obtain ⟨w, hw⟩ := exact_of_app h_exact
-  have h_mono : Mono α := (mono_iff_mono_app _).2 fun A ↦
-    (AddCommGrpCat.mono_iff_injective _).2 (h_inj A)
-  have h_epi : Epi g := (epi_iff_epi_app _).2 fun A ↦
-    (AddCommGrpCat.epi_iff_surjective _).2 (h_surj A)
-  exact ⟨w, .mk' hw h_mono h_epi⟩
+  obtain ⟨w, -⟩ := exact_of_app h_exact
+  exact ⟨w, ShortComplex.shortExact_of_forall_function_exact h_inj h_exact h_surj⟩
 
 /-- For `f : N ⟶ F` with `α ≫ f = 0`, the induced morphism `coker α ⟶ F` through which `f`
 factors. -/
