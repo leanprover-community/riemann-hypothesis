@@ -401,6 +401,103 @@ lemma isPeriodMap_vecMulVec_sub_one_of_sub_smul_eq
       smul_eq_re_smul_add_im_smul (Φ v₀ _), sub_eq_zero] at h_coord ⊢
     grind
 
+/-- Given a uniformisation `u` of `x.groupScheme` and an `ℝ`-linear lift `G` of the `𝓞 E`-action
+over the real basis `d` of `E ⊗ ℝ`, lifting the `2`-torsion points `e.torsionPoint (e_j / 2)`
+produces a `G`-equivariant real-linear equivalence `Q : (E ⊗ ℝ)ⁿ ≃L[ℝ] ℂ^d` that lifts `e` on
+`½ (𝓞 E)ⁿ` and whose image of `Eⁿ` contains `u.lattice`. -/
+private lemma exists_realEquiv_of_cmAction
+    (u : Uniformisation x.groupScheme (Fin (abelianDim E D.Index) → ℂ))
+    (d : Module.Basis (Module.Free.ChooseBasisIndex ℤ (𝓞 E)) ℝ (InfinitePlace E → ℂ))
+    (hd : ∀ i : Module.Free.ChooseBasisIndex ℤ (𝓞 E), d i = cmEmbedding (basis E i).val)
+    (G : (InfinitePlace E → ℂ) →ₗ[ℝ]
+      (Fin (abelianDim E D.Index) → ℂ) →L[ℂ] Fin (abelianDim E D.Index) → ℂ)
+    (hG : ∀ (c : 𝓞 E) (z : Fin (abelianDim E D.Index) → ℂ),
+      u.expMap (G (cmEmbedding c) z) = c • u.expMap z) :
+    ∃ Q : RealVectors E D.Index ≃L[ℝ] Fin (abelianDim E D.Index) → ℂ,
+      (∀ (c : InfinitePlace E → ℂ) (w : RealVectors E D.Index), Q (c • w) = G c (Q w)) ∧
+      (∀ y : D.Index → E, 2 • y ∈ (frameTorsionClass 1).ker →
+        u.expMap (Q (toRealVectors y)) = e.torsionPoint (frameTorsionClass 1 y)) ∧
+      (∀ z ∈ u.lattice, ∃ y : D.Index → E, Q (toRealVectors y) = z) := by
+  -- `P` sends the `j`-th unit vector to twice a lift `l j` of the point `e.torsionPoint (e_j / 2)`
+  choose l hl using fun j : D.Index ↦
+    u.surjective (e.torsionPoint (frameTorsionClass 1 (Pi.single j 2⁻¹)))
+  let P : RealVectors E D.Index →ₗ[ℝ] Fin (abelianDim E D.Index) → ℂ :=
+    ∑ j, (coeLM ℝ).flip (2 • l j) ∘ₗ G ∘ₗ .proj j
+  -- on vectors of `½ (𝓞 E)ⁿ`, `P` lifts the torsion points of `e`
+  have hP := expMap_apply_toRealVectors_eq_torsionPoint_of_two_smul_mem_ker e u G hG l hl
+  -- so `P (Eⁿ)` contains the lattice, and `P` is bijective
+  have h_lat : ∀ z ∈ u.lattice, ∃ y : D.Index → E, P (toRealVectors y) = z :=
+    lattice_subset_range_of_expMap_eq_torsionPoint e u P hP
+  let Q : RealVectors E D.Index ≃L[ℝ] Fin (abelianDim E D.Index) → ℂ := (LinearEquiv.ofBijective P
+    (bijective_of_lattice_subset_range u P h_lat)).toContinuousLinearEquiv
+  have hG_mul : ∀ c c' : InfinitePlace E → ℂ, G (c * c') = G c * G c' := by
+    refine G.map_mul_iff.mpr (ext_basis d d fun i j ↦ u.linear_ext ?_)
+    simp [← map_mul, mul_smul, hd, hG]
+  have hQ (c : InfinitePlace E → ℂ) (w : RealVectors E D.Index) : Q (c • w) = G c (Q w) := by
+    simp [Q, P, hG_mul]
+  exact ⟨Q, hQ, hP, h_lat⟩
+
+/-- If `Q : (E ⊗ ℝ)ⁿ ≃ V` is `G`-equivariant, `Q Y` is a `G`-eigenvector with eigenvalue `c v₀`,
+and `G (star β) - x.baseHom β` acts as `v ↦ ξ v • Q Y`, then on every `Q w` it acts as
+`(η ⬝ᵥ (w · v₀)) • Q Y` where `η j = ξ (Q (Pi.single j 1))`. -/
+private lemma sub_smul_eq_dotProduct_smul {V : Type} [FinComplexSpace V]
+    (G : (InfinitePlace E → ℂ) →ₗ[ℝ] V →L[ℂ] V) (Q : RealVectors E D.Index ≃L[ℝ] V)
+    (hQ : ∀ (c : InfinitePlace E → ℂ) (w : RealVectors E D.Index), Q (c • w) = G c (Q w))
+    (Y : RealVectors E D.Index) (hGY : ∀ c : InfinitePlace E → ℂ, G c (Q Y) = c v₀ • Q Y)
+    (ξ : V →ₗ[ℂ] ℂ)
+    (hξ : ∀ v : V, G (cmEmbedding (star D.β)) v - x.baseHom D.β • v = ξ v • Q Y)
+    (w : RealVectors E D.Index) :
+    G (cmEmbedding (star D.β)) (Q w) - x.baseHom D.β • Q w =
+      ((fun j ↦ ξ (Q (Pi.single j 1))) ⬝ᵥ (w · v₀)) • Q Y := by
+  -- apply `G (w k)` to `hξ` at the `k`-th unit vector and sum over `k`
+  have h_sum :
+      ∑ k, G (w k) (G (cmEmbedding (star D.β)) (Q (Pi.single k 1)) -
+          x.baseHom D.β • Q (Pi.single k 1)) =
+        ∑ k, G (w k) (ξ (Q (Pi.single k 1)) • Q Y) :=
+    Finset.sum_congr rfl fun k _ ↦ congrArg (G (w k)) (hξ (Q (Pi.single k 1)))
+  simpa [hGY, ← hQ, smul_comm (w _), ← map_sum, ← smul_sum, smul_smul (ξ _),
+    ← dotProduct.eq_1, ← pi_eq_sum_univ', ← sum_smul] using h_sum
+
+/-- Using the signature condition `X.signature` on a Lie chart of `x.groupScheme`, any
+`G`-equivariant real-linear equivalence `Q : (E ⊗ ℝ)ⁿ ≃L[ℝ] ℂ^d` is a period map for some complex
+reflection matrix `ℓ`. -/
+private lemma exists_isPeriodMap_and_isReflection
+    (hρ : ∀ c : 𝓞 E, x.baseHom c = Φ v₀ c.val)
+    (u : Uniformisation x.groupScheme (Fin (abelianDim E D.Index) → ℂ))
+    (d : Module.Basis (Module.Free.ChooseBasisIndex ℤ (𝓞 E)) ℝ (InfinitePlace E → ℂ))
+    (hd : ∀ i : Module.Free.ChooseBasisIndex ℤ (𝓞 E), d i = cmEmbedding (basis E i).val)
+    (G : (InfinitePlace E → ℂ) →ₗ[ℝ]
+      (Fin (abelianDim E D.Index) → ℂ) →L[ℂ] Fin (abelianDim E D.Index) → ℂ)
+    (hG : ∀ (c : 𝓞 E) (z : Fin (abelianDim E D.Index) → ℂ),
+      u.expMap (G (cmEmbedding c) z) = c • u.expMap z)
+    (Q : RealVectors E D.Index ≃L[ℝ] Fin (abelianDim E D.Index) → ℂ)
+    (hQ : ∀ (c : InfinitePlace E → ℂ) (w : RealVectors E D.Index), Q (c • w) = G c (Q w)) :
+    ∃ ℓ : Matrix D.Index D.Index ℂ, IsPeriodMap ℓ Q ∧ IsReflection ℓ := by
+  have hβ : (Φ v₀ D.β.val).im ≠ 0 := by simpa [conj_eq_iff_im] using D.emb_star_beta_ne
+  -- a Lie chart of `x.groupScheme` in which the signature condition `h_rk` holds
+  obtain ⟨U, z_chart, m_chart, h_jac, h_rk⟩ := X.signature 0 x
+  -- the signature condition: `Q Y ≠ 0` is an eigenvector of `G` on `𝓞 E` (`hY_eigen`), and
+  -- `G (star β) w - Φ(β) • w = ξ w • Q Y` for a linear form `ξ` on `V` (`hξ`); here `β = D.β`
+  obtain ⟨Y, hY, hY_eigen, ξ, hξ⟩ := Q.surjective.exists.mp
+    ((u.hasSignature_iff hG h_jac x.isGroupBaseChange (by simp) (ρ := x.baseHom)).mp h_rk)
+  have hGY (c : InfinitePlace E → ℂ) : G c (Q Y) = c v₀ • Q Y := by
+    rw [← d.sum_repr c]
+    simp [sum_smul, mul_smul, hd, hY_eigen, hρ]
+  let η (j : D.Index) : ℂ := ξ (Q (Pi.single j 1))
+  have h_rank (w : RealVectors E D.Index) :
+      G (cmEmbedding (star D.β)) (Q w) - x.baseHom D.β • Q w = (η ⬝ᵥ (w · v₀)) • Q Y :=
+    sub_smul_eq_dotProduct_smul G Q hQ Y hGY ξ (fun v ↦ by simpa using hξ v) w
+  -- the reflection fixes the line of `Y · v₀`; its linear form is a multiple of `η`
+  let η' : D.Index → ℂ := (Complex.I / (Φ v₀ D.β.val).im : ℂ) • η
+  have h_two : η' ⬝ᵥ (Y · v₀) = 2 := by
+    -- `h_rank` at `Y` gives `η ⬝ᵥ (Y · v₀) = conj Φ(β) - Φ(β) = -2 * I * Im Φ(β)`
+    have h_Y : Φ v₀ (star D.β.val) - Φ v₀ D.β.val = η ⬝ᵥ (Y · v₀) := by
+      simpa [smul_left_inj, hGY, hρ, hY, ← sub_smul] using h_rank Y
+    simp [η', ← h_Y, Complex.ext_iff, ← two_mul, field]
+  have h_per : IsPeriodMap (vecMulVec (Y · v₀) η' - 1) Q :=
+    isPeriodMap_vecMulVec_sub_one_of_sub_smul_eq hρ G Q hQ Y hGY hβ η h_rank
+  exact ⟨vecMulVec (Y · v₀) η' - 1, h_per, (Y · v₀), η', h_two, rfl⟩
+
 /-- Let `x` be an object over `ℂ` whose structure map on `𝓞 E` is `Φ v₀` (`hρ`), with full
 structure `e`. Then there are an adelic frame `g`, a complex matrix `ℓ` and a dimension `d` such
 that `x` has a model `m` on a polarised period map `Y` for `(g, ℓ)` on `ℂ^d`, whose torsion points
@@ -422,60 +519,15 @@ lemma exists_torusModel
       ∃ d : Module.Basis (Module.Free.ChooseBasisIndex ℤ (𝓞 E)) ℝ (InfinitePlace E → ℂ),
         ∀ i : Module.Free.ChooseBasisIndex ℤ (𝓞 E), d i = cmEmbedding (basis E i).val :=
     exists_mixedEquiv.imp' (mixedEmbedding.latticeBasis E).map (by aesop)
-  have hβ : (Φ v₀ D.β.val).im ≠ 0 := by simpa [conj_eq_iff_im] using D.emb_star_beta_ne
-  -- a Lie chart of `x.groupScheme` in which the signature condition `h_rk` holds
-  obtain ⟨U, z_chart, m_chart, h_jac, h_rk⟩ := X.signature 0 x
   obtain ⟨G, hG⟩ := exists_expMap_apply_cmEmbedding_eq_smul u d hd
-  -- `P` sends the `j`-th unit vector to twice a lift `l j` of the point `e.torsionPoint (e_j / 2)`
-  choose l hl using fun j : D.Index ↦
-    u.surjective (e.torsionPoint (frameTorsionClass 1 (Pi.single j 2⁻¹)))
-  let P : RealVectors E D.Index →ₗ[ℝ] Fin (abelianDim E D.Index) → ℂ :=
-    ∑ j, (coeLM ℝ).flip (2 • l j) ∘ₗ G ∘ₗ .proj j
-  -- on vectors of `½ (𝓞 E)ⁿ`, `P` lifts the torsion points of `e`
-  have hP := expMap_apply_toRealVectors_eq_torsionPoint_of_two_smul_mem_ker e u G hG l hl
-  -- so `P (Eⁿ)` contains the lattice, and `P` is bijective
-  have h_lat : ∀ z ∈ u.lattice, ∃ y : D.Index → E, P (toRealVectors y) = z :=
-    lattice_subset_range_of_expMap_eq_torsionPoint e u P hP
-  let Q : RealVectors E D.Index ≃L[ℝ] Fin (abelianDim E D.Index) → ℂ := (LinearEquiv.ofBijective P
-    (bijective_of_lattice_subset_range u P h_lat)).toContinuousLinearEquiv
-  have hG_mul : ∀ c c' : InfinitePlace E → ℂ, G (c * c') = G c * G c' := by
-    refine G.map_mul_iff.mpr (ext_basis d d fun i j ↦ u.linear_ext ?_)
-    simp [← map_mul, mul_smul, hd, hG]
-  have hQ (c : InfinitePlace E → ℂ) (w : RealVectors E D.Index) : Q (c • w) = G c (Q w) := by
-    simp [Q, P, hG_mul]
-  -- the signature condition: `Q Y ≠ 0` is an eigenvector of `G` on `𝓞 E` (`hY_eigen`), and
-  -- `G (star β) w - Φ(β) • w = ξ w • Q Y` for a linear form `ξ` on `V` (`hξ`); here `β = D.β`
-  obtain ⟨Y, hY, hY_eigen, ξ, hξ⟩ := Q.surjective.exists.mp
-    ((u.hasSignature_iff hG h_jac x.isGroupBaseChange (by simp) (ρ := x.baseHom)).mp h_rk)
-  have hGY (c : InfinitePlace E → ℂ) : G c (Q Y) = c v₀ • Q Y := by
-    rw [← d.sum_repr c]
-    simp [sum_smul, mul_smul, hd, hY_eigen, hρ]
-  let η (j : D.Index) : ℂ := ξ (Q (Pi.single j 1))
-  -- apply `G (w k)` to `hξ` at the `k`-th unit vector and sum over `k`
-  have h_rank (w : RealVectors E D.Index) :
-      G (cmEmbedding (star D.β)) (Q w) - x.baseHom D.β • Q w = (η ⬝ᵥ (w · v₀)) • Q Y := by
-    have h_sum :
-        ∑ k, G (w k) (G (cmEmbedding (star D.β)) (Q (Pi.single k 1)) -
-            x.baseHom D.β • Q (Pi.single k 1)) =
-          ∑ k, G (w k) (ξ (Q (Pi.single k 1)) • Q Y) :=
-      Finset.sum_congr rfl fun k _ ↦ congrArg (G (w k)) (by simpa using hξ (Q (Pi.single k 1)))
-    simpa [η, hGY, ← hQ, smul_comm (w _), ← map_sum, ← smul_sum, smul_smul (ξ _),
-      ← dotProduct.eq_1, ← pi_eq_sum_univ', ← sum_smul] using h_sum
+  obtain ⟨Q, hQ, hP, h_lat⟩ := exists_realEquiv_of_cmAction e u d hd G hG
   have h_smul (c : 𝓞 E) (w : RealVectors E D.Index) :
       u.expMap (Q (cmEmbedding c.val • w)) = c • u.expMap (Q w) := by simp [hQ, hG]
   -- `u.expMap ∘ Q` sends `y` to the torsion point of `e` at the class of `m *ᵥ y`
   obtain ⟨m, h_ev⟩ := exists_matrix_torsionPoint_eq_expMap e u Q hP h_smul
-  -- the reflection fixes the line of `Y · v₀`; its linear form is a multiple of `η`
-  let η' : D.Index → ℂ := (Complex.I / (Φ v₀ D.β.val).im : ℂ) • η
-  have h_two : η' ⬝ᵥ (Y · v₀) = 2 := by
-    -- `h_rank` at `Y` gives `η ⬝ᵥ (Y · v₀) = conj Φ(β) - Φ(β) = -2 * I * Im Φ(β)`
-    have h_Y : Φ v₀ (star D.β.val) - Φ v₀ D.β.val = η ⬝ᵥ (Y · v₀) := by
-      simpa [smul_left_inj, hGY, hρ, hY, ← sub_smul] using h_rank Y
-    simp [η', ← h_Y, Complex.ext_iff, ← two_mul, field]
-  have h_per : IsPeriodMap (vecMulVec (Y · v₀) η' - 1) Q :=
-    isPeriodMap_vecMulVec_sub_one_of_sub_smul_eq hρ G Q hQ Y hGY hβ η h_rank
+  obtain ⟨ℓ, h_per, h_refl⟩ := exists_isPeriodMap_and_isReflection hρ u d hd G hG Q hQ
   obtain ⟨g, period, model, h_model⟩ := exists_torusModel_of_isPeriodMap e hρ u Q h_per h_smul h_ev
     h_lat
-  exact ⟨g, _, abelianDim E D.Index, period, model, h_model, (Y · v₀), η', h_two, rfl⟩
+  exact ⟨g, ℓ, abelianDim E D.Index, period, model, h_model, h_refl⟩
 
 end New.Variety
