@@ -210,6 +210,12 @@ lemma relLength_mono {S' T' : Submodule A M} (hS : S ≤ S') (hT : T' ≤ T) :
     relLength S T ≤ relLength S' T' :=
   relLength_le_of_mapsTo .id (fun _ hx ↦ hS hx) fun _ _ hx ↦ hT hx
 
+/-- To compare lengths modulo two submodules, it suffices to compare their intersections
+with the source. -/
+lemma relLength_anti_right_of_inf_le {U : Submodule A M} (h : S ⊓ U ≤ T) :
+    relLength S T ≤ relLength S U :=
+  relLength_le_of_mapsTo LinearMap.id (fun _ hx ↦ hx) fun _ hx hu ↦ h ⟨hx, hu⟩
+
 @[simp]
 lemma relLength_eq_zero : relLength S T = 0 ↔ S ≤ T := by simp [relLength, length_quotient]
 

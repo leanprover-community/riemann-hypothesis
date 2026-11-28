@@ -476,7 +476,7 @@ lemma IsTiedPrimes.relLength_tied_le_sum_ker [ThePrime ℓ]
         (Submodule.mem_iInf _).1 hz_tie p
   calc
     relLength (Sel L) (Sel (L ∪ tieRelations I d i)) ≤ relLength (Sel L) (⨅ p, (tie p).ker) :=
-      relLength_le_of_mapsTo LinearMap.id (fun _ hz ↦ hz) fun z hz hz' ↦ h_tied ⟨hz, hz'⟩
+      relLength_anti_right_of_inf_le h_tied
     _ ≤ ∑ p : I × Bool, relLength (Sel L) (tie p).ker := relLength_iInf_le _ _
     _ = ∑ v : I, ∑ b : Bool, relLength (Sel L) (tie (v, b)).ker := Fintype.sum_prod_type _
     _ ≤ _ := sum_le_sum fun v _ ↦ sum_le_sum fun b _ ↦ by

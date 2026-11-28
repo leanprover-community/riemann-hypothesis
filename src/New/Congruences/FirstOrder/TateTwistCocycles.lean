@@ -273,8 +273,8 @@ lemma hasTriangleCost_tateTwist [Fintype J] [LinearOrder J] {ν : ℕ} {w : J �
     have h_step : ℓ ^ h • (z + z ∘ conjGal) (τ j) = 0 := h_tri.pow_smul_eq_zero O j _ h_even h_prev'
     simpa [← Nat.cast_smul_eq_nsmul O, eq_neg_iff_add_eq_zero] using h_step
   · -- The loss: a cocycle that obeys the local crystalline relations vanishes on `L`.
-    exact relLength_le_of_mapsTo 1 (by simp) fun z hz h_loc g hg ↦
-      apply_eq_zero_of_mem_obeying_crysRelations (h_coc hz) h_loc hg
+    exact relLength_anti_right_of_inf_le fun z hz g hg ↦
+      apply_eq_zero_of_mem_obeying_crysRelations (h_coc hz.1) hz.2 hg
   · -- The cocycles in `S` kill the tame generators, so they are unramified off `ℓ`.
     have hS_tame z (hz : z ∈ S) : ∀ k : J × Bool, z (withConjInv τ k) = 0 := by
       rintro ⟨j, copy⟩
