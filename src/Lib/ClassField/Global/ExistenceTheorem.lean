@@ -16,6 +16,7 @@ import Lib.ClassField.LocalDuality.KummerFiniteness
 import Lib.ClassField.Places.LocalFields
 import Lib.ClassField.Places.TameInertia
 import Lib.General.NumberTheory.SUnitsAndClassNumber
+import TauCeti.RingTheory.DedekindDomain.SInteger.Power
 
 /-!
 # Kummer characters, power indices and the existence theorem for totally complex fields
@@ -509,9 +510,8 @@ private lemma exists_unit_pow_eq_of_nsmul_eq_ofBase {S : Set (FinPlace K)} {u : 
   have h_nsmul : n • x = Additive.ofMul (u : Kˣ) :=
     (ofBase_bijective (K := K) Γ).injective ((map_nsmul (ofBase Γ Ω) n x).trans hy)
   have hx_pow : x.toMul ^ n = (u : Kˣ) := by rw [← toMul_nsmul, h_nsmul, toMul_ofMul]
-  -- `x` is a unit outside `S`, as its `n`-th power is.
-  have hx_unit (v : FinPlace K) (hv : v ∉ S) : v.valuation K (x.toMul : K) = 1 := by
-    simpa [← hx_pow, NeZero.ne n] using S.unit_valuation_eq_one K u hv
+  have hx_unit : x.toMul ∈ S.unit K :=
+    (S.pow_mem_unit_iff K (NeZero.ne n)).1 (hx_pow.symm ▸ u.property)
   exact ⟨⟨x.toMul, hx_unit⟩, rfl, Subtype.ext hx_pow⟩
 
 /-- Let `Γ`, the Galois group of `Ω/K` for the fixed algebraic closure `Ω` of `ℚ`, fix the `n`-th
@@ -520,27 +520,20 @@ roots of unity among the `S`-units. -/
 private lemma dvd_natCard_ker_powMonoidHom_of_cyclotomicCharMod_eq_one
     (h_fix : ∀ g : Γ, cyclotomicCharMod Ω n g = 1) (S : Set (FinPlace K)) :
     n ∣ Nat.card (powMonoidHom n : S.unit K →* S.unit K).ker := by
-  -- The root of unity `ζ` of order `n` chosen in `rootPowHom` is `Γ`-invariant, so it is an
-  -- `S`-unit `x` with `x ^ n = 1`. The order of the group of such `x` kills `x`, hence `ζ`.
+  -- The primitive root chosen in `Ω` descends to `K`. TauCeti counts the torsion among the S-units.
   set ζ : DiscreteUnits Ω := (rootPowHom Ω n).val 1
   have hζ : IsPrimitiveRoot ζ.toMul n := isPrimitiveRoot_rootPowHom_one Ω n
   have hζ_nsmul : n • ζ = 0 := ((rootPowHom Ω n).property.right ζ).mp ⟨1, rfl⟩
   have hζ_inv : ζ ∈ (unitsRep : Representation ℤ Γ (DiscreteUnits Ω)).invariants :=
     (Representation.mem_invariants _ ζ).mpr fun g ↦
       cyclotomicCharMod_eq_one_iff.mp (h_fix g) ζ hζ_nsmul
-  have hζ_root : n • (⟨ζ, hζ_inv⟩ : (unitsRep : Representation ℤ Γ (DiscreteUnits Ω)).invariants) =
-      ofBase Γ Ω (Additive.ofMul ((1 : S.unit K) : Kˣ)) :=
-    Subtype.ext (by simp [hζ_nsmul])
-  obtain ⟨x, hx_eq, hx_pow⟩ := exists_unit_pow_eq_of_nsmul_eq_ofBase hζ_root
-  set c : ℕ := Nat.card (powMonoidHom n : S.unit K →* S.unit K).ker
-  have hx_ker : x ∈ (powMonoidHom n : S.unit K →* S.unit K).ker := MonoidHom.mem_ker.mpr hx_pow
-  have hx_card : ((x : Kˣ) : K) ^ c = 1 := by
-    simpa [c] using congrArg (fun z ↦ (((z.val : S.unit K) : Kˣ) : K))
-      (pow_card_eq_one' (x := (⟨x, hx_ker⟩ : (powMonoidHom n : S.unit K →* S.unit K).ker)))
-  have hζ_val : (ζ.toMul : Ω) = algebraMap K Ω ((x : Kˣ) : K) := by
-    simpa using congrArg (fun z ↦ ((Subtype.val z).toMul : Ω)) hx_eq.symm
-  refine hζ.dvd_of_pow_eq_one c (Units.ext ?_)
-  rw [Units.val_pow_eq_pow_val, hζ_val, ← map_pow, hx_card, map_one, Units.val_one]
+  obtain ⟨x, hx⟩ := (ofBase_bijective (K := K) Γ).surjective ⟨ζ, hζ_inv⟩
+  let f := Units.map (algebraMap K Ω).toMonoidHom
+  have hζ_eq : f x.toMul = ζ.toMul := Units.ext (by
+    simpa [f] using congrArg (fun z ↦ ((Subtype.val z).toMul : Ω)) hx)
+  have h_x : IsPrimitiveRoot x.toMul n :=
+    (hζ_eq.symm ▸ hζ).of_map_of_injective (Units.map_injective (algebraMap K Ω).injective)
+  rw [Set.natCard_ker_powMonoidHom_unit, h_x.card_rootsOfUnity']
 
 /-- Let `Γ`, the Galois group of `Ω/K` for the algebraic closure `Ω` of `ℚ`, fix the `n`-th roots of
 unity and let `S` be a set of finite places of `K`. An `S`-unit `u` whose Kummer character vanishes
