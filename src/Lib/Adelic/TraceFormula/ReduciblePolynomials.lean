@@ -130,16 +130,18 @@ polynomial lies in `S`. Here `k` is a cusp kernel of order `B ≥ 13 * card n ^ 
 integrable. It is a linear form in the test function `φ : TestFunction (Gf E n)`, which has an
 underlying function `φ.1 : Gf E n → ℂ`. -/
 def geometricSide (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k) (S : Set E[X]) :
-    TestFunction (Gf E n) →ₗ[ℂ] ℂ where
-  toFun φ := ∫ x : G E s, ∑' γ : U V.J, V.polyTerm k φ S γ x ∂V.quotMeasure
-  map_add' φ ψ := by
-    rw [← integral_add (V.integrable_tsum_polyTerm hB he φ S)
-      (V.integrable_tsum_polyTerm hB he ψ S)]
-    congr with x
-    rw [← (V.summable_polyTerm hB φ he.decay S x).tsum_add (V.summable_polyTerm hB ψ he.decay S x)]
-    simp [kernelTerm, mul_add]
-  map_smul' c φ := by
-    simp [← integral_const_mul, ← tsum_mul_left, kernelTerm, mul_left_comm _ c]
+    TestFunction (Gf E n) →ₗ[ℂ] ℂ :=
+  let kernel (x : G E s) := V.partialKernelLinear hB he.decay
+    {γ : U V.J | ((γ : GL n E) : Matrix n n E).charpoly ∈ S} x x
+  { toFun φ := ∫ x : G E s, kernel x φ ∂V.quotMeasure
+    map_add' φ ψ := by
+      have h_int (f : TestFunction (Gf E n)) :
+          Integrable (fun x ↦ kernel x f) V.quotMeasure :=
+        V.integrable_tsum_polyTerm hB he f S
+      rw [← integral_add (h_int φ) (h_int ψ)]
+      exact integral_congr_ae (.of_forall fun x ↦ (kernel x).map_add φ ψ)
+    map_smul' c φ := by
+      simp only [map_smul, smul_eq_mul, integral_const_mul, RingHom.id_apply] }
 
 /-- The value of the linear form `geometricSide` at `φ`, as an integral over `[G]`. -/
 lemma geometricSide_apply (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k)

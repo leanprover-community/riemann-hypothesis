@@ -323,10 +323,13 @@ theorem partialKernel_convIndicator_eq_sum {K : Subgroup (Gf E n)} [hK : IsLevel
         ((V.formRep e).asAlgebraHom a (b i)).val g * starRingEnd ℂ ((b i : V.Form e).val g') := by
   classical
   -- Both sides are linear in `a`, and for a group element `h` this is the case of `1_K` at `g h`.
+  let kernel := V.partialKernelLinear hB he.decay .univ g g'
+  change kernel (convIndicator hK.isOpen hK.isCompact a) = _
   have h_add (y y' : V.Form e) : (y + y').val g = y.val g + y'.val g := rfl
   have h_smul (c : ℂ) (y : V.Form e) : (c • y).val g = c * y.val g := rfl
   induction a using MonoidAlgebra.induction_on with
   | of h =>
+    change V.partialKernel e (convIndicator hK.isOpen hK.isCompact _) .univ g g' = _
     simp only [MonoidAlgebra.of_apply, Representation.asAlgebraHom_single_one, formRep_apply]
     rw [← V.tsum_kernel_eq_sum hB he b (g * (1, h)) g']
     let i : U V.J ≃ V.Γ := (MonoidHom.ofInjective V.ratEmbed_injective).toEquiv
@@ -335,15 +338,10 @@ theorem partialKernel_convIndicator_eq_sum {K : Subgroup (Gf E n)} [hK : IsLevel
     refine tsum_congr fun γ ↦ ?_
     simp [kernelTerm, convIndicator_single, Set.indicator, hi, mul_assoc]
   | add a a' ha ha' =>
-    simp only [map_add, LinearMap.add_apply, h_add, add_mul, sum_add_distrib, mul_add]
-    rw [← ha, ← ha', partialKernel, partialKernel, partialKernel,
-      ← (V.summable_kernelTerm hB _ he.decay .univ g g').tsum_add
-        (V.summable_kernelTerm hB _ he.decay .univ g g')]
-    simp [kernelTerm, mul_add]
+    simp only [map_add, LinearMap.add_apply, h_add, add_mul, sum_add_distrib, mul_add, ha, ha']
   | smul c a ha =>
-    simp only [map_smul, LinearMap.smul_apply, h_smul, mul_assoc, ← Finset.mul_sum]
-    rw [mul_left_comm, ← ha, partialKernel, partialKernel, ← tsum_mul_left]
-    simp [kernelTerm, mul_left_comm _ c]
+    simp only [map_smul, LinearMap.smul_apply, h_smul, smul_eq_mul, mul_assoc, ← Finset.mul_sum]
+    rw [ha, mul_left_comm]
 
 /-- Let `e` be a cusp kernel of order `B ≥ 13 n ^ 3`, `K` a level, and `T` an operator that acts as
 the element `a` of the group algebra on the forms of type `e` and level `K`. Then `vol K` times the
