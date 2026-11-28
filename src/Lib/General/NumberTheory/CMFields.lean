@@ -170,11 +170,9 @@ lemma aeval_root_finAdele_map_conj_comp [IsCMField (AdjoinRoot P)] {c : E[X]}
   have h_star : aeval (root P : 𝔸f (AdjoinRoot P)) (c.map (algebraMap E (𝔸f E))) =
       star (root P : 𝔸f (AdjoinRoot P)) := by
     rw [aeval_root_finAdele_map, hc, star_algebraMap_finAdele]
-  have h_incl : algebraMap (𝔸f E) (𝔸f (AdjoinRoot P)) = adeleMap (of P) :=
-    algebraMap_eq_finAdeleIncl
-  induction q using Polynomial.induction_on' with
-  | add p r hp hr => simp [hp, hr]
-  | monomial n a => simp [h_star, h_incl, ← adeleMap_star, starRingEnd_apply]
+  rw [aeval_comp, h_star, aeval_def, aeval_def, eval₂_map]
+  simp only [← starRingEnd_apply, hom_eval₂]
+  exact congrArg (fun f ↦ q.eval₂ f _) <| RingHom.ext fun a ↦ adeleMap_star (of P) a
 
 /-- Let `L = E[X]/(P)` be a CM field. An algebra map `ε` from the polynomials over the finite adeles
 `𝔸f E` to `𝔸f L` presents `𝔸f L` as `(𝔸f E)[X]/(P)`, compatibly with `E[X] → L` and with complex
