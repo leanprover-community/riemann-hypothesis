@@ -95,6 +95,7 @@ lemma _root_.Membership.mem.map_mem_agreeWithOneOn (f : R →+* R')
   aesop (add simp [Subgroup.mem_subgroupOf, Matrix.one_apply])
 
 variable (S) in
+/-- The level integer `S.N` is invertible in the field `E` since `N` is prime and nonzero. -/
 lemma isUnit_natCast_N : IsUnit (S.N : E) := (Nat.cast_ne_zero.2 S.N_prime.ne_zero).isUnit
 
 /-- The rational Gram matrix `S.ratMiddle E` of the middle space is hermitian and invertible. -/
@@ -164,6 +165,8 @@ Its columns form a basis of hΛ₀, where Λ₀ is the lattice spanned by the co
 noncomputable def classBasis (c : S.Classes) : GL 𝔰.BesselIndex (𝔸f E) :=
   (toBesselH 𝔰 (S.N : 𝔸f E) c.out).val * S.latticeBasis
 
+/-- The class basis is the lattice basis times the class representative:
+`classBasis c = S.latticeBasis * S.classRep c`. -/
 lemma classBasis_eq_latticeBasis_mul_classRep (c : S.Classes) :
     classBasis c = S.latticeBasis * (S.classRep c).val := by
   simp [classBasis, classRep, inclHFin, toLatticeBasis, mul_assoc]
@@ -228,6 +231,7 @@ lemma simpleRootSum_ratToAdelic (u : S.G E) :
     simpleRootSum (S.ratToAdelic u) = ↑(simpleRootSum u) :=
   (map_sum (toAdele (E := E)) _ _).symm
 
+/-- The self-dual character on finite adeles has complex norm identically equal to 1. -/
 @[simp]
 lemma norm_selfDualChar {x : 𝔸f E} : ‖S.selfDualChar x‖ = 1 := norm_coe _
 
