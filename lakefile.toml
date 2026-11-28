@@ -13,6 +13,23 @@ relaxedAutoImplicit = false
 maxSynthPendingDepth = 3
 pp.unicode.fun = true
 maxHeartbeats = 4000000
+# Added for style checks: Mathlib's style linters that the code already passes, so that new code
+# keeps to them. Mathlib turns these on, with others, through `linter.mathlibStandardSet`.
+weak.linter.hashCommand = true
+weak.linter.oldObtain = true
+weak.linter.privateModule = true
+weak.linter.style.cases = true
+weak.linter.style.cdot = true
+weak.linter.style.docString = true
+weak.linter.style.dollarSyntax = true
+weak.linter.style.extendedBinder = true
+weak.linter.style.lambdaSyntax = true
+weak.linter.style.longFile = 1500
+weak.linter.style.missingEnd = true
+weak.linter.style.native = true
+weak.linter.style.setOption = true
+weak.linter.style.whitespace = true
+# The rest of this file, up to the next "Added" comment, is unchanged from grh-lean commit 72fead1.
 
 [[require]]
 name = "mathlib"
