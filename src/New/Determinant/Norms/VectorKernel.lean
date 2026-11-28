@@ -104,24 +104,16 @@ lemma vectorKernel_equivariant (γ : U (stdSpace E n).J) (k : O.levelGroup) (g :
       O.levelChar k • (stdSpace E n).weightRep O.columnCount O.detExp γ (O.vectorKernel g x) := by
   -- The operator `c(k) ρ(γ)` is unitary for the Gram form and onto, so it is enough to pair both
   -- sides with its values; there `conjKernel_equivariant` applies.
-  set ρ : Representation ℂ (U (stdSpace E n).J) (WeylIndex n O.columnCount → ℂ) :=
-    (stdSpace E n).weightRep O.columnCount O.detExp with hρ
-  set c : ℂ := O.levelChar k with hc
-  have h_norm : conj c * c = 1 := by
-    rw [hc, Complex.conj_mul', (LevelPlaces.isOfFinOrder_level_char k).norm_eq_one]
-    simp
-  have h_unitary (u v : WeylIndex n O.columnCount → ℂ) :
-    gramForm (c • ρ γ u) (c • ρ γ v) = gramForm u v := by
-    rw [map_smul, LinearMap.map_smulₛₗ₂, smul_smul, mul_comm, h_norm, one_smul, hρ,
-      weightRep_apply, gramForm_conjWeylRep]
+  let ρ := (stdSpace E n).weightRep O.columnCount O.detExp
   refine ext_gramForm_left fun ζ ↦ ?_
-  obtain ⟨v, rfl⟩ : ∃ v : WeylIndex n O.columnCount → ℂ, c • ρ γ v = ζ :=
-    ⟨conj c • ρ γ⁻¹ ζ, by rw [map_smul, smul_smul, mul_comm, h_norm, one_smul, ρ.self_inv_apply]⟩
-  calc gramForm (c • ρ γ v) (O.vectorKernel g (stdEmbFin γ * x * k.val))
+  obtain ⟨v, rfl⟩ : ∃ v : WeylIndex n O.columnCount → ℂ, O.levelChar k • ρ γ v = ζ :=
+    ⟨O.levelChar k⁻¹ • ρ γ⁻¹ ζ, by
+      rw [map_smul, smul_smul, ← map_mul, mul_inv_cancel, map_one, one_smul, ρ.self_inv_apply]⟩
+  calc gramForm (O.levelChar k • ρ γ v) (O.vectorKernel g (stdEmbFin γ * x * k.val))
       = conj (O.conjKernel g x v) := by
         rw [← conj_gramForm, gramForm_vectorKernel_left, O.conjKernel_equivariant]
-    _ = gramForm (c • ρ γ v) (c • ρ γ (O.vectorKernel g x)) := by
-        rw [h_unitary, ← gramForm_vectorKernel_left, conj_gramForm]
+    _ = gramForm (O.levelChar k • ρ γ v) (O.levelChar k • ρ γ (O.vectorKernel g x)) := by
+        rw [O.gramForm_levelChar_smul_weightRep γ k, ← gramForm_vectorKernel_left, conj_gramForm]
 
 /-- For a rational point `γ` of `U(V)`, where `V = stdSpace E n` and `stdEmbFin γ` is the image of
 `γ` in the finite points, `θ_W(g, γ x) = ρ(γ) θ_W(g, x)`. With `k⁺ = O.colsPlus`, `k⁻ = O.colsMinus`

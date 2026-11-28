@@ -152,17 +152,10 @@ lemma inner_classForm (h : Gf E n) (φ : O.FormV) (v : WeylIndex n O.columnCount
       stdClassSum O.levelGroup fun g : Gf E n ↦ L g (classForm O h v g) :=
     inner_eq_stdClassSum_gramForm (classForm O h v) φ
   refine h_sum.trans (classSum_deltaForm L fun γ k ↦ ?_)
-  set ρ : Representation ℂ (U (stdSpace E n).J) (WeylIndex n O.columnCount → ℂ) :=
-    (stdSpace E n).weightRep O.columnCount O.detExp
-  have h_equivariant : φ ((stdSpace E n).embFin γ * h * k) = O.levelChar k • ρ γ (φ h) :=
-    levelSpace_smoothFormRep_apply φ.property γ h k
-  have h_unitary : gramForm (ρ γ v) (ρ γ (φ h)) = gramForm v (φ h) := by
-    simp only [ρ, Space.weightRep_apply, gramForm_conjWeylRep]
-  have h_unit : conj (O.levelChar k) * O.levelChar k = 1 := by
-    rw [Complex.conj_mul', (LevelPlaces.isOfFinOrder_level_char k).norm_eq_one]
-    simp
-  change gramForm (O.levelChar k • ρ γ v) (φ ((stdSpace E n).embFin γ * h * k)) = gramForm v (φ h)
-  rw [h_equivariant, LinearMap.map_smulₛₗ₂, map_smul, smul_smul, h_unit, one_smul, h_unitary]
+  change gramForm (O.levelChar k • (stdSpace E n).weightRep O.columnCount O.detExp γ v)
+    (φ ((stdSpace E n).embFin γ * h * k)) = _
+  rw [levelSpace_smoothFormRep_apply φ.property γ h k]
+  exact O.gramForm_levelChar_smul_weightRep γ k v (φ h)
 
 /-- Let `h` be a point of the finite unitary group `Gf E n` of `V` and `g` a point of the adelic
 unitary group `G E O.signs` of the space `O.W` of rank `r`. The descent `O.normalizedDescent` is the

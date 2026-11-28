@@ -266,6 +266,19 @@ followed by `New.DescentPair.residueLevelChar`. -/
 abbrev levelChar : levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl) →* ℂ :=
   O.residueLevelChar.comp (levelOf.reduction O.placeAt (descentResidueLevel O.toLevelPlaces O.incl))
 
+omit [WeilData E] in
+/-- The weight action of a rational unitary element, multiplied by the level character at `k`,
+preserves the Gram pairing on weight vectors. -/
+lemma gramForm_levelChar_smul_weightRep (γ : U (stdSpace E n).J) (k : O.levelGroup)
+    (u v : WeylIndex n O.columnCount → ℂ) :
+    gramForm (O.levelChar k • (stdSpace E n).weightRep O.columnCount O.detExp γ u)
+      (O.levelChar k • (stdSpace E n).weightRep O.columnCount O.detExp γ v) = gramForm u v := by
+  have h_unit : conj (O.levelChar k) * O.levelChar k = 1 := by
+    rw [Complex.conj_mul', (LevelPlaces.isOfFinOrder_level_char k).norm_eq_one]
+    simp
+  rw [LinearMap.map_smulₛₗ₂, map_smul, smul_smul, h_unit, one_smul]
+  simp only [weightRep_apply, gramForm_conjWeylRep]
+
 /-- Algebraic forms on V = I_n of weight (`O.columnCount`, `O.detExp`) whose level fixes the basis
 vectors indexed by `incl` modulo the places of M and the span of the other basis vectors modulo the
 places of Q, with character ∏_Q ψ_w⁻¹(det g₀₀), g₀₀ the diagonal block on `incl`. -/
