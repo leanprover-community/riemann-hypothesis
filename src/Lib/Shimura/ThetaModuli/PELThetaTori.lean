@@ -995,7 +995,7 @@ lemma hasGoodReduction_one :
       -- `-map_mul` keeps the valuation of each product in one piece.
       simpa [IsGreatest, LatticeForm.sizeAt, upperBounds, -map_mul,
         Valuation.one_apply_le_one, thetaShift_apply] using h_not_greatest
-    exact hf_ne (eq_zero_of_torsionPoints hf h_torsion_zero)
+    exact hf_ne (eq_zero_of_torsionPoints hf.continuous h_torsion_zero)
   -- The three sup norms are `0` or `1`.
   rw [← sizeAt_mul]
   change (B + C).thetaNorm 1 (f * f') = B.thetaNorm 1 f * C.thetaNorm 1 f'

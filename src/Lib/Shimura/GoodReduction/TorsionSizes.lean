@@ -25,8 +25,7 @@ have valuation `1`, so sizes are periodic and do not see these multipliers.
 * `New.ThetaTori.mul_shift_mem_sizes`: products of sizes with torsion translates of sizes are sizes.
 * `New.ThetaTori.bddAbove_of_mem_sizes`, `New.ThetaTori.IsAmpleType.thetaNorm_pos`: sizes are
   bounded, and the sup norm of `f ≠ 0` is positive.
-* `New.ThetaTori.eq_zero_of_torsionPoints`: a holomorphic function that vanishes at all torsion
-  points is zero.
+* `New.ThetaTori.dense_torsionPoints`: the vectors torsion modulo a full-rank lattice are dense.
 * `New.ThetaTori.LatticeForm.HasShiftBound`: the bound `φ ^ 2 ≤ C * ⨆ x, φ x * φ (x + w)`. It passes
   from `B` to `B'` when the Riemann form of `B - B'` is positive
   (`New.ThetaTori.LatticeForm.HasShiftBound.of_isPosRiemann_sub`), and with `C = 1` it compares
@@ -223,40 +222,52 @@ lemma isCocompact_of_isFullRankLattice : L.toAddSubgroup.IsCocompact := by
   · -- the fractional part `x - floor b x` has norm at most `∑ i, ‖b i‖`
     simpa [neg_add_eq_sub, ZSpan.fract_apply] using norm_fract_le b x
 
-/-- A continuous function that vanishes on lattices of arbitrarily small mesh is zero: suppose that
-for linear maps `d` arbitrarily close to `0` there is a left inverse `c` of `d` such that `f`
-vanishes on the preimage of `L` under `c`. Then `f = 0`. -/
+/-- A set is dense if it contains lattices of arbitrarily small mesh. The mesh is given by a
+continuous linear map `d` arbitrarily close to zero, with a left inverse `c` identifying the
+lattice as the preimage of `L`. -/
+lemma dense_of_small_mesh {s : Set V}
+    (h_small : ∃ᶠ d : V →L[ℂ] V in nhds 0, ∃ c : V →L[ℂ] V,
+      (∀ y : V, c (d y) = y) ∧ ∀ y : V, c y ∈ L → y ∈ s) : Dense s := by
+  obtain ⟨K, hK, h_cover⟩ := isCocompact_of_isFullRankLattice (L := L)
+  intro z
+  refine mem_closure_iff.2 fun U hU hz ↦ ?_
+  -- For small enough `d`, the translate `z - d K` fits inside `U`.
+  have h_mem : ∀ᶠ d : V →L[ℂ] V in nhds 0, ∀ u ∈ K, z - d u ∈ U :=
+    hK.eventually_forall_mem (fun (d : V →L[ℂ] V) u ↦ z - d u) U (by
+      intro u hu
+      simpa using hU.mem_nhds hz)
+  obtain ⟨d, ⟨c, hcd, h_lattice⟩, hd⟩ := (h_small.and_eventually h_mem).exists
+  -- Write `l + c z ∈ K` for some `l ∈ L`. The corresponding point maps to `-l` under `c`.
+  obtain ⟨l, hl, hu⟩ := h_cover (c z)
+  refine ⟨z - d (l + c z), hd _ hu, h_lattice _ ?_⟩
+  simpa [hcd] using hl
+
+/-- A continuous function that vanishes on lattices of arbitrarily small mesh is zero. -/
 lemma eq_zero_of_small_mesh (hf : Continuous f)
     (h_small : ∃ᶠ d : V →L[ℂ] V in nhds 0, ∃ c : V →L[ℂ] V,
       (∀ y : V, c (d y) = y) ∧ ∀ y : V, c y ∈ L → f y = 0) :
-    f = 0 := by
-  obtain ⟨K, hK, h_cover⟩ := isCocompact_of_isFullRankLattice (L := L)
-  funext z
-  by_contra hz
-  -- If `f z ≠ 0`, then for `d` near 0 the function `f` has no zero on `z - d K`.
-  have h_ne : ∀ᶠ d : V →L[ℂ] V in nhds 0, ∀ u ∈ K, f (z - d u) ∈ ({0}ᶜ : Set ℂ) :=
-    hK.eventually_forall_mem (fun (d : V →L[ℂ] V) u ↦ f (z - d u)) {0}ᶜ (by aesop)
-  refine h_small (h_ne.mono fun d hd ⟨c, hcd, h_zero⟩ ↦ ?_)
-  -- But `u = l + c z ∈ K` for some `l ∈ L`, and then `c (z - d u) = -l` lies in `L`.
-  obtain ⟨l, hl, hu⟩ := h_cover (c z)
-  exact hd _ hu (h_zero _ (by simpa [hcd] using hl))
+    f = 0 :=
+  Continuous.ext_on (dense_of_small_mesh (s := {y | f y = 0}) h_small) hf continuous_const
+    (fun _ hy ↦ hy)
 
-/-- A holomorphic function `f` on `V` that vanishes at all torsion points of `V / L` is zero. -/
-lemma eq_zero_of_torsionPoints (hf : Differentiable ℂ f) (h_zero : ∀ x : torsionPoints L, f x = 0) :
-    f = 0 := by
-  -- The zero set of `f` contains `n⁻¹ L` for all `n ≠ 0`, lattices of mesh tending to 0.
+/-- The vectors in `V` that are torsion modulo the full-rank lattice `L` are dense. -/
+lemma dense_torsionPoints : Dense (torsionPoints L : Set V) := by
+  -- The torsion points contain the lattices `n⁻¹ L`, of mesh tending to zero.
   have h_mesh : Tendsto (fun n : ℕ ↦ (n : ℝ)⁻¹ • (1 : V →L[ℂ] V)) atTop (nhds 0) := by
     have h_cont : Continuous (fun r : ℝ ↦ r • (1 : V →L[ℂ] V)) := by
       simp only [continuous_clm_apply, smul_apply]
       fun_prop
     exact (h_cont.tendsto' 0 0 (zero_smul ℝ _)).comp tendsto_inv_atTop_nhds_zero_nat
-  -- for `d = n⁻¹ • 1` take `c = n • 1`: it inverts `d`, and `f` vanishes where `c y ∈ L`
-  have h_small : ∃ᶠ d : V →L[ℂ] V in nhds 0, ∃ c : V →L[ℂ] V,
-      (∀ y : V, c (d y) = y) ∧ ∀ y : V, c y ∈ L → f y = 0 := by
-    refine h_mesh.frequently ((eventually_ne_atTop 0).frequently.mono fun n hn ↦ ?_)
-    refine ⟨n, fun y ↦ ?_, fun y hy ↦ h_zero ⟨y, n, hn, hy⟩⟩
-    simp [← smul_assoc, hn]
-  exact eq_zero_of_small_mesh (L := L) hf.continuous h_small
+  -- For `d = n⁻¹ • 1`, the map `c = n • 1` is a left inverse.
+  refine dense_of_small_mesh (L := L) <|
+    h_mesh.frequently ((eventually_ne_atTop 0).frequently.mono fun n hn ↦ ?_)
+  refine ⟨n, fun y ↦ ?_, fun _ hy ↦ ⟨n, hn, hy⟩⟩
+  simp [← smul_assoc, hn]
+
+/-- A continuous function that vanishes on the torsion points is zero. -/
+lemma eq_zero_of_torsionPoints (hf : Continuous f) (h_zero : ∀ x : torsionPoints L, f x = 0) :
+    f = 0 :=
+  Continuous.ext_on dense_torsionPoints hf continuous_const fun x hx ↦ h_zero ⟨x, hx⟩
 
 omit [IsFullRankLattice L] in
 /-- A fixed point argument for the constant in `New.ThetaTori.LatticeForm.HasShiftBound`, for a
@@ -432,7 +443,8 @@ lemma IsAmpleType.nsmul (h_ample : IsAmpleType B χ) (hn : n ≠ 0) : IsAmpleTyp
 lemma IsAmpleType.thetaNorm_pos (h_ample : IsAmpleType B χ) (hf : f ∈ B.thetaSpace χ)
     (h_ne : f ≠ 0) : 0 < B.thetaNorm v f := by
   -- `f` is nonzero at some torsion point, and there its size is positive.
-  have h_not_zero : ¬∀ x : torsionPoints L, f x = 0 := mt (eq_zero_of_torsionPoints hf.1) h_ne
+  have h_not_zero : ¬∀ x : torsionPoints L, f x = 0 :=
+    mt (eq_zero_of_torsionPoints hf.1.continuous) h_ne
   simpa [sizeAt, thetaShift, lt_ciSup_iff (bddAbove_of_mem_sizes ⟨h_ample, hf⟩), v.pos_iff]
     using h_not_zero
 
