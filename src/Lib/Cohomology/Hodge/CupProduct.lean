@@ -1,7 +1,8 @@
 module
 
-import Mathlib.Algebra.Homology.ShortComplex.ExactFunctor
 public import Lib.Cohomology.Etale.BijectiveComparisons -- shake: keep (instance attribute)
+public import TauCeti.Algebra.Category.Grp.FunctorTensor
+public import TauCeti.Algebra.Homology.Ext.Total
 
 /-!
 # Pointwise tensor product of functors, total Ext with Yoneda composition, external products
@@ -42,7 +43,7 @@ noncomputable section
 
 namespace New.Variety
 
-open CategoryTheory Abelian Ext TensorProduct Functor DirectSum Function H LongExactSeq
+open CategoryTheory Abelian Ext TensorProduct Functor DirectSum Function H
 
 variable {C C' : Type 1} [Category C] [Category C'] {M N N' F F' G G' : AbFunctor C} {a b e n : ℕ}
   {A : Type _} [Category A] (Φ Ψ : AbFunctor C ⥤ AbFunctor C') [IsExactFunctor Φ] [IsExactFunctor Ψ]
@@ -81,35 +82,35 @@ def abTensor : AbFunctor C ⥤ AbFunctor C ⥤ AbFunctor C :=
 on the pure tensors `a ⊗ b`. -/
 lemma abTensor_hom_ext {f g : abTensor F G ⟶ G'}
     (h_tmul : ∀ (c : C) (a : F.obj c) (b : G.obj c), f c (a ⊗ₜ b) = g c (a ⊗ₜ b)) : f = g :=
-  NatTrans.ext (funext fun c ↦ addCommGrp_tensor_hom_ext (h_tmul c))
+  objectwiseTensor.hom_ext h_tmul
 
 /-- Every value F(c) of the functor F from C to abelian groups is a flat ℤ-module. -/
 class HasFlatValues (F : AbFunctor C) where
   /-- Each value of `F` is a flat `ℤ`-module. -/
   flat (c : C) : Module.Flat ℤ (F.obj c)
 
+instance [HasFlatValues F] : F.HasFlatValues := ⟨HasFlatValues.flat⟩
+
 instance (φ : C' ⥤ C) [HasFlatValues F] : HasFlatValues (C := C') (φ ⋙ F) :=
   ⟨fun c ↦ HasFlatValues.flat (φ.obj c)⟩
 
-instance : (abTensor F).Additive := ⟨abTensor_hom_ext fun _ _ _ ↦ tmul_add ..⟩
+instance : (abTensor F).Additive := inferInstanceAs ((objectwiseTensor C).obj F).Additive
 
-instance : (abTensor.flip F).Additive := ⟨abTensor_hom_ext fun _ _ _ ↦ add_tmul ..⟩
+instance : (abTensor.flip F).Additive := inferInstanceAs ((objectwiseTensor C).flip.obj F).Additive
 
-instance [HasFlatValues F] : IsExactFunctor (abTensor F) := by
-  -- Exactness is tested object by object, where it is the flatness of `F.obj c`.
-  have h_exact (S : ShortComplex (AbFunctor C)) (hS : S.Exact) : (S.map (abTensor F)).Exact :=
-    (exact_of_app fun c ↦ (HasFlatValues.flat c).lTensor_exact _
-      (exact_of_shortComplex_exact (hS.map ((evaluation ..).obj c)))).2
-  obtain ⟨_, _⟩ := ((abTensor F).exact_tfae.out 2 4 :).mp h_exact
-  exact ⟨⟩
+instance [HasFlatValues F] : IsExactFunctor (abTensor F) :=
+  letI : Limits.PreservesFiniteLimits (abTensor F) :=
+    inferInstanceAs (Limits.PreservesFiniteLimits ((objectwiseTensor C).obj F))
+  letI : Limits.PreservesFiniteColimits (abTensor F) :=
+    inferInstanceAs (Limits.PreservesFiniteColimits ((objectwiseTensor C).obj F))
+  ⟨⟩
 
-instance [HasFlatValues F] : IsExactFunctor (abTensor.flip F) := by
-  -- The same argument, with the flat factor on the right.
-  have h_exact (S : ShortComplex (AbFunctor C)) (hS : S.Exact) : (S.map (abTensor.flip F)).Exact :=
-    (exact_of_app fun c ↦ (HasFlatValues.flat c).rTensor_exact _
-      (exact_of_shortComplex_exact (hS.map ((evaluation ..).obj c)))).2
-  obtain ⟨_, _⟩ := ((abTensor.flip F).exact_tfae.out 2 4 :).mp h_exact
-  exact ⟨⟩
+instance [HasFlatValues F] : IsExactFunctor (abTensor.flip F) :=
+  letI : Limits.PreservesFiniteLimits (abTensor.flip F) :=
+    inferInstanceAs (Limits.PreservesFiniteLimits ((objectwiseTensor C).flip.obj F))
+  letI : Limits.PreservesFiniteColimits (abTensor.flip F) :=
+    inferInstanceAs (Limits.PreservesFiniteColimits ((objectwiseTensor C).flip.obj F))
+  ⟨⟩
 
 /-! ### Total cohomology and the Yoneda product -/
 
@@ -127,15 +128,10 @@ instance addCommGroupH : AddCommGroup (H N F a) := { Ext.instAddCommGroup with a
 abbrev TotalH (N F : AbFunctor C) : Type 2 := DirectSum ℕ (H (C := C) N F)
 
 /-- The biadditive map from total `Ext(M, N)` and total `Ext(N, F)` to total `Ext(M, F)` that
-extends the Yoneda composition of homogeneous classes. The `choose` makes no real choice: it only
-keeps the formula from unfolding. See `TotalH.comp_def` and `TotalH.comp_of`. -/
-@[irreducible]
+extends the Yoneda composition of homogeneous classes. See `TotalH.comp_def` and `TotalH.comp_of`.
+-/
 def TotalH.comp : TotalH M N →+ TotalH N F →+ TotalH M F :=
-  (@exists_eq (TotalH M N →+ TotalH N F →+ TotalH M F)
-    (toAddMonoid fun a ↦
-      (toAddMonoid fun b ↦
-        ((bilinearComp M N F a b (a + b) rfl).compr₂
-          (DirectSum.of (H M F) (a + b))).flip).flip)).choose
+  TotalExt.comp
 
 /-- `comp` is the biadditive extension to the direct sums of the Yoneda compositions
 `Ext^a(M, N) × Ext^b(N, F) → Ext^(a + b)(M, F)`. -/
@@ -143,17 +139,16 @@ lemma TotalH.comp_def :
     (comp : TotalH M N →+ TotalH N F →+ TotalH M F) =
       toAddMonoid fun a : ℕ ↦ (toAddMonoid fun b : ℕ ↦
         ((bilinearComp M N F a b (a + b) rfl).compr₂
-          (DirectSum.of (H M F) (a + b))).flip).flip := by
-  unfold comp
-  exact exists_eq.choose_spec
+          (DirectSum.of (H M F) (a + b))).flip).flip :=
+  addHom_ext' fun a ↦ AddMonoidHom.ext fun x ↦
+    addHom_ext' fun b ↦ AddMonoidHom.ext fun y ↦ by simp [comp]
 
 /-- On homogeneous classes `comp` is the Yoneda composition. -/
 @[local simp]
 lemma TotalH.comp_of (x : H M N a) (y : H N F b) (h : a + b = n) :
     comp (DirectSum.of (H M N) a x) (DirectSum.of (H N F) b y) =
-      DirectSum.of (H M F) n (x.comp y h) := by
-  subst h
-  simp [comp_def]
+      DirectSum.of (H M F) n (x.comp y h) :=
+  TotalExt.comp_of_of x y h
 
 /-- A class x in Ext^n(N,F), as the element of the total group ⊕_m Ext^m(N,F) concentrated in
 degree n. -/
@@ -164,20 +159,19 @@ namespace TotalH
 
 /-- For an exact functor `Φ`, the additive map from total `Ext(N, F)` to total `Ext(Φ N, Φ F)`
 obtained by applying `Φ` in each degree. See `TotalH.map_def` and `TotalH.map_of`. -/
-@[irreducible]
 def map : TotalH N F →+ TotalH (Φ.obj N) (Φ.obj F) :=
-  (@exists_eq (TotalH N F →+ TotalH (Φ N) (Φ F)) (DirectSum.map (Φ.mapExtAddHom N F))).choose
+  TotalExt.map Φ
 
 /-- `map Φ` is the direct sum of the maps induced by `Φ` on `Ext` in each degree. -/
 @[local simp]
 lemma map_def :
     map Φ =
-      (DirectSum.map (Φ.mapExtAddHom N F) : TotalH N F →+ TotalH (Φ.obj N) (Φ.obj F)) := by
-  unfold map
-  exact exists_eq.choose_spec
+      (DirectSum.map (Φ.mapExtAddHom N F) : TotalH N F →+ TotalH (Φ.obj N) (Φ.obj F)) :=
+  addHom_ext' fun a ↦ AddMonoidHom.ext fun x ↦ by simp [map]
 
 lemma map_map (Θ : (C' ⥤ Ab) ⥤ AbFunctor A) [IsExactFunctor (C' := A) Θ] (x : TotalH N F) :
-    map Θ (map Φ x) = map (Φ ⋙ Θ) x := by aesop (add simp mapExactFunctor_mapExactFunctor)
+    map Θ (map Φ x) = map (Φ ⋙ Θ) x :=
+  TotalExt.map_map Φ Θ x
 
 /-- For an exact functor Φ and u in total Ext(ΦF,K), the additive map x ↦ Φx·u (Yoneda product)
 from total Ext(N,F) to total Ext(ΦN,K). -/
@@ -186,20 +180,8 @@ def mapThenComp {K : AbFunctor C'} (u : TotalH (Φ F) K) : TotalH N F →+ Total
 
 variable {Φ Ψ} {x : TotalH M N} (r : R) (y : TotalH N F)
 
-lemma comp_assoc (y : TotalH N F) (z : TotalH F G) : comp (comp x y) z = comp x (comp y z) := by
-  -- Both sides are additive in each variable, so reduce to homogeneous classes.
-  induction z using DirectSum.induction_on with
-  | zero => simp
-  | add z z' hz hz' => simp_all
-  | of c z =>
-    induction y using DirectSum.induction_on with
-    | zero => simp
-    | add y y' hy hy' => simp_all
-    | of b y =>
-      induction x using DirectSum.induction_on with
-      | zero => simp
-      | add x x' hx hx' => simp_all
-      | of a x => simp [add_assoc, comp_of, Ext.comp_assoc]
+lemma comp_assoc (y : TotalH N F) (z : TotalH F G) : comp (comp x y) z = comp x (comp y z) :=
+  TotalExt.comp_assoc x y z
 
 /-- A morphism f: N → F as a degree-zero element of total Ext(N,F). -/
 abbrev homClass (f : N ⟶ F) : TotalH N F := DirectSum.of (H N F) 0 (mk₀ f)
@@ -212,21 +194,14 @@ abbrev pullbackAlong (f : N ⟶ F) : TotalH F G →+ TotalH N G := comp (homClas
 @[simp]
 lemma map_of (x : H N F a) :
     map Φ (DirectSum.of (H N F) a x) =
-      DirectSum.of (H (Φ.obj N) (Φ.obj F)) a (x.mapExactFunctor Φ) := by
-  simp [map_def]
+      DirectSum.of (H (Φ.obj N) (Φ.obj F)) a (x.mapExactFunctor Φ) :=
+  TotalExt.map_of Φ x
 
-lemma map_homClass : map Φ (homClass f) = homClass (Φ.map f) := by simp [mapExactFunctor_mk₀]
+lemma map_homClass : map Φ (homClass f) = homClass (Φ.map f) :=
+  TotalExt.map_mk₀ Φ f
 
-lemma map_comp : map Φ (comp x y) = comp (map Φ x) (map Φ y) := by
-  -- Both sides are additive in `x` and `y`, so reduce to homogeneous classes.
-  induction x using DirectSum.induction_on with
-  | zero => simp
-  | add x x' hx hx' => simp_all
-  | of a x =>
-    induction y using DirectSum.induction_on with
-    | zero => simp
-    | add y y' hy hy' => simp_all
-    | of b y => simp [comp_of, mapExactFunctor_comp]
+lemma map_comp : map Φ (comp x y) = comp (map Φ x) (map Φ y) :=
+  TotalExt.map_comp Φ x y
 
 /-- An exact functor commutes with the pull-back along a morphism `f`. -/
 lemma map_pullbackAlong {f : G ⟶ M} :
@@ -235,8 +210,8 @@ lemma map_pullbackAlong {f : G ⟶ M} :
   simp [↓map_comp, mapExactFunctor_mk₀]
 
 /-- The class of a composite `f ≫ g` is the Yoneda product of the classes. -/
-lemma homClass_comp (g : F ⟶ G) : homClass (f ≫ g) = comp (F := G) (homClass f) (homClass g) := by
-  simp [comp_of]
+lemma homClass_comp (g : F ⟶ G) : homClass (f ≫ g) = comp (F := G) (homClass f) (homClass g) :=
+  (TotalExt.mk₀_comp_mk₀ f g).symm
 
 /-- An exact functor sends the extension class of a short exact sequence `S` to the extension class
 of the image sequence. -/
@@ -256,36 +231,26 @@ lemma of_comp_homClass (x : H M N n) :
   simp [push]
 
 @[simp]
-lemma comp_id : comp x (homClass (𝟙 N)) = x := by
-  induction x using DirectSum.induction_on with
-  | zero => simp
-  | add x x' hx hx' => simp_all
-  | of a x => simp
+lemma comp_id : comp x (homClass (𝟙 N)) = x :=
+  TotalExt.comp_mk₀_id x
 
-/-- Pulling back along `f` is `New.Variety.H.map` in every degree. -/
-lemma pullbackAlong_eq_map : pullbackAlong f = DirectSum.map (H.map G f) := by
-  aesop (add simp comp_of)
+/-- Pulling back total cohomology along `f` is applying `H.map G f` in each degree. -/
+lemma pullbackAlong_eq_map : pullbackAlong f = DirectSum.map (H.map G f) :=
+  AddMonoidHom.ext (TotalExt.mk₀_comp f)
 
-lemma pullbackAlong_id : pullbackAlong (𝟙 M) x = x := by
-  ext
-  simp [pullbackAlong_eq_map]
+@[simp]
+lemma pullbackAlong_id : pullbackAlong (𝟙 M) x = x :=
+  TotalExt.mk₀_id_comp x
 
-lemma map_id : map (𝟭 (AbFunctor C)) x = x := by
-  ext n
-  -- The identity functor fixes every class.
-  have h_id : (𝟭 (AbFunctor C)).mapExtAddHom M N n (x n) = x n := (x n).id_mapExactFunctor
-  simpa using h_id
+@[simp]
+lemma map_id : map (𝟭 (AbFunctor C)) x = x :=
+  TotalExt.map_id x
 
 /-- For a natural transformation `η : Φ ⟶ Ψ` of exact functors, pushing `Φ x` along `η F` equals
 pulling `Ψ x` back along `η N`. -/
 lemma naturality (η : Φ ⟶ Ψ) (x : TotalH N F) :
-    comp (map Φ x) (homClass (η F)) = pullbackAlong (η N) (map Ψ x) := by
-  induction x using DirectSum.induction_on with
-  | zero => simp only [_root_.map_zero, AddMonoidHom.zero_apply]
-  | of n x =>
-    rw [map_of, map_of, of_comp_homClass, pullbackAlong_of]
-    exact congrArg toTotalH (mapExactFunctor_naturality η x)
-  | add x y hx hy => simp only [_root_.map_add, AddMonoidHom.add_apply, hx, hy]
+    comp (map Φ x) (homClass (η F)) = pullbackAlong (η N) (map Ψ x) :=
+  TotalExt.comp_map_mk₀ Φ η x
 
 /-- The action of a scalar `r` of `R` on the coefficients `F` (`CoeffAction R F` gives each `r` an
 endomorphism `CoeffAction.act r` of `F`) is the product with the class of its action map. -/
@@ -343,29 +308,9 @@ lemma exact_precomp {ξ : H M N e} {ζ : H G M b}
     (h_ker : ∀ {n : ℕ} {y : H M F n}, (∀ (m : ℕ) (hm : b + n = m), ζ.comp (c := m) y hm = 0) →
       y = 0 ∨ ∃ (a : ℕ) (ha : e + a = n) (x : Abelian.Ext N F a), ξ.comp (b := a) x ha = y)
     (h_comp : ζ.comp ξ rfl = 0) :
-    Exact (comp (F := F) ξ.toTotalH) (comp ζ.toTotalH) := by
-  classical
-  -- The composite vanishes by `h_comp`. A class `y` killed by `ζ` is the sum of its homogeneous
-  -- parts; each part is killed by `ζ`, so by `h_ker` it is zero or comes from `ξ`.
-  have h_composite (x : TotalH N F) : comp ζ.toTotalH (comp ξ.toTotalH x) = 0 := by
-    simp [← comp_assoc, comp_of ζ ξ rfl, h_comp]
-  refine .of_comp_of_mem_range (funext h_composite) fun y hy ↦ ?_
-  have h_part (z : TotalH M F) (n m : ℕ) (hm : b + n = m) :
-      ζ.comp (z n) hm = comp ζ.toTotalH z m := by
-    induction z using DirectSum.induction_on with
-    | zero => simp
-    | add z₁ z₂ h₁ h₂ => simp [h₁, h₂]
-    | of i w =>
-      subst hm
-      rw [comp_of ζ w rfl]
-      obtain rfl | h_ne := eq_or_ne i n
-      · simp
-      · simp [of_apply, h_ne]
-  rw [← sum_support_of y]
-  refine (comp ξ.toTotalH).range.sum_mem fun n _ ↦ ?_
-  rcases h_ker (y := y n) (fun m hm ↦ by simp [h_part, hy]) with h_zero | ⟨a, ha, x, hx⟩
-  · simp [h_zero]
-  · exact ⟨DirectSum.of (H N F) a x, by rw [← hx, comp_of]⟩
+    Exact (comp (F := F) ξ.toTotalH) (comp ζ.toTotalH) :=
+  TotalExt.exact_comp_of_of h_comp fun _ _ hm _ hy ↦
+    h_ker fun _ hm' ↦ by subst hm hm'; exact hy
 
 /-- The long exact sequence of a short exact sequence `S` in the first variable, as an exact
 triangle of total groups: pull-back along `S.g`, pull-back along `S.f` and composition with the
@@ -376,27 +321,8 @@ lemma exact_triangle (h : S.ShortExact) (F : AbFunctor C) :
     -- (b) at the classes on the subobject
     Exact (pullbackAlong (G := F) S.f) (comp h.extClass.toTotalH) ∧
     -- (c) at the classes on the quotient
-    Exact (comp (F := F) h.extClass.toTotalH) (pullbackAlong S.g) := by
-  -- By `exact_precomp` it is enough to argue degree by degree, in the long exact Ext sequence `L`.
-  let L := LongExactSeq.contravariant h F
-  -- The zero of `H` is the zero of Mathlib's group structure on `Ext`, in which Mathlib and `L`
-  -- state their results.
-  have h_zero {X Y : AbFunctor C} {m : ℕ} {z : H X Y m} :
-      z = 0 ↔ z = (letI := Ext.instAddCommGroup (X := X) (Y := Y) (n := m); 0) := .rfl
-  have h_f_g : (mk₀ S.f).comp (mk₀ S.g) (zero_add 0) = 0 := by simp
-  have h_extClass_f : h.extClass.comp (mk₀ S.f) rfl = 0 := h_zero.2 h.extClass_comp
-  have h_g_extClass : (mk₀ S.g).comp h.extClass rfl = 0 := h_zero.2 h.comp_extClass
-  refine ⟨exact_precomp (fun {n y} hy ↦ ?_) h_f_g,
-    exact_precomp (fun {n y} hy ↦ ?_) h_extClass_f,
-    exact_precomp (fun {n y} hy ↦ ?_) h_g_extClass⟩
-  · exact .inr ⟨n, zero_add n, (L.exact_f_g n y).1 (h_zero.1 (hy n (zero_add n)))⟩
-  · exact .inr ⟨n, zero_add n, (L.exact_g_delta n y).1 (h_zero.1 (hy (n + 1) (add_comm 1 n)))⟩
-  · rcases n with _ | n
-    · -- in degree 0 nothing comes from the extension class, but the first map is injective
-      exact .inl (h_zero.2
-        ((injective_iff_map_eq_zero (L.f 0)).1 L.injective_f y (h_zero.1 (hy 0 rfl))))
-    · exact .inr ⟨n, add_comm 1 n,
-        (L.exact_delta_f n y).1 (h_zero.1 (hy (n + 1) (zero_add (n + 1))))⟩
+    Exact (comp (F := F) h.extClass.toTotalH) (pullbackAlong S.g) :=
+  TotalExt.exact_triangle h F
 
 /-- The cohomology Ext(`freeAb (reprBy c)`, G) of the free abelian functor ℤ[Hom(c, −)] on a
 representable functor is concentrated in degree zero. -/
@@ -504,7 +430,7 @@ Aφ∘α = Nσ∘A, then restricting y along φ and pulling back along α gives 
 total Ext. -/
 lemma TotalH.pull_twist {N : C ⥤ AddCommGrpCat} {N' : AbFunctor C'} {φ : C' ⥤ C'} {x : H N F n}
     {y : H N' F' n} {A : N' ⟶ c.functor ⋙ N} {s : F' ⟶ φ ⋙ F'} (h : y = c.pull A n x)
-      (σ : c.functor ⟶ φ ⋙ c.functor)
+    (σ : c.functor ⟶ φ ⋙ c.functor)
     (α : N' ⟶ φ ⋙ N') (h_coeff : whiskerRight σ F ≫ φ.whiskerLeft c.coeffHom = c.coeffHom ≫ s)
     (h_space : α ≫ φ.whiskerLeft A = A ≫ whiskerRight σ N) :
     pullbackAlong α (map (restrictAlong φ) y.toTotalH) = comp y.toTotalH (homClass s) := by
