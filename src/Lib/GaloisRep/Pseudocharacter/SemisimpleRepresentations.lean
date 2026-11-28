@@ -268,6 +268,15 @@ variable (k) in
 /-- The span of ρ(G) in B is semiprime: any x in it with x ρ(g) x = 0 for all g is zero. -/
 def HasSemiprimeSpan : Prop := ∀ x ∈ span k (Set.range ρ), (∀ g : G, x * ρ g * x = 0) → x = 0
 
+omit [Module.Finite k B] in
+/-- In a semiprime component, the sandwich condition forces the projected element to vanish. -/
+private lemma component_eq_zero {A : Type} [Ring A] [Algebra k A] {σ : G →* B} {x : B}
+    (hx : x ∈ span k (Set.range σ)) (hz : ∀ g, x * σ g * x = 0)
+    (f : B →ₐ[k] A) (h : HasSemiprimeSpan k (f.toMonoidHom.comp σ)) : f x = 0 := by
+  apply h _ ?_ fun g ↦ by simpa [MonoidHom.comp_apply] using congrArg f (hz g)
+  change f.toLinearMap x ∈ span k (range (f.toLinearMap ∘ σ))
+  simpa only [range_comp] using apply_mem_span_image_of_mem_span f.toLinearMap hx
+
 /-! ### The Wedderburn decomposition and its consequences -/
 
 /-- The Wedderburn–Artin theorem for the span of `ρ ∘ f`. Let `ρ : G →* B` have semiprime span and
@@ -360,12 +369,9 @@ lemma IsTraceNondeg.exists_conj_of_trace_eq [CharZero k]
   -- algebra maps `F₁`, `F₂` of equal trace, and `exists_piMatrix_retract` intertwines these.
   let pair : G →* Matrix n n k × B := ((coeHom (Matrix n n k)).comp r).prod ρ
   have pair_semiprime : HasSemiprimeSpan k pair := by
-    rintro ⟨x, y⟩ h_mem h_zero
-    obtain ⟨x_mem, y_mem⟩ :
-        x ∈ span k (range ((coeHom (Matrix n n k)).comp r)) ∧ y ∈ span k (range ρ) :=
-      span_prod_le _ _ (span_mono (range_pair_subset ..) h_mem)
-    exact Prod.ext (hr.hasSemiprimeSpan x x_mem fun g ↦ congrArg Prod.fst (h_zero g))
-      (hρ y y_mem fun g ↦ congrArg Prod.snd (h_zero g))
+    intro x hx hz
+    exact Prod.ext (component_eq_zero hx hz (AlgHom.fst k _ _) hr.hasSemiprimeSpan)
+      (component_eq_zero hx hz (AlgHom.snd k _ _) hρ)
   obtain ⟨b, d, _, s, F, -, s_span, hF⟩ :=
     exists_wedderburn pair (.id G) pair_semiprime ⟨by simp⟩
   let F₁ : PiMatrix k d →ₐ[k] Matrix n n k := (AlgHom.fst k (Matrix n n k) B).comp F
@@ -474,17 +480,10 @@ lemma New.IsTraceNondeg.exists_cancel_chars [DecidableEq n] [CharZero k] [IsAlgC
   have hsemi : HasSemiprimeSpan k ρ := by
     intro x hx h_zero
     funext i
-    -- the matrix component of `x i` lies in the span of `r i G`
-    have hspan : (x i).fst ∈ span k (Set.range ((Units.coeHom (Matrix m m k)).comp (r i))) := by
-      refine span_mono ?_ (apply_mem_span_image_of_mem_span (LinearMap.fst k _ _ ∘ₗ .proj i) hx)
-      rintro _ ⟨_, ⟨g, rfl⟩, rfl⟩
-      exact ⟨g, rfl⟩
-    have h_mat : (x i).fst = 0 := (h_nondeg i).hasSemiprimeSpan (x i).fst hspan fun g ↦ by
-      simpa [ρ] using congrArg (fun y ↦ (y i).fst) (h_zero g)
+    refine Prod.ext (component_eq_zero hx h_zero
+      ((AlgHom.fst k _ _).comp (Pi.evalAlgHom k _ i)) (h_nondeg i).hasSemiprimeSpan) ?_
     -- at `g = 1` the character components give `(x i).snd j ^ 2 = 0`
-    have h_chars : (x i).snd = 0 :=
-      funext fun j ↦ by simpa [ρ] using congrArg (fun y ↦ (y i).snd j) (h_zero 1)
-    exact Prod.ext h_mat h_chars
+    exact funext fun j ↦ by simpa [ρ] using congrArg (fun y ↦ (y i).snd j) (h_zero 1)
   -- Wedderburn: `ρ = F ∘ s`, where `s G` spans a product `PiMatrix k d` of matrix algebras and `F`
   -- is an algebra map on it.
   obtain ⟨b, d, hd, s, F, -, hs, hF⟩ : ∃ (b : ℕ) (d : Fin b → ℕ) (_ : ∀ i : Fin b, NeZero (d i))
