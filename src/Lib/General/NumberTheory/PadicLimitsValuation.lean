@@ -8,6 +8,7 @@ public import Mathlib.Topology.Algebra.Ring.Compact -- shake: keep (needed publi
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.FieldTheory.Finite.FrobeniusFixed
 import TauCeti.RingTheory.Huber.Normed
 public import Lib.GaloisRep.Main.SelmerModules
 public import Lib.General.NumberTheory.CoefficientRings
@@ -144,34 +145,44 @@ lemma QuadField.exists_map_eq_and_map_star_eq_pow {k : Type*} [Field k] [CharP k
   · -- `q_p = p`: Frobenius fixes `z`, so a rational integer will do.
     obtain ⟨n, rfl⟩ := prime_field z (by simpa [h_not_inert, frobenius_def] using hz_pow)
     exact ⟨n, by simp⟩
-  -- `q_p = p²`: Frobenius applied twice fixes `z`, and it acts as conjugation on `e = φ betaK`,
-  -- where `betaK = (1 + √-d) / 2`. We write `z = m + n e` with `m`, `n` fixed by Frobenius and take
-  -- `a = m + n betaK`.
+  -- For inert `p`, the residue field cut out by `φ` has `p²` elements.
+  have hp_mem : (p : 𝓞 (QuadField d)) ∈ RingHom.ker φ := by
+    rw [RingHom.mem_ker, map_natCast, CharP.cast_eq_zero]
+  let w : FinPlace (QuadField d) := ⟨RingHom.ker φ, RingHom.ker_isPrime φ,
+    fun h_bot ↦ (Nat.cast_ne_zero.mpr hp.out.ne_zero) (h_bot.le hp_mem)⟩
+  have h_norm : w.q = p ^ 2 := by
+    obtain ⟨-, h⟩ | ⟨_, -, h, -⟩ := span_eq_or_exists_span_eq_mul w hp_mem
+    · exact h
+    · exact ((q_eq_iff_chiK_ne_neg_one w hp_mem).1 h h_inert).elim
+  let residueField := 𝓞 (QuadField d) ⧸ w.asIdeal
+  have h_card : Nat.card residueField = p ^ 2 := by
+    simpa only [residueField, FinPlace.q, Ideal.absNorm_apply, Submodule.cardQuot_apply]
+      using h_norm
+  have : Finite residueField :=
+    Nat.finite_of_card_ne_zero (h_card.trans_ne (pow_ne_zero _ hp.out.ne_zero))
+  have : w.asIdeal.IsMaximal := w.isMaximal
+  let _ : Field residueField := Ideal.Quotient.field w.asIdeal
+  let φbar : residueField →+* k :=
+    Ideal.Quotient.lift w.asIdeal φ fun _ hx ↦ RingHom.mem_ker.1 hx
+  let _ : Algebra residueField k := φbar.toAlgebra
+  -- The elements of the embedded residue field are the fixed points of the `p²`-power map.
+  obtain ⟨y, hy⟩ := (TauCeti.FiniteField.pow_natCard_eq_self_iff_mem_range_algebraMap
+    (K := residueField) z).1 (by simpa [h_card, h_inert] using hz_pow)
+  obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective y
+  have ha : φ a = z := by
+    change φbar (Ideal.Quotient.mk w.asIdeal a) = z at hy
+    exact (Ideal.Quotient.lift_mk w.asIdeal φ _).symm.trans hy
+  -- Frobenius and conjugation give the same map on the generator `betaK d`.
   have hp_ne_two : p ≠ 2 := fun h_two ↦ by simp [h_two, chiK_two] at h_inert
-  have hz : frobenius k p (frobenius k p z) = z := by
-    simpa [h_inert, frobenius_def, sq, pow_mul] using hz_pow
   have he : frobenius k p (φ (betaK d)) = 1 - φ (betaK d) := by
     rw [frobenius_def, ← pow_one p, eq_comm, eq_map_betaK_pow_iff hp_ne_two, h_inert,
       show φ (sqrtNegDInt d) = 2 * φ (betaK d) - 1 by simp [map_ofNat]]
     ring
-  -- `2 e - 1`, a square root of `-d`, has the `(p - 1)`-st power `-1`, so it is not `0`.
-  have hδ_ne : 2 * φ (betaK d) - 1 ≠ 0 := fun h_zero ↦ by
-    simpa [h_inert, h_zero, map_ofNat, Nat.sub_ne_zero_of_lt hp.out.one_lt]
-      using chiK_eq_pow_of_sq_eq_neg hp_ne_two (map_sqrtNegDInt_sq φ)
-  -- Frobenius negates both `z - z ^ p` and `2 e - 1`, so it fixes their quotient `n`.
-  have hδ_frob : frobenius k p (2 * φ (betaK d) - 1) = -(2 * φ (betaK d) - 1) := by
-    rw [map_sub, map_mul, map_one, he, map_ofNat]
-    ring
-  obtain ⟨n, hn⟩ : ∃ n : ℤ, n = (z - frobenius k p z) / (2 * φ (betaK d) - 1) :=
-    prime_field _ (by rw [map_div₀, map_sub, hz, hδ_frob, div_neg, ← neg_div, neg_sub])
-  rw [eq_div_iff hδ_ne] at hn
-  -- Frobenius sends `z - n e` to `z ^ p - n (1 - e)`, and `z - z ^ p = n (2 e - 1)`.
-  obtain ⟨m, hm⟩ : ∃ m : ℤ, m = z - n * φ (betaK d) := prime_field _ <| by
-    rw [map_sub, map_mul, map_intCast, he]
-    linear_combination hn
-  -- Frobenius sends `z` to `z - n (2 e - 1)`, which is `m + n (1 - e)`, the image of `star a`.
-  have h_frob_z : frobenius k p z = m + n * (1 - φ (betaK d)) := by linear_combination hn - hm
-  exact ⟨m + n * betaK d, by simp [hm], by simp [h_frob_z, star_add, star_mul']⟩
+  have h_maps : (φ.comp (starRingEnd (𝓞 (QuadField d)))).toIntAlgHom =
+      ((frobenius k p).comp φ).toIntAlgHom :=
+    AlgHom.ext_of_adjoin_eq_top (different_eq_span_and_adjoin_betaK d).2
+      (Set.eqOn_singleton.2 (by simp [he, starRingEnd_apply]))
+  exact ⟨a, ha, by rw [← ha]; exact DFunLike.congr_fun h_maps a⟩
 
 variable [PadicPlace p]
 
