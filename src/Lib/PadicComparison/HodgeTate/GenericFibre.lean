@@ -1,11 +1,11 @@
 module
 
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.TotallySplit
 public import Lib.General.Algebra.CohomologyBaseChange
 import Lib.Cohomology.Etale.DenseSubfunctors
 import Lib.PadicComparison.Completion
 public import Lib.PadicComparison.Descent.TestCovers -- shake: keep (needed public by an exposed definition)
+import TauCeti.RingTheory.Localization.Away.Basic
+import TauCeti.RingTheory.Perfectoid.Integral.Tilt
 import Lib.PadicHodge.PeriodRings.CrystallineRings
 
 /-!
@@ -51,11 +51,10 @@ abbrev GenericRing : Type := Localization.Away (p : c.ProdRing)
 zero in `R[1/p]` is zero, since `p` is not a zero divisor in `R`. -/
 lemma eq_zero_of_algebraMap_genericRing (x : c.ProdRing)
     (hx : algebraMap c.ProdRing c.GenericRing x = 0) :
-    x = 0 := by
-  -- A power of `p` kills `x`, and `p` is not a zero divisor of `c.ProdRing`.
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, (p : c.ProdRing) ^ n * x = p ^ n * 0 :=
-    IsLocalization.Away.exists_of_eq (p : c.ProdRing) (hx.trans (map_zero _).symm)
-  exact c.isLeftRegular_p.pow n hn
+    x = 0 :=
+  -- `p` is regular in `c.ProdRing`, so inverting `p` is injective.
+  (IsLocalization.Away.injective_iff_isRegular (S := c.GenericRing) (p : c.ProdRing)).mpr
+    (isLeftRegular_iff_isRegular.mp c.isLeftRegular_p) (hx.trans (map_zero _).symm)
 
 end New.Variety.PadicTest
 
@@ -186,10 +185,9 @@ lemma existsUnique_lift_thickening :
     exact (c.thetaGeneric_algebraMap_ainf _).trans
       (congrArg c.genericStructureMap ((OC.toPadicIntAlgHom _).commutes a))
   let π : c.Thickening →ₐ[ℤ_[p]] c.GenericRing := ⟨c.thickeningProj, h_linear⟩
-  have h_surj : Surjective π := c.thickeningProj_surjective_and_ker_thetaGeneric.left
   change ∃! ρ : PadicAlgCl p →ₐ[ℤ_[p]] c.Thickening, ∀ z, π (ρ z) = s z
   simpa only [AlgHom.ext_iff, AlgHom.comp_apply] using
-    New.Variety.existsUnique_algHom_lift s π h_surj h_nil
+    New.Variety.existsUnique_algHom_lift s π c.thickeningProj_surjective h_nil
 
 /-- The unique `ℤ_p`-algebra map from `ℚ̄_p` to the thickening that lifts the structure map
 `ℚ̄_p → ℂ_p → R[1/p]` along `thickeningProj`. -/
@@ -382,8 +380,7 @@ def proj : thickeningOver (k := k) ⟶ genericOver where
 /-- The additive map R[1/p] → W(R^♭)[1/p]/(ker θ)² sending θ(x) to the class of μx, where
 μ = [ε] − 1. It is well defined since θ is onto and μ · ker θ ⊆ (ker θ)². -/
 def mulMu : genericOver c →+ thickeningOver c :=
-  c.thickeningProj.toAddMonoidHom.liftOfSurjective
-    c.thickeningProj_surjective_and_ker_thetaGeneric.1
+  c.thickeningProj.toAddMonoidHom.liftOfSurjective c.thickeningProj_surjective
     ⟨AddMonoidHom.mulLeft ⟦algebraMap Ainf _ mu⟧, fun b hb ↦ by
       -- `μ` and `b` both lie in the kernel of `thickeningProj`, whose square is zero.
       exact (sq _).ge.trans_eq c.ker_thickeningProj_sq (mul_mem_mul c.thetaGeneric_mu hb)⟩
@@ -395,7 +392,7 @@ lemma mulMu_thickeningProj (b : c.Thickening) :
 
 /-- `proj` kills the image of `mulMu`, since `θ(μ) = 0`. -/
 lemma proj_mulMu : ∀ t : genericOver.obj c, proj c (mulMu c t) = 0 := by
-  refine c.thickeningProj_surjective_and_ker_thetaGeneric.left.forall.mpr fun b ↦ ?_
+  refine c.thickeningProj_surjective.forall.mpr fun b ↦ ?_
   -- `proj c` is `thickeningProj`, and `θ(μ) = 0`.
   change c.thickeningProj (mulMu c (c.thickeningProj b)) = 0
   rw [mulMu_thickeningProj, map_mul,
@@ -404,7 +401,7 @@ lemma proj_mulMu : ∀ t : genericOver.obj c, proj c (mulMu c t) = 0 := by
 /-- `mulMu` is linear over the thickening, which acts on `R[1/p]` through `proj`. -/
 lemma mulMu_proj_mul (b : thickeningOver.obj c) :
     ∀ t : genericOver.obj c, mulMu c (proj c b * t) = b * mulMu c t := by
-  refine c.thickeningProj_surjective_and_ker_thetaGeneric.left.forall.mpr fun b' ↦ ?_
+  refine c.thickeningProj_surjective.forall.mpr fun b' ↦ ?_
   -- `b` lives in `thickeningOver.obj c`, and `proj c b` is `c.thickeningProj b` up to unfolding.
   refine (congrArg (mulMu c) (map_mul c.thickeningProj b b').symm).trans <|
     (mulMu_thickeningProj ..).trans ?_
@@ -414,7 +411,7 @@ lemma mulMu_proj_mul (b : thickeningOver.obj c) :
 /-- `mulMu` commutes with the maps induced by a morphism `f` of tests. -/
 lemma map_mulMu (d : PadicTest) (f : c ⟶ d) :
     ∀ t : genericOver.obj c, thickeningOver.map f (mulMu c t) = mulMu d (genericOver.map f t) := by
-  refine c.thickeningProj_surjective_and_ker_thetaGeneric.left.forall.mpr fun b ↦ ?_
+  refine c.thickeningProj_surjective.forall.mpr fun b ↦ ?_
   change mapThickening f (mulMu c (c.thickeningProj b)) =
     mulMu d (mapGeneric f (c.thickeningProj b))
   rw [← thickeningProj_mapThickening, mulMu_thickeningProj, mulMu_thickeningProj,
@@ -423,27 +420,19 @@ lemma map_mulMu (d : PadicTest) (f : c ⟶ d) :
 /-- `ξ` is not a zero divisor in `W(R♭)[1/p]`. -/
 lemma isLeftRegular_xi {p : ℕ} [ThePrime p] (c : PadicTest) :
     IsLeftRegular (algebraMap Ainf (Localization.Away (p : WittVector p c.TiltRing)) xi) := by
-  -- As the localisation is flat, it is enough to show that `ξ x = 0` in `W(R♭)` forces `x = 0`.
-  refine IsSMulRegular.of_flat (R := WittVector p c.TiltRing) (x := algebraMap Ainf _ xi)
-    (.of_right_eq_zero_of_smul fun x hx ↦ by_contra fun x_ne ↦ ?_)
-  -- Otherwise `x` is a `j`-fold Verschiebung of some `y` with nonzero zeroth coordinate.
-  obtain ⟨j, y, hy, rfl⟩ :
-      ∃ (j : ℕ) (y : WittVector p c.TiltRing), y.coeff 0 ≠ 0 ∧ x = verschiebung^[j] y :=
-    verschiebung_nonzero x_ne
-  -- The `j`-th coordinate of `ξ x` is `y.coeff 0` times the `p ^ j`-th power of the zeroth
-  -- coordinate of `ξ`, the image of `pFlat`, which is regular in `c.TiltRing`.
-  refine hy (IsLeftRegular.pow (R := c.TiltRing) (p ^ j) c.isPerfectTorsionFree_tilt.right ?_)
-  -- The `j`-th coordinate of `ξ x = 0`, by the formula for products of Verschiebungs.
-  have h_coeff :
-      (algebraMap Ainf (WittVector p c.TiltRing) xi).coeff 0 ^ p ^ j * y.coeff 0 = 0 := by
-    simpa [← smul_eq_mul, hx] using
-      (iterate_verschiebung_mul_coeff (algebraMap Ainf (WittVector p c.TiltRing) xi) y 0 j).symm
-  change tiltMap c.structureMap pFlat ^ p ^ j * y.coeff 0 = tiltMap c.structureMap pFlat ^ p ^ j * 0
-  rw [mul_zero]
-  -- The zeroth coordinate of `ξ` in `W(R♭)` is the image of `pFlat`.
-  have h_xi_coeff : (algebraMap Ainf (WittVector p c.TiltRing) xi).coeff 0 =
-      tiltMap c.structureMap pFlat := rfl
-  rwa [h_xi_coeff] at h_coeff
+  -- `ξ` is distinguished in `A_inf`, hence also in `W(R♭)`, and its zeroth coordinate vanishes
+  -- modulo `p`; so `ξ` is a nonzerodivisor in `W(R♭)`, hence also after inverting `p`.
+  let ξ : WittVector p c.TiltRing := WittVector.map (tiltMap c.structureMap) xi
+  have h_dist : ξ.IsDistinguished :=
+    (TauCeti.Perfectoid.IsIntegralPerfectoid.isDistinguished_of_ker_fontaineTheta_eq_span
+      ker_theta_eq_span_xi).map (tiltMap c.structureMap)
+  have h_coeff : PreTilt.coeff 0 (ξ.coeff 0) = 0 := by
+    rw [← mk_fontaineTheta, fontaineTheta_map_tiltMap, theta_xi, map_zero, map_zero]
+  have : IsHausdorff (span {ξ.coeff 0}) c.TiltRing :=
+    Perfection.isHausdorff_span_singleton_of_coeff_zero_eq_zero h_coeff
+  exact (isRegular_iff_mem_nonZeroDivisors.mpr <| IsLocalization.nonZeroDivisors_le_comap
+    (Submonoid.powers (p : WittVector p c.TiltRing)) (Localization.Away _)
+    (h_dist.mem_nonZeroDivisors (le_radical (mem_span_singleton_self _)))).left
 
 /-- For a `p`-adic test `c` with ring `R`, `proj c : W(R♭)[1/p] / (ker θ)² → R[1/p]` is the map
 induced by `θ`, and `mulMu c : R[1/p] → W(R♭)[1/p] / (ker θ)²` sends `θ(x)` to the class of `μx`,
