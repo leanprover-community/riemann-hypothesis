@@ -285,12 +285,15 @@ A weaker form of Hadamard's inequality as in Horn and Johnson, omitting the equa
 lemma New.hadamard_det_inequality {k : ℕ} {z : Matrix (Fin k) (Fin k) ℂ} (hz : z.PosSemidef) :
     ‖z.det‖ ≤ ∏ i : Fin k, ‖z i i‖ := by
   obtain ⟨A, rfl⟩ := posSemidef_iff_eq_conjTranspose_mul_self.1 hz
-  have hdiag (i : Fin k) : ‖WithLp.toLp 2 (Aᵀ i)‖ ^ 2 = ‖(Aᴴ * A) i i‖ := by
-    simp [EuclideanSpace.norm_sq_eq, Matrix.mul_apply, Complex.conj_mul',
-      ← Complex.ofReal_pow, ← Complex.ofReal_sum,
-      abs_of_nonneg (Finset.sum_nonneg fun j _ ↦ sq_nonneg ‖A j i‖)]
-  simpa [det_mul, Complex.norm_conj, ← sq, ← Finset.prod_pow, hdiag] using
-    pow_le_pow_left₀ (norm_nonneg _) (norm_det_le_prod_norm_toLp Aᵀ) 2
+  let v (i : Fin k) : EuclideanSpace ℂ (Fin k) := WithLp.toLp 2 (Aᵀ i)
+  have h_gram : gram ℂ v = Aᴴ * A := by
+    have h_coords :
+        (Matrix.of fun i j : Fin k ↦ (EuclideanSpace.basisFun (Fin k) ℂ).repr (v j) i) = A := by
+      ext i j
+      simp [v]
+    simpa only [h_coords] using gram_eq_conjTranspose_mul (EuclideanSpace.basisFun (Fin k) ℂ) v
+  rw [← h_gram, ← Complex.re_eq_norm.mpr (posSemidef_gram ℂ v).det_nonneg]
+  simpa [gram_apply, inner_self_eq_norm_sq_to_K] using re_det_gram_le_prod_norm_sq (𝕜 := ℂ) v
 
 end FischerInequality
 
