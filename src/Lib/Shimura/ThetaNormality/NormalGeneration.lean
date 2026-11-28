@@ -706,17 +706,9 @@ lemma finrank_reduction_eq (G : HasGoodReduction B χ v r) (hf : f ∈ B.thetaSp
       hφ.comp_left.comp b.equivFun.surjective
     refine h_lift.forall.mpr fun t ht i ↦ h_coord t ?_ i
     let f : ballMap.range →ₛₗ[φ] Q := red.comp e.toLinearMap
-    have h_sum_f (s : Finset (Fin (finrank v.valuationSubring ballMap.range)))
-        (g : Fin (finrank v.valuationSubring ballMap.range) → ballMap.range) :
-        f (∑ j ∈ s, g j) = ∑ j ∈ s, f (g j) := by
-      classical
-      induction s using Finset.induction_on with
-      | empty => exact LinearMap.map_zero f
-      | insert a s ha ih =>
-        rw [Finset.sum_insert ha, Finset.sum_insert ha, LinearMap.map_add, ih]
     have h_eq : f t = ∑ j, φ (b.equivFun t j) • f (b j) := by
       calc f t = f (∑ j, b.equivFun t j • b j) := congrArg f (b.sum_equivFun t).symm
-        _ = ∑ j, f (b.equivFun t j • b j) := h_sum_f _ _
+        _ = ∑ j, f (b.equivFun t j • b j) := map_sum f _ _
         _ = ∑ j, φ (b.equivFun t j) • f (b j) :=
           Finset.sum_congr rfl fun j _ ↦ LinearMap.map_smulₛₗ f _ _
     exact h_eq.trans ht
