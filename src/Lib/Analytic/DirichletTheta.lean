@@ -51,7 +51,7 @@ def thetaSeries (j : Fin 2) (c : ℕ → ℂ) (u : ℝ) : ℂ := √u * gaussian
 /-- The Mellin transform `Γ_j(s) = ∫_0^∞ w(z) z ^ s dz / z` of the weight `w`. -/
 def gaussianMellin (j : Fin 2) : ℂ → ℂ := mellin (gaussianMonomial j ·)
 
-variable {j : Fin 2} {c : ℕ → ℂ} {q : ℕ} {t : ℝ} {s : ℂ} [NeZero q] {χ : DirichletCharacter ℂ q}
+variable {j : Fin 2} {c : ℕ → ℂ} {q : ℕ} {t : ℝ} {s : ℂ} {χ : DirichletCharacter ℂ q}
 
 lemma measurable_gaussianTheta : Measurable (gaussianTheta j c) := by
   fun_prop [gaussianTheta, gaussianMonomial]
@@ -251,19 +251,6 @@ lemma norm_mul_moebius_le_one (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (n : ℕ) : �
   grw [norm_mul, hc, one_mul, Complex.norm_intCast, ← Int.cast_abs, abs_moebius_le_one,
     Int.cast_one]
 
-/-- Riemann's formula for `1 / L`: if `re s > 1`, then the theta series `θ` with coefficients
-`χ(n) μ(n)` satisfies `∫_0^∞ θ(u) u ^ (s - 1/2) du / u = Γ_j(s) / L(s, χ)`, where `Γ_j` is the
-Mellin transform of the weight `w(z) = z ^ j e^(-π z²)`. -/
-lemma mellin_thetaSeries_moebius (χ : DirichletCharacter ℂ q) (hs : 1 < s.re) :
-    mellin (thetaSeries j fun n : ℕ ↦ χ n * μ n) (s - 2⁻¹) =
-      gaussianMellin j s / χ.LFunction s := by
-  have h_inv : χ.LFunction s * LSeries (fun n : ℕ ↦ χ n * μ n) s = 1 := by
-    rw [χ.LFunction_eq_LSeries hs]
-    exact DirichletCharacter.LSeries.mul_mu_eq_one χ hs
-  rw [mellin_thetaSeries (norm_mul_moebius_le_one fun n ↦ χ.norm_le_one n) hs,
-    eq_inv_of_mul_eq_one_right h_inv, div_eq_mul_inv]
-
-omit [NeZero q] in
 /-- If `Φ : ZMod q → ℂ` has parity `j` and vanishes at `0`, then the sum of `Φ(n) w(n t)` over `ℤ`,
 where `w(z) = z ^ j e^(-π z²)`, is twice the sum over `n ≥ 1` that defines `gaussianTheta`. -/
 lemma two_mul_gaussianTheta (t : ℝ) {Φ : ZMod q → ℂ} {S : ℂ}
@@ -275,6 +262,20 @@ lemma two_mul_gaussianTheta (t : ℝ) {Φ : ZMod q → ℂ} {S : ℂ}
     fin_cases j <;> simp [Function.Even, gaussianMonomial, h_parity]
   rw [← h_sum.tsum_eq, tsum_int_eq_zero_add_two_mul_tsum_pnat h_even h_sum.summable]
   simp [gaussianTheta, h_zero]
+
+variable [NeZero q]
+
+/-- Riemann's formula for `1 / L`: if `re s > 1`, then the theta series `θ` with coefficients
+`χ(n) μ(n)` satisfies `∫_0^∞ θ(u) u ^ (s - 1/2) du / u = Γ_j(s) / L(s, χ)`, where `Γ_j` is the
+Mellin transform of the weight `w(z) = z ^ j e^(-π z²)`. -/
+lemma mellin_thetaSeries_moebius (χ : DirichletCharacter ℂ q) (hs : 1 < s.re) :
+    mellin (thetaSeries j fun n : ℕ ↦ χ n * μ n) (s - 2⁻¹) =
+      gaussianMellin j s / χ.LFunction s := by
+  have h_inv : χ.LFunction s * LSeries (fun n : ℕ ↦ χ n * μ n) s = 1 := by
+    rw [χ.LFunction_eq_LSeries hs]
+    exact DirichletCharacter.LSeries.mul_mu_eq_one χ hs
+  rw [mellin_thetaSeries (norm_mul_moebius_le_one fun n ↦ χ.norm_le_one n) hs,
+    eq_inv_of_mul_eq_one_right h_inv, div_eq_mul_inv]
 
 /-- Poisson summation for `w(z) = z ^ j e^(-π z²)`: for `t > 0` and real `a`,
 `∑_{n ∈ ℤ} e^(2πi a n) w(n / t) = i ^ j t ∑_{n ∈ ℤ} w((n + a) t)`, both series being convergent. -/
