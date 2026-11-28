@@ -2,12 +2,11 @@ module
 
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.Hadamard
-import Mathlib.NumberTheory.LSeries.PrimesInAP
-import Mathlib.NumberTheory.LSeries.SumCoeff
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.PNatToNat
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.NumberTheory.DirichletCharacter.Conductor
+import TauCeti.NumberTheory.LSeries.PrimesInAP
 public import Lib.Analytic.DirichletTheta
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.Analytic.EntireLFunction
@@ -736,8 +735,8 @@ to `N`). The number of primes `d ≤ X` of the class that are bad (`IsBadPrime`:
 with `ξ` modulo `N` has a zero with `re s ≥ β`, `|im s| ≤ H`) is `O(X ^ (1 - δ / 2))`. -/
 lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {a : ZMod N}
     (h_class : ∀ d : ℕ, d.Prime → (d : ZMod N) = a → d % 8 = 7 ∧ N.Coprime d) :
-    (fun X : ℕ ↦ (#{d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d} : ℝ)) =O[atTop]
-      fun X : ℕ ↦ (X : ℝ) ^ (1 - δ / 2) := by
+    (fun X : ℝ ↦ ({d : ℕ | IsBadPrime a (1 / 2 + 9 * δ) H d ∧ (d : ℝ) ≤ X}.ncard : ℝ))
+      =O[atTop] (· ^ (1 - δ / 2)) := by
   -- Take `T² = N X`, pass from each `ξ` to the primitive character that induces it, and sum.
   have hN : (0 : ℝ) < N := Nat.cast_pos.2 (NeZero.pos N)
   choose M hMN ψ hM hψ h_induced using
@@ -746,29 +745,36 @@ lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H :
     {d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d % 8 = 7 ∧ (M ξ).Coprime d ∧ M ξ * d ≤ T ^ 2 ∧
       IsPrimeWithTwistZero (ψ ξ) (1 / 2 + 9 * δ) H d}
   choose C hC using fun ξ ↦ exists_card_zero_quadTwist_le hδ H (hψ ξ)
-  have h_tendsto : Tendsto (fun X : ℕ ↦ √(N * X)) atTop atTop :=
-    tendsto_sqrt_atTop.comp (tendsto_natCast_atTop_atTop.const_mul_atTop hN)
+  have h_tendsto : Tendsto (fun X : ℝ ↦ √(N * X)) atTop atTop :=
+    tendsto_sqrt_atTop.comp (tendsto_id.const_mul_atTop hN)
   refine .of_bound ((∑ ξ, C ξ) * N ^ (1 - δ / 2)) ?_
   -- The bounds for all `ξ` hold at `T = √(N X)` once `X` is large.
-  filter_upwards [h_tendsto.eventually (eventually_all.2 hC)] with X hX
+  filter_upwards [h_tendsto.eventually (eventually_all.2 hC), eventually_ge_atTop (0 : ℝ)]
+    with X hX hX_nonneg
   set T : ℝ := √(N * X)
   have hT : T ^ 2 = N * X := sq_sqrt (by positivity)
   have h_pow : T ^ (2 - δ) = N ^ (1 - δ / 2) * X ^ (1 - δ / 2) := by
-    rw [← mul_rpow hN.le X.cast_nonneg, ← hT, ← rpow_natCast_mul (sqrt_nonneg _), Nat.cast_ofNat,
+    rw [← mul_rpow hN.le hX_nonneg, ← hT, ← rpow_natCast_mul (sqrt_nonneg _), Nat.cast_ofNat,
       mul_one_sub, mul_div_cancel₀ δ two_ne_zero]
-  suffices h_subset : {d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d} ⊆ univ.biUnion (S · T) by
-    rw [Real.norm_natCast, norm_of_nonneg (by positivity), mul_assoc, ← h_pow, sum_mul]
-    calc (#{d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d} : ℝ)
-      _ ≤ ∑ ξ, (#(S ξ T) : ℝ) := mod_cast (card_le_card h_subset).trans card_biUnion_le
+  suffices h_subset : {d : ℕ | IsBadPrime a (1 / 2 + 9 * δ) H d ∧ (d : ℝ) ≤ X} ⊆
+      (univ.biUnion (S · T) : Finset ℕ) by
+    have h_card := Set.ncard_le_ncard h_subset (Finset.finite_toSet _)
+    rw [Set.ncard_coe_finset] at h_card
+    rw [Real.norm_natCast, Real.norm_of_nonneg (rpow_nonneg hX_nonneg _), mul_assoc, ← h_pow,
+      sum_mul]
+    calc ({d : ℕ | IsBadPrime a (1 / 2 + 9 * δ) H d ∧ (d : ℝ) ≤ X}.ncard : ℝ)
+      _ ≤ ↑(univ.biUnion (S · T)).card := Nat.cast_le.mpr h_card
+      _ ≤ ∑ ξ, (#(S ξ T) : ℝ) := by exact_mod_cast card_biUnion_le
       _ ≤ ∑ ξ, C ξ * T ^ (2 - δ) := sum_le_sum fun ξ _ ↦ hX ξ
-  intro d hd
-  obtain ⟨hd_mem, hd_class, ξ, h_twist⟩ := mem_filter.1 hd
+  rintro d ⟨⟨hd_class, ξ, h_twist⟩, hd_le⟩
   have hd_prime : Fact d.Prime := h_twist.prime
   obtain ⟨s, h_re, h_im, h_zero⟩ := h_twist.exists_zero
-  obtain ⟨hd_pos, hd_le⟩ := mem_Ioc.1 hd_mem
+  have hd_pos : 0 < d := hd_prime.out.pos
   obtain ⟨h8, h_coprime⟩ := h_class d hd_prime.out hd_class
   have h_coprime' : (M ξ).Coprime d := h_coprime.of_dvd_left (hMN ξ)
-  have h_cond : M ξ * d ≤ N * X := Nat.mul_le_mul (le_of_dvd (NeZero.pos N) (hMN ξ)) hd_le
+  have h_level_le : (M ξ : ℝ) ≤ N := Nat.cast_le.mpr (le_of_dvd (NeZero.pos N) (hMN ξ))
+  have h_cond : (M ξ : ℝ) * d ≤ N * X :=
+    mul_le_mul h_level_le hd_le (Nat.cast_nonneg d) hN.le
   -- The `L`-functions of the two twists differ by Euler factors, which do not vanish at `s`.
   have h_level : quadTwist ξ d =
       (quadTwist (ψ ξ) d).changeLevel (Nat.mul_dvd_mul_right (hMN ξ) d) := by
@@ -778,12 +784,13 @@ lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H :
     rw [h_level, LFunction_changeLevel _ _ (.inl (quadTwist_ne_one _ d (by omega) h_coprime'))]
       at h_zero
     exact (mul_eq_zero.1 h_zero).resolve_right (prod_euler_factor_ne_zero _ (by linarith))
-  have h_cond' : (M ξ : ℝ) * d ≤ T ^ 2 :=
-    (mod_cast h_cond : (M ξ : ℝ) * d ≤ N * X).trans hT.ge
-  refine mem_biUnion.2 ⟨ξ, mem_univ ξ, mem_filter.2 ⟨mem_Ioc.2 ⟨hd_pos, ?_⟩,
+  have h_cond' : (M ξ : ℝ) * d ≤ T ^ 2 := h_cond.trans hT.ge
+  have h_one : (1 : ℝ) ≤ M ξ := by
+    exact_mod_cast (Nat.succ_le_iff.mpr (NeZero.pos (M ξ)))
+  have hd_floor : d ≤ ⌊T ^ 2⌋₊ := Nat.le_floor
+    ((le_mul_of_one_le_left (by positivity) h_one).trans h_cond')
+  exact mem_biUnion.2 ⟨ξ, mem_univ ξ, mem_filter.2 ⟨mem_Ioc.2 ⟨hd_pos, hd_floor⟩,
     h8, h_coprime', h_cond', ⟨s, h_re, h_im, h_zero'⟩⟩⟩
-  rw [hT, ← Nat.cast_mul, floor_natCast]
-  exact (Nat.le_mul_of_pos_left d (NeZero.pos _)).trans h_cond
 
 /-- **Choice of the prime.** Let `β > 1/2`, `H` real and `a` an invertible class mod `N` all of
 whose primes are `≡ 7 mod 8` and prime to `N`. For some prime `d` of the class no `L(s, ξ (·/d))`,
@@ -798,39 +805,17 @@ lemma exists_entireL_quadTwist_ne_zero {N : ℕ} [NeZero N] {β : ℝ} (H : ℝ)
     ∃ d : Primes, ((d : ℕ) : ZMod N) = a ∧ ∀ (ξ : DirichletCharacter ℂ N) (s : ℂ),
       β ≤ s.re → |s.im| ≤ H → entireL (quadTwist ξ d) s ≠ 0 := by
   classical
-  -- We may assume `β < 1`, as a smaller `β` gives a larger box.
-  wlog hβ_lt : β < 1 generalizing β with h_lt_one
-  · obtain ⟨d, hd, h_ne⟩ := h_lt_one (β := 3 / 4) (by norm_num) (by norm_num)
-    exact ⟨d, hd, fun ξ s h_re ↦ h_ne ξ s (by linarith)⟩
   obtain ⟨δ, rfl⟩ : ∃ δ, β = 1 / 2 + 9 * δ := ⟨(β - 1 / 2) / 9, by ring⟩
   have hδ : 0 < δ := by linarith
-  -- If every prime of the class were bad, only `O(X ^ (1 - δ / 2))` of them would be at most `X`,
-  -- so `∑ log d / d` over the class would converge.
-  by_contra! h_all
-  have h_bad (d : Primes) (hd_class : ((d : ℕ) : ZMod N) = a) :
-      IsBadPrime a (1 / 2 + 9 * δ) H d := by
-    obtain ⟨ξ, s, h_re, h_im, h_zero⟩ := h_all d hd_class
-    obtain ⟨h8, h_coprime⟩ := h_class d hd_class
-    rw [entireL, ite_eq_right (quadTwist_ne_one ξ _ (by omega) h_coprime)] at h_zero
-    exact ⟨hd_class, ξ, ⟨s, h_re, h_im, h_zero⟩⟩
-  let f (n : ℕ) : ℂ := if n.Prime ∧ n = a then 1 else 0
-  have h_count : (fun X ↦ ∑ n ∈ Icc 1 X, ‖f n‖) =O[atTop] fun X : ℕ ↦ (X : ℝ) ^ (1 - δ / 2) := by
-    refine .trans (.of_norm_le fun X ↦ ?_)
-      (zero_density_quadTwist hδ H fun d hd ↦ h_class ⟨d, hd⟩)
-    simp only [f, apply_ite norm, norm_one, norm_zero, sum_boole, Real.norm_natCast, Nat.cast_le]
-    -- Every prime of the class is bad, so it is counted by `zero_density_quadTwist`.
-    refine card_le_card fun d hd ↦ ?_
-    obtain ⟨hd_mem, hd_prime, hd_class⟩ := mem_filter.1 hd
-    exact mem_filter.2 ⟨by simpa [Nat.one_le_iff_ne_zero, Nat.pos_iff_ne_zero] using hd_mem,
-      h_bad ⟨d, hd_prime⟩ hd_class⟩
-  have h_conv : LSeriesSummable f (1 - δ / 2 / 2) :=
-    LSeriesSummable_of_sum_norm_bigO h_count (by linarith) (by simpa)
-  have h_log : LSeriesSummable (logMul f) 1 := LSeriesSummable_logMul_of_lt_re
-    (h_conv.abscissaOfAbsConv_le.trans_lt (mod_cast by simpa))
-  -- The terms `Λ(p) / p` of the divergent series are those of this one, as `Λ(p) = log p`.
-  refine not_summable_residueClass_prime_div ha (h_log.norm.of_norm_bounded fun n ↦ ?_)
-  change ‖(if n.Prime then residueClass a n else 0) / n‖ ≤ ‖term (logMul f) 1 n‖
-  simp +contextual [f, Set.indicator, term, apply_ite, ite_and, ← natCast_log,
-    vonMangoldt_apply_prime]
+  have h_count := zero_density_quadTwist hδ H fun d hd ↦ h_class ⟨d, hd⟩
+  obtain ⟨d, hd, hda, h_good⟩ := (Nat.infinite_setOf_prime_and_eq_mod_and_notMem_of_ncard_isBigO
+    ha (S := {d | IsBadPrime a (1 / 2 + 9 * δ) H d})
+    (B := 1 - δ / 2) (by linarith) h_count).nonempty
+  refine ⟨⟨d, hd⟩, hda, fun ξ s h_re h_im h_zero ↦ h_good ?_⟩
+  have : Fact d.Prime := ⟨hd⟩
+  obtain ⟨h8, h_coprime⟩ := h_class ⟨d, hd⟩ hda
+  change d % 8 = 7 at h8
+  rw [entireL, ite_eq_right (quadTwist_ne_one ξ d (by omega) h_coprime)] at h_zero
+  exact ⟨hda, ξ, ⟨s, h_re, h_im, h_zero⟩⟩
 
 end New
