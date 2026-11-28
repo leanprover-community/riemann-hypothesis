@@ -209,17 +209,16 @@ theorem map_joinCols_prod_volume (e : n₁ ⊕ n₂ ≃ n) (E₁ : Matrix ι n�
     (volume.prod (m.map fun g : U J ↦ g.val.val * E₁)).map
         (fun p : Matrix ι n₂ ℂ × Matrix ι n₁ ℂ ↦ joinCols e p.swap) =
       (m.prod volume).map fun p : U J × Matrix ι n₂ ℂ ↦ p.1.val.val * joinCols e (E₁, p.2) := by
-  refine ext_of_lintegral _ fun K hK ↦ ?_
-  rw [lintegral_map hK (by fun_prop), lintegral_prod_symm' _ (by fun_prop),
-    lintegral_map (by fun_prop) (by fun_prop), lintegral_map hK (by fun_prop),
-    lintegral_prod _ (by fun_prop)]
-  -- For fixed `g`, substitute `g y` for the further columns `y`.
-  refine lintegral_congr fun g ↦ ?_
-  have h_subst : ∫⁻ y : Matrix ι n₂ ℂ, K (joinCols e (g.val.val * E₁, g.val.val * y)) =
-      ∫⁻ y : Matrix ι n₂ ℂ, K (joinCols e (g.val.val * E₁, y)) :=
-    (measurePreserving_U_mul g).lintegral_comp
-      (f := fun y : Matrix ι n₂ ℂ ↦ K (joinCols e (g.val.val * E₁, y))) (by fun_prop)
-  simp only [mul_joinCols, Prod.swap_prod_mk, h_subst]
+  have h_first : MeasurePreserving (fun g : U J ↦ g.val.val * E₁) m
+      (m.map fun g : U J ↦ g.val.val * E₁) := ⟨by fun_prop, rfl⟩
+  -- For each fixed `g`, multiplication by `g` preserves the volume of the further columns.
+  have h_move : MeasurePreserving (fun p : U J × Matrix ι n₂ ℂ ↦
+      (p.1.val.val * E₁, p.1.val.val * p.2)) (m.prod volume)
+      ((m.map fun g : U J ↦ g.val.val * E₁).prod volume) :=
+    h_first.skew_product (by fun_prop) (.of_forall fun g ↦ (measurePreserving_U_mul g).map_eq)
+  have h_swap := measurePreserving_swap.comp h_move
+  rw [← h_swap.map_eq, Measure.map_map (by fun_prop) h_swap.measurable]
+  simp [Function.comp_def, mul_joinCols]
 
 omit [DecidableEq n] [DecidableEq n₁] [DecidableEq n₂] [IsHermitianInvolution J] in
 /-- Let `E = joinCols e (E₁, E₂)` have the columns of `E₁` and `E₂`. If `m'` is carried by the
