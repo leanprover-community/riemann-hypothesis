@@ -686,6 +686,15 @@ lemma exists_isFrob (h : IsPlaceOver A v) : ∃ φ : Γ, IsFrob A v.q φ := by
 
 /-! ### The normalised order -/
 
+/-- Compare powers of a unit with a base-field uniformiser using the order normalised on K. -/
+private lemma valuation_pow_eq_zpow_iff_ordRat (h : IsPlaceOver A v) (G : Type*)
+    [Group G] [TopologicalSpace G] [MulSemiringAction G Ω] [IsProGalois G K Ω] {π : Kˣ}
+    (hπ : v.valuation K π = exp (-1)) {x : DiscreteUnits Ω} (n : ℕ) (a : ℤ) :
+    A.valuation x.toMul ^ n = valuationVia K A π ^ a ↔ n * ordRat K A x = a := by
+  have hπ' := h.isUniformizer_map_fixedFieldOf_decompGroup G (h.isUniformizer_iff.mpr hπ)
+  simpa [valuationVia, ← IsScalarTower.algebraMap_apply, h.ordRat_fixedFieldOf_decompGroup G] using
+    hπ'.valuation_pow_eq_zpow_iff_mul_ordRat_eq (h.isLocalGalois_decompGroup G) (x := x) n a
+
 /-- If A lies over v, an element x of Ωˣ (written additively) has order 0 at A, for the order
 normalised on K, exactly when its valuation at A is 1. -/
 lemma ordRat_eq_zero_iff (h : IsPlaceOver A v) {x : DiscreteUnits Ω} :
@@ -697,17 +706,15 @@ lemma ordRat_eq_zero_iff (h : IsPlaceOver A v) {x : DiscreteUnits Ω} :
 order normalised on K, exactly when x lies in the valuation ring A. -/
 lemma ordRat_nonneg_iff (h : IsPlaceOver A v) (x : DiscreteUnits Ω) :
     0 ≤ ordRat K A x ↔ ↑x.toMul ∈ A := by
-  obtain ⟨π, -, hπ⟩ := h.exists_uniformizer Gal(Ω/K)
+  obtain ⟨π, hπ, h_unif⟩ := h.exists_uniformizer Gal(Ω/K)
   -- Write the order of `x` as `r.num / r.den`; then `x ^ r.den` has the valuation of `π ^ r.num`.
   set r : ℚ := ordRat K A x
   have h_pow : A x.toMul ^ r.den = valuationVia K A π ^ r.num :=
-    (hπ.valuation_pow_eq_zpow_iff_mul_ordRat_eq (h.isLocalGalois_decompGroup Gal(Ω/K)) r.den
-      r.num).mpr <|
-      by rw [h.ordRat_fixedFieldOf_decompGroup Gal(Ω/K), den_mul_eq_num]
+    (h.valuation_pow_eq_zpow_iff_ordRat Gal(Ω/K) hπ r.den r.num).2 (den_mul_eq_num r)
   -- As the valuation of `π` lies in `(0, 1)`, this valuation is `≤ 1` iff `0 ≤ r.num`.
   have h_le : A x.toMul ^ r.den ≤ 1 ↔ 0 ≤ r.num := by
     rw [h_pow]
-    exact zpow_le_one_iff_right_of_lt_one₀ (by simp [pos_iff]) hπ.valuationVia_lt_one
+    exact zpow_le_one_iff_right_of_lt_one₀ (by simp [pos_iff]) h_unif.valuationVia_lt_one
   -- Finally `0 ≤ r ↔ 0 ≤ r.num`, and `A x ^ r.den ≤ 1 ↔ A x ≤ 1`, which says `x ∈ A`.
   rw [← Rat.num_nonneg, ← h_le, pow_le_one_iff r.den_nz]
   exact A.valuation_le_one_iff _
@@ -721,22 +728,18 @@ valuation of x. -/
 lemma ordRat_ofBase (h : IsPlaceOver A v) (x : Kˣ) :
     ordRat K A (ofBase Γ Ω (Additive.ofMul x)) = -(v.valuation K x).log := by
   -- With `π` a uniformiser and `a = -log (v x)`, the elements `x` and `π ^ a` have equal valuation.
-  obtain ⟨π, hπ, h_unif⟩ := h.exists_uniformizer Γ
+  obtain ⟨π, hπ, -⟩ := h.exists_uniformizer Γ
   set a : ℤ := -(v.valuation K x).log
   -- `v (π ^ a) = exp (-1) ^ a = exp (-a) = exp (log (v x)) = v x`.
   have h_val : v.valuation K x = v.valuation K (π ^ a) := by
     rw [map_zpow₀, hπ, ← exp_zsmul, _root_.smul_eq_mul, mul_neg_one]
     simp [a, exp_log]
-  -- By `IsUniformizer.valuation_pow_eq_zpow_iff_mul_ordRat_eq` with exponent `1`, the order of `x`
-  -- is `a`.
-  have h_ord_eq :
-      ((1 : ℕ) : ℚ) * ordRat (fixedFieldOf (decompGroup Γ A)) A (ofBase Γ Ω (.ofMul x)) = a := by
-    apply (h_unif.valuation_pow_eq_zpow_iff_mul_ordRat_eq (h.isLocalGalois_decompGroup Γ) 1 a).mp
-    -- `ofBase` is the map `K → Ω` on units, and the fixed field sits between `K` and `Ω`.
+  -- With exponent `1`, equality of the valuations gives the order of `x`.
+  have h_ord_eq : ((1 : ℕ) : ℚ) * ordRat K A (ofBase Γ Ω (.ofMul x)) = a := by
+    apply (h.valuation_pow_eq_zpow_iff_ordRat Γ hπ 1 a).1
     have h_image : ((ofBase Γ Ω (.ofMul x) : DiscreteUnits Ω).toMul : Ω) = algebraMap K Ω x := rfl
-    simpa [h_image, valuationVia, ← IsScalarTower.algebraMap_apply] using
-      h.isEquiv.eq_iff.mpr h_val
-  simpa [a, h.ordRat_fixedFieldOf_decompGroup Γ] using h_ord_eq
+    simpa [h_image, valuationVia] using h.isEquiv.eq_iff.mpr h_val
+  simpa [a] using h_ord_eq
 
 /-- Let A lie over v. For g ∈ Γ and x ∈ Ωˣ, the order (normalised on K) of gx (`unitsRep g x`) at
 the place gA equals the order of x at A. -/
