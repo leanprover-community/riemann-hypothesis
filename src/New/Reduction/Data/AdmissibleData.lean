@@ -75,6 +75,10 @@ def New.Parameters.logLevelMin (P : Parameters) (s m : ℕ) (κ : P.Φ s → ℕ
   m * ((∑ τ : P.Φ s, log (κ τ)) / Core.numInfPlaces (P.E s)) +
     (m - 1) * log (M * rootDiscr (P.E s) / (2 * Real.pi)) - 15 / 2 * logB
 
+/-- The weight of an infinite place is `b` on `T` and `x * b / x₁` off `T`. -/
+def New.Parameters.placeWeight (P : Parameters) {s : ℕ} (T : Finset (P.Φ s)) (x x₁ b : ℕ)
+    (τ : P.Φ s) : ℕ := if τ ∈ T then b else x * b / x₁
+
 /-- The data for the parameters `P`: scales `x`, `x₁`, `b`, the number `m` of lifts, the rank `r`,
 the exponent `s` of the field `E = P.E s`, a sparse set of `b`-places with the weights that it
 determines, and primes `p₀`, `p₁`, `N` with integers of `K` and of `E` whose products with their
@@ -139,10 +143,6 @@ structure New.Data (P : Parameters) where
   towerDeg_le_card_bPlaces_mul : towerDeg towerExp ≤ bPlaces.card * logB
   /-- The `b`-places are sparse for the primes up to `k t`, where `k = r + 1 - m` and `t = 5 r`. -/
   sparse : P.IsSparse towerExp ((r + 1 - m) * (5 * r)) bPlaces
-  /-- The weight `κ(τ)` of a place. -/
-  weight : P.Φ towerExp → ℕ
-  /-- The weight is `b = a / x` at the `b`-places and `a / x₁` elsewhere, where `a = x b`. -/
-  weight_eq (τ : P.Φ towerExp) : weight τ = if τ ∈ bPlaces then natB else natX * natB / natX₁
   /-- The two primes `p₀`, `p₁` of the principal level. -/
   levelPrime : Fin 2 → ℕ
   /-- `p₀` and `p₁` are prime. -/
@@ -164,8 +164,10 @@ structure New.Data (P : Parameters) where
   /-- `N ≡ 1` modulo `q₂²`. -/
   N_modEq_one_q₂_sq : N ≡ 1 [MOD P.q₂ towerExp ^ 2]
   /-- `log N₋ ≤ log N ≤ log N₋ + √(log b)`, with `N₋` as in `New.Parameters.logLevelMin`. -/
-  log_N_mem : log N ∈ Icc (P.logLevelMin towerExp m weight (levelPrime 0 * levelPrime 1) logB)
-    (P.logLevelMin towerExp m weight (levelPrime 0 * levelPrime 1) logB + √logB)
+  log_N_mem :
+    let κ := P.placeWeight bPlaces natX natX₁ natB
+    log N ∈ Icc (P.logLevelMin towerExp m κ (levelPrime 0 * levelPrime 1) logB)
+      (P.logLevelMin towerExp m κ (levelPrime 0 * levelPrime 1) logB + √logB)
   /-- An integer `π_N` of `E` whose product with its complex conjugate is `N`. -/
   piN : 𝓞 (P.E towerExp)
   /-- `π_N` times its conjugate is `N`. -/
@@ -174,6 +176,15 @@ structure New.Data (P : Parameters) where
 namespace New.Data
 
 variable {P : Parameters} (D : Data P)
+
+/-- The weight `κ(τ)` determined by the scales and the set of `b`-places. -/
+def weight (self : Data P) : P.Φ self.towerExp → ℕ :=
+  P.placeWeight self.bPlaces self.natX self.natX₁ self.natB
+
+/-- The weight is `b = a / x` at the `b`-places and `a / x₁` elsewhere, where `a = x b`. -/
+lemma weight_eq (self : Data P) (τ : P.Φ self.towerExp) :
+    self.weight τ = if τ ∈ self.bPlaces then self.natB
+      else self.natX * self.natB / self.natX₁ := rfl
 
 /-- The length `x` of the prime sum, as a real number. -/
 abbrev x : ℝ := exp D.logX

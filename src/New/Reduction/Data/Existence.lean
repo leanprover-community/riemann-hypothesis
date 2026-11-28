@@ -597,7 +597,7 @@ structure Parameters.IsAdmissibleData (P : Parameters) (x : ℕ) (W : ℝ) (m r 
   N_modEq_one : N ≡ 1 [MOD P.q₂ s ^ 2]
   /-- `log N₋ ≤ log N ≤ log N₋ + √(log b)`, for the weights `b` on `T` and `x b / x₁` elsewhere. -/
   log_N_mem :
-    let κ (τ : P.Φ s) : ℕ := if τ ∈ T then b else x * b / ⌊exp W⌋₊
+    let κ := P.placeWeight T x ⌊exp W⌋₊ b
     log N ∈ Set.Icc (P.logLevelMin s m κ (g 0 * g 1) (log b))
       (P.logLevelMin s m κ (g 0 * g 1) (log b) + √(log b))
   /-- `β` times its complex conjugate is `N`. -/
@@ -778,7 +778,6 @@ lemma Parameters.IsAdmissibleData.exists_hasFields {P : Parameters} {x n m r s b
       levelPrime_modEq_one_q₂_sq := h_adm.levelPrime_modEq_one
       levelPrime_injective := h_adm.levelPrime_injective
       N_modEq_one_q₂_sq := h_adm.N_modEq_one
-      weight τ := if τ ∈ T then b else x * b / ⌊exp W⌋₊
       exp_logX := exp_log hx_pos
       exp_logX₁ := exp_log (mod_cast Nat.floor_pos.2 (one_le_exp (by linarith)))
       exp_logB := hb_eq
@@ -789,7 +788,7 @@ lemma Parameters.IsAdmissibleData.exists_hasFields {P : Parameters} {x n m r s b
       log_logX₁_le_log_logB := by linarith
       m_mem := ⟨hm_lower, hm_upper⟩, r_mem := ⟨hr_lower, hr_upper⟩
       exists_m_eq_two_pow := ⟨e, hm_pow, hs_eq⟩, exists_r_eq_three_pow := hr_pow
-      towerExp_le := hs, dvd_natB := hb_dvd, weight_eq _ := rfl
+      towerExp_le := hs, dvd_natB := hb_dvd
       placeClass_of_mem_bPlaces := h_adm.placeClass_eq_neg_one
       towerDeg_le_card_bPlaces_mul := h_adm.towerDeg_le
       levelPrime_mem i := by simpa only [hb_eq] using h_adm.levelPrime_mem i
@@ -855,9 +854,10 @@ lemma Parameters.IsLargeScale.exists_isAdmissibleData {P : Parameters} {x n : �
   have hx_le : x ≤ ⌊exp W⌋₊ := Nat.le_floor ((log_le_iff_le_exp hx_pos).1 (by linarith))
   have hb_ge : ⌊exp W⌋₊ ≤ b :=
     Nat.le_of_dvd (mod_cast (exp_pos L).trans_eq hb_eq) (dvd_of_mul_left_dvd hb.1.1)
-  let κ (τ : P.Φ s) : ℕ := if τ ∈ T then b else x * b / ⌊exp W⌋₊
+  let κ := P.placeWeight T x ⌊exp W⌋₊ b
   have hκ (τ : P.Φ s) : (κ τ : ℝ) ∈ Set.Icc 1 (exp L) := by
-    simpa [hb_eq] using ite_mul_div_mem_Icc (mod_cast hx_pos) hx_le hb_ge (τ ∈ T)
+    simpa [hb_eq] using (show κ τ ∈ Set.Icc 1 b from
+      ite_mul_div_mem_Icc (mod_cast hx_pos) hx_le hb_ge (τ ∈ T))
   -- primes and level, from windows that start in `[L, 24 m L] ⊆ [W, W ^ (n + 7)]`
   replace h_window (U : ℝ) (h_lower : L ≤ U) (h_upper : U ≤ 24 * m * L) :
       ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD P.q₂ s ^ 2] ∧ log p ∈ Set.Icc U (U + W) := by
