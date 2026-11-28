@@ -11,9 +11,17 @@ RH_CACHE_ROOT="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$RH_CACHE_ROOT"
 
 # scripts/ci-cache-get.py needs Python 3.11 for tomllib. Say so before downloading anything.
-if ! python3 -c 'import sys; sys.exit(sys.version_info < (3, 11))'; then
-  RH_CACHE_PYTHON="$(command -v python3 >/dev/null && python3 --version 2>&1 || echo none)"
-  echo "lake exe cache get needs Python 3.11 or newer as python3; found: $RH_CACHE_PYTHON" >&2
+# On Windows `python3` is often only the Microsoft Store placeholder, so `python` is tried too.
+RH_PY=
+for RH_PY_CANDIDATE in python3 python; do
+  if "$RH_PY_CANDIDATE" -c 'import sys; sys.exit(sys.version_info < (3, 11))' >/dev/null 2>&1; then
+    RH_PY="$RH_PY_CANDIDATE"
+    break
+  fi
+done
+if [[ -z "$RH_PY" ]]; then
+  RH_CACHE_PYTHON="python3: $(command -v python3 >/dev/null && python3 --version 2>&1 || echo none); python: $(command -v python >/dev/null && python --version 2>&1 || echo none)"
+  echo "lake exe cache get needs Python 3.11 or newer as python3 or python; found: $RH_CACHE_PYTHON" >&2
   exit 1
 fi
 
@@ -42,12 +50,12 @@ export LAKE_CACHE_DIR="$RH_CACHE_ROOT/.lake/cache"
 # Tau Ceti's oleans come from Tau Ceti's own public cache (service tauceti-public in lakefile.toml).
 # tauceti-cache-get.py first checks that Tau Ceti and this project pin the same Mathlib commit.
 printf 'Fetching Tau Ceti cache...\n'
-python3 scripts/tauceti-cache-get.py
+"$RH_PY" scripts/tauceti-cache-get.py
 
 # ci-cache-get.py registers the map, downloads and checks the artifacts (500 parallel transfers),
 # unpacks them with one leantar process, then checks with `lake build --no-build`.
 RH_CI_CACHE_STATUS=0
-python3 scripts/ci-cache-get.py || RH_CI_CACHE_STATUS=$?
+"$RH_PY" scripts/ci-cache-get.py || RH_CI_CACHE_STATUS=$?
 if [[ "$RH_CI_CACHE_STATUS" == 3 ]]; then
   echo 'No validated cache matches these build inputs; use lake build.' >&2
 fi
