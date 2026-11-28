@@ -83,8 +83,17 @@ lemma exists_v_entry_eq_one_of_mem_intGL {k : GL (Fin N) F} (hk : k ∈ intGL (F
   -- of two integral elements, lie in the maximal ideal; one outside it has unit factors.
   by_contra h
   have h_term_lt (r : Fin N) : v (k⁻¹ m r * k r m) < 1 := by
-    grind [mem_intGL, mul_lt_of_lt_of_le_one, v.mem_integer_iff]
-  have h_lt : v (∑ r, k⁻¹ m r * k r m) < 1 := v.map_sum_lt' one_pos fun r _ ↦ h_term_lt r
+    have h_inv : v (k⁻¹ m r) ≤ 1 :=
+      (v.mem_integer_iff _).mp (hk.isIntMatrix_inv m r)
+    have h_entry : v (k r m) ≤ 1 :=
+      (v.mem_integer_iff _).mp (hk.isIntMatrix r m)
+    rw [map_mul]
+    by_cases hr : v (k⁻¹ m r) = 1
+    · rw [hr, one_mul]
+      exact lt_of_le_of_ne h_entry (fun he ↦ h ⟨r, hr, he⟩)
+    · exact mul_lt_of_lt_of_le_one (lt_of_le_of_ne h_inv hr) h_entry
+  have h_lt : v (∑ r, k⁻¹ m r * k r m) < 1 :=
+    v.map_sum_lt' one_pos fun r _ ↦ h_term_lt r
   have h_sum : ∑ r, k⁻¹ m r * k r m = 1 := by
     rw [← Matrix.mul_apply, k.inv_mul, Matrix.one_apply_eq]
   rw [h_sum, map_one] at h_lt
