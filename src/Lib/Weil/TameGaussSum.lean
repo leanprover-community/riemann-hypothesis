@@ -1,6 +1,6 @@
 module
 
-import Mathlib.LinearAlgebra.Matrix.Unique
+import TauCeti.NumberTheory.GaussSum.Basic
 public import Lib.Adelic.Adeles.LocalFactors
 import Lib.Adelic.Hecke.ClassSums
 import Lib.General.Measure.HaarNormalisation
@@ -43,7 +43,7 @@ Notions from other files:
 Known result: Gauss sums of a character of the determinant over matrix rings. Only one-dimensional
 ramified characters are treated, and the exact value is not computed. For matrices over a finite
 ring, the eigen-relation, the vanishing at singular index and the modulus are proved in another file
-(`New.Exchange.exists_matrixFourier_eq_mul_inv_det`, used here). This file proves the scalar case
+(`New.Exchange.exists_matrixFourier_eq_mul_inv_det`). This file proves the scalar case
 over the integers of a product of local fields, with the modulus. Source: T. Kondo, On Gaussian sums
 attached to the general linear groups over finite fields, J. Math. Soc. Japan 15 (1963) 244–255; for
 the scalar case over finite rings, E. Lamprecht, Math. Nachr. 9 (1953), see K. Conrad, Gauss and
@@ -150,6 +150,29 @@ lemma div_invOnUnits (χ : MulChar F ℂ) (γ : ℂ) (x : F) :
   rw [invOnUnits]
   split_ifs <;> simp
 
+/-- For a primitive multiplicative character, the Gauss sum at an additive shift by `b` is
+the original Gauss sum times `χ⁻¹ b`. For a nonunit `b`, the shifted sum vanishes. -/
+private lemma gaussSum_mulShift_of_isPrimitiveMulChar {R : Type*} [CommRing R] [Fintype R]
+    {χ : MulChar R ℂ} (hχ : Exchange.IsPrimitiveMulChar χ) (ψ : AddChar R ℂ) (b : R) :
+    gaussSum χ (ψ.mulShift b) = χ⁻¹ b * gaussSum χ ψ := by
+  by_cases hb : IsUnit b
+  · obtain ⟨u, rfl⟩ := hb
+    exact gaussSum_mulShift_eq χ ψ u
+  · -- A nonunit in a finite ring annihilates a nonzero element.
+    obtain ⟨x, hbx, hx⟩ : ∃ x : R, b * x = 0 ∧ x ≠ 0 := by
+      by_contra! h
+      exact hb (isLeftRegular_iff_right_eq_zero_of_mul.2 h).isUnit_of_finite
+    obtain ⟨c, hc_ne_zero, hc_ne_one⟩ := hχ x hx
+    have hc_unit : IsUnit (1 + c * x) := by
+      by_contra hc
+      exact hc_ne_zero (χ.map_nonunit hc)
+    let u : Rˣ := hc_unit.unit
+    have hu : (u : R) = 1 + c * x := hc_unit.unit_spec
+    have hbu : b * (u - 1) = 0 := by
+      rw [hu, add_sub_cancel_left, mul_left_comm b c, hbx, mul_zero]
+    rw [MulChar.gaussSum_mulShift_eq_zero_of_mul_sub_one_eq_zero χ ψ hbu
+      (by simpa [hu] using hc_ne_one), χ⁻¹.map_nonunit hb, zero_mul]
+
 open scoped Classical in
 /-- The local Gauss sum. Let `F` be semilocal, with Haar measure giving `O` volume one. Let `χ` be
 tame, that is, `χ⁻¹` on the units of `O` is the pullback of a primitive character of the finite
@@ -167,19 +190,19 @@ lemma exists_local_gauss_sum {χ : MulChar F ℂ} (hχ : TameLocalChar χ) {ψ :
       ∀ t : F,
         ∫ x : F in (O : Subring F), invOnUnits χ x * ψ (t * x) =
           if IsIntegralUnit ((ϖ : Fˣ) * t) then γ * χ ((ϖ : Fˣ) * t) else 0 := by
-  -- Averaging over translates by representatives of `ResidueRing = O / ϖ` turns the integral into
-  -- the Gauss sum `Γ` of `resChar` on the finite ring `ResidueRing`, seen as `1 × 1` matrices.
-  -- The primitive additive character `φ` of the ring has `φ (reduction x) = ψ (ϖ⁻¹ * x)`.
+  -- Averaging over representatives of `ResidueRing = O / ϖ` gives the scalar Gauss sum.
+  -- Its primitive additive character `φ` satisfies `φ (reduction x) = ψ (ϖ⁻¹ * x)`.
   obtain ⟨hψ_cont, hψ_cond⟩ := hψ
   obtain ⟨φ, hφ_prim, hφψ⟩ := exists_primitive_residue_addChar
     hχ.reduction_surjective_and_eq_zero_iff hψ_cond
   obtain ⟨h_prim, hη⟩ := hχ.isPrimitive_resChar_and_invOnUnits_eq
   have h_cont : Continuous (invOnUnits χ) := hχ.isLocallyConstant_invOnUnits.continuous
-  let S (y : Matrix Unit Unit hχ.ResidueRing) : ℂ := hχ.resChar y.det
-  obtain ⟨Γ, h_norm, h_fourier⟩ := exists_matrixFourier_eq_mul_inv_det (a := Unit) hφ_prim h_prim
-  have h_twist (y : Matrix Unit Unit hχ.ResidueRing) :
-      matrixFourier φ S y = Γ * hχ.resChar⁻¹ y.det * S 1 :=
-    h_fourier S (by simp [S, -det_unique]) y
+  let Γ : ℂ := gaussSum hχ.resChar φ
+  have h_gaussShift := gaussSum_mulShift_of_isPrimitiveMulChar h_prim φ
+  have h_norm : ‖Γ‖ ^ 2 = card hχ.ResidueRing := by
+    dsimp [Γ]
+    rw [TauCeti.norm_gaussSum_of_forall_mulShift h_gaussShift hφ_prim,
+      Real.sq_sqrt (Nat.cast_nonneg _)]
   refine ⟨Γ / card hχ.ResidueRing, by simpa [field] using h_norm, fun t ↦ ?_⟩
   let f (x : F) : ℂ := invOnUnits χ x * ψ (t * x)
   suffices h_div : ∫ x in (O : Subring F), f x =
@@ -196,11 +219,12 @@ lemma exists_local_gauss_sum {χ : MulChar F ℂ} (hχ : TameLocalChar χ) {ψ :
         f z = hχ.resChar (hχ.reduction z) * φ (u * hχ.reduction z) := by
       simp [f, u, hη, ← map_mul, hφψ, mul_assoc]
     have h_sum (x : (O : Subring F)) : ∑ r, f (rep r + x) = hχ.resChar⁻¹ u * Γ := by
-      -- `r + reduction x` runs over the residue ring, that is, over the `1 × 1` matrices
-      calc ∑ r, f (rep r + x) = matrixFourier φ S (u • 1) :=
-            sum_equiv (.trans (.addRight (hχ.reduction x)) uniqueEquiv.symm) _ _ fun r ↦ by
-              simpa [S, rep, Function.surjInv_eq, trace] using h_factor (rep r + x)
-        _ = hχ.resChar⁻¹ u * Γ := by simpa [S, mul_comm] using h_twist (u • 1)
+      -- Translation by `reduction x` permutes the residue ring.
+      calc ∑ r, f (rep r + x) = gaussSum hχ.resChar (φ.mulShift u) :=
+            sum_equiv (.addRight (hχ.reduction x)) _ _ fun r ↦ by
+              simpa [gaussSum, rep, Function.surjInv_eq, AddChar.mulShift_apply]
+                using h_factor (rep r + x)
+        _ = hχ.resChar⁻¹ u * Γ := h_gaussShift u
     have h_avg : (∫ x in (O : Subring F), f x) * card hχ.ResidueRing = hχ.resChar⁻¹ u * Γ := by
       calc (∫ x in (O : Subring F), f x) * card hχ.ResidueRing
         _ = ∑ r, ∫ x in (O : Subring F), f (rep r + x) := by simp [h_shift, mul_comm]
