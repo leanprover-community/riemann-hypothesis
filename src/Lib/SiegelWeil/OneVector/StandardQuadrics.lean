@@ -346,6 +346,28 @@ variable {A κ : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fi
 lemma card_eq_card_pair_sum (h : 2 ≤ card κ) : card κ = card (Fin 2 ⊕ Fin (card κ - 2)) := by
   rw [card_sum, card_fin, card_fin, Nat.add_sub_cancel' h]
 
+/-- An orthonormal block splits integrally into hyperbolic pairs indexed by `σ` and
+orthonormal vectors indexed by `ν`. -/
+lemma IntegralPlace.exists_integral_hyperbolicBlock (σ ν : Type) [Fintype σ] [DecidableEq σ]
+    [Fintype ν] [DecidableEq ν] :
+    ∃ C : Matrix (σ ⊕ ν ⊕ σ) (σ ⊕ ν ⊕ σ) A,
+      Cᴴ * C = hyperbolicGram σ 1 ∧ IsIntMatrix P.integers C := by
+  obtain ⟨c, hc_mem, hc⟩ := P.isAdelic.exists_norm_neg_one
+  have hτ := P.element_add_star
+  -- For each index in `σ`, replace the orthonormal vectors `x`, `y` by
+  -- `x + c y`, `τ̄ x - τ c y`, where `τ = P.element` has trace one.
+  let C' : Matrix (σ ⊕ ν ⊕ σ) (σ ⊕ ν ⊕ σ) A :=
+    fromBlocks 1 (fromCols 0 (star P.element • 1)) (fromRows 0 (c • 1))
+      (fromBlocks 1 0 0 (-(P.element * c) • 1))
+  have hC' : C'ᴴ * C' = hyperbolicGram σ 1 := by
+    ext (i | i | i) (j | j | j) <;>
+      simp [C', hyperbolicGram, Matrix.mul_apply, Fintype.sum_sum_type, Matrix.one_apply]
+    all_goals obtain rfl | hij := eq_or_ne j i <;> simp_all <;> grind
+  refine ⟨C', hC', ?_⟩
+  rintro (i | i | i) (j | j | j) <;>
+    simp [C', Matrix.one_apply, ite_mem, mul_mem, hc_mem, P.element_mem,
+      IsStarStable.star_mem]
+
 /-- At a finite place, the standard hermitian form has an integral basis that consists of one
 hyperbolic pair, the hyperbolic pairs indexed by `σ`, and orthonormal vectors indexed by `ν`: its
 Gram matrix is `planeSumGram (hyperbolicGram σ 1)`. -/
@@ -353,50 +375,20 @@ lemma IntegralPlace.exists_split_basis {σ ν : Type} [Fintype σ] [DecidableEq 
     [DecidableEq ν] (h : card κ = card (Fin 2 ⊕ σ ⊕ ν ⊕ σ)) :
     ∃ B : Matrix κ (Fin 2 ⊕ σ ⊕ ν ⊕ σ) A,
       Bᴴ * B = planeSumGram (hyperbolicGram σ (1 : Matrix ν ν A)) ∧ IsIntMatrix P.integers B := by
-  -- With `c̄ c = -1` and `τ + τ̄ = 1`, two orthonormal vectors `x`, `y` give the hyperbolic pair
-  -- `x + c y`, `τ̄ x - τ c y`.
-  obtain ⟨c, hc_mem, hc⟩ : ∃ c : A, c ∈ P.integers ∧ star c * c = -1 :=
-    P.isAdelic.exists_norm_neg_one
-  have hτ : P.element + star P.element = 1 := P.element_add_star
-  have hτ_mem : star P.element ∈ P.integers := P.isAdelic.toIsStarStable.star_mem P.element_mem
-  let e : κ ≃ Fin 2 ⊕ σ ⊕ ν ⊕ σ := equivOfCardEq h
-  let C : Matrix (Fin 2) (Fin 2) A := !![1, star P.element; c, -(P.element * c)]
-  have hC : Cᴴ * C = !![0, 1; 1, 0] :=
-    calc
-      Cᴴ * C = !![1 + star c * c, star P.element - P.element * (star c * c);
-          P.element - star P.element * (star c * c),
-            P.element * star P.element + P.element * star P.element * (star c * c)] := by
-        simp [C, ← ext_iff, Matrix.mul_apply, sub_eq_add_neg, mul_comm, mul_left_comm, mul_assoc]
-      _ = !![0, 1; 1, 0] := by simp [hc, hτ, add_comm (star P.element)]
-  -- The same pairs, indexed by `σ`: the first and last blocks of the index set are paired.
-  let C' : Matrix (σ ⊕ ν ⊕ σ) (σ ⊕ ν ⊕ σ) A :=
-    fromBlocks 1 (fromCols 0 (star P.element • 1)) (fromRows 0 (c • 1))
-      (fromBlocks 1 0 0 (-(P.element * c) • 1))
-  have hC' : C'ᴴ * C' = hyperbolicGram σ 1 := by
-    have hc' : c * star c = -1 := by rw [mul_comm, hc]
-    ext (i | i | i) (j | j | j) <;>
-      simp [C', hyperbolicGram, Matrix.mul_apply, Fintype.sum_sum_type, Matrix.one_apply]
-    all_goals
-      obtain rfl | hij := eq_or_ne j i
-      · first
-          | (simp; done)
-          | (simp; linear_combination hc')
-          | (simp; linear_combination hτ - P.element * hc')
-          | (simp; linear_combination hτ - star P.element * hc')
-          | (simp; linear_combination (P.element * star P.element) * hc')
-      · simp [hij, hij.symm]
-  let D : Matrix (Fin 2 ⊕ σ ⊕ ν ⊕ σ) (Fin 2 ⊕ σ ⊕ ν ⊕ σ) A := fromBlocks C 0 0 C'
-  have hD : Dᴴ * D = planeSumGram (hyperbolicGram σ 1) := by
-    simp [D, fromBlocks_conjTranspose, fromBlocks_multiply, hC, hC']
-  have hD_int : IsIntMatrix P.integers D := by
-    have h_mul : P.element * c ∈ P.integers := mul_mem P.element_mem hc_mem
-    rintro (i | i | i | i) (j | j | j | j) <;> try fin_cases i <;> try fin_cases j
-    all_goals
-      simp [D, C, C', Matrix.one_apply]
-      try split_ifs
-      all_goals simp [hc_mem, hτ_mem, h_mul]
-  refine ⟨D.submatrix e id, ?_, fun i j ↦ hD_int (e i) j⟩
-  rw [conjTranspose_submatrix, submatrix_mul_equiv, hD, submatrix_id_id]
+  -- Give the first hyperbolic pair the extra index `none`.
+  obtain ⟨C, hC, h_int⟩ := P.exists_integral_hyperbolicBlock (Option σ) ν
+  let row : κ ≃ Option σ ⊕ ν ⊕ Option σ := equivOfCardEq (by simp_all +arith)
+  let col : Fin 2 ⊕ σ ⊕ ν ⊕ σ → Option σ ⊕ ν ⊕ Option σ
+    | .inl i => if i = 0 then .inl none else .inr (.inr none)
+    | .inr (.inl i) => .inl (some i)
+    | .inr (.inr (.inl i)) => .inr (.inl i)
+    | .inr (.inr (.inr i)) => .inr (.inr (some i))
+  refine ⟨C.submatrix row col, ?_, fun i j ↦ h_int (row i) (col j)⟩
+  rw [conjTranspose_submatrix, submatrix_mul_equiv, hC]
+  ext (i | i | i | i) (j | j | j | j)
+  all_goals try fin_cases i
+  all_goals try fin_cases j
+  all_goals simp [col, planeSumGram, hyperbolicGram, Matrix.one_apply]
 
 /-- At a finite place, the standard hermitian form of rank at least two has a basis that begins
 with a hyperbolic pair and ends with orthonormal vectors: its Gram matrix is `planeSumGram 1`. -/

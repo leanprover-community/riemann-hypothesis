@@ -251,34 +251,36 @@ lemma IntegralPlace.exists_isIntMatrix_hyperbolicBasis {N : A} (hN : N ∈ P.int
     (hN_star : star N = N) (hm : 𝔰.k = Fintype.card ι + 2 * m + 1) :
     ∃ B : HyperbolicBasis ι (latticeMiddleGram 𝔰 N) m,
       IsIntMatrix P.integers B.basisMatrix ∧ B.basisMatrix (inr ()) = Pi.single (inl 1) 1 := by
-  -- `E` makes the plane of `𝔰.k₀` and z hyperbolic, turns `2 * m` orthonormal vectors into `m`
-  -- hyperbolic pairs by means of `c` with `star c * c = -1`, and keeps the others.
-  obtain ⟨c, hc, hc_norm⟩ : ∃ c ∈ P.integers, star c * c = -1 := P.isAdelic.exists_norm_neg_one
+  -- Split the distinguished plane separately from the orthonormal complement.
   have f : SplitIndex m ι ≃ {i : 𝔰.κ // 𝔰.k₀ ≠ i} := equivOfCardEq (by simp +arith [hm])
-  let C : Matrix (SplitIndex m ι) (SplitIndex m ι) A :=
-    fromBlocks 1 (fromCols 0 (P.element • 1)) (fromRows 0 (c • 1))
-      (fromBlocks 1 0 0 ((-star P.element * c) • 1))
+  obtain ⟨C, hC, hC_int⟩ := P.exists_integral_hyperbolicBlock (Fin m) ι
+  let coords : Fin 2 ⊕ SplitIndex m ι → 𝔰.MiddleIndex :=
+    ![inl 𝔰.k₀, inr ()] ⊕ᵥ fun i ↦ inl (f i)
   let E : Matrix 𝔰.MiddleIndex (Fin 2 ⊕ SplitIndex m ι) A :=
-    inclMatrix A (![inl 𝔰.k₀, inr ()] ⊕ᵥ fun i ↦ inl (f i)) *
-      fromBlocks !![-1, -N * P.element; 0, 1] 0 0 C
+    inclMatrix A coords * fromBlocks !![-1, -N * P.element; 0, 1] 0 0 C
   have E_int : IsIntMatrix P.integers E :=
     .mul (by simp [IsIntMatrix, inclMatrix, Matrix.one_apply, ite_mem]) (by
-      simp [C, hc, hN, IsIntMatrix, data_normalised, mul_mem, Matrix.one_apply, ite_mem,
-        IsStarStable.star_mem])
+      rintro (i | i) (j | j)
+      · fin_cases i <;> fin_cases j <;> simp [hN, mul_mem, P.element_mem]
+      · simp
+      · simp
+      · exact hC_int i j)
   have E_form : Eᴴ * latticeMiddleGram 𝔰 N * E = planeSumGram (hyperbolicGram (Fin m) 1) := by
     have h_ne (i : SplitIndex m ι) : (f i : 𝔰.κ) ≠ 𝔰.k₀ := (f i).prop.symm
     have h_trace : P.element + star P.element = 1 := P.element_add_star
-    rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix]
-    -- each entry reduces to `hc_norm`, `h_trace` or `hN_star`
-    simp [← Matrix.ext_iff, Matrix.mul_apply, C, latticeMiddleGram, diagonal, h_ne,
-      Subtype.val_inj, fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
-      conjTranspose_fromCols_eq_fromRows_conjTranspose, Matrix.one_apply]
+    have h_mid : (latticeMiddleGram 𝔰 N).submatrix coords coords =
+        fromBlocks !![0, -1; -1, -N] 0 0 1 := by
+      simp [← Matrix.ext_iff, Matrix.submatrix_apply, coords, latticeMiddleGram, diagonal, h_ne,
+        Subtype.val_inj, Matrix.one_apply]
+    rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix, h_mid]
+    simp [fromBlocks_conjTranspose, fromBlocks_multiply, hC, planeSumGram, hN_star,
+      ← Matrix.ext_iff, Matrix.mul_apply]
     grind
   obtain ⟨V, hV, hV_eq⟩ : ∃ V ∈ intGL 𝔰.MiddleIndex P.integers, V.val = latticeMiddleGram 𝔰 N :=
     (isUnimodular_latticeMiddleGram 𝔰 ⟨hN, hN_star⟩).2
   have h_det : P.modulus (latticeMiddleGram 𝔰 N).det = 1 := by rw [← hV_eq, modulus_det_eq_one hV]
   refine ⟨⟨E, E_form, by lia, h_det⟩, E_int, ?_⟩
-  simp [E, funext_iff, Matrix.mul_apply, inclMatrix, Matrix.one_apply]
+  simp [E, coords, funext_iff, Matrix.mul_apply, inclMatrix, Matrix.one_apply]
 
 omit [IsHermitianUnit T.splitGram] in
 /-- If a hyperbolic basis of the middle block is integral, so is the basis of each floor. -/
