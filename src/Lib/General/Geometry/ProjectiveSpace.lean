@@ -791,6 +791,20 @@ lemma picClass_pi (s : Finset Λ) : (pi N s).picClass = ∑ l ∈ s, (N l).picCl
     rw [sum_cons, ih, ← picClass_mul]
     exact picClass_eq_of_le (fun i ↦ (i a, i)) (by simp [iInf_le]) (by simp)
 
+/-- Homogeneous coordinates for a product line bundle are the products of the coordinates for
+its factors, with one coordinate index chosen for each factor. -/
+lemma IsHomogeneousCoords.pi {A : CommRingCat} {t : Spec A ⟶ X} {v : (a : Λ) → ν a → A}
+    (h : ∀ a : Λ, (N a).IsHomogeneousCoords t (v a)) :
+    (pi N).IsHomogeneousCoords t fun j ↦ ∏ a : Λ, v a (j a) := by
+  refine .intro (fun j ↦ ?_) fun j k h_unit ↦ ?_
+  · simp [landsIn_iInf, fun a : Λ ↦ (h a).landsIn_iff_isUnit]
+  · have h_factor (a : Λ) : IsUnit (v a (j a)) := IsUnit.prod_univ_iff.1 h_unit a
+    have h_mul (a : Λ) : (N a).transition (j a) (k a) A t * v a (j a) = v a (k a) := by
+      rw [(h a).transition_eq_mul_inverse (h_factor a),
+        Ring.inverse_mul_cancel_right _ _ (h_factor a)]
+    rw [Ring.eq_mul_inverse_iff_mul_eq _ _ _ h_unit]
+    simp [← prod_mul_distrib, h_mul]
+
 /-- The Segre product of a finite family of linear systems is a linear system. -/
 lemma IsLinearSystem.pi (h : ∀ a : Λ, (N a).IsLinearSystem) : (pi N).IsLinearSystem where
   isRegularOn_transition i j A B φ t ht := by
@@ -804,19 +818,8 @@ lemma IsLinearSystem.pi (h : ∀ a : Λ, (N a).IsLinearSystem) : (pi N).IsLinear
     obtain ⟨a, ha⟩ : ∃ a : Λ, ¬LandsIn t ((N a).opens (i a)) := by simpa [landsIn_iInf] using ht
     simpa using prod_eq_zero (mem_univ a) ((h a).transition_eq_zero (j a) ha)
   isHomogeneousCoords_transition {A i t} ht := by
-    -- A product is a unit exactly when each factor is, and coordinates multiply factor by factor.
-    have h_coords (a : Λ) : (N a).IsHomogeneousCoords t ((N a).transition (i a) · A t) :=
-      (h a).isHomogeneousCoords_transition ((landsIn_iInf t).1 ht a)
-    refine .intro (fun j ↦ ?_) fun j k h_unit ↦ ?_
-    · simp [landsIn_iInf, fun a : Λ ↦ (h_coords a).landsIn_iff_isUnit]
-    · have h_factor (a : Λ) : IsUnit ((N a).transition (i a) (j a) A t) :=
-        IsUnit.prod_univ_iff.1 (by simpa using h_unit) a
-      have h_mul (a : Λ) : (N a).transition (j a) (k a) A t * (N a).transition (i a) (j a) A t =
-          (N a).transition (i a) (k a) A t := by
-        rw [(h_coords a).transition_eq_mul_inverse (h_factor a),
-          Ring.inverse_mul_cancel_right _ _ (h_factor a)]
-      rw [Ring.eq_mul_inverse_iff_mul_eq _ _ _ h_unit]
-      simp [← prod_mul_distrib, h_mul]
+    simpa using IsHomogeneousCoords.pi
+      (fun a ↦ (h a).isHomogeneousCoords_transition ((landsIn_iInf t).1 ht a))
 
 lemma pull_pi : (pi N).pull p = pi fun l : Λ ↦ (N l).pull p := by ext <;> simp [Opens.coe_iInf]
 

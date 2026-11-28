@@ -176,17 +176,6 @@ attribute [local instance low] Fintype.ofFinite
 variable {V ι κ : Type} [FinComplexSpace V] {S : Scheme} [IsReduced S] [IsLocallyNoetherian S]
   [Finite ι] {η : κ → (Spec (CommRingCat.of ℂ) ⟶ S)}
 
-omit [Finite ι] in
-/-- Homogeneous coordinates for a product of line bundles: if for each factor `l : K` the values
-`θ k (w l)`, `k : ι`, are homogeneous coordinates of `t` for `M l`, then the products
-`∏ l, θ (μ l) (w l)`, indexed by `μ : K → ι`, are homogeneous coordinates of `t` for the product
-bundle `LineBundle.pi M`. Here `V` is any type. -/
-lemma LineBundle.IsHomogeneousCoords.pi {K : Type} {X : Scheme} {t : Spec (CommRingCat.of ℂ) ⟶ X}
-    {V : Sort*} [Fintype K] {M : K → LineBundle X ι} {θ : ι → V → ℂ} {w : K → V}
-    (h : ∀ l : K, (M l).IsHomogeneousCoords t fun k : ι ↦ θ k (w l)) :
-    (LineBundle.pi M).IsHomogeneousCoords t fun μ : K → ι ↦ ∏ l : K, θ (μ l) (w l) := by
-  simp_all [IsHomogeneousCoords, landsIn_iInf, Finset.prod_ne_zero_iff, Finset.prod_mul_distrib]
-
 open HasRingHomProperty MorphismProperty Hom in
 omit [IsReduced S] in
 /-- A flat proper commutative group scheme A over a locally noetherian S is smooth if every point of
@@ -713,7 +702,11 @@ lemma Variety.exists_maps_of_riemann_relation
   obtain ⟨G, hG, hG_pull⟩ := he_pairs.exists_map_of_coords
     (p := fun s ↦ Pi.lift fun l ↦ e s.1.1 (comb s.1.1 (doubledCoeffs p q l) s.2 s.1.2))
     hM (isProjEmbedding_pi (Pi.π _) (fun _ ↦ hN) (Pi.hom_ext _ _)) hM_coords
-    fun s ↦ .pi fun l ↦ by simpa [← comp_left, IsHomogeneousCoords.pull_iff] using he_coords _ _
+    fun s ↦ by
+      let z (l : (Bool ⊕ K) ⊕ Bool ⊕ K) := comb s.1.1 (doubledCoeffs p q l) s.2 s.1.2
+      refine IsHomogeneousCoords.pi (A := .of ℂ)
+        (v := fun l k ↦ (x s.1.1).thetaCoord k (z l)) fun l ↦ ?_
+      simpa [← comp_left, IsHomogeneousCoords.pull_iff] using he_coords s.1.1 (z l)
   refine ⟨fun l ↦ G ≫ Pi.π _ l, fun l i y z ↦ ?_, ?_⟩
   · rw [← assoc, hG ((i, y), z), Pi.lift_comp_π]
   · rw [← hM_class, ← hG_pull]

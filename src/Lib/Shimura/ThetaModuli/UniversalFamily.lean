@@ -380,7 +380,7 @@ lemma holomorphicAt_complexPoint {F : AnalyticFamily D} ⦃b : BallBase D.Index�
       (hu ..).comp₂ analyticAt_id (F.analyticAt _ hb (toRealVectors (ratLift F.frame ω.val)))
   refine .of_isHomogeneousCoords C.isProjEmbedding_pi_coordBundle h_analytic
     (hu_ne.mono fun b' h_unit ↦ ?_) fun _ ↦ Over.w _
-  exact .pi (w := (·)) fun ω ↦ (C.isHomogeneousCoords_complexPoint (F, b') ω).smul h_unit
+  exact .pi fun ω ↦ (C.isHomogeneousCoords_complexPoint (F, b') ω).smul h_unit
 
 /-- Let `m a` be a model of the fibre of `X` at the parameter `a` on the theta torus at `a`, whose
 theta functions `(m a).θ` are those of the torus (`hθ`). Then for a point `b` of the domain of an
