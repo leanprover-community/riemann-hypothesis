@@ -8,7 +8,7 @@ import New.Derivatives.Vacuum.JetIntegrality
 import New.Derivatives.Vacuum.StandardDataProducts
 
 /-!
-# Integrality and divisibility of the derivatives of standard data
+# Scale, integrality and divisibility of the derivatives of standard data
 
 This file bounds the valuations of the derivatives of the Taylor series of standard data along
 homogeneous integral polynomials.
@@ -34,6 +34,11 @@ homogeneous integral polynomials.
   N) 1))`, where `N = card n'`.
 * `New.Parameters.norm_schurJet_jetSeries_le_of_charges`: the bound with removed columns and charges
   for the derivatives along the entries of the Schur matrices.
+
+## Relation to the literature
+
+The modulus of `jetScale` is computed from the formula of Chowla and Selberg,
+`New.CMLattice.chowla_selberg`.
 -/
 
 @[expose] public section
@@ -45,6 +50,18 @@ homogeneous integral polynomials.
   homogeneous polynomial is a theta value times a power of the scale.
 * `New.Parameters.norm_periodFactor_mul_daggerForms_le_one`: the scaled linear form of a vector `y`
   is integral at `p` if `α⁻¹ y` is integral above `p`.
+
+The period scale is `jetScale` times an integer `π_M` of `K` of norm `M`. The statement with this
+factor is `New.Data.norm_taylorScale_eq_one_of_not_dvd`.
+
+The statements use these notions:
+* `daggerForms u j`: the coefficients in `ℂ_p` of the linear form `z ↦ y† z` of the vector
+  `y = u j`; at a pair `(v, i)` of an infinite place and a coordinate the coefficient is the image
+  in `ℂ_p` of the complex conjugate of `Φ_v (y i)`, with `Φ_v` the embedding chosen at `v`.
+* `periodFactor`: the complex number `vacuumRoot / chowlaSelbergUnit`, where `vacuumRoot` is a root
+  of the inverse of the value `chiFin α` of a character at the idele `α` and the denominator is a
+  unit at every `p`-adic place; `jetScale` is `periodFactor * √(2π / √d) / cmPeriod`, where
+  `cmPeriod * 𝓞_K` is the lattice of the CM curve of the field `K = ℚ(i√d)`.
 -/
 
 section Scale
