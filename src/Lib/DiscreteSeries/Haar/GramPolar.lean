@@ -68,8 +68,8 @@ tuples of vectors. -/
 theorem measurePreserving_U_mul (g : U J) :
     MeasurePreserving fun y : Matrix ι n ℂ ↦ (g : Matrix ι ι ℂ) * y := by
   refine ⟨by fun_prop, ext_of_lintegral _ fun K hK ↦ ?_⟩
-  rw [lintegral_map hK (by fun_prop), lintegral_eq_det_mul_comp_mul_mul (P := (g : Matrix ι ι ℂ))
-    (Q := 1) (norm_pos_iff.1 (by simp)) (by simp) hK]
+  rw [lintegral_map hK (by fun_prop), lintegral_eq_det_mul_comp_mul_mul (K := K)
+    (P := (g : Matrix ι ι ℂ)) (Q := 1) (norm_pos_iff.1 (by simp)) (by simp)]
   simp [← ofReal_norm]
 
 omit [Fintype n] [IsHermitianInvolution J] in

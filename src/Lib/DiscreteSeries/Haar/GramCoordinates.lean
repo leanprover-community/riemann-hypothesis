@@ -9,6 +9,7 @@ import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
+import TauCeti.MeasureTheory.Measure.Haar.NormedSpace
 import TauCeti.Topology.Instances.Matrix
 public import Lib.General.LinearAlgebra.HermitianMatrices
 import Lib.DiscreteSeries.Haar.CayleyChart
@@ -177,26 +178,23 @@ theorem measurable_matrix_det [Fintype n] : Measurable fun Z : Matrix n n ℂ �
 measure: the Jacobian is `|det T|`. -/
 theorem lintegral_eq_abs_det_mul_comp {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V)
-    [μ.IsAddHaarMeasure] {T : V →ₗ[ℝ] V} (hT : T.det ≠ 0) {K : V → ℝ≥0∞} (hK : Measurable K) :
+    [μ.IsAddHaarMeasure] {T : V →ₗ[ℝ] V} (hT : T.det ≠ 0) (K : V → ℝ≥0∞) :
     ∫⁻ y : V, K y ∂μ = ENNReal.ofReal |T.det| * ∫⁻ y : V, K (T y) ∂μ := by
-  have h_map : ∫⁻ y : V, K (T y) ∂μ = ENNReal.ofReal |T.det⁻¹| * ∫⁻ y : V, K y ∂μ := by
-    rw [← lintegral_map hK T.continuous_of_finiteDimensional.measurable,
-      map_linearMap_addHaar_eq_smul_addHaar μ hT, lintegral_smul_measure, smul_eq_mul]
-  rw [h_map, ← mul_assoc, ← ENNReal.ofReal_mul (abs_nonneg _), ← abs_mul, mul_inv_cancel₀ hT]
-  simp
+  rw [lintegral_comp_linearMap μ hT, ← mul_assoc, ← ENNReal.ofReal_mul (abs_nonneg _), ← abs_mul,
+    mul_inv_cancel₀ hT, abs_one, ENNReal.ofReal_one, one_mul]
 
 /-- Substitution `y ↦ P y Q` in an integral over complex matrices, for invertible `P` and `Q`: the
 Jacobian is `|det P| ^ (2 |n|) |det Q| ^ (2 |ι|)`. -/
 theorem lintegral_eq_det_mul_comp_mul_mul [Fintype n]
     [DecidableEq ι] {P : Matrix ι ι ℂ} {Q : Matrix n n ℂ}
-    (hP : P.det ≠ 0) (hQ : Q.det ≠ 0) {K : Matrix ι n ℂ → ℝ≥0∞} (hK : Measurable K) :
+    (hP : P.det ≠ 0) (hQ : Q.det ≠ 0) {K : Matrix ι n ℂ → ℝ≥0∞} :
     ∫⁻ y : Matrix ι n ℂ, K y =
       ‖P.det‖ₑ ^ (2 * card n) * ‖Q.det‖ₑ ^ (2 * card ι) * ∫⁻ y : Matrix ι n ℂ, K (P * y * Q) := by
   let L : Matrix ι n ℂ →ₗ[ℝ] Matrix ι n ℂ := mulRightLinearMap ι ℝ Q ∘ₗ mulLeftLinearMap n ℝ P
   have h_det : L.det = ‖P.det‖ ^ (2 * card n) * ‖Q.det‖ ^ (2 * card ι) :=
     det_mulLeft_mulRight_real P Q
   have h_ne : L.det ≠ 0 := h_det.trans_ne (by positivity)
-  simp [lintegral_eq_abs_det_mul_comp volume h_ne hK, h_det, L, ENNReal.ofReal_mul,
+  simp [lintegral_eq_abs_det_mul_comp volume h_ne K, h_det, L, ENNReal.ofReal_mul,
     ENNReal.ofReal_pow]
 
 /-! ### Hermitian coordinates -/
@@ -239,7 +237,7 @@ theorem continuous_hermOfReal [Fintype n] : Continuous (hermOfReal : Matrix n n 
 /-- In the real coordinates `t` of hermitian matrices `T = hermOfReal t` of size `n`, the congruence
 `T ↦ Cᴴ T C` has the Jacobian `|det C| ^ (2 n)`. -/
 theorem lintegral_eq_det_mul_comp_congruence [Fintype n] {C : Matrix n n ℂ} (hC : C.det ≠ 0)
-    {G : Matrix n n ℂ → ℝ≥0∞} (hG : Measurable G) :
+    {G : Matrix n n ℂ → ℝ≥0∞} :
     ∫⁻ t : Matrix n n ℝ, G (hermOfReal t) =
       ‖C.det‖ₑ ^ (2 * card n) * ∫⁻ t : Matrix n n ℝ, G (Cᴴ * hermOfReal t * C) := by
   let L : Matrix n n ℝ →ₗ[ℝ] Matrix n n ℝ :=
@@ -250,8 +248,8 @@ theorem lintegral_eq_det_mul_comp_congruence [Fintype n] {C : Matrix n n ℂ} (h
   have h_herm (t : Matrix n n ℝ) : hermOfReal (L t) = Cᴴ * hermOfReal t * C := by
     simp [L, hermOfReal, skewOfReal_skewCoords, Matrix.mul_assoc]
   have h_ne : L.det ≠ 0 := abs_ne_zero.1 (h_det.trans_ne (by positivity))
-  simp [lintegral_eq_abs_det_mul_comp volume h_ne (show Measurable fun t ↦ G (hermOfReal t) by
-    fun_prop), h_det, h_herm, ENNReal.ofReal_pow]
+  simp [lintegral_eq_abs_det_mul_comp volume h_ne fun t ↦ G (hermOfReal t), h_det, h_herm,
+    ENNReal.ofReal_pow]
 
 /-- The derivative of the Gram matrix `σᴴ J σ` of a differentiable family `σ` of matrices is
 `σᴴ J dσ + dσᴴ J σ`, read in the coordinates of `gramCoords`. -/
@@ -369,12 +367,10 @@ theorem lintegral_eq_comp_skewAddHerm {K : Matrix n n ℂ → ℝ≥0∞} (hK : 
       Finset.sum_comm (f := fun a b ↦ p.1 b a ^ 2),
       Finset.sum_comm (f := fun a b ↦ p.2 b a ^ 2)] at h_sum
     linarith
-  have hK' : Measurable fun p : Matrix n n ℝ × Matrix n n ℝ ↦ K (skewAddHerm p) :=
-    hK.comp skewAddHerm.toLinearMap.continuous_of_finiteDimensional.measurable
   have h_subst : ∫⁻ Z : Matrix n n ℂ, K Z = ∫⁻ p, K (skewAddHerm (T₁.prodMap T₂ p)) :=
     (h_iso.lintegral_comp hK).symm
-  simp [h_subst, lintegral_eq_abs_det_mul_comp volume h_ne hK', h_det, ENNReal.ofReal_pow,
-    ← mul_assoc, ENNReal.inv_mul_cancel]
+  simp [h_subst, lintegral_eq_abs_det_mul_comp volume h_ne fun p ↦ K (skewAddHerm p), h_det,
+    ENNReal.ofReal_pow, ← mul_assoc, ENNReal.inv_mul_cancel]
 
 /-- Lebesgue measure on the complex matrices `Z = S + T / 2` of size `n`, with `S = skewOfReal s`
 skew-hermitian and `T = hermOfReal t` hermitian, is `2 ^ (-n) ds dt`. -/

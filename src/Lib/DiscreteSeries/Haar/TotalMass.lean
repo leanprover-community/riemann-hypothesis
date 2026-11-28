@@ -190,8 +190,7 @@ theorem HasGramDensity.lintegral_conjTranspose_mulVec {W : Set (Matrix n' n' ℝ
         rw [volume_eq_prod, lintegral_prod_symm' _ (by fun_prop)]
     _ = ENNReal.ofReal (r ^ card n') * ∫⁻ w, c * ∫⁻ t, F (t, √r • w) := by simp only [h_inner]
     _ = ∫⁻ w, c * ∫⁻ t, F (t, w) := by
-        rw [eq_comm, lintegral_eq_abs_det_mul_comp volume (hT.trans_ne (by positivity))
-          (by fun_prop), hT]
+        rw [eq_comm, lintegral_eq_abs_det_mul_comp volume (hT.trans_ne (by positivity)) _, hT]
         simp [T, abs_of_pos hr]
     _ = c * ∫⁻ p, F p := by
         rw [volume_eq_prod, lintegral_prod_symm' _ hF, lintegral_const_mul c (by fun_prop)]

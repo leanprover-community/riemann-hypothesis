@@ -363,14 +363,14 @@ theorem lintegral_eq_dualFrameOfGram_mul {Z : 𝔰.FrameMatrix} (hZ : Z.det ≠ 
   calc
     _ = ‖Z.det‖ₑ ^ (2 * card (Fin 𝔰.ϱ ⊕ 𝔰.κ)) * ∫⁻ p : Matrix (Fin 𝔰.ϱ ⊕ 𝔰.κ) (Fin (𝔰.ϱ + 1)) ℂ,
           K ((𝔰.J₁ * 𝔰.frameCols + 𝔰.freeCols * p) * Z) := by
-      rw [lintegral_eq_det_mul_comp_mul_mul (P := 1) (by simp) hZ (by fun_prop)]
+      rw [lintegral_eq_det_mul_comp_mul_mul (P := 1) (by simp) hZ]
       simp [Matrix.add_mul, Matrix.mul_assoc]
     _ = ‖Z.det‖ₑ ^ (2 * card (Fin 𝔰.ϱ ⊕ 𝔰.κ)) * ∫⁻ t, dualIntegrand (hermOfReal t) := by
       rw [lintegral_eq_lintegral_sphereMass_mul_dualFrameOfGram (K := fun y ↦ K (y * Z))
         (by fun_prop)]
     _ = ‖Z.det‖ₑ ^ (2 * (𝔰.k - 1)) * ∫⁻ t, dualIntegrand (Z⁻¹ᴴ * hermOfReal t * Z⁻¹) := by
-      rw [lintegral_eq_det_mul_comp_congruence hZ (G := fun T ↦ dualIntegrand (Z⁻¹ᴴ * T * Z⁻¹))
-        (by fun_prop), h_exp, pow_add, mul_assoc]
+      rw [lintegral_eq_det_mul_comp_congruence hZ (G := fun T ↦ dualIntegrand (Z⁻¹ᴴ * T * Z⁻¹)),
+        h_exp, pow_add, mul_assoc]
       simp [← Matrix.mul_assoc, ← conjTranspose_mul, hZ]
     _ = _ := by simp (disch := finiteness) only [dualIntegrand, mul_assoc, lintegral_const_mul']
 
