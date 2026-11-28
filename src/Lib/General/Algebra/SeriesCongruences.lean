@@ -26,8 +26,7 @@ work with such congruences.
   has only terms of the degrees `p ^ i + p ^ j`.
 * `New.dvd_sum_pow_sub_sum`: for a prime `p` the `p ^ j`-th powers are additive modulo a divisor of
   `p`.
-* `New.continuous_subst_of_constantCoeff_eq_zero`: substitution of finitely many series without
-  constant term is continuous.
+* `New.continuous_subst_of_hasSubst`: substitution by a fixed substitutable family is continuous.
 * `New.C_dvd_of_hasSum`: over the valuation ring of `ℂ_[p]` a convergent sum of power series
   divisible by `π` is divisible by `π`.
 
@@ -266,24 +265,33 @@ lemma dvd_sum_pow_sub_sum {p : ℕ} [Fact p.Prime] {π : R} (hπ : π ∣ (p : R
       Ideal.Quotient.eq_zero_iff_dvd]
   simp only [map_pow, map_sum, sum_pow_char_pow]
 
+/-- Substitution by a fixed substitutable family is continuous for coefficientwise convergence. -/
+lemma continuous_subst_of_hasSubst [TopologicalSpace R] [IsTopologicalRing R]
+    {Z : σ → MvPowerSeries τ R} (hZ : HasSubst Z) :
+    Continuous fun F : MvPowerSeries σ R ↦ F.subst Z := by
+  classical
+  refine continuous_pi fun m ↦ ?_
+  let weight (d : σ →₀ ℕ) := coeff m (d.prod fun x k ↦ Z x ^ k)
+  -- Taking every input coefficient equal to one gives a finite support independent of F.
+  have hfin : weight.HasFiniteSupport := by
+    have h := coeff_subst_finite hZ (fun _ ↦ (1 : R) : MvPowerSeries σ R) m
+    change (fun d ↦ (1 : R) • weight d).HasFiniteSupport at h
+    simpa only [one_smul] using h
+  have hcoeff (F : MvPowerSeries σ R) : coeff m (F.subst Z) =
+      ∑ d ∈ hfin.toFinset, coeff d F * weight d := by
+    rw [coeff_subst hZ]
+    apply finsum_eq_sum_of_support_subset
+    intro d hd
+    exact hfin.mem_toFinset.mpr (right_ne_zero_of_mul hd)
+  exact (continuous_congr hcoeff).2
+    (continuous_finsetSum _ fun d _ ↦ (continuous_coeff R d).mul continuous_const)
+
 /-- Substitution of series `Z x` without constant term for finitely many variables `x` is continuous
 in the topology of coefficientwise convergence. -/
 lemma continuous_subst_of_constantCoeff_eq_zero [Finite σ] [TopologicalSpace R]
     [IsTopologicalRing R] {Z : σ → MvPowerSeries τ R} (hZ : ∀ x : σ, constantCoeff (Z x) = 0) :
-    Continuous fun F : MvPowerSeries σ R ↦ F.subst Z := by
-  -- Each coefficient of `F.subst Z` is a linear form in finitely many coefficients of `F`.
-  have h_fin (n : ℕ) : {d : σ →₀ ℕ | d.degree ≤ n}.Finite := Finsupp.finite_of_degree_le n
-  have h_coeff (m : τ →₀ ℕ) (F : MvPowerSeries σ R) : coeff m (F.subst Z) =
-      ∑ d ∈ (h_fin m.degree).toFinset, coeff d F * coeff m (d.prod fun x k ↦ Z x ^ k) := by
-    rw [coeff_subst (hasSubst_of_constantCoeff_zero hZ)]
-    refine finsum_eq_sum_of_support_subset _ fun d hd ↦ ?_
-    by_contra h_not_mem
-    have h_lt : m.degree < d.degree := by simpa using h_not_mem
-    have h_zero : coeff m (d.prod fun x k ↦ Z x ^ k) = 0 :=
-      coeff_of_lt_order ((Nat.cast_lt.2 h_lt).trans_le (degree_le_order_prod_pow hZ d))
-    exact hd (by simp only [h_zero, smul_zero])
-  refine continuous_pi fun m ↦ (continuous_congr (h_coeff m)).2 ?_
-  exact continuous_finsetSum _ fun d _ ↦ (continuous_coeff R d).mul continuous_const
+    Continuous fun F : MvPowerSeries σ R ↦ F.subst Z :=
+  continuous_subst_of_hasSubst (hasSubst_of_constantCoeff_zero hZ)
 
 /-- A family of power series is summable, in the topology of coefficientwise convergence, if for
 each `n` only finitely many of its members have order at most `n`. -/

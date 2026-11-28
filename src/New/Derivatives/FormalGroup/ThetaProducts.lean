@@ -324,7 +324,7 @@ lemma dvd_sum_subst_sub_couplingSum {Φ n J : Type} [Fintype Φ] [Fintype n] [Fi
     -- Substitution is continuous, so it maps the sum `T` term by term.
     have h_cont : Continuous (PowerSeries.substAlgHom (R := valRingCp p) (h_subst i)) := by
       rw [PowerSeries.coe_substAlgHom]
-      exact continuous_subst_of_constantCoeff_eq_zero fun _ ↦ hL i
+      exact continuous_subst_of_hasSubst (h_subst i).const
     rw [← PowerSeries.coe_substAlgHom (h_subst i)]
     simpa only [Function.comp_def, map_smul, map_pow, map_mul, PowerSeries.substAlgHom_X] using
       (summable_smul_X_pow_mul_X_pow S l).hasSum.map _ h_cont

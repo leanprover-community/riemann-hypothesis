@@ -117,7 +117,7 @@ lemma hasSum_subst_couplingSum {τ : Type} {Z : Φ × c → MvPowerSeries τ (va
   have h_subst : HasSubst Z := hasSubst_of_constantCoeff_zero hZ
   simpa only [Function.comp_def, coe_substAlgHom, subst_smul h_subst, subst_pow h_subst] using
     (hasSum_couplingSum (S := S) (pr := pr) (l := l)).map (substAlgHom h_subst)
-      (by simpa only [coe_substAlgHom] using continuous_subst_of_constantCoeff_eq_zero hZ)
+      (by simpa only [coe_substAlgHom] using continuous_subst_of_hasSubst h_subst)
 
 /-- Let `Ξ = couplingSum S pr l` be the series `∑_{e ∈ S} ∑_j λ_{e j} Γ_e ^ p ^ j`. As `Γ_e` is
 homogeneous of degree `p ^ e + 1`, the series `Ξ(α z)` is the same sum with `λ_{e j}` multiplied by
