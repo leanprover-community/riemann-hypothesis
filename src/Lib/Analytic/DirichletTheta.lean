@@ -53,9 +53,11 @@ def gaussianMellin (j : Fin 2) : ℂ → ℂ := mellin (gaussianMonomial j ·)
 
 variable {j : Fin 2} {c : ℕ → ℂ} {q : ℕ} {t : ℝ} {s : ℂ} [NeZero q] {χ : DirichletCharacter ℂ q}
 
+/-- The Gaussian theta function `gaussianTheta j c` is measurable. -/
 lemma measurable_gaussianTheta : Measurable (gaussianTheta j c) := by
   fun_prop [gaussianTheta, gaussianMonomial]
 
+/-- The theta series `thetaSeries j c` is measurable. -/
 lemma measurable_thetaSeries : Measurable (thetaSeries j c) :=
   (measurable_ofReal.comp continuous_sqrt.measurable).mul measurable_gaussianTheta
 
