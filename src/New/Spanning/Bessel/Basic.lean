@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.InnerProductSpace.GramSchmidt.Ortho
 import TauCeti.LinearAlgebra.Matrix.Determinant.FromBlocks
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.Algebra.Order.Star.Real
@@ -389,17 +390,19 @@ theorem orthoFrame_besselS_mul (y : 𝔰.G₁) {s : 𝔰.G₁} (hs : s ∈ besse
   · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨b, hba, rfl⟩)
   · simp [frameMatrix_unitriangular hu b a hab.le, hab.ne']
 
+/-- The vectors of the moved frame are linearly independent because they are distinct columns
+of the invertible matrix `y⁻¹`. -/
+lemma linearIndependent_frameVector : LinearIndependent ℂ (frameVector y) := by
+  have h := (linearIndependent_col_iff_isUnit.2 y⁻¹.val.isUnit).comp 𝔰.besselFrame
+    besselFrame_injective
+  let e := (WithLp.linearEquiv 2 ℂ (𝔰.BesselIndex → ℂ)).symm
+  exact h.map' e.toLinearMap e.ker
+
 /-- A Gram–Schmidt vector `orthoFrame y a` is not longer than the vector `frameVector y a` of the
 moved frame (y⁻¹ e₁, …, y⁻¹ e_ϱ, y⁻¹ z) from which it comes. -/
 lemma norm_orthoFrame_le : ‖orthoFrame y a‖ ≤ ‖frameVector y a‖ := by
-  -- `‖f‖ ^ 2 = ⟪f, y⁻¹ f_a⟫` for `f = orthoFrame y a`, by orthogonality
-  have h_inner : ⟪orthoFrame y a, frameVector y a⟫_ℂ = ‖orthoFrame y a‖ ^ 2 := by
-    rw [frameVector_eq_sum_orthoFrame, inner_sum, sum_eq_single a _ (by simp)]
-    · simp [gramSchmidtMatrix, unitriangularMatrix]
-    · simp +contextual [inner_smul_right, inner_orthoFrame_eq_zero_of_ne y (Ne.symm _)]
-  have h_sq : ‖orthoFrame y a‖ * ‖orthoFrame y a‖ ≤ ‖orthoFrame y a‖ * ‖frameVector y a‖ := by
-    simpa [h_inner, sq] using norm_inner_le_norm (𝕜 := ℂ) (orthoFrame y a) (frameVector y a)
-  nlinarith [norm_nonneg (orthoFrame y a), norm_nonneg (frameVector y a)]
+  simpa [orthoFrame, gramSchmidtNormed_unit_length a (linearIndependent_frameVector y)] using
+    norm_inner_le_norm (𝕜 := ℂ) (gramSchmidtNormed ℂ (frameVector y) a) (frameVector y a)
 
 /-- The Gram–Schmidt vectors `orthoFrame y a` of the moved frame (y⁻¹ e₁, …, y⁻¹ e_ϱ, y⁻¹ z) have
 length at least `‖y‖⁻¹`, with the operator norm of `y`. -/
@@ -416,8 +419,8 @@ lemma one_le_norm_mul_norm_orthoFrame : 1 ≤ ‖y.val.val‖ * ‖orthoFrame y 
         (𝔰.besselFrame a)
   simpa [frameMatrix_unitriangular (inv_mem hu) a a le_rfl] using h_entry
 
-lemma orthoFrame_ne_zero : orthoFrame y a ≠ 0 := fun h_zero ↦
-  zero_lt_one.not_ge (by simpa [h_zero] using one_le_norm_mul_norm_orthoFrame y a)
+lemma orthoFrame_ne_zero : orthoFrame y a ≠ 0 :=
+  gramSchmidt_ne_zero a (linearIndependent_frameVector y)
 
 /-- If `besselLength y`, the infimum of ‖s y‖ + 1 over `s` in the Bessel subgroup `besselS`, is at
 most `M`, the Gram–Schmidt vectors `orthoFrame y a` of the moved frame (y⁻¹ e₁, …, y⁻¹ e_ϱ, y⁻¹ z)
@@ -433,8 +436,7 @@ theorem norm_orthoFrame_mem_Icc (h_size : besselLength y ≤ M) :
   · grw [norm_orthoFrame_le, norm_frameVector_le, h_norm]
 
 lemma linearIndependent_orthoFrame : LinearIndependent ℂ (orthoFrame y) :=
-  linearIndependent_of_ne_zero_of_inner_eq_zero (orthoFrame_ne_zero y)
-    fun _ _ ↦ inner_orthoFrame_eq_zero_of_ne y
+  gramSchmidt_linearIndependent (linearIndependent_frameVector y)
 
 /-- For `y` in the unitary group `𝔰.G₁`, let `gramSchmidtMatrix y` be the unitriangular matrix of
 the moved frame in its Gram–Schmidt vectors. Let `s` lie in the Bessel subgroup `besselS`, the group
@@ -465,15 +467,10 @@ theorem gramSchmidtMatrix_besselS_mul (y : 𝔰.G₁) {s : 𝔰.G₁} (hs : s �
 /-- The Gram–Schmidt vectors `orthoFrame y a` of the moved frame (y⁻¹ e₁, …, y⁻¹ e_ϱ, y⁻¹ z) depend
 continuously on `y` in the unitary group `𝔰.G₁`. -/
 lemma continuous_orthoFrame : Continuous fun y : 𝔰.G₁ ↦ orthoFrame y a := by
-  -- Induction along the Gram–Schmidt recursion, which divides only by nonzero lengths.
-  induction a using WellFoundedLT.induction with | ind a ih
-  have h_step (y : 𝔰.G₁) : orthoFrame y a = frameVector y a - ∑ i ∈ Iio a,
-      (⟪orthoFrame y i, frameVector y a⟫_ℂ / ‖orthoFrame y i‖ ^ 2) • orthoFrame y i :=
-    eq_sub_of_add_eq (gramSchmidt_def'' ℂ (frameVector y) a).symm
-  rw [funext h_step]
-  refine (continuous_frameVector a).sub (continuous_finsetSum _ fun i hi ↦ ?_)
-  have := ih i (mem_Iio.1 hi)
-  fun_prop (disch := simp [orthoFrame_ne_zero])
+  rw [← continuousOn_univ]
+  intro y _
+  exact ContinuousWithinAt.gramSchmidt a (fun i _ ↦ (continuous_frameVector i).continuousWithinAt)
+    ((linearIndependent_frameVector y).linearIndepOn _)
 
 lemma continuous_gramSchmidtMatrix : Continuous (gramSchmidtMatrix : 𝔰.G₁ → 𝔰.FrameMatrix) := by
   refine continuous_unitriangularMatrix.comp (continuous_pi fun p ↦ ?_)
