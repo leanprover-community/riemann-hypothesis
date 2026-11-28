@@ -2,6 +2,7 @@ module
 
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.LinearAlgebra.Matrix.CharP
+import TauCeti.MeasureTheory.Measure.Count.Basic
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import New.Determinant.Exchange.LargeTriple
@@ -184,7 +185,7 @@ lemma exists_circle_thetaIntegral_localDatum_eq_mul (W W₁ : Space E n s) (V V�
     (pairThetaKer W₁ V₁ α β).swap.theta_rat_mul γ γ.property h
   have same_distrib : ProbabilityTheory.IdentDistrib (fun h : G E t ↦ kernel₁ (k' * h)) kernel₁
       V.quotMeasure V₁.quotMeasure :=
-    identDistrib_orbitMeasure_comp (measurePreserving_count ((MulAut.conj k').subtypeEquiv Γ_conj))
+    identDistrib_orbitMeasure_comp ((MulAut.conj k').subtypeEquiv Γ_conj).measurePreserving_count
       (measurePreserving_mul_left _ k') (by simp [Subgroup.smul_def, mul_assoc]) kernel₁_inv
   calc thetaIntegral W V α β (localDatum W V v Φ hπ) g
     _ = ∫ h, u * kernel₁ (k' * h) ∂V.quotMeasure := congrArg _ (funext kernel_eq)

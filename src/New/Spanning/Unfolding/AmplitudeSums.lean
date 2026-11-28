@@ -4,6 +4,7 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 import TauCeti.MeasureTheory.Integral.Pi
+import TauCeti.MeasureTheory.Measure.Count.Basic
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
@@ -748,7 +749,7 @@ lemma hasSum_amplitudeSum_of_cutoff (hT : S.IsStable T) (c : S.Classes) (s : S.R
   let : SMul Δ Y := action.toSMul
   let ρ : Measure (X × Y) := Measure.count.prod volume
   have preserving (u : Δ) : MeasurePreserving (u • ·) ρ ρ :=
-    (measurePreserving_count (MulAction.toPerm u)).prod (measurePreserving_mul_left ..)
+    ((MulAction.toPerm u).measurePreserving_count).prod (measurePreserving_mul_left ..)
   have : MeasurableSMul₂ Δ (X × Y) :=
     ⟨measurable_from_prod_countable_right fun u ↦ (preserving u).measurable⟩
   have : SMulInvariantMeasure Δ (X × Y) ρ :=

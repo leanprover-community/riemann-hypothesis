@@ -323,11 +323,6 @@ variable {I H X G : Type*} [MeasurableSpace I] [MeasurableSpace H] [Countable I]
 
 /-! ### Counting measure and sums of weights -/
 
-lemma measurePreserving_count (e : I ≃ H) : MeasurePreserving e count count := by
-  -- Push the sum of Dirac measures forward term by term and reindex it along `e`.
-  refine ⟨.of_discrete, (Measure.map_sum .of_discrete).trans ?_⟩
-  simp [count, ← Function.comp_def]
-
 /-- The integral of a complex function against the counting measure of a countable set is its sum
 (both are zero when the function is not summable). -/
 lemma integral_count_eq_tsum (f : I → ℂ) : ∫ x : I, f x ∂count = ∑' x : I, f x := by

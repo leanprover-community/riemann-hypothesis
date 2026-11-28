@@ -3,6 +3,7 @@ module
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Algebra.ProperAction.Torsor
+import TauCeti.MeasureTheory.Measure.Count.Basic
 public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
@@ -112,7 +113,7 @@ lemma New.integral_quotMeasure_stages [T2Space H] {Z : Type*} [MeasurableSpace Z
   have h_dist :
       IdentDistrib F (fun p : Z × H ↦ F (i p.2 * T p.1)) (Γ.quotMeasure μ)
         (m.prod (Λ.quotMeasure ν)) :=
-    identDistrib_orbitMeasure_of_unfold (measurePreserving_count e.toEquiv) h_unfold hF
+    identDistrib_orbitMeasure_of_unfold e.toEquiv.measurePreserving_count h_unfold hF
       hT.measurable fun γ ↦ hF_inv γ γ.property
   have h_int := h_dist.integrable_snd hF_int
   exact ⟨h_int.integral_prod_left, h_dist.integral_eq.trans (integral_prod _ h_int)⟩
