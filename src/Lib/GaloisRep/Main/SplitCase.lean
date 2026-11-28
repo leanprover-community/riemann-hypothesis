@@ -93,9 +93,7 @@ lemma New.GaloisRep.exists_place_apart {ℓ : ℕ} {E : Type} {D : ℕ} [ThePrim
     {z : FinPlace E} (hz : ↑ℓ ∈ z.asIdeal) (z_split : IsSplitPrimeToDisc (z.below (QuadField D)))
     (y u : FinPlace E) :
     ∃ (x : FinPlace E) (θ : Ω →+* PadicAlgCl ℓ), IsPlaceApart D z y u x θ := by
-  obtain ⟨x, x_below, x_ne_y, star_ne_y, x_ne_u, star_ne_u⟩ :
-      ∃ x : FinPlace E, x.below (QuadField D) = z.below (QuadField D) ∧
-        x ≠ y ∧ star x ≠ y ∧ x ≠ u ∧ star x ≠ u := z_split.exists_place_above_ne y u
+  obtain ⟨x, x_below, x_ne_y, star_ne_y, x_ne_u, star_ne_u⟩ := z_split.exists_place_above_ne y u
   -- `x` lies above `ℓ`, so some `ℓ`-adic embedding `θ` induces it.
   have hℓ_below : ↑ℓ ∈ (x.below (QuadField D)).asIdeal := by simpa [x_below] using hz
   have hx : ↑ℓ ∈ x.asIdeal := by simpa using hℓ_below
@@ -181,14 +179,11 @@ lemma New.GaloisRep.exists_attached_of_isApproximatingMonoid {ℓ : ℕ} {E : Ty
     simp [trace_eq_neg_charpoly_coeff, h_char, h_pair]
   have fst_mem : ∀ᶠ p : FrobeniusDatum E in mostFrobenii E, (d p (a - 1)).val.fst ∈ L :=
     hd.mono fun p ⟨_, h_mem, h_pair⟩ ↦ by rwa [h_pair]
-  have trace_tendsto (g : Gal(Ω/E)) (i : (η : Set.Ioi 0) × Fin (s η)) :
-      (mostFrobeniiAt E g).Tendsto (fun p : FrobeniusDatum E ↦ (d p (a - 1)).val.snd i)
-        (nhds (r i g).val.trace) :=
-    (tendsto_mostFrobeniiAt fun g ↦ (r i g).val.trace).congr' (mem_inf_of_left (trace_eq i))
   obtain ⟨R, R_cont, R_nondeg, R_mem⟩ :=
     exists_continuous_isTraceNondeg_of_tendsto_trace apx
-      (fun g ↦ (mostFrobeniiAt E g).map fun p ↦ d p (a - 1)) hL
-      (fun _ ↦ mem_inf_of_left fst_mem) r_cont fun g i ↦ tendsto_map' (trace_tendsto g i)
+      (fun g ↦ (mostFrobeniiAt E g).map fun p ↦ d p (a - 1)) hL (fun _ ↦ mem_inf_of_left fst_mem)
+      r_cont fun g i ↦ tendsto_map' <|
+        (tendsto_mostFrobeniiAt fun g ↦ (r i g).val.trace).congr' (mem_inf_of_left (trace_eq i))
   let tr (g : Gal(Ω/E)) : N := ⟨_, R_mem g⟩
   -- By Newton's identities the coefficient `i` of a characteristic polynomial is a polynomial in
   -- the traces of the powers. Add `d p i`: for each `r i` the sum is `0` at most Frobenius
@@ -299,13 +294,11 @@ lemma New.GaloisRep.exists_isLevel_of_localCongruence_hom {E : Type} {a : ℕ} [
     .mono (((isOpen_localCongruence (m := 1)).preimage_of_continuous
       ((continuous_atPlace v).comp continuous_subtypeVal)).mem_nhds (by simp)) fun k hk ↦
       show χ k = 1 from ϑ_one ⟨_, ((mem_K k).1 k.property).left⟩ hk
-  have K_off (k : Gf E (Fin a)) (k_int : k ∈ stdLevel E (Fin a)) (k_v : atPlace v k = 1) :
-      k ∈ K.toSubgroup ↔ k ∈ V := by simp [mem_K, k_v, k_int]
-  have χ_off (k : K.toSubgroup) (k_v : atPlace v k.val = 1) : χ k = 1 := by simp [χ, k_v, ϑ_one]
   have j_mem (j : localCongruence (Fin a) v 0) : ofSplitPlace v_split j.val ∈ K.toSubgroup := by
     have j_int : j.val ∈ localIntGL (Fin a) v := j.prop.1
     simpa [mem_K] using j_int
-  exact ⟨K.toSubgroup, χ, ⟨inf_le_right, K.isOpen'⟩, χ_near, K_off, χ_off,
+  exact ⟨K.toSubgroup, χ, ⟨inf_le_right, K.isOpen'⟩, χ_near,
+    fun k k_int k_v ↦ by simp [mem_K, k_v, k_int], fun k k_v ↦ by simp [χ, k_v, ϑ_one],
     fun j ↦ ⟨⟨_, j_mem j⟩, rfl, by simp [χ]⟩⟩
 
 /-- Let `N` be a closed monoid of pairs `(x, φ)` such that `∑ i, t η i * φ (η, i)` tends to `x`
@@ -364,30 +357,6 @@ lemma New.GaloisRep.isCompatibleAt_of_isApproximatingMonoid {ℓ : ℕ} {E : Typ
     simpa [tr, d, mul_assoc, hc] using
       apx.tendstoUniformly_eval (c⁻¹ • .X 0 * .X 1) fun g ↦ ![d, tr g]
 
-/-- Let `x` be a split place and `H` an open subgroup. There is a finite set `S` of places such that
-the integral points trivial at `S` have their part off `x` (the point times the inverse of its
-component at `x`, placed at `x`) in `H`. It avoids `x` and its conjugate, and also `w` and its
-conjugate when `w` is apart from them and `H` contains `maxCompactAt _ w`. -/
-private lemma New.GaloisRep.exists_inf_trivialOn_le_offPartComap {E : Type} {a : ℕ} [Field E]
-    [CMType E] {x : FinPlace E} (x_split : x.IsSplit) (H : OpenSubgroup (Gf E (Fin a))) :
-    ∃ S : Finset (FinPlace E),
-      x ∉ S ∧
-      star x ∉ S ∧
-      (∀ w : FinPlace E, x ≠ w → star x ≠ w → maxCompactAt (Fin a) w ≤ H.1 → w ∉ S ∧ star w ∉ S) ∧
-      stdLevel E (Fin a) ⊓ trivialOn (Fin a) S ≤ (offPartComap x_split H).toSubgroup := by
-  obtain ⟨S, S_min, S_level⟩ : ∃ S : Finset (FinPlace E),
-      (∀ w : FinPlace E, maxCompactAt (Fin a) w ≤ (offPartComap x_split H).1 → w ∉ S ∧ star w ∉ S) ∧
-      stdLevel E (Fin a) ⊓ trivialOn (Fin a) S ≤ (offPartComap x_split H).toSubgroup :=
-    exists_inf_trivialOn_le (offPartComap x_split H).isOpen'
-  -- A point supported at `x` and its conjugate has trivial part off `x`.
-  have x_le : maxCompactAt (Fin a) x ≤ (offPartComap x_split H).toSubgroup :=
-    inf_le_of_right_le (by simp [LE.le, ← range_ofSplitPlace x_split, offPartComap])
-  obtain ⟨x_off, star_off⟩ := S_min x x_le
-  refine ⟨S, x_off, star_off, fun w x_ne star_ne le_H ↦ S_min w fun g hg ↦ ?_, S_level⟩
-  -- A point supported at `w` and its conjugate is `1` at `x`, so it is its own part off `x`.
-  have g_x : atPlace x g = 1 := by simp [mem_supportedOn.1 hg.2 x, x_ne, star_ne]
-  simpa [g_x, offPartComap] using le_H hg
-
 /-- The level `K` with its character `χ` has the type `ϑ` at the split place `v`, lies in `H` away
 from `v` and `x`, and is spherical off the finite set `U`, which contains `v` and avoids `x`. -/
 private structure New.GaloisRep.IsTypeLevel {E : Type} {a : ℕ} [Field E] [CMType E]
@@ -431,19 +400,25 @@ private lemma New.GaloisRep.exists_isTypeLevel {E : Type} {a : ℕ} [Field E] [C
       IsTypeLevel v_split ϑ x H.toSubgroup K χ U := by
   classical
   -- Off `v` the level is the group of integral points whose part off `x` lies in `H`.
-  obtain ⟨S, x_off, star_x_off, S_min, S_level⟩ := exists_inf_trivialOn_le_offPartComap x_split H
+  -- Integral points trivial at some finite set `S` of places have their part off `x` in `H`.
+  obtain ⟨S, S_min, S_level⟩ := exists_inf_trivialOn_le (offPartComap x_split H).isOpen'
+  -- A point supported at `x` and its conjugate has trivial part off `x`.
+  obtain ⟨x_off, star_x_off⟩ := S_min x <|
+    inf_le_of_right_le (by simp [LE.le, ← range_ofSplitPlace x_split, offPartComap])
   obtain ⟨K, χ, K_level, χ_near, K_off, χ_off, K_at⟩ :=
     exists_isLevel_of_localCongruence_hom v_split (offPartComap x_split H) ϑ_one
   refine ⟨K, χ, insert v S, K_level, χ_near, K_at, fun k k_v k_x ↦ ⟨?_, χ_off k k_v⟩, ?_,
     mem_insert_self v S, by simp [x_off, x_ne], by simp [star_x_off, star_x_ne], ?_⟩
-  · have k_mem : k.val ∈ offPartComap x_split H := (K_off k (K_level.le k.prop) k_v).1 k.prop
-    simpa [k_x, offPartComap] using k_mem
+  · simpa [k_x, offPartComap] using (K_off k (K_level.le k.prop) k_v).1 k.prop
   · rintro k ⟨k_int, k_off⟩
     obtain ⟨k_v, k_S⟩ : atPlace v k = 1 ∧ ∀ w ∈ S, atPlace w k = 1 := by simpa using k_off
     have k_mem : k ∈ K := (K_off k k_int k_v).2 (S_level ⟨k_int, mem_trivialOn.2 k_S⟩)
     exact ⟨k_mem, χ_off ⟨k, k_mem⟩ k_v⟩
   · intro w v_ne star_v_ne x_ne_w star_x_ne_w le_H
-    obtain ⟨w_off, star_w_off⟩ := S_min w x_ne_w star_x_ne_w le_H
+    -- A point supported at `w` and its conjugate is `1` at `x`, so it is its own part off `x`.
+    obtain ⟨w_off, star_w_off⟩ := S_min w fun g hg ↦ by
+      have g_x : atPlace x g = 1 := by simp [mem_supportedOn.1 hg.2 x, x_ne_w, star_x_ne_w]
+      simpa [g_x, offPartComap] using le_H hg
     have star_w_ne : star w ≠ v := fun h ↦ star_v_ne (star_eq_iff_star_eq.mp h)
     exact ⟨by simp [w_off, v_ne.symm], by simp [star_w_off, star_w_ne]⟩
 
@@ -464,9 +439,9 @@ private lemma New.GaloisRep.IsTypeLevel.levelSpace_le_span {E : Type} {a : ℕ} 
     simpa [χ_k] using hg ⟨k, k_mem⟩
   have : Module.Finite ℂ (levelSpace ((stdSpace E (Fin a)).formTranslation μ) K χ) :=
     (stdSpace E (Fin a)).finite_formTranslation_levelSpace μ hK.isLevel.isOpen χ
-  refine le_span_isSphericalOff _ le_sph fun y hy y_off star_off j g hg ↦ ?_
-  exact heckeSplit_mem_levelSpace hy j (levelSpace_le_sphericalAt y_off star_off (le_sph hg))
-    hK.isLevel.le hg
+  exact le_span_isSphericalOff _ le_sph fun y hy y_off star_off j g hg ↦
+    heckeSplit_mem_levelSpace hy j (levelSpace_le_sphericalAt y_off star_off (le_sph hg))
+      hK.isLevel.le hg
 
 /-- Let `a` be odd, and let `v` and `x` lie over the split place of `QuadField D` below `z`, apart
 from `u` and from each other. Let `u` lie over a split place of `QuadField D` prime to `D`, and let
@@ -503,9 +478,7 @@ private lemma New.GaloisRep.exists_rep_of_free_weight {ℓ : ℕ} {E : Type} {a 
     obtain ⟨k, k_eq, χ_eq⟩ := hK.exists_eq_ofSplitPlace j
     simpa [k_eq, χ_eq] using congrArg Subtype.val (hg k)
   -- The weight `μ` is free at the infinite place given by `θ`, so its jumps there are free.
-  obtain ⟨e, e_free, e_mem⟩ : ∃ e : Fin a → ℤ, HasNoSmallRelations e ∧
-      ∀ i : Fin a, e i ∈ jumps μ a (RingHom.comp ιℓ.symm (θ.comp (algebraMap E Ω))) :=
-    (μ_free _ hx.not_inducesPlacePair).exists_mem_jumps
+  obtain ⟨e, e_free, e_mem⟩ := (μ_free _ hx.not_inducesPlacePair).exists_mem_jumps
   have x_below : x.below (QuadField D) = v.below (QuadField D) := hx.below_eq.trans hv.below_eq.symm
   have u_below (hu : ↑ℓ ∈ u.asIdeal) : u.below (QuadField D) = v.below (QuadField D) := by
     rw [huz hu, hv.below_eq]
@@ -568,8 +541,7 @@ private lemma New.GaloisRep.exists_attached_of_coeff_mem {ℓ : ℕ} {E : Type} 
     exact ⟨by simpa using p_hecke.isMonicOfDegree hf_ne, neg_mem (p_hecke.coeff_pred_mem hL hf₀),
       fun j ↦ hd p j (coeff_mem p.place p_split _ j p_off star_off p_prime p_hecke)⟩
   exact exists_attached_of_isApproximatingMonoid apx r_cont r_frob
-    L.toSubmodule.isComplete_of_finiteDimensional d
-    most_frob
+    L.toSubmodule.isComplete_of_finiteDimensional d most_frob
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
@@ -609,10 +581,8 @@ lemma New.GaloisRep.sphericalCompat_of_split {ℓ : ℕ} {E : Type} {a D : ℕ} 
   obtain ⟨ϑ, ϑ_type, ϑ_one⟩ := Variety.exists_isCuspidalType v a
   -- `K` is a level and `χ` a character of `K` that is `ϑ` at `v`; away from `v` and `x` the level
   -- fixes `f`.
-  let stab : OpenSubgroup (Gf E (Fin a)) := ⟨rightStabilizer f, hf.1⟩
-  obtain ⟨K, χ, U, hK⟩ : ∃ (K : Subgroup (Gf E (Fin a))) (χ : K →* ℂ) (U : Finset (FinPlace E)),
-      IsTypeLevel v_split ϑ x (rightStabilizer f) K χ U :=
-    exists_isTypeLevel v_split x_split hx.ne_left hx.star_ne_left stab ϑ_one
+  obtain ⟨K, χ, U, hK⟩ :=
+    exists_isTypeLevel v_split x_split hx.ne_left hx.star_ne_left ⟨rightStabilizer f, hf.1⟩ ϑ_one
   -- Hecke operators `T y hy j` that do not increase the sup norm (`hT`). On the model of a form
   -- with polynomial `X` at `y` the eigenvalue is `b y hy j * ιℓ (X.coeff j)` (`hE`), where `b` is
   -- not zero (`hb`) and is `-1` for `y` prime to `ℓ` (`hb'`).
