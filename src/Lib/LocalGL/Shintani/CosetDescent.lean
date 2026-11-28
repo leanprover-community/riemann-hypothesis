@@ -611,7 +611,7 @@ private lemma descendsTo_induceClassFn_greenCuspidal_mulMoebius [Finite k] (hran
   -- `μ` is real, so it moves to the other side of the inner product
   have h_rank_eq : rankInner m (greenCuspidal k θ).mulMoebius Y =
       rankInner (finrank k L) (greenCuspidal k θ) Y.mulMoebius := by
-    simp [← hrank, rankInner.eq_1, mul_right_comm, mul_assoc]
+    rw [← hrank, rankInner_mulMoebius_left]
   -- the latter is a mean over `Lˣ` (`rankInner_greenCuspidal_mulMoebius`)
   rw [classInner_evalGL, Fintype.card_fin, h_rank_eq,
     rankInner_greenCuspidal_mulMoebius θ ((AlgHom.liftEquiv k k' L K).symm φ) Y]

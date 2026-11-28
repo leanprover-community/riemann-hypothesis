@@ -218,6 +218,12 @@ lemma conj_moebius : ∀ c : SimClass k, conj (moebius c) = moebius c := by
     simp [μ', ← map_sum, mul_simClassOf, finsum_eq_sum_of_fintype, sum_moebius_simClassOf_endOnSub]
   exact congrFun (isUnit_constOne.mul_right_cancel h_inv)
 
+/-- Pointwise multiplication by the real-valued Möbius function can be moved from the first
+argument of the rank inner product to the second. -/
+lemma rankInner_mulMoebius_left (m : ℕ) (F H : Hall k) :
+    rankInner m F.mulMoebius H = rankInner m F H.mulMoebius := by
+  simp [rankInner, mul_right_comm, mul_assoc]
+
 /-! ### The cuspidal function attached to `η` -/
 
 /-- The induction product of `New.Hall.greenCuspidal k η` with the constant function

@@ -558,8 +558,8 @@ private lemma rankInner_greenCuspidal_mulMoebius_brauerLift {P : k[X]} {m : ℕ}
   -- multiplying with `constOne`, and use that `Ξ_P` has norm `1`.
   calc rankInner m (greenCuspidal k θ).mulMoebius (brauerLift k θ)
     _ = (-1) ^ m * rankInner m (labelChar T P) (brauerLift k θ).mulMoebius := by
-      simp [h_labelChar_eq, rankInner, rankPart, ← finMean_const_mul, ← mul_assoc, ← mul_pow,
-        mul_right_comm _ (moebius _)]
+      rw [rankInner_mulMoebius_left]
+      simp [h_labelChar_eq, rankInner, rankPart, ← finMean_const_mul, ← mul_assoc, ← mul_pow]
     _ = (-1) ^ m * rankInner m (labelChar T P) (greenCuspidal k θ) := by
       rw [greenCuspidal, rankInner_labelChar_mul_constOne T hL h_not_root_one]
     _ = rankInner m (labelChar T P) ((-1 : ℂ) ^ m • rankPart m (greenCuspidal k θ)) := by
@@ -577,6 +577,7 @@ private lemma rankInner_neg_one_pow_smul_mulMoebius_labelChar {c : k'[X]} {m : �
       rankInner m (labelChar T c) ((-1 : ℂ) ^ m • rankPart m (B.mulMoebius * constOne)) :=
   calc rankInner m ((-1 : ℂ) ^ m • (labelChar T c).mulMoebius) B
     _ = (-1) ^ m * rankInner m (labelChar T c) B.mulMoebius := by
+      rw [← rankInner_mulMoebius_left]
       simp [rankInner, ← finMean_const_mul, mul_comm, mul_left_comm]
     _ = (-1) ^ m * rankInner m (labelChar T c) (B.mulMoebius * constOne) := by
       rw [rankInner_labelChar_mul_constOne T hc hc_one]
