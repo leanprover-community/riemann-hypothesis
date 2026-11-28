@@ -103,9 +103,11 @@ lemma toGalPlus_mem_inertiaGroup_iff {A : ClosurePlace} {g : Gal(Ω/E)} :
     toGalPlus E g ∈ inertiaGroup Gal(Ω/maximalRealSubfield E) A ↔ g ∈ inertiaGroup Gal(Ω/E) A :=
   Iff.rfl
 
+/-- The cyclotomic character commutes with the restriction map `toGalPlus`. -/
 lemma cyclotomicChar_toGalPlus (g : Gal(Ω/E)) :
     cyclotomicChar Ω ℓ (toGalPlus E g) = cyclotomicChar Ω ℓ g := rfl
 
+/-- Conjugation in `Gal(Ω/E)` maps under `toGalPlus` to conjugation by `conjPlus`. -/
 lemma toGalPlus_conjGal (g : Gal(Ω/E)) :
     toGalPlus E (conjGal g) = conjPlus E * toGalPlus E g * conjPlus E := rfl
 
