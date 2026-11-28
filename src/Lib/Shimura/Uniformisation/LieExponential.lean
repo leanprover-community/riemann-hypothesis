@@ -546,7 +546,6 @@ lemma exists_holomorphic_chart (hd : SmoothOfRelativeDimension d A.hom) (x : Com
         HolomorphicAt (fun z : P ↦ (γ z).1) w →
         AnalyticAt ℂ (φ ∘ γ) w ∧
         ∀ v : P, IsFirstOrderConst (fun z : P ↦ (γ z).1) w v → fderiv ℂ (φ ∘ γ) w v = 0 := by
-  classical
   -- Near x the scheme is cut out of affine space ℂ^ι by equations F with onto derivative. The
   -- chart of the scheme is the chart c of the zeros of F (`exists_zero_set_chart`), applied to
   -- the coordinates of a point.

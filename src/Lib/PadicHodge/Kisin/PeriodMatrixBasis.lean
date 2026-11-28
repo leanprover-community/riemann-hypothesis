@@ -569,7 +569,6 @@ lemma exists_dotProduct_pow_smul_sub_mul_mem_span_pow (hU : c.IsPeriodMatrix U h
     (x : d → Ainf) (y : d → BPlus) (hy : U *ᵥ y = c.E.val ^ h • ainfToBPlus ∘ x) (δ : Ainf)
     (l g : d → Ainf) (hl : l ᵥ* Q = δ • g) :
     ∃ N : ℕ, ∀ m : ℕ, ∃ z : Ainf, l ⬝ᵥ p ^ N • x - δ * z ∈ span {(p : Ainf), xi} ^ m := by
-  classical
   obtain ⟨u, -, hup⟩ := c.exists_bicommutant_mul_p_eq_one
   obtain ⟨N, hN⟩ := hU.exists_ainfToBPlus_eq_pow_mul
   obtain ⟨k, hk⟩ :=

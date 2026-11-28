@@ -388,7 +388,6 @@ lemma Model.isNullHecke_of_isNullFamily [Nonempty n] (h_neat : IsNeat n 𝔑)
         IsNullFamily (fun q : GL n (𝔸f E) ⧸ levelGU n 𝔑 ↦ X.leg i ⟦q.out⟧ ≫ X.mulMap α)
           (heckeCosetFn b) X.dimension h) :
     IsNullHecke ν h b := by
-  classical
   -- Idea: on a deep level `i`, send each coincidence of `X.leg i ⟦1⟧` and
   -- `X.leg i ⟦c.out⟧ ≫ X.mulMap (2 * α)` to a class of triples (frame, `z`, mark). The fibre over a
   -- class has (number of solutions) · `|X.deckGroup i|` elements, and the number of solutions is

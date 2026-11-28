@@ -983,7 +983,6 @@ lemma New.Variety.UniversalFamily.exists_ne_bot_factorsThrough_sup {E k : Type} 
         (fun A : Submodule (ResField w.val) (D.Index → ResField w.val) ↦
           specMap ((iterateFrobenius k l (m A)).comp π) ≫ α A)
         (fun A : Submodule (ResField w.val) (D.Index → ResField w.val) ↦ A ⊔ W) := by
-  classical
   -- Let `y` and `y' B` be the objects over `V` behind the points `s` and `α B`; `x₀` and `x B` are
   -- their reductions to `k`, the latter twisted by Frobenius. The isogeny `ψ B` from `y` to `y' B`
   -- reduces to an isogeny `g B` from `x₀` to `x B`. Its kernel depends only on the reduction of the

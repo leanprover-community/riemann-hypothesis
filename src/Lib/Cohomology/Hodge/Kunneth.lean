@@ -246,7 +246,6 @@ private lemma bijective_lerayHirsch_reprBy {k : Type} [Field k] [CharZero k]
         H.push _ exteriorAlg.mulPairing i.fst
           ((i.snd : H N hodgeCoeff i.fst).mapExactFunctor (abTensor.flip _)))
       (freeAb (reprBy c))) := by
-  classical
   -- By dévissage in the first factor, the products with a basis `b` of the forms on `c` give a
   -- bijection. Both maps are the cross product on `H(N) ⊗ forms(c)`: the coordinates for the
   -- basis of `H(N)` are exchanged for those for `b`.
@@ -300,7 +299,6 @@ lemma kunneth {k : Type} [Field k] [CharZero k] {X : CommAlg k ⥤ Type 1} {d n 
       {w : HodgeH (freeAb.obj (X ⊗ X)) n |
         ∃ (a b : ℕ) (e : b + a = n), ∃ (x : HodgeH (freeAb.obj X) a) (y : HodgeH (freeAb.obj X) b),
           w = HodgeH.map (freeAb.prod X X) (cup (exteriorAlg (k := k)).mulPairing x y e :)} := by
-  classical
   -- Replace `X` by a dense subfunctor `U` built from charts. Leray–Hirsch, applied in one factor
   -- and then in the other, writes every class on `U × U` as a sum of products of classes on `U`.
   obtain ⟨V, hV_cover, hV_built⟩ : ∃ V : Subfunctor X, IsCharting V := hX.exists_isCharting

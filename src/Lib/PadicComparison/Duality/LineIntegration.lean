@@ -652,7 +652,6 @@ seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 a short exact sequence `0 → X₁ → X₂ → X₃ → 0` with `D.IsFiniteLerayHirsch X₁` it holds for `X₂` if
 and only if for `X₃`. -/
 lemma isClosedClass_isFiniteLerayHirsch : IsClosedClass D.IsFiniteLerayHirsch := by
-  classical
   -- The bijectivity half of `IsFiniteLerayHirsch` is `isClosedClass_isLerayHirschBasis`; it remains
   -- to treat finiteness.
   let L : AbFunctor (TestOver A) := locConstAlong (𝟭 (TestOver A))
@@ -710,7 +709,6 @@ lemma isFiniteLerayHirsch_iff_of_isCohomEquiv (α : N ⟶ N')
     (h : ∀ {C : Type 1} [Category C] {F : AbFunctor C} (g : C ⥤ TestOver A),
       HasZariskiDescent (ringOf g) F → IsCohomEquiv F (g.whiskerLeft α)) :
     D.IsFiniteLerayHirsch N ↔ D.IsFiniteLerayHirsch N' := by
-  classical
   -- Pull-back along `α` is bijective in the constant theory and in `D`.
   have h_const : Bijective (pullbackAlong (G := locConstAlong (𝟭 (TestOver A))) α) :=
     (h (𝟭 (TestOver A)) Theory.locallyConstant.zariski_descent).bijective_pullbackAlong
@@ -734,7 +732,6 @@ lemma isFiniteLerayHirsch_of_retract [HasFlatValues N] (r : ι → NaturalOp 0 (
         pullbackAlong (t.toTestOver.whiskerLeft (abCoker.π (ℓ • 𝟙 N))) x)
     (hN' : D.IsFiniteLerayHirsch N') :
     D.IsFiniteLerayHirsch N := by
-  classical
   -- Write `b M` for the comparison map on `M`. It commutes with the operations `r i` and `ρ i`,
   -- and by `h_sum` every class on `N` is `∑ i, ρ i (r i x)` for a class `x` on `N / ℓ`.
   -- `stL` and `stD` are the stages of the constant theory and of `D`, with the one section

@@ -459,7 +459,6 @@ lemma New.Variety.pair_star_eq_univ {d₀ : ℕ} [Fact (d₀ % 4 = 3)] (s₀ : Q
 
 private lemma New.Variety.eq_star_or_eq {d₀ : ℕ} [Fact (d₀ % 4 = 3)] (s s₀ : QuadField d₀ →+* ℂ) :
     s = star s₀ ∨ s = s₀ := by
-  classical
   simpa [← pair_star_eq_univ s₀] using mem_univ s
 
 /-- Exactly one of `s` and its conjugate is `s₀`. -/

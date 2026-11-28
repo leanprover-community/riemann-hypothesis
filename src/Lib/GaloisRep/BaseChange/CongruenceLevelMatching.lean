@@ -264,7 +264,6 @@ lemma New.exists_isNormRoot_and_mem_of_mem {O R n : Type} [CommRing O] [CommRing
     ∃ z : Polynomial R, IsNormRoot n σ p (algebraMap O R u) D g.val.val.charpoly z ∧
       ∀ γ a : U (1 : Matrix n n R), γ.val.val.charpoly = g.val.val.charpoly →
         IsRootQuotient γ (algebraMap O R u • z) a.val → γ ∈ L → a ∈ L := by
-  classical
   set ι : O →+* R := algebraMap O R
   have hι : ∀ x : O, ι (star x) = star (ι x) := algebraMap_star_comm
   -- `q r` is `r` read in the coordinate `v • (X - 1)`

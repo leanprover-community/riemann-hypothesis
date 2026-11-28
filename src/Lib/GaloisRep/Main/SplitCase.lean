@@ -586,7 +586,6 @@ lemma New.GaloisRep.sphericalCompat_of_split {ℓ : ℕ} {E : Type} {a D : ℕ} 
     (hsp : ∀ v : FinPlace E,
       ↑ℓ ∈ v.asIdeal ∨ v = u → IsSplitPrimeToDisc (v.below (QuadField D))) :
     SphericalCompat (ℓ := ℓ) E (Fin a) a u := by
-  classical
   -- Approximate the `ℓ`-adic model of `f` by eigenforms that are wildly ramified at a place `v`
   -- above `ℓ` and whose weights equal `κ` at the infinite places that induce `u` or its conjugate
   -- and are free at the others; these have representations by `exists_rep_of_free_weight`.

@@ -78,7 +78,6 @@ lemma isLerayHirschBasis_lineBasis_of_basis (Θ : Theory g) {I : Type*} {S : AbF
     (h_base : IsLerayHirschBasis θ S)
     (h_line : IsLerayHirschBasis θ ((abTensor.obj S).obj (freeAb (projLineAlong g)))) :
     IsLerayHirschBasis Θ.lineBasis S := by
-  classical
   -- By `isLerayHirschBasis_lineBasis_of_injective` it suffices that the product with η is injective
   -- on `S`, and that `x` is such a product as soon as `hx` holds over the points of ℙ¹.
   refine isLerayHirschBasis_lineBasis_of_injective Θ (fun v w hvw ↦ ?_) fun x hx ↦ ?_
