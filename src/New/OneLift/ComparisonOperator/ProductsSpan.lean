@@ -601,6 +601,36 @@ lemma integral_mul_polyMatrixCoeff_paddedMinorProd {o : D.CarrierIndex → ℤ}
   simp only [h_integrand] at h_int ⊢
   simpa [m₁, m₂, m₃] using h_hol.integral_mul_conj_holMinorsPi ho h_dom₃ h_int
 
+/-- Let `g₁` be a peak of the carrier form and `A` a continuous function on `GInf D.E (1 ⊕ᵥ -1)`
+with `‖A h'‖ ≤ c * maxOpNorm h' ^ (6 * nStar D)`. Then the carrier form at `g₁ * (h', 1)` times
+`A h'` times `holMinorsPi (1 ⊕ᵥ -1) (flatKernelWeight D) h'` is integrable over
+`GInf D.E (1 ⊕ᵥ -1)`, and the norm of its integral is at most
+`2 * ‖carrierForm D.E D.m g₁‖ * c * D.b ^ nStar D` times the integral of
+`‖holMinorsPi (1 ⊕ᵥ -1) (antiholomorphicWeight j) h‖ ^ 2`. -/
+private lemma integral_peak_mul_holMinorsPi
+    (g₁ : New.G D.E (1 ⊕ᵥ -1 : D.CarrierIndex → ℤˣ))
+    (hg₁ : IsPeak (carrierForm D.E D.m) g₁)
+    {A : GInf D.E (1 ⊕ᵥ -1 : D.CarrierIndex → ℤˣ) → ℂ} {c : ℝ}
+    (hA : Continuous A) (hA_le : ∀ h', ‖A h'‖ ≤ c * maxOpNorm h' ^ (6 * nStar D)) :
+    MeasureTheory.Integrable (fun h' ↦ carrierForm D.E D.m (g₁ * (h', 1)) * A h' *
+      holMinorsPi (1 ⊕ᵥ -1) (flatKernelWeight D) h') ∧
+    ‖∫ h', carrierForm D.E D.m (g₁ * (h', 1)) * A h' *
+      holMinorsPi (1 ⊕ᵥ -1) (flatKernelWeight D) h'‖ ≤
+      2 * ‖carrierForm D.E D.m g₁‖ * c * D.b ^ nStar D *
+        ∫ h, ‖holMinorsPi (1 ⊕ᵥ -1) (antiholomorphicWeight j) h‖ ^ 2 := by
+  -- The weights `u₁`, `u₃` satisfy the hypotheses of `integrable_mul_holMinorsPi`.
+  obtain ⟨_, o, ho, φ_hol⟩ :=
+    carrierForm_mem_rapidOfLevel_and_isAdelicHol D.m_even (isTameFor_twistedChiMPow (c := 2) j 1)
+  obtain ⟨h_rank, _⟩ := card_carrierIndex_le_and_card_sum_padIndex_le j
+  obtain ⟨u₁_dom, u₁_gap, u₃_dom, u₃_gap, u₃_le⟩ :=
+    flatKernelWeight_antiholomorphicWeight_bounds j o
+  have prod_le (h' : GInf D.E (1 ⊕ᵥ -1)) :
+      ‖carrierForm D.E D.m (g₁ * (h', 1)) * A h'‖ ≤
+        2 * ‖carrierForm D.E D.m g₁‖ * c * maxOpNorm h' ^ (6 * nStar D) := by
+    grw [norm_mul, hg₁.norm_le, hA_le, ← mul_assoc]
+  exact integrable_mul_holMinorsPi h_rank ho u₃_dom u₁_dom u₃_gap u₁_gap u₃_le
+    ((φ_hol g₁).continuous.fun_mul hA) prod_le
+
 /-- There is a bounded function `F₀` on the real group of `W_j` with `F₀ 1 ≠ 0` such that, at every
 adelic `g` off the cusps, in the sense that the lattice of `W_j` moved by `g` has first minimum at
 least `(5 b ^ 24) ^ (-1 / 2)`, some combination `F` of the `choiceFn j i` has `|F (g h) - F₀ h| ≤ 2
@@ -617,7 +647,7 @@ theorem exists_choiceFn_approx : ∃ (F₀ : GInf D.E (D.signsW j) → ℂ) (C :
   -- With a peak `g₁` of `φ°` put `F₀ h = ∫ φ°(g₁ h') c_P(h', h) m_u₁(h') dh'`. Its value at `1` is
   -- `c_P(1, 1) φ°(g₁) J` with `J = ∫ |m_u₃|²`. Away from the cusps a theta kernel is close to `c_P`
   -- (`exists_datum_norm_modKernel_sub_polyMatrixCoeff_le`), and the same integral with the kernel
-  -- in place of `c_P` is a combination of the `choiceFn j i`. The bound `h_bound` for the integral
+  -- in place of `c_P` is a combination of the `choiceFn j i`. The peak bound for the integral
   -- of the difference has the same factors `|φ°(g₁)|` and `J`, so it is small against `|F₀ 1|`.
   let φ := carrierForm D.E D.m
   let S := signedSpace D.E (1 ⊕ᵥ -1 : D.CarrierIndex → ℤˣ)
@@ -635,26 +665,17 @@ theorem exists_choiceFn_approx : ∃ (F₀ : GInf D.E (D.signsW j) → ℂ) (C :
   let J : ℝ := ∫ h, ‖holMinorsPi (1 ⊕ᵥ -1) (antiholomorphicWeight j) h‖ ^ 2
   let ι (h : GInf D.E (D.signsW j)) : GInf D.E (padSigns j) := (G.sum ((h, 1), 1)).1
   let F₀ (h : GInf D.E (D.signsW j)) : ℂ := ∫ h', φ (g₁ * (h', 1)) * cP h' (ι h) * m₁ h'
-  -- The weights `u₁`, `u₃` satisfy the hypotheses of `integrable_mul_holMinorsPi`.
   obtain ⟨h_rank, h_rank'⟩ := card_carrierIndex_le_and_card_sum_padIndex_le j
   obtain ⟨u₁_dom, u₁_gap, u₃_dom, u₃_gap, u₃_le⟩ :=
     flatKernelWeight_antiholomorphicWeight_bounds j o
   have J_pos : 0 < J := integral_norm_holMinorsPi_sq_pos h_rank ho u₃_dom u₃_gap
-  have h_bound {A : GInf D.E (1 ⊕ᵥ -1) → ℂ} {c : ℝ} (hA : Continuous A)
-      (hA_le : ∀ h', ‖A h'‖ ≤ c * maxOpNorm h' ^ (6 * nStar D)) :
-      MeasureTheory.Integrable (fun h' ↦ φ (g₁ * (h', 1)) * A h' * m₁ h') ∧
-      ‖∫ h', φ (g₁ * (h', 1)) * A h' * m₁ h'‖ ≤ 2 * ‖φ g₁‖ * c * D.b ^ nStar D * J := by
-    have prod_le (h' : GInf D.E (1 ⊕ᵥ -1)) :
-        ‖φ (g₁ * (h', 1)) * A h'‖ ≤ 2 * ‖φ g₁‖ * c * maxOpNorm h' ^ (6 * nStar D) := by
-      grw [norm_mul, g₁_peak.norm_le, hA_le, ← mul_assoc]
-    exact integrable_mul_holMinorsPi h_rank ho u₃_dom u₁_dom u₃_gap u₁_gap u₃_le
-      ((φ_hol g₁).continuous.fun_mul hA) prod_le
   have F₀_bound (h : GInf D.E (padSigns j)) :
       MeasureTheory.Integrable (fun h' ↦ φ (g₁ * (h', 1)) * cP h' h * m₁ h') ∧
       ‖∫ h', φ (g₁ * (h', 1)) * cP h' h * m₁ h'‖ ≤ 2 * ‖φ g₁‖ * B * D.b ^ nStar D * J :=
-    h_bound (by fun_prop [polyMatrixCoeff]) fun h' ↦ (cP_le h' h).trans
-      (le_mul_of_one_le_right ((norm_nonneg _).trans (cP_le 1 1))
-        (one_le_pow₀ (one_le_maxOpNorm h')))
+    integral_peak_mul_holMinorsPi j g₁ g₁_peak (by fun_prop [polyMatrixCoeff])
+      fun h' ↦ (cP_le h' h).trans
+        (le_mul_of_one_le_right ((norm_nonneg _).trans (cP_le 1 1))
+          (one_le_pow₀ (one_le_maxOpNorm h')))
   have F₀_one : F₀ 1 = J * (φ g₁ * cP 1 1) := by
     simpa [F₀, ι, J, cP, m₁, φ, mk_one_one] using
       integral_mul_polyMatrixCoeff_paddedMinorProd j ho (φ_hol g₁) (fun _ ↦ D.m) (F₀_bound 1).1
@@ -677,20 +698,21 @@ theorem exists_choiceFn_approx : ∃ (F₀ : GInf D.E (D.signsW j) → ℂ) (C :
     exists_sum_choiceFn_eq_integral j ho φ_level
       (integrable_holMinorsPi h_rank ho u₁_dom u₁_gap) g₁ Ψ
   refine ⟨c, fun h ↦ ?_⟩
-  -- The difference is the integral of `φ° (θ Ψ - c_P) m_u₁`, to which `h_bound` applies.
+  -- The difference is the integral of `φ° (θ Ψ - c_P) m_u₁`, to which the peak bound applies.
   let A (h' : GInf D.E (1 ⊕ᵥ -1)) : ℂ :=
     θ Ψ (g₁ * (h', 1)) (G.sum (g, 1) * (ι h, 1)) - cP h' (ι h)
   let ε : ℝ := (D.b ^ (20 * nStar D))⁻¹ * maxOpNorm (ι h) ^ (6 * nStar D) * ‖cP 1 1‖
   have A_le (h' : GInf D.E (1 ⊕ᵥ -1)) : ‖A h'‖ ≤ ε * maxOpNorm h' ^ (6 * nStar D) :=
     (θ_near h' (ι h)).trans_eq (by ring)
-  obtain ⟨diff_int, diff_le⟩ := h_bound (by fun_prop [polyMatrixCoeff, modKernel]) A_le
+  obtain ⟨diff_int, diff_le⟩ :=
+    integral_peak_mul_holMinorsPi j g₁ g₁_peak (by fun_prop [polyMatrixCoeff, modKernel]) A_le
   have h_diff : ∑ i, c i * choiceFn j i (g * (h, 1)) - F₀ h =
       ∫ h', φ (g₁ * (h', 1)) * A h' * m₁ h' := by
     have h_point : G.sum (g * (h, 1), 1) = G.sum (g, 1) * (ι h, 1) := by
       simp [ι, G.sum, Pi.mul_def, ← map_mul]
     rw [sum_eq, h_point, sub_eq_iff_eq_add,
       ← MeasureTheory.integral_add diff_int (F₀_bound (ι h)).1]
-    simp [A, ← add_mul, ← mul_add]
+    simp [A, F₀, φ, m₁, ← add_mul, ← mul_add]
   have norm_one : ‖F₀ 1‖ = J * (‖φ g₁‖ * ‖cP 1 1‖) := by simp [F₀_one, abs_of_pos J_pos]
   calc ‖∑ i, c i * choiceFn j i (g * (h, 1)) - F₀ h‖
     _ ≤ 2 * ‖φ g₁‖ * ε * D.b ^ nStar D * J := by rwa [h_diff]
