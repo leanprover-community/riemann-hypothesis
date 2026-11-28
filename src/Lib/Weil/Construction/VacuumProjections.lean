@@ -788,14 +788,10 @@ coordinates) fixes every vector `f` of the finite part `V.finitePart`. The finit
 subspace of 𝒮(V) spanned by the translates of the vacuum under the finite Heisenberg operators. -/
 @[simp]
 lemma projReal_eq_self_of_mem_finitePart (hf : f ∈ V.finitePart) : V.projReal f = f := by
-  induction hf using span_induction with
-  | mem _ h_gen =>
-    obtain ⟨z, rfl⟩ := h_gen
-    -- `projReal` commutes with ϱ_f(z) and fixes the vacuum.
-    rw [integrated_finHeisenbergOp, projReal_vacElem]
-  | zero => simp
-  | add f₁ f₂ _ _ h₁ h₂ => rw [map_add, h₁, h₂]
-  | smul c f₁ _ h₁ => rw [map_smul, h₁]
+  refine LinearMap.eqOn_span (f := V.projReal.toLinearMap) (g := LinearMap.id) ?_ hf
+  rintro _ ⟨z, rfl⟩
+  -- `projReal` commutes with ϱ_f(z) and fixes the vacuum.
+  simp [integrated_finHeisenbergOp, projReal_vacElem]
 
 /-- For f in the finite part, the map x ↦ ϱ(x)f on finite adelic vectors x is locally constant. -/
 lemma isLocallyConstant_rho_finVec (hf_mem : f ∈ V.finitePart) :
