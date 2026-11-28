@@ -1,13 +1,14 @@
 module
 
-import Mathlib.Algebra.Ring.Subring.IntPolynomial
 import Mathlib.NumberTheory.Padics.ProperSpace
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Topology.Algebra.Module.Compact
 import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.NumberTheory.Padics.AlgebraicClosure.ResidueField
 import TauCeti.RingTheory.Length
+import TauCeti.Topology.Algebra.Valued.Integer
 public import Lib.General.Algebra.AdicCompletion
 public import Lib.General.Algebra.FittingIdealsAndLengths
 
@@ -42,7 +43,7 @@ attribute [instance 10] instSMulSubtypeMem instMulActionSubtypeMem moduleLeft
 
 namespace New
 
-open PadicInt IsDiscreteValuationRing NeZero IsLocalRing Module IntermediateField minpoly Finite Nat
+open PadicInt IsDiscreteValuationRing NeZero IsLocalRing Module IntermediateField Finite Nat
 
 variable {R : Type*} (ℓ : ℕ) [ThePrime ℓ] {X Y : Type} [CommRing R]
 
@@ -127,16 +128,13 @@ lemma CoeffRing.norm_le_one (x : ↑O) : ‖x.val‖ ≤ 1 :=
 /-- An element of ℚ̄_ℓ of norm at most 1 is integral over ℤ_ℓ. -/
 lemma isIntegral_padicInt_of_norm_le_one {x : PadicAlgCl ℓ} (hx : ‖x‖ ≤ 1) :
     IsIntegral ℤ_[ℓ] x := by
-  -- the norm of `x` is the spectral value of its minimal polynomial, so all coefficients have norm
-  -- at most `1` and the polynomial lifts to a monic one over `ℤ_[ℓ]`, the unit ball of `ℚ_[ℓ]`
-  have h_monic : (minpoly ℚ_[ℓ] x).Monic := minpoly.monic (Algebra.IsIntegral.isIntegral x)
-  have h_coeff : ∀ n : ℕ, ‖(minpoly ℚ_[ℓ] x).coeff n‖ ≤ 1 :=
-    (spectralValue_le_one_iff h_monic).mp hx
-  -- `ℤ_[ℓ]` is by definition the subring `subring ℓ` of `ℚ_[ℓ]`
-  let p : Polynomial ℤ_[ℓ] := Polynomial.int (subring ℓ) (minpoly ℚ_[ℓ] x) h_coeff
-  have hp_root : p.eval₂ (algebraMap ℤ_[ℓ] (PadicAlgCl ℓ)) x = 0 :=
-    (Polynomial.int_eval₂_eq (subring ℓ) _ h_coeff x).trans (minpoly.aeval ℚ_[ℓ] x)
-  exact ⟨p, (Polynomial.int_monic_iff _ _ h_coeff).mpr h_monic, hp_root⟩
+  let y : Valued.integer (PadicAlgCl ℓ) := ⟨x, Valued.integer.mem_iff.mpr hx⟩
+  have h_inclusion : (Valued.integer (PadicAlgCl ℓ)).subtype.comp
+      (TauCeti.PadicAlgCl.padicIntToInteger ℓ) = algebraMap ℤ_[ℓ] (PadicAlgCl ℓ) :=
+    RingHom.ext TauCeti.PadicAlgCl.coe_padicIntToInteger
+  rw [IsIntegral, ← h_inclusion]
+  exact (TauCeti.PadicAlgCl.isIntegral_padicIntToInteger y).map
+    (Valued.integer (PadicAlgCl ℓ)).subtype
 
 /-- A coefficient ring O, the ring of integers of a finite Galois extension of ℚ_ℓ inside ℚ̄_ℓ, is
 a finite ℤ_ℓ-module. -/
