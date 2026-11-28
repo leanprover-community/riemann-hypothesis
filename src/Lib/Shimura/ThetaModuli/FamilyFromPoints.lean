@@ -1111,7 +1111,7 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
     (he_coords i)
     (he_fibre i) (he_lattice i)
   have h_dim : SmoothOfRelativeDimension (abelianDim E D.Index) A.hom := by
-    refine smoothOfRelativeDimension_of_fibres he_sep.2 fun s d h_smooth ↦ ?_
+    refine smoothOfRelativeDimension_of_fibers he_sep.2 fun s d h_smooth ↦ ?_
     obtain ⟨-, -, -, -, hd⟩ := h_unif s.1 d h_smooth
     exact hd
   -- The fibre over `η i` is the base change of `A` along `η i`, so it has the same dimension.

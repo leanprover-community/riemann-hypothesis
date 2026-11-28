@@ -1001,7 +1001,7 @@ lemma isDenseFamily_datumPoint (ν : ℕ) :
   -- The base points from `U.dense`, indexed by pairs `(f, p)`, are dense. A point `y` above the
   -- base point of `(f, p)` is a tuple of points of its fibre, each the image of a vector `P i`.
   have h_empty : IsEmpty (NonzeroTorsion (E := E) 1 D.Index) := ⟨by simp⟩
-  refine U.dense.of_fibres _ (s := (smoothOfRelativeDimension_fibrePower_one ν).smooth) fun ⟨f, p⟩ y
+  refine U.dense.of_fibers _ (s := (smoothOfRelativeDimension_fibrePower_one ν).smooth) fun ⟨f, p⟩ y
     hy ↦ ?_
   obtain ⟨P, hP⟩ : ∃ P : Fin ν → BallFibre E D.Index, ∀ i : Fin ν,
       (U.model (f, p)).uniformisation.expMap (P i) =

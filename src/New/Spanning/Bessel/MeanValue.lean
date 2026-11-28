@@ -28,7 +28,7 @@ in `X₀ = ℂ ^ κ` runs over a sphere.
 One can find the measure on the frames over `Z` by letting both frames vary and dividing two
 equalities of fibre measures, the one on pairs of frames, which are tuples of `2 (ϱ + 1)` vectors
 with an invertible Gram matrix, by the one on frames. Here a fibre measure enters only through the
-relation of being at most it (`New.LeFibreMeasure`); the measure over `Z` is computed directly in
+relation of being at most it (`New.LeFiberMeasure`); the measure over `Z` is computed directly in
 coordinates as a lower bound, and the fibre measure on frames is used as an upper bound.
 
 * `New.RealPlace.lintegral_eq_lintegral_sphereMass_mul_dualFrameOfGram`: Lebesgue measure on the

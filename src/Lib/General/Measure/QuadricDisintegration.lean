@@ -485,7 +485,7 @@ matrix `planeSumGram T` (a hyperbolic plane e, e' plus T), and consider the flat
 `flatChart T b` ((t, w), a) ↦ (t̄⁻¹τ(δ⁻¹b − h(w, w)) + ta)e + te' + w, where t̄⁻¹ is zero if t̄ is
 not a unit. Then the supremum over skew `b` of the ν-measure of the fibre {a | flatChart T b ((t,
 w), a) ∈ K} has finite lower integral over (t, w) ∈ A × (ι → A). -/
-lemma lintegral_iSup_fibre_lt_top {K : Set (Fin 2 ⊕ ι → A)} (hK : IsCompact K) :
+lemma lintegral_iSup_fiber_lt_top {K : Set (Fin 2 ⊕ ι → A)} (hK : IsCompact K) :
     ∫⁻ p : A × (ι → A), ⨆ b : skewAdjoint A,
       skewMeasure {a : skewAdjoint A | flatChart T b (p, a) ∈ K} < ∞ := by
   -- For a unit `t`, the fibre over `p = (t, w)` has measure `≤ ‖g t * √N‖` by
@@ -616,7 +616,7 @@ lemma isDisintegration_quadricMeasure (hT : Tᴴ = T) :
     let bound (p : A × (ι → A)) := ofNNReal (iSup f) *
       ⨆ β, skewMeasure {a | flatChart T β (p, a) ∈ tsupport f}
     have h_fin : ∫⁻ p, bound p < ∞ := (lintegral_const_mul' _ _ coe_ne_top).trans_lt
-      (mul_lt_top coe_lt_top (lintegral_iSup_fibre_lt_top hf_supp))
+      (mul_lt_top coe_lt_top (lintegral_iSup_fiber_lt_top hf_supp))
     exact ⟨continuous_iff_continuousAt.2 fun b ↦
       tendsto_lintegral_filter_of_dominated_convergence bound (.of_forall (by fun_prop))
         (.of_forall fun β ↦ .of_forall (lintegral_flatChart_le hf hf_supp β)) h_fin.ne

@@ -30,12 +30,12 @@ separating over a stalk of the base and on a product of flat schemes.
 
 * `New.exists_section_mem`, `New.exists_point_mem`: a nonempty locally closed set in a scheme
   locally of finite type over `k` contains a `k`-point.
-* `New.IsDenseFamily.of_fibres`: if the complex points `η i` are dense in `S` and `A` is smooth over
+* `New.IsDenseFamily.of_fibers`: if the complex points `η i` are dense in `S` and `A` is smooth over
   `S`, a family containing every complex point of `A` over the `η i` is dense in `A`.
 * `New.AddObj.property_of_isOpenImmersion`: take a commutative group scheme (`New.AddObj`) locally
   of finite type over `k`. A property induced by a property of ring maps spreads from a nonempty
   open part to the whole scheme, by translation.
-* `New.AddObj.smoothOfRelativeDimension_of_fibres`: the relative dimension of an abelian scheme can
+* `New.AddObj.smoothOfRelativeDimension_of_fibers`: the relative dimension of an abelian scheme can
   be read off the fibres through a dense family of points.
 * `New.isSeparatingFamily_stalk`: for `A` and `S` reduced and dense points of `A` with finitely many
   images in `S`, the lifts of those that factor through a stalk of `S` separate the base change of
@@ -93,7 +93,7 @@ lemma exists_point_mem {k : Type*} [Field k] [IsAlgClosed k] (X : Over (Spec (.o
 /-- Let `f : A ⟶ S` be smooth and `η i` complex points with dense images in `S`
 (`New.IsDenseFamily`). If every complex point of `A` over some `η i` is one of the points `ξ z`,
 then the `ξ z` have dense images in `A`. -/
-lemma IsDenseFamily.of_fibres {A S : Scheme} {κ Z : Type} {η : κ → (Spec (.of ℂ) ⟶ S)}
+lemma IsDenseFamily.of_fibers {A S : Scheme} {κ Z : Type} {η : κ → (Spec (.of ℂ) ⟶ S)}
     (hη : IsDenseFamily η) (f : A ⟶ S) [s : Smooth f] {ξ : Z → (Spec (.of ℂ) ⟶ A)}
     (h_all : ∀ (i : κ) (y : Spec (.of ℂ) ⟶ A), y ≫ f = η i → ∃ z : Z, ξ z = y) :
     IsDenseFamily ξ := by
@@ -165,7 +165,7 @@ lemma smoothOfRelativeDimension_fromSpec_comp {X S : Scheme} {f : X ⟶ S} {U : 
 /-- Let `A` be an abelian scheme over `S` (`New.IsAbelianScheme`) with complex points `y i` over
 `η i` whose images are dense in `A`. If `g` is the only possible relative dimension of each fibre
 over `η i`, then `A` is smooth of relative dimension `g` over `S`. -/
-lemma AddObj.smoothOfRelativeDimension_of_fibres {S : Scheme} {κ : Type} {g : ℕ} {A : Over S}
+lemma AddObj.smoothOfRelativeDimension_of_fibers {S : Scheme} {κ : Type} {g : ℕ} {A : Over S}
     [IsAbelianScheme A] {η : κ → (Spec (.of ℂ) ⟶ S)} {y : ∀ i : κ, Over.mk (η i) ⟶ A}
     (hy : IsDenseFamily fun i : κ ↦ (y i).left)
     (h_dim : ∀ (i : κ) (n : ℕ), SmoothOfRelativeDimension n (snd A.hom (η i)) → n = g) :
