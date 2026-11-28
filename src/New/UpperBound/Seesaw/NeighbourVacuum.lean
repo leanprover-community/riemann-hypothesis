@@ -9,24 +9,24 @@ import New.UpperBound.Seesaw.EdgePairEvaluation
 # The vacuum of the neighbour lattice
 
 The sum of the translates of the vacuum by the representatives of the neighbour lattice is computed
-on the two edges of the pair. A representative is `neighbourTranslation X X'' y + t`, for residues
-`y` and a vector `t` that vanishes above `N`. The translations by the `neighbourTranslation X X'' y`
+on the two edges of the pair. A representative is `neighborTranslation X X'' y + t`, for residues
+`y` and a vector `t` that vanishes above `N`. The translations by the `neighborTranslation X X'' y`
 add up to `doubleLiftGluing`, and they commute with the translations that vanish above `N`. So a
 translate of the sum by such a vector is a sum of roots of unity times vectors `gluedTranslate`,
 one for each class of the `t`. The result is
-`isAdmissibleCombination_finHeisenbergOp_sum_neighbourCosetRep`.
+`isAdmissibleCombination_finHeisenbergOp_sum_neighborCosetRep`.
 
 Notions from other files:
 * `PairIndex X X''`: the indices of a basis of `X⁻ ⊕ X''`, where each of the two definite spaces
   has a last basis vector.
-* `neighbourTranslation X X'' y`: the matrix attached to residues `y` modulo `N` at the places of
+* `neighborTranslation X X'' y`: the matrix attached to residues `y` modulo `N` at the places of
   `P`, with `η ȳ / N` (`η` the unit of norm `-1`) in the row of the last basis vector of `X`,
   `-ȳ / N` in that of `X''`, and zero elsewhere. It is supported at the places conjugate to `P`.
 * `vanishingAbove ι P`: the vectors that vanish at the places of `P` and their conjugates (for
   split `N`, the places above `N`).
-* `AwayLatticeQuotient`, `neighbourCosetRep`: the classes, modulo the integral ones, of the
+* `AwayLatticeQuotient`, `neighborCosetRep`: the classes, modulo the integral ones, of the
   elements of the neighbour lattice that vanish above `N`, and the sum
-  `neighbourTranslation X X'' y + t` for a chosen representative `t` of such a class.
+  `neighborTranslation X X'' y + t` for a chosen representative `t` of such a class.
 * `Z.finHeisenbergOp x`, `Z.vacElem`: the translation by a finite adelic vector `x` and the vacuum
   in the space `𝒮 Z`.
 * `IsAdmissibleCombination v A n d p B z`: `z` is a finite combination of the `v x` with `x ∈ A`,
@@ -118,39 +118,39 @@ variable [Fact N.Prime] {s : PairIndex X X'' × X' → ℤˣ} (Z : Space E (Pair
 
 omit [DecidableEq X] [DecidableEq X'] [DecidableEq X''] in
 /-- Let `N = π π̄` with `π` a uniformiser at the places of `P`, none conjugate to another, and a
-unit elsewhere (`hπ`). The matrix `neighbourTranslation X X'' y`, whose only nonzero rows are
+unit elsewhere (`hπ`). The matrix `neighborTranslation X X'' y`, whose only nonzero rows are
 multiples of `ȳ / N` at the two last basis vectors and which is supported at the places conjugate
 to `P`, is orthogonal to every matrix `x` that vanishes at the places of `P` and their
 conjugates. -/
-lemma star_neighbourTranslation_dotProduct_eq_zero (hπ : IsSplitSquarefree P (N : E) π)
+lemma star_neighborTranslation_dotProduct_eq_zero (hπ : IsSplitSquarefree P (N : E) π)
     (y : X' → P → ZMod N) (hx : x ∈ vanishingAbove (PairIndex X X'' × X') P) :
-    star (neighbourTranslation X X'' y) ⬝ᵥ x = 0 := by
-  rw [← idem_conjClosure_smul_neighbourTranslation hπ, star_smul, star_idem_conjClosure,
+    star (neighborTranslation X X'' y) ⬝ᵥ x = 0 := by
+  rw [← idem_conjClosure_smul_neighborTranslation hπ, star_smul, star_idem_conjClosure,
     smul_dotProduct,
     ← dotProduct_smul, mem_vanishingAbove.1 hx, dotProduct_zero]
 
 /-- Let `N = π π̄` with `π` a uniformiser at the places of `P`, none conjugate to another, and a
-unit elsewhere (`hπ`). The matrix `neighbourTranslation X X'' y`, made from residues `y` modulo
+unit elsewhere (`hπ`). The matrix `neighborTranslation X X'' y`, made from residues `y` modulo
 `N`, is supported at the conjugates of these places. So if `x` vanishes at the places of `P` and
-their conjugates, the translation of `f ∈ 𝒮 Z` by `neighbourTranslation X X'' y + x` is the
+their conjugates, the translation of `f ∈ 𝒮 Z` by `neighborTranslation X X'' y + x` is the
 product of the translations by the two summands. -/
-lemma finHeisenbergOp_neighbourTranslation_add (hπ : IsSplitSquarefree P (N : E) π)
+lemma finHeisenbergOp_neighborTranslation_add (hπ : IsSplitSquarefree P (N : E) π)
     (y : X' → P → ZMod N) (hx : x ∈ vanishingAbove (PairIndex X X'' × X') P) (f : 𝒮 Z) :
-    Z.finHeisenbergOp (neighbourTranslation X X'' y + x) f =
-      Z.finHeisenbergOp (neighbourTranslation X X'' y) (Z.finHeisenbergOp x f) := by
+    Z.finHeisenbergOp (neighborTranslation X X'' y + x) f =
+      Z.finHeisenbergOp (neighborTranslation X X'' y) (Z.finHeisenbergOp x f) := by
   rw [finHeisenbergOp_finHeisenbergOp, star_dotProduct,
-    star_neighbourTranslation_dotProduct_eq_zero hπ y hx, star_zero, mul_zero,
+    star_neighborTranslation_dotProduct_eq_zero hπ y hx, star_zero, mul_zero,
     AddChar.map_zero_eq_one, one_smul]
 
 /-- Let `N = π π̄` with `π` a uniformiser at the places of `P`, none conjugate to another, and a
-unit elsewhere (`hπ`). The matrix `neighbourTranslation X X'' y`, made from residues `y` modulo
+unit elsewhere (`hπ`). The matrix `neighborTranslation X X'' y`, made from residues `y` modulo
 `N`, is supported at the conjugates of these places. So the translation of `𝒮 Z` by it commutes
 with the translation by any `x` that vanishes at the places of `P` and their conjugates. -/
-lemma finHeisenbergOp_comm_neighbourTranslation (hπ : IsSplitSquarefree P (N : E) π)
+lemma finHeisenbergOp_comm_neighborTranslation (hπ : IsSplitSquarefree P (N : E) π)
     (y : X' → P → ZMod N) (hx : x ∈ vanishingAbove (PairIndex X X'' × X') P) (f : 𝒮 Z) :
-    Z.finHeisenbergOp x (Z.finHeisenbergOp (neighbourTranslation X X'' y) f) =
-      Z.finHeisenbergOp (neighbourTranslation X X'' y) (Z.finHeisenbergOp x f) := by
-  rw [finHeisenbergOp_comm, star_neighbourTranslation_dotProduct_eq_zero hπ y hx,
+    Z.finHeisenbergOp x (Z.finHeisenbergOp (neighborTranslation X X'' y) f) =
+      Z.finHeisenbergOp (neighborTranslation X X'' y) (Z.finHeisenbergOp x f) := by
+  rw [finHeisenbergOp_comm, star_neighborTranslation_dotProduct_eq_zero hπ y hx,
     AddChar.map_zero_eq_one, one_smul]
 
 end Commute
@@ -243,33 +243,33 @@ on the two edges `Hom(X ⊕ Unit, X')` and `Hom(X', X'' ⊕ Unit)` of standard s
 `arrowTensor` joins it to one datum on `stdPairSpace`, the space
 `Hom(X', (X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit))`. There the operator `doubleLiftGluing` (the sum over residues
 `y` of the translation of the first datum by the last column `-y / N` and of the second by the last
-row `-ȳ / N`) becomes the sum of the translations by `neighbourTranslation X X'' y`, the matrices
+row `-ȳ / N`) becomes the sum of the translations by `neighborTranslation X X'' y`, the matrices
 whose only nonzero rows are `η ȳ / N` and `-ȳ / N` at the two last basis vectors. -/
 lemma arrowTensor_doubleLiftGluing (hπ : IsSplitSquarefree P (N : E) π)
     (t : ((stdSpace E (X ⊕ Unit)).hom (stdSpace E X')).finitePart ⊗[ℂ]
       ((stdSpace E X').hom (stdSpace E (X'' ⊕ Unit))).finitePart) :
     arrowTensor (doubleLiftGluing X X' P N X'' t) =
       ∑ y : X' → P → ZMod N,
-        (stdPairSpace E X X' X'').finHeisenbergOp (neighbourTranslation X X'' y)
+        (stdPairSpace E X X' X'').finHeisenbergOp (neighborTranslation X X'' y)
           (arrowTensor t) := by
   induction t with
   | add t t' ht ht' => simp [ht, ht', Finset.sum_add_distrib]
   | tmul Φ Ψ =>
     -- The adjoint, times the unit of norm `-1`, turns the first nonzero row of
-    -- `neighbourTranslation y` into the last column `-y / N`; the second nonzero row is the last
+    -- `neighborTranslation y` into the last column `-y / N`; the second nonzero row is the last
     -- row `-ȳ / N`.
     have h_column (y : X' → P → ZMod N) :
         (fun q : X' × (X ⊕ Unit) ↦ (normNegOne (E := E) : 𝔸f E) *
-          star (neighbourTranslation X X'' y (Sum.inl q.2, q.1))) = poleColumn X y := by
-      ext ⟨a, i | i⟩ : 1 <;> simp [neighbourTranslation, ← mul_assoc, mul_comm _ (star _)]
+          star (neighborTranslation X X'' y (Sum.inl q.2, q.1))) = poleColumn X y := by
+      ext ⟨a, i | i⟩ : 1 <;> simp [neighborTranslation, ← mul_assoc, mul_comm _ (star _)]
     have h_row (y : X' → P → ZMod N) :
-        (fun q : (X'' ⊕ Unit) × X' ↦ neighbourTranslation X X'' y (Sum.inr q.1, q.2)) =
+        (fun q : (X'' ⊕ Unit) × X' ↦ neighborTranslation X X'' y (Sum.inr q.1, q.2)) =
           poleRow X'' y := by
-      ext ⟨i | i, a⟩ : 1 <;> simp [neighbourTranslation]
+      ext ⟨i | i, a⟩ : 1 <;> simp [neighborTranslation]
     have h_phase (y : X' → P → ZMod N) :
-        semichar (fun q : X' × (X ⊕ Unit) ↦ neighbourTranslation X X'' y (Sum.inl q.2, q.1)) = 1 :=
+        semichar (fun q : X' × (X ⊕ Unit) ↦ neighborTranslation X X'' y (Sum.inl q.2, q.1)) = 1 :=
       semichar_eq_one_of_smul_eq hπ <|
-        funext fun q ↦ congrFun (star_idem_smul_neighbourTranslation y) (Sum.inl q.2, q.1)
+        funext fun q ↦ congrFun (star_idem_smul_neighborTranslation y) (Sum.inl q.2, q.1)
     simp only [doubleLiftGluing, LinearMap.sum_apply, map_sum, map_tmul, arrowTensor_tmul,
       finHeisenbergOp_arrowProduct, h_column, h_row, h_phase, one_pow, one_smul,
       heisenbergFinPart_apply_coe]
@@ -279,18 +279,18 @@ open scoped Classical in
 and a unit elsewhere. Let `z` be a matrix on `PairIndex X X''` times `X'` whose rows have
 denominator at most `β` in the first block and `β̄` in the second (`selfOrConj β`), away from `n`.
 In `stdPairSpace`, the space `Hom(X', (X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit))`, add up over residues `y` modulo
-`N` at `P` the translates, by `neighbourTranslation X X'' y`, of the translate of the vacuum by `z`.
+`N` at `P` the translates, by `neighborTranslation X X'' y`, of the translate of the vacuum by `z`.
 The sum is a root of unity times the image under `arrowTensor` of `gluedTranslate N P (t₁, t₂)`, the
 glued tensor of the translates by `t₁`, `t₂` of the vacua of the two edges, for some `t₁`, `t₂` with
 `β̄ t₁`, `β̄ t₂` integral away from `n`. -/
-lemma exists_sum_finHeisenbergOp_neighbourTranslation_eq (hπ : IsSplitSquarefree P (N : E) π)
+lemma exists_sum_finHeisenbergOp_neighborTranslation_eq (hπ : IsSplitSquarefree P (N : E) π)
     {n : ℕ} {z : PairIndex X X'' × X' → 𝔸f E}
     (hz : z ∈ weightedTranslations n fun i : PairIndex X X'' × X' ↦ selfOrConj β i.1) :
     ∃ ζ : ℂ, IsOfFinOrder ζ ∧
       ∃ t₁ ∈ translations (X' × (X ⊕ Unit)) n (star (β : 𝔸f E)),
         ∃ t₂ ∈ translations ((X'' ⊕ Unit) × X') n (star (β : 𝔸f E)),
           ∑ y : X' → P → ZMod N, (stdPairSpace E X X' X'').finHeisenbergOp
-            (neighbourTranslation X X'' y)
+            (neighborTranslation X X'' y)
               ((stdPairSpace E X X' X'').finHeisenbergOp z (stdPairSpace E X X' X'').vacElem) =
             ζ • arrowTensor (gluedTranslate N P (t₁, t₂)) := by
   -- `z` splits into `t₁` on the first edge, through the adjoint, and `t₂` on the second.
@@ -311,7 +311,7 @@ open scoped Classical in
 factor `κ` is `1` or `δ`, with denominator at most `β̄`. The classes
 `q : AwayLatticeQuotient X' hπ hκ` are those, modulo integral matrices, of the elements of the
 neighbour lattice that vanish above `N`; for residues `y` modulo `N` at `P`,
-`neighbourCosetRep (y, q)` is `neighbourTranslation X X'' y` plus a chosen representative of `q`.
+`neighborCosetRep (y, q)` is `neighborTranslation X X'' y` plus a chosen representative of `q`.
 
 Let `x` vanish above `N` and have rows of denominator at most `β` in the first block and `β̄` in the
 second, away from `n`. Translate by `x` the sum over `(y, q)` of the translates of the vacuum by
@@ -322,7 +322,7 @@ vacua of the edges and `β̄ t₁`, `β̄ t₂` are integral away from `n`. Its 
 number of integral matrices modulo `β`, are integral away from `n`. The proposition `boundHyp` is
 arbitrary; if it holds, the absolute sum of the coefficients is at most `1` under every automorphism
 of `ℂ`. -/
-theorem isAdmissibleCombination_finHeisenbergOp_sum_neighbourCosetRep
+theorem isAdmissibleCombination_finHeisenbergOp_sum_neighborCosetRep
     (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) {n : ℕ} (boundHyp : Prop)
     {x : PairIndex X X'' × X' → 𝔸f E}
     (hx : x ∈ weightedTranslations n fun i : PairIndex X X'' × X' ↦ selfOrConj β i.1)
@@ -335,23 +335,23 @@ theorem isAdmissibleCombination_finHeisenbergOp_sum_neighbourCosetRep
       (Nat.card (PairIndex X X'' × X' → Ô E ⧸ Ideal.span {β})) boundHyp 1
       (arrowTensor.leftInverse ((stdPairSpace E X X' X'').finHeisenbergOp x
         (∑ a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ,
-          (stdPairSpace E X X' X'').finHeisenbergOp (neighbourCosetRep a)
+          (stdPairSpace E X X' X'').finHeisenbergOp (neighborCosetRep a)
             (stdPairSpace E X X' X'').vacElem))) := by
   let Z := stdPairSpace E X X' X''
   let K : ℕ := Fintype.card (AwayLatticeQuotient X' hπ hκ)
   -- The term of a class `q`: its representative splits off, and `x` passes the shifts.
   let classTerm (q : AwayLatticeQuotient X' hπ hκ) : 𝒮 Z := ∑ y : X' → P → ZMod N,
-    Z.finHeisenbergOp (neighbourTranslation X X'' y)
+    Z.finHeisenbergOp (neighborTranslation X X'' y)
       (Z.finHeisenbergOp x (Z.finHeisenbergOp q.out.val Z.vacElem))
   have h_terms : Z.finHeisenbergOp x (∑ a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ,
-      Z.finHeisenbergOp (neighbourCosetRep a) Z.vacElem) = ∑ q : AwayLatticeQuotient X' hπ hκ,
+      Z.finHeisenbergOp (neighborCosetRep a) Z.vacElem) = ∑ q : AwayLatticeQuotient X' hπ hκ,
         classTerm q := by
     rw [map_sum, Fintype.sum_prod_type_right]
     refine sum_congr rfl fun q _ ↦ sum_congr rfl fun y _ ↦ ?_
     have hq_zero : q.out.val ∈ vanishingAbove (PairIndex X X'' × X') P :=
       (AddSubgroup.mem_inf.1 q.out.property).2
-    rw [neighbourCosetRep, finHeisenbergOp_neighbourTranslation_add Z hπ y hq_zero,
-      finHeisenbergOp_comm_neighbourTranslation Z hπ y hx_zero]
+    rw [neighborCosetRep, finHeisenbergOp_neighborTranslation_add Z hπ y hq_zero,
+      finHeisenbergOp_comm_neighborTranslation Z hπ y hx_zero]
   have h_mean : arrowTensor.leftInverse (∑ q : AwayLatticeQuotient X' hπ hκ, classTerm q) =
       ∑ q : AwayLatticeQuotient X' hπ hκ,
         (1 / K : ℂ) • (K : ℂ) • arrowTensor.leftInverse (classTerm q) := by
@@ -372,7 +372,7 @@ theorem isAdmissibleCombination_finHeisenbergOp_sum_neighbourCosetRep
       weightedTranslations n fun i : PairIndex X X'' × X' ↦ selfOrConj β i.1 :=
     add_mem hx (awayLattice_le_weightedTranslations hπ hκ n q.out.property)
   obtain ⟨ζ, hζ, t₁, ht₁, t₂, ht₂, h_glue⟩ :=
-    exists_sum_finHeisenbergOp_neighbourTranslation_eq hπ h_sum_mem
+    exists_sum_finHeisenbergOp_neighborTranslation_eq hπ h_sum_mem
   have h_term : classTerm q = ξ • ζ • arrowTensor (gluedTranslate N P (t₁, t₂)) := by
     simp only [classTerm, Z, ξ, ← h_glue, smul_sum, Z.finHeisenbergOp_finHeisenbergOp (x := x),
       map_smul]

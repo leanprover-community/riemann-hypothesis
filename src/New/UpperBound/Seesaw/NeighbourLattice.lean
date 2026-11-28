@@ -9,10 +9,10 @@ public import New.UpperBound.Seesaw.EdgePairEvaluation -- shake: keep (needed pu
 
 Take definite spaces with bases indexed by `X ⊕ Unit`, `X'` and `X'' ⊕ Unit`, written `X`, `X'`,
 `X''` for short, and let `e` and `e''` be the last basis vectors of the first and of the third. An
-explicit unitary carries the standard lattice of `Hom (X', X⁻ ⊕ X'')` to `neighbourLattice`. Away
+explicit unitary carries the standard lattice of `Hom (X', X⁻ ⊕ X'')` to `neighborLattice`. Away
 from `N` this lattice is the standard one with scaled rows. Above `N` it is a neighbour of the
-standard lattice, and the translations `neighbourTranslation` represent it modulo its integral
-points. The sums `neighbourCosetRep` of these and of scaled rows away from `N` represent the whole
+standard lattice, and the translations `neighborTranslation` represent it modulo its integral
+points. The sums `neighborCosetRep` of these and of scaled rows away from `N` represent the whole
 lattice modulo its integral points.
 
 Notions from other files:
@@ -114,7 +114,7 @@ variable {E X X' X'' : Type} [Field E] [CMType E] [WeilData E]
 /-- The gluing conditions on a vector `x` of `X⁻ ⊕ X''` and an adele `c`, which in the application
 is the coefficient of an isotropic vector: `x` is integral except at `e` and `e''`, where it has
 denominator at most `π̄`, and its entries there, divided by `π`, are congruent to `c` and `η̄ c`. -/
-structure IsNeighbourVector (π : (𝔸f E)ˣ) (δ c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E) : Prop where
+structure IsNeighborVector (π : (𝔸f E)ˣ) (δ c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E) : Prop where
   /-- The coefficient `c` is unchanged by `δ`. -/
   mul_coeff : δ * c = c
   /-- The entries other than those at `e` and `e''` are integral. -/
@@ -152,29 +152,29 @@ variable (X X'') (P : Finset (FinPlace E)) (π : (𝔸f E)ˣ)
 /-- The vector `ρ = e + η̄ j̄ e''`, where `j` is the idempotent of `P` and `η` the unit of norm
 `-1`. It is `e` except at the places conjugate to `P`, where it is `e + η̄ e''`. It has norm one
 when `P` is disjoint from its conjugate. -/
-def neighbourAxis : PairIndex X X'' → 𝔸f E :=
+def neighborAxis : PairIndex X X'' → 𝔸f E :=
   (0 ⊕ᵥ fun _ ↦ 1) ⊕ᵥ (0 ⊕ᵥ fun _ ↦ star ((normNegOne (E := E) : 𝔸f E) * idem P))
 
 /-- The adele `A` such that, when `P` is disjoint from its conjugate, `1 + A` is `π` at `P`, `π̄⁻¹`
 at the conjugate places and `1` elsewhere. -/
-def neighbourScale : 𝔸f E :=
+def neighborScale : 𝔸f E :=
   idem P * ((π : 𝔸f E) - 1) + star (idem P) * (star (↑π⁻¹ : 𝔸f E) - 1)
 
 /-- The matrix `γ = 1 + A ρ ρ*`. When `P` is disjoint from its conjugate, so that `ρ` has norm one,
 it scales `ρ` by `1 + A` and fixes its orthogonal complement; its columns then span a neighbour at
 `N` of the standard lattice. -/
-def neighbourMatrix : Matrix (PairIndex X X'') (PairIndex X X'') (𝔸f E) :=
-  1 + neighbourScale P π • vecMulVec (neighbourAxis X X'' P) (star (neighbourAxis X X'' P))
+def neighborMatrix : Matrix (PairIndex X X'') (PairIndex X X'') (𝔸f E) :=
+  1 + neighborScale P π • vecMulVec (neighborAxis X X'' P) (star (neighborAxis X X'' P))
 
-/-- The coefficient of the isotropic vector that goes with each column of `neighbourMatrix`; it is
+/-- The coefficient of the isotropic vector that goes with each column of `neighborMatrix`; it is
 zero except for the columns of `e` and `e''`. -/
-def neighbourCoeff : PairIndex X X'' → 𝔸f E :=
-  (0 ⊕ᵥ fun _ ↦ neighbourScale P π * (↑π⁻¹ : 𝔸f E) * star (idem P)) ⊕ᵥ
-    (0 ⊕ᵥ fun _ ↦ neighbourScale P π * (↑π⁻¹ : 𝔸f E) * ((normNegOne (E := E) : 𝔸f E) * idem P))
+def neighborCoeff : PairIndex X X'' → 𝔸f E :=
+  (0 ⊕ᵥ fun _ ↦ neighborScale P π * (↑π⁻¹ : 𝔸f E) * star (idem P)) ⊕ᵥ
+    (0 ⊕ᵥ fun _ ↦ neighborScale P π * (↑π⁻¹ : 𝔸f E) * ((normNegOne (E := E) : 𝔸f E) * idem P))
 
 /-- The translation `n y` attached to residues `y` at `P`: the matrix with row `η ȳ / N` at `e`,
 row `-ȳ / N` at `e''` and zero elsewhere. It is supported at the places conjugate to `P`. -/
-def neighbourTranslation {P : Finset (FinPlace E)} {N : ℕ} (y : X' → P → ZMod N)
+def neighborTranslation {P : Finset (FinPlace E)} {N : ℕ} (y : X' → P → ZMod N)
     (i : PairIndex X X'' × X') : 𝔸f E :=
   Sum.elim (0 ⊕ᵥ fun _ ↦ (normNegOne (E := E) : 𝔸f E) * star (residueOverN (y i.2)))
     (0 ⊕ᵥ fun _ ↦ -star (residueOverN (y i.2))) i.1
@@ -263,24 +263,24 @@ lemma IsScalingAtM.star_idem_mul (hκ : IsScalingAtM N β δ κ)
   · simp [hw]
 
 /-- Let `N = π π̄` with `π` a uniformiser on `P` and a unit elsewhere, and let `P` be disjoint from
-its conjugate (`IsSplitSquarefree`). The adele `A = neighbourScale P π`, which is `π - 1` at `P`,
+its conjugate (`IsSplitSquarefree`). The adele `A = neighborScale P π`, which is `π - 1` at `P`,
 `π̄⁻¹ - 1` at the conjugate places and `0` elsewhere, has denominator at most `π̄`: the product
 `π̄ A` is integral. -/
-lemma star_mul_neighbourScale_mem (hπ : IsSplitSquarefree P (N : E) π) :
-    star (π : 𝔸f E) * neighbourScale P π ∈ Ô E := by
-  have h_eq : star (π : 𝔸f E) * neighbourScale P π =
+lemma star_mul_neighborScale_mem (hπ : IsSplitSquarefree P (N : E) π) :
+    star (π : 𝔸f E) * neighborScale P π ∈ Ô E := by
+  have h_eq : star (π : 𝔸f E) * neighborScale P π =
       star (π : 𝔸f E) * (idem P * (π : 𝔸f E) - idem P - star (idem P)) + star (idem P) := by
-    rw [neighbourScale]
+    rw [neighborScale]
     linear_combination star (idem P) * star_mul_star_inv π
   have hj : idem P ∈ Ô E := idem_mem_Ô _
   rw [h_eq]
   exact add_mem (mul_mem hπ.star_mem_integralAdeles
     (sub_mem (sub_mem (mul_mem hj hπ.mem_integralAdeles) hj) (star_mem_Ô hj))) (star_mem_Ô hj)
 
-/-- The adele `neighbourScale P π` vanishes at each place outside `P` and its conjugate. -/
-lemma neighbourScale_apply_of_notMem {w : FinPlace E} (hw : w ∉ P) (hw_star : star w ∉ P) :
-    evalAt w (neighbourScale P π) = 0 := by
-  simp [neighbourScale, star_idem, hw, hw_star]
+/-- The adele `neighborScale P π` vanishes at each place outside `P` and its conjugate. -/
+lemma neighborScale_apply_of_notMem {w : FinPlace E} (hw : w ∉ P) (hw_star : star w ∉ P) :
+    evalAt w (neighborScale P π) = 0 := by
+  simp [neighborScale, star_idem, hw, hw_star]
 
 end Relations
 
@@ -291,12 +291,12 @@ omit [Fintype X] [Fintype X'] [Fintype X'']
 omit [WeilData E] in
 /-- Let `π` be split squarefree for `N` at the finite set of places `P` (`IsSplitSquarefree`):
 `N = π π̄`, the idele `π` is a uniformiser at each place of `P` and a unit at all others, and no
-place of `P` has its conjugate in `P`. For `A = neighbourScale P π` the adele `1 + A`, which is `π`
+place of `P` has its conjugate in `P`. For `A = neighborScale P π` the adele `1 + A`, which is `π`
 at `P`, `π̄⁻¹` at the conjugate places and `1` elsewhere, has norm one: its product with its own
 conjugate is `1`. -/
-lemma star_one_add_neighbourScale_mul (hπ : IsSplitSquarefree P (N : E) π) :
-    star (1 + neighbourScale P π) * (1 + neighbourScale P π) = 1 := by
-  simp only [neighbourScale, star_add, star_sub, star_mul', star_one, star_star]
+lemma star_one_add_neighborScale_mul (hπ : IsSplitSquarefree P (N : E) π) :
+    star (1 + neighborScale P π) * (1 + neighborScale P π) = 1 := by
+  simp only [neighborScale, star_add, star_sub, star_mul', star_one, star_star]
   linear_combination
     ((π : 𝔸f E) - 1) * ((↑π⁻¹ : 𝔸f E) - 1) * idem_mul_self (P : Set (FinPlace E)) +
     (star (π : 𝔸f E) - 1) * (star (↑π⁻¹ : 𝔸f E) - 1) * star_idem_mul_self (P : Set (FinPlace E)) +
@@ -308,189 +308,189 @@ lemma star_one_add_neighbourScale_mul (hπ : IsSplitSquarefree P (N : E) π) :
 lemma normNegOne_mem : (normNegOne (E := E) : 𝔸f E) ∈ Ô E :=
   SetLike.coe_mem _
 
-lemma neighbourAxis_mem (i : PairIndex X X'') : neighbourAxis X X'' P i ∈ Ô E := by
+lemma neighborAxis_mem (i : PairIndex X X'') : neighborAxis X X'' P i ∈ Ô E := by
   rcases i with (i | i) | (i | i) <;>
-    simp [neighbourAxis, zero_mem, one_mem, star_mem_Ô, mul_mem, idem_mem_Ô]
+    simp [neighborAxis, zero_mem, one_mem, star_mem_Ô, mul_mem, idem_mem_Ô]
 
-/-- The entries of `γ = 1 + A ρ ρ*`, where `A = neighbourScale P π` and
-`ρ = neighbourAxis X X'' P`. -/
-lemma neighbourMatrix_apply [DecidableEq X] [DecidableEq X''] (i m : PairIndex X X'') :
-    neighbourMatrix X X'' P π i m = (if i = m then 1 else 0) +
-      neighbourScale P π * (neighbourAxis X X'' P i * star (neighbourAxis X X'' P m)) := by
-  simp [neighbourMatrix, vecMulVec_apply, Matrix.one_apply]
+/-- The entries of `γ = 1 + A ρ ρ*`, where `A = neighborScale P π` and
+`ρ = neighborAxis X X'' P`. -/
+lemma neighborMatrix_apply [DecidableEq X] [DecidableEq X''] (i m : PairIndex X X'') :
+    neighborMatrix X X'' P π i m = (if i = m then 1 else 0) +
+      neighborScale P π * (neighborAxis X X'' P i * star (neighborAxis X X'' P m)) := by
+  simp [neighborMatrix, vecMulVec_apply, Matrix.one_apply]
 
-/-- Off `P` and its conjugate, `γ = neighbourMatrix X X'' P π` is the identity. -/
-lemma neighbourMatrix_apply_of_notMem [DecidableEq X] [DecidableEq X'']
+/-- Off `P` and its conjugate, `γ = neighborMatrix X X'' P π` is the identity. -/
+lemma neighborMatrix_apply_of_notMem [DecidableEq X] [DecidableEq X'']
     {w : FinPlace E} (hw : w ∉ P) (hw_star : star w ∉ P) (i m : PairIndex X X'') :
-    evalAt w (neighbourMatrix X X'' P π i m) = if i = m then 1 else 0 := by
-  rw [neighbourMatrix_apply, map_add, map_mul, neighbourScale_apply_of_notMem hw hw_star]
+    evalAt w (neighborMatrix X X'' P π i m) = if i = m then 1 else 0 := by
+  rw [neighborMatrix_apply, map_add, map_mul, neighborScale_apply_of_notMem hw hw_star]
   split_ifs <;> simp
 
-/-- The coefficient `neighbourCoeff X X'' P π m` attached to each column `m` of `neighbourMatrix`
+/-- The coefficient `neighborCoeff X X'' P π m` attached to each column `m` of `neighborMatrix`
 has component `0` at every place `w` outside `P` and its conjugate. -/
-lemma neighbourCoeff_apply_of_notMem {w : FinPlace E} (hw : w ∉ P) (hw_star : star w ∉ P)
-    (m : PairIndex X X'') : evalAt w (neighbourCoeff X X'' P π m) = 0 := by
+lemma neighborCoeff_apply_of_notMem {w : FinPlace E} (hw : w ∉ P) (hw_star : star w ∉ P)
+    (m : PairIndex X X'') : evalAt w (neighborCoeff X X'' P π m) = 0 := by
   rcases m with (m | m) | (m | m) <;>
-    simp only [neighbourCoeff, Sum.elim_inl, Sum.elim_inr, Pi.zero_apply, map_zero, map_mul,
-      neighbourScale_apply_of_notMem hw hw_star, zero_mul]
+    simp only [neighborCoeff, Sum.elim_inl, Sum.elim_inr, Pi.zero_apply, map_zero, map_mul,
+      neighborScale_apply_of_notMem hw hw_star, zero_mul]
 
 /-- Let `P` and its conjugates be the places above `N` (`IsSplitLevel`). Let `δ` be the
 scaling adele of `IsScalingAtM`, which is `1` above `N`. Then multiplying by `δ` does not change the
-coefficient `neighbourCoeff X X'' P π m` of the isotropic vector that goes with column `m` of
-`neighbourMatrix`. -/
-lemma mul_neighbourCoeff (hP : IsSplitLevel P N) (hκ : IsScalingAtM N β δ κ)
+coefficient `neighborCoeff X X'' P π m` of the isotropic vector that goes with column `m` of
+`neighborMatrix`. -/
+lemma mul_neighborCoeff (hP : IsSplitLevel P N) (hκ : IsScalingAtM N β δ κ)
     (m : PairIndex X X'') :
-    δ * neighbourCoeff X X'' P π m = neighbourCoeff X X'' P π m := by
-  have h_scale : δ * neighbourScale P π = neighbourScale P π := by
-    rw [neighbourScale]
+    δ * neighborCoeff X X'' P π m = neighborCoeff X X'' P π m := by
+  have h_scale : δ * neighborScale P π = neighborScale P π := by
+    rw [neighborScale]
     linear_combination ((π : 𝔸f E) - 1) * hκ.idem_mul hP +
       (star (↑π⁻¹ : 𝔸f E) - 1) * hκ.star_idem_mul hP
-  rcases m with (m | m) | (m | m) <;> simp [neighbourCoeff, ← mul_assoc, h_scale]
+  rcases m with (m | m) | (m | m) <;> simp [neighborCoeff, ← mul_assoc, h_scale]
 
 /-- Let `π` be split squarefree for `N` at `P`: `N = π π̄`, `π` is a uniformiser on `P` and a unit
-elsewhere, and `P` does not meet its conjugate. The matrix `γ = neighbourMatrix X X'' P π` is
+elsewhere, and `P` does not meet its conjugate. The matrix `γ = neighborMatrix X X'' P π` is
 `1 + A ρ ρ*`, with rows and columns indexed by the bases of two spaces with last vectors `e`
-(index `lastSource`) and `e''` (index `lastTarget`); here `A = neighbourScale P π`,
+(index `lastSource`) and `e''` (index `lastTarget`); here `A = neighborScale P π`,
 `j = idem P` is `1` at `P` and `0` elsewhere, `η = normNegOne` has norm `-1`, and
-`ρ = e + η̄ j̄ e''`. The adele `neighbourCoeff X X'' P π m` is `A π⁻¹ j̄` for the column of `e`,
+`ρ = e + η̄ j̄ e''`. The adele `neighborCoeff X X'' P π m` is `A π⁻¹ j̄` for the column of `e`,
 `A π⁻¹ η j` for that of `e''` and `0` for the others. This lemma computes it minus `π⁻¹` times
 the entry `γ lastSource m`: it is `-ϖ` if `m` is the index of `e` and `0` otherwise, where
 `ϖ = j + (1 - j) π⁻¹` is `1` at `P` and `π⁻¹` elsewhere. -/
-lemma neighbourCoeff_sub_lastSource [DecidableEq X] [DecidableEq X'']
+lemma neighborCoeff_sub_lastSource [DecidableEq X] [DecidableEq X'']
     (hπ : IsSplitSquarefree P (N : E) π) (m : PairIndex X X'') :
-    neighbourCoeff X X'' P π m - (↑π⁻¹ : 𝔸f E) * neighbourMatrix X X'' P π lastSource m =
+    neighborCoeff X X'' P π m - (↑π⁻¹ : 𝔸f E) * neighborMatrix X X'' P π lastSource m =
       -(idem P + (1 - idem P) * (↑π⁻¹ : 𝔸f E)) * if lastSource = m then 1 else 0 := by
   let π' : 𝔸f E := ↑π⁻¹
-  have h_corner : neighbourScale P π * π' * star (idem P) - π' * (1 + neighbourScale P π) =
+  have h_corner : neighborScale P π * π' * star (idem P) - π' * (1 + neighborScale P π) =
       -(idem P + (1 - idem P) * π') := by
     -- Off the places conjugate to `P`, the adele `A` is `π - 1` at `P` and `0` elsewhere.
-    have hA_off : neighbourScale P π * (1 - star (idem P)) = idem P * ((π : 𝔸f E) - 1) := by
-      rw [neighbourScale]
+    have hA_off : neighborScale P π * (1 - star (idem P)) = idem P * ((π : 𝔸f E) - 1) := by
+      rw [neighborScale]
       linear_combination (1 - (π : 𝔸f E)) * idem_mul_star hπ.isConjDisjoint +
         (1 - star π') * star_idem_mul_self (P : Set (FinPlace E))
     linear_combination -π' * hA_off - idem P * π.mul_inv
-  rw [neighbourMatrix_apply]
+  rw [neighborMatrix_apply]
   rcases m with (m | m) | (m | m)
-  case inl.inr => simpa [neighbourCoeff, neighbourAxis] using h_corner
-  all_goals simp [neighbourCoeff, neighbourAxis, mul_assoc, mul_left_comm]
+  case inl.inr => simpa [neighborCoeff, neighborAxis] using h_corner
+  all_goals simp [neighborCoeff, neighborAxis, mul_assoc, mul_left_comm]
 
 /-- Let `π` be split squarefree for `N` at `P`: `N = π π̄`, `π` is a uniformiser on `P` and a unit
-elsewhere, and `P` does not meet its conjugate. The matrix `γ = neighbourMatrix X X'' P π` is
+elsewhere, and `P` does not meet its conjugate. The matrix `γ = neighborMatrix X X'' P π` is
 `1 + A ρ ρ*`, with rows and columns indexed by the bases of two spaces with last vectors `e`
-(index `lastSource`) and `e''` (index `lastTarget`); here `A = neighbourScale P π`,
+(index `lastSource`) and `e''` (index `lastTarget`); here `A = neighborScale P π`,
 `j = idem P` is `1` at `P` and `0` elsewhere, `η = normNegOne` has norm `-1`, and
-`ρ = e + η̄ j̄ e''`. The adele `neighbourCoeff X X'' P π m` is `A π⁻¹ j̄` for the column of `e`,
+`ρ = e + η̄ j̄ e''`. The adele `neighborCoeff X X'' P π m` is `A π⁻¹ j̄` for the column of `e`,
 `A π⁻¹ η j` for that of `e''` and `0` for the others. This lemma computes `η̄` times it minus
 `π⁻¹` times the entry `γ lastTarget m`: it is `-ϖ` if `m` is the index of `e''` and `0`
 otherwise, where `ϖ = j + (1 - j) π⁻¹` is `1` at `P` and `π⁻¹` elsewhere. -/
-lemma star_normNegOne_mul_neighbourCoeff_sub_lastTarget [DecidableEq X] [DecidableEq X'']
+lemma star_normNegOne_mul_neighborCoeff_sub_lastTarget [DecidableEq X] [DecidableEq X'']
     (hπ : IsSplitSquarefree P (N : E) π) (m : PairIndex X X'') :
-    star (normNegOne (E := E) : 𝔸f E) * neighbourCoeff X X'' P π m -
-        (↑π⁻¹ : 𝔸f E) * neighbourMatrix X X'' P π lastTarget m =
+    star (normNegOne (E := E) : 𝔸f E) * neighborCoeff X X'' P π m -
+        (↑π⁻¹ : 𝔸f E) * neighborMatrix X X'' P π lastTarget m =
       -(idem P + (1 - idem P) * (↑π⁻¹ : 𝔸f E)) * if lastTarget = m then 1 else 0 := by
   let η : 𝔸f E := normNegOne (E := E)
   let π' : 𝔸f E := ↑π⁻¹
-  have h_corner : star η * (neighbourScale P π * π' * (η * idem P)) -
-      π' * (1 + neighbourScale P π * (star η * star (idem P) * (η * idem P))) =
+  have h_corner : star η * (neighborScale P π * π' * (η * idem P)) -
+      π' * (1 + neighborScale P π * (star η * star (idem P) * (η * idem P))) =
       -(idem P + (1 - idem P) * π') := by
-    -- At `P` the adele `neighbourScale P π` is `π - 1`.
-    have hA_on : neighbourScale P π * idem P = idem P * ((π : 𝔸f E) - 1) := by
-      rw [neighbourScale]
+    -- At `P` the adele `neighborScale P π` is `π - 1`.
+    have hA_on : neighborScale P π * idem P = idem P * ((π : 𝔸f E) - 1) := by
+      rw [neighborScale]
       linear_combination ((π : 𝔸f E) - 1) * idem_mul_self (P : Set (FinPlace E)) +
         (star π' - 1) * idem_mul_star hπ.isConjDisjoint
     linear_combination
-      neighbourScale P π * π' * idem P * star_normNegOne_mul_self (E := E) -
-        π' * neighbourScale P π * (star η * η) * idem_mul_star hπ.isConjDisjoint -
+      neighborScale P π * π' * idem P * star_normNegOne_mul_self (E := E) -
+        π' * neighborScale P π * (star η * η) * idem_mul_star hπ.isConjDisjoint -
         π' * hA_on - idem P * π.mul_inv
-  rw [neighbourMatrix_apply]
+  rw [neighborMatrix_apply]
   rcases m with (m | m) | (m | m)
-  case inr.inr => simpa [neighbourCoeff, neighbourAxis] using h_corner
-  all_goals simp [neighbourCoeff, neighbourAxis, mul_assoc, mul_left_comm]
+  case inr.inr => simpa [neighborCoeff, neighborAxis] using h_corner
+  all_goals simp [neighborCoeff, neighborAxis, mul_assoc, mul_left_comm]
 
 /-- The coefficients of the isotropic vector are supported above `N`. -/
-lemma idem_conjClosure_mul_neighbourCoeff (hπ : IsSplitSquarefree P (N : E) π)
+lemma idem_conjClosure_mul_neighborCoeff (hπ : IsSplitSquarefree P (N : E) π)
     (m : PairIndex X X'') :
-    idem (P : Set (FinPlace E)).conjClosure * neighbourCoeff X X'' P π m =
-      neighbourCoeff X X'' P π m := by
+    idem (P : Set (FinPlace E)).conjClosure * neighborCoeff X X'' P π m =
+      neighborCoeff X X'' P π m := by
   rw [idem_conjClosure_eq_add_star hπ.isConjDisjoint]
   rcases m with (m | m) | (m | m) <;>
-    simp only [neighbourCoeff, Sum.elim_inl, Sum.elim_inr, Pi.zero_apply] <;>
+    simp only [neighborCoeff, Sum.elim_inl, Sum.elim_inr, Pi.zero_apply] <;>
     grind [idem_mul_self (P : Set (FinPlace E)), star_idem_mul_self (P : Set (FinPlace E)),
       idem_mul_star hπ.isConjDisjoint]
 
 /-- Suppose that the places above the prime `N` are `P` and its conjugate, that `N = π π̄` with `π`
 a uniformiser on `P` and a unit elsewhere, and that `κ` are factors `1` or `δ` for an adele `δ` of
 norm one that is `1` above `N`, with the denominators bounded by `β` and `β̄` (`IsScalingAtM`). Let
-`x` be column `m` of `γ = neighbourMatrix X X'' P π = 1 + A ρ ρ*` and `c` its coefficient
-`neighbourCoeff`. Then `δ c = c`; `x` is integral except at `e` and `e''`; all of `π̄ x` is
+`x` be column `m` of `γ = neighborMatrix X X'' P π = 1 + A ρ ρ*` and `c` its coefficient
+`neighborCoeff`. Then `δ c = c`; `x` is integral except at `e` and `e''`; all of `π̄ x` is
 integral; and `c - π⁻¹ x_e` and `η̄ c - π⁻¹ x_e''` are integral, with `η = normNegOne` of norm `-1`.
-These are the conditions `IsNeighbourVector`. -/
-lemma isNeighbourVector_col_neighbourMatrix [DecidableEq X] [DecidableEq X'']
+These are the conditions `IsNeighborVector`. -/
+lemma isNeighborVector_col_neighborMatrix [DecidableEq X] [DecidableEq X'']
     (hP : IsSplitLevel P N)
     (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) (m : PairIndex X X'') :
-    IsNeighbourVector π δ (neighbourCoeff X X'' P π m) ((neighbourMatrix X X'' P π).col m) := by
+    IsNeighborVector π δ (neighborCoeff X X'' P π m) ((neighborMatrix X X'' P π).col m) := by
   have h_one (i) : (if i = m then 1 else 0) ∈ Ô E := by split_ifs <;> simp
   have hϖ_mem : -(idem P + (1 - idem P) * (↑π⁻¹ : 𝔸f E)) ∈ Ô E :=
     neg_mem (add_mem (idem_mem_Ô _) hπ.one_sub_idem_mul_inv_mem)
   refine
-    { mul_coeff := mul_neighbourCoeff hP hκ m
+    { mul_coeff := mul_neighborCoeff hP hκ m
       mem_of_ne := fun i hi₁ hi₂ ↦ by
         rcases i with (i | ⟨⟩) | (i | ⟨⟩) <;>
-          simp_all [neighbourMatrix_apply, neighbourAxis]
+          simp_all [neighborMatrix_apply, neighborAxis]
       star_mul_mem := fun i ↦ by
-        rw [Matrix.col_apply, neighbourMatrix_apply, mul_add, ← mul_assoc]
+        rw [Matrix.col_apply, neighborMatrix_apply, mul_add, ← mul_assoc]
         exact add_mem (mul_mem hπ.star_mem_integralAdeles (h_one i))
-          (mul_mem (star_mul_neighbourScale_mem hπ)
-            (mul_mem (neighbourAxis_mem i) (star_mem_Ô (neighbourAxis_mem m))))
+          (mul_mem (star_mul_neighborScale_mem hπ)
+            (mul_mem (neighborAxis_mem i) (star_mem_Ô (neighborAxis_mem m))))
       sub_source_mem := by
-        simpa [neighbourCoeff_sub_lastSource hπ] using mul_mem hϖ_mem (h_one _)
+        simpa [neighborCoeff_sub_lastSource hπ] using mul_mem hϖ_mem (h_one _)
       sub_target_mem := by
-        simpa [star_normNegOne_mul_neighbourCoeff_sub_lastTarget hπ] using
+        simpa [star_normNegOne_mul_neighborCoeff_sub_lastTarget hπ] using
           mul_mem hϖ_mem (h_one _) }
 
 end Entries
 
 /-- The inner product of `ρ = e + η̄ j̄ e''` with a vector `x` is the sum of the entry at `e` and
 `η j` times the entry at `e''`, where `j` is the idempotent of `P` and `η` the unit of norm `-1`. -/
-lemma star_neighbourAxis_dotProduct (x : PairIndex X X'' → 𝔸f E) :
-    star (neighbourAxis X X'' P) ⬝ᵥ x =
+lemma star_neighborAxis_dotProduct (x : PairIndex X X'' → 𝔸f E) :
+    star (neighborAxis X X'' P) ⬝ᵥ x =
       x lastSource + (normNegOne (E := E) : 𝔸f E) * idem P * x lastTarget := by
-  simp [neighbourAxis, dotProduct, Fintype.sum_sum_type]
+  simp [neighborAxis, dotProduct, Fintype.sum_sum_type]
 
-/-- The vector `ρ = neighbourAxis X X'' P` satisfies `star ρ ⬝ᵥ ρ = 1` when `π` is a split
+/-- The vector `ρ = neighborAxis X X'' P` satisfies `star ρ ⬝ᵥ ρ = 1` when `π` is a split
 squarefree idele for `N` at `P` (`hπ`), so that `P` is disjoint from its conjugate. -/
-lemma star_neighbourAxis_dotProduct_self (hπ : IsSplitSquarefree P (N : E) π) :
-    star (neighbourAxis X X'' P) ⬝ᵥ neighbourAxis X X'' P = 1 := by
-  rw [star_neighbourAxis_dotProduct]
-  simp only [neighbourAxis, Sum.elim_inl, Sum.elim_inr, star_mul']
+lemma star_neighborAxis_dotProduct_self (hπ : IsSplitSquarefree P (N : E) π) :
+    star (neighborAxis X X'' P) ⬝ᵥ neighborAxis X X'' P = 1 := by
+  rw [star_neighborAxis_dotProduct]
+  simp only [neighborAxis, Sum.elim_inl, Sum.elim_inr, star_mul']
   -- The product at `e''` has the factor `j j̄ = 0`.
   grind [idem_mul_star hπ.isConjDisjoint]
 
-/-- Multiplication by `γ = neighbourMatrix X X'' P π` adds to a vector `x` the multiple `A ⟨ρ, x⟩ ρ`
-of `ρ`. Here `A` is `neighbourScale P π`, `ρ` is `neighbourAxis X X'' P`, and `⟨ρ, x⟩ = x
+/-- Multiplication by `γ = neighborMatrix X X'' P π` adds to a vector `x` the multiple `A ⟨ρ, x⟩ ρ`
+of `ρ`. Here `A` is `neighborScale P π`, `ρ` is `neighborAxis X X'' P`, and `⟨ρ, x⟩ = x
 lastSource + normNegOne * idem P * x lastTarget`. -/
-lemma neighbourMatrix_mulVec [DecidableEq X] [DecidableEq X'']
+lemma neighborMatrix_mulVec [DecidableEq X] [DecidableEq X'']
     (x : PairIndex X X'' → 𝔸f E) (i : PairIndex X X'') :
-    (neighbourMatrix X X'' P π *ᵥ x) i = x i + neighbourScale P π *
+    (neighborMatrix X X'' P π *ᵥ x) i = x i + neighborScale P π *
       (x lastSource + (normNegOne (E := E) : 𝔸f E) * idem P * x lastTarget) *
-        neighbourAxis X X'' P i := by
-  simp [neighbourMatrix, add_mulVec, smul_mulVec, vecMulVec_mulVec, star_neighbourAxis_dotProduct,
+        neighborAxis X X'' P i := by
+  simp [neighborMatrix, add_mulVec, smul_mulVec, vecMulVec_mulVec, star_neighborAxis_dotProduct,
     mul_comm, mul_left_comm]
 
 variable (X X'') in
-/-- The matrix `γ` (`neighbourMatrix`) as a finite point of the unitary group, for a split
+/-- The matrix `γ` (`neighborMatrix`) as a finite point of the unitary group, for a split
 squarefree idele `π` for `N` at `P`. -/
-def neighbourUnitary [DecidableEq X] [DecidableEq X'']
+def neighborUnitary [DecidableEq X] [DecidableEq X'']
     (hπ : IsSplitSquarefree P (N : E) π) : Gf E (PairIndex X X'') :=
-  U.of isUnit_one (neighbourMatrix X X'' P π) <| by
+  U.of isUnit_one (neighborMatrix X X'' P π) <| by
     rw [mul_one]
-    exact conjTranspose_mul_one_add_smul_vecMulVec (star_neighbourAxis_dotProduct_self hπ)
-      (star_one_add_neighbourScale_mul hπ)
+    exact conjTranspose_mul_one_add_smul_vecMulVec (star_neighborAxis_dotProduct_self hπ)
+      (star_one_add_neighborScale_mul hπ)
 
-/-- The matrix of `neighbourUnitary` is `γ`. -/
-lemma coe_neighbourUnitary [DecidableEq X] [DecidableEq X''] (hπ : IsSplitSquarefree P (N : E) π) :
-    (neighbourUnitary X X'' hπ : Matrix (PairIndex X X'') (PairIndex X X'') (𝔸f E)) =
-      neighbourMatrix X X'' P π :=
+/-- The matrix of `neighborUnitary` is `γ`. -/
+lemma coe_neighborUnitary [DecidableEq X] [DecidableEq X''] (hπ : IsSplitSquarefree P (N : E) π) :
+    (neighborUnitary X X'' hπ : Matrix (PairIndex X X'') (PairIndex X X'') (𝔸f E)) =
+      neighborMatrix X X'' P π :=
   rfl
 
 omit [Fintype X] [Fintype X''] [WeilData E] in
@@ -514,13 +514,13 @@ variable [DecidableEq X] [DecidableEq X'']
 /-- At a level prime `N` split as `P` and its conjugate, the matrix `γ` commutes with the diagonal
 matrix of the scaling factors `κ`: it differs from `1` only above `N`, where all of these factors
 are `1`. -/
-lemma commute_neighbourMatrix_diagonal (hP : IsSplitLevel P N)
-    (hκ : IsScalingAtM N β δ κ) : Commute (neighbourMatrix X X'' P π) (diagonal κ) := by
-  have h_scale (i : PairIndex X X'') : neighbourScale P π * κ i = neighbourScale P π := by
-    grind [neighbourScale, hκ.idem_mul_apply hP i, hκ.star_idem_mul_apply hP i]
+lemma commute_neighborMatrix_diagonal (hP : IsSplitLevel P N)
+    (hκ : IsScalingAtM N β δ κ) : Commute (neighborMatrix X X'' P π) (diagonal κ) := by
+  have h_scale (i : PairIndex X X'') : neighborScale P π * κ i = neighborScale P π := by
+    grind [neighborScale, hκ.idem_mul_apply hP i, hκ.star_idem_mul_apply hP i]
   ext i m : 1
   rw [mul_diagonal, diagonal_mul]
-  simp only [neighbourMatrix, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply]
+  simp only [neighborMatrix, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, Matrix.one_apply]
   grind [h_scale i, h_scale m]
 
 /-- The diagonal matrix of the factors `κ`, each of which has norm one, as a finite point of the
@@ -565,11 +565,11 @@ def kroneckerOne (ι : Type) [Fintype ι] [DecidableEq ι] : Gf E ι →* Gf E (
 that is the neighbour above `N` and has its rows scaled by `κ` elsewhere. -/
 def latticeUnitary (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
     Gf E (PairIndex X X'' × X') :=
-  kroneckerOne X' (PairIndex X X'') (neighbourUnitary X X'' hπ * scalingUnitary hκ)
+  kroneckerOne X' (PairIndex X X'') (neighborUnitary X X'' hπ * scalingUnitary hκ)
 
 /-- The image of the standard lattice under `latticeUnitary`. For a pair of edges it is the lattice
 `zeroTermLattice` of their splitting, by `DoubleLiftData.zeroTermLattice_splitting_eq`. -/
-def neighbourLattice (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
+def neighborLattice (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
     AddSubgroup (PairIndex X X'' × X' → 𝔸f E) :=
   (stdLattice E (PairIndex X X'' × X')).map
     (DistribSMul.toAddMonoidHom (PairIndex X X'' × X' → 𝔸f E) (latticeUnitary X' hπ hκ))
@@ -577,7 +577,7 @@ def neighbourLattice (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM 
 /-- The elements of the lattice that vanish above `N`. -/
 def awayLattice (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
     AddSubgroup (PairIndex X X'' × X' → 𝔸f E) :=
-  neighbourLattice X' hπ hκ ⊓ vanishingAbove (PairIndex X X'' × X') P
+  neighborLattice X' hπ hκ ⊓ vanishingAbove (PairIndex X X'' × X') P
 
 /-- The classes of `awayLattice` modulo its integral points. Only the rows scaled by `δ` can fail
 to be integral. -/
@@ -614,20 +614,20 @@ omit [Fintype X'] [DecidableEq X'] in
 /-- Let `π` be split squarefree for `N` at `P`, `j = idem P` the adele `1` at `P` and `0` elsewhere
 and `η = normNegOne` of norm `-1`. The matrix `x` has rows indexed by `PairIndex X X''`, with last
 indices `e = lastSource` and `e'' = lastTarget`, and columns by `X'`. Let
-`γ = neighbourMatrix X X'' P π`, let `ρ = neighbourAxis X X'' P = e + η̄ j̄ e''` and, for residues
-`y` modulo `N` at the places of `P`, let `n y = neighbourTranslation X X'' y` be the matrix with row
+`γ = neighborMatrix X X'' P π`, let `ρ = neighborAxis X X'' P = e + η̄ j̄ e''` and, for residues
+`y` modulo `N` at the places of `P`, let `n y = neighborTranslation X X'' y` be the matrix with row
 `η ȳ / N` at `e`, row `-ȳ / N` at `e''` and zero elsewhere. After multiplication by `j̄`, each
 column of `γ x + n y` is that of `x` plus `ρ` times `j̄ (π̄⁻¹ x_e + η ȳ / N) - j̄ x_e`. -/
-lemma star_idem_mul_neighbour_add_translation (hπ : IsSplitSquarefree P (N : E) π)
+lemma star_idem_mul_neighbor_add_translation (hπ : IsSplitSquarefree P (N : E) π)
     (x : PairIndex X X'' × X' → 𝔸f E) (y : X' → P → ZMod N) (i : PairIndex X X'' × X') :
-    star (idem P) * ((neighbourMatrix X X'' P π *ᵥ fun l : PairIndex X X'' ↦ x (l, i.2)) i.1 +
-        neighbourTranslation X X'' y i) =
-      star (idem P) * x i + neighbourAxis X X'' P i.1 *
+    star (idem P) * ((neighborMatrix X X'' P π *ᵥ fun l : PairIndex X X'' ↦ x (l, i.2)) i.1 +
+        neighborTranslation X X'' y i) =
+      star (idem P) * x i + neighborAxis X X'' P i.1 *
         (star (idem P) * (star (↑π⁻¹ : 𝔸f E) * x (lastSource, i.2) +
           (normNegOne (E := E) : 𝔸f E) * star (residueOverN (y i.2))) -
             star (idem P) * x (lastSource, i.2)) := by
   obtain ⟨b, a⟩ := i
-  simp only [neighbourMatrix_mulVec, neighbourTranslation, neighbourScale]
+  simp only [neighborMatrix_mulVec, neighborTranslation, neighborScale]
   have h_star_sq : star (idem P) * star (idem P) = (star (idem P) : 𝔸f E) :=
     star_idem_mul_self _
   have h_disjoint : idem P * star (idem P) = (0 : 𝔸f E) := idem_mul_star hπ.isConjDisjoint
@@ -636,7 +636,7 @@ lemma star_idem_mul_neighbour_add_translation (hπ : IsSplitSquarefree P (N : E)
   rcases b with (b | b) | (b | b)
   -- The four kinds of row index differ only in the entries of `ρ` and of `n y`.
   all_goals
-    simp only [neighbourAxis, star_mul', Sum.elim_inl, Sum.elim_inr, Pi.zero_apply]
+    simp only [neighborAxis, star_mul', Sum.elim_inl, Sum.elim_inr, Pi.zero_apply]
     grind
 
 /-- Let the prime `N` be split as `P` and its conjugate, let `π` be split squarefree for `N` at `P`,
@@ -686,44 +686,44 @@ lemma exists_class_star_idem_mul_mem_iff [Fact N.Prime] (hP : IsSplitLevel P N)
 
 /-- Let the prime `N` be split as `P` and its conjugate and `π` split squarefree for `N` at `P`.
 `kroneckerOne` lets the unitary `γ` act on each column. Let `η = normNegOne` have norm `-1`. For
-residues `y` modulo `N` at `P`, `n y = neighbourTranslation X X'' y` has row `η ȳ / N` at `e`, row
+residues `y` modulo `N` at `P`, `n y = neighborTranslation X X'' y` has row `η ȳ / N` at `e`, row
 `-ȳ / N` at `e''` and zero elsewhere. At the places conjugate to `P`, `γ x + n y` is integral for
 exactly one `y` if `x` is integral there, and for none otherwise. -/
-lemma exists_add_neighbourTranslation_mem_iff [Fact N.Prime] (hP : IsSplitLevel P N)
+lemma exists_add_neighborTranslation_mem_iff [Fact N.Prime] (hP : IsSplitLevel P N)
     (hπ : IsSplitSquarefree P (N : E) π) (x : PairIndex X X'' × X' → 𝔸f E) :
     ∃ y₀ : X' → P → ZMod N, ∀ y : X' → P → ZMod N,
-      kroneckerOne X' (PairIndex X X'') (neighbourUnitary X X'' hπ) • x +
-          neighbourTranslation X X'' y ∈ integralBox (PairIndex X X'' × X')
+      kroneckerOne X' (PairIndex X X'') (neighborUnitary X X'' hπ) • x +
+          neighborTranslation X X'' y ∈ integralBox (PairIndex X X'' × X')
           (star ⁻¹' (P : Set (FinPlace E))) ↔
         x ∈ integralBox (PairIndex X X'' × X') (star ⁻¹' (P : Set (FinPlace E))) ∧ y₀ = y := by
   -- In column `a`, take the residues attached to the entry of `x` at `lastSource`.
   choose y₀ hy₀ using fun a : X' ↦ exists_class_star_idem_mul_mem_iff hP hπ (x (lastSource, a))
   refine ⟨y₀, fun y ↦ ?_⟩
   simp only [mem_integralBox, ← star_idem, Pi.add_apply, kroneckerOne_smul,
-    coe_neighbourUnitary, star_idem_mul_neighbour_add_translation hπ]
+    coe_neighborUnitary, star_idem_mul_neighbor_add_translation hπ]
   refine ⟨fun h ↦ ?_, fun ⟨hx, hy⟩ i ↦ ?_⟩
   · -- The row at `lastSource` decides the residues; then, times `j̄`, all entries differ from those
     -- of `x` by integral adeles.
     have h_row (a : X') : star (idem P) * (star (↑π⁻¹ : 𝔸f E) * x (lastSource, a) +
         (normNegOne (E := E) : 𝔸f E) * star (residueOverN (y a))) ∈ Ô E := by
-      simpa [neighbourAxis] using h (lastSource, a)
+      simpa [neighborAxis] using h (lastSource, a)
     have h_residues (a : X') : star (idem P) * x (lastSource, a) ∈ Ô E ∧ y₀ a = y a :=
       (hy₀ a (y a)).1 (h_row a)
     refine ⟨fun i ↦ ?_, funext fun a ↦ (h_residues a).2⟩
     exact (add_mem_cancel_right
-      (mul_mem (neighbourAxis_mem i.1) (sub_mem (h_row i.2) (h_residues i.2).1))).1 (h i)
-  · exact add_mem (hx i) (mul_mem (neighbourAxis_mem i.1)
+      (mul_mem (neighborAxis_mem i.1) (sub_mem (h_row i.2) (h_residues i.2).1))).1 (h i)
+  · exact add_mem (hx i) (mul_mem (neighborAxis_mem i.1)
       (sub_mem ((hy₀ i.2 (y i.2)).2 ⟨hx (lastSource, i.2), congrFun hy i.2⟩)
         (hx (lastSource, i.2))))
 
 omit [Fintype X] [Fintype X'] [Fintype X''] [DecidableEq X] [DecidableEq X'] [DecidableEq X''] in
-/-- The translation `n y = neighbourTranslation X X'' y` is supported at the places conjugate to
+/-- The translation `n y = neighborTranslation X X'' y` is supported at the places conjugate to
 `P`: multiplication by `star (idem P)`, the idempotent `j̄` of these places, fixes it. -/
-lemma star_idem_smul_neighbourTranslation [Fact N.Prime] (y : X' → P → ZMod N) :
-    star (idem P : 𝔸f E) • neighbourTranslation X X'' y = neighbourTranslation X X'' y := by
+lemma star_idem_smul_neighborTranslation [Fact N.Prime] (y : X' → P → ZMod N) :
+    star (idem P : 𝔸f E) • neighborTranslation X X'' y = neighborTranslation X X'' y := by
   ext1 ⟨i, a⟩
   rcases i with (i | i) | (i | i) <;>
-    simp [neighbourTranslation, mul_left_comm _ (normNegOne (E := E) : 𝔸f E),
+    simp [neighborTranslation, mul_left_comm _ (normNegOne (E := E) : 𝔸f E),
       star_idem_mul_star_residueOverN (y a)]
 
 omit [WeilData E] in
@@ -736,19 +736,19 @@ lemma kroneckerOne_scalingUnitary_smul (hκ : IsScalingAtM N β δ κ)
   exact mulVec_diagonal κ _ i.1
 
 /-- For a split level `N` with chosen places `P`, the matrix of `latticeUnitary` is
-`(diagonal κ * γ) ⊗ 1`, where `γ = neighbourMatrix X X'' P π`. -/
+`(diagonal κ * γ) ⊗ 1`, where `γ = neighborMatrix X X'' P π`. -/
 lemma coe_latticeUnitary (hP : IsSplitLevel P N)
     (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) :
     (latticeUnitary X' hπ hκ : Matrix (PairIndex X X'' × X') (PairIndex X X'' × X') (𝔸f E)) =
-      (diagonal κ * neighbourMatrix X X'' P π) ⊗ₖ (1 : Matrix X' X' (𝔸f E)) := by
-  rw [latticeUnitary, coe_kroneckerOne, ← (commute_neighbourMatrix_diagonal hP hκ).eq]
+      (diagonal κ * neighborMatrix X X'' P π) ⊗ₖ (1 : Matrix X' X' (𝔸f E)) := by
+  rw [latticeUnitary, coe_kroneckerOne, ← (commute_neighborMatrix_diagonal hP hκ).eq]
   rfl
 
 /-- Acting by `latticeUnitary` means scaling the rows by `κ`, then acting by `γ ⊗ 1`. -/
 lemma latticeUnitary_smul (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
     (x : PairIndex X X'' × X' → 𝔸f E) :
     latticeUnitary X' hπ hκ • x =
-      kroneckerOne X' (PairIndex X X'') (neighbourUnitary X X'' hπ) •
+      kroneckerOne X' (PairIndex X X'') (neighborUnitary X X'' hπ) •
         fun i : PairIndex X X'' × X' ↦ κ i.1 * x i := by
   rw [latticeUnitary, map_mul, mul_smul, funext (kroneckerOne_scalingUnitary_smul hκ x)]
 
@@ -765,7 +765,7 @@ section AwayFromN
 
 /-- Let `π` be split squarefree for `N` at `P`, and let `κ` be row factors that are `1` or a fixed
 adele `δ` of norm one (`IsScalingAtM`). The unitary `latticeUnitary` is `(γ κ) ⊗ 1` for
-`γ = neighbourMatrix X X'' P π`. On a matrix `x` that vanishes at `P` and its conjugate, where `γ`
+`γ = neighborMatrix X X'' P π`. On a matrix `x` that vanishes at `P` and its conjugate, where `γ`
 acts trivially, it multiplies row `b` by `κ b`. -/
 lemma latticeUnitary_smul_of_mem_vanishingAbove {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
     {κ : PairIndex X X'' → 𝔸f E} [DecidableEq X] [DecidableEq X'']
@@ -775,23 +775,23 @@ lemma latticeUnitary_smul_of_mem_vanishingAbove {π : (𝔸f E)ˣ} {β : Ô E} {
   have h_zero (i : PairIndex X X'' × X') : (idem P + star (idem P)) * x i = 0 := by
     simpa [← idem_conjClosure_eq_add_star hπ.isConjDisjoint] using
       congrFun (mem_vanishingAbove.1 hx) i
-  have h_scale (i : PairIndex X X'' × X') : neighbourScale P π * x i = 0 := by
-    grind [neighbourScale, h_zero i, idem_mul_self (P : Set (FinPlace E)),
+  have h_scale (i : PairIndex X X'' × X') : neighborScale P π * x i = 0 := by
+    grind [neighborScale, h_zero i, idem_mul_self (P : Set (FinPlace E)),
       star_idem_mul_self (P : Set (FinPlace E)), idem_mul_star hπ.isConjDisjoint]
   ext1 i
-  simp only [latticeUnitary_smul, kroneckerOne_smul, coe_neighbourUnitary, neighbourMatrix_mulVec]
+  simp only [latticeUnitary_smul, kroneckerOne_smul, coe_neighborUnitary, neighborMatrix_mulVec]
   grind [h_scale (lastSource, i.2), h_scale (lastTarget, i.2)]
 
 /-- Let `π` be split squarefree for `N` at `P`. Let `κ` be row factors that are `1` or a fixed adele
 `δ` of norm one, with denominators bounded by `β` and `β̄` (`IsScalingAtM`). Off `P` and its
-conjugate, `neighbourLattice` is the standard lattice with its rows scaled by `κ`: if a matrix `x`
-vanishes at `P` and its conjugate and lies in `neighbourLattice`, then `κ⁻¹ x = κ̄ x` has integral
+conjugate, `neighborLattice` is the standard lattice with its rows scaled by `κ`: if a matrix `x`
+vanishes at `P` and its conjugate and lies in `neighborLattice`, then `κ⁻¹ x = κ̄ x` has integral
 entries. -/
-lemma star_mul_mem_of_mem_neighbourLattice {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
+lemma star_mul_mem_of_mem_neighborLattice {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
     {κ : PairIndex X X'' → 𝔸f E} [DecidableEq X] [DecidableEq X'']
     (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
     {x : PairIndex X X'' × X' → 𝔸f E} (hx : x ∈ vanishingAbove (PairIndex X X'' × X') P)
-    (hmem : x ∈ neighbourLattice X' hπ hκ) (i : PairIndex X X'' × X') :
+    (hmem : x ∈ neighborLattice X' hπ hκ) (i : PairIndex X X'' × X') :
     star (κ i.1) * x i ∈ Ô E := by
   -- The matrix `x` is the image of `κ̄ x`.
   have h_vanish : (fun i ↦ star (κ i.1) * x i) ∈ vanishingAbove (PairIndex X X'' × X') P :=
@@ -806,7 +806,7 @@ lemma star_mul_mem_of_mem_neighbourLattice {π : (𝔸f E)ˣ} {β : Ô E} {δ : 
 
 /-- Let `π` be split squarefree for `N` at `P`, and let `κ` be row factors of norm one with
 denominator at most `β` in the first block and `β̄` in the second (`IsScalingAtM`). An element of
-`awayLattice`, the part of `neighbourLattice` that vanishes at `P` and its conjugate, is `κ` times
+`awayLattice`, the part of `neighborLattice` that vanishes at `P` and its conjugate, is `κ` times
 an integral matrix. So its rows, times `β` in the first block and `β̄` in the second, are integral
 at every place, in particular at those not dividing `n`, as `weightedTranslations n` asks. -/
 lemma awayLattice_le_weightedTranslations {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
@@ -819,13 +819,13 @@ lemma awayLattice_le_weightedTranslations {π : (𝔸f E)ˣ} {β : Ô E} {δ : �
     linear_combination -(selfOrConj β i.1 * x i) * hκ.apply_mul_star_eq_one i.1
   rw [h_eq]
   exact mem_Ô.1 (mul_mem (hκ.selfOrConj_mul_mem i.1)
-    (star_mul_mem_of_mem_neighbourLattice hπ hκ hx_zero hx i)) w
+    (star_mul_mem_of_mem_neighborLattice hπ hκ hx_zero hx i)) w
 
 /-- Let `π` be split squarefree for `N` at `P` (`IsSplitSquarefree`): `N = π π̄`, `π` is a
 uniformiser on `P` and a unit elsewhere, and `P` does not meet its conjugate. Let `κ` be row factors
 that are `1` or a fixed adele `δ`, with denominator at most `β̄` (`IsScalingAtM`). The matrices have
 rows indexed by `PairIndex X X''`, the basis indices of a sum of two definite spaces, and columns
-indexed by `X'`. The group `awayLattice` consists of the matrices in `neighbourLattice` that vanish
+indexed by `X'`. The group `awayLattice` consists of the matrices in `neighborLattice` that vanish
 at `P` and its conjugate. `AwayLatticeQuotient` is its quotient by the matrices all of whose entries
 lie in the integral adeles `Ô E`. The order of this quotient divides the number of such matrices
 with entries in `Ô E ⧸ (β)`. -/
@@ -838,7 +838,7 @@ lemma card_awayLatticeQuotient_dvd {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
   -- matrix, hence integral.
   have h_int (x : awayLattice X' hπ hκ) (i : PairIndex X X'' × X') :
       star (κ i.1) * x.val i ∈ Ô E :=
-    star_mul_mem_of_mem_neighbourLattice hπ hκ x.property.2 x.property.1 i
+    star_mul_mem_of_mem_neighborLattice hπ hκ x.property.2 x.property.1 i
   let reduction : awayLattice X' hπ hκ →+ PairIndex X X'' × X' → Ô E ⧸ Ideal.span {β} :=
     AddMonoidHom.mk' (fun x i ↦ Ideal.Quotient.mk _ (star ⟨_, h_int x i⟩)) fun x y ↦ by
       ext i
@@ -863,63 +863,63 @@ end AwayFromN
 /-- Let the prime `N` be split as `P` and its conjugate, let `N = π π̄` with `π` a uniformiser on
 `P` and a unit elsewhere, and let `κ` be row factors that are `1` or `δ`, where `δ` is `1` above `N`
 (`IsScalingAtM`). Then every translation `n y` attached to residues `y` modulo `N` at `P` lies in
-`neighbourLattice`, the image of the standard lattice under `(γ κ) ⊗ 1` for
-`γ = neighbourMatrix X X'' P π`. -/
-lemma neighbourTranslation_mem_neighbourLattice {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
+`neighborLattice`, the image of the standard lattice under `(γ κ) ⊗ 1` for
+`γ = neighborMatrix X X'' P π`. -/
+lemma neighborTranslation_mem_neighborLattice {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
     {κ : PairIndex X X'' → 𝔸f E} [DecidableEq X] [DecidableEq X''] [Fact N.Prime]
     (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
-    (y : X' → P → ZMod N) : neighbourTranslation X X'' y ∈ neighbourLattice X' hπ hκ := by
+    (y : X' → P → ZMod N) : neighborTranslation X X'' y ∈ neighborLattice X' hπ hκ := by
   -- Write `-n y = γ x`; then `x` is integral at `star ⁻¹' P`.
-  set γ := kroneckerOne X' (PairIndex X X'') (neighbourUnitary X X'' hπ)
-  set x := γ⁻¹ • (-neighbourTranslation X X'' y)
-  have hx : γ • x = -neighbourTranslation X X'' y := smul_inv_smul γ _
-  obtain ⟨_, hy₀⟩ := exists_add_neighbourTranslation_mem_iff hP hπ x
+  set γ := kroneckerOne X' (PairIndex X X'') (neighborUnitary X X'' hπ)
+  set x := γ⁻¹ • (-neighborTranslation X X'' y)
+  have hx : γ • x = -neighborTranslation X X'' y := smul_inv_smul γ _
+  obtain ⟨_, hy₀⟩ := exists_add_neighborTranslation_mem_iff hP hπ x
   refine ⟨fun i ↦ -(star (idem P) * x i), fun i ↦ neg_mem ?_, ?_⟩
   · simpa [star_idem] using mem_integralBox.1 ((hy₀ y).1 (by simp [γ, hx])).1 i
   · have h_scaled : (fun i ↦ κ i.1 * -(star (idem P) * x i)) = -(star (idem P : 𝔸f E) • x) :=
       funext fun i ↦ by simp [mul_left_comm (κ i.1), ← mul_assoc, hκ.star_idem_mul_apply hP i.1]
     have h_comm : γ • star (idem P : 𝔸f E) • x = star (idem P : 𝔸f E) • γ • x := mulVec_smul ..
     rw [DistribSMul.toAddMonoidHom_apply, latticeUnitary_smul, h_scaled, smul_neg, h_comm, hx,
-      smul_neg, neg_neg, star_idem_smul_neighbourTranslation]
+      smul_neg, neg_neg, star_idem_smul_neighborTranslation]
 
 /-- Let `N = π π̄` with `π` a uniformiser on `P` and a unit elsewhere, and let `P` be disjoint from
 its conjugate (`IsSplitSquarefree`). An adele is integral at `P` if its product with `idem P`,
 which is `1` at `P` and `0` elsewhere, is integral. The matrices have rows indexed by
 `PairIndex X X''`, with last indices `e` and `e''`, and columns by `X'`; `kroneckerOne` lets the
-unitary `γ` (`neighbourUnitary`, with matrix `neighbourMatrix X X'' P π`) act on each column, and
-`n y = neighbourTranslation X X'' y` has row `η ȳ / N` at `e` and `-ȳ / N` at `e''`, both
+unitary `γ` (`neighborUnitary`, with matrix `neighborMatrix X X'' P π`) act on each column, and
+`n y = neighborTranslation X X'' y` has row `η ȳ / N` at `e` and `-ȳ / N` at `e''`, both
 supported at the places conjugate to `P`. If `z` is integral at `P`, then so is `γ z + n y`: at
 `P`, `γ` is integral and `n y` is `0`. -/
-lemma idem_mul_neighbour_add_translation_mem {π : (𝔸f E)ˣ} [DecidableEq X] [DecidableEq X'']
+lemma idem_mul_neighbor_add_translation_mem {π : (𝔸f E)ˣ} [DecidableEq X] [DecidableEq X'']
     [Fact N.Prime] (hπ : IsSplitSquarefree P (N : E) π)
     {z : PairIndex X X'' × X' → 𝔸f E} (hz : ∀ i : PairIndex X X'' × X', idem P * z i ∈ Ô E)
     (y : X' → P → ZMod N) (i : PairIndex X X'' × X') :
-    idem P * (kroneckerOne X' (PairIndex X X'') (neighbourUnitary X X'' hπ) • z +
-      neighbourTranslation X X'' y) i ∈ Ô E := by
-  have h_translation : idem P * neighbourTranslation X X'' y i = 0 := by
+    idem P * (kroneckerOne X' (PairIndex X X'') (neighborUnitary X X'' hπ) • z +
+      neighborTranslation X X'' y) i ∈ Ô E := by
+  have h_translation : idem P * neighborTranslation X X'' y i = 0 := by
     simpa [← mul_assoc, idem_mul_star hπ.isConjDisjoint] using
-      congrArg (idem P * ·) (congrFun (star_idem_smul_neighbourTranslation y) i).symm
+      congrArg (idem P * ·) (congrFun (star_idem_smul_neighborTranslation y) i).symm
   set c : 𝔸f E := idem P * z (lastSource, i.2) +
     (normNegOne (E := E) : 𝔸f E) * (idem P * z (lastTarget, i.2)) with hc
-  have h_entry : idem P * (neighbourMatrix X X'' P π *ᵥ fun l ↦ z (l, i.2)) i.1 =
-      idem P * z i + ((π : 𝔸f E) - 1) * c * neighbourAxis X X'' P i.1 := by
-    rw [neighbourMatrix_mulVec, neighbourScale, hc]
+  have h_entry : idem P * (neighborMatrix X X'' P π *ᵥ fun l ↦ z (l, i.2)) i.1 =
+      idem P * z i + ((π : 𝔸f E) - 1) * c * neighborAxis X X'' P i.1 := by
+    rw [neighborMatrix_mulVec, neighborScale, hc]
     grind [idem_mul_self (P : Set (FinPlace E)), idem_mul_star hπ.isConjDisjoint]
-  rw [Pi.add_apply, mul_add, h_translation, add_zero, kroneckerOne_smul, coe_neighbourUnitary,
+  rw [Pi.add_apply, mul_add, h_translation, add_zero, kroneckerOne_smul, coe_neighborUnitary,
     h_entry]
   exact add_mem (hz i) (mul_mem (mul_mem (sub_mem hπ.mem_integralAdeles (one_mem _))
-    (add_mem (hz _) (mul_mem normNegOne_mem (hz _)))) (neighbourAxis_mem i.1))
+    (add_mem (hz _) (mul_mem normNegOne_mem (hz _)))) (neighborAxis_mem i.1))
 
 /-- Let the prime `N` be split as `P` and its conjugate, let `N = π π̄` with `π` a uniformiser on
 `P` and a unit elsewhere, and let `κ` be row factors that are `1` above `N` (`IsScalingAtM`). Above
-`N` the translations `n y` represent `neighbourLattice` modulo its integral points: for each element
+`N` the translations `n y` represent `neighborLattice` modulo its integral points: for each element
 `x` there is exactly one family `y` of residues modulo `N` at `P` such that `x + n y` is integral at
 `P` and its conjugate, the places above `N`. -/
-lemma existsUnique_add_neighbourTranslation_mem {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
+lemma existsUnique_add_neighborTranslation_mem {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
     {κ : PairIndex X X'' → 𝔸f E} [DecidableEq X] [DecidableEq X''] [Fact N.Prime]
     (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
-    {x : PairIndex X X'' × X' → 𝔸f E} (hx : x ∈ neighbourLattice X' hπ hκ) :
-    ∃! y : X' → P → ZMod N, x + neighbourTranslation X X'' y ∈
+    {x : PairIndex X X'' × X' → 𝔸f E} (hx : x ∈ neighborLattice X' hπ hκ) :
+    ∃! y : X' → P → ZMod N, x + neighborTranslation X X'' y ∈
       integralBox (PairIndex X X'' × X') (P : Set (FinPlace E)).conjClosure := by
   obtain ⟨x₀, hx₀, rfl⟩ := hx
   set z : PairIndex X X'' × X' → 𝔸f E := fun i ↦ κ i.1 * x₀ i with hz
@@ -930,90 +930,90 @@ lemma existsUnique_add_neighbourTranslation_mem {π : (𝔸f E)ˣ} {β : Ô E} {
     simpa only [mem_integralBox, hz, ← star_idem, ← mul_assoc, hκ.star_idem_mul_apply hP] using
       fun i ↦ mul_mem (star_mem_Ô (idem_mem_Ô _)) (hx₀ i)
   -- At the places conjugate to `P`, the sum `γ z + n y` is integral for exactly one family `y₀`.
-  obtain ⟨y₀, hy₀⟩ := exists_add_neighbourTranslation_mem_iff hP hπ z
+  obtain ⟨y₀, hy₀⟩ := exists_add_neighborTranslation_mem_iff hP hπ z
   have h_iff (y : X' → P → ZMod N) :
-      latticeUnitary X' hπ hκ • x₀ + neighbourTranslation X X'' y ∈
+      latticeUnitary X' hπ hκ • x₀ + neighborTranslation X X'' y ∈
         integralBox (PairIndex X X'' × X') (P : Set (FinPlace E)).conjClosure ↔ y₀ = y := by
     -- At `P` the sum is integral, so only the conjugate places count.
-    have h_conj : kroneckerOne X' (PairIndex X X'') (neighbourUnitary X X'' hπ) • z +
-        neighbourTranslation X X'' y ∈ integralBox (PairIndex X X'' × X')
+    have h_conj : kroneckerOne X' (PairIndex X X'') (neighborUnitary X X'' hπ) • z +
+        neighborTranslation X X'' y ∈ integralBox (PairIndex X X'' × X')
           (star ⁻¹' (P : Set (FinPlace E))) ↔ y₀ = y :=
       (hy₀ y).trans (and_iff_right hz_box)
     simp only [← h_conj, latticeUnitary_smul, ← hz, mem_integralBox, add_mul, ← star_idem,
       idem_conjClosure_eq_add_star hπ.isConjDisjoint,
-      add_mem_cancel_left (idem_mul_neighbour_add_translation_mem hπ hz_idem y _)]
+      add_mem_cancel_left (idem_mul_neighbor_add_translation_mem hπ hz_idem y _)]
   exact ⟨y₀, (h_iff y₀).2 rfl, fun y hy ↦ ((h_iff y).1 hy).symm⟩
 
 omit [Fintype X] [Fintype X'] [Fintype X''] [DecidableEq X'] in
-/-- Under `hπ`, the translations `n y = neighbourTranslation X X'' y` are supported above `N`:
+/-- Under `hπ`, the translations `n y = neighborTranslation X X'' y` are supported above `N`:
 multiplication by the idempotent `idem` of `P` and its conjugate places fixes them. -/
-lemma idem_conjClosure_smul_neighbourTranslation {π : (𝔸f E)ˣ} [Fact N.Prime]
+lemma idem_conjClosure_smul_neighborTranslation {π : (𝔸f E)ˣ} [Fact N.Prime]
     (hπ : IsSplitSquarefree P (N : E) π) (y : X' → P → ZMod N) :
-    (idem (P : Set (FinPlace E)).conjClosure : 𝔸f E) • neighbourTranslation X X'' y =
-      neighbourTranslation X X'' y := by
-  rw [← star_idem_smul_neighbourTranslation, smul_smul,
+    (idem (P : Set (FinPlace E)).conjClosure : 𝔸f E) • neighborTranslation X X'' y =
+      neighborTranslation X X'' y := by
+  rw [← star_idem_smul_neighborTranslation, smul_smul,
     idem_conjClosure_eq_add_star hπ.isConjDisjoint,
     add_mul, idem_mul_star hπ.isConjDisjoint, star_idem_mul_self, zero_add]
 
-/-- The representative `n y + t`, where `n y = neighbourTranslation X X'' y` is attached to residues
+/-- The representative `n y + t`, where `n y = neighborTranslation X X'' y` is attached to residues
 `y` at `P` and `t` is the chosen representative of a class in `AwayLatticeQuotient`. -/
-def neighbourCosetRep {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E} {κ : PairIndex X X'' → 𝔸f E}
+def neighborCosetRep {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E} {κ : PairIndex X X'' → 𝔸f E}
     [DecidableEq X] [DecidableEq X'']
     {hπ : IsSplitSquarefree P (N : E) π} {hκ : IsScalingAtM N β δ κ}
     (a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ) : PairIndex X X'' × X' → 𝔸f E :=
-  neighbourTranslation X X'' a.1 + a.2.out.val
+  neighborTranslation X X'' a.1 + a.2.out.val
 
 /-- Let `N` be prime, `IsSplitLevel P N`, `IsSplitSquarefree P (N : E) π` and
-`IsScalingAtM N β δ κ`. Then `neighbourCosetRep a` lies in `neighbourLattice X' hπ hκ`, the image of
+`IsScalingAtM N β δ κ`. Then `neighborCosetRep a` lies in `neighborLattice X' hπ hκ`, the image of
 the standard lattice under `latticeUnitary`. -/
-lemma neighbourCosetRep_mem_neighbourLattice {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
+lemma neighborCosetRep_mem_neighborLattice {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
     {κ : PairIndex X X'' → 𝔸f E} [DecidableEq X] [DecidableEq X''] [Fact N.Prime]
     (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
     (a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ) :
-      neighbourCosetRep a ∈ neighbourLattice X' hπ hκ :=
-  add_mem (neighbourTranslation_mem_neighbourLattice hP hπ hκ a.1) a.2.out.property.1
+      neighborCosetRep a ∈ neighborLattice X' hπ hκ :=
+  add_mem (neighborTranslation_mem_neighborLattice hP hπ hκ a.1) a.2.out.property.1
 
 /-- Let the prime `N` be split as `P` and its conjugate, let `N = π π̄` with `π` a uniformiser on
 `P` and a unit elsewhere, and let `κ` be row factors that are `1` above `N` (`IsScalingAtM`). Then
-each `z` in `neighbourLattice` differs by a matrix with integral entries (`stdLattice`) from
-`neighbourCosetRep (y, q)` for exactly one pair `(y, q)`. Here `y` is a family of residues modulo
+each `z` in `neighborLattice` differs by a matrix with integral entries (`stdLattice`) from
+`neighborCosetRep (y, q)` for exactly one pair `(y, q)`. Here `y` is a family of residues modulo
 `N` at `P`, `q` is a class of lattice elements vanishing above `N` modulo integral ones, and
-`neighbourCosetRep (y, q)` is `neighbourTranslation X X'' y` plus the chosen representative of
+`neighborCosetRep (y, q)` is `neighborTranslation X X'' y` plus the chosen representative of
 `q`. -/
-lemma existsUnique_sub_neighbourCosetRep_mem {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
+lemma existsUnique_sub_neighborCosetRep_mem {π : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
     {κ : PairIndex X X'' → 𝔸f E} [DecidableEq X] [DecidableEq X''] [Fact N.Prime]
     (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
-    {z : PairIndex X X'' × X' → 𝔸f E} (hz : z ∈ neighbourLattice X' hπ hκ) :
+    {z : PairIndex X X'' × X' → 𝔸f E} (hz : z ∈ neighborLattice X' hπ hκ) :
     ∃! a : (X' → P → ZMod N) × AwayLatticeQuotient X' hπ hκ,
-      z - neighbourCosetRep a ∈ stdLattice E (PairIndex X X'' × X') := by
+      z - neighborCosetRep a ∈ stdLattice E (PairIndex X X'' × X') := by
   -- The part of `z` above `N` decides `y`; the part `z'` away from `N` decides the class `q`.
   set e : 𝔸f E := idem (P : Set (FinPlace E)).conjClosure
-  have h_above : e • z ∈ neighbourLattice X' hπ hκ := by
+  have h_above : e • z ∈ neighborLattice X' hπ hκ := by
     obtain ⟨x, hx, rfl⟩ := hz
     exact ⟨e • x, smul_mem_stdLattice (idem_mem_Ô _) hx, mulVec_smul ..⟩
   let z' : awayLattice X' hπ hκ :=
     ⟨z - e • z, AddSubgroup.mem_inf.2 ⟨sub_mem hz h_above, sub_idem_smul_mem_vanishingAbove z⟩⟩
   obtain ⟨y₀, hy₀, hy₀_unique⟩ :
-      ∃! y : X' → P → ZMod N, e • (-z + neighbourTranslation X X'' y) ∈ stdLattice E _ :=
-    existsUnique_add_neighbourTranslation_mem hP hπ hκ (neg_mem hz)
+      ∃! y : X' → P → ZMod N, e • (-z + neighborTranslation X X'' y) ∈ stdLattice E _ :=
+    existsUnique_add_neighborTranslation_mem hP hπ hκ (neg_mem hz)
   have h_iff (y : X' → P → ZMod N) (q : AwayLatticeQuotient X' hπ hκ) :
-      z - neighbourCosetRep (y, q) ∈ stdLattice E _ ↔
-        e • (-z + neighbourTranslation X X'' y) ∈ stdLattice E _ ∧ q = z' := by
-    have h_part : e • (z - neighbourCosetRep (y, q)) =
-      -(e • (-z + neighbourTranslation X X'' y)) := by
-      rw [neighbourCosetRep, smul_sub, smul_add, mem_vanishingAbove.1 q.out.property.2, smul_add,
+      z - neighborCosetRep (y, q) ∈ stdLattice E _ ↔
+        e • (-z + neighborTranslation X X'' y) ∈ stdLattice E _ ∧ q = z' := by
+    have h_part : e • (z - neighborCosetRep (y, q)) =
+      -(e • (-z + neighborTranslation X X'' y)) := by
+      rw [neighborCosetRep, smul_sub, smul_add, mem_vanishingAbove.1 q.out.property.2, smul_add,
         smul_neg]
       abel
-    have h_split : z - neighbourCosetRep (y, q) =
-        -(e • (-z + neighbourTranslation X X'' y)) + (-q.out.val + (z - e • z)) := by
-      rw [neighbourCosetRep, smul_add, smul_neg, idem_conjClosure_smul_neighbourTranslation hπ]
+    have h_split : z - neighborCosetRep (y, q) =
+        -(e • (-z + neighborTranslation X X'' y)) + (-q.out.val + (z - e • z)) := by
+      rw [neighborCosetRep, smul_add, smul_neg, idem_conjClosure_smul_neighborTranslation hπ]
       abel
     have h_class : q = z' ↔ -q.out.val + (z - e • z) ∈ stdLattice E _ := by
       conv_lhs => rw [← q.out_eq', QuotientAddGroup.eq]
       rfl
     rw [h_class]
     refine ⟨fun h ↦ ?_, fun ⟨h_int, h_away⟩ ↦ ?_⟩
-    · have h_neg : -(e • (-z + neighbourTranslation X X'' y)) ∈ stdLattice E _ :=
+    · have h_neg : -(e • (-z + neighborTranslation X X'' y)) ∈ stdLattice E _ :=
         by simpa only [← h_part] using smul_mem_stdLattice (idem_mem_Ô _) h
       rw [h_split, add_mem_cancel_left h_neg] at h
       exact ⟨neg_mem_iff.1 h_neg, h⟩

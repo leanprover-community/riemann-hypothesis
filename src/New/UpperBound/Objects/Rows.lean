@@ -699,51 +699,51 @@ lemma hcParameter_descentPair (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex) {p
     omega
   exact hcParameter_eq_of_steps τ L h_step ha h_agree p hp
 
-/-- The system of centres (`New.CentreSystem`) at τ for the j-th descent pair: its stem is the
+/-- The system of centres (`New.CenterSystem`) at τ for the j-th descent pair: its stem is the
 doubled target parameter {2ς_p : p < r}, and its only centre is the down centre `.inr (j - 1)`, at
 −w_j and with a block of length t. -/
-def descentCentres (τ : D.Φ) (j : D.LiftIndex) : CentreSystem (ℕ ⊕ ℕ) :=
-  { D.gridCentres τ false with centres := {.inr (j - 1)} }
+def descentCenters (τ : D.Φ) (j : D.LiftIndex) : CenterSystem (ℕ ⊕ ℕ) :=
+  { D.gridCenters τ false with centers := {.inr (j - 1)} }
 
-/-- The value of the centre `.inr (j - 1)` of `D.descentCentres τ j` is `-D.liftWeight j τ`, minus
+/-- The value of the centre `.inr (j - 1)` of `D.descentCenters τ j` is `-D.liftWeight j τ`, minus
 the weight at `τ` of the character of the `j`-th lift. -/
-lemma descentCentres_centre (τ : D.Φ) (j : D.LiftIndex) :
-    (D.descentCentres τ j).center (.inr (j - 1)) = -D.liftWeight j τ := by
-  simp [descentCentres, gridCentres, Nat.sub_add_cancel j.prop.1]
+lemma descentCenters_center (τ : D.Φ) (j : D.LiftIndex) :
+    (D.descentCenters τ j).center (.inr (j - 1)) = -D.liftWeight j τ := by
+  simp [descentCenters, gridCenters, Nat.sub_add_cancel j.prop.1]
 
-/-- When the block of the only centre of `New.Data.descentCentres` is present, every entry has the
+/-- When the block of the only centre of `New.Data.descentCenters` is present, every entry has the
 sign +. -/
-lemma sign_descentCentres (τ : D.Φ) (j : D.LiftIndex) (y : ℤ) :
-    (D.descentCentres τ j).sign (insert (.inr (j - 1)) ∅) y = 1 := by
-  simp [CentreSystem.sign, descentCentres]
+lemma sign_descentCenters (τ : D.Φ) (j : D.LiftIndex) (y : ℤ) :
+    (D.descentCenters τ j).sign (insert (.inr (j - 1)) ∅) y = 1 := by
+  simp [CenterSystem.sign, descentCenters]
 
 /-- The doubled parameter `D.paramW τ` (2ς on W_j), with signs `D.signsW j` and read as a vector by
-`toHCParam`, is a parameter of the centre system `D.descentCentres τ j` with no block (∅) and global
+`toHCParam`, is a parameter of the centre system `D.descentCenters τ j` with no block (∅) and global
 sign 1. Its entries are those of the stem {2ς_p : p < r}, and the sign is − exactly at the entries
 below −2w_j, with w_j = `D.liftWeight j τ`. -/
 lemma isParam_paramW (τ : D.Φ) (j : D.LiftIndex) :
-    (D.descentCentres τ j).IsParam ∅ 1 (toHCParam (D.signsW j) (D.paramW τ)) := by
-  have h_lowering : (D.descentCentres τ j).lowering ∅ = 0 := by simp [CentreSystem.lowering]
+    (D.descentCenters τ j).IsParam ∅ 1 (toHCParam (D.signsW j) (D.paramW τ)) := by
+  have h_lowering : (D.descentCenters τ j).lowering ∅ = 0 := by simp [CenterSystem.lowering]
   refine ⟨?_, ?_, fun x ↦ ?_⟩
-  · rw [card_rowIndex, CentreSystem.rank, Finset.sum_empty]
-    exact (D.card_stem_gridCentres τ false).symm
+  · rw [card_rowIndex, CenterSystem.rank, Finset.sum_empty]
+    exact (D.card_stem_gridCenters τ false).symm
   · rw [h_lowering]
     ext y
-    simp [CentreSystem.entries, descentCentres, gridCentres, paramW,
+    simp [CenterSystem.entries, descentCenters, gridCenters, paramW,
       D.basisNumber.exists_congr_left, Fin.exists_iff]
   · have h_pos : 0 < D.halfGap := D.nat_le_of_hasLogBound
-    have h_counts : (D.descentCentres τ j).CountsFor (.inr (j - 1)) (D.paramW τ x) ↔
+    have h_counts : (D.descentCenters τ j).CountsFor (.inr (j - 1)) (D.paramW τ x) ↔
         D.posRank j ≤ D.basisNumber x := by
       have h_far : if D.basisNumber x < D.posRank j then
             D.halfGap ≤ D.targetParameter τ (D.basisNumber x) + D.liftWeight j τ
           else D.targetParameter τ (D.basisNumber x) + D.liftWeight j τ ≤ -D.halfGap :=
         D.targetParameter_add_liftWeight_gap j τ (D.basisNumber x)
-      rw [CentreSystem.CountsFor, descentCentres_centre,
-        ite_eq_right (by simp [descentCentres, gridCentres]), paramW]
+      rw [CenterSystem.CountsFor, descentCenters_center,
+        ite_eq_right (by simp [descentCenters, gridCenters]), paramW]
       split_ifs at h_far <;> omega
     rw [h_lowering, add_zero, one_mul, signsW,
-      CentreSystem.sign_eq_ite_sign_insert (mem_singleton_self _) (notMem_empty _),
-        sign_descentCentres]
+      CenterSystem.sign_eq_ite_sign_insert (mem_singleton_self _) (notMem_empty _),
+        sign_descentCenters]
     exact if_congr h_counts.symm rfl rfl
 
 /-- For p < r + t: entry p of the doubled parameter `hcParameter` of `D.descentPair ϑ j` at τ, in
@@ -765,20 +765,20 @@ lemma hcParameter_descentPair_sub (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex
 /-- Let ϑ be a tame character, τ an infinite place, 1 ≤ j ≤ m, w_j = `D.liftWeight j τ` and
 u = m − j + w_j − ⌊r/2⌋. Let l = `paramV τ` − 2u, where `paramV τ` is twice the Harish-Chandra
 parameter at τ on the positive definite space V_j of rank r + t of the j-th descent pair. The system
-`New.Data.descentCentres` has the stem {2ς_p : p < r}, with ς = `D.targetParameter τ`, and one
+`New.Data.descentCenters` has the stem {2ς_p : p < r}, with ς = `D.targetParameter τ`, and one
 centre, with index `.inr (j - 1)`, value −w_j and block {−2w_j + t − 1 − 2b : b < t}. Then l is the
 parameter of this system with the block present and common sign 1: the ranks agree, the numbers l
 x + 1 are the entries of the stem and of the block, and each of them has the sign +. -/
 lemma isParam_paramV (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex) :
-    (D.descentCentres τ j).IsParam (insert (.inr (j - 1)) ∅) 1
+    (D.descentCenters τ j).IsParam (insert (.inr (j - 1)) ∅) 1
       (toHCParam 1 fun x : D.RowIndex ⊕ Fin D.t ↦
         (D.descentPair ϑ j).paramV τ x - 2 * (D.m - j + D.liftWeight j τ - D.r / 2)) := by
-  have h_stem : #(D.descentCentres τ j).stem = D.r := D.card_stem_gridCentres τ false
-  have h_lowering : (D.descentCentres τ j).lowering (insert (.inr (j - 1)) ∅) = 1 := by
-    simp [CentreSystem.lowering, h_stem, D.r_odd]
-  refine ⟨?_, ?_, fun x ↦ by rw [sign_descentCentres, one_mul, Pi.one_apply]⟩
-  · rw [card_rowIndex_sum_fin, CentreSystem.rank, h_stem]
-    simp [descentCentres, gridCentres]
+  have h_stem : #(D.descentCenters τ j).stem = D.r := D.card_stem_gridCenters τ false
+  have h_lowering : (D.descentCenters τ j).lowering (insert (.inr (j - 1)) ∅) = 1 := by
+    simp [CenterSystem.lowering, h_stem, D.r_odd]
+  refine ⟨?_, ?_, fun x ↦ by rw [sign_descentCenters, one_mul, Pi.one_apply]⟩
+  · rw [card_rowIndex_sum_fin, CenterSystem.rank, h_stem]
+    simp [descentCenters, gridCenters]
   · have h_posRank : D.posRank j ≤ D.r := by grind [j.prop, D.r_add_one]
     have h_card : card (D.RowIndex ⊕ Fin D.t) = D.r + D.t := D.card_rowIndex_sum_fin
     let shift (y : ℤ) : ℤ := y - 2 * (D.m - j + D.liftWeight j τ - D.r / 2) + 1
@@ -787,10 +787,10 @@ lemma isParam_paramV (ϑ : D.TameChar) (τ : D.Φ) (j : D.LiftIndex) :
           (shift ∘ hcParameter (D.descentPair ϑ j).columnCount
           (D.descentPair ϑ j).detExp (card (D.RowIndex ⊕ Fin D.t)) τ) := by
       rw [← image_image, ← image_image, (D.descentPair ϑ j).isHCParam_paramV.image_eq τ]
-    rw [h_lowering, CentreSystem.entries_insert, CentreSystem.block, descentCentres_centre]
+    rw [h_lowering, CenterSystem.entries_insert, CenterSystem.block, descentCenters_center]
     refine h_image.trans (Finset.ext fun y ↦ ?_)
     -- Unfold both sides to entries of the shifted parameter, of the stem and of the block.
-    simp only [CentreSystem.entries, biUnion_empty, union_empty, descentCentres, gridCentres,
+    simp only [CenterSystem.entries, biUnion_empty, union_empty, descentCenters, gridCenters,
       mem_union, mem_image, Finset.mem_range, mem_centeredBlock, Function.comp_apply, Sum.elim_inr,
       Bool.toNat_false, Nat.sub_zero, Nat.cast_zero, add_zero, shift]
     constructor
@@ -828,13 +828,13 @@ lemma paramsCorrespond_descentPair (ϑ : D.TameChar) (j : D.LiftIndex) :
   have h_rule : IsBlockRule _ _ (toHCParam (D.signsW j) (D.paramW τ))
       (toHCParam 1 fun x ↦ (D.descentPair ϑ j).paramV τ x - 2 * u) :=
     (D.isParam_paramW τ j).isBlockRule_insert_of_down (D.isParam_paramV ϑ τ j) rfl
-      ((D.isSeparated_gridCentres τ false).subset (singleton_subset_iff.2
-        (by simpa [gridCentres] using Nat.sub_one_lt_of_le j.prop.1 j.prop.2)))
+      ((D.isSeparated_gridCenters τ false).subset (singleton_subset_iff.2
+        (by simpa [gridCenters] using Nat.sub_one_lt_of_le j.prop.1 j.prop.2)))
       (empty_subset _) (mem_singleton_self _) (notMem_empty _)
       (by grind [card_rowIndex_sum_fin, card_rowIndex]) rfl
   rw [show (negCount (D.signsW j) : ℤ) = -D.liftWeight j τ + card D.RowIndex / 2 + u by
     grind [negCount_signsW, card_rowIndex]]
-  simpa [descentCentres_centre, add_comm] using h_rule.shift u 0
+  simpa [descentCenters_center, add_comm] using h_rule.shift u 0
 
 /-- The doubled parameter 2ς = `D.paramW` on W_j fits the j-th descent pair (W_j, V_j), that is:
 * it corresponds to the doubled parameter `paramV` on V_j;

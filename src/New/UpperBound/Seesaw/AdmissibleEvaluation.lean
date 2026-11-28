@@ -14,7 +14,7 @@ in `I^⊥ / I` with the neighbour lattice. Here `L` is the lattice of the vacuum
 isotropic subspace of the splitting. It follows that the evaluation of a translate of the vacuum is
 `0` or a root of unity times a translate of the zero term of the vacuum, and that this zero term is
 a nonzero multiple of the sum of the translates of the vacuum by representatives of `L'`. The two
-conditions `LiftsNeighbours` and `MatchesDenominators` are checked for the middle double lift and
+conditions `LiftsNeighbors` and `MatchesDenominators` are checked for the middle double lift and
 for the last double lift.
 
 Notions from other files:
@@ -29,7 +29,7 @@ Notions from other files:
 * `DoubleLiftData`, called a pair of edges `Y → Y' → Y''`, is the data of two consecutive lifts
   between graded spaces `V`, `V'`, `V''`. It identifies the part of grade zero of `V⁻ ⊕ V''` with
   `(X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit)` plus hyperbolic planes.
-* `IsNeighbourVector π δ c x` lists the congruences that glue the last entries of a vector `x`
+* `IsNeighborVector π δ c x` lists the congruences that glue the last entries of a vector `x`
   indexed by `PairIndex X X'' = (X ⊕ Unit) ⊕ (X'' ⊕ Unit)` to the coefficient `c`.
 * `selfOrConj β` is the allowed denominator: `β` on the first block of indices, `β̄` on the second.
 * `IsScalingAtM N β δ κ` says that each factor of `κ` is `1` or `δ`, that `δ` has norm one and is
@@ -209,9 +209,9 @@ def liftVector (c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E) : ι ⊕ ι'' →
       ((fun _ : X ⊕ Unit ↦ (flipScale E : 𝔸f E)) ⊕ᵥ (1 : X'' ⊕ Unit → 𝔸f E)) * κ * x)
 
 /-- Every neighbour vector `(c, x)`, that is, every solution of the gluing congruences
-`IsNeighbourVector π δ c x`, has its lift `liftVector` in the lattice of `V⁻ ⊕ V''`. -/
-def LiftsNeighbours (δ : 𝔸f E) : Prop :=
-  ∀ (c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E), IsNeighbourVector π δ c x →
+`IsNeighborVector π δ c x`, has its lift `liftVector` in the lattice of `V⁻ ⊕ V''`. -/
+def LiftsNeighbors (δ : 𝔸f E) : Prop :=
+  ∀ (c : 𝔸f E) (x : PairIndex X X'' → 𝔸f E), IsNeighborVector π δ c x →
     (flipSum V V'').xFin⁻¹.val *ᵥ D.liftVector u κ c x ∈ stdLattice E (ι ⊕ ι'')
 
 /-- Where the inclusion of `X⁻ ⊕ X''` joins an index `b` to an index `i` of `V⁻ ⊕ V''`, the
@@ -220,16 +220,16 @@ def MatchesDenominators (β : Ô E) : Prop :=
   ∀ (i : ι ⊕ ι'') (b : PairIndex X X''), D.zeroPart.incl i (Sum.inr b) ≠ 0 →
     ∀ w : FinPlace E, v (selfOrConj β i w) = v ((selfOrConj β b * κ b) w)
 
-/-- The matrix whose columns are the lifts of the columns of `neighbourMatrix`, in the coordinates
+/-- The matrix whose columns are the lifts of the columns of `neighborMatrix`, in the coordinates
 of the lattice of `V⁻ ⊕ V''`. -/
-def neighbourLift : Matrix (ι ⊕ ι'') (PairIndex X X'') (𝔸f E) :=
+def neighborLift : Matrix (ι ⊕ ι'') (PairIndex X X'') (𝔸f E) :=
   (of fun j ↦ (flipSum V V'').xFin⁻¹.val *ᵥ
-    D.liftVector u κ (neighbourCoeff X X'' P π j) ((neighbourMatrix X X'' P π).col j))ᵀ
+    D.liftVector u κ (neighborCoeff X X'' P π j) ((neighborMatrix X X'' P π).col j))ᵀ
 
 variable (q) in
 /-- The coefficients of the lifted columns at the second basis vectors of the planes. -/
 def planeCoeff : Matrix q (PairIndex X X'') (𝔸f E) :=
-  of fun _ j ↦ flipScale E * u * neighbourCoeff X X'' P π j
+  of fun _ j ↦ flipScale E * u * neighborCoeff X X'' P π j
 
 variable (q Y Y' Y'') in
 /-- The coordinates, in the isotropic frame of the splitting of `Hom (V', V⁻ ⊕ V'')`, of the
@@ -241,17 +241,17 @@ def isotropicCoeff :
   fromRows 0 (planeCoeff q P π u ⊗ₖ 1)
 
 /-- The matrix `B` of the map `x ↦ A x R` from `Hom (X' ⊕ Unit, X⁻ ⊕ X'')` to
-`Hom (V', V⁻ ⊕ V'')`, in the coordinates of the lattices, with `A = neighbourLift` and
+`Hom (V', V⁻ ⊕ V'')`, in the coordinates of the lattices, with `A = neighborLift` and
 `R = gradeZeroRows`. -/
 def latticeLift : Matrix ((ι ⊕ ι'') × ι') (PairIndex X X'' × (X' ⊕ Unit)) (𝔸f E) :=
-  D.neighbourLift P π u κ ⊗ₖ Y'.gradeZeroRowsᵀ
+  D.neighborLift P π u κ ⊗ₖ Y'.gradeZeroRowsᵀ
 
 variable {P π u κ} {a : (𝔸f E)ˣ} {β : Ô E} {δ : 𝔸f E}
 
 omit [Fintype X'] in
 /-- For a finite set of places `P`, an idele `π`, a unitary adele `u` and scaling factors `κ`, let
 `B = latticeLift` be the matrix of `x ↦ A x R`. Here the columns of `A` are the lifts to `V⁻ ⊕ V''`
-of the columns of `neighbourMatrix`, and `R` consists of the rows of the point of `V'` at
+of the columns of `neighborMatrix`, and `R` consists of the rows of the point of `V'` at
 `X' ⊕ Unit`. Then `Bᴴ` kills `stackedStringMapFin`, the finite coordinates of the map
 `V' → V⁻ ⊕ V''` made of the adjoint of `stringMap` for `V → V'` and of `stringMap` for `V' → V''`;
 these maps only move vectors of the strings. -/
@@ -265,7 +265,7 @@ lemma conjTranspose_latticeLift_mulVec_stackedStringMapFin [Finite X'] :
     simp [mul_inclMatrix, ← Matrix.ext_iff, stackedStringMap, Y.formAdjoint_apply Y', stringMap,
       stringReversal, reindex_equiv Y.indexEquiv, reindex_equiv Y''.indexEquiv]
   have h_adjoint : (D.latticeLift P π u κ)ᴴ =
-      (D.neighbourLift P π u κ)ᴴ ⊗ₖ (Y'.gradeZeroRowsᴴ)ᵀ := conjTranspose_kronecker _ _
+      (D.neighborLift P π u κ)ᴴ ⊗ₖ (Y'.gradeZeroRowsᴴ)ᵀ := conjTranspose_kronecker _ _
   rw [h_adjoint, stackedStringMapFin, finCoord_homAtPoint, kronecker_mulVec_eq_matrixToVec,
     vecToMatrix_matrixToVec]
   simp [Matrix.mul_assoc, conjTranspose_gradeZeroRows, h_vanish]
@@ -281,8 +281,8 @@ Let `D` be the data of two consecutive lifts between the graded hermitian spaces
 `V''`, and let `V⁻` be `V` with the form negated.
 For a unitary adele `u`, let `B = latticeLift` be the matrix of `x ↦ A x R`, where the columns
 of `A` are the lifts to `V⁻ ⊕ V''` (`liftVector` for `u` and `κ`) of the columns of
-`neighbourMatrix` and `R` consists of the rows of the point of `V'` at `X' ⊕ Unit`.
-Let `g = latticeUnitary` be the unitary `(κ γ) ⊗ 1`, with `γ = neighbourMatrix` and `κ` read as a
+`neighborMatrix` and `R` consists of the rows of the point of `V'` at `X' ⊕ Unit`.
+Let `g = latticeUnitary` be the unitary `(κ γ) ⊗ 1`, with `γ = neighborMatrix` and `κ` read as a
 diagonal matrix. Then `B x` is the image of `g x` in `Hom (V', V⁻ ⊕ V'')` (by `iFin`) plus a vector
 of the isotropic subspace `I` of the splitting of `D`. Its coordinates in the basis
 `isotropicBasisFin` of `I` are `isotropicCoeff` applied to `x`: zero in positive grade and
@@ -298,23 +298,23 @@ lemma latticeLift_eq_latticeUnitary_add_isotropic (hP : IsSplitLevel P N)
     flipSum (stdSpace E (X ⊕ Unit)) (stdSpace E (X'' ⊕ Unit))
   let S : (hyperbolicSum q Z).Splitting Z q := removePlanes q Z
   -- In the part of grade zero, a lifted column is the column of `κ γ` in
-  -- `(X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit)`, with `γ = neighbourMatrix`, plus an isotropic vector of the
+  -- `(X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit)`, with `γ = neighborMatrix`, plus an isotropic vector of the
   -- planes.
   let M : Matrix ((q ⊕ q) ⊕ PairIndex X X'') (PairIndex X X'') (𝔸f E) :=
-    S.i.map f * (Z.xFin.val * (diagonal κ * neighbourMatrix X X'' P π)) +
+    S.i.map f * (Z.xFin.val * (diagonal κ * neighborMatrix X X'' P π)) +
       S.k.map f * planeCoeff q P π u
   let A : Matrix (ι ⊕ ι'') ((q ⊕ q) ⊕ PairIndex X X'') (𝔸f E) :=
     (flipSum V V'').xFin⁻¹.val * D.zeroPart.incl.map f
-  have h_neighbourLift_eq : D.neighbourLift P π u κ = A * M := by
+  have h_neighbourLift_eq : D.neighborLift P π u κ = A * M := by
     ext1 i j
     have h_column : M.col j =
-        ((0 : q → 𝔸f E) ⊕ᵥ fun _ : q ↦ (flipScale E : 𝔸f E) * u * neighbourCoeff X X'' P π j) ⊕ᵥ
+        ((0 : q → 𝔸f E) ⊕ᵥ fun _ : q ↦ (flipScale E : 𝔸f E) * u * neighborCoeff X X'' P π j) ⊕ᵥ
           ((fun _ : X ⊕ Unit ↦ (flipScale E : 𝔸f E)) ⊕ᵥ (1 : X'' ⊕ Unit → 𝔸f E)) * κ *
-            (neighbourMatrix X X'' P π).col j := by
+            (neighborMatrix X X'' P π).col j := by
       simp [funext_iff, Matrix.mul_apply, planeCoeff, M, S, Z, removePlanes, flipScale, xFin,
         Space.sum, flipSpace, ← mul_assoc, diagonal_apply, Matrix.one_apply, fromRows_map,
         fromBlocks_map]
-    rw [neighbourLift, transpose_apply, of_apply, liftVector, ← h_column, mulVec_mulVec]
+    rw [neighborLift, transpose_apply, of_apply, liftVector, ← h_column, mulVec_mulVec]
     rfl
   -- The image of `κ γ ⊗ 1` and that of `planeCoeff ⊗ 1` are Kronecker products with the same
   -- second factor, and their first factors add up to that of `latticeLift`.
@@ -343,10 +343,10 @@ its columns lie in the lattice `L` of the vacuum of `Hom (V', V⁻ ⊕ V'')`. -/
 lemma isIntMatrix_latticeLift
     [Finite X'] (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π)
     (hκ : IsScalingAtM N β δ κ) {u' : unitary (𝔸f E)} (hL : Y'.SpansLattice a π u')
-    (h_lift : D.LiftsNeighbours π u κ δ) : IsIntMatrix (Ô E) (D.latticeLift P π u κ) := by
+    (h_lift : D.LiftsNeighbors π u κ δ) : IsIntMatrix (Ô E) (D.latticeLift P π u κ) := by
   intro i j
-  have h_entry : D.neighbourLift P π u κ i.1 j.1 ∈ Ô E :=
-    h_lift _ _ (isNeighbourVector_col_neighbourMatrix hP hπ hκ j.1) i.1
+  have h_entry : D.neighborLift P π u κ i.1 j.1 ∈ Ô E :=
+    h_lift _ _ (isNeighborVector_col_neighborMatrix hP hπ hκ j.1) i.1
   rw [latticeLift, kroneckerMap_apply, transpose_apply]
   exact mul_mem h_entry
     (Y'.isIntMatrix_gradeZeroRows hL (Nat.not_odd_iff_even.2 D.even_length_middle) j.2 i.2)
@@ -359,16 +359,16 @@ factors with values `1` or `δ`, trivial above `N`, with denominators bounded by
 Let `D` be the data of two consecutive lifts between the graded hermitian spaces `V`, `V'`,
 `V''`, and let `V⁻` be `V` with the form negated. Suppose that the point of `V'` spans the
 lattice of `gradedLatticeBasis` for `a`, `π`, `u'` (`hL`) and that every solution of the
-congruences `IsNeighbourVector` lifts to the lattice of `V⁻ ⊕ V''` (`h_lift`). Let `L` be the
+congruences `IsNeighborVector` lifts to the lattice of `V⁻ ⊕ V''` (`h_lift`). Let `L` be the
 standard integral lattice of `Hom (V', V⁻ ⊕ V'')` and `I` the isotropic subspace of the splitting
-of `D`. Then the image of `L ∩ I^⊥` in `I^⊥ / I` is `neighbourLattice`, the image of the standard
+of `D`. Then the image of `L ∩ I^⊥` in `I^⊥ / I` is `neighborLattice`, the image of the standard
 lattice under `latticeUnitary`. -/
 lemma zeroTermLattice_splitting_eq (hP : IsSplitLevel P N)
     (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) {u' : unitary (𝔸f E)}
-    (hL : Y'.SpansLattice a π u') (h_lift : D.LiftsNeighbours π u κ δ) :
-    zeroTermLattice D.splitting = neighbourLattice (X' ⊕ Unit) hπ hκ := by
+    (hL : Y'.SpansLattice a π u') (h_lift : D.LiftsNeighbors π u κ δ) :
+    zeroTermLattice D.splitting = neighborLattice (X' ⊕ Unit) hπ hκ := by
   -- The neighbour lattice lies in the image of `L ∩ I^⊥`, and both lattices are their own duals.
-  have h_le : neighbourLattice (X' ⊕ Unit) hπ hκ ≤ zeroTermLattice D.splitting :=
+  have h_le : neighborLattice (X' ⊕ Unit) hπ hκ ≤ zeroTermLattice D.splitting :=
     map_stdLattice_le_zeroTermLattice (D.latticeLift_eq_latticeUnitary_add_isotropic hP hπ hκ)
       (D.isIntMatrix_latticeLift hP hπ hκ hL h_lift)
   exact zeroTermLattice_eq_map_of_le D.splitting h_le
@@ -382,14 +382,14 @@ omit [Fact N.Prime] in
 conjugate `star w` lie outside `P`, and let `j` be an index of
 `PairIndex X X'' = (X ⊕ Unit) ⊕ (X'' ⊕ Unit)`. Suppose that the entry `(l, j)` of the inclusion of
 `(X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit)` in `V⁻ ⊕ V''` is zero. Then, for all `u` and `κ`, the lift of the
-column `j` of `neighbourMatrix`, with its coefficient `neighbourCoeff` at the isotropic vectors, has
+column `j` of `neighborMatrix`, with its coefficient `neighborCoeff` at the isotropic vectors, has
 entry `l` vanishing at `star w`. -/
 lemma evalAt_liftVector_eq_zero {j : PairIndex X X''} {w : FinPlace E} (hw_star : star w ∉ P)
     (hw_star_star : star (star w) ∉ P) {l : ι ⊕ ι''}
     (hl : D.zeroPart.incl l (Sum.inr j) = 0) :
-    evalAt (star w) (D.liftVector u κ (neighbourCoeff X X'' P π j)
-      ((neighbourMatrix X X'' P π).col j) l) = 0 := by
-  -- At `star w` the column `j` of `neighbourMatrix` is the basis vector `j` and its coefficient
+    evalAt (star w) (D.liftVector u κ (neighborCoeff X X'' P π j)
+      ((neighborMatrix X X'' P π).col j) l) = 0 := by
+  -- At `star w` the column `j` of `neighborMatrix` is the basis vector `j` and its coefficient
   -- is `0`, so only the column `j` of the inclusion counts.
   rw [liftVector, mulVec, dotProduct, map_sum]
   refine sum_eq_zero fun b _ ↦ ?_
@@ -397,11 +397,11 @@ lemma evalAt_liftVector_eq_zero {j : PairIndex X X''} {w : FinPlace E} (hw_star 
   rcases b with (b | b) | b
   · simp
   · simp only [Sum.elim_inl, Sum.elim_inr, map_mul,
-      neighbourCoeff_apply_of_notMem hw_star hw_star_star, mul_zero]
+      neighborCoeff_apply_of_notMem hw_star hw_star_star, mul_zero]
   · obtain rfl | hb := eq_or_ne b j
     · simp [hl]
     · simp only [Sum.elim_inr, Pi.mul_apply, map_mul, col_apply, ite_eq_right hb, mul_zero,
-        neighbourMatrix_apply_of_notMem hw_star hw_star_star]
+        neighborMatrix_apply_of_notMem hw_star hw_star_star]
 
 omit [Fact N.Prime] in
 /-- Let `P` contain one place of each conjugate pair above `N` (`hP`), and let `κ` be scaling
@@ -410,12 +410,12 @@ factors with values `1` or `δ`, trivial above `N`, with denominators bounded by
 and `β̄` on the second. Suppose that `d l` and `d b * κ b` have the same valuation `v` at every
 finite place whenever the entry `(l, b)` of the inclusion of `(X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit)` in
 `V⁻ ⊕ V''` is nonzero (`h_match`). If `d i` and `d j * κ j` have different valuations at `w`, then,
-for every idele `π` and unitary adele `u`, the entry `(i, j)` of `neighbourLift`, the matrix of the
-lifted columns of `neighbourMatrix`, vanishes at the conjugate place `star w`. -/
-lemma evalAt_neighbourLift_eq_zero (hP : IsSplitLevel P N) (hκ : IsScalingAtM N β δ κ)
+for every idele `π` and unitary adele `u`, the entry `(i, j)` of `neighborLift`, the matrix of the
+lifted columns of `neighborMatrix`, vanishes at the conjugate place `star w`. -/
+lemma evalAt_neighborLift_eq_zero (hP : IsSplitLevel P N) (hκ : IsScalingAtM N β δ κ)
     (h_match : D.MatchesDenominators κ β) {i : ι ⊕ ι''} {j : PairIndex X X''} {w : FinPlace E}
     (h_ne : v (selfOrConj β i w) ≠ v ((selfOrConj β j * κ j) w)) :
-    evalAt (star w) (D.neighbourLift P π u κ i j) = 0 := by
+    evalAt (star w) (D.neighborLift P π u κ i j) = 0 := by
   -- Above `N` all denominators are units, so `w` is not above `N`.
   have hw : ¬(w ∈ P ∨ star w ∈ P) := by
     rw [← hP.natCast_mem_iff]
@@ -424,7 +424,7 @@ lemma evalAt_neighbourLift_eq_zero (hP : IsSplitLevel P N) (hκ : IsScalingAtM N
       rcases hκ.eq_one_or_eq j with h_val | h_val <;> simp [h_val, hκ.apply_eq_one w hN]
     exact h_ne (by simp [v_selfOrConj_eq_one hκ _ hN, h_κ])
   obtain ⟨hw_P, hw_star⟩ := not_or.1 hw
-  rw [neighbourLift, transpose_apply, of_apply, mulVec, dotProduct, map_sum]
+  rw [neighborLift, transpose_apply, of_apply, mulVec, dotProduct, map_sum]
   refine sum_eq_zero fun l _ ↦ ?_
   by_cases hl : D.zeroPart.incl l (Sum.inr j) = 0
   · rw [map_mul, D.evalAt_liftVector_eq_zero hw_star (by rwa [star_star]) hl, mul_zero]
@@ -448,7 +448,7 @@ lemma conjTranspose_latticeLift_mulVec_mem (hP : IsSplitLevel P N) (hκ : IsScal
     (D.latticeLift P π u κ)ᴴ *ᵥ y ∈ weightedTranslations n
       fun j : PairIndex X X'' × (X' ⊕ Unit) ↦ selfOrConj β j.1 * κ j.1 := by
   exact conjTranspose_mulVec_mem_weightedTranslations h_int hy fun i j w h_ne ↦
-    mul_eq_zero_of_left (D.evalAt_neighbourLift_eq_zero hP hκ h_match h_ne) _
+    mul_eq_zero_of_left (D.evalAt_neighborLift_eq_zero hP hκ h_match h_ne) _
 
 end
 
@@ -459,9 +459,9 @@ with values `1` or `δ`, trivial above `N`, with denominators bounded by the int
 its conjugate (`hκ`). Let `D` be the data of two consecutive lifts between the graded hermitian
 spaces `V`, `V'`, `V''`, and let `V⁻` be `V` with the form negated. For a unitary adele `u`, let
 `B = latticeLift` be the matrix of `x ↦ A x R`, where the columns of `A` are the lifts to `V⁻ ⊕ V''`
-(`liftVector` for `u` and `κ`) of the columns of `neighbourMatrix` and `R` consists of the rows of
+(`liftVector` for `u` and `κ`) of the columns of `neighborMatrix` and `R` consists of the rows of
 the point of `V'` at `X' ⊕ Unit`. Let `g = latticeUnitary` be the unitary `(κ γ) ⊗ 1` with
-`γ = neighbourMatrix`, and let `iFin` be the inclusion of
+`γ = neighborMatrix`, and let `iFin` be the inclusion of
 `Hom (X' ⊕ Unit, (X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit))` in `Hom (V', V⁻ ⊕ V'')` given by the splitting of `D`.
 If `y` vanishes above `N`, then `g Bᴴ y` is the orthogonal projection `iFinᴴ y` of `y`. -/
 lemma latticeUnitary_mulVec_conjTranspose_latticeLift_mulVec (hP : IsSplitLevel P N)
@@ -478,10 +478,10 @@ lemma latticeUnitary_mulVec_conjTranspose_latticeLift_mulVec (hP : IsSplitLevel 
     · exact mul_zero e
     · -- The entry at a plane is that of `planeCoeff ⊗ 1`.
       let r₁ : 𝔸f E := (1 : Matrix (X' ⊕ Unit) (X' ⊕ Unit) (𝔸f E)) r.2 j.2
-      change e * (flipScale E * u * neighbourCoeff X X'' P π j.1 * r₁) =
-        flipScale E * u * neighbourCoeff X X'' P π j.1 * r₁
+      change e * (flipScale E * u * neighborCoeff X X'' P π j.1 * r₁) =
+        flipScale E * u * neighborCoeff X X'' P π j.1 * r₁
       linear_combination (flipScale E : 𝔸f E) * u * r₁ *
-        idem_conjClosure_mul_neighbourCoeff hπ j.1
+        idem_conjClosure_mul_neighborCoeff hπ j.1
   have h_isotropic : cᴴ *ᵥ D.splitting.isotropicBasisFinᴴ *ᵥ y = 0 := by
     rw [← h_support, conjTranspose_smul, he, star_idem_conjClosure, smul_mulVec, ← mulVec_smul,
       mem_vanishingAbove.1 (mulVec_mem_vanishingAbove _ hy), mulVec_zero]
@@ -496,7 +496,7 @@ omit [Fact N.Prime] in
 `π` a uniformiser at the places of `P` and a unit elsewhere (`hπ`), and let `κ` be scaling factors
 with values `1` or `δ`, trivial above `N`, with denominators bounded by the integral adele `β` and
 its conjugate (`hκ`). Suppose that, for a unitary adele `u`, the matrix `latticeLift` built from the
-lifted columns of `neighbourMatrix` is integral, that the denominators match through `κ`, and that
+lifted columns of `neighborMatrix` is integral, that the denominators match through `κ`, and that
 `y` vanishes above `N`. If each entry of `y` in a row `i`, times `selfOrConj β i`, is integral at
 all places not dividing `n`, then the orthogonal projection `iFinᴴ y` of `y` to
 `Hom (X' ⊕ Unit, (X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit))` has the same property. -/
@@ -523,7 +523,7 @@ factors with values `1` or `δ`, trivial above `N`, with denominators bounded by
 Let `D` be the data of two consecutive lifts between the graded hermitian spaces `V`, `V'`,
 `V''`, and let `V⁻` be `V` with the form negated.
 Suppose that, for a unitary adele `u`, the matrix `latticeLift` built from the lifted columns of
-`neighbourMatrix` is integral, and that `y` vanishes above `N`. Let `φ = vacElem` be the vacuum
+`neighborMatrix` is integral, and that `y` vanishes above `N`. Let `φ = vacElem` be the vacuum
 (Gaussian times twisted lattice indicator) of `V'.hom (flipSum V V'') = Hom (V', V⁻ ⊕ V'')`. The
 map `D.finEval` translates by `stackedStringMapFin`, takes the finite constant term `zeroTermFin`
 along the splitting of `D`, and applies a left inverse of `arrowTensor`, the map that joins data on
@@ -569,27 +569,27 @@ with values `1` or `δ`, trivial above `N`, with denominators bounded by the int
 its conjugate (`hκ`). Let `D` be the data of two consecutive lifts between the graded hermitian
 spaces `V`, `V'`, `V''`, and let `V⁻` be `V` with the form negated. Suppose that the point of `V'`
 spans the lattice of `gradedLatticeBasis` for `a`, `π`, `u'` (`hL`) and that every solution of the
-congruences `IsNeighbourVector` lifts, with `u` and `κ`, to the lattice of `V⁻ ⊕ V''` (`h_lift`).
+congruences `IsNeighborVector` lifts, with `u` and `κ`, to the lattice of `V⁻ ⊕ V''` (`h_lift`).
 Then the finite constant term `zeroTermFin`, along the splitting of `D`, of the vacuum of
 `Hom (V', V⁻ ⊕ V'')` is a nonzero multiple of the sum of the translates of the vacuum of
-`Hom (X' ⊕ Unit, (X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit))` by the vectors `neighbourCosetRep r`. These represent
-`neighbourLattice`, the image of the standard lattice under `latticeUnitary`, modulo its integral
-points. Here `r` consists of residues at `P`, which give the vector `neighbourTranslation` (rows
+`Hom (X' ⊕ Unit, (X ⊕ Unit)⁻ ⊕ (X'' ⊕ Unit))` by the vectors `neighborCosetRep r`. These represent
+`neighborLattice`, the image of the standard lattice under `latticeUnitary`, modulo its integral
+points. Here `r` consists of residues at `P`, which give the vector `neighborTranslation` (rows
 `η ȳ / N` and `-ȳ / N` at the two last indices for residues `y`, `η = normNegOne`), and a class
-modulo integral points of vectors of `neighbourLattice` that vanish above `N`
+modulo integral points of vectors of `neighborLattice` that vanish above `N`
 (`AwayLatticeQuotient`); the representative is the sum of that vector and a member of the class. -/
 lemma exists_zeroTermFin_splitting_vacElem_eq_sum (hP : IsSplitLevel P N)
     (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ) {u' : unitary (𝔸f E)}
-    (hL : Y'.SpansLattice a π u') (h_lift : D.LiftsNeighbours π u κ δ) :
+    (hL : Y'.SpansLattice a π u') (h_lift : D.LiftsNeighbors π u κ δ) :
     ∃ c ≠ (0 : ℂ), zeroTermFin D.splitting (vacElem (V'.hom (flipSum V V''))) =
       c • ∑ r : (X' ⊕ Unit → P → ZMod N) × AwayLatticeQuotient (X' ⊕ Unit) hπ hκ,
-        (stdPairSpace E X (X' ⊕ Unit) X'').finHeisenbergOp (neighbourCosetRep r)
+        (stdPairSpace E X (X' ⊕ Unit) X'').finHeisenbergOp (neighborCosetRep r)
           (stdPairSpace E X (X' ⊕ Unit) X'').vacElem := by
-  have h_lattice : zeroTermLattice D.splitting = neighbourLattice (X' ⊕ Unit) hπ hκ :=
+  have h_lattice : zeroTermLattice D.splitting = neighborLattice (X' ⊕ Unit) hπ hκ :=
     D.zeroTermLattice_splitting_eq hP hπ hκ hL h_lift
   exact exists_zeroTermFin_vacElem_eq_sum D.splitting
-    (fun r ↦ h_lattice.ge (neighbourCosetRep_mem_neighbourLattice hP hπ hκ r))
-    fun z hz ↦ existsUnique_sub_neighbourCosetRep_mem hP hπ hκ (h_lattice.le hz)
+    (fun r ↦ h_lattice.ge (neighborCosetRep_mem_neighborLattice hP hπ hκ r))
+    fun z hz ↦ existsUnique_sub_neighborCosetRep_mem hP hπ hκ (h_lattice.le hz)
 
 end DoubleLiftData
 
@@ -600,7 +600,7 @@ factors with values `1` or `δ`, trivial above `N`, with denominators bounded by
 Let `D` be the data of two consecutive lifts between the graded hermitian spaces `V`, `V'`, `V''`,
 with hyperbolic planes indexed by `q`, and let `V⁻` be `V` with the form negated. Suppose that the
 point of `V'` spans the lattice of `gradedLatticeBasis` for `a`, `π`, `u'`, that the solutions of
-the congruences `IsNeighbourVector` lift to the lattice of `V⁻ ⊕ V''`, and that the denominators
+the congruences `IsNeighborVector` lift to the lattice of `V⁻ ⊕ V''`, and that the denominators
 match through `κ`. The map `D.finEval` translates by `stackedStringMapFin`, takes the finite
 constant term along the splitting of `D` and splits the result into a tensor. There is then a
 constant `C` such that, for `n` prime to `N` and `y` with denominators `β` on `V⁻` and `β̄` on
@@ -614,12 +614,12 @@ theorem isAdmissibleEval_finEval {Y'' : Grading V'' N μ m''} [Fact N.Prime]
     {κ : PairIndex X X'' → 𝔸f E}
     (D : DoubleLiftData (X'' ⊕ Unit) q Y Y' Y'') (hP : IsSplitLevel P N)
     (hπ : IsSplitSquarefree P (N : E) π) (hκ : IsScalingAtM N β δ κ)
-    (hL : Y'.SpansLattice a π u') (h_lift : D.LiftsNeighbours π u κ δ)
+    (hL : Y'.SpansLattice a π u') (h_lift : D.LiftsNeighbors π u κ δ)
     (h_match : D.MatchesDenominators κ β) :
     IsAdmissibleEval N P β D.finEval (selfOrConj β) := by
   -- Replace `y` by its part `y'` away from `N`. The evaluation is `0` or a root of unity times the
   -- translate by the projection of `y'` of the zero term of the vacuum, which is `c` times the sum
-  -- over the representatives `neighbourCosetRep r` of `neighbourLattice` modulo integral points.
+  -- over the representatives `neighborCosetRep r` of `neighborLattice` modulo integral points.
   have h_int : IsIntMatrix (Ô E) (D.latticeLift P π u κ) :=
     D.isIntMatrix_latticeLift hP hπ hκ hL h_lift
   classical
@@ -627,7 +627,7 @@ theorem isAdmissibleEval_finEval {Y'' : Grading V'' N μ m''} [Fact N.Prime]
   let Z := stdPairSpace E X (X' ⊕ Unit) X''
   obtain ⟨c, -, hc⟩ : ∃ c ≠ (0 : ℂ), zeroTermFin D.splitting W.vacElem =
       c • ∑ r : (X' ⊕ Unit → P → ZMod N) × AwayLatticeQuotient (X' ⊕ Unit) hπ hκ,
-        Z.finHeisenbergOp (neighbourCosetRep r) Z.vacElem :=
+        Z.finHeisenbergOp (neighborCosetRep r) Z.vacElem :=
     D.exists_zeroTermFin_splitting_vacElem_eq_sum hP hπ hκ hL h_lift
   refine ⟨c * Fintype.card (AwayLatticeQuotient (X' ⊕ Unit) hπ hκ), fun n p hn y hy ↦ ?_⟩
   obtain ⟨ξ, hξ, y', hy', hy'_vanish, h_away⟩ : ∃ ξ : ℂ, IsOfFinOrder ξ ∧
@@ -648,7 +648,7 @@ theorem isAdmissibleEval_finEval {Y'' : Grading V'' N μ m''} [Fact N.Prime]
   -- Roots of unity and zero keep a combination admissible, and the constant is pulled out.
   refine IsAdmissibleCombination.smul_of_eq_zero_or_isOfFinOrder
     (IsAdmissibleCombination.smul_of_eq_zero_or_isOfFinOrder ?_ hζ) (Or.inr hξ)
-  exact (isAdmissibleCombination_finHeisenbergOp_sum_neighbourCosetRep hπ hκ p h_den
+  exact (isAdmissibleCombination_finHeisenbergOp_sum_neighborCosetRep hπ hκ p h_den
     (mulVec_mem_vanishingAbove _ hy'_vanish)).map (c • LinearMap.id)
 
 end Lift
@@ -666,11 +666,11 @@ paired in reverse order, with `m` odd and `Y.genericConst = Y'.genericConst` (`h
 `xFin`) of `V` and `V''` span the lattices of `gradedLatticeBasis` for `a`, `π` and `u`, `u''`, and
 that `s u = η̄ δ u''`, where `η = normNegOne` has `η̄ η = -1` and `s = flipScale E` scales the point
 of `V⁻`. Let `e`, `e''` be the last indices of `X ⊕ Unit`, `X'' ⊕ Unit`, and let `(c, x)` satisfy
-`IsNeighbourVector π δ c x`: `δ c = c`, the entries of `x` are integral except that `x e`, `x e''`
+`IsNeighborVector π δ c x`: `δ c = c`, the entries of `x` are integral except that `x e`, `x e''`
 have denominator at most `π̄`, and `x e / π ≡ c`, `x e'' / π ≡ η̄ c` modulo integral adeles. Then
 the lift of `(c, x)`, with component `s x` in `X ⊕ Unit`, `x` in `X'' ⊕ Unit` and coefficient
 `s u c` at `z + z''`, lies in the lattice of `V⁻ ⊕ V''`. -/
-lemma liftsNeighbours_middleDoubleLift {V : Space E ι ε} {V' : Space E ι' ε'}
+lemma liftsNeighbors_middleDoubleLift {V : Space E ι ε} {V' : Space E ι' ε'}
     {V'' : Space E ι'' ε''} {N m m' m'' : ℕ} {Y : Grading V N (X ⊕ Unit) m}
     {Y' : Grading V' N (X' ⊕ Unit) m'} {Y'' : Grading V'' N (X'' ⊕ Unit) m''}
     (h_string : HasConsecutiveStrings Y Y' Y'')
@@ -678,7 +678,7 @@ lemma liftsNeighbours_middleDoubleLift {V : Space E ι ε} {V' : Space E ι' ε'
     {a π : (𝔸f E)ˣ} {u u'' : unitary (𝔸f E)} {δ : 𝔸f E}
     (hL : Y.SpansLattice a π u) (hL'' : Y''.SpansLattice a π u'')
     (h_scale : (flipScale E : 𝔸f E) * u = star (normNegOne (E := E) : 𝔸f E) * δ * u'') :
-    (middleDoubleLift Y Y' Y'' h_string h_card hm).LiftsNeighbours π u 1 δ := by
+    (middleDoubleLift Y Y' Y'' h_string h_card hm).LiftsNeighbors π u 1 δ := by
   intro c x hx
   have h_odd : Odd m := h_string.odd_length
   have h_odd'' : Odd m'' := by grind [h_string.length_last, h_string.length_middle]
@@ -738,12 +738,12 @@ is `V` with the form negated; `lastDoubleLift` identifies `V⁻ ⊕ V''` with
 basis `xFin`) of `V` spans the lattice of `gradedLatticeBasis` for `a`, `π`, `u`, and that
 `s u = η̄ δ`, where `η = normNegOne` has `η̄ η = -1` and `s = flipScale E` scales the point of `V⁻`.
 Let `e`, `e''` be the last indices of `X ⊕ Unit`, `X'' ⊕ Unit`, and let `(c, x)` satisfy
-`IsNeighbourVector π δ c x`: `δ c = c`, the entries of `x` are integral except that `x e`, `x e''`
+`IsNeighborVector π δ c x`: `δ c = c`, the entries of `x` are integral except that `x e`, `x e''`
 have denominator at most `π̄`, and `x e / π ≡ c`, `x e'' / π ≡ η̄ c` modulo integral adeles. Then
 the lift of `(c, x)`, with component `s x` in `X ⊕ Unit`, `x` in `X''` and coefficient `δ x e'' / p`
 at `z`, lies in the lattice of `V⁻ ⊕ V''`; there is no hyperbolic plane, so `u c` does not enter the
 lift. -/
-lemma liftsNeighbours_lastDoubleLift {V : Space E ι ε} {V' : Space E ι' ε'}
+lemma liftsNeighbors_lastDoubleLift {V : Space E ι ε} {V' : Space E ι' ε'}
     {V'' : Space E ι'' ε''} {N m m' m'' : ℕ} {Y : Grading V N (X ⊕ Unit) m}
     {Y' : Grading V' N (X' ⊕ Unit) m'} [V''.IsStd] {Y'' : Grading V'' N X'' m''}
     (h_string : HasConsecutiveStrings Y Y' Y'')
@@ -751,7 +751,7 @@ lemma liftsNeighbours_lastDoubleLift {V : Space E ι ε} {V' : Space E ι' ε'}
     {a π : (𝔸f E)ˣ} {u : unitary (𝔸f E)} {δ : 𝔸f E}
     (hπ : (↑π⁻¹ : 𝔸f E) = algebraMap E (𝔸f E) p⁻¹) (hL : Y.SpansLattice a π u)
     (h_scale : (flipScale E : 𝔸f E) * u = star (normNegOne (E := E) : 𝔸f E) * δ) :
-    (lastDoubleLift Y Y' Y'' h_string h_card hp hm).LiftsNeighbours π u (lastScaling X X'' δ)
+    (lastDoubleLift Y Y' Y'' h_string h_card hp hm).LiftsNeighbors π u (lastScaling X X'' δ)
       δ := by
   intro c x hx
   -- The entries of the lift `y`: those of `x`, scaled by `s = flipScale E` in `X ⊕ Unit`, and
