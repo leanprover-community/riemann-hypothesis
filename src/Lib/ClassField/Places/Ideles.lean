@@ -8,6 +8,7 @@ public import Lib.Adelic.Adeles.Basic
 public import Lib.General.Topology
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.General.Groups.ProfiniteCharacters
+import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.LocalUnits
 
 /-!
 # Finite ideles, principal ideles and the class group; finite index of open subgroups
@@ -52,9 +53,9 @@ noncomputable section
 /-!
 ## Finite ideles: principal and local ideles, S-unit ideles, positivity
 
-`New.mem_of_locIdele_mem` and `New.eventually_unramified` rest on
-`New.exists_finset_cover_mulSupport_ideleAt`, which comes from the compactness of
-`New.idelesUnitOff ∅`.
+`New.mem_of_locIdele_mem` uses `New.exists_finset_cover_mulSupport_ideleAt`, which follows from
+the compactness of `New.idelesUnitOff ∅`. `New.eventually_unramified` follows from Tau Ceti's
+`IsDedekindDomain.FiniteAdeleRing.eventually_unitsOfAdicCompletion_mem_of_isOpen`.
 -/
 
 section Ideles
@@ -209,14 +210,18 @@ trivial on the local units at all but finitely many finite places. -/
 lemma eventually_unramified {C : Type*} [CommGroup C] (ψ : (𝔸f K)ˣ →* C) (h_open : ψ.ker.IsOpen) :
     ∀ᶠ v : FinPlace K in Filter.cofinite,
       ∀ x : (LocField v)ˣ, Valued.v x.val = 1 → ψ (locIdele v x) = 1 := by
-  -- a unit idele outside the kernel has a component `≠ 1` in the finite set `T`; for `v ∉ T` the
-  -- idele `locIdele v x` has none
-  obtain ⟨T, hT⟩ := exists_finset_cover_mulSupport_ideleAt h_open ψ.map_one
-  filter_upwards [T.eventually_cofinite_notMem] with v hv x hx
-  by_contra h_ne
-  obtain ⟨w, hw, hw_ne⟩ : ∃ w ∈ T, ideleAt w (locIdele v x) ≠ 1 := by
-    simpa using hT ⟨locIdele_mem_idelesUnitOff hx, h_ne⟩
-  exact hw_ne (ideleAt_locIdele_of_ne (ne_of_mem_of_not_mem hw hv) x)
+  -- The open kernel contains the local units at almost every place. First identify
+  -- Tau Ceti's single-place embedding with `locIdele`.
+  have h_loc (v : FinPlace K) (x : (LocField v)ˣ) :
+      unitsOfAdicCompletion K v x = locIdele v x := by
+    apply Units.ext
+    ext w
+    by_cases hw : w = v
+    · subst w
+      simp
+    · simp [hw]
+  simpa only [h_loc, MonoidHom.mem_ker] using
+    eventually_unitsOfAdicCompletion_mem_of_isOpen (H := ψ.ker) h_open
 
 /-! ### Totally positive elements -/
 
