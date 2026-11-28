@@ -590,6 +590,91 @@ private lemma apply_tangent_sub_sum_eq_zero {E : Type} [Field E] [Algebra k E]
   rw [map_mul, Matrix.map_apply, AlgHom.commutes, ← μ_snd, hf, Pi.sub_apply, map_sub, map_sub]
   exact congrArg (Q i l * ·) (snd_sub _ _).symm
 
+/-- The scaled graph at a section of a chart. On `O`, let `δ` be the symbol of the coordinate
+differences of the chart `A` of `X`; let `lift u c` map the chart `a` of `W` into `O`, and let `φ`,
+`ψ` write `u`, `c` on `a`, with difference `f`. Let `ν : R ⟶ R ⊕ R ^ d` be a section of the
+projection, where `R = a.coordRing`, and `e` the map of relative chains that `ν` induces from the
+locus where some `f i` is a unit. Then `δ.baseChange`, pulled back along `scaledGraph t u c`,
+`a.point` and `e`, is the pull-back of `[dT / T]` along a map induced by the coordinate differences
+`F i = s_t (ν (φ xᵢ)) - ν (ψ xᵢ)` of the scaled graph, where `s_t` scales `R ^ d` by `t`. -/
+private lemma exists_map_scaledGraph_eq_map_symbolClass {E : Type} [Field E] [Algebra k E]
+    {W : CommAlg E ⥤ Type 1} {u c : W ⟶ restrictAlg k E ⋙ X} {s : Finset (W.obj (of E E))}
+    {t : E} {δ : HodgeH (relFreeAb (offDiagonal X)) d} {A : EtaleChart d X}
+    {O : Subfunctor (X ⊗ X)} (hO : IsOpenSubfunctor O) (h_near : IsDiagonalSymbolOn δ A O)
+    (off_le : (offPoints (s : Set (W.obj (of E E)))).whisker sqZeroExt ≤
+      (((offDiagonal X).whisker (restrictAlg k E)).whisker sqZeroExt).preimage (scaledGraph t u c))
+    {a : EtaleChart d W}
+    (ha_O : a.point ∈
+      ((O.whisker (restrictAlg k E)).preimage (CartesianMonoidalCategory.lift u c)).obj a.coordRing)
+    {φ ψ : A.coordRing ⟶ (restrictAlg k E).obj a.coordRing}
+    (hφ : X.map φ A.point = u.app a.coordRing a.point)
+    (hψ : X.map ψ A.point = c.app a.coordRing a.point) {f : Fin d → a.coordRing}
+    (hf : f = (φ ∘ A.coordinate : Fin d → a.coordRing) - (ψ ∘ A.coordinate : Fin d → a.coordRing))
+    {V : Subfunctor (reprBy a.coordRing)}
+    (V_le : V ≤ (offPoints (s : Set (W.obj (of E E)))).preimage (pointMap a.point))
+    {ν : a.coordRing ⟶ sqZeroExt.obj (⟨a.coordRing, Fin d⟩ : HodgeTest E)}
+    (ν_fst : Function.LeftInverse TrivSqZeroExt.fst ν)
+    (h_unit : someUnitLocus f ≤ ((V.whisker sqZeroExt).preimage (pointMap ⟨ν⟩)).preimage (𝟙 _)) :
+    ∃ α, IsInducedByCoords f
+        (fun i ↦ (scaleModule t sqZeroExt).app _ (ν (φ (A.coordinate i))) - ν (ψ (A.coordinate i)))
+        α ∧
+      H.map hodgeCoeff (((relFreeAb.map (𝟙 _) h_unit ≫ relFreeAb.map (U := V.whisker sqZeroExt)
+          (pointMap ⟨ν⟩) le_rfl : relFreeAb (someUnitLocus f) ⟶ sqZeroExt ⋙ relFreeAb V) ≫
+          sqZeroExt.whiskerLeft (relFreeAb.map (pointMap a.point) V_le)) ≫
+          (relFreeAb.map (scaledGraph t u c) off_le :)) d δ.baseChange =
+        H.map hodgeCoeff α d symbolClass := by
+  let r : CommAlg E ⥤ CommAlg k := restrictAlg k E
+  let q : sqZeroExt ⋙ relFreeAb (offPoints (s : Set (W.obj (of E E)))) ⟶
+      sqZeroExt ⋙ r ⋙ relFreeAb (offDiagonal X) := (relFreeAb.map (scaledGraph t u c) off_le :)
+  let P : HodgeTest E := ⟨a.coordRing, Fin d⟩
+  let e : relFreeAb (someUnitLocus (c := P) f) ⟶ sqZeroExt ⋙ relFreeAb V :=
+    (relFreeAb.map (𝟙 _) h_unit ≫
+      relFreeAb.map (U := V.whisker sqZeroExt) (pointMap ⟨ν⟩) le_rfl :)
+  let ρ := relFreeAb.map (U := offPoints s) (pointMap a.point) V_le
+  -- At the image `y` of the point `ν`, `δ` is the symbol of `F`, which lifts `f`.
+  let S : CommAlg k := r.obj (sqZeroExt.obj P)
+  let y : (X ⊗ X).obj S := (scaledGraph t u c).app P (W.map ν a.point)
+  let φ' : A.coordRing ⟶ S := (φ ≫ r.map ν) ≫ r.map ((scaleModule t sqZeroExt).app P)
+  let ψ' : A.coordRing ⟶ S := ψ ≫ r.map ν
+  let F : Fin d → S := fun i ↦ φ' (A.coordinate i) - ψ' (A.coordinate i)
+  have hy_O : y ∈ O.obj S :=
+    preimage_lift_le_preimage_scaledGraph t u c hO.whisker_restrictAlg _ (Subfunctor.map _ ν ha_O)
+  obtain ⟨F_cut, h_refl, δ_eq⟩ : IsLocalSymbol δ y (fun _ x ↦ x.1 = x.2) F 1 :=
+    h_near.isLocalSymbol hy_O
+      (map_comp_map_point_eq_app_map_of_map_point_eq
+        (map_comp_map_point_eq_app_map_of_map_point_eq hφ _) _)
+      (map_comp_map_point_eq_app_map_of_map_point_eq hψ _)
+  have F_fst (i : Fin d) : TrivSqZeroExt.fst (F i) = f i := by
+    rw [hf]
+    exact congrArg₂ Sub.sub (ν_fst (φ (A.coordinate i))) (ν_fst (ψ (A.coordinate i)))
+  let V' := (offDiagonal X).preimage (pointMap y)
+  have unit_le : someUnitLocus (c := P) f ≤
+      ((V'.whisker r).whisker sqZeroExt).preimage (pointMap (A := P) ⟨𝟙 S⟩) := by
+    intro C σ ⟨i, hi⟩
+    rw [← F_fst i] at hi
+    exact F_cut.preimage_fieldLocus_not.ge _
+      (projSpace.span_eq_top_of_isUnit i (isUnit_iff_isUnit_fst.2 hi))
+  let β : relFreeAb (someUnitLocus (c := P) f) ⟶ sqZeroExt ⋙ r ⋙ relFreeAb V' :=
+    (relFreeAb.map _ unit_le :)
+  let γ := relFreeAb.map (U := offDiagonal X) (pointMap y) h_refl
+  let γ' := relFreeAb.map (U := unimodular) (pointMap (A := S) ⟨F⟩)
+    F_cut.preimage_fieldLocus_not.le
+  have h_square : (e ≫ sqZeroExt.whiskerLeft ρ) ≫ q =
+      β ≫ sqZeroExt.whiskerLeft (r.whiskerLeft γ) := by
+    refine relFreeAb.hom_ext fun C σ ↦ congrArg (relFreeAb.mk _) ?_
+    exact (congrArg _ (W.map_comp_apply ν (sqZeroExt.map σ.down) a.point)).trans
+      ((scaledGraph t u c).naturality_apply σ.down (W.map ν a.point))
+  have δ_bc : HodgeH.map (r.whiskerLeft γ) δ.baseChange =
+      HodgeH.map (r.whiskerLeft γ') symbolClass :=
+    calc _ = HodgeH.baseChange (k := E) (δ.map γ) := (HodgeH.baseChange_map ..).symm
+      _ = HodgeH.baseChange (symbolClass.map γ') := congrArg _ (δ_eq.trans (one_smul ..))
+      _ = _ := (HodgeH.baseChange_map ..).trans (congrArg _ symbolClass_baseChange)
+  refine ⟨β ≫ sqZeroExt.whiskerLeft (r.whiskerLeft γ'), fun _ _ ↦ rfl, ?_⟩
+  calc H.map _ ((e ≫ sqZeroExt.whiskerLeft ρ) ≫ q) d δ.baseChange
+    _ = H.map _ (β ≫ sqZeroExt.whiskerLeft (r.whiskerLeft γ)) d δ.baseChange := by rw [h_square]
+    _ = H.map _ (β ≫ sqZeroExt.whiskerLeft (r.whiskerLeft γ')) d symbolClass :=
+      (map_comp ..).trans ((congrArg _ δ_bc).trans (map_comp ..).symm)
+
 /-- The multiplicity at one coincidence. On `O`, the class `δ` (relative to the complement of the
 diagonal) is the symbol of the coordinate differences of the chart `A`; `lift u c` maps the chart
 `a` of `W`, with a point `ζ`, into `O`; `φ`, `ψ` write `u`, `c` on `a`; their difference `f` cuts
@@ -641,50 +726,18 @@ private lemma map_pointMap_map_scaledGraph_eq_smul_symbolClass {E : Type}
   let ρ := relFreeAb.map (U := offPoints s) (pointMap a.point) V_le
   let τ := relFreeAb.map (U := unimodular) (pointMap (A := a.coordRing) ⟨f⟩)
     f_cut.preimage_fieldLocus_not.le
-  -- At the image `y` of the universal point, `δ` is the symbol of `F`, which lifts `f`.
-  let S : CommAlg k := r.obj (sqZeroExt.obj P)
-  let y : (X ⊗ X).obj S := (scaledGraph t u c).app P (W.map ν a.point)
-  let φ' : A.coordRing ⟶ S := (φ ≫ r.map ν) ≫ r.map ((scaleModule t sqZeroExt).app P)
-  let ψ' : A.coordRing ⟶ S := ψ ≫ r.map ν
-  let F : Fin d → S := fun i ↦ φ' (A.coordinate i) - ψ' (A.coordinate i)
-  have hy_O : y ∈ O.obj S :=
-    preimage_lift_le_preimage_scaledGraph t u c hO.whisker_restrictAlg _ (Subfunctor.map _ ν ha_O)
-  obtain ⟨F_cut, h_refl, δ_eq⟩ : IsLocalSymbol δ y (fun _ x ↦ x.1 = x.2) F 1 :=
-    h_near.isLocalSymbol hy_O
-      (map_comp_map_point_eq_app_map_of_map_point_eq
-        (map_comp_map_point_eq_app_map_of_map_point_eq hφ _) _)
-      (map_comp_map_point_eq_app_map_of_map_point_eq hψ _)
-  have F_fst (i : Fin d) : TrivSqZeroExt.fst (F i) = f i := by
-    rw [hf]
-    exact congrArg₂ Sub.sub (ν_fst (φ (A.coordinate i))) (ν_fst (ψ (A.coordinate i)))
-  let V' := (offDiagonal X).preimage (pointMap y)
-  have unit_le : someUnitLocus (c := P) f ≤
-      ((V'.whisker r).whisker sqZeroExt).preimage (pointMap (A := P) ⟨𝟙 S⟩) := by
-    intro C σ ⟨i, hi⟩
-    rw [← F_fst i] at hi
-    exact F_cut.preimage_fieldLocus_not.ge _
-      (projSpace.span_eq_top_of_isUnit i (isUnit_iff_isUnit_fst.2 hi))
-  let β : relFreeAb (someUnitLocus (c := P) f) ⟶ sqZeroExt ⋙ r ⋙ relFreeAb V' :=
-    (relFreeAb.map _ unit_le :)
-  let γ := relFreeAb.map (U := offDiagonal X) (pointMap y) h_refl
-  let γ' := relFreeAb.map (U := unimodular) (pointMap (A := S) ⟨F⟩)
-    F_cut.preimage_fieldLocus_not.le
-  have h_square : (e ≫ sqZeroExt.whiskerLeft ρ) ≫ q =
-      β ≫ sqZeroExt.whiskerLeft (r.whiskerLeft γ) := by
-    refine relFreeAb.hom_ext fun C σ ↦ congrArg (relFreeAb.mk _) ?_
-    exact (congrArg _ (W.map_comp_apply ν (sqZeroExt.map σ.down) a.point)).trans
-      ((scaledGraph t u c).naturality_apply σ.down (W.map ν a.point))
-  have δ_bc : HodgeH.map (r.whiskerLeft γ) δ.baseChange =
-      HodgeH.map (r.whiskerLeft γ') symbolClass :=
-    calc _ = HodgeH.baseChange (k := E) (δ.map γ) := (HodgeH.baseChange_map ..).symm
-      _ = HodgeH.baseChange (symbolClass.map γ') := congrArg _ (δ_eq.trans (one_smul ..))
-      _ = _ := (HodgeH.baseChange_map ..).trans (congrArg _ symbolClass_baseChange)
+  -- There `δ` is the symbol of the coordinate differences `F` of the scaled graph.
+  obtain ⟨α, hα, h_α⟩ :=
+    exists_map_scaledGraph_eq_map_symbolClass hO h_near off_le ha_O hφ hψ hf V_le ν_fst h_unit
   -- The transformation law: `F = (f, t du - dc)`, `ν ∘ f = (f, du - dc)`, and modulo `f` the
   -- second components are related by `Q`, whose determinant is `m`.
-  have h_symbol : H.map _ (β ≫ sqZeroExt.whiskerLeft (r.whiskerLeft γ')) d symbolClass =
+  have h_symbol : H.map _ α d symbolClass =
       m • H.map _ (e ≫ sqZeroExt.whiskerLeft τ) d symbolClass := by
-    refine symbolClass_transformation (f := F) (g := fun l ↦ ν (f l)) (fun _ _ ↦ rfl)
-      (fun _ _ ↦ rfl) (funext F_fst) 1 (Q.map (algebraMap ..)) _ ?_ (fun i j ↦ ker_le ?_) ?_
+    refine symbolClass_transformation hα (g := fun l ↦ ν (f l)) (fun _ _ ↦ rfl) ?_ 1
+      (Q.map (algebraMap ..)) _ ?_ (fun i j ↦ ker_le ?_) ?_
+    · refine funext fun i ↦ ?_
+      rw [hf]
+      exact congrArg₂ Sub.sub (ν_fst (φ (A.coordinate i))) (ν_fst (ψ (A.coordinate i)))
     · rw [Matrix.one_mulVec]
       exact funext fun l ↦ (ν_fst (f l)).symm
     · change ζ (t • (ν _).snd j - (ν _).snd j - _) = 0
@@ -693,9 +746,7 @@ private lemma map_pointMap_map_scaledGraph_eq_smul_symbolClass {E : Type}
   calc H.map _ e d (HodgeH.map ρ (H.map _ q d δ.baseChange))
     _ = H.map _ ((e ≫ sqZeroExt.whiskerLeft ρ) ≫ q) d δ.baseChange :=
       (map_comp ..).symm.trans (map_comp ..).symm
-    _ = H.map _ (β ≫ sqZeroExt.whiskerLeft (r.whiskerLeft γ)) d δ.baseChange := by rw [h_square]
-    _ = H.map _ (β ≫ sqZeroExt.whiskerLeft (r.whiskerLeft γ')) d symbolClass :=
-      (map_comp ..).trans ((congrArg _ δ_bc).trans (map_comp ..).symm)
+    _ = H.map _ α d symbolClass := h_α
     _ = m • H.map _ (e ≫ sqZeroExt.whiskerLeft τ) d symbolClass := h_symbol
     _ = H.map _ e d (m • HodgeH.map τ symbolClass) :=
       (congrArg _ (map_comp ..)).trans (map_push ..).symm
@@ -988,6 +1039,108 @@ lemma New.Variety.pull_cup_along_pair {k : Type} [Field k] [CharZero k] {d : ℕ
     cup_map _ x y _ (whiskerLeft _ (relFreeAb.map _ hT)) (whiskerLeft _ (relFreeAb.map _ hS))
       (hom_ext (U := (T ⊔ S).whisker _))
 
+/-- If `g` cuts out the `k`-point `z.1` on a chart `a` of `X` and `g'` cuts out `z.2` on a chart `b`
+of `Y` with one coordinate, then `g ⊗ 1` followed by `1 ⊗ g'` cuts out `z` on the product chart
+`a.prod b`. -/
+lemma New.Variety.CutsOutLocus.prod {k : Type} [Field k] {d : ℕ} {X Y : CommAlg k ⥤ Type 1}
+    {a : EtaleChart d X} {b : EtaleChart 1 Y} {z : (X ⊗ Y).obj (CommAlgCat.of k k)}
+    {g : Fin d → a.coordRing} {g' : Fin 1 → b.coordRing}
+    (hg : CutsOutLocus X (ComesFromPoints {z.1}) a.point g)
+    (hg' : CutsOutLocus Y (ComesFromPoints {z.2}) b.point g') :
+    CutsOutLocus (X ⊗ Y) (ComesFromPoints {z}) (a.prod b).point
+      (Fin.snoc (g · ⊗ₜ 1) (1 ⊗ₜ g' 0)) := by
+  let G : Fin (d + 1) → (a.prod b).coordRing := Fin.snoc (g · ⊗ₜ 1) (1 ⊗ₜ g' 0)
+  intro K α
+  refine .symm (exists_eq_left.trans (Prod.ext_iff.trans ?_))
+  change (X.map α (X.map tensorInl a.point) = X.map (CommAlgCat.ofHom (Algebra.ofId k K)) z.1 ∧
+    Y.map α (Y.map tensorInr b.point) = Y.map (CommAlgCat.ofHom (Algebra.ofId k K)) z.2) ↔
+    Ideal.span (Set.range G) ≤ RingHom.ker α.hom
+  rw [show X.map α (X.map tensorInl a.point) = X.map (tensorInl ≫ α) a.point from
+    (X.map_comp_apply tensorInl α a.point).symm,
+    show Y.map α (Y.map tensorInr b.point) = Y.map (tensorInr ≫ α) b.point from
+      (Y.map_comp_apply tensorInr α b.point).symm]
+  simp only [Ideal.span_le, Set.range_subset_iff, Fin.forall_fin_succ']
+  have h_cut := ((hg K (tensorInl ≫ α)).and (hg' K (tensorInr ≫ α))).symm
+  simp only [ComesFromPoints, Set.mem_singleton_iff, exists_eq_left, Ideal.span_le,
+    Set.range_subset_iff, Fin.forall_fin_one] at h_cut
+  convert h_cut using 2
+  · change (∀ i : Fin d, α.hom (G i.castSucc) = 0) ↔
+      ∀ i : Fin d, α.hom (g i ⊗ₜ[k] 1) = 0
+    have hG (i : Fin d) : G i.castSucc = g i ⊗ₜ[k] 1 := Fin.snoc_castSucc _ _ _
+    simp only [hG]
+  · change α.hom (G (Fin.last d)) = 0 ↔ α.hom (1 ⊗ₜ[k] g' 0) = 0
+    rw [show G (Fin.last d) = 1 ⊗ₜ[k] g' 0 from Fin.snoc_last _ _]
+
+/-- Let `x` and `y` be classes with support `z.1` and `z.2` that restrict to `[dg / g]` on a chart
+`a` of `X` containing `z.1` and to `[dg' / g']` on a chart `b` of `Y` containing `z.2`. Let `ξ` be
+a class with support `z` that restricts to `[dG / G]` on the product chart, where
+`G = (g ⊗ 1, 1 ⊗ g')`. Then the external product of `x` and `y`, a class relative to
+`U = (X ∖ z.1) × Y ∪ X × (Y ∖ z.2)`, is the restriction of `ξ` to `U`. -/
+lemma New.Variety.map_prod_cup_eq_map_of_isLocalSymbol {k : Type} [Field k] [CharZero k] {d : ℕ}
+    {X Y : CommAlg k ⥤ Type 1} [IsSeparatedFunctor X] [IsSeparatedFunctor Y]
+    {z : (X ⊗ Y).obj (CommAlgCat.of k k)} {a : EtaleChart d X} {b : EtaleChart 1 Y}
+    {g : Fin d → a.coordRing} {g' : Fin 1 → b.coordRing}
+    {x : HodgeH (relFreeAb (offPoints {z.1})) d} {y : HodgeH (relFreeAb (offPoints {z.2})) 1}
+    {ξ : HodgeH (relFreeAb (offPoints {z})) (d + 1)}
+    (ha : z.1 ∈ a.locus.obj (CommAlgCat.of k k)) (hb : z.2 ∈ b.locus.obj (CommAlgCat.of k k))
+    (hx : IsLocalSymbol x a.point (ComesFromPoints {z.1}) g 1)
+    (hy : IsLocalSymbol y b.point (ComesFromPoints {z.2}) g' 1)
+    (hξ : IsLocalSymbol ξ (a.prod b).point (ComesFromPoints {z})
+      (Fin.snoc (g · ⊗ₜ 1) (1 ⊗ₜ g' 0)) 1)
+    (hU : (offPoints {z.1}).preimage (fst X Y) ⊔ (offPoints {z.2}).preimage (snd X Y) ≤
+      (offPoints (X := X ⊗ Y) {z}).preimage (𝟙 _)) :
+    HodgeH.map (relFreeAb.prod (U := offPoints {z.1}) (offPoints {z.2}))
+        (cup exteriorAlg.mulPairing x y (add_comm 1 d) :) =
+      ξ.map (relFreeAb.map (𝟙 _) hU) := by
+  let G : Fin (d + 1) → (a.prod b).coordRing := Fin.snoc (g · ⊗ₜ 1) (1 ⊗ₜ g' 0)
+  let U : Subfunctor (X ⊗ Y) :=
+    (offPoints {z.1}).preimage (fst X Y) ⊔ (offPoints {z.2}).preimage (snd X Y)
+  -- A point off the product chart is off `a` or off `b`, so it has a neighbourhood in `U`.
+  have near (K) (hK : IsField K.carrier) (q) (hq : q ∉ (a.prod b).locus.obj K) :
+      ∃ O, IsOpenSubfunctor O ∧ q ∈ O.obj K ∧ O ≤ U := by
+    obtain hq | hq := not_and_or.1 fun h ↦ hq ((range_pointMap_prod a b).ge K h)
+    · obtain ⟨O, hO_open, hqO, hO_le⟩ := exists_isOpenSubfunctor_le_offPoints ha hK hq
+      exact ⟨_, hO_open.preimage _, hqO, fun _ _ h ↦ .inl (hO_le _ h)⟩
+    · obtain ⟨O, hO_open, hqO, hO_le⟩ := exists_isOpenSubfunctor_le_offPoints hb hK hq
+      exact ⟨_, hO_open.preimage _, hqO, fun _ _ h ↦ .inr (hO_le _ h)⟩
+  -- By excision it suffices to compare pull-backs to the product chart. That of the external
+  -- product is the product of the symbols of `g ⊗ 1` and `1 ⊗ g'` (`pull_cup_along_pair`, `hx`,
+  -- `hy`).
+  refine (hodge_excision (a.prod b).isOpenSubfunctor near (by rfl) _).1
+    ((pull_cup_along_pair ..).trans
+      ((congrArg _ (congrArg₂ (fun u v ↦ cup _ u v _)
+        ((hx.map _).2.2.trans (one_smul _ _))
+        ((hy.map _).2.2.trans (one_smul _ _)))).trans ?_))
+  change _ =
+    (ξ.map (relFreeAb.map (𝟙 _) hU)).map (relFreeAb.map (pointMap (a.prod b).point) le_rfl)
+  -- Read `pull_cup_along_pair` backwards: this is the pull-back, along `(g ⊗ 1, 1 ⊗ g')`, of the
+  -- product of the universal symbols on `𝔸^d × 𝔸^1`.
+  refine (pull_cup_along_pair (U := unimodular) (W := unimodular) _ _ _ _
+    symbolClass symbolClass).symm.trans ?_
+  -- `symbolClass_succ` turns the product into `[dG / G]`, the pull-back of `ξ` by `hξ`.
+  refine (congrArg (HodgeH.map _) (symbolClass_succ k d).2).trans ?_
+  let p := pointMap (a.prod b).point
+  let Q := U.preimage p
+  let Z := (offPoints {z}).preimage p
+  let restrict : relFreeAb Q ⟶ relFreeAb Z :=
+    relFreeAb.map (𝟙 (reprBy _)) fun K _ h ↦ hU K h
+  let toPoint : relFreeAb Z ⟶ relFreeAb (offPoints {z}) := relFreeAb.map p hξ.2.1
+  let toSymbol : relFreeAb Z ⟶ relFreeAb (unimodular (k := k) (d := d + 1)) :=
+    relFreeAb.map (pointMap ⟨G⟩) hξ.1.preimage_fieldLocus_not.le
+  have h_local : ξ.map toPoint = symbolClass.map toSymbol :=
+    hξ.2.2.trans (one_smul _ _)
+  have h_comp : ξ.map (restrict ≫ toPoint) = symbolClass.map (restrict ≫ toSymbol) :=
+    (HodgeH.map_comp restrict toPoint ξ).trans
+      ((congrArg (fun w : HodgeH (relFreeAb Z) (d + 1) ↦ w.map restrict) h_local).trans
+        (HodgeH.map_comp restrict toSymbol symbolClass).symm)
+  refine (HodgeH.map_comp _ _ _).symm.trans ?_
+  refine Eq.trans ?_ (HodgeH.map_comp _ _ _)
+  refine (congrArg (fun f ↦ symbolClass.map f) ?_).trans
+    (h_comp.symm.trans (congrArg (fun f ↦ ξ.map f) ?_))
+  · exact relFreeAb.hom_ext fun C σ ↦ congrArg (relFreeAb.mk _) <|
+      ULift.ext (Fin.comp_snoc σ.down.hom (g · ⊗ₜ[k] 1) (1 ⊗ₜ[k] g' 0)).symm
+  · exact relFreeAb.hom_ext
+
 /-- Over a field `k` of characteristic `0`, let `X` and `Y` have atlases of dimensions `d` and `1`.
 Let `z` be a `k`-point of `X × Y`. Take the classes of `z.1` and `z.2` and multiply them with the
 wedge product of coefficients. Pull the product back along `ℤ[X × Y] → ℤ[X] ⊗ ℤ[Y]`. The result is
@@ -1010,89 +1163,24 @@ lemma New.Variety.IsPointSum.cup_pointClass {k : Type} [Field k] [CharZero k] {d
   have cl_fst : pointClass d z.1 = .map (π _) x := x_pt.map_eq_pointClass.symm
   have cl_snd : pointClass 1 z.2 = .map (π _) y := y_pt.map_eq_pointClass.symm
   -- Charts `a ∋ z.1`, `b ∋ z.2` and functions `g`, `g'` on them that cut out these points, with
-  -- `x = [dg / g]` on `a` and `y = [dg' / g']` on `b`.
+  -- `x = [dg / g]` on `a` and `y = [dg' / g']` on `b`. Together they cut out `z` in the product
+  -- chart, where `ξ` restricts to their symbol.
   obtain ⟨a, g, ha, hx⟩ := x_pt z.1 rfl
   obtain ⟨b, g', hb, hy⟩ := y_pt z.2 rfl
-  let G : Fin (d + 1) → (a.prod b).coordRing := Fin.snoc (g · ⊗ₜ 1) (1 ⊗ₜ g' 0)
-  -- The equations `g` and `g'` together cut out `z` in the product chart.
-  have cut : CutsOutLocus (X ⊗ Y) (ComesFromPoints {z}) (a.prod b).point G := fun K α ↦ by
-    refine .symm (exists_eq_left.trans (Prod.ext_iff.trans ?_))
-    change (X.map α (X.map tensorInl a.point) = X.map (CommAlgCat.ofHom (Algebra.ofId k K)) z.1 ∧
-      Y.map α (Y.map tensorInr b.point) = Y.map (CommAlgCat.ofHom (Algebra.ofId k K)) z.2) ↔
-      Ideal.span (Set.range G) ≤ RingHom.ker α.hom
-    rw [show X.map α (X.map tensorInl a.point) = X.map (tensorInl ≫ α) a.point from
-      (X.map_comp_apply tensorInl α a.point).symm,
-      show Y.map α (Y.map tensorInr b.point) = Y.map (tensorInr ≫ α) b.point from
-        (Y.map_comp_apply tensorInr α b.point).symm]
-    simp only [Ideal.span_le, Set.range_subset_iff, Fin.forall_fin_succ']
-    have h_cut := ((hx.1 K (tensorInl ≫ α)).and (hy.1 K (tensorInr ≫ α))).symm
-    simp only [ComesFromPoints, Set.mem_singleton_iff, exists_eq_left, Ideal.span_le,
-      Set.range_subset_iff, Fin.forall_fin_one] at h_cut
-    convert h_cut using 2
-    · change (∀ i : Fin d, α.hom (G i.castSucc) = 0) ↔
-        ∀ i : Fin d, α.hom (g i ⊗ₜ[k] 1) = 0
-      have hG (i : Fin d) : G i.castSucc = g i ⊗ₜ[k] 1 := Fin.snoc_castSucc _ _ _
-      simp only [hG]
-    · change α.hom (G (Fin.last d)) = 0 ↔ α.hom (1 ⊗ₜ[k] g' 0) = 0
-      rw [show G (Fin.last d) = 1 ⊗ₜ[k] g' 0 from Fin.snoc_last _ _]
   obtain ⟨ξ, ξ_local, ξ_pt⟩ :=
-    (a.prod b).exists_isLocalSymbol cut ((range_pointMap_prod ..).ge _ ⟨ha, hb⟩)
+    (a.prod b).exists_isLocalSymbol (hx.1.prod hy.1) ((range_pointMap_prod ..).ge _ ⟨ha, hb⟩)
   let U : Subfunctor (X ⊗ Y) :=
     (offPoints {z.1}).preimage (fst X Y) ⊔ (offPoints {z.2}).preimage (snd X Y)
   -- A point that avoids `z.1` or `z.2` in its coordinate avoids `z`.
   have hU : U ≤ (offPoints (X := X ⊗ Y) {z}).preimage (𝟙 _) := by
     rintro _ _ (h | h) _ _ hK ⟨_, ⟨⟩, e⟩ <;> exact h _ _ hK ⟨_, rfl, by injections⟩
-  let η : HodgeH (relFreeAb U) (d + 1) :=
-    HodgeH.map (relFreeAb.prod ..) (cup exteriorAlg.mulPairing x y (add_comm 1 d) :)
-  have η_eq : η = ξ.map (relFreeAb.map (𝟙 _) hU) := by
-    -- A point off the product chart is off `a` or off `b`, so it has a neighbourhood in `U`.
-    have near (K) (hK : IsField K.carrier) (q) (hq : q ∉ (a.prod b).locus.obj K) :
-        ∃ O, IsOpenSubfunctor O ∧ q ∈ O.obj K ∧ O ≤ U := by
-      obtain hq | hq := not_and_or.1 fun h ↦ hq ((range_pointMap_prod a b).ge K h)
-      · obtain ⟨O, hO_open, hqO, hO_le⟩ := exists_isOpenSubfunctor_le_offPoints ha hK hq
-        exact ⟨_, hO_open.preimage _, hqO, fun _ _ h ↦ .inl (hO_le _ h)⟩
-      · obtain ⟨O, hO_open, hqO, hO_le⟩ := exists_isOpenSubfunctor_le_offPoints hb hK hq
-        exact ⟨_, hO_open.preimage _, hqO, fun _ _ h ↦ .inr (hO_le _ h)⟩
-    -- By excision it suffices to compare pull-backs to the product chart. That of `η` is the
-    -- product of the symbols of `g ⊗ 1` and `1 ⊗ g'` (`pull_cup_along_pair`, `hx`, `hy`).
-    refine (hodge_excision (a.prod b).isOpenSubfunctor near (by rfl) _).1
-      ((pull_cup_along_pair ..).trans
-        ((congrArg _ (congrArg₂ (fun u v ↦ cup _ u v _)
-          ((hx.map _).2.2.trans (one_smul _ _))
-          ((hy.map _).2.2.trans (one_smul _ _)))).trans ?_))
-    change _ =
-      (ξ.map (relFreeAb.map (𝟙 _) hU)).map (relFreeAb.map (pointMap (a.prod b).point) le_rfl)
-    -- Read `pull_cup_along_pair` backwards: this is the pull-back, along `(g ⊗ 1, 1 ⊗ g')`, of the
-    -- product of the universal symbols on `𝔸^d × 𝔸^1`.
-    refine (pull_cup_along_pair (U := unimodular) (W := unimodular) _ _ _ _
-      symbolClass symbolClass).symm.trans ?_
-    -- `symbolClass_succ` turns the product into `[dG / G]`, the pull-back of `ξ` by `ξ_local`.
-    refine (congrArg (HodgeH.map _) (symbolClass_succ k d).2).trans ?_
-    let p := pointMap (a.prod b).point
-    let Q := U.preimage p
-    let Z := (offPoints {z}).preimage p
-    let restrict : relFreeAb Q ⟶ relFreeAb Z :=
-      relFreeAb.map (𝟙 (reprBy _)) fun K _ h ↦ hU K h
-    let toPoint : relFreeAb Z ⟶ relFreeAb (offPoints {z}) := relFreeAb.map p ξ_local.2.1
-    let toSymbol : relFreeAb Z ⟶ relFreeAb (unimodular (k := k) (d := d + 1)) :=
-      relFreeAb.map (pointMap ⟨G⟩) ξ_local.1.preimage_fieldLocus_not.le
-    have h_local : ξ.map toPoint = symbolClass.map toSymbol :=
-      ξ_local.2.2.trans (one_smul _ _)
-    have h_comp : ξ.map (restrict ≫ toPoint) = symbolClass.map (restrict ≫ toSymbol) :=
-      (HodgeH.map_comp restrict toPoint ξ).trans
-        ((congrArg (fun w : HodgeH (relFreeAb Z) (d + 1) ↦ w.map restrict) h_local).trans
-          (HodgeH.map_comp restrict toSymbol symbolClass).symm)
-    refine (HodgeH.map_comp _ _ _).symm.trans ?_
-    refine Eq.trans ?_ (HodgeH.map_comp _ _ _)
-    refine (congrArg (fun f ↦ symbolClass.map f) ?_).trans
-      (h_comp.symm.trans (congrArg (fun f ↦ ξ.map f) ?_))
-    · exact relFreeAb.hom_ext fun C σ ↦ congrArg (relFreeAb.mk _) <|
-        ULift.ext (Fin.comp_snoc σ.down.hom (g · ⊗ₜ[k] 1) (1 ⊗ₜ[k] g' 0)).symm
-    · exact relFreeAb.hom_ext
+  -- The external product of `x` and `y` is the restriction of `ξ` to `U`.
+  have prod_eq := map_prod_cup_eq_map_of_isLocalSymbol ha hb hx hy ξ_local hU
   rw [cl_fst, cl_snd]
-  -- The left side is the image of `η`, hence of `ξ`, in the cohomology of `X ⊗ Y`.
+  -- The left side is the image of the external product of `x` and `y`, hence of `ξ`, in the
+  -- cohomology of `X ⊗ Y`.
   refine (cup_map _ _ _ _ (whiskerLeft _ (π _)) (whiskerLeft _ (π _)) rfl).symm.trans
-    ((HodgeH.map_comp (π U) (relFreeAb.prod ..) _).trans ((congrArg _ η_eq).trans ?_))
+    ((HodgeH.map_comp (π U) (relFreeAb.prod ..) _).trans ((congrArg _ prod_eq).trans ?_))
   refine (HodgeH.map_comp _ _ _).symm.trans ?_
   have hπ : π U ≫ relFreeAb.map (𝟙 _) hU = π (offPoints {z}) := by
     rw [π_map, freeAb.map_id, Category.id_comp]
