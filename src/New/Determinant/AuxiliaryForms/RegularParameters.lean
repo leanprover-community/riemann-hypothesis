@@ -44,7 +44,6 @@ Harish-Chandra parameter of `(κ, e)` at `w` in rank `N`. -/
 lemma abs_hcParameter_le_of_isHCParam {κ : Φ → ℕ → ℕ} {e : Φ → ℤ} {l : Φ → n → ℤ}
     (hl : IsHCParam κ e l) {β : ℕ} {w : Φ} (hβ : ∀ i : n, |l w i| ≤ β) {p : ℕ}
     (hp : p < Fintype.card n) : |hcParameter κ e (Fintype.card n) w p| ≤ β := by
-  classical
   obtain ⟨i, -, hi, -⟩ := hl.exists_decreasingPosition_eq w hp
   simpa [← hi] using hβ i
 
@@ -63,7 +62,6 @@ and `i`, then `κ` has at most `card Φ * card n * β` boxes in columns of heigh
 lemma boxes_le_card_mul_of_isHCParam {κ : Φ → ℕ → ℕ} {e : Φ → ℤ} {l : Φ → n → ℤ}
     (hl : IsHCParam κ e l) {β : ℕ} (hβ : ∀ (w : Φ) (i : n), |l w i| ≤ β) :
     boxes κ (Fintype.card n) ≤ Fintype.card Φ * Fintype.card n * β := by
-  classical
   -- The boxes are counted by rows. A row length is at most half the difference between an entry
   -- of `l w` and the smallest entry `2 e w + 1 - card n`, so at most `β`.
   rw [← FitsRanks.refl.sum_diagramWeight_eq_boxes]
@@ -121,7 +119,6 @@ lemma exists_isHCParam_of_le {s : n → ℤˣ} (κ : Φ → ℕ → ℕ) {e : Φ
     ∃ f : Φ → ℕ → ℕ,
       IsHCParam f (fun w : Φ ↦ e w + f w (Fintype.card n)) l ∧
       ∀ w : Φ, ∀ k > Fintype.card n, f w k = κ w k := by
-  classical
   -- By parity `l w i` is determined by its half, so the halves are distinct; apply
   -- `exists_eq_add_card_add_sum_Ioc` to them.
   have h_parity (w : Φ) (i : n) : (l w i + Fintype.card n - 1) % 2 = 0 :=
