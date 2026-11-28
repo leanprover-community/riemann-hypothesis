@@ -77,6 +77,7 @@ def blockDiagonalGroup : Subgroup (GL n k) where
   mul_mem' ha hb := Commute.mul_left ha hb
   inv_mem' ha := Commute.units_inv_left ha
 
+/-- Characterization of membership in the block diagonal subgroup associated to an idempotent. -/
 lemma mem_blockDiagonalGroup {h : GL n k} : h ∈ blockDiagonalGroup ε ↔ h.1 * ε = ε * h.1 := Iff.rfl
 
 /-- The radical of the idempotent `ε` consists of the `u` for which `u - 1` is an upper right
@@ -277,6 +278,7 @@ lemma exists_columnSpace_eq_smul_coordProjector {O : Subring F} (hO : IsValuatio
     _ = (a * permGL σ) • columnSpace (coordProjector T) := by
         rw [columnSpace_coordProjector_map, mul_smul]
 
+/-- The rank of a coordinate projector matrix indexed by `T` equals the cardinality of `T`. -/
 lemma rank_coordProjector (T : Finset n) : (coordProjector T : Matrix n n F).rank = T.card := by
   classical
   simp [coordProjector, rank_diagonal]
