@@ -965,6 +965,12 @@ lemma adeleMap_adeleMap [NumberField L] :
 lemma adeleMap_id : ∀ x : 𝔸f K, adeleMap (RingHom.id K) x = x :=
   denseRange_algebraMap_finAdele.eq fun x : K ↦ by simp
 
+/-- The Galois action on finite adeles by ring endomorphisms. -/
+noncomputable def galAdeleHom [NumberField L] [Algebra K L] : Gal(L/K) →* (𝔸f L →+* 𝔸f L) where
+  toFun σ := adeleMap (σ : L →+* L)
+  map_one' := RingHom.ext (adeleMap_id (K := L))
+  map_mul' σ τ := RingHom.ext fun x ↦ (adeleMap_adeleMap (σ : L →+* L) (τ : L →+* L) x).symm
+
 omit [NumberField K] in
 /-- For an embedding `f: K →+* L`, every finite place of `K` has a place of `L` above it. -/
 lemma FinPlace.comap_surjective : Function.Surjective (comap f) := by

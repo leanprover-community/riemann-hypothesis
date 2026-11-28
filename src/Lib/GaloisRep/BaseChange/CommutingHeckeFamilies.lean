@@ -223,12 +223,8 @@ lemma IsStep.exists_gal_ne_one (hμ : IsStep E' μ) : ∃ σ : Gal(E'/E), σ ≠
 
 lemma adeleMap_pow_finrank_eq_one [IsGalois E E'] :
     adeleMap (σ : E' →+* E') ^ finrank E E' = 1 := by
-  -- `σ ^ [E' : E] = 1`, as the order of the Galois group is the degree. The image of
-  -- `1 : Gal(E'/E)` is the identity ring map up to unfolding.
-  ext x v
-  simp only [← card_aut_eq_finrank, Nat.card_eq_fintype_card, adeleMap_gal_pow, pow_card_eq_one,
-    RingHom.coe_one, id_eq]
-  exact congrArg (fun y ↦ (y v).toCompletion) (adeleMap_id x)
+  change galAdeleHom σ ^ finrank E E' = 1
+  rw [← map_pow, ← card_aut_eq_finrank, Nat.card_eq_fintype_card, pow_card_eq_one, map_one]
 
 end BaseChangePlaces
 

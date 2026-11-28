@@ -1050,16 +1050,12 @@ lemma New.twisted_trace_identity {E E' n : Type} [Field E] [CMType E] [Field E']
   -- The trace formula over `E` (untwisted) and over `E'` (twisted by `σ`, as an automorphism).
   let τ : U 1 ≃* U 1 := by
     apply ω.toMulEquiv (mapEnd (map_star_CM ↑σ⁻¹)) <;> ext <;> simp [ω, U.map]
-  have hσ_l : ((σ⁻¹ : Gal(E'/E)) : E' →+* E').comp (σ : E' →+* E') = RingHom.id E' :=
-    RingHom.ext fun x ↦ AlgEquiv.symm_apply_apply σ x
-  have hσ_r : (σ : E' →+* E').comp ((σ⁻¹ : Gal(E'/E)) : E' →+* E') = RingHom.id E' :=
-    RingHom.ext fun x ↦ AlgEquiv.apply_symm_apply σ x
+  have cancel (s : Gal(E'/E)) : (galoisGf (n := n) s⁻¹).comp (galoisGf s) = MonoidHom.id _ :=
+    MonoidHom.ext fun x ↦ Subtype.ext (Units.ext (Matrix.ext fun a b ↦
+      DFunLike.congr_fun (map_mul_eq_one galAdeleHom (inv_mul_cancel s))
+        ((x : Matrix n n (𝔸f E')) a b)))
   let θ : Gf E' n ≃* Gf E' n :=
-    (galoisGf σ).toMulEquiv (galoisGf σ⁻¹)
-      (MonoidHom.ext fun x ↦ Subtype.ext (Units.ext (Matrix.ext fun a b ↦
-        (adeleMap_adeleMap _ _ _).trans (by rw [hσ_l, adeleMap_id]; rfl))))
-      (MonoidHom.ext fun x ↦ Subtype.ext (Units.ext (Matrix.ext fun a b ↦
-        (adeleMap_adeleMap _ _ _).trans (by rw [hσ_r, adeleMap_id]; rfl))))
+    (galoisGf σ).toMulEquiv (galoisGf σ⁻¹) (cancel σ) (by simpa using cancel σ⁻¹)
   have hK_E : K.comap baseChangeGf ≤ stdLevel E n := fun _ h ↦ baseChangeGf_mem_stdLevel.1 (hK h)
   obtain ⟨c, hc, h_forms, h_level, h_tr⟩ :=
     (stdSpace E n).isSampleTotal_twisted_trace κ 1 continuous_id hK_E (L.comap_mono hL)

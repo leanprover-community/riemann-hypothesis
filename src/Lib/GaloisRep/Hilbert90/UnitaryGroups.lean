@@ -356,15 +356,8 @@ variable {K L : Type*} [Field K] [Field L] [NumberField L] [Algebra K L] {σ : G
 
 /-- The `i`-th iterate of the action of `σ` on finite adeles is the action of `σ ^ i`. -/
 lemma adeleMap_gal_pow (i : ℕ) :
-    adeleMap (σ : L →+* L) ^ i = adeleMap (↑(σ ^ i) : L →+* L) := by
-  induction i with
-  | zero =>
-    ext1 x
-    simp [aut_one]
-  | succ i ih =>
-    ext1 x
-    rw [pow_succ, RingHom.coe_mul, Function.comp_apply, ih, adeleMap_adeleMap, pow_succ]
-    rfl
+    adeleMap (σ : L →+* L) ^ i = adeleMap (↑(σ ^ i) : L →+* L) :=
+  (map_pow galAdeleHom σ i).symm
 
 /-- Let `a` and `b` be finite adeles of `L` that solve `u * σ x = x`, where `σ` acts through
 `New.adeleMap`. Then some solution `c` divides both: at each place take whichever of `a`, `b` has
