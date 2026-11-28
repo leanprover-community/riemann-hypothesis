@@ -2,8 +2,10 @@ module
 
 import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
 import TauCeti.Analysis.Matrix.LDL
+import TauCeti.Analysis.Matrix.L2OpNorm
 import TauCeti.Analysis.Matrix.PosSemidef.Determinant
 import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
+import TauCeti.MeasureTheory.Measure.Haar.NormedSpace
 public import Aesop.BuiltinRules
 public import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
@@ -107,20 +109,18 @@ noncomputable def principalMinor (y : Matrix n n ℂ) (p : n → Prop) [Decidabl
 
 variable {x b : Matrix n n ℂ} {p : n → Prop} [DecidablePred p] {ε : n → ℤˣ} (g : USign ε)
 
+theorem norm_det_le_norm_pow : ‖x.det‖ ≤ ‖x‖ ^ card n := by
+  simpa only [ContinuousLinearMap.det, coe_toEuclideanCLM_eq_toEuclideanLin, toEuclideanLin,
+    LinearMap.det_toLpLin, finrank_euclideanSpace, l2_opNorm_toEuclideanCLM] using
+    (toEuclideanCLM (n := n) (𝕜 := ℂ) x).norm_det_le_opNorm_pow
+
 /-- The absolute value of the principal minor of a complex square matrix `x` on the indices
 satisfying `p` is at most `‖x‖ ^ k`, where `‖x‖` is the operator norm and `k` is the number of
 these indices. -/
 theorem norm_principalMinor_le_pow : ‖principalMinor x p‖ ≤ ‖x‖ ^ card {i // p i} := by
-  -- `Aᴴ * A ≤ ‖x‖ ^ 2` in the Loewner order; taking determinants gives the square of the claim.
-  have h_le :
-      (x.toBlock p p)ᴴ * x.toBlock p p ≤ (algebraMap ℝ (Matrix n n ℂ) (‖x‖ ^ 2)).toBlock p p :=
-    ((le_add_of_nonneg_right (posSemidef_conjTranspose_mul_self _).nonneg).trans_eq
-      (toBlock_mul_eq_add p p p (star x) x).symm).trans
-      ((star_mul_le_algebraMap_norm_sq (a := x)).submatrix _)
-  refine le_of_sq_le_sq ?_ (by positivity)
-  simpa [sq, mul_pow, principalMinor, toSquareBlockProp, algebraMap_eq_diagonal,
-    toBlock_diagonal_self] using
-    norm_det_le_norm_det_of_posSemidef (x.toBlock p p).posSemidef_conjTranspose_mul_self h_le
+  exact (norm_det_le_norm_pow (x := x.toSquareBlockProp p)).trans
+    (pow_le_pow_left₀ (norm_nonneg _) (l2_opNorm_submatrix_le x
+      Subtype.val_injective Subtype.val_injective) _)
 
 -- lets `aesop` reduce an equality of two determinants to an equality of the two matrices
 attribute [local aesop 1%] congr
@@ -245,9 +245,6 @@ theorem U.principalMinor_compl :
   have h_inv : principalMinor (g.val.val : Matrix n n ℂ)⁻¹ p = conj (principalMinor g p) := by
     rw [← coe_units_inv, ← InvMemClass.coe_inv, principalMinor_coe_inv]
   rw [← h_inv, jacobi_complementary_minor g.val.det_ne_zero, mul_div_cancel₀ _ g.val.det_ne_zero]
-
-theorem norm_det_le_norm_pow : ‖x.det‖ ≤ ‖x‖ ^ card n := by
-  simpa using norm_principalMinor_le_pow (x := x) (p := fun _ ↦ True)
 
 end New
 
