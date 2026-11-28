@@ -154,18 +154,22 @@ variable {W : Type*} [AddCommGroup W] [TopologicalSpace W] {H : Heisenberg W}
 
 attribute [fun_prop] cont Rep.cont
 
+/-- The cocycle coefficient `H.β x y` is nonzero for all elements `x, y`. -/
 @[simp]
 lemma beta_ne_zero : H.β x y ≠ 0 := by simp [← norm_pos_iff, norm_eq_one]
 
+/-- The cocycle `H.β 0 y` evaluated at zero on the left equals 1. -/
 @[simp]
 lemma beta_zero_left : H.β 0 y = 1 := by simpa using H.add_left 0 0 y
 
+/-- The product relation `H.β x y * H.β y x = 1` for the Heisenberg cocycle. -/
 @[simp]
 lemma beta_mul_beta : H.β x y * H.β y x = 1 := by
   -- Expand `β (x + y) (x + y) = 1` in both variables.
   have h_diag : H.β (x + y) (x + y) = 1 := H.self_eq_one _
   simpa [H.add_left, H.add_right, H.self_eq_one] using h_diag
 
+/-- The cocycle `H.β y 0` evaluated at zero on the right equals 1. -/
 @[simp]
 lemma beta_zero_right : H.β y 0 = 1 := by simpa using beta_mul_beta 0 y
 
