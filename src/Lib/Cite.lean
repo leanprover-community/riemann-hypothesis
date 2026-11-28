@@ -1,6 +1,8 @@
-import Lean.Elab.Command
-import Lib.Cite.Bib
-import Mathlib.Init
+module
+
+public meta import Lean.Elab.Command
+public meta import Lib.Cite.Bib
+public import Mathlib.Init
 
 /-!
 # Citations
@@ -41,6 +43,8 @@ track this read: a module that cites an entry is not rebuilt when the file chang
 `#citations` (`Lib.Cite.Report`) lists the citations that a declaration depends on, together
 with Mathlib's cross-references such as `@[stacks]`.
 -/
+
+public meta section
 
 open Lean Elab Command
 

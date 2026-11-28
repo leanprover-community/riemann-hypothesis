@@ -1,6 +1,8 @@
-import Lean.Data.Position
-import Std.Internal.Parsec
-import Mathlib.Init
+module
+
+public meta import Lean.Data.Position
+public meta import Std.Internal.Parsec
+public import Mathlib.Init
 
 /-!
 # The BibTeX file
@@ -23,6 +25,8 @@ metadata can be checked against that catalogue: a `doi`, a zbMATH number `zbl` (
 returns those of an entry, and fails on one that is malformed. A zbMATH document number `zbmath`
 alone does not count: the `zbl` number is the one that zbMATH's addresses use.
 -/
+
+public meta section
 
 open Lean Std.Internal.Parsec String
 

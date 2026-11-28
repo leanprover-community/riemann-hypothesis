@@ -1,7 +1,9 @@
-import Lean.Elab.Command
-import Lib.Cite
-import Mathlib.Tactic.CrossRefAttribute
-import Mathlib.Init
+module
+
+public meta import Lean.Elab.Command
+public meta import Lib.Cite
+public meta import Mathlib.Tactic.CrossRefAttribute
+public import Mathlib.Init
 
 /-!
 # The citations that a declaration depends on
@@ -16,6 +18,8 @@ In a file that starts with `module`, the proofs of imported theorems are not loa
 command only follows their statements, and it says so. To follow the proofs, run it from a file
 without `module`, as `scripts/cite/Citations.lean` does for `riemannHypothesis`.
 -/
+
+public meta section
 
 open Lean Elab Command
 

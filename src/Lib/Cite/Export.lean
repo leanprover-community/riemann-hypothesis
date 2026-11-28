@@ -1,7 +1,9 @@
-import Lean.Data.Json.Elab
-import Lean.Elab.Command
-import Lib.Cite
-import Mathlib.Init
+module
+
+public meta import Lean.Data.Json.Elab
+public meta import Lean.Elab.Command
+public meta import Lib.Cite
+public import Mathlib.Init
 
 /-!
 # Citations as Literature Links annotations
@@ -27,6 +29,8 @@ The export reads the BibTeX file again and checks every cited entry as `@[cite]`
 nothing if one fails. This catches a change to the file after which Lake did not rebuild a citing
 module.
 -/
+
+public meta section
 
 open Lean Elab Command Json
 
