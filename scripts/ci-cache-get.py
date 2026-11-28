@@ -17,8 +17,8 @@ exactly as for an exact match, but against the baseline's inputs. Its modules ar
 with its current inputs) and keeps the rest. Exit 4 means a baseline was restored.
 
 The record's immutable map and module manifest are checked against its SHA-256 values and
-against each other. Then, at the same time, the map is registered with `lake cache add` in
-parallel shards and the missing artifacts are downloaded by one 500-way curl process, each
+against each other. Then, at the same time, the map is registered with `lake cache add`
+and the missing artifacts are downloaded by one 500-way curl process, each
 checked against the manifest's SHA-256 before it enters the cache (fetch-artifacts.py). Then one
 stock leantar process unpacks every module (after path checks), and `lake build --no-build`
 confirms that nothing would have to be compiled.
@@ -59,7 +59,6 @@ ARTIFACT = re.compile(r"[0-9a-f]{16}\.ltar\Z")
 MODULE = re.compile(r"[\w']+(?:\.[\w']+)*\Z")  # Unicode names occur in the tree.
 SCHEMA = "2026-03-17"
 USER_AGENT = "RiemannHypothesisCache/1.0"
-SHARDS = 16
 MAX_JSON = 64 * 1024 * 1024
 MAX_RECEIPT = 2 * 1024 * 1024
 MAX_MODULES = 500000
@@ -350,50 +349,6 @@ def published(artifact):
         return None
 
 
-def registered(cache, entries):
-    """Map entries already registered in this cache with the same artifact
-    (outputs/<scope>/<hash>.json naming it). Others are (re)written by `lake cache add`."""
-    wanted = dict(entries)
-    have = set()
-    for directory, _, files in os.walk(cache / "outputs"):
-        for name in files:
-            input_hash = name[:-5]
-            if name.endswith(".json") and input_hash in wanted and input_hash not in have:
-                try:
-                    text = (Path(directory) / name).read_text()
-                except (OSError, UnicodeDecodeError):
-                    continue
-                if wanted[input_hash][:-5] in text:
-                    have.add(input_hash)
-    return have
-
-
-def write_map(path, items):
-    path.write_text(json.dumps(SCHEMA) + "\n" + "".join(json.dumps(item) + "\n" for item in items))
-
-
-def register(root, env, service, temporary, items, shards=SHARDS):
-    """`lake cache add` in parallel shards. Lake writes one file per mapping, so shards cannot
-    conflict; a small first shard runs alone so that one process creates the outputs directory."""
-    command = ["lake", "-q", "cache", "add", "--scope", SCOPE]
-    if service:
-        command += ["--service", service]
-    first, rest = items[:100], items[100:]
-    shards = max(1, min(shards, len(rest) // 2000 or 1))
-    write_map(temporary / "add-0.jsonl", first)
-    subprocess.run([*command, str(temporary / "add-0.jsonl")], cwd=root, env=env, check=True)
-    processes = []
-    for index in range(shards):
-        part = rest[index::shards]
-        if part:
-            path = temporary / f"add-{index + 1}.jsonl"
-            write_map(path, part)
-            processes.append(subprocess.Popen([*command, str(path)], cwd=root, env=env))
-    codes = [process.wait() for process in processes]
-    if any(codes):
-        raise subprocess.CalledProcessError(max(codes), command)
-
-
 def unpack_jobs(root, cache, modules, baseline=False):
     """leantar jobs for every module, refusing unsafe or symlinked source/output paths.
 
@@ -492,24 +447,23 @@ def consume(root, cache, record, identity, workers=24, fetcher=fetch, baseline=N
                LAKE_RESTORE_ARTIFACTS="true", ELAN_TOOLCHAIN=identity["toolchain"])
     env["RUST_MIN_STACK"] = str(max(int(env.get("RUST_MIN_STACK", "0")), 8388608))
     service = tomllib.loads((root / "lakefile.toml").read_text()).get("cache", {}).get("defaultService")
-    entries = [decode(line) for line in contents.splitlines()[1:]]
-    have = registered(cache, entries)
-    fresh = [entry for entry in entries if entry[0] not in have]
     print(f"Fetching {PROJECT} build cache {record['candidate_head']} for "
-          f"{'baseline' if baseline else 'current'} build inputs: "
-          f"{len(entries)} modules, {len(fresh)} not yet registered...", flush=True)
+          f"{'baseline' if baseline else 'current'} build inputs: {len(modules)} modules...", flush=True)
     with tempfile.TemporaryDirectory(prefix="ci-cache-", dir=root / ".lake") as temporary:
         temporary = Path(temporary)
-        (temporary / "outputs.jsonl").write_bytes(contents)
+        mapping = temporary / "outputs.jsonl"
+        mapping.write_bytes(contents)
         (temporary / "sha256.json").write_text(json.dumps(shas))
         downloads = subprocess.Popen(
-            [sys.executable, "-I", str(FETCH_ARTIFACTS), str(temporary / "outputs.jsonl"), str(cache),
+            [sys.executable, "-I", str(FETCH_ARTIFACTS), str(mapping), str(cache),
              "--sha256", str(temporary / "sha256.json"), "--verify-existing",
              "--base-url", f"{PUBLIC_BASE}/artifacts/{SCOPE}/", "--user-agent", USER_AGENT,
              "--report", str(temporary / "downloads.json")])
         try:
-            if fresh:
-                register(root, env, service, temporary, fresh)
+            command = ["lake", "-q", "cache", "add", "--scope", SCOPE]
+            if service:
+                command += ["--service", service]
+            subprocess.run([*command, str(mapping)], cwd=root, env=env, check=True)
         finally:
             code = downloads.wait()
         try:
@@ -517,7 +471,7 @@ def consume(root, cache, record, identity, workers=24, fetcher=fetch, baseline=N
         except (OSError, ValueError):
             report = None
     if code:
-        missing = sorted({artifact for _, artifact in entries if not (cache / "artifacts" / artifact).is_file()})
+        missing = sorted(artifact for artifact in shas if not (cache / "artifacts" / artifact).is_file())
         absent = [artifact for artifact in missing[:20] if published(artifact) is False]
         shown = ", ".join(missing[:20]) + (f" and {len(missing) - 20} more" if len(missing) > 20 else "")
         if absent:
