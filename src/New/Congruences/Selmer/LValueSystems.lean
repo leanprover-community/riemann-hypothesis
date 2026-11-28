@@ -356,8 +356,11 @@ lemma ellVal_le_of_norm_eq_mul_pow {x x₀ r : PadicAlgCl ℓ} {i : ℕ} {c : EN
     (h_le : ellVal x ≤ ellVal x₀ + c) : ellVal r ≤ c := by
   obtain hr | hr := le_total ‖r‖ 1
   · have h_eq : ellVal x = ellVal x₀ + i * ellVal r := by
-      rw [ellVal_congr_norm (y := x₀ * r ^ i) (by simp [hx]), ← ellVal_pow]
-      simpa using ellVal_val_mul (⟨x₀, hx₀_int⟩ : intQpBar ℓ) ((⟨r, hr⟩ : intQpBar ℓ) ^ i)
+      have hr_pow : ‖r ^ i‖ ≤ 1 := by
+        rw [norm_pow]
+        exact pow_le_one₀ (norm_nonneg r) hr
+      rw [ellVal_congr_norm (y := x₀ * r ^ i) (by simp [hx]),
+        ellVal_mul_eq_add_of_norm_le_one hx₀_int hr_pow, ellVal_pow]
     rw [h_eq, ENNReal.add_le_add_iff_left (ellVal_eq_top_iff.not.2 hx₀)] at h_le
     calc ellVal r ≤ i * ellVal r :=
           le_mul_of_one_le_left zero_le (mod_cast Nat.one_le_iff_ne_zero.2 hi)

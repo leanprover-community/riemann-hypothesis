@@ -61,16 +61,26 @@ lemma ellVal_zero : ellVal (0 : PadicAlgCl ℓ) = ⊤ := ellVal_eq_top_iff.2 rfl
 lemma ellVal_congr_norm {x y : PadicAlgCl ℓ} (h_norm : ‖x‖ = ‖y‖) : ellVal x = ellVal y :=
   le_antisymm (ellVal_le_ellVal h_norm.ge) (ellVal_le_ellVal h_norm.le)
 
+/-- The truncated valuation is additive on products when both factors have norm at most one. -/
+lemma ellVal_mul_eq_add_of_norm_le_one {x y : PadicAlgCl ℓ} (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) :
+    ellVal (x * y) = ellVal x + ellVal y := by
+  obtain rfl | hx_ne := eq_or_ne x 0
+  · simp [ellVal]
+  obtain rfl | hy_ne := eq_or_ne y 0
+  · simp [ellVal]
+  have hx_norm : ‖x‖ ≠ 0 := (norm_pos_iff.2 hx_ne).ne'
+  have hy_norm : ‖y‖ ≠ 0 := (norm_pos_iff.2 hy_ne).ne'
+  have hℓ : (1 : ℝ) < ℓ := mod_cast (Fact.out : ℓ.Prime).one_lt
+  have h_nonneg (z : PadicAlgCl ℓ) (hz : ‖z‖ ≤ 1) : 0 ≤ -Real.logb ℓ ‖z‖ :=
+    neg_nonneg.2 (Real.logb_nonpos hℓ (norm_nonneg z) hz)
+  rw [ellVal, ellVal, ellVal, norm_mul, ite_eq_right (mul_ne_zero hx_norm hy_norm),
+    ite_eq_right hx_norm, ite_eq_right hy_norm, Real.logb_mul hx_norm hy_norm, neg_add]
+  exact ENNReal.ofReal_add (h_nonneg x hx) (h_nonneg y hy)
+
 /-- The valuation `v = ellVal` is additive on products of elements of `ℤ̄_ℓ = intQpBar ℓ`. (Outside
 this ring it is cut off at `0` and is not additive.) -/
-lemma ellVal_val_mul (x y : intQpBar ℓ) : ellVal (x * y).val = ellVal x.val + ellVal y.val := by
-  obtain rfl | hx := eq_or_ne x 0
-  · simp [ellVal_zero]
-  obtain rfl | hy := eq_or_ne y 0
-  · simp [ellVal_zero]
-  have h_nonneg (z : intQpBar ℓ) : 0 ≤ -Real.logb ℓ ‖z.val‖ := neg_nonneg.2 <| Real.logb_nonpos
-    (mod_cast (Fact.out : ℓ.Prime).one_lt) (norm_nonneg z.val) (norm_coe_le_one z)
-  simp [ellVal, hx, hy, Real.logb_mul, add_comm, ENNReal.ofReal_add (h_nonneg x) (h_nonneg y)]
+lemma ellVal_val_mul (x y : intQpBar ℓ) : ellVal (x * y).val = ellVal x.val + ellVal y.val :=
+  ellVal_mul_eq_add_of_norm_le_one (norm_coe_le_one x) (norm_coe_le_one y)
 
 /-- The ultrametric inequality for `v = ellVal` on the integral elements `ℤ̄_ℓ = intQpBar ℓ`:
 `min(v(x), v(y)) ≤ v(x + y)`. -/
