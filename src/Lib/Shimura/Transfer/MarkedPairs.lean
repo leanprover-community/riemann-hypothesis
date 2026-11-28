@@ -111,9 +111,7 @@ eigenline of the `i`-th listed root `numberedRoots (Φ v₀) _ i` of the charact
 `-1` on the other eigenlines. -/
 lemma isReflection_markedReflection (hy_sep : y.val.charpoly.Separable) (i : n) :
     IsReflection (markedReflection y i) := by
-  obtain ⟨k, h_eig⟩ : ∃ k : GL n ℂ,
-      markedReflection y i = toConjAct k • (diagonal (Pi.single i 2) - 1) :=
-    (exists_conj_diagonal_markedReflection hy_sep).imp fun k ⟨_, h_eig⟩ ↦ h_eig i
+  obtain ⟨k, -, h_eig⟩ := exists_conj_diagonal_markedReflection hy_sep
   -- Take for `u` the `i`-th basis vector and for `w` twice that vector.
   have h_uw : diagonal (Pi.single i 2) = vecMulVec (Pi.single i (1 : ℂ)) (Pi.single i 2) := by
     ext a b
@@ -132,10 +130,8 @@ lemma exists_eq_markedReflection_iff_of_ratConj_eq (hy_sep : y.val.charpoly.Sepa
   -- Diagonalise: Φ_{v₀}(y) = k • diagonal ρ with distinct `ρ i`; then `markedReflection y i` is
   -- `k • (2 e_i e_iᵀ - 1)`. A reflection `k • (u wᵀ - 1)` that commutes with `k • diagonal ρ` has
   -- `u wᵀ` diagonal, so `u wᵀ = 2 e_i e_iᵀ` for one `i`.
+  obtain ⟨k, hy_diag, h_eig⟩ := exists_conj_diagonal_markedReflection hy_sep
   set ρ : n ↪ ℂ := numberedRoots (Φ v₀) y.val.charpoly
-  obtain ⟨k, hy_diag, h_eig⟩ : ∃ k : GL n ℂ, y.val.map (Φ v₀) = toConjAct k • diagonalAlgHom ℂ ρ ∧
-      ∀ i : n, markedReflection y i = toConjAct k • (diagonal (Pi.single i 2) - 1) :=
-    exists_conj_diagonal_markedReflection hy_sep
   -- In the basis `k` the reflection `J` is `u wᵀ - 1` with `w ⬝ᵥ u = 2`.
   obtain ⟨u, w, h_dot, hJ_uw⟩ : IsReflection ((toConjAct k)⁻¹ • J) := by
     simpa [units_smul_def] using hJ.conj k⁻¹
@@ -162,8 +158,8 @@ lemma exists_eq_markedReflection_iff_of_ratConj_eq (hy_sep : y.val.charpoly.Sepa
     have h_ρ : diagonal ρ * diagonal (Pi.single i (2 : ℂ)) = ρ i • diagonal (Pi.single i 2) := by
       simp +contextual [← diagonal_smul, Pi.single_apply]
     simp [smul_sub, hy_diag, ← smul_mul', h_ρ, smul_comm (ρ i)]
-  · rw [h_eig, smul_left_cancel_iff, sub_left_inj, diagonal_injective.eq_iff]
-    exact ⟨fun h ↦ by simpa [Pi.single_apply] using congrFun h i, fun h ↦ by rw [h]⟩
+  · rw [h_eig, smul_left_cancel_iff, sub_left_inj, diagonal_injective.eq_iff,
+      Pi.single_left_inj two_ne_zero]
 
 /-- For `y` with separable characteristic polynomial, each `markedReflection y i` is a reflection
 (`isReflection_markedReflection`), and a reflection `J` fixed by conjugation with Φ_{v₀}(y) equals
@@ -197,8 +193,7 @@ coset of `g`, then `g` lies in `GUPlus E n`, the similitudes whose inverse has i
 entries. -/
 lemma heckeAlgebra.mem_GUPlus_of_ne_zero (hg_ne : heckeCosetFn f g ≠ 0) : g ∈ GUPlus E n := by
   -- `g` lies in the coset of some `d` in `GUPlus E n`, and the level is contained in `GUPlus E n`.
-  obtain ⟨d, hd_mem, hd_coset⟩ : ∃ d ∈ GUPlus E n, (d : GL n (𝔸f E) ⧸ levelGU n 𝔑) = g :=
-    spanOn.exists_mem_of_cosetFn_ne_zero f.property.1 hg_ne
+  obtain ⟨d, hd_mem, hd_coset⟩ := spanOn.exists_mem_of_cosetFn_ne_zero f.property.1 hg_ne
   simpa using mul_mem hd_mem (mem_GUPlus_of_mem_levelGU (QuotientGroup.eq.mp hd_coset))
 
 open scoped Classical in
