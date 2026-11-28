@@ -48,12 +48,9 @@ variable X_j on either side moves to the derivative ∂_j on the other side:
 B(Q, P X_j) = B(∂_j Q, P) and B(Q X_j, P) = B(Q, ∂_j P). -/
 private lemma MvPolynomial.sesqForm_apply_eq_zero_of_mul_X_eq_pderiv {σ : Type*}
     (B : MvPolynomial σ ℂ →ₗ⋆[ℂ] MvPolynomial σ ℂ →ₗ[ℂ] ℂ) (h_one : B 1 1 = 0)
-    (h_right : ∀ (j : σ) (P Q : MvPolynomial σ ℂ),
-      B Q (P * MvPolynomial.X j) = B (MvPolynomial.pderiv j Q) P)
-    (h_left : ∀ (j : σ) (P Q : MvPolynomial σ ℂ),
-      B (Q * MvPolynomial.X j) P = B Q (MvPolynomial.pderiv j P))
-    (Q P : MvPolynomial σ ℂ) :
-    B Q P = 0 := by
+    (h_right : ∀ j P Q, B Q (P * MvPolynomial.X j) = B (MvPolynomial.pderiv j Q) P)
+    (h_left : ∀ j P Q, B (Q * MvPolynomial.X j) P = B Q (MvPolynomial.pderiv j P))
+    (Q P : MvPolynomial σ ℂ) : B Q P = 0 := by
   -- First `B Q 1 = 0` by induction on `Q`; then induction on `P`.
   have h_left_one (Q : MvPolynomial σ ℂ) : B Q 1 = 0 := by
     induction Q using MvPolynomial.induction_on with
@@ -221,9 +218,8 @@ variable {ι : Type} [Fintype ι] {ε : ι → ℤˣ}
 det(P₊ + P₋γ(t)) has derivative tr(P₋Y) at 0. Here P₊ = `New.Fock.posProj` ε is the projection
 on the coordinates of sign 1 and P₋ = 1 − P₊; the determinant is the minor of γ(t) on the
 coordinates of sign −1 (`New.Fock.principalMinor_sign_eq_det`). -/
-private lemma hasDerivAt_det_posProj_add_mul [DecidableEq ι] {γ : ℝ → USign ε}
-    {Y : Matrix ι ι ℂ} (hγ_zero : γ 0 = 1)
-    (hγ : HasDerivAt (fun t : ℝ ↦ ((γ t : GL ι ℂ) : Matrix ι ι ℂ)) Y 0) :
+private lemma hasDerivAt_det_posProj_add_mul [DecidableEq ι] {γ : ℝ → USign ε} {Y : Matrix ι ι ℂ}
+    (hγ_zero : γ 0 = 1) (hγ : HasDerivAt (fun t : ℝ ↦ ((γ t : GL ι ℂ) : Matrix ι ι ℂ)) Y 0) :
     HasDerivAt (fun t : ℝ ↦ (posProj ε + (1 - posProj ε) * ((γ t : GL ι ℂ) : Matrix ι ι ℂ)).det)
       ((1 - posProj ε) * Y).trace 0 :=
   hasDerivAt_det_of_eq_one (by simp [hγ_zero]) ((hγ.const_mul _).const_add (posProj ε))
@@ -277,64 +273,20 @@ private lemma valueAt_zero_polyVector_glOp_one [DecidableEq ι] (a b : ι) :
     valueAt 0 (polyVector ε (glOp ε a b 1)) = -(1 - posProj ε) b a := by
   aesop (add simp [glOp, raiseOp, lowerOp, realVac, posProj, Matrix.one_apply, diagonal])
 
-/-- The relation `New.Fock.fockMatrixCoeff_raiseOp`, differentiated along a
-curve γ in U(ε) with γ(0) = 1 whose matrix has derivative Y at 0. Here `hD` says that ⟨v_Q, D P⟩
-is the derivative at 0 of the matrix coefficient ⟨v_Q, ω₀(γ(t))v_P⟩ for all polynomials Q, P. Then
-⟨v_Q, D(A_j P)⟩ = Σ_i Y_ij ε_i ⟨v_{B_i Q}, v_P⟩ + ε_j ⟨v_{B_j Q}, D P⟩, with
-A_a = `New.Fock.raiseOp` ε a and B_a = `New.Fock.lowerOp` ε a. -/
-private lemma fockInner_raiseOp_eq_of_hasDerivAt [DecidableEq ι] {γ : ℝ → USign ε}
-    {Y : Matrix ι ι ℂ} (hγ_zero : γ 0 = 1)
-    (hγ : HasDerivAt (fun t : ℝ ↦ ((γ t : GL ι ℂ) : Matrix ι ι ℂ)) Y 0)
+/-- Differentiates a linear relation
+`a * ⟨v_Q, ω₀(γ t) v_{P'}⟩ = ∑ i, f i t * ⟨v_{R i}, ω₀(γ t) v_P⟩` along `γ` with `γ 0 = 1`
+and `f i 0 = if i = j then b else 0`, unifying the `raiseOp` and `lowerOp` cases. -/
+private lemma fockInner_eq_sum_of_hasDerivAt [DecidableEq ι] {γ : ℝ → USign ε} (hγ_zero : γ 0 = 1)
     {D : MvPolynomial ι ℂ → fockSpace ε}
-    (hD : ∀ Q P : MvPolynomial ι ℂ,
-      HasDerivAt (fun t : ℝ ↦ fockMatrixCoeff (γ t) Q P) (fockInner Q (D P)) 0)
-    (j : ι) (P Q : MvPolynomial ι ℂ) :
-    fockInner Q (D (raiseOp ε j P)) =
-      ∑ i : ι, Y i j * ε i * fockInner (lowerOp ε i Q) (polyVector ε P) +
-        ε j * fockInner (lowerOp ε j Q) (D P) := by
-  have entry (a b : ι) : HasDerivAt (fun t : ℝ ↦ ((γ t : GL ι ℂ) : Matrix ι ι ℂ) a b) (Y a b) 0 :=
-    hasDerivAt_pi.mp (hasDerivAt_pi.mp hγ a) b
-  -- The right side of the relation at `γ t`, differentiated by the product rule.
-  have sum_deriv : HasDerivAt
-      (fun t : ℝ ↦ ∑ i : ι,
-        ((γ t : GL ι ℂ) : Matrix ι ι ℂ) i j * ε i * fockMatrixCoeff (γ t) (lowerOp ε i Q) P)
-      (∑ i : ι, (Y i j * ε i * fockMatrixCoeff (γ 0) (lowerOp ε i Q) P +
-        ((γ 0 : GL ι ℂ) : Matrix ι ι ℂ) i j * ε i * fockInner (lowerOp ε i Q) (D P))) 0 :=
-    .fun_sum fun i _ ↦ ((entry i j).mul_const _).fun_mul (hD _ P)
-  -- `fockMatrixCoeff_raiseOp` at each `γ t` says that the two curves agree, so their derivatives
-  -- do; at `γ 0 = 1` only the term `i = j` of the second sum remains.
-  simpa [Matrix.one_apply, hγ_zero, sum_add_distrib] using (hD Q (raiseOp ε j P)).unique
-    (sum_deriv.congr_of_eventuallyEq
-      (.of_forall fun t : ℝ ↦ fockMatrixCoeff_raiseOp (γ t) P Q j))
-
-/-- The relation `New.Fock.fockMatrixCoeff_lowerOp`, differentiated along a
-curve γ in U(ε) with γ(0) = 1 whose matrix has derivative Y at 0, with `hD` as in
-`fockInner_raiseOp_eq_of_hasDerivAt`: ε_j ⟨v_Q, D(B_j P)⟩ = Σ_i conj(Y_ij) ⟨v_{A_i Q}, v_P⟩ +
-⟨v_{A_j Q}, D P⟩. -/
-private lemma fockInner_lowerOp_eq_of_hasDerivAt [DecidableEq ι] {γ : ℝ → USign ε}
-    {Y : Matrix ι ι ℂ} (hγ_zero : γ 0 = 1)
-    (hγ : HasDerivAt (fun t : ℝ ↦ ((γ t : GL ι ℂ) : Matrix ι ι ℂ)) Y 0)
-    {D : MvPolynomial ι ℂ → fockSpace ε}
-    (hD : ∀ Q P : MvPolynomial ι ℂ,
-      HasDerivAt (fun t : ℝ ↦ fockMatrixCoeff (γ t) Q P) (fockInner Q (D P)) 0)
-    (j : ι) (P Q : MvPolynomial ι ℂ) :
-    ε j * fockInner Q (D (lowerOp ε j P)) =
-      ∑ i : ι, starRingEnd ℂ (Y i j) * fockInner (raiseOp ε i Q) (polyVector ε P) +
-        fockInner (raiseOp ε j Q) (D P) := by
-  have entry (a b : ι) : HasDerivAt (fun t : ℝ ↦ ((γ t : GL ι ℂ) : Matrix ι ι ℂ) a b) (Y a b) 0 :=
-    hasDerivAt_pi.mp (hasDerivAt_pi.mp hγ a) b
-  -- The right side of the relation at `γ t`, differentiated by the product rule.
-  have sum_deriv : HasDerivAt
-      (fun t : ℝ ↦ ∑ i : ι,
-        star (((γ t : GL ι ℂ) : Matrix ι ι ℂ) i j) * fockMatrixCoeff (γ t) (raiseOp ε i Q) P)
-      (∑ i : ι, (star (Y i j) * fockMatrixCoeff (γ 0) (raiseOp ε i Q) P +
-        star (((γ 0 : GL ι ℂ) : Matrix ι ι ℂ) i j) * fockInner (raiseOp ε i Q) (D P))) 0 :=
-    .fun_sum fun i _ ↦ (entry i j).star.fun_mul (hD _ P)
-  -- `fockMatrixCoeff_lowerOp` at each `γ t` says that the two curves agree, so their derivatives
-  -- do; at `γ 0 = 1` only the term `i = j` of the second sum remains.
-  simpa [Matrix.one_apply, hγ_zero, sum_add_distrib] using
-    ((hD Q (lowerOp ε j P)).const_mul (ε j : ℂ)).unique (sum_deriv.congr_of_eventuallyEq
-      (.of_forall fun t : ℝ ↦ fockMatrixCoeff_lowerOp (γ t) P Q j))
+    (hD : ∀ Q P, HasDerivAt (fun t ↦ fockMatrixCoeff (γ t) Q P) (fockInner Q (D P)) 0)
+    {f : ι → ℝ → ℂ} {f' : ι → ℂ} {P' P Q : MvPolynomial ι ℂ} {R : ι → MvPolynomial ι ℂ} {j : ι}
+    (a b : ℂ) (hf : ∀ i, HasDerivAt (f i) (f' i) 0) (h0 : ∀ i, f i 0 = if i = j then b else 0)
+    (heq : ∀ t, a * fockMatrixCoeff (γ t) Q P' = ∑ i, f i t * fockMatrixCoeff (γ t) (R i) P) :
+    a * fockInner Q (D P') =
+      ∑ i, f' i * fockInner (R i) (polyVector ε P) + b * fockInner (R j) (D P) := by
+  have h_sum := HasDerivAt.fun_sum (u := univ) fun i _ ↦ (hf i).fun_mul (hD (R i) P)
+  simpa [hγ_zero, h0, sum_add_distrib] using
+    ((hD Q P').const_mul a).unique (h_sum.congr_of_eventuallyEq (.of_forall heq))
 
 /-- If γ is a curve in U(ε) with γ(0) = 1 whose matrix has derivative Y at 0, then
 t ↦ `New.Fock.realWeil`(γ(t)) v_P has derivative v_Q at 0 in the Fock space `New.Fock.fockSpace` ε.
@@ -351,9 +303,6 @@ theorem hasDerivAt_realWeil [DecidableEq ι] {γ : ℝ → USign ε} {Y : Matrix
   -- `B Q P = fockInner Q (D P - weilDeriv ε Y P)` vanishes at `(1, 1)` and moves the operators
   -- `raiseOp`, `lowerOp` from one side to the other, so it is `0`; and the vectors `polyVector ε Q`
   -- are dense.
-  -- `Y` is skew-adjoint for the signs, written with `starRingEnd` as the terms below are.
-  have skew (i j : ι) : starRingEnd ℂ (Y j i) * ε j = -(ε i * Y i j) :=
-    star_mul_sign_eq_neg_sign_mul_of_hasDerivAt hγ_zero hγ i j
   have h_diff := differentiableAt_realWeil_polyVector hγ_zero hγ
   let D : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace ε :=
     { toFun := fun P ↦ deriv (fun t : ℝ ↦ realWeil (γ t) (polyVector ε P)) 0
@@ -363,15 +312,14 @@ theorem hasDerivAt_realWeil [DecidableEq ι] {γ : ℝ → USign ε} {Y : Matrix
     (fockInner.toLinearMap₁₂ ∘ₛₗ polyVector ε).compl₂ (D - polyVector ε ∘ₗ weilDeriv ε Y)
   have B_apply (Q P : MvPolynomial ι ℂ) :
       B Q P = fockInner Q (D P) - fockInner Q (polyVector ε (weilDeriv ε Y P)) := by simp [B]
-  have pair_deriv (Q P : MvPolynomial ι ℂ) :
-      HasDerivAt (fun t : ℝ ↦ fockMatrixCoeff (γ t) Q P) (fockInner Q (D P)) 0 :=
+  have pair_deriv (Q P) : HasDerivAt (fun t ↦ fockMatrixCoeff (γ t) Q P) (fockInner Q (D P)) 0 :=
     (h_diff P).hasDerivAt.map_clm _
   -- At `(1, 1)` both terms are minus the trace of the negative block of `Y`: the vacuum coefficient
   -- of `realWeil u` is the inverse of the determinant det(P₊ + P₋u) in
   -- `hasDerivAt_det_posProj_add_mul`.
   have B_one : B 1 1 = 0 := by
-    have vacuum_coeff :
-        HasDerivAt (fun t : ℝ ↦ fockMatrixCoeff (γ t) 1 1) (-((1 - posProj ε) * Y).trace) 0 := by
+    have vacuum_coeff : HasDerivAt (fun t ↦ fockMatrixCoeff (γ t) 1 1)
+        (-((1 - posProj ε) * Y).trace) 0 := by
       -- (`using!`: the two sides differ only in the instance path of `ℂ` as a module over `ℝ`.)
       simpa [principalMinor_sign_eq_det, hγ_zero] using!
         (hasDerivAt_det_posProj_add_mul hγ_zero hγ).inv
@@ -382,34 +330,42 @@ theorem hasDerivAt_realWeil [DecidableEq ι] {γ : ℝ → USign ε} {Y : Matrix
   -- At `u = 1` the relations `fockMatrixCoeff_raiseOp` and `fockMatrixCoeff_lowerOp` say that
   -- `raiseOp ε i` and `ε i * lowerOp ε i` are adjoint.
   have raise_adjoint (P Q : MvPolynomial ι ℂ) (i : ι) :
-      fockInner (polyVector ε Q) (polyVector ε (raiseOp ε i P)) =
-        ε i * fockInner (polyVector ε (lowerOp ε i Q)) (polyVector ε P) := by
+      fockInner Q (polyVector ε (raiseOp ε i P)) =
+        ε i * fockInner (lowerOp ε i Q) (polyVector ε P) := by
     simpa [Matrix.one_apply] using fockMatrixCoeff_raiseOp (ε := ε) 1 P Q i
   have lower_adjoint (P Q : MvPolynomial ι ℂ) (i : ι) :
-      ε i * fockInner (polyVector ε Q) (polyVector ε (lowerOp ε i P)) =
-        fockInner (polyVector ε (raiseOp ε i Q)) (polyVector ε P) := by
+      ε i * fockInner Q (polyVector ε (lowerOp ε i P)) =
+        fockInner (raiseOp ε i Q) (polyVector ε P) := by
     simpa [Matrix.one_apply] using fockMatrixCoeff_lowerOp (ε := ε) 1 P Q i
-  -- The commutators of `weilDeriv ε Y = ∑ Y a b • raiseOp ε a * lowerOp ε b` with `raiseOp ε j`
-  -- and `lowerOp ε j`, by `canonical_commutation`.
-  have comm_raise (j : ι) (P : MvPolynomial ι ℂ) : weilDeriv ε Y (raiseOp ε j P) =
-      raiseOp ε j (weilDeriv ε Y P) + ∑ a : ι, Y a j • raiseOp ε a P := by
-    simp [weilDeriv, glOp, canonical_commutation, apply_ite (DFunLike.coe _), sum_add_distrib]
-  have comm_lower (j : ι) (P : MvPolynomial ι ℂ) : weilDeriv ε Y (lowerOp ε j P) =
-      lowerOp ε j (weilDeriv ε Y P) - ∑ b : ι, Y j b • lowerOp ε b P := by
-    simp [weilDeriv, glOp, canonical_commutation, sum_add_distrib]
-  -- Differentiating the relations (`fockInner_raiseOp_eq_of_hasDerivAt` and
-  -- `fockInner_lowerOp_eq_of_hasDerivAt`) gives terms with `Y` that match these commutators, so
-  -- `B` moves `raiseOp` and `lowerOp` from one side to the other.
+  -- Differentiating `fockMatrixCoeff_raiseOp` and `fockMatrixCoeff_lowerOp` along `γ` gives terms
+  -- with `Y` that match the commutators of `weilDeriv` with `raiseOp` and `lowerOp` (by
+  -- `canonical_commutation`), so `B` moves `raiseOp` and `lowerOp` across the form.
+  have entry (a b) := hasDerivAt_pi.mp (hasDerivAt_pi.mp hγ a) b
   have move_raise (j : ι) (P Q : MvPolynomial ι ℂ) :
       B Q (raiseOp ε j P) = ε j * B (lowerOp ε j Q) P := by
-    simp only [B_apply, fockInner_raiseOp_eq_of_hasDerivAt hγ_zero hγ pair_deriv, comm_raise,
-      map_add, map_sum, map_smul, smul_eq_mul, raise_adjoint, ← mul_assoc]
+    have hD := (one_mul _).symm.trans <| fockInner_eq_sum_of_hasDerivAt hγ_zero pair_deriv (j := j)
+      1 (ε j)
+      (fun i ↦ (entry i j).mul_const (ε i : ℂ))
+      (fun i ↦ by simp +contextual [hγ_zero, Matrix.one_apply])
+      (fun t ↦ (one_mul _).trans (fockMatrixCoeff_raiseOp (γ t) P Q j))
+    have h_comm : weilDeriv ε Y (raiseOp ε j P) =
+        raiseOp ε j (weilDeriv ε Y P) + ∑ a : ι, Y a j • raiseOp ε a P := by
+      simp [weilDeriv, glOp, canonical_commutation, apply_ite (DFunLike.coe _), sum_add_distrib]
+    simp only [B_apply, hD, h_comm, map_add, map_sum, map_smul, smul_eq_mul,
+      raise_adjoint, ← mul_assoc]
     ring
   have move_lower (j : ι) (P Q : MvPolynomial ι ℂ) :
       ε j * B Q (lowerOp ε j P) = B (raiseOp ε j Q) P := by
-    simp only [B_apply, mul_sub, fockInner_lowerOp_eq_of_hasDerivAt hγ_zero hγ pair_deriv,
-      comm_lower, map_sub, map_sum, map_smul, smul_eq_mul, mul_sum, ← lower_adjoint, ← mul_assoc,
-      skew, neg_mul, sum_neg_distrib]
+    have hD := fockInner_eq_sum_of_hasDerivAt hγ_zero pair_deriv (j := j) (ε j) 1
+      (fun i ↦ (entry i j).star)
+      (fun i ↦ by simp [hγ_zero, Matrix.one_apply, apply_ite])
+      (fun t ↦ fockMatrixCoeff_lowerOp (γ t) P Q j)
+    have h_comm : weilDeriv ε Y (lowerOp ε j P) =
+        lowerOp ε j (weilDeriv ε Y P) - ∑ b : ι, Y j b • lowerOp ε b P := by
+      simp [weilDeriv, glOp, canonical_commutation, sum_add_distrib]
+    simp only [B_apply, mul_sub, hD, one_mul, h_comm, map_sub, map_sum, map_smul,
+      smul_eq_mul, mul_sum, ← lower_adjoint, ← mul_assoc,
+      star_mul_sign_eq_neg_sign_mul_of_hasDerivAt hγ_zero hγ, neg_mul, sum_neg_distrib]
     ring
   -- One of `raiseOp ε j`, `lowerOp ε j` is multiplication by `X j`, the other a derivative up to
   -- sign. So for either sign the moves read as follows; they reduce `P`, and then `Q`, to
