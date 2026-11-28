@@ -455,8 +455,6 @@ lemma diagOp_apply (x : Eigensystem L) {f : ↥(V.forms κ)} (hf : f ∈ (x : Is
         (.single x ⟨f, hf⟩)
   simp [diagOp, h_inv]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- The space `New.Patching.BaseLevel.formsOfLevel` is spanned by its eigenforms: a subspace N
 containing its intersection with every isotypic space of level L contains all of it. -/
 lemma formsOfLevel_le_of_eigensystem {N : Submodule ℂ (V.forms κ)}

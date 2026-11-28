@@ -879,8 +879,6 @@ lemma New.HCParam.prod_prod_lowerCount_sub {n : Type} [Fintype n]
         simp [← e.prod_comp, h_map, h_count, ← Iio_eq_range, ← Fin.map_valEmbedding_Iio]
     _ = _ := by simp only [h_factorial, Fin.prod_univ_eq_prod_range (fun i : ℕ ↦ (i ! : ℂ))]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 /-- Weyl's dimension formula for `U(n)`. Let `l = 2λ` be a parameter for all signs `1` (distinct
 entries congruent to `n - 1` mod 2; the gap `h` plays no role as all signs are equal) and
 `Λ = l.lowestKType = λ - ρ`. The number `Λ.kTypeNormSq` is the integral of `|New.weightMinors Λ k|²`

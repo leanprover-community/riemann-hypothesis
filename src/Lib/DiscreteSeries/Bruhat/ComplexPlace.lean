@@ -262,8 +262,6 @@ lemma realFrameGram_cellChart {c : ℂ} (hc : 1 < ‖c‖) :
 
 /-! ### The top floor: Cartan decomposition and the hyperboloid -/
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Cartan decomposition of `U(V_ϱ)`, the isometry group of the form `middleGram 1` (diagonal: 1 on
 X₀, indexed by κ, and −1 at z). Let `σ` fix the basis vectors of the floors below the top
 (`σ ∈ floorGroup ϱ`) and let `c = h(z, σ z)`, the last diagonal entry of `realFrameGram σ`, have

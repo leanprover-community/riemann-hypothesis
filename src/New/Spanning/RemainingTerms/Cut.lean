@@ -532,8 +532,6 @@ lemma IsKernelExtension.card_add_eq_finrank [Fintype τ] {P : Type} [Fintype P] 
 
 end
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- **The splitting.** Let `γ` be a term of cell rank `j` over the classes `c`, `c'` with reduction
 `s`, where `s` is compatible with the unipotent character (`S.Agrees s`). Let `x` be a natural
 number that is at most the norm `S.meetNorm s` of the product of the places with `S.MeetsAt s`, and

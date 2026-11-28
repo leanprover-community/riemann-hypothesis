@@ -386,8 +386,6 @@ lemma norm_gluedFactor_le {i : ℕ} (hi : i ≤ D.ϱ) :
     _ ≤ (D.N : ℝ) ^ (2 * D.f * D.b) := by
       rw [mul_right_comm, rpow_mul_natCast (Nat.cast_nonneg _), prod_const, card_univ]
 
-attribute [local irreducible] IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers
-
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
 open scoped Classical in

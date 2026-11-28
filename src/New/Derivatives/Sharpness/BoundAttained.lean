@@ -436,13 +436,11 @@ lemma norm_map_mul_intVacuum_le {P : Parameters} (D : Data P) {l : D.Φ → ℕ}
   have h_exponent : 12 * D.f * Real.log D.M + 2 * D.f * D.lossFactorCount * Real.log lossBase +
       12 * (P.constantBound * D.q₁ ^ 2) ≤ D.f * D.m / D.k * D.b := by
     rw [h_lossBase, lossFactorCount]
-    exact D.le_of_hasLogBound
+    exact D.le_of_hasLogBound (by scale_grind D)
   rw [map_mul, norm_mul, map_natCast, Complex.norm_natCast]
   exact (mul_le_mul h_int h_vac (norm_nonneg _) (exp_nonneg _)).trans
     (by rw [← exp_add]; exact Real.exp_le_exp.2 h_exponent)
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Sharpness. Let `D` be admissible data for the parameters `P`, with `K = ℚ(√-d)` for the prime
 `d = P.d` and `E = D.E = P.E D.towerExp` the extension of `K` by the roots of unity of order
 `q₁ = D.q₁`. For degrees `l` with `κ ≤ l ≤ κ + x ^ 42` at the weights `κ = D.weight` there is a

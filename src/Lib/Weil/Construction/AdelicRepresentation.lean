@@ -189,16 +189,31 @@ section
 
 variable {E : Type*} [Field E] [NumberField E] [IsCMField E] (g : G E s)
 
-/-- The adelic unitary group `G E s` acts on 𝔸^n through `G.toUnitary`, by its matrix. -/
-instance : DistribMulAction (G E s) (n → 𝔸 E) := .compHom _ toUnitary.toMonoidHom
+/-- The adelic unitary group `G E s` acts on 𝔸^n by its matrix `G.adeleMatrix`. The action and its
+continuity and measurability are declared on `n → 𝔸 E` itself: the coordinatewise instances for
+function types would otherwise be tried first and look for an action of `G E s` on `𝔸 E`. -/
+instance : SMul (G E s) (n → 𝔸 E) := ⟨fun g x ↦ g.adeleMatrix *ᵥ x⟩
 
 @[simp]
 lemma smul_eq_adeleMatrix_mulVec (x : n → 𝔸 E) : g • x = g.adeleMatrix *ᵥ x := rfl
+
+instance : DistribMulAction (G E s) (n → 𝔸 E) where
+  one_smul _ := by simp
+  mul_smul _ _ _ := by simp [G.adeleMatrix_mul, mulVec_mulVec]
+  smul_zero _ := mulVec_zero _
+  smul_add _ _ _ := mulVec_add _ _ _
 
 instance : ContinuousSMul (G E s) (n → 𝔸 E) := by
   refine ⟨?_⟩
   simp only [smul_eq_adeleMatrix_mulVec]
   fun_prop
+
+instance : ContinuousConstSMul (G E s) (n → 𝔸 E) := by
+  refine ⟨fun g ↦ ?_⟩
+  simp only [smul_eq_adeleMatrix_mulVec]
+  fun_prop
+
+instance : MeasurableConstSMul (G E s) (n → 𝔸 E) := ⟨fun g ↦ (continuous_const_smul g).measurable⟩
 
 end
 

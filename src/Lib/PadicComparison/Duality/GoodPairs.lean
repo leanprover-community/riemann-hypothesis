@@ -514,8 +514,6 @@ private lemma isZariskiLocallyTop_range_rootPairsToProdLine_sup :
 
 /-! ### Principal open sets of affine space and standard étale charts -/
 
--- Keeps definitional checks from unfolding the Ext groups.
-seal CategoryTheory.Abelian.Ext in
 /-- Alexander duality for a principal open set of `Spec T ⊆ (ℙ¹)^d`, embedded by the presentation
 `e` of `T` as a polynomial ring. `D.IsFiniteLerayHirsch N` requires, among other things, that
 `w ↦ ∑ i, (w i restricted along g) · D.comparison i` be a bijection from families in total

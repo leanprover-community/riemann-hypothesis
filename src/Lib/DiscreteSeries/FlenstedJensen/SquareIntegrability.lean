@@ -156,8 +156,6 @@ theorem U.principalMinor_sign_ne_zero (σ : ℤˣ) (g : USign ε) : principalMin
   intro h_zero
   simpa [h_zero] using norm_det_blockDiagPart σ g
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- For `g` in `U(diag ε)`, the determinant of the block diagonal part of `g` has absolute value at
 least `(‖g‖ / 2)²`, where `‖g‖` is the L² operator norm. -/
 theorem sq_le_norm_det_blockDiagPart (g : USign ε) [Nonempty n] :

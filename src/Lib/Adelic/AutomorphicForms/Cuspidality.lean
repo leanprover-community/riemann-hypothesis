@@ -761,8 +761,6 @@ lemma exists_norm_sub_le_half (he : IsCuspKernel B e) (j : ℕ) : ∃ δ₀ : �
     _ ≤ (c ^ j)⁻¹ / 2 * (C * c ^ j) := by grw [h_translate (h_near.trans inf_le_left)]
     _ = C / 2 := by field_simp
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Rapid decay in a cusp. For a cusp kernel `e` and `j ≥ 0` there is `δ₀ > 0` with the following
 property. Let `J` be a level, `W` a space, and let `A ≠ 0` be a rational isotropic subspace of it,
 spanned by the columns of `X`, with `N_A g ⊆ (Γ ∩ N_A) g Z_δ J` (`New.Space.RadicalCovered`; `N_A`

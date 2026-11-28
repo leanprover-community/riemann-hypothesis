@@ -27,8 +27,8 @@ Letters used in comments, and the names in the code:
 
 * `New.Data`: the data; `New.Parameters.IsSparse` is the condition on the `b`-places. The scales and
   ranks are asked to lie in ranges only. The data with the exact values are
-  `New.Parameters.IsAdmissibleData`; they are admissible for large `x`
-  (`New.eventually_exists_data_of_isAdmissibleData`). Sizes are compared in the files `Magnitudes`
+  `New.Parameters.IsAdmissibleData`; at a large scale they give data
+  (`New.Parameters.IsAdmissibleData.exists_hasFields`). Sizes are compared in the files `Magnitudes`
   and `Sizes` of this folder.
 * `New.Parameters.logLevelMin_mem_Icc`: the lower end `N₋` of the range for the level has logarithm
   between `m log b` and `24 m log b`.
