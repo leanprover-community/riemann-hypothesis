@@ -21,9 +21,8 @@ import TauCeti.LinearAlgebra.Matrix.AbsoluteValue
 * `New.norm_det_mul_det_gram_mul_det_le_one`: a bound on a Gram determinant times `conj (det u')`
   and `det u` in a nonarchimedean field when the inner products of the families transformed by `u'`
   and `u` have norm at most `1`.
-* `New.formGram`, `New.norm_det_formGram_le`, `New.norm_det_pairing_sq_le`: Gram matrices for a
-  form given by a matrix; a consequence of Hadamard's inequality and the Cauchy–Schwarz inequality
-  for determinants, for a positive semidefinite form.
+* `New.formGram`, `New.norm_det_formGram_le`: Gram matrices for a form given by a matrix and
+  Hadamard's inequality for a positive semidefinite form.
 
 Notions from other files:
 
@@ -133,17 +132,6 @@ lemma norm_det_formGram_le (hG : G.PosSemidef) {n : ℕ} {v : Fin n → I → �
         gcongr with i
         simpa [formGram, Complex.re_eq_norm.mpr (hG.dotProduct_mulVec_nonneg (v i))] using hv i
     _ = exp (n * h) := by rw [Fin.prod_const, exp_natCast_mul]
-
-/-- The Cauchy–Schwarz inequality in the exterior power, where the product of `v₁ ∧ ⋯ ∧ vₙ` and
-`w₁ ∧ ⋯ ∧ wₙ` is `det (v_i* G w_k)`: for `G` positive semidefinite,
-`|det (v_i* G w_k)|² ≤ det (v_i* G v_k) det (w_i* G w_k)`. -/
-lemma norm_det_pairing_sq_le [Fintype S] [DecidableEq S] (hG : G.PosSemidef) (v w : S → I → ℂ) :
-    ‖(of fun i k : S ↦ star (v i) ⬝ᵥ G *ᵥ w k).det‖ ^ 2 ≤
-      ‖(formGram G v).det‖ * ‖(formGram G w).det‖ := by
-  -- The three matrices are blocks of the Gram matrix of the union of the two families.
-  have h_pos : (formGram G (Sum.elim v w)).PosSemidef := posSemidef_formGram hG _
-  rw [← fromBlocks_toBlocks (formGram G (Sum.elim v w))] at h_pos
-  exact norm_det_sq_le_of_posSemidef h_pos
 
 end FormGram
 
