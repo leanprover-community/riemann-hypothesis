@@ -398,15 +398,6 @@ lemma isClosed_setOf_charpoly_eq [CommRing F] [TopologicalSpace F] [IsTopologica
 
 variable [NormedField F]
 
-open scoped Matrix.Norms.Operator in
-/-- Over a complete normed field `GL_n` is open in the space of matrices. -/
-lemma isOpenEmbedding_coe_generalLinearGroup [CompleteSpace F] :
-    IsOpenEmbedding fun g : GL n F ↦ g.val := by
-  -- `Units.isOpenEmbedding_val` asks for completeness in the uniform structure of the norm.
-  let _ : UniformSpace (Matrix n n F) := PseudoMetricSpace.toUniformSpace
-  have : CompleteSpace (Matrix n n F) := Pi.complete _
-  exact Units.isOpenEmbedding_val
-
 /-- Over a complete normed field, let the idempotent matrices `e y` tend to the idempotent `e₀`
 along a filter, and let `O` be a neighbourhood of `1` in `GL_n(F)`. Then eventually `e y` is
 `g e₀ g⁻¹` for some `g ∈ O`. -/
@@ -420,7 +411,7 @@ lemma eventually_exists_semiconjBy_of_isIdempotentElem [CompleteSpace F] {Y : Ty
     simpa [h_idem₀.eq, h_idem₀.one_sub.eq] using
       (h_lim.mul_const e₀).add ((h_lim.const_sub 1).mul_const (1 - e₀))
   filter_upwards [h_idem, h_tendsto.eventually
-    (isOpenEmbedding_coe_generalLinearGroup.image_mem_nhds.2 hO)] with y hy ⟨g, hg, hg_val⟩
+    (IsOpenUnits.isOpenEmbedding_unitsVal.image_mem_nhds.2 hO)] with y hy ⟨g, hg, hg_val⟩
   refine ⟨g, hg, ?_⟩
   calc g.val * e₀ = e y * e₀ := by
         simp [hg_val, add_mul, mul_assoc, h_idem₀.eq, h_idem₀.one_sub_mul_self]
