@@ -633,6 +633,140 @@ its signs `homSigns 1 1`, the products of those of `W` and `V`, are all `1`. -/
 abbrev stdLineHom (E n : Type) [Field E] [CMType E] [Fintype n] [DecidableEq n] :
     Space E (n × Unit) (homSigns 1 1) := (stdSpace E Unit).hom (stdSpace E n)
 
+/-- Let `X` be data for a lift from `U(1)` with no places of the twist, and `Y` data with the places
+of `X`. Let `L` be a `σ`-semilinear map on the Schwartz space of `stdLineHom` that sends
+`schrodingerOp X.places Ψ vacElem` to `l ω(z)` applied to the same vector for `σ ∘ Ψ`, for every
+`Ψ` Schwartz–Bruhat at the places of `X`. Then `L` sends the block datum of `X` to `l ω(z)` applied
+to the block datum of `Y`. -/
+lemma LValueData.map_blockDatum {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
+    [DecidableEq n] {σ : ℂ →+* ℂ} {l : ℂ} {z : unitary (𝔸f E)}
+    {L : 𝒮 (stdLineHom E n) →ₛₗ[σ] 𝒮 (stdLineHom E n)}
+    (X : LValueData E n) (h_no_twist : IsEmpty X.TwistIndex)
+    (hL_schrodinger : ∀ Ψ : (n × Unit → 𝔸f E) → ℂ, IsSchwartzBruhat X.places Ψ →
+      L ((stdLineHom E n).schrodingerOp X.places Ψ (stdLineHom E n).vacElem) =
+        l • (stdLineHom E n).ω (1, scalarFin (n × Unit) z)
+          ((stdLineHom E n).schrodingerOp X.places (σ ∘ Ψ) (stdLineHom E n).vacElem))
+    (Y : LValueData E n) (hY_places : Y.toLevelPlaces = X.toLevelPlaces) :
+    L X.descentPair.blockDatum.val =
+      l • (stdLineHom E n).ω (1, scalarFin (n × Unit) z) Y.descentPair.blockDatum.val := by
+  classical
+  let V : Space E (n × Unit) (homSigns 1 1) := stdLineHom E n
+  -- The block data realize the functions `ΨX`, `ΨY` of residues. With `TwistIndex` empty both
+  -- are the same function with values `0` and `1`, which `σ` fixes.
+  let ΨX : (n × Unit → 𝔸f E) → ℂ := residueDatum X.placeAt X.descentPair.residueBlockDatum
+  let ΨY : (n × Unit → 𝔸f E) → ℂ := residueDatum Y.placeAt Y.descentPair.residueBlockDatum
+  have hX_block : X.descentPair.blockDatum.val = V.schrodingerOp X.places ΨX V.vacElem := by
+    simp only [DescentPair.blockDatum, places_levelModulus, liftFn_eq_residueDatum, V, ΨX]
+  have hY_block : Y.descentPair.blockDatum.val = V.schrodingerOp X.places ΨY V.vacElem := by
+    rw [← hY_places]
+    simp only [DescentPair.blockDatum, places_levelModulus, liftFn_eq_residueDatum, V, ΨY]
+  have hΨ_conj : σ ∘ ΨX = ΨY := by
+    obtain ⟨S, d, μ, ψ, hμ_weight, h_card, hψ_unramified⟩ := Y
+    obtain rfl : S = X.toLevelPlaces := hY_places
+    ext x
+    simp [ΨX, ΨY, univ_eq_empty, residueDatum, DescentPair.residueBlockDatum, apply_ite σ]
+  rw [hX_block, hY_block, ← hΨ_conj]
+  exact hL_schrodinger ΨX (isSchwartzBruhat_residueDatum _ X.apart.star_ne)
+
+/-- Let the `σ`-semilinear map `L` on the Schwartz space of `Hom(S, T)` scale finite translations,
+and let `f` be in the finite part. Then `L` moves past the Weil operator `ω` at the image under
+`G.onHom` of a finite point `(g, h)` of `U(S) × U(T)`, up to the factors `multiplierRatio σ`
+(`σ Δ / Δ` for the multiplier `Δ`) at the images of `g` and of `h`. -/
+lemma Space.ScalesTranslations.map_omega_onHom {E r n : Type} [Field E] [CMType E] [WeilData E]
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {s : r → ℤˣ} {s' : n → ℤˣ}
+    {S : Space E r s} {T : Space E n s'} {σ : ℂ →+* ℂ} {b : 𝔸f E}
+    {L : 𝒮 (S.hom T) →ₛₗ[σ] 𝒮 (S.hom T)} (hL : (S.hom T).ScalesTranslations σ b L)
+    (g : Gf E r) (h : Gf E n) {f : 𝒮 (S.hom T)} (hf : f ∈ (S.hom T).finitePart) :
+    L ((S.hom T).ω (G.onHom ((1, g), 1, h)) f) =
+      (multiplierRatio σ (G.onHom (s := s) (s' := s') ((1, g), 1)).snd *
+          multiplierRatio σ (G.onHom (s := s) (s' := s') (1, 1, h)).snd) •
+        (S.hom T).ω (G.onHom ((1, g), 1, h)) (L f) := by
+  -- The images `g'`, `h'` of `g` and `h` act on `Hom(S, T)`, and `L` moves past each of them.
+  set g' : Gf E (n × r) := (G.onHom (s := s) (s' := s') ((1, g), 1)).snd
+  set h' : Gf E (n × r) := (G.onHom (s := s) (s' := s') (1, 1, h)).snd
+  have hg' : G.onHom (s := s) (s' := s') ((1, g), 1) = (1, g') := onHom_fin g 1
+  have hh' : G.onHom (s := s) (s' := s') (1, 1, h) = (1, h') := onHom_fin 1 h
+  have h_onHom : G.onHom (s := s) (s' := s') ((1, g), 1, h) = (1, g') * (1, h') := by
+    rw [← hg', ← hh', ← MonoidHom.map_mul, mk_mul_mk, mul_one, one_mul]
+  rw [h_onHom, MonoidHom.map_mul, mul_apply_eq_comp, mul_apply_eq_comp,
+    hL.map_omega g' (omega_mem_finitePart h' hf), hL.map_omega h' hf, map_smul, smul_smul]
+
+/-- Let `card n = 2 * m`. The factor `σ Δ / Δ` (`multiplierRatio σ`) at the image under `G.onHom`
+of a finite point `g` of `U(r)`, which acts on `n × r` matrices by `x ↦ x g⁻¹`, is
+`(σ υ(det g) / υ(det g)) ^ m`, for the splitting character `υ = WeilData.upsilonU1`. -/
+lemma multiplierRatio_onHom_left_eq_pow {E r n : Type} [Field E] [CMType E] [WeilData E]
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (σ : ℂ →+* ℂ) (g : Gf E r) {m : ℕ}
+    (hm : card n = 2 * m) :
+    multiplierRatio σ (G.onHom (s := (1 : r → ℤˣ)) (s' := (1 : n → ℤˣ)) ((1, g), 1)).snd =
+      (σ (WeilData.upsilonU1.val (detFin 1 g)) / WeilData.upsilonU1.val (detFin 1 g)) ^ m := by
+  -- The ratio at the image of `g` is that at `g⁻¹` to the power `2 * m`, and the ratio at `g⁻¹`
+  -- has square `σ υ / υ` at `det g`.
+  have h_pow :
+      multiplierRatio σ (G.onHom (s := (1 : r → ℤˣ)) (s' := (1 : n → ℤˣ)) ((1, g), 1)).snd =
+        (multiplierRatio σ g⁻¹ ^ 2) ^ m := by
+    rw [← pow_mul, ← hm, multiplierRatio, multiplierRatio, finMultiplier_onHom_left,
+      RingHom.map_pow, div_pow]
+  have h_det : detFin 1 g⁻¹ = (detFin 1 g)⁻¹ := MonoidHom.map_inv G.det (1, g)
+  have h_ups_inv : WeilData.upsilonU1.val (detFin 1 g)⁻¹ =
+      (WeilData.upsilonU1.val (detFin 1 g))⁻¹ :=
+    WeilData.upsilonU1.val.toMonoidHom.map_inv _
+  rw [h_pow, multiplierRatio_sq, h_det, h_ups_inv, Circle.coe_inv, map_inv₀ σ, inv_div_inv]
+
+/-- Let `card n = 2 * m`, and let `u` be a point of `U(1)` at which the character of `Y` is `σ` of
+that of `X`. The character `charV` of a descent pair is `u1Char υ ^ m`, for the splitting character
+`υ = WeilData.upsilonU1`; so the conjugate under `σ` of `X.descentPair.charV u` is
+`Y.descentPair.charV u` times `(σ υ(u) / υ(u)) ^ m`. -/
+lemma LValueData.map_charV {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
+    [DecidableEq n] {σ : ℂ →+* ℂ} {m : ℕ} (hm : card n = 2 * m) (X Y : LValueData E n)
+    {u : unitary (𝔸 E)} (hu : Y.u1Char.val u = σ (X.u1Char.val u)) :
+    σ (X.descentPair.charV.val u) =
+      Y.descentPair.charV.val u *
+        (σ (WeilData.upsilonU1.val u) / WeilData.upsilonU1.val u) ^ m := by
+  have h_ups_ne : (WeilData.upsilonU1.val u : ℂ) ^ m ≠ 0 :=
+    pow_ne_zero m (Circle.coe_ne_zero _)
+  have h_char_val (Z : LValueData E n) : (Z.descentPair.charV.val u : ℂ) =
+      Z.u1Char.val u * (WeilData.upsilonU1.val u : ℂ) ^ m := by
+    simp [DescentPair.charV, rankTwist, hm]
+  rw [h_char_val X, h_char_val Y, map_mul σ, map_pow σ, ← hu, div_pow, mul_assoc,
+    mul_div_cancel₀ _ h_ups_ne]
+
+/-- The character `pairChar charW charV` of the pair `X.descentPair` at a finite point `(g, h)` of
+`U(1) × U(n)` is the inverse of the value of `X.descentPair.charV` at `det g`, as the character
+`X.descentPair.charW` of the definite line is trivial. -/
+lemma LValueData.pairChar_charW_charV {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
+    [DecidableEq n] (X : LValueData E n) (g : Gf E Unit) (h : Gf E n) :
+    pairChar (s := 1) (s' := 1) X.descentPair.charW X.descentPair.charV ((1, g), 1, h) =
+      (X.descentPair.charV.val (detFin 1 g) : ℂ)⁻¹ := by
+  simp [DescentPair.charW]
+
+/-- Let `card n = 2 * m`, and let the character of `Y` agree with `σ ∘ X.u1Char` on finite points.
+The conjugate under `σ` of the character of the pair `X.descentPair` at a finite point `(g, h)` of
+`U(1) × U(n)`, times the factor `σ Δ / Δ` at the image of `g` under `G.onHom`, is the value of
+`Y.descentPair.charV` at `det z⁻¹` times the character of the pair `Y.descentPair` at
+`(g z⁻¹, h)`. -/
+lemma LValueData.map_pairChar_mul_multiplierRatio {E n : Type} [Field E] [CMType E] [WeilData E]
+    [Fintype n] [DecidableEq n] {σ : ℂ →+* ℂ} {m : ℕ} (hm : card n = 2 * m)
+    (X Y : LValueData E n)
+    (hY_char : ∀ u : unitary (𝔸 E), (u : 𝔸 E).fst = 1 → Y.u1Char.val u = σ (X.u1Char.val u))
+    (g : Gf E Unit) (h : Gf E n) (z : unitary (𝔸f E)) :
+    σ (pairChar (s := 1) (s' := 1) X.descentPair.charW X.descentPair.charV ((1, g), 1, h)) *
+        multiplierRatio σ (G.onHom (s := 1) (s' := (1 : n → ℤˣ)) ((1, g), 1)).snd =
+      Y.descentPair.charV.val (detFin 1 (scalarFin Unit z⁻¹)) *
+        pairChar (s := 1) (s' := 1) Y.descentPair.charW Y.descentPair.charV
+          ((1, g * scalarFin Unit z⁻¹), 1, h) := by
+  -- The characters of the pairs are inverse values of `charV`, and `σ` turns
+  -- `X.descentPair.charV` into `Y.descentPair.charV` up to the factor `σ Δ / Δ` at `g`.
+  have h_det_mul : detFin 1 (g * scalarFin Unit z⁻¹) =
+      detFin 1 g * detFin 1 (scalarFin Unit z⁻¹) := by
+    rw [detFin, ← one_mk_mul_one_mk g, MonoidHom.map_mul]
+  have h_ratio_ne :
+      multiplierRatio σ (G.onHom (s := 1) (s' := (1 : n → ℤˣ)) ((1, g), 1)).snd ≠ 0 := by
+    simp [multiplierRatio_onHom_left_eq_pow σ g hm]
+  rw [X.pairChar_charW_charV, Y.pairChar_charW_charV, h_det_mul, map_mul, Circle.coe_mul,
+    map_inv₀, X.map_charV hm Y (hY_char _ (by simp [funext_iff])),
+    ← multiplierRatio_onHom_left_eq_pow σ g hm]
+  field_simp
+
 /-- Let `L` be a `σ`-semilinear map on the Schwartz space of `stdLineHom`, the space `Hom(W, V)` of
 columns for the standard spaces `W`, `V` of ranks `1` and `card n = 2 * m`. Let `L` scale finite
 translations by `b`. Let `X` be data for a lift from `U(1)` with no places of the twist; `X.u1Char`
@@ -667,102 +801,18 @@ lemma LValueData.map_pairWeilFinite_blockDatum {P : Parameters} {s : ℕ} {n : T
           multiplierRatio σ (G.onHom (s := X.descentPair.signs) (s' := 1) (1, 1, h)).snd) •
         pairWeil (stdSpace (P.E s) Unit) (stdSpace (P.E s) n) Y.descentPair.charW
           Y.descentPair.charV ((1, g * scalarFin Unit z⁻¹), 1, h) Y.descentPair.blockDatum := by
-  -- The action of a pair is a character times `ω ∘ G.onHom`. Compute `L` on the block datum
-  -- (`h_datum`), move it past `ω` (`h_omega`), and compare the scalars (`h_char`).
-  classical
-  let V : Space (P.E s) (n × Unit) (homSigns 1 1) := stdLineHom (P.E s) n
-  -- The block data realize the functions `ΨX`, `ΨY` of residues. With `TwistIndex` empty both
-  -- are the same function with values `0` and `1`, which `σ` fixes.
-  let ΨX : (n × Unit → 𝔸f (P.E s)) → ℂ := residueDatum X.placeAt X.descentPair.residueBlockDatum
-  let ΨY : (n × Unit → 𝔸f (P.E s)) → ℂ := residueDatum Y.placeAt Y.descentPair.residueBlockDatum
-  have hX_block : X.descentPair.blockDatum.val = V.schrodingerOp X.places ΨX V.vacElem := by
-    simp only [DescentPair.blockDatum, places_levelModulus, liftFn_eq_residueDatum, V, ΨX]
-  have hY_block : Y.descentPair.blockDatum.val = V.schrodingerOp X.places ΨY V.vacElem := by
-    rw [← hY_places]
-    simp only [DescentPair.blockDatum, places_levelModulus, liftFn_eq_residueDatum, V, ΨY]
-  have hΨ_conj : σ ∘ ΨX = ΨY := by
-    obtain ⟨S, d, μ, ψ, hμ_weight, h_card, hψ_unramified⟩ := Y
-    obtain rfl : S = X.toLevelPlaces := hY_places
-    ext x
-    simp [ΨX, ΨY, univ_eq_empty, residueDatum, DescentPair.residueBlockDatum, apply_ite σ]
-  have h_datum : L X.descentPair.blockDatum.val =
-      l • V.ω (1, scalarFin (n × Unit) z) Y.descentPair.blockDatum.val := by
-    rw [hX_block, hY_block, ← hΨ_conj]
-    exact hL_schrodinger ΨX (isSchwartzBruhat_residueDatum _ X.apart.star_ne)
-  -- The images `g'`, `h'` of `g` and `h` act on `V`, and `L` moves past each of them.
-  let g' : Gf (P.E s) (n × Unit) := (G.onHom (s := 1) (s' := 1) ((1, g), 1)).snd
-  let h' : Gf (P.E s) (n × Unit) := (G.onHom (s := 1) (s' := 1) (1, 1, h)).snd
-  have hg' : G.onHom (s := 1) (s' := 1) ((1, g), 1) = (1, g') := onHom_fin g 1
-  have hh' : G.onHom (s := 1) (s' := 1) (1, 1, h) = (1, h') := onHom_fin 1 h
-  have h_onHom : G.onHom (s := 1) (s' := 1) ((1, g), 1, h) = (1, g') * (1, h') := by
-    rw [← hg', ← hh', ← MonoidHom.map_mul, mk_mul_mk, mul_one, one_mul]
-  let fY : 𝒮 V := V.ω (G.onHom ((1, g * scalarFin Unit z⁻¹), 1, h)) Y.descentPair.blockDatum.val
-  have h_omega : L (V.ω (G.onHom ((1, g), 1, h)) X.descentPair.blockDatum.val) =
-      (multiplierRatio σ g' * multiplierRatio σ h' * l) • fY := by
-    have h_mem : X.descentPair.blockDatum.val ∈ V.finitePart := X.descentPair.blockDatum.prop
-    have hfY : fY = V.ω (1, g') (V.ω (1, h')
-        (V.ω (1, scalarFin (n × Unit) z) Y.descentPair.blockDatum.val)) := by
-      simp only [fY, onHom_mul_scalarFin_inv, h_onHom, MonoidHom.map_mul, mul_apply_eq_comp]
-    rw [hfY, h_onHom, MonoidHom.map_mul, mul_apply_eq_comp,
-      hL_scale.map_omega g' (omega_mem_finitePart h' h_mem), hL_scale.map_omega h' h_mem, h_datum]
-    simp only [V, map_smul, smul_smul, mul_assoc]
-  -- The ratio `σ Δ / Δ` at `g'` is that at `g⁻¹` to the power `2 * m`, and the ratio at `g⁻¹` has
-  -- square `σ υ / υ` at `u = det g`.
-  let u : unitary (𝔸 (P.E s)) := detFin 1 g
-  let v : unitary (𝔸 (P.E s)) := detFin 1 (scalarFin Unit z⁻¹)
-  have h_ratio : multiplierRatio σ g' =
-      (σ (WeilData.upsilonU1.val u) / WeilData.upsilonU1.val u) ^ m := by
-    have h_pow : multiplierRatio σ g' = (multiplierRatio σ g⁻¹ ^ 2) ^ m := by
-      rw [← pow_mul, ← hm, multiplierRatio, multiplierRatio, finMultiplier_onHom_left,
-        RingHom.map_pow, div_pow]
-    have h_det : detFin 1 g⁻¹ = u⁻¹ := MonoidHom.map_inv G.det (1, g)
-    have h_ups_inv : WeilData.upsilonU1.val u⁻¹ = (WeilData.upsilonU1.val u)⁻¹ :=
-      WeilData.upsilonU1.val.toMonoidHom.map_inv u
-    rw [h_pow, multiplierRatio_sq, h_det, h_ups_inv, Circle.coe_inv, map_inv₀ (σ : ℂ →+* ℂ),
-      inv_div_inv]
-    rfl
-  -- The characters `charV` are `X.u1Char υ ^ m` and `Y.u1Char υ ^ m`, and `hY_char` turns
-  -- `σ X.u1Char` into `Y.u1Char`.
-  have h_charV_conj :
-      σ (X.descentPair.charV.val u) = Y.descentPair.charV.val u * multiplierRatio σ g' := by
-    have h_char_u : Y.u1Char.val u = σ (X.u1Char.val u) := hY_char u (by simp [u, funext_iff])
-    have h_ups_ne : (WeilData.upsilonU1.val u : ℂ) ^ m ≠ 0 :=
-      pow_ne_zero m (Circle.coe_ne_zero _)
-    have h_char_val (Z : LValueData (P.E s) n) : (Z.descentPair.charV.val u : ℂ) =
-        Z.u1Char.val u * (WeilData.upsilonU1.val u : ℂ) ^ m := by
-      simp [DescentPair.charV, rankTwist, hm]
-    rw [h_char_val X, h_char_val Y, h_ratio, map_mul σ, map_pow σ, ← h_char_u, div_pow,
-      mul_assoc, mul_div_cancel₀ _ h_ups_ne]
-  -- The characters `charW` are trivial, so the characters of the two pairs are inverse values of
-  -- `charV`.
-  let χX : ℂ := pairChar (s := 1) (s' := 1) X.descentPair.charW X.descentPair.charV ((1, g), 1, h)
-  let χY : ℂ :=
-    pairChar (s := 1) (s' := 1) Y.descentPair.charW Y.descentPair.charV
-      ((1, g * scalarFin Unit z⁻¹), 1, h)
-  have hχX : χX = (X.descentPair.charV.val u : ℂ)⁻¹ := by simp [χX, DescentPair.charW, u]
-  have hχY : χY = (Y.descentPair.charV.val u * Y.descentPair.charV.val v : ℂ)⁻¹ := by
-    have h_det_mul : G.det (s := 1) (1, g * scalarFin Unit z⁻¹) = u * v := by
-      rw [← one_mk_mul_one_mk g, MonoidHom.map_mul]
-    have h_val_mul : Y.descentPair.charV.val (u * v) =
-        Y.descentPair.charV.val u * Y.descentPair.charV.val v :=
-      Y.descentPair.charV.val.toMonoidHom.map_mul u v
-    have h_charW_one : (Y.descentPair.charW.val (detFin 1 h) : ℂ) = 1 := by
-      simp [DescentPair.charW]
-    dsimp only [χY]
-    rw [pairChar_apply]
-    dsimp only
-    rw [h_charW_one, one_mul, h_det_mul, h_val_mul, Circle.coe_mul]
-  have h_char : σ χX * multiplierRatio σ g' = Y.descentPair.charV.val v * χY := by
-    have h_ratio_ne : multiplierRatio σ g' ≠ 0 := by simp [h_ratio]
-    rw [hχX, hχY, map_inv₀, h_charV_conj]
-    field_simp
-  calc L (χX • V.ω (G.onHom ((1, g), 1, h)) X.descentPair.blockDatum.val)
-    _ = (σ χX * multiplierRatio σ g' * (multiplierRatio σ h' * l)) • fY := by
-      rw [map_smulₛₗ, h_omega, smul_smul, mul_assoc, mul_assoc]
-      rfl
-    _ = (l * Y.descentPair.charV.val v * multiplierRatio σ h') • χY • fY := by
-      rw [h_char, smul_smul]
-      ring_nf
+  -- The action of a pair is a character times `ω ∘ G.onHom`. The map `L` moves past `ω` up to the
+  -- factors `σ Δ / Δ` (`map_omega_onHom`) and carries the block datum of `X` to `l ω(z)` applied to
+  -- that of `Y` (`map_blockDatum`); `ω(z)` translates `g` by `z⁻¹` (`onHom_mul_scalarFin_inv`).
+  -- The scalars agree by `map_pairChar_mul_multiplierRatio`.
+  rw [pairWeilFinite_apply_apply_coe, pairWeil_apply, pairWeil_apply, map_smulₛₗ,
+    hL_scale.map_omega_onHom g h X.descentPair.blockDatum.prop,
+    X.map_blockDatum h_no_twist hL_schrodinger Y hY_places, map_smul, rep_apply_apply,
+    ← onHom_mul_scalarFin_inv, smul_smul, smul_smul, smul_smul]
+  congr 1
+  linear_combination
+    (multiplierRatio σ (G.onHom (s := (1 : Unit → ℤˣ)) (s' := 1) (1, 1, h)).snd * l) *
+      X.map_pairChar_mul_multiplierRatio (σ := σ) hm Y hY_char g h z
 
 /-- Conjugates of the lift. The parameters `P` and the natural number `s` give the CM field `P.E s`
 over the imaginary quadratic field `K P`, the positive number `P.bigOmega s` and the scale
