@@ -179,15 +179,16 @@ lemma New.AutChar.exists_pair_heckeCoeff_ne {E : Type} [Field E] [CMType E] [Wei
   simpa [u, coe_divStar, locFullIdele, hw, ← map_inv, hγ_val, hn_pos.ne'] using h_unit w
 
 /-- Let `r` be continuous with non-degenerate trace form, and let its trace be that of `ρ` minus the
-traces of the one-dimensional representations `χ l`. Let `ρ` and every `χ l` be continuous and
+traces of the representations `χ l`. Let `ρ` and every `χ l` be continuous and
 unramified or crystalline at `A`, with jumps `J + ∑ l, j l` for `ρ` and `j l` for `χ l`. Then `r` is
 unramified or crystalline at `A` and has the jumps `J`. Moreover, every polynomial `P` that kills
 `s` at `A` for `ρ` and for every `χ l` kills it for `r` (`PolyKillsAt`: `P(r s) = 0` if ℓ is a unit
 at `A`, and otherwise `P` kills the Weil pairs of `s` along each local datum at `A`). -/
 lemma New.GaloisRep.isGoodAt_hasJumpsAt_of_trace_eq_sub {ℓ : ℕ} {E n m T : Type} [ThePrime ℓ]
-    [PadicIso ℓ]
-    [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
-    [Fintype T] {r : GalRep ℓ E n} {ρ : GalRep ℓ E m} {χ : T → GalRep ℓ E (Fin 1)}
+    [PadicIso ℓ] [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
+    [Fintype m] [DecidableEq m] [Fintype T] {nχ : T → Type}
+    [∀ l, Fintype (nχ l)] [∀ l, DecidableEq (nχ l)]
+    {r : GalRep ℓ E n} {ρ : GalRep ℓ E m} {χ : (l : T) → GalRep ℓ E (nχ l)}
     {A : ClosurePlace} {J : (E →+* ℂ) → Multiset ℤ} {j : T → (E →+* ℂ) → Multiset ℤ}
     (hr : Continuous r) (hr_nondeg : IsTraceNondeg r)
     (htr : ∀ g : Gal(Ω/E), (r g).val.trace = (ρ g).val.trace - ∑ l : T, (χ l g).val.trace)
@@ -198,7 +199,7 @@ lemma New.GaloisRep.isGoodAt_hasJumpsAt_of_trace_eq_sub {ℓ : ℕ} {E n m T : T
     ∀ (s : Gal(Ω/E)) (P : (PadicAlgCl ℓ)[X]), PolyKillsAt ρ A s P →
       (∀ l : T, PolyKillsAt (χ l) A s P) → PolyKillsAt r A s P := by
   -- Regard the trace subtraction as a finite linear combination in `IsTraceLimit`.
-  -- The coefficients are `1` for `ρ` and `-1` for the characters. The filter `pure ()`
+  -- The coefficients are `1` for `ρ` and `-1` for the `χ l`. The filter `pure ()`
   -- makes convergence an equality; the limit representation is already given, not constructed.
   let a : Option T → PadicAlgCl ℓ := Option.elim' 1 (-1)
   let σ : Option T → Period.PadicRep Gal(Ω/E) ℓ := Option.elim' ⟨ρ⟩ fun l ↦ ⟨χ l⟩
