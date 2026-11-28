@@ -439,20 +439,14 @@ variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
 rapid decay: |F|·ht^B is bounded for every B, with ht the height of V. -/
 lemma isRapid_of_isCocompact (hF : Continuous F) (h_inv : V.Γ.FixesLeft F)
     (h_cocompact : V.Γ.IsCocompact) : V.IsRapid F := by
-  intro B
-  obtain ⟨K, hK, h_cover⟩ : ∃ K : Set (G E s), IsCompact K ∧ ∀ g, ∃ γ ∈ V.Γ, γ * g ∈ K :=
-    h_cocompact
+  obtain ⟨K, hK, h_cover⟩ := h_cocompact
   -- `F` is bounded on `K`, and the height is bounded on the `Γ`-orbit of `K`, the whole group.
-  obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ g ∈ K, ‖F g‖ ≤ C :=
-    hK.exists_bound_of_continuousOn hF.continuousOn
-  obtain ⟨D, hD⟩ : ∃ D : ℝ, ∀ g, ∀ γ ∈ V.Γ, γ * g ∈ K → C * V.height g ^ B ≤ D :=
-    exists_mul_height_pow_le hK C
-  refine ⟨D, fun g ↦ ?_⟩
+  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hF.continuousOn
+  refine fun B ↦ (exists_mul_height_pow_le (V := V) (B := B) hK C).imp fun D hD g ↦ ?_
   obtain ⟨γ, hγ, hγg⟩ := h_cover g
-  calc
-    ‖F g‖ * V.height g ^ B = ‖F (γ * g)‖ * V.height g ^ B := by rw [h_inv γ hγ]
-    _ ≤ C * V.height g ^ B := mul_le_mul_of_nonneg_right (hC _ hγg) (pow_pos (height_pos g) B).le
-    _ ≤ D := hD g γ hγ hγg
+  rw [← h_inv γ hγ]
+  exact (mul_le_mul_of_nonneg_right (hC _ hγg) (pow_pos (height_pos g) B).le).trans
+    (hD g γ hγ hγg)
 
 /-- On a definite space (all signs `s i` are equal) every automorphic function F (continuous, left
 Γ-invariant, with a level) has rapid decay (|F|·ht^B is bounded for every B), so it lies in

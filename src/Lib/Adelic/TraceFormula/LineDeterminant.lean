@@ -81,22 +81,16 @@ lemma trace_pow_mul_eq_sum (h : Commute A T) {S : Finset ℂ}
     (hS : ∀ μ : ℂ, μ ∉ S → A.maxGenEigenspace μ = ⊥) (l : ℕ) :
     trace ℂ B (A ^ l * T) =
       ∑ μ ∈ S, μ ^ l * trace ℂ (A.maxGenEigenspace μ) (restrictGenEigenspace h μ) := by
-  have h_subset : {μ : ℂ | A.maxGenEigenspace μ ≠ ⊥} ⊆ (S : Set ℂ) :=
-    fun μ hμ ↦ by_contra fun hμS ↦ hμ (hS μ hμS)
-  have h_finite : {μ : ℂ | A.maxGenEigenspace μ ≠ ⊥}.Finite := S.finite_toSet.subset h_subset
-  have h_internal := DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top
-    A.independent_maxGenEigenspace A.iSup_maxGenEigenspace_eq_top
-  have h_comm : Commute A (A ^ l * T) := (Commute.self_pow A l).mul_right h
-  calc _ = ∑ μ ∈ h_finite.toFinset,
-          trace ℂ (A.maxGenEigenspace μ) (restrictGenEigenspace h_comm μ) :=
-      trace_eq_sum_trace_restrict' h_internal h_finite (End.mapsTo_maxGenEigenspace_of_comm h_comm)
-    _ = ∑ μ ∈ S, trace ℂ (A.maxGenEigenspace μ) (restrictGenEigenspace h_comm μ) := by
-      refine Finset.sum_subset (h_finite.toFinset_subset.2 h_subset) fun μ _ hμ ↦ ?_
-      have : Subsingleton (A.maxGenEigenspace μ) :=
-        Submodule.subsingleton_iff_eq_bot.2 (by simpa using hμ)
-      rw [Subsingleton.eq_zero (restrictGenEigenspace h_comm μ), map_zero]
-    _ = ∑ μ ∈ S, μ ^ l * trace ℂ (A.maxGenEigenspace μ) (restrictGenEigenspace h μ) :=
-      Finset.sum_congr rfl fun μ _ ↦ trace_restrictGenEigenspace_pow_mul h μ l
+  have h_sub : {μ : ℂ | A.maxGenEigenspace μ ≠ ⊥} ⊆ S := fun μ hμ ↦ not_imp_comm.1 (hS μ) hμ
+  have h_fin := S.finite_toSet.subset h_sub
+  rw [trace_eq_sum_trace_restrict' (DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top
+      A.independent_maxGenEigenspace A.iSup_maxGenEigenspace_eq_top) h_fin
+      (End.mapsTo_maxGenEigenspace_of_comm ((Commute.self_pow A l).mul_right h)),
+    Finset.sum_subset (h_fin.toFinset_subset.2 h_sub)]
+  · exact Finset.sum_congr rfl fun μ _ ↦ trace_restrictGenEigenspace_pow_mul h μ l
+  · intro μ _ hμ
+    have := Submodule.subsingleton_iff_eq_bot.2 (by simpa using hμ)
+    exact (congrArg _ (Subsingleton.eq_zero _)).trans (map_zero _)
 
 /-- The sequences `l ↦ μ ^ l`, `μ : ℂ`, are linearly independent: two combinations of them that
 agree for all `l` have the same coefficients. -/

@@ -127,17 +127,12 @@ lemma weylGauge_embFin (γ : U (stdSpace E n).J) :
   -- At each infinite place `adeleExtension` restricts on `E` to the embedding that it extends, so
   -- the factor `γ⁻¹` of `(γ g)⁻¹` cancels the action of `γ` on `ξ`.
   have h_rat (τ : InfinitePlace E) :
-      GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) ((stdSpace E n).embFin γ).val =
-        GeneralLinearGroup.map (weightEmbedding ιₚ τ) γ.val :=
+      GeneralLinearGroup.map (weightEmbedding ιₚ τ) γ.val =
+        GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ))
+          ((stdSpace E n).embFin γ).val :=
     GeneralLinearGroup.ext fun _ _ ↦ by simp [stdSpace_embFin, adeleExtension_algebraMap]
-  have h_cancel (τ : InfinitePlace E) :
-      GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ))
-          ((stdSpace E n).embFin γ * g)⁻¹.val *
-          GeneralLinearGroup.map (weightEmbedding ιₚ τ) γ.val =
-        GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) g⁻¹.val := by
-    rw [← h_rat, ← map_mul]
-    simp [mul_assoc]
-  simp only [weylGauge, map_weightRep, mulVec_mulVec, ← map_mul, Pi.mul_def, h_cancel]
+  simp only [weylGauge, map_weightRep, mulVec_mulVec, ← map_mul, Pi.mul_def, h_rat]
+  simp [mul_assoc]
 
 /-- The gauge of a vector is unchanged when the point is multiplied on the right by an element
 that is integral at the primes above `p`. -/
