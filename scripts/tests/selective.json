@@ -1,0 +1,4 @@
+{
+  "module_roots": ["."],
+  "test_roots": ["scripts/tests"]
+}

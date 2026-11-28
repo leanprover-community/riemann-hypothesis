@@ -1,0 +1,23 @@
+dependencies:
+  - readers: ["test_batch_building.py"]
+    inputs: ["//scripts/batch-building.py"]
+    kind: import
+  - readers: ["test_inbox_sync.py", "test_label_names.py"]
+    inputs: ["//scripts/inbox-sync.py"]
+    kind: import
+  - readers: ["test_label_names.py"]
+    inputs: ["//scripts/batch-labels.py"]
+    kind: import
+  - readers: ["test_label_names.py"]
+    inputs: ["//.github/workflows/*.yml"]
+    kind: content
+    reason: The label consistency tests read every workflow as text.
+  - readers: ["test_ci_cache_baseline.py"]
+    inputs: ["//scripts/ci-cache-get.py"]
+    kind: import
+  - readers: ["test_technical_debt_metrics.py"]
+    inputs: ["//scripts/technical-debt-metrics.py"]
+    kind: import
+  - readers: ["test_pr_checks.py"]
+    inputs: ["//scripts/ci-github.py"]
+    kind: import

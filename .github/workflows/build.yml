@@ -1,6 +1,7 @@
 name: build
 
-# Builds every pull request to main from a fork on the self-hosted rh-pr-fork runners, every pull
+# A GitHub-hosted job checks PR automation and looks for a reusable proof check. For PRs that
+# need a build, this workflow builds forks on the self-hosted rh-pr-fork runners, every pull
 # request from a branch of this repository not starting with batch/ on the self-hosted
 # rh-pr-trusted runners, and every merge queue group, push to main, manual run and pull request
 # from a batch/ branch of this repository (the batcher's batch pull requests) on the self-hosted
@@ -11,7 +12,7 @@ name: build
 # `lake build` in every case: it is the merge queue's required check.
 #
 # Pull requests run their own code, so they use `pull_request` (not `pull_request_target`), a
-# read-only token and no secrets. A pull request from a fork runs only on the rh-pr-fork runners,
+# read-only token and no secrets. A self-hosted build from a fork runs only on the rh-pr-fork runners,
 # which assume hostile code and hold no credential. A pull request whose head branch is in this
 # repository (a branch of someone who can already push here) is trusted like a manual run and builds
 # on the rh-pr-trusted or rh-big runners. The job-started hook of every self-hosted runner
@@ -54,31 +55,96 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
-    name: lake build
-    # Pull requests from forks run on the rh-pr-fork runners. (GitHub does not pass repository
-    # variables to pull requests from forks, so this cannot be a variable; replacing that
-    # fromJSON with '"ubuntu-latest"' sends them back to GitHub-hosted runners.) Other pull
-    # requests run on the rh-pr-trusted runners, except those whose head branch starts with
-    # batch/, which run on the rh-big runner with every other event.
-    runs-on: ${{ github.event_name != 'pull_request' && fromJSON('["self-hosted", "rh-big"]') || github.event.pull_request.head.repo.full_name != github.repository && fromJSON('["self-hosted", "rh-pr-fork"]') || startsWith(github.event.pull_request.head.ref, 'batch/') && fromJSON('["self-hosted", "rh-big"]') || fromJSON('["self-hosted", "rh-pr-trusted"]') }}
-    timeout-minutes: 360
-    env:
-      # Pull requests upload nothing, whichever runner they build on.
-      STAGE: ${{ github.event_name != 'pull_request' }}
+  preflight:
+    name: Select PR checks
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      tested: ${{ steps.scope.outputs.tested }}
     steps:
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 2
           persist-credentials: false
 
-      - name: Check whether the merge queue has built this commit
-        # The merge queue moves main to the exact commit it built, and that build's artifact is
-        # what gets published, so the push build of that commit has nothing left to do.
-        id: queue
-        if: github.event_name == 'push'
+      - name: Check the tested merge tree against its base
+        id: scope
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 -I scripts/ci-github.py queue-tested --sha "$GITHUB_SHA"
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: python3 -I scripts/ci-github.py pr-checks --sha "$BASE"
+
+      - name: Test the CI scripts
+        env:
+          TESTS: ${{ steps.scope.outputs.tests }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [[ "$TESTS" == affected || "$TESTS" == policy ]]; then
+            # The manifests describe filename-based imports and workflow reads.
+            # The full suite uses only the standard library and works offline.
+            envdir="$RUNNER_TEMP/script-tests"
+            model=scripts/tests/selective.json
+            if python3 -m venv "$envdir" && "$envdir/bin/python" -m pip install --disable-pip-version-check 'pytest-selective==1.10.0'; then
+              if [[ "$TESTS" == policy ]]; then
+                # Observe module loads from source as well as the files each test reads.
+                audit=$(mktemp -d "$RUNNER_TEMP/script-audit.XXXXXXXX")
+                "$envdir/bin/python" -I -B -X "pycache_prefix=$audit/bytecode" -m pytest -q --rootdir=. \
+                  --no-selective -p pytest_selective.impact_audit_plugin --impact-audit-dir "$audit/reads" scripts/tests
+                "$envdir/bin/python" -I -m pytest_selective.impact_cli audit --config "$model" \
+                  --records "$audit/reads" --cache "$audit/graph.sqlite3" --output "$audit/report.json"
+                exec "$envdir/bin/python" -I -c 'import json, sys; sys.exit(bool(json.load(sys.stdin)["recorder_errors"]))' < "$audit/report.json"
+              fi
+              exec "$envdir/bin/python" -I -m pytest -q --rootdir=. --selective --selective-config="$model" --selective-base="$BASE" scripts/tests
+            fi
+            if [[ "$TESTS" == policy ]]; then
+              echo "::error::Validating changed dependency declarations requires pytest-selective"
+              exit 1
+            fi
+            echo "::warning::Selector unavailable; running every script test"
+          fi
+          python3 -I -m unittest discover -s scripts/tests
+
+  build:
+    name: lake build
+    needs: preflight
+    # A non-PR skips preflight. A failed PR preflight must fail the required check.
+    if: ${{ !cancelled() }}
+    runs-on: >-
+      ${{ github.event_name != 'pull_request' && fromJSON('["self-hosted", "rh-big"]') ||
+          (needs.preflight.result != 'success' || needs.preflight.outputs.tested == 'true') && 'ubuntu-latest' ||
+          github.event.pull_request.head.repo.full_name != github.repository && fromJSON('["self-hosted", "rh-pr-fork"]') ||
+          startsWith(github.event.pull_request.head.ref, 'batch/') && fromJSON('["self-hosted", "rh-big"]') ||
+          fromJSON('["self-hosted", "rh-pr-trusted"]') }}
+    timeout-minutes: 360
+    env:
+      STAGE: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - name: Require successful PR checks
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && needs.preflight.result != 'success' }}
+        run: exit 1
+
+      - uses: actions/checkout@v4
+        if: needs.preflight.outputs.tested != 'true'
+        with:
+          persist-credentials: false
+
+      - name: Use an existing merge-queue build
+        id: queue
+        if: github.event_name == 'push' || needs.preflight.outputs.tested == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == push ]]; then
+            python3 -I scripts/ci-github.py queue-tested --sha "$GITHUB_SHA"
+          else
+            echo "PR checks passed with a verified base build."
+            echo "tested=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Test all CI scripts
+        if: github.event_name != 'pull_request' && steps.queue.outputs.tested != 'true'
+        run: python3 -I -m unittest discover -s scripts/tests
 
       - name: Fetch history for the cache baseline
         if: steps.queue.outputs.tested != 'true'
@@ -95,10 +161,6 @@ jobs:
           rm elan-init.sh
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
           "$HOME/.elan/bin/lake" --version
-
-      - name: Test the cache baseline selection
-        if: steps.queue.outputs.tested != 'true'
-        run: python3 -I scripts/tests/test_ci_cache_baseline.py
 
       - name: Restore Mathlib's cache
         if: steps.queue.outputs.tested != 'true'

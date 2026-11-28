@@ -29,7 +29,8 @@ def commit(root, files, message):
     for name, text in files.items():
         path = root / name
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
+        # Cache identities compare the working bytes with the committed blob.
+        path.write_text(text, encoding="utf-8", newline="\n")
     run(root, "add", "-A")
     run(root, "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", message)
     return subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()

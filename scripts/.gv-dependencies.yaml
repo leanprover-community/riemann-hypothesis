@@ -1,0 +1,5 @@
+dependencies:
+  - readers: ["batch-building.py", "inbox-sync.py"]
+    inputs: ["github-rest.py", "batch-labels.py"]
+    kind: import
+    reason: Both scripts load the REST client and label definitions by filename.

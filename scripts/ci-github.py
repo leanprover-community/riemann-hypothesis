@@ -20,6 +20,7 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.request
@@ -113,9 +114,65 @@ def find_run(args):
         time.sleep(30)
 
 
+def queue_built(sha):
+    return any(run.get("event") == "merge_group" and problem(run, sha) is None for run in runs(sha))
+
+
 def queue_tested(args):
-    tested = any(run.get("event") == "merge_group" and problem(run, args.sha) is None for run in runs(args.sha))
-    outputs(tested=str(tested).lower())
+    outputs(tested=str(queue_built(args.sha)).lower())
+
+
+# These files have no part in the proof build, cache restoration or axiom check.
+# Keep the list explicit: an unfamiliar file must take the ordinary build path.
+DOCS = {"README.md", "GUIDE.md", "CONTENTS.md", "INDEX.md", "REFERENCES.md", "ATTRIBUTION.md", "CACHE.md"}
+AUTOMATION = {
+    "scripts/" + name for name in (
+        "batch-building.py", "batch-labels.py", "github-rest.py", "inbox-sync.py", "technical-debt-metrics.py",
+    )
+} | {
+    ".github/workflows/" + name + ".yml" for name in (
+        "batch-building", "batch-pushed", "inbox", "inbox-review", "label-pr", "review-commands", "technical-debt",
+    )
+}
+
+
+def pr_scope(changed):
+    """Return whether proof reuse is eligible, and which script tests to run."""
+    if "scripts/tests/selective.json" in changed or any(
+        p.endswith((".gv-dependency.yaml", ".gv-dependencies.yaml")) for p in changed
+    ):
+        return False, "policy"
+    proof = {p for p in changed if p.startswith("src/") and p.endswith(".lean")}
+    tests = {p for p in changed if re.fullmatch(r"scripts/tests/test_\w+\.py", p)}
+    reuse = changed <= DOCS | AUTOMATION | tests
+    if changed <= DOCS | proof:
+        # Even a Lean or Markdown file can be a script test fixture. The full
+        # standard-library suite is cheaper here than installing the selector.
+        return reuse, "full"
+    if changed <= DOCS | proof | AUTOMATION | tests | {"scripts/ci-cache-get.py"}:
+        return reuse, "affected"
+    return False, "full"
+
+
+def pr_checks(args):
+    # Compare the tree CI will actually build with its exact first parent. A rename
+    # contributes both paths, including a removal from a proof-sensitive location.
+    tested, tests = False, "full"
+    try:
+        parent = subprocess.check_output(["git", "rev-parse", "HEAD^1"], text=True).strip()
+        if parent != args.sha or not SHA.fullmatch(parent):
+            raise ValueError("checkout parent differs from the pull request base")
+        paths = subprocess.check_output(["git", "diff", "--name-only", "--no-renames", "-z", parent, "HEAD", "--"])
+        reuse, tests = pr_scope({os.fsdecode(p) for p in paths.split(b"\0") if p})
+        if reuse:
+            # A successful merge-group run built the base and checked its axioms.
+            # A PR result can never supply this evidence.
+            tested = queue_built(parent)
+            if tested:
+                print(f"Reusing the successful merge-queue proof check of {parent}.")
+    except (OSError, ValueError, KeyError, subprocess.CalledProcessError) as error:
+        print(f"Using the ordinary proof build: {error}", file=sys.stderr)
+    outputs(tested=str(tested).lower(), tests=tests)
 
 
 def main():
@@ -129,6 +186,9 @@ def main():
     command = commands.add_parser("queue-tested")
     command.add_argument("--sha", required=True)
     command.set_defaults(function=queue_tested)
+    command = commands.add_parser("pr-checks", help="select checks for a pull request merge checkout")
+    command.add_argument("--sha", required=True, help="base SHA from the pull_request event")
+    command.set_defaults(function=pr_checks)
     args = parser.parse_args()
     if os.environ.get("GITHUB_REPOSITORY", REPOSITORY) != REPOSITORY:
         raise ValueError("this script only serves leanprover-community/riemann-hypothesis")
