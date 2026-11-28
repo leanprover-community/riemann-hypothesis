@@ -285,9 +285,13 @@ def upperGram (l : ℕ) :
 /-- The enumeration `floorIndexEnum a` of the basis of V_a has no repetitions. -/
 lemma floorIndexEnum_injective (a : Fin 𝔰.ϱ) : Injective (floorIndexEnum a) := by
   -- the only coincidences to exclude are those of `e_a`, `e*_a` with a higher pair
-  suffices (∀ c : Fin 𝔰.ϱ, a < c → a ≠ c) ∧ ∀ c : Fin 𝔰.ϱ, a < c → c ≠ a by
-    simpa [floorIndexEnum, Injective] using this
-  exact ⟨fun c hc ↦ hc.ne, fun c hc ↦ hc.ne'⟩
+  rintro (i | ⟨i, hi⟩) (j | ⟨j, hj⟩) h
+  · fin_cases i <;> fin_cases j <;> simp [floorIndexEnum] at h ⊢
+  · fin_cases i <;> simp only [floorIndexEnum, Sum.elim_inl, Sum.elim_inr] at h <;>
+      (subst h; simp [floorOf] at hj)
+  · fin_cases j <;> simp only [floorIndexEnum, Sum.elim_inl, Sum.elim_inr] at h <;>
+      (subst h; simp [floorOf] at hi)
+  · exact congrArg Sum.inr (Subtype.ext h)
 
 /-- The enumeration `floorIndexEnum a` lists exactly the basis indices of floor at least a. -/
 lemma mem_range_floorIndexEnum (a : Fin 𝔰.ϱ) (i : 𝔰.BesselIndex) :
@@ -312,10 +316,13 @@ lemma gram_inclMatrix_floorIndexEnum (a : Fin 𝔰.ϱ) :
       planeSumGram (upperGram (T := T) (a + 1)) := by
   rw [conjTranspose_inclMatrix_mul_mul_inclMatrix]
   -- the pair of floor `a` is orthogonal to the higher pairs
-  suffices (∀ c : Fin 𝔰.ϱ, a < c → a = c → (1 : A) = 0) ∧
-      ∀ c : Fin 𝔰.ϱ, a < c → c = a → (1 : A) = 0 by
-    simpa [floorIndexEnum, upperGram, ← ext_iff] using this
-  exact ⟨fun c hc h ↦ absurd h hc.ne, fun c hc h ↦ absurd h hc.ne'⟩
+  ext (i | ⟨i, hi⟩) (j | ⟨j, hj⟩)
+  · fin_cases i <;> fin_cases j <;> simp [floorIndexEnum, planeSumGram]
+  · fin_cases i <;> obtain c | (k | z) | c := j <;> simp [floorIndexEnum, planeSumGram]
+    all_goals exact fun h ↦ absurd h (by simp [floorOf] at hj; omega)
+  · fin_cases j <;> obtain c | (k | z) | c := i <;> simp [floorIndexEnum, planeSumGram]
+    all_goals exact fun h ↦ absurd h (by simp [floorOf] at hi; omega)
+  · rfl
 
 /-- For a < ϱ, the measure `F.floorQuadricMeasure a.castSucc` on the quadric h(v, v) = 0 of V_a can
 be computed in the basis `floorIndexEnum a`. It is the image, under extension by zero, of the
@@ -382,7 +389,8 @@ lemma inclMatrix_mulVec_flatChart_eq_heisenbergElem_mulVec (a : Fin 𝔰.ϱ) (t 
     linear_combination (-element * t * c) * h_cancel
   have h_incl (x y : A) (w : {i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} → A) :
       inclMatrix A (floorIndexEnum a) *ᵥ (![x, y] ⊕ᵥ w) =
-        Pi.single (eStar a) y + inclMatrix A Subtype.val *ᵥ w + x • Pi.single (.inl a) 1 := by
+        Pi.single (eStar a) y + inclMatrix A Subtype.val *ᵥ w +
+        x • Pi.single (.inl a : 𝔰.BesselIndex) 1 := by
     ext i
     simp [floorIndexEnum, inclMatrix, mulVec_apply_eq_sum, Pi.single_apply, Matrix.one_apply,
       add_comm, add_assoc]
@@ -412,16 +420,19 @@ lemma measurePreserving_orbitPoint {F : PlaceData ι T m} (b : Fin 𝔰.n) :
       ∫⁻ t : A, modulus t ^ d * ∫⁻ u : V, ∫⁻ β : skewAdjoint A,
         Φ (orbitPoint a.castSucc ((floorWeyl a t : T.G)⁻¹ * heisenbergElem a (u, β)))
           ∂P.skewMeasure := by
-    simp (disch := fun_prop) only [floorMeasure, Fin.val_castSucc, Fin.is_lt, ↓reduceIte, mconv,
-      heisenbergMeasure, ↓reduceDIte, lintegral_map, lintegral_prod, hd]
-    rw [weylLaw, lintegral_map (by fun_prop) (by fun_prop),
+    simp only [floorMeasure, Fin.val_castSucc, Fin.is_lt, ↓reduceIte, mconv,
+      heisenbergMeasure, ↓reduceDIte, hd]
+    rw [lintegral_map hΦ (by fun_prop), lintegral_map (by fun_prop) (by fun_prop),
+      lintegral_prod _ (by fun_prop), weylLaw, lintegral_map (by fun_prop) (by fun_prop),
       lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)]
-    rfl
+    refine lintegral_congr fun t ↦ congrArg (modulus t ^ d * ·) ?_
+    dsimp only
+    rw [lintegral_map (by fun_prop) (by fun_prop), lintegral_prod _ (by fun_prop)]
   have h_quadric : ∫⁻ v, Φ v ∂F.floorQuadricMeasure a.castSucc =
       ∫⁻ t : A, ∫⁻ u : V, ∫⁻ β : skewAdjoint A, Φ (χ t u β) ∂P.skewMeasure := by
-    rw [floorQuadricMeasure_castSucc_eq_map]
-    simp (disch := fun_prop) only [lintegral_map, volume_eq_prod, lintegral_prod, V, χ]
-    rw [lintegral_prod _ (by fun_prop)]
+    rw [floorQuadricMeasure_castSucc_eq_map, lintegral_map hΦ (by fun_prop)]
+    rw [quadricMeasure, lintegral_map (by fun_prop) (by fun_prop), volume_eq_prod,
+      lintegral_prod _ (by fun_prop), lintegral_prod _ (by fun_prop)]
   rw [h_floor, h_quadric]
   refine lintegral_congr_of_ae_imp ae_isUnit ?_
   rintro _ ⟨t, rfl⟩
@@ -684,8 +695,9 @@ lemma partialGroupMeasure_mconv_dirac {s : T.G} {F : PlaceData ι T m} (h : l + 
       fun t ht g ↦ by
         simp only [avg, ← lintegral_mconv_dirac, ← dirac_mconv_dirac, ← mconv_assoc, hρ_right t ht]
     rw [lintegral_mconv_dirac, h_split, lintegral_mconv_symm (by fun_prop), lintegral_mconv_symm hf]
+    have h_avg : Measurable avg := (hf.comp measurable_mul).lintegral_prod_left' (μ := ρ)
     simpa only [avg, mul_assoc] using lintegral_floorMeasure_mul_right le_rfl h_inv
-      ⟨mem_partialUnitriangularGroup_of_mem_floorGroup hs, hs⟩
+      ⟨mem_partialUnitriangularGroup_of_mem_floorGroup hs, hs⟩ h_avg
 
 /-- The group measure, the convolution over all floors, is right invariant. -/
 instance isMulRightInvariant_groupMeasure : F.groupMeasure.IsMulRightInvariant where
@@ -727,7 +739,8 @@ lemma floorMeasure_ne_zero {F : PlaceData ι T m} (l : ℕ) : F.floorMeasure l �
     exact (Measure.map_ne_zero_iff h_map.aemeasurable).1 (h_map.map_eq ▸ h_quadric)
   · rw [floorMeasure_top]
     exact NeZero.ne F.measureH
-  · have h_dirac : F.floorMeasure l = dirac 1 := by grind [floorMeasure]
+  · have h_dirac : F.floorMeasure l = dirac 1 := by
+      rw [floorMeasure, ite_eq_right (by lia), ite_eq_right (by lia), ite_eq_right (by lia)]
     rw [h_dirac]
     exact dirac_ne_zero
 
