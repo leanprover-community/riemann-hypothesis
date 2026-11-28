@@ -277,11 +277,8 @@ lemma classSum_eq_relIndex_smul [H : HasFiniteType Γ K] [J : HasFiniteType Γ K
   set L : Subgroup G := K'.comap (conj a) with hL
   have h_finite : Finite (K ⧸ L.subgroupOf K) := Nat.finite_of_card_ne_zero
     (H.isCompact.relIndex_ne_zero (J.isOpen.preimage (continuous_conj a)))
-  have h_transporter (U : Subgroup G) [HasFiniteType Γ U] (g h : G) : ∃ T : Finset G,
-      (∀ γ : G, γ ∈ T ↔ γ ∈ Γ ∧ g⁻¹ * γ * h ∈ U) ∧
-      #T = if mk Γ U g = mk Γ U h then Nat.card (classAut Γ U g) else 0 :=
-    exists_transporter Γ injective_id (by simp) U g h
-  choose T hT card_T using h_transporter
+  choose T hT card_T using fun (U : Subgroup G) [HasFiniteType Γ U] ↦
+    exists_transporter Γ injective_id (by simp) U
   -- Sort `γ ∈ T K y (x * a)` by the coset `q` of `y⁻¹ * γ * (x * a) ∈ K`; as `L = a⁻¹ * K' * a`,
   -- the part belonging to `q` is `T K' (y * q.out * a⁻¹) x`.
   have h_split (x y : G) :
@@ -485,12 +482,10 @@ lemma New.card_filter_smul_eq_ite_card_classAut {G H X : Type*} [Group G] [Group
     #{γ ∈ T | a • e = γ • e} =
       if DoubleCoset.mk Δ L h = DoubleCoset.mk Δ L d then Nat.card (classAut Δ L h) else 0 := by
   -- These `γ` are the `a * ι δ` with `δ ∈ Δ` and `h⁻¹ * δ * d ∈ L`.
-  obtain ⟨s, mem_s, card_s⟩ : ∃ s : Finset H, (∀ δ : H, δ ∈ s ↔ δ ∈ Δ ∧ h⁻¹ * δ * d ∈ L) ∧
-      #s = if DoubleCoset.mk Δ L h = DoubleCoset.mk Δ L d then Nat.card (classAut Δ L h) else 0 :=
-    exists_transporter Δ injective_id (by simp) L h d
+  obtain ⟨s, mem_s, card_s⟩ := exists_transporter Δ injective_id (by simp) L h d
   have mem_s_iff (δ : H) : δ ∈ s ↔ a * ι δ ∈ T := by
     have h_eq : ι (h⁻¹ * δ * d) = k⁻¹ * (g⁻¹ * (a * ι δ) * ι d) := by simp [hh, mul_assoc]
-    simp only [mem_s, mem_T, hΔ, hL, Subgroup.mem_comap, h_eq,
+    simp only [mem_s, id_eq, mem_T, hΔ, hL, Subgroup.mem_comap, h_eq,
       K.mul_mem_cancel_left (inv_mem hk), Γ.mul_mem_cancel_left ha]
   have fibre_eq :
       {γ ∈ T | a • e = γ • e} = s.map ⟨fun δ ↦ a * ι δ, (mul_right_injective a).comp hι⟩ := by

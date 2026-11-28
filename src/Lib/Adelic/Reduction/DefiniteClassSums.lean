@@ -333,12 +333,7 @@ lemma integral_quotMeasure_eq_classSum {V : Space E n 1} {F : G E (1 : n → ℤ
     forall_mem_range.2 fun γ ↦ ⟨⟨V.ratEmbed γ, γ, rfl⟩, rfl⟩
   -- `T g h : Finset V.Γ` is the set of `γ` with `g⁻¹ * finPart γ * h ∈ K`; it has
   -- `#(classAut V.Γf K g)` elements if `g` and `h` lie in one class, and none otherwise.
-  have h_transporter : ∀ g h : Gf E n, ∃ T : Finset V.Γ,
-      (∀ γ : V.Γ, γ ∈ T ↔ finPart γ ∈ V.Γf ∧ g⁻¹ * finPart γ * h ∈ K) ∧
-      T.card = if DoubleCoset.mk V.Γf K g = DoubleCoset.mk V.Γf K h
-        then Nat.card (classAut V.Γf K g) else 0 :=
-    exists_transporter V.Γf h_inj h_surj K
-  choose T hT card_T using h_transporter
+  choose T hT card_T using exists_transporter V.Γf h_inj h_surj K
   let Φ (u : Gf E n) : G E (1 : n → ℤˣ) → W := (univ ×ˢ ((u * ·) '' K)).indicator F
   have h_int (u : Gf E n) : Integrable (Φ u) := by
     have h_compact :

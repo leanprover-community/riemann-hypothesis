@@ -271,12 +271,8 @@ lemma New.Space.isSampleTotal_twisted_trace {K L : Subgroup (Gf E n)} (σ : Gf E
   rintro φ T ⟨a, rfl, hT⟩
   -- the transporter `S J g h` is the finite set of rational `γ` with `g⁻¹ * j γ * h ∈ J` (`hS`);
   -- it has `#(classAut V.Γf J g)` elements if `Γ g J = Γ h J` and is empty otherwise (`h_card`)
-  have h_transporter (J : Subgroup (Gf E n)) [HasFiniteType V.Γf J] (g h : Gf E n) :
-      ∃ S : Finset (U V.J), (∀ γ : U V.J, γ ∈ S ↔ V.embFin γ ∈ V.Γf ∧ g⁻¹ * V.embFin γ * h ∈ J) ∧
-        #S = if DoubleCoset.mk V.Γf J g = DoubleCoset.mk V.Γf J h then
-          Nat.card (classAut V.Γf J g) else 0 :=
-    exists_transporter V.Γf Fact.out .rfl J g h
-  choose S hS h_card using h_transporter
+  choose S hS h_card using fun (J : Subgroup (Gf E n)) [HasFiniteType V.Γf J] ↦
+    exists_transporter (u := V.embFin) V.Γf Fact.out .rfl J
   let wt (i : DoubleCoset.Quotient V.Γf L) : ℂ := ((Nat.card (classAut V.Γf L i.out) : ℚ)⁻¹ : ℚ)
   -- `cosetFn L a` lives on finitely many cosets `q`, and each is met by finitely many `γ`
   have h_fin (x : Gf E n) :
