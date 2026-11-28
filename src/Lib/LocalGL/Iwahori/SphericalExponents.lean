@@ -110,7 +110,9 @@ lemma sum_by_last_nonzero_coord [CompactSpace 𝒪[F]] (a : Fin N → ℂ) (I : 
   have card_allowed (r : Fin N) : (#(allowed j r) : ℂ) =
       q * ((if r ∈ insert j I then 1 - q⁻¹ else 1) / if r ∈ Ioi j then q else 1) := by
     split_ifs with h_insert h_Ioi h_Ioi
-    · grind
+    · exact absurd (mem_Ioi.mp h_Ioi) (not_lt.mpr (by
+        rcases mem_insert.mp h_insert with rfl | hI
+        exacts [le_rfl, mem_Iic.mp ((mem_filter.mp hj).2.2 hI)]))
     · simp_all [q, allowed, mul_sub, ← card_subtype, NeZero.one_le, -mem_Ioi]
     · simp_all [q, allowed, ← card_subtype, -mem_Ioi]
     · simp_all [q, allowed, -mem_Ioi]
@@ -207,23 +209,40 @@ private lemma map_colVector_eq_sum
     -- with `p⁻¹ m r` and `p r m` units; `r < m` is excluded as `p⁻¹ ∈ blockParahoric (min m)`.
     have not_column : ¬∃ p, residueCol m p = c := fun ⟨p, hp⟩ ↦ by
       simp [← hp, residueCol, reduceParahoric, Subgroup.inclusion] at h_vanish
-      grind [exists_v_entry_eq_one_of_mem_intGL (mem_blockParahoric.mp p.property).left m,
-        mem_blockParahoric.mp (inv_mem p.property)]
-    grind [colVector_eq_zero_of_not_exists, sum_eq_zero]
+      obtain ⟨r, hr_inv, hr⟩ :=
+        exists_v_entry_eq_one_of_mem_intGL (mem_blockParahoric.mp p.property).1 m
+      rcases le_or_gt m r with hmr | hrm
+      · exact (h_vanish r hmr).ne hr
+      · exact ((mem_blockParahoric.mp (inv_mem p.property)).2 m r (by omega)).ne hr_inv
+    rw [colVector_eq_zero_of_not_exists not_column, map_zero, eq_comm]
+    exact sum_eq_zero fun j hj ↦
+      absurd (h_vanish j (mem_Ici.mp (mem_filter.mp hj).1)) (mem_filter.mp hj).2.1
   obtain ⟨c, rfl⟩ : ∃ c' : Fin N → 𝒪[F], residue _ ∘ c' = c := residue_surjective.comp_left c
   obtain ⟨j, hj, j_max⟩ := exists_maximal_of_wellFoundedGT _ h_vanish
   -- In terms of `v`: `c j` is a unit, and `j` is the last index `≥ m` with this property.
   simp only [Function.comp_apply, ne_eq, residue_eq_zero_iff_valuation_lt_one, not_lt] at hj j_max ⊢
   obtain ⟨hj_ge, hj_unit⟩ := hj
-  have h_below : ∀ r > j, v (c r : F) < 1 := by grind
+  have h_below : ∀ r > j, v (c r : F) < 1 := fun r hr ↦
+    by_contra fun h ↦ (j_max ⟨hj_ge.trans hr.le, not_lt.mp h⟩ hr.le).not_gt hr
   -- `c` is column `m` of `u * swap m j`, where `u` is the unit matrix with column `j` replaced
   -- by `c`, an element of the Iwahori group.
   obtain ⟨u, hu_mem, hu_val⟩ := exists_mem_blockParahoric_updateCol hj_unit h_below
   have column : residue _ ∘ c = residueCol m
-      (⟨u, by grind⟩ * ⟨_, permGL_swap_mem_blockParahoric_min hj_ge⟩) := by
-    simp [funext_iff, residueCol, reduceParahoric, hu_val, PEquiv.mul_toMatrix_toPEquiv]
-  rw [column, colVector_residueCol hx, sum_eq_single j (by grind) (by grind)]
-  simpa using hφ u hu_mem (ρ (permGL (swap m j)) x)
+      (⟨u, ⟨hu_mem.1, fun i r h ↦ hu_mem.2 i r (by omega)⟩⟩ *
+        ⟨_, permGL_swap_mem_blockParahoric_min hj_ge⟩) := by
+    simp [funext_iff, residueCol, reduceParahoric, Subgroup.inclusion, hu_val,
+      PEquiv.mul_toMatrix_toPEquiv]
+  rw [column, colVector_residueCol hx, sum_eq_single j]
+  · simpa using hφ u hu_mem (ρ (permGL (swap m j)) x)
+  · intro k hk hkj
+    obtain ⟨-, hk_unit, hk_max⟩ := by simpa [mem_filter] using hk
+    rcases lt_or_gt_of_ne hkj with hlt | hgt
+    · exact absurd hj_unit (hk_max j hlt).not_ge
+    · exact absurd (h_below k hgt) (not_lt_of_ge hk_unit)
+  · intro h_not
+    simp only [mem_filter, mem_Ici, not_and, not_forall, not_lt] at h_not
+    obtain ⟨r, hr, hru⟩ := h_not hj_ge hj_unit
+    exact absurd (h_below r hr) (not_lt_of_ge hru)
 
 /-- `blockParahoric (min m)` permutes the vectors `colVector m x c` through its action on the
 columns `c`. -/
@@ -255,13 +274,17 @@ private lemma apply_sum_colVector
   -- `(κ k *ᵥ c) i ≠ 0 ↔ c a ≠ 0`; the entry at `a` is not `0` since `κ k` is invertible.
   have entry (a : Fin N) (ha : a ∈ I) (c : Fin N → 𝓀[F]) :
       (reduceParahoric m k *ᵥ c) i = 0 ↔ c a = 0 := by
-    have h_entry_ne : reduceParahoric m k i a ≠ 0 := by
-      grind [(reduceParahoric m k).det_ne_zero, det_eq_zero_of_row_eq_zero i]
-    rw [mulVec, dotProduct, sum_eq_single a] <;> grind
+    have h_entry_ne : reduceParahoric m k i a ≠ 0 := fun h0 ↦
+      (reduceParahoric m k).det_ne_zero <| det_eq_zero_of_row_eq_zero i fun r ↦
+        if hr : r = a then hr ▸ h0 else h_row a ha r hr
+    rw [mulVec, dotProduct, sum_eq_single a (fun r _ hr ↦ by rw [h_row a ha r hr, zero_mul])
+      (fun h ↦ absurd (mem_univ a) h)]
+    exact mul_eq_zero.trans (or_iff_right h_entry_ne)
   simp only [map_sum, apply_colVector hx]
-  refine sum_equiv (reduceParahoric m k).toLin.toLinearEquiv ?_ fun _ _ ↦ rfl
-  simp
-  grind
+  refine sum_equiv (reduceParahoric m k).toLin.toLinearEquiv (fun c ↦ ?_) fun _ _ ↦ rfl
+  simp only [mem_filter, mem_univ, true_and, mem_image, forall_exists_index, and_imp,
+    forall_apply_eq_imp_iff₂]
+  exact forall₂_congr fun a ha ↦ (entry a ha c).not.symm
 
 /-- Let `F` be a field valued in `ℤᵐ⁰` with compact `𝒪[F]`, `ρ` a smooth representation of
 `GL_N(F)`, `φ : ρ →ₗ[ℂ] ℂ`, `m : Fin N`, `P = blockParahoric (min m)` (the `p` in `GL_N(𝒪)` with
@@ -293,9 +316,11 @@ lemma exists_compactMean_and_swap_eq_sum [IsSmoothRep ρ.ρ]
     simpa only [Y, map_sum, map_colVector_eq_sum hx hφ] using sum_by_last_nonzero_coord _ I
   refine ⟨Y ∅, Y {m}, mem_levelSpace.mpr fun k ↦ ?_, ?_, fun i hi ↦ ?_⟩
   · -- the group of level `update (min m) m N` lies in `P` and fixes `Y {m}`
-    have hk_mem : k.val ∈ blockParahoric (min m) := by grind
+    have hk_mem : k.val ∈ blockParahoric (min m) :=
+      ⟨k.2.1, fun i j hij ↦ k.2.2 i j (by simp only [update_apply]; split_ifs <;> omega)⟩
     have h_row (r : Fin N) (hr : r ≠ m) : reduceParahoric m ⟨k.val, hk_mem⟩ m r = 0 := by
-      have h_val : v (k.val m r) < 1 := by grind
+      have h_val : v (k.val m r) < 1 :=
+        k.2.2 m r (by simp only [update_apply, Fin.val_ne_of_ne hr, ↓reduceIte]; omega)
       simpa [reduceParahoric] using h_val
     simpa [Y] using apply_sum_colVector hx ⟨k.val, hk_mem⟩ {m} m (by simpa using h_row)
   · -- `Y ∅` is fixed by `P`, so the mean over `P` does not change it.
@@ -309,7 +334,10 @@ lemma exists_compactMean_and_swap_eq_sum [IsSmoothRep ρ.ρ]
       simp [s, reduceParahoric, hr.symm]
     have swap_Y : ρ (permGL (swap m i)) (Y {m}) = Y {i} := by
       simpa [Y, s] using apply_sum_colVector hx s {m} i (by simpa using h_row)
-    have indices : ({j | m ≤ j ∧ {i} ⊆ Iic j} : Finset (Fin N)) = Ici i := by grind
+    have indices : ({j | m ≤ j ∧ {i} ⊆ Iic j} : Finset (Fin N)) = Ici i := by
+      ext j
+      simp only [mem_filter, mem_univ, true_and, mem_Ici, singleton_subset_iff, mem_Iic]
+      exact ⟨And.right, fun h ↦ ⟨hi.trans h, h⟩⟩
     rw [swap_Y, φ_Y, indices, ← sum_Ioi_add_eq_sum_Ici, mul_sum]
     -- For `j > i` the set `{j, i}` has two elements, which gives one more factor `1 - q⁻¹`.
     congr! 2 with j hj
@@ -348,15 +376,28 @@ lemma exists_clear_first_row (hg : g ∈ blockParahoric (min 1)) :
   obtain ⟨hg_int, hg_below_small⟩ := mem_blockParahoric.mp hg
   have h_int (j : Fin N) : v (g⁻¹ 0 j) ≤ 1 := (v.mem_integer_iff _).mp (hg_int.isIntMatrix_inv 0 j)
   -- some `g⁻¹ 0 r` and `g r 0` are both units, and `g r 0` is not a unit for `r ≠ 0`
-  have h_unit : v (g⁻¹ 0 0) = 1 := by grind [exists_v_entry_eq_one_of_mem_intGL hg_int 0]
-  have h_ne : g⁻¹ 0 0 ≠ 0 := by grind [one_ne_zero]
+  have h_unit : v (g⁻¹ 0 0) = 1 := by
+    obtain ⟨r, hr_inv, hr⟩ := exists_v_entry_eq_one_of_mem_intGL hg_int 0
+    have hr0 : r = 0 := by_contra fun h ↦
+      (hg_below_small r 0 (by simp [Fin.pos_iff_ne_zero.mpr h])).ne hr
+    exact hr0 ▸ hr_inv
+  have h_ne : g⁻¹ 0 0 ≠ 0 := fun h ↦ by simp [h] at h_unit
   -- `u` is the identity with first row replaced by that of `g⁻¹`, scaled to have corner entry `1`
   let u : Matrix (Fin N) (Fin N) (LocField w) := updateRow 1 0 ((g⁻¹ 0 0)⁻¹ • g⁻¹ 0)
   have hu : IsUnit u.det := by simpa [u, ← cramer_transpose_apply] using h_ne
   refine ⟨.mk'' u hu, ?_, fun j hj ↦ ?_⟩
   · -- `-coe_units_inv` keeps the entries of `g⁻¹` in the form of `h_unit` and `h_int`
-    simp [u, mem_proIwahori, h_unit, Matrix.one_apply, apply_ite v, updateRow_apply, -coe_units_inv]
-    grind [one_pos, sub_self]
+    simp [u, mem_proIwahori, h_unit, Matrix.one_apply, apply_ite v, updateRow_apply,
+      -coe_units_inv]
+    refine ⟨fun i j ↦ ?_, fun i j hij ↦ ?_, fun i ↦ ?_⟩
+    · by_cases hi : i = 0
+      · simpa [hi, coe_units_inv] using h_int j
+      · simp only [hi, ↓reduceIte]; split_ifs <;> simp
+    · have hi0 : i ≠ 0 := ((Fin.zero_le j).trans_lt hij).ne'
+      simp [hi0, hij.ne']
+    · by_cases hi : i = 0
+      · simp [hi, -coe_units_inv, h_ne]
+      · simp [hi]
   · -- the first row of `u g` is a multiple of the first row of `g⁻¹ g = 1`
     simp [u, updateRow_mul, smul_vecMul, ← mul_apply_eq_vecMul, hj.symm]
 
@@ -380,7 +421,11 @@ lemma conj_diagGL_mulSingle_zero_mem_blockParahoric {ϖ : (LocField w)ˣ} (hϖ :
   have h_log_le (a b : Fin N) : m a b = 0 ∨
       (v (d b).val).log + (if min 1 (b : ℕ) < min 1 (a : ℕ) then 1 else 0) ≤
         (v (d a).val).log + if min 1 (b : ℕ) < min 1 (a : ℕ) then 1 else 0 := by
-    grind [Units.val_one, log_one, log_exp]
+    rcases eq_or_ne a 0 with rfl | ha <;> rcases eq_or_ne b 0 with rfl | hb
+    · exact Or.inr le_rfl
+    · exact Or.inl (h_row b hb)
+    · exact Or.inr (by simp [d, ha, hϖ, log_exp, log_one])
+    · exact Or.inr (by simp [d, ha, hb])
   simpa using (conj_monomial_mem_blockParahoric d 1 ⊤ ⟨hm, fun _ ↦ trivial⟩ h_log_le).left
 
 /-- For a uniformiser `ϖ` (`v ϖ = exp (-1)`) and `t = diag (ϖ, 1, …, 1)`, the Hecke operator of the
@@ -533,7 +578,8 @@ lemma New.IsExponent.eq_zero_of_apply_permGL_swap_eq_zero {F : Type*} [Field F] 
   | succ j ih =>
     by_contra h_ne
     have hmj : m ≤ j :=
-      le_of_not_gt fun h_lt ↦ h_ne (by simpa [← Perm.one_def] using h_swap m (by grind))
+      le_of_not_gt fun h_lt ↦
+        h_ne (by simpa [← Perm.one_def] using h_swap m (Fin.succ_le_castSucc_iff.mpr h_lt))
     -- Put `a i = (q - 1) q ^ i l_i x`. There are an average over `P` on which `l` is
     -- `∑_{i ≥ m} a i`, and a vector `z` fixed by the `p ∈ P` with row `m` in `𝔭` off the diagonal,
     -- with `l_i z = a i + (1 - 1 / q) ∑_{i' > i} a i'` for `i ≥ m`.
@@ -562,7 +608,9 @@ lemma New.IsExponent.eq_zero_of_apply_permGL_swap_eq_zero {F : Type*} [Field F] 
     have h_swap' (i : Fin N) (hi : j.castSucc ≤ i.castSucc) :
         l (ρ (permGL (Equiv.swap m i)) x') = 0 := by
       have h_beyond : ∑ i' > i, a i' = 0 :=
-        sum_eq_zero fun i' hi' ↦ by simp [a, h_swap i' (by grind)]
+        sum_eq_zero fun i' hi' ↦ by
+          simp [a, h_swap i' (Fin.succ_le_castSucc_iff.mpr
+            (lt_of_le_of_lt hi (mem_Ioi.mp hi')))]
       have hz_i : l (ρ (permGL (Equiv.swap m i)) z) = a i := by
         rw [hz_sum i (hmj.trans hi), h_beyond, mul_zero, zero_add]
       obtain rfl | h_lt : j = i ∨ j < i := j.eq_or_lt_of_le hi
@@ -581,7 +629,7 @@ lemma New.IsExponent.eq_zero_of_apply_permGL_swap_eq_zero {F : Type*} [Field F] 
       rw [h_shift, hz_m] at hx'_zero
       simp only [a, swap_self, ← Perm.one_def, map_one, one_apply_eq_self] at hx'_zero
       field_simp at hx'_zero
-      grind
+      rw [hx'_zero, mul_comm]
     simpa [h_root, hq, hq_lt.not_ge] using hθ_anti hmj
 
 /-- Let `l` be an exponent of the smooth representation `ρ` with character `torusChar θ`. That is,
@@ -608,7 +656,11 @@ lemma New.IsExponent.eq_zero_of_eq_zero_on_spherical {F : Type*} [Field F] [Valu
       l (ρ k z) = l z := by
     have hk_int : k ∈ intGL (Fin N) 𝒪[F] := (mem_blockParahoric.mp hk).left
     have h_val_diag (i : Fin N) : v (k i i) = 1 := by
-      grind [exists_v_entry_eq_one_of_mem_intGL hk_int i, inv_mem hk, one_pos]
+      obtain ⟨r, hr_inv, hr⟩ := exists_v_entry_eq_one_of_mem_intGL hk_int i
+      rcases lt_trichotomy r i with hlt | rfl | hgt
+      · exact absurd hr_inv ((mem_blockParahoric.mp (inv_mem hk)).2 i r (by simp [hlt])).ne
+      · exact hr
+      · exact absurd hr ((mem_blockParahoric.mp hk).2 r i (by simp [hgt])).ne
     have h_diag_ne (i : Fin N) : k i i ≠ 0 := fun h_zero ↦ by simpa [h_zero] using h_val_diag i
     let d (i : Fin N) : Fˣ := (Units.mk0 (k i i) (h_diag_ne i))⁻¹
     have h_dk_mem : diagGL d * k ∈ proIwahori := by
@@ -631,7 +683,12 @@ lemma New.IsExponent.eq_zero_of_eq_zero_on_spherical {F : Type*} [Field F] [Valu
       -- `blockParahoric (min (m + 1))`, so they fix the mean.
       refine hl.eq_zero_of_apply_permGL_swap_eq_zero hϖ hθ_anti h_invariant ih (.last N) _ ?_
         (by simp)
-      grind [New.apply_compactMean]
+      intro p hp hp_col
+      refine New.apply_compactMean (H := blockParahoric (min (m.succ : ℕ)))
+        ⟨hp.1, fun i j hij ↦ ?_⟩ y
+      rcases eq_or_ne j m with rfl | hj
+      · exact hp_col i (by rintro rfl; exact (hij.ne rfl).elim)
+      · exact hp.2 i j (by simp only [Fin.val_succ] at hij; omega)
   rw [← map_compactMean_of_const l fun k hk ↦ h_invariant k hk x]
   exact h_mean_eq_zero (Fin.last N) x
 
