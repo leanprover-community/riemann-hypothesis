@@ -262,7 +262,8 @@ end PeriodicFourier
 The estimate `New.exists_pow_mul_norm_fourier_le` is proved by induction on the order of decay, with
 one integration by parts at each step. Two lemmas prepare that step: a lower bound for the factor
 by which the integration by parts multiplies the Fourier transform, and the product rule for
-`g * exp (h / a)`.
+`g * exp (h / a)`. The base case is the trivial bound for the Fourier transform of a bounded
+function supported in a compact set, `New.norm_fourier_le_of_forall_notMem_eq_zero`.
 -/
 
 section NonstationaryPhase
@@ -291,6 +292,18 @@ lemma fderiv_mul_exp_div_apply {E : Type*} [NormedAddCommGroup E] [NormedSpace �
   rw [(hg.hasFDerivAt.fun_mul (hh.hasFDerivAt.mul_const a⁻¹).cexp).fderiv]
   simp [add_comm, mul_comm]
 
+/-- A function `f` on `ℂ^n` that vanishes off the compact set `K` and is bounded by `B` on `K` has
+Fourier transform of norm at most `B` times the volume of `K` at every point: the Fourier integral
+is an integral over `K` of a function of norm at most `B`. -/
+lemma New.norm_fourier_le_of_forall_notMem_eq_zero {n : Type} [Fintype n]
+    {K : Set (EuclideanSpace ℂ n)} (hK : IsCompact K) {f : EuclideanSpace ℂ n → ℂ} {B : ℝ}
+    (h_zero : ∀ x ∉ K, f x = 0) (h_bound : ∀ x ∈ K, ‖f x‖ ≤ B) (b : EuclideanSpace ℂ n) :
+    ‖𝓕 f b‖ ≤ B * volume.real K := by
+  rw [fourier_eq, ← setIntegral_eq_integral_of_forall_compl_eq_zero (s := K)
+    fun x hx ↦ by simp [h_zero x hx]]
+  exact norm_setIntegral_le_of_norm_le_const hK.measure_lt_top fun x hx ↦ by
+    simpa using h_bound x hx
+
 /-- Let `c` and `q` be smooth functions of a parameter `s : T` and a point `x : ℂ^n`, with
 `c (s, x) = 0` for `x` off the compact set `K`. For each `M` there is a `C` such that, for
 `‖s‖ ≤ 1`, `‖a‖ ≤ 1`, `a ≠ 0` and every bound `D` of `‖exp (q (s, ·) / a)‖` on `K`, the Fourier
@@ -311,12 +324,9 @@ lemma New.exists_pow_mul_norm_fourier_le {n T : Type} [Fintype n] [NormedAddComm
     obtain ⟨B, hB⟩ : ∃ B : ℝ, ∀ p ∈ Metric.closedBall (0 : T) 1 ×ˢ K, ‖c p‖ ≤ B :=
       ((isCompact_closedBall 0 1).prod hK).exists_bound_of_continuousOn hc.continuous.continuousOn
     refine ⟨B * volume.real K, fun b s a D hs ha_le ha_ne hD ↦ ?_⟩
-    have h_bound (x : EuclideanSpace ℂ n) (hx : x ∈ K) :
-        ‖𝐞 (-inner ℝ x b) • (c (s, x) * (q (s, x) / a).exp)‖ ≤ B * D := by
-      simpa using norm_mul_le_of_le (hB (s, x) ⟨mem_closedBall_zero_iff.2 hs, hx⟩) (hD x hx)
-    rw [fourier_eq, ← setIntegral_eq_integral_of_forall_compl_eq_zero (s := K)
-      fun x hx ↦ by simp [h_zero s x hx]]
-    simpa [mul_right_comm] using norm_setIntegral_le_of_norm_le_const hK.measure_lt_top h_bound
+    simpa [mul_right_comm] using norm_fourier_le_of_forall_notMem_eq_zero hK
+      (fun x hx ↦ by simp [h_zero s x hx])
+      (fun x hx ↦ norm_mul_le_of_le (hB (s, x) ⟨mem_closedBall_zero_iff.2 hs, hx⟩) (hD x hx)) b
   | succ M ih =>
     -- With `F = c · exp (q / a)` one has `a • (I • F + ∂_{v} F) = c' · exp (q / a)`; the new
     -- amplitude `c'` is smooth in `x` and in the parameters `(s, v, a)`, and vanishes off `K`.
