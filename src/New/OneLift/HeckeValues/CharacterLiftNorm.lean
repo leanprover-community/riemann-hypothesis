@@ -137,6 +137,7 @@ namespace New
 
 open Matrix Fintype ComplexConjugate MeasureTheory Fock Complex SiegelWeil Rows Finset MulAction
   Space Subgroup
+open TauCeti (qPochhammer)
 
 variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] (X : LValueData E n)
 
@@ -203,10 +204,10 @@ lemma LValueData.hasLiftHeckePolynomial_trivialLift [WeilData E] :
   intro w hw hw_off
   -- The constant `1` on `U(1)` has the polynomial `1 - Y`; transfer it along the theta lift.
   have h_one : HasHeckePolynomial (X.descentPair.W.formRep (typeKernel 0 X.descentPair.signs)) hw
-      (qPochhammer w.q (card Unit)) X.constForm :=
+      (qPochhammer · w.q (card Unit)) X.constForm :=
     hasHeckePolynomial_qPochhammer hw fun _ ↦ rfl
   have h_poly (Y : ℂ) :
-      heckePolyEval Unit w ((1 : FinPlace E → ℕ → ℂ) w) Y = qPochhammer w.q (card Unit) Y := by
+      heckePolyEval Unit w ((1 : FinPlace E → ℕ → ℂ) w) Y = qPochhammer Y w.q (card Unit) := by
     simp [heckePolyEval, sub_eq_add_neg, sum_range_succ]
   obtain ⟨h_fixed, h_hecke⟩ :=
     X.descentPair.hasHeckePolynomial_thetaLift X.fitsParams_descentPair hw hw_off h_one

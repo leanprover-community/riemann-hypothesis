@@ -74,6 +74,7 @@ namespace New
 section ThetaLift
 
 open Set MulChar Space stdLevel DescentPair
+open TauCeti (qPochhammer)
 
 variable {E r n : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n]
   [DecidableEq n] (O : DescentPair E r n)
@@ -173,7 +174,7 @@ lemma DescentPair.hasHeckePolynomial_thetaLift [Nonempty r]
     (hy : HasHeckePolynomial (O.W.formRep (typeKernel l O.signs)) hw p y) :
     HasHeckePolynomial (rightRegular ℂ (Gf E n) (WeylIndex n O.columnCount → ℂ)) hw
       (fun X : ℂ ↦
-        SiegelWeil.qPochhammer w.q O.rankDiff (O.charW.frobValue r w * X) *
+        qPochhammer (O.charW.frobValue r w * X) w.q O.rankDiff *
           p (w.q ^ O.rankDiff * O.charW.frobValue r w / O.charV.frobValue n w * X))
       ((O.thetaLift hfit y : O.FormV) : Gf E n → WeylIndex n O.columnCount → ℂ) := by
   -- At `w` both characters are unramified and the datum is the vacuum, so

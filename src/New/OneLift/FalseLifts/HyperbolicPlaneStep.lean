@@ -68,6 +68,7 @@ See `New.OneLift.FalseLifts.PeriodsOfFalseLifts` for related work.
 namespace New.SiegelWeil
 
 open Matrix MeasureTheory WeilData Exchange Space Splitting Finset Fintype Real G Fock
+open TauCeti (qPochhammer)
 
 variable {E r n m p : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r]
   [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] [Fintype p] [DecidableEq p] {s : r → ℤˣ}
@@ -98,8 +99,8 @@ lemma eq_zero_of_heckePolyOp_eq_zero {F : G E t → ℂ} {w : FinPlace E} {X : �
   -- The `q`-binomial theorem at the point `-‖X‖` computes the total weight.
   have h_weight : ∑ U : Submodule (ResField w) (m → ResField w), ‖heckePolyCoeff X U‖ < 2 :=
     calc _ = ∏ j ∈ range (card m), (1 + w.q ^ j * ‖X‖) := by
-          simpa [← Complex.ofReal_inj, heckePolyCoeff, card_ResField] using
-            q_binomial_submodule m (ResField w) ⊤ (-‖X‖)
+          simpa [← Complex.ofReal_inj, heckePolyCoeff, card_ResField, TauCeti.qPochhammer_def,
+            mul_comm] using q_binomial_submodule m (ResField w) ⊤ (-‖X‖)
       _ ≤ exp (∑ j ∈ range (card m), w.q ^ j * ‖X‖) := prod_one_add_le_exp_sum _ (by bound)
       _ ≤ exp (1 / 2) := by grw [← sum_mul, h_geom, h_half]
       _ < 2 := (lt_log_iff_exp_lt two_pos).1 (by linarith [log_two_gt_d9])
@@ -386,12 +387,13 @@ lemma norm_frobValue (χ : AutChar E) (m : Type) [Fintype m] (w : FinPlace E) :
 
 /-- The product `∏_{i<k} (1 - q^i X)` is not zero if `1 < q` and `q^k |X| ≤ 1`. -/
 lemma qPochhammer_ne_zero {q k : ℕ} {X : ℂ} (hq : 1 < q) (hX : q ^ k * ‖X‖ ≤ 1) :
-    qPochhammer q k X ≠ 0 := by
-  refine prod_ne_zero_iff.2 fun i hi h_zero ↦ ?_
+    qPochhammer X q k ≠ 0 := by
+  rw [Ne, TauCeti.qPochhammer_eq_zero_iff]
+  rintro ⟨i, hi, h_eq⟩
   -- A vanishing factor gives `q^i |X| = 1` with `i < k`, so `1 < q^k |X|`.
-  have h_one : (q : ℝ) ^ i * ‖X‖ = 1 := by simpa using congrArg norm (sub_eq_zero.1 h_zero).symm
+  have h_one : (q : ℝ) ^ i * ‖X‖ = 1 := by simpa [mul_comm] using congrArg norm h_eq
   have hX_pos : 0 < ‖X‖ := norm_pos_iff.2 fun hX_zero ↦ by simp [hX_zero] at h_one
-  have h_lt : (q : ℝ) ^ i < q ^ k := pow_lt_pow_right₀ (mod_cast hq) (mem_range.1 hi)
+  have h_lt : (q : ℝ) ^ i < q ^ k := pow_lt_pow_right₀ (mod_cast hq) hi
   linarith [mul_lt_mul_of_pos_right h_lt hX_pos]
 
 /-- Let the automorphic function `Y` be spherical at the split place `w` and killed by the Hecke
@@ -415,7 +417,7 @@ lemma lift_eq_zero_of_heckePolyOp_eq_zero (hY : V.IsAutomorphic Y) {w : FinPlace
   set F : G E t → ℂ := lift (pairThetaKer W' V χ 1).swap φ Y
   set X₀ : ℂ := χ.frobValue m (star w) * X with hX₀
   set X' : ℂ := w.q ^ k * χ.frobValue m (star w) / AutChar.frobValue 1 n (star w) * X with hX'
-  have h_hecke : qPochhammer w.q k X₀ • heckePolyOp (finRightRep E t) hw X' F = 0 := by
+  have h_hecke : qPochhammer X₀ w.q k • heckePolyOp (finRightRep E t) hw X' F = 0 := by
     rw [← h_transfer, hY_hecke]
     simp [lift, funext_iff]
   -- Both size conditions are written in powers of `√q`.
@@ -426,7 +428,7 @@ lemma lift_eq_zero_of_heckePolyOp_eq_zero (hY : V.IsAutomorphic Y) {w : FinPlace
     have h_ratio : √(w.q : ℝ) ^ (2 * k) * √w.q ^ card m / √w.q ^ (card m + k) = √w.q ^ k := by
       field
     simp [hX', norm_frobValue, h_sqrt, hk, h_ratio]
-  have h_factor : qPochhammer w.q k X₀ ≠ 0 := qPochhammer_ne_zero w.one_lt_q <| by
+  have h_factor : qPochhammer X₀ w.q k ≠ 0 := qPochhammer_ne_zero w.one_lt_q <| by
     rwa [h_norm₀, h_sqrt, ← mul_assoc, ← pow_add, add_comm]
   have h_small : w.q ^ (card m + 1) * ‖X'‖ ≤ 1 := by
     rwa [h_norm', h_sqrt, ← mul_assoc, ← pow_add]

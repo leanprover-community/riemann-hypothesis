@@ -47,6 +47,7 @@ See `New.Congruences.Selmer.ClassSums`.
 namespace New.Rows
 
 open Matrix Finset Fintype RingHom Space SiegelWeil Set
+open TauCeti (qPochhammer)
 
 attribute [local instance low] Fintype.ofFinite
 
@@ -251,8 +252,8 @@ lemma sum_heckePolyCoeff_smul_modDatum_eq_modDatum
   have h_local (x : Matrix n n (ResField v)) :
       ∏ l ∈ .range (card n - x.rank), (1 - v.q ^ l : ℂ) = ψ v x.det := by
     rw [hψ v hv, prod_range_corank_one_sub_q_pow]
-  simp only [hf, modDatum, integrated_schrodingerOp, qPochhammer, inv_mul_cancel₀ hX, mul_one,
-    h_local, liftFn_charOfTamePart_det_eq_residueDatum]
+  simp only [hf, modDatum, integrated_schrodingerOp, TauCeti.qPochhammer_def, inv_mul_cancel₀ hX,
+    one_mul, h_local, liftFn_charOfTamePart_det_eq_residueDatum]
   -- The functions put in by `schrodingerOp` at `v` and at `𝔪.places` join to one function at
   -- `𝔪'.places = {v} ∪ 𝔪.places`.
   rw [← residueDatum_singleton_mul hv h_places, h_places, ← Set.singleton_union]
@@ -269,7 +270,7 @@ lemma sum_heckePolyCoeff_smul_modDatum_eq_modDatum
 of `𝔪'` be those of `𝔪` and one new prime `v`, of norm `q`. Let `X` be the inverse of
 `α.frobValue n v`, which is the value at a uniformiser at `v` of the Hecke character `α.spaceChar N`
 times `q ^ (N/2)`, where `N = card n`. Then the period for `𝔪'` is `∏ l < N, (1 - q ^ l X)`, which
-is `qPochhammer q N X`, times the period for `𝔪`.
+is `qPochhammer X q N`, times the period for `𝔪`.
 
 The factor is the sum, over the subspaces `U` of `(O/v)^n`, of the coefficients
 `heckePolyCoeff X U`, evaluated by the q-binomial theorem. -/
@@ -277,7 +278,7 @@ lemma detPeriod_insert [h : α.HasWeight (fun τ : NumberField.InfinitePlace E �
     (hψ : ∀ w : FinPlace E, w ∉ 𝔪.places → ψ w = 1) (v : FinPlace E) (hv : v ∉ 𝔪.places)
     (h_places : 𝔪'.places = insert v 𝔪.places) :
     detPeriod n α c 𝔪' ψ =
-      qPochhammer v.q (Fintype.card n) (α.frobValue n v)⁻¹ * detPeriod n α c 𝔪 ψ := by
+      qPochhammer (α.frobValue n v)⁻¹ v.q (Fintype.card n) * detPeriod n α c 𝔪 ψ := by
   -- The datum for `𝔪'` is a combination of translates of that for `𝔪`, and a translate has the
   -- same period. The new prime `v` splits, as `𝔪'` is prime to its conjugate.
   have h_split : v.IsSplit := fun h_conj_eq ↦
@@ -305,7 +306,7 @@ lemma detPeriod_insert [h : α.HasWeight (fun τ : NumberField.InfinitePlace E �
     classIntegral_sum univ (fun U ↦ .mulLeft (heckePolyCoeff X U)) γ (fun _ ↦ h_smooth) h_kernel]
   -- The coefficients add up to the product by the `q`-binomial theorem.
   have h_coeff : ∑ U : Submodule (ResField v) (n → ResField v), heckePolyCoeff X U =
-      qPochhammer v.q (card n) X := by
+      qPochhammer X v.q (card n) := by
     simpa [← card_ResField] using q_binomial_submodule n (ResField v) ⊤ X
   simp [detPeriod, ← sum_mul, classIntegral_eq_classSum h_level, h_coeff, X]
 

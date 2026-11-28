@@ -529,8 +529,9 @@ lemma IsWeakChainDatum.exists_heckePolyOp_lift (H : IsWeakChainDatum ϑ Ψ)
       z ^ (D.t + 1) := by
     simp only [hq, n_succ, Nat.cast_pow]
     field
-  rw [h_frob, h_frob, h_scale]
-  simp [qPochhammer, map_prod, mul_assoc]
+  rw [h_frob, h_frob, h_scale, TauCeti.qPochhammer_def, map_prod]
+  congr 1
+  exact prod_congr rfl fun k _ ↦ by simp; ring
 
 /-- The Hecke polynomial at the split place `l` (`l` differs from `star l`), applied at `s * U` to a
 form `φ` on `X_e`, equals `∑ i ≤ D.n e, U ^ i • ((-s) ^ i * l.q ^ (i choose 2)) • T_{l,i} φ`. Here

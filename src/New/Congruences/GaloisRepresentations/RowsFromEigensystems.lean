@@ -239,23 +239,26 @@ variable {P : Parameters} {D : Data P}
 
 section DescentPair
 
+open TauCeti (qPochhammer)
+
 variable {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] {O : DescentPair D.E r n} {ℓ : ℕ}
   [ThePrime ℓ]
 
 omit [DecidableEq r] in
 /-- Let `r` and `n` be nonempty. Suppose that, for all `X`, the Hecke polynomial at `w` of rank `n`
-with eigenvalues `s` equals `qPochhammer q t (α X) = ∏_{l < t} (1 - q ^ l α X)` times the Hecke
+with eigenvalues `s` equals `qPochhammer (α X) q t = ∏_{l < t} (1 - α X q ^ l)` times the Hecke
 polynomial of rank `r` with eigenvalues `z` at `β X`, where `q` is the norm of `w`. Comparing the
 linear terms gives `s 1 = β z 1 + (∑_{i < t} q ^ i) α z 0`. -/
 lemma apply_one_eq_of_heckePolyEval_eq (r_pos : 0 < Fintype.card r) (n_pos : 0 < Fintype.card n)
     {w : FinPlace D.E} {s z : ℕ → ℂ} {t : ℕ} {α β : ℂ} (h_eq : ∀ X : ℂ,
-      heckePolyEval n w s X = qPochhammer w.q t (α * X) * heckePolyEval r w z (β * X)) :
+      heckePolyEval n w s X = qPochhammer (α * X) w.q t * heckePolyEval r w z (β * X)) :
     s 1 = β * z 1 + (∑ i ∈ Finset.range t, (w.q : ℂ) ^ i) * α * z 0 := by
   have deriv_eq : -deriv (fun X ↦ heckePolyEval n w s X) 0 = -deriv (fun X ↦
-      qPochhammer w.q t (α * X) * heckePolyEval r w z (β * X)) 0 := by rw [funext h_eq]
-  simp (disch := fun_prop) only [heckePolyEval, qPochhammer, smul_eq_mul, deriv_fun_mul,
+      qPochhammer (α * X) w.q t * heckePolyEval r w z (β * X)) 0 := by rw [funext h_eq]
+  simp (disch := fun_prop) only [heckePolyEval, TauCeti.qPochhammer_def, smul_eq_mul, deriv_fun_mul,
     deriv_fun_finsetProd, deriv_fun_sum, deriv_fun_pow] at deriv_eq
-  simpa [← sum_mul, zero_pow_eq, n_pos, r_pos, sum_range_succ'] using deriv_eq
+  simp [← mul_sum, zero_pow_eq, n_pos, r_pos, sum_range_succ'] at deriv_eq
+  linear_combination deriv_eq
 
 /-- Let `O` be a descent pair over the CM field `D.E` of the data `D`: two spaces of dimensions
 `r < n`, a character `μ = O.u1Char` of `U(1)` of weight `O.weight`, and chosen places
@@ -317,12 +320,12 @@ lemma neg_coeff_eq_of_hasLiftHeckePolynomial [DecidableEq n] (r_pos : 0 < Fintyp
   obtain ⟨-, poly_lift⟩ := hy_lifts w hw_split hw_off
   set ν : ℂ := V.charW.frobValue r w
   -- `y` is nonzero, so its Hecke polynomial at `w` is that of the lift of `b`
-  have hecke_eq (X : ℂ) : heckePolyEval n w s X = qPochhammer w.q V.rankDiff (ν * X) *
+  have hecke_eq (X : ℂ) : heckePolyEval n w s X = qPochhammer (ν * X) w.q V.rankDiff *
       heckePolyEval r w (b w) (w.q ^ V.rankDiff * ν / V.charV.frobValue n w * X) :=
     (smul_left_inj hy_ne).1 ((poly_s X).symm.trans (poly_lift X))
   have s_zero : s 0 = 1 := by simpa using ((isMonicOfDegree_iff _ _).1 monic).2
   have b_zero : b w 0 = 1 := by
-    simpa [heckePolyEval, qPochhammer, zero_pow_eq, s_zero] using (hecke_eq 0).symm
+    simpa [heckePolyEval, zero_pow_eq, s_zero] using (hecke_eq 0).symm
   have coeff_eq : -(heckePoly w.q (card n) s).coeff (card n - 1) = s 1 := by
     simp [Nat.sub_sub_self V.rank_lt.pos]
   rw [coeff_eq, apply_one_eq_of_heckePolyEval_eq r_pos V.rank_lt.pos hecke_eq, b_zero, mul_one]

@@ -66,6 +66,7 @@ noncomputable section
 namespace New
 
 open NumberField (InfinitePlace)
+open TauCeti (qPochhammer)
 
 /-!
 ## The lift and the descent
@@ -564,23 +565,20 @@ lemma DescentPair.heckePolyOnForms_liftHeckeRoot_eq_zero {O : DescentPair E r n}
     {z : FinPlace E → ℕ → ℂ} (h_lifts : O.HasLiftHeckePolynomial y z) :
     O.heckePolyOnForms hw hw_level (O.liftHeckeRoot w) y = 0 := by
   -- `O.heckePolyOnForms` acts on `y` by the value of its Hecke polynomial, and `O.liftHeckeRoot w`
-  -- is the zero of the last factor `1 - q ^ k * ν * X` of `SiegelWeil.qPochhammer`, where
-  -- `O.rankDiff = k + 1`.
+  -- is the zero of the last factor `1 - ν * X * q ^ k` of `qPochhammer (ν * X) q O.rankDiff`,
+  -- where `O.rankDiff = k + 1`.
   obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_lt O.rank_lt
-  have h_zero : SiegelWeil.qPochhammer w.q O.rankDiff (O.charW.frobValue r w * O.liftHeckeRoot w) =
-    0 := by
-    rw [SiegelWeil.qPochhammer, rankDiff, hk, add_assoc, Nat.add_sub_cancel_left,
-      Finset.prod_range_succ]
-    refine mul_eq_zero_of_right _ ?_
+  have h_rankDiff : O.rankDiff = k + 1 := by rw [rankDiff, hk, add_assoc, Nat.add_sub_cancel_left]
+  have h_zero : qPochhammer (O.charW.frobValue r w * O.liftHeckeRoot w) w.q O.rankDiff = 0 := by
+    refine TauCeti.qPochhammer_eq_zero_of_mul_pow_eq_one (i := k) (by omega) ?_
     have hq_pos : 0 < w.q := zero_lt_one.trans w.one_lt_q
     have hq : (w.q : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hq_pos.ne'
     have hsqrt : (Real.sqrt (w.q : ℝ) : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.2 (by exact_mod_cast hq_pos)).ne'
     have h_frob_ne : O.charW.frobValue r w ≠ 0 := by
       simp [AutChar.frobValue, HeckeChar.atUniformizer, hsqrt]
-    rw [liftHeckeRoot, rankDiff, hk, add_assoc, Nat.add_sub_cancel_left, Nat.add_sub_cancel,
-      ← mul_assoc, mul_comm ((w.q : ℂ) ^ k),
-      mul_inv_cancel₀ (mul_ne_zero h_frob_ne (pow_ne_zero k hq)), sub_self]
+    rw [liftHeckeRoot, h_rankDiff, Nat.add_sub_cancel, mul_right_comm,
+      mul_inv_cancel₀ (mul_ne_zero h_frob_ne (pow_ne_zero k hq))]
   rw [O.heckePolyOnForms_eq_smul _ _ (h_lifts w hw hw_level), h_zero, zero_mul, zero_smul]
 
 end DescentPairHecke

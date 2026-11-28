@@ -79,6 +79,7 @@ split place `w` with Hecke polynomial `P`. For a character `b` of `U(1)`, `hb.to
 namespace New
 
 open NumberField Space SiegelWeil Fintype
+open TauCeti (qPochhammer)
 
 variable {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
 
@@ -277,15 +278,15 @@ lemma exists_isSharp_of_two_mul_card_le {m : Type} [Fintype m] [DecidableEq m]
 omit [WeilData E] [DecidableEq n] in
 /-- Let `t` and `t'` give the Hecke polynomials at `w` of ranks `card n` and `card n + s`, the
 second of degree `card n + s`. Suppose that for all `X` their reciprocal polynomials `heckePolyEval`
-satisfy `R' X = R (μ * X) * qPochhammer w.q s (ν * X)` (`qPochhammer w.q s Y` is a product over
-`l < s` of factors linear in `q_w ^ l * Y`), where `R` is built from `t` and `R'` from `t'`, and let
+satisfy `R' X = R (μ * X) * qPochhammer (ν * X) w.q s` (`qPochhammer Y w.q s` is a product over
+`l < s` of factors linear in `Y * q_w ^ l`), where `R` is built from `t` and `R'` from `t'`, and let
 `μ * a = 1` and `θ l = q_w ^ l * ν * a` for `l < s`. Then the second Hecke polynomial, with its
 roots multiplied by `a`, is the first one times `∏ l < s, (X - θ l)`. -/
 private lemma scaleRoots_heckePoly_eq (w : FinPlace E) {s : ℕ} {t t' : ℕ → ℂ} {μ ν a : ℂ}
     (θ : Fin s → ℂ)
     (h_deg : (heckePoly w.q (card (Fin (card n + s))) t').natDegree = card (Fin (card n + s)))
     (h_eigval : ∀ X : ℂ, heckePolyEval (Fin (card n + s)) w t' X =
-      heckePolyEval n w t (μ * X) * qPochhammer w.q s (ν * X))
+      heckePolyEval n w t (μ * X) * qPochhammer (ν * X) w.q s)
     (h_scale : μ * a = 1) (h_root : ∀ l : Fin s, θ l = w.q ^ (l : ℕ) * ν * a) :
     (heckePoly w.q (card (Fin (card n + s))) t').scaleRoots a =
       heckePoly w.q (card n) t * ∏ l : Fin s, (X - C (θ l)) := by
@@ -297,8 +298,8 @@ private lemma scaleRoots_heckePoly_eq (w : FinPlace E) {s : ℕ} {t t' : ℕ →
   rw [eval_mul, eval_heckePoly w t hx, ← mul_div_cancel₀ x ha_ne, scaleRoots_eval_mul,
     eval_heckePoly w t' (div_ne_zero hx ha_ne), h_deg, ← mul_assoc,
     ← mul_pow, h_eigval, eval_prod, card_fin, pow_add, ← Fin.prod_const s, mul_mul_mul_comm,
-    qPochhammer, Finset.prod_range, ← Finset.prod_mul_distrib, mul_div_cancel₀ x ha_ne, inv_div,
-    mul_div_assoc', h_scale, one_div]
+    TauCeti.qPochhammer_def, Finset.prod_range, ← Finset.prod_mul_distrib, mul_div_cancel₀ x ha_ne,
+    inv_div, mul_div_assoc', h_scale, one_div]
   -- What is left is one linear factor for each `l < s`.
   exact congrArg _ (Finset.prod_congr rfl fun l _ ↦ by simp [h_root, field])
 
@@ -373,20 +374,20 @@ private lemma toAlgForm_formLift_ne_zero {κ κ' : InfinitePlace E → ℕ → �
 
 omit [DecidableEq n] in
 /-- Let `F ≠ 0` be a form of rank `card n + s` that is spherical at the split place `w`
-(`star w ≠ w`), and on which the Hecke polynomial operator at `X` acts by `qPochhammer w.q s
-(frobValue 1 n w * X) * heckePolyEval n w t (r * X)`, with `qPochhammer w.q s Y` a product over
-`l < s` of factors linear in `q_w ^ l * Y`, where `r = q_w ^ s * frobValue 1 n w / b.frobValue (Fin
-(card n + s)) w` and `b` is a character of `U(1)` of weight `c`. Then `F` has a Hecke polynomial `Q`
-at `w` (`HasHeckePolyAt`), and `Q` with its roots multiplied by the value at `w` of
-`hb.toAlgebraic s s` is `heckePoly w.q (card n) t` times `∏ l < s, (X - θ l)`, where `θ l` is the
-value at `w` of `hb.toAlgebraic (card n + s) (s - l)`. -/
+(`star w ≠ w`), and on which the Hecke polynomial operator at `X` acts by
+`qPochhammer (frobValue 1 n w * X) w.q s * heckePolyEval n w t (r * X)`, with `qPochhammer Y w.q s`
+a product over `l < s` of factors linear in `Y * q_w ^ l`, where
+`r = q_w ^ s * frobValue 1 n w / b.frobValue (Fin (card n + s)) w` and `b` is a character of `U(1)`
+of weight `c`. Then `F` has a Hecke polynomial `Q` at `w` (`HasHeckePolyAt`), and `Q` with its roots
+multiplied by the value at `w` of `hb.toAlgebraic s s` is `heckePoly w.q (card n) t` times
+`∏ l < s, (X - θ l)`, where `θ l` is the value at `w` of `hb.toAlgebraic (card n + s) (s - l)`. -/
 private lemma exists_hasHeckePolyAt_scaleRoots_eq {κ' : InfinitePlace E → ℕ → ℕ} {s : ℕ}
     {b : AutChar E} {c : InfinitePlace E → ℤ} (hb : b.HasWeight c 1) {w : FinPlace E}
     (hw : star w ≠ w) {t : ℕ → ℂ}
     {F : Gf E (Fin (card n + s)) → WeylIndex (Fin (card n + s)) κ' → ℂ} (hF_ne : F ≠ 0)
     (hF_sph : HasHeckePolynomial
       (rightRegular ℂ (Gf E (Fin (card n + s))) (WeylIndex (Fin (card n + s)) κ' → ℂ)) hw
-      (fun X : ℂ ↦ qPochhammer w.q s (frobValue 1 n w * X) *
+      (fun X : ℂ ↦ qPochhammer (frobValue 1 n w * X) w.q s *
         heckePolyEval n w t (w.q ^ s * frobValue 1 n w / b.frobValue (Fin (card n + s)) w * X))
       F) :
     ∃ Q : ℂ[X],
@@ -405,7 +406,7 @@ private lemma exists_hasHeckePolyAt_scaleRoots_eq {κ' : InfinitePlace E → ℕ
   -- Two expressions for the eigenvalue of the Hecke polynomial on `F ≠ 0`.
   have h_eigval (X : ℂ) : heckePolyEval (Fin (card n + s)) w t' X =
       heckePolyEval n w t (w.q ^ s * frobValue 1 n w / b.frobValue (Fin (card n + s)) w * X) *
-        qPochhammer w.q s (frobValue 1 n w * X) := by
+        qPochhammer (frobValue 1 n w * X) w.q s := by
     obtain ⟨-, hF_eigval'⟩ := hasHeckePolynomial_of_heckeSplit hF_spherical ht'
     rw [mul_comm, ← smul_left_inj hF_ne, ← hF_eigval X]
     exact (hF_eigval' X).symm
@@ -501,7 +502,7 @@ lemma exists_theta_lift_heckePoly [Nonempty n] {κ κ' : InfinitePlace E → ℕ
     (hasHeckePolynomial_toAlgForm_iff _ hl).mp (hasHeckePolynomial_of_heckeSplit h_sph ht)
   have hF_sph : HasHeckePolynomial
       (rightRegular ℂ (Gf E (Fin (card n + s))) (WeylIndex (Fin (card n + s)) κ' → ℂ)) hw
-      (fun X ↦ qPochhammer w.q s (frobValue 1 n w * X) *
+      (fun X ↦ qPochhammer (frobValue 1 n w * X) w.q s *
         heckePolyEval n w t (w.q ^ s * frobValue 1 n w / b.frobValue (Fin (card n + s)) w * X))
       F :=
     (hasHeckePolynomial_toAlgForm_iff _ hl').mpr <| hasHeckePolynomial_formLift (card_fin _)

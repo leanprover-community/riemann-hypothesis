@@ -89,6 +89,7 @@ Block 0 is the image of the embedding r ↪ n, block 1 the rest (`New.rangeParab
 section DescentPair
 
 open Matrix NumberField ComplexConjugate Fintype Subgroup Space WeilData Rows Sum
+open TauCeti (qPochhammer)
 
 section
 
@@ -419,7 +420,7 @@ the characters `O.charW`, `O.charV` in ranks r, n. -/
 def HasLiftHeckePolynomial (y : O.FormV) (z : FinPlace E → ℕ → ℂ) : Prop :=
   ∀ (w : FinPlace E) (hw : star w ≠ w), w ∉ O.places.conjClosure →
     HasHeckePolynomial (rightRegular ℂ (Gf E n) (WeylIndex n O.columnCount → ℂ)) hw
-      (fun T : ℂ ↦ SiegelWeil.qPochhammer w.q O.rankDiff (O.charW.frobValue r w * T) *
+      (fun T : ℂ ↦ qPochhammer (O.charW.frobValue r w * T) w.q O.rankDiff *
         heckePolyEval r w (z w) (w.q ^ O.rankDiff * O.charW.frobValue r w / O.charV.frobValue n w *
           T))
       y.val.val

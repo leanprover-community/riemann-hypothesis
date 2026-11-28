@@ -88,11 +88,10 @@ lemma New.Variety.cancels_moebius_of_factorsThrough_sup {E n : Type} {X : Type*}
         Finset.sum_congr rfl fun A _ ↦ by
           simp only [μ, heckePolyCoeff, Int.cast_mul, Int.cast_pow, Int.cast_neg, Int.cast_one,
             Int.cast_natCast, card_ResField]
-      rw [hcast, q_binomial_submodule, SiegelWeil.qPochhammer]
+      rw [hcast, q_binomial_submodule]
       have hpos : 0 < Module.finrank (ResField w) B :=
         pos_iff_ne_zero.mpr (mt Submodule.finrank_eq_zero.mp (ne_bot_of_le_ne_bot hW h))
-      exact (Finset.prod_eq_zero (i := 0) (Finset.mem_range.mpr hpos)
-        (by simp only [pow_zero, mul_one, sub_self])).symm
+      exact (TauCeti.qPochhammer_eq_zero_of_mul_pow_eq_one hpos (by simp)).symm
     · have hfilt : (Finset.univ.filter fun A : Submodule (ResField w) (n → ResField w) ↦
           A ⊔ W ∈ Finset.Iic B) = ∅ := by
         rw [Finset.filter_eq_empty_iff]

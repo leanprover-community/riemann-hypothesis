@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.Algebra.Ring.QPochhammer
 import TauCeti.LinearAlgebra.Submodule.CardFinrank
 public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.RingTheory.Polynomial.UniversalFactorizationRing
@@ -24,7 +25,7 @@ algebraic facts serve to extract values of Schur polynomials from vanishing line
 ## Main definitions and results
 
 * `New.q_binomial_submodule`: the sum of `New.heckePolyCoeff X U` over the subspaces `U` of `W` is
-  `New.SiegelWeil.qPochhammer q (dim W) X`.
+  the q-Pochhammer product `TauCeti.qPochhammer X q (dim W)`.
 * `New.Variety.genericSchur`, `New.Variety.rootCoeffEval`: the Schur polynomial in the coefficients,
   and evaluation at the coefficients of the monic polynomial with a given multiset of roots.
 * `New.Variety.rootCoeffEval_genericSchur_mul_det`: the value times the Vandermonde determinant is
@@ -54,12 +55,6 @@ open Finset Module Submodule
 -- Finite types of vectors and of subspaces are summed over through `Fintype.ofFinite`.
 attribute [local instance low] Fintype.ofFinite
 
-/-- The product of `1 - q ^ l * X` over `0 ≤ l < m`. For `q` the norm of a split place, it is the
-Hecke polynomial of the trivial representation in rank `m`. -/
-@[simp]
-noncomputable abbrev New.SiegelWeil.qPochhammer (q m : ℕ) (X : ℂ) : ℂ :=
-  ∏ l ∈ range m, (1 - (q : ℂ) ^ l * X)
-
 /-- The number `(-X) ^ d * q ^ (d choose 2)` attached to a subspace `U` of `k^n` of dimension `d`,
 where `q` is the number of elements of `k`. -/
 noncomputable abbrev New.heckePolyCoeff {n k : Type*} [Field k] (X : ℂ) (U : Submodule k (n → k)) :
@@ -69,15 +64,15 @@ noncomputable abbrev New.heckePolyCoeff {n k : Type*} [Field k] (X : ℂ) (U : S
 open scoped Classical in
 /-- The q-binomial theorem for subspaces: for a subspace `W` of `k^n`, with `n` finite and `k` a
 field with `q` elements, and for `X : ℂ`, the sum of `(-X) ^ dim U * q ^ (dim U choose 2)`
-(`heckePolyCoeff X U`) over the subspaces `U ≤ W` is `∏ l < dim W, (1 - q ^ l * X)`
-(`SiegelWeil.qPochhammer q (dim W) X`).
+(`heckePolyCoeff X U`) over the subspaces `U ≤ W` is `∏ l < dim W, (1 - X * q ^ l)`
+(`TauCeti.qPochhammer X q (dim W)`).
 
 A variant of the finite q-binomial theorem as in Macdonald, with a sum over subspaces in place of
 Gaussian binomial coefficients. -/
 lemma New.q_binomial_submodule (n k : Type*) [Finite n] [Field k] [Finite k]
     (W : Submodule k (n → k)) (X : ℂ) :
     ∑ U : Submodule k (n → k) with U ≤ W, heckePolyCoeff X U =
-      SiegelWeil.qPochhammer (Nat.card k) (finrank k W) X := by
+      TauCeti.qPochhammer X (Nat.card k) (finrank k W) := by
   let q := Fintype.card k
   let d := finrank k W
   let weight (j : ℕ) : ℂ := (-X) ^ j * (q : ℂ) ^ j.choose 2
@@ -97,9 +92,8 @@ lemma New.q_binomial_submodule (n k : Type*) [Finite n] [Field k] [Finite k]
     mem_range.mpr (Nat.lt_succ_of_le U.finrank_le)
   rw [subspaces, ← sum_fiberwise_of_maps_to' ranks weight]
   have product := TauCeti.prod_one_add_pow_mul_eq_sum_gaussianBinomial (q : ℂ) (-X) d
-  simp only [mul_neg, ← sub_eq_add_neg] at product
-  unfold SiegelWeil.qPochhammer
-  rw [Nat.card_eq_fintype_card, product]
+  simp only [mul_neg, ← sub_eq_add_neg, mul_comm _ X] at product
+  rw [TauCeti.qPochhammer_def, Nat.card_eq_fintype_card, product]
   apply sum_congr rfl
   intro j _
   rw [sum_const, nsmul_eq_mul, ← Fintype.card_subtype, ← Nat.card_eq_fintype_card,

@@ -653,6 +653,7 @@ section CuspidalVanishing
 
 open Finset Matrix Real Fintype ComplexOrder New WeilData Space Splitting AutChar HeckeChar
   SiegelWeil.Lagrangian G Complex
+open TauCeti (qPochhammer)
 
 /-- For a real `x > 1` and positive `p`, `k`, write `q = x * x`. The product of
 `∏ j < k, (1 + q ^ j * x ^ (2 * p))` and `∏ j < 2 * p, (1 + q ^ j * x ^ k)` is less than
@@ -689,10 +690,10 @@ variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [Decidable
 /-- The weight of the subspace `U` of `𝔽_w ^ n` in the Hecke operator at `w` that the Hecke transfer
 at `-1` gives on the side of `S`, for `S` of rank `2 * p` and `T` of rank `N = 2 * p + k`. Here
 `𝔽_w = ResField w` is the residue field, `w.q` is the norm of `w` and `υ.atUniformizer w` the value
-of the splitting character at a uniformiser. For `x ≥ 0`, `qPochhammer q k (-x)` has norm
+of the splitting character at a uniformiser. For `x ≥ 0`, `qPochhammer (-x) q k` has norm
 `∏ j < k, (1 + q ^ j * x)`, and `heckePolyCoeff y U = (-y) ^ dim U * q ^ (dim U choose 2)`. -/
 def New.SiegelWeil.transferWeight (p k N : ℕ) (U : Submodule (ResField w) (n → ResField w)) : ℂ :=
-  qPochhammer w.q k (-√w.q ^ (2 * p)) *
+  qPochhammer (-√w.q ^ (2 * p) : ℂ) w.q k *
     heckePolyCoeff (-(w.q ^ k * √w.q ^ (2 * p) / ((υ.atUniformizer w ^ N)⁻¹ * √w.q ^ N))) U
 
 /-- The point of the unitary group `G E s`, supported above the split place `w` (the inverse of the
@@ -705,14 +706,14 @@ def New.SiegelWeil.transferPoint (s : n → ℤˣ) (hw : w.IsSplit)
 /-- The Hecke transfer at `-1`. Let `S` have rank `2 * p` and `T` rank `2 * p + k`, let `f` be
 fixed by the projection on the vacua at the split place `w` of norm `q = w.q`, and let `Λ` be a
 functional invariant under the group of `T`. Then, in norm, `Λ (splitWeil S T (g, 1) f)` times
-`qPochhammer q (card m) (-1) = ∏ l < card m, (1 + q ^ l)` is the sum, over the subspaces `U` of
+`qPochhammer (-1) q (card m) = ∏ l < card m, (1 + q ^ l)` is the sum, over the subspaces `U` of
 `𝔽_w ^ n`, of the values of `Λ` at the translates by the points `transferPoint s hw U`, with the
 weights `transferWeight p k (card m) U`. -/
 lemma New.SiegelWeil.norm_qPochhammer_mul_norm_eq_norm_sum {p k : ℕ}
     (hn : Fintype.card n = 2 * p) (hk : Fintype.card m = 2 * p + k) (hw : w.IsSplit)
     {f : 𝒮 (S.hom T)} (hf : (S.hom T).projOn {w} f = f) {Λ : 𝒮 (S.hom T) →L[ℂ] ℂ}
     (hΛ : ∀ (h : G E t) (f : 𝒮 (S.hom T)), Λ (splitWeil S T (1, h) f) = Λ f) (g : G E s) :
-    ‖qPochhammer w.q (Fintype.card m) (-1)‖ * ‖Λ (splitWeil S T (g, 1) f)‖ =
+    ‖qPochhammer (-1 : ℂ) w.q (Fintype.card m)‖ * ‖Λ (splitWeil S T (g, 1) f)‖ =
       ‖∑ U : Submodule (ResField w) (n → ResField w), transferWeight p k (Fintype.card m) U *
         Λ (splitWeil S T (g * transferPoint s hw U, 1) f)‖ := by
   -- Apply the transfer to the matrix coefficients `g ↦ Λ (ω(g, 1) f)`. The group of `S` acts on
@@ -738,11 +739,11 @@ lemma New.SiegelWeil.norm_qPochhammer_mul_norm_eq_norm_sum {p k : ℕ}
   simpa [coeff, transferWeight, transferPoint, (hasHeckePolynomial_qPochhammer ..).2, mul_sum,
     ← mul_assoc] using h_norm
 
-/-- For `x ≥ 0`, the norm of `qPochhammer q k (-x)` is `∏ j < k, (1 + q ^ j * x)`. -/
+/-- For `x ≥ 0`, the norm of `qPochhammer (-x) q k` is `∏ j < k, (1 + q ^ j * x)`. -/
 lemma New.SiegelWeil.norm_qPochhammer_neg (q k : ℕ) {x : ℝ} (hx : 0 ≤ x) :
-    ‖qPochhammer q k (-x)‖ = ∏ j ∈ range k, (1 + (q : ℝ) ^ j * x) := by
+    ‖qPochhammer (-x : ℂ) q k‖ = ∏ j ∈ range k, (1 + (q : ℝ) ^ j * x) := by
   rw [← Real.norm_of_nonneg (prod_nonneg fun j _ ↦ by positivity), ← norm_real]
-  simp
+  simp [TauCeti.qPochhammer_def, mul_comm]
 
 omit [Fintype n] [DecidableEq n] in
 /-- The norm of the weight of `U` for `N = 2 * p + k`: with `x = √q`, `q = w.q` the norm of `w`, it
@@ -752,7 +753,7 @@ lemma New.SiegelWeil.norm_transferWeight (p k : ℕ) (U : Submodule (ResField w)
       (∏ j ∈ range k, (1 + (w.q : ℝ) ^ j * √w.q ^ (2 * p))) *
         ((√w.q ^ k) ^ Module.finrank (ResField w) U *
           (w.q : ℝ) ^ (Module.finrank (ResField w) U).choose 2) := by
-  have h_hecke : ‖qPochhammer w.q k (-√w.q ^ (2 * p))‖ =
+  have h_hecke : ‖qPochhammer (-√w.q ^ (2 * p) : ℂ) w.q k‖ =
       ∏ j ∈ range k, (1 + (w.q : ℝ) ^ j * √w.q ^ (2 * p)) := by
     simpa using norm_qPochhammer_neg w.q k (x := √w.q ^ (2 * p)) (by positivity)
   have hq_pos : 0 < √(w.q : ℝ) := zero_lt_one.trans (by simp [lt_sqrt])
@@ -765,21 +766,21 @@ lemma New.SiegelWeil.norm_transferWeight (p k : ℕ) (U : Submodule (ResField w)
 
 omit [DecidableEq n] in
 /-- If `card n = 2 * p`, `p` and `k` are positive and `N = 2 * p + k`, the total weight
-`∑ U, ‖transferWeight p k N U‖` is less than `‖qPochhammer w.q N (-1)‖ = ∏ l < N, (1 + q ^ l)`,
+`∑ U, ‖transferWeight p k N U‖` is less than `‖qPochhammer (-1) w.q N‖ = ∏ l < N, (1 + q ^ l)`,
 where `q = w.q` is the norm of the place `w`. -/
 lemma New.SiegelWeil.sum_norm_transferWeight_lt {p k N : ℕ} (hn : Fintype.card n = 2 * p)
     (hN : N = 2 * p + k) (hp : 0 < p) (hk : 0 < k) :
     ∑ U : Submodule (ResField w) (n → ResField w), ‖transferWeight p k N U‖ <
-      ‖qPochhammer w.q N (-1)‖ := by
+      ‖qPochhammer (-1 : ℂ) w.q N‖ := by
   -- The total weight is a product, by the `q`-binomial theorem, and so is the right side.
   -- With `x = √q` this is `prod_mul_prod_lt_prod_one_add_pow`.
   have binomial : ∑ U : Submodule (ResField w) (n → ResField w),
       (√w.q ^ k) ^ Module.finrank (ResField w) U *
         (w.q : ℝ) ^ (Module.finrank (ResField w) U).choose 2 =
       ∏ j ∈ range (2 * p), (1 + (w.q : ℝ) ^ j * √w.q ^ k) := by
-    simpa [← Complex.ofReal_inj, heckePolyCoeff, hn, card_ResField] using
-      q_binomial_submodule n (ResField w) ⊤ (-√w.q ^ k)
-  have h_right : ‖qPochhammer w.q (2 * p + k) (-1)‖ =
+    simpa [← Complex.ofReal_inj, heckePolyCoeff, hn, card_ResField, TauCeti.qPochhammer_def,
+      mul_comm] using q_binomial_submodule n (ResField w) ⊤ (-√w.q ^ k)
+  have h_right : ‖qPochhammer (-1 : ℂ) w.q (2 * p + k)‖ =
       ∏ j ∈ range (2 * p + k), (1 + (w.q : ℝ) ^ j) := by
     simpa using norm_qPochhammer_neg w.q (2 * p + k) zero_le_one
   have hq : 1 < √(w.q : ℝ) := by simp [lt_sqrt]
@@ -895,7 +896,7 @@ lemma New.SiegelWeil.sum_norm_mul_norm_zeroTerm_le (p k : ℕ) (hw : w.IsSplit) 
   -- `r U ≥ 0`.
   obtain ⟨v, r, hr⟩ := exists_zeroTerm_transferPoint_eq (T := T) hw L g
   -- The weight of `U` is a constant `c`, times a real number `a U ≥ 0`, times the phase in `hr`.
-  let c : ℂ := qPochhammer w.q k (-√w.q ^ (2 * p))
+  let c : ℂ := qPochhammer (-√w.q ^ (2 * p) : ℂ) w.q k
   let a (U : Submodule (ResField w) (n → ResField w)) : ℝ :=
     (w.q ^ k * √w.q ^ (2 * p) / √w.q ^ Fintype.card m) ^ Module.finrank (ResField w) U *
       Nat.card (ResField w) ^ (Module.finrank (ResField w) U).choose 2
@@ -964,7 +965,7 @@ lemma New.SiegelWeil.eq_zero_of_le_tsum_zeroTerm {E n m : Type} {p : ℕ} [Field
   let σ (g : G E s) : ℝ :=
     ∑' L : Lagrangian S, ‖L.zeroTerm T (splitWeil S T (g, 1) (vacElem (S.hom T)))‖
   have super (g : G E s) :
-      ∑ U, ‖c U‖ * σ (g * γ U) ≤ ‖qPochhammer w.q (card m) (-1)‖ * σ g := by
+      ∑ U, ‖c U‖ * σ (g * γ U) ≤ ‖qPochhammer (-1 : ℂ) w.q (card m)‖ * σ g := by
     refine hasSum_le (fun L ↦ ?_) (hasSum_sum fun U _ ↦ (h_summable _).norm.hasSum.mul_left _)
       ((h_summable _).norm.hasSum.mul_left _)
     have invariant (h : G E t) (f : 𝒮 (S.hom T)) :

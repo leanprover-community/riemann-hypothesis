@@ -19,8 +19,8 @@ Let `w` be a split place of norm q, let S and T be hermitian spaces of ranks n a
 the characters `a`, `b` be unramified at `w`. On the vacuum at `w` of the Weil representation
 `New.pairWeil S T a b`, the Hecke operators of S and of T count subspaces of the kernels of an
 integral matrix and of its transpose modulo `w`. By the q-binomial theorem the Hecke polynomial for
-T at `w` is then the rescaled polynomial for S at w̄ times ∏_{l<k}(1 − q^l X), which is
-`New.SiegelWeil.qPochhammer q k X`. This identity passes to theta lifts.
+T at `w` is then the rescaled polynomial for S at w̄ times ∏_{l<k}(1 − X q^l), which is the
+q-Pochhammer product `TauCeti.qPochhammer X q k`. This identity passes to theta lifts.
 
 ## Main definitions and results
 
@@ -85,6 +85,7 @@ namespace New
 
 open Matrix Fintype WeilData AutChar HeckeChar Valued Space G CharUnramifiedAt
 open Finset hiding card
+open TauCeti (qPochhammer)
 
 section Transfer
 
@@ -170,17 +171,11 @@ namespace SiegelWeil
 
 /-! ### The Hecke polynomials on the vacuum -/
 
-/-- The product of `1 - q ^ j * X` over `j < k + l` splits into the first `k` factors and the
-product of length `l` at `q ^ k * X`. -/
-lemma qPochhammer_add (q k l : ℕ) (X : ℂ) :
-    qPochhammer q (k + l) X = qPochhammer q k X * qPochhammer q l ((q : ℂ) ^ k * X) := by
-  simp only [qPochhammer, prod_range_add, pow_add, mul_assoc, mul_left_comm ((q : ℂ) ^ k)]
-
 open Classical in
 /-- The `q`-binomial theorem weighted by integrality at `w`. Let `y` be a matrix over `E_w` with
 columns indexed by `ι₂`, `c : ℂ`, and `γ_U = basicCosetRep U`. The sum over the subspaces `U` of
 `𝔽_w^ι₂` of `heckePolyCoeff X U * c ^ dim U` times the indicator that `y γ_U⁻¹` is integral is
-`qPochhammer q (card ι₂ - r) (X * c)` times the indicator that `y` is integral, where `r` is the
+`qPochhammer (X * c) q (card ι₂ - r)` times the indicator that `y` is integral, where `r` is the
 rank of `y` modulo `w`. -/
 private lemma sum_heckePolyCoeff_mul_ite_integral_eq {ι₁ ι₂ : Type} [Fintype ι₂] [DecidableEq ι₂]
     (X c : ℂ) (y : Matrix ι₁ ι₂ (LocField w)) :
@@ -188,7 +183,7 @@ private lemma sum_heckePolyCoeff_mul_ite_integral_eq {ι₁ ι₂ : Type} [Finty
         heckePolyCoeff X U * (c ^ Module.finrank (ResField w) U *
           if ∀ (i : ι₁) (j : ι₂), v ((y * (basicCosetRep U)⁻¹.val) i j) ≤ 1 then 1 else 0) =
       if ∀ (i : ι₁) (j : ι₂), v (y i j) ≤ 1 then
-        qPochhammer w.q (card ι₂ - (y.map residueOrZero).rank) (X * c) else 0 := by
+        qPochhammer (X * c) w.q (card ι₂ - (y.map residueOrZero).rank) else 0 := by
   -- Only the subspaces `U` of the kernel of `y` modulo `w` contribute, and only for integral `y`.
   have h_integral (U : Submodule (ResField w) (ι₂ → ResField w)) :
       (∀ (i : ι₁) (j : ι₂), v ((y * (basicCosetRep U)⁻¹.val) i j) ≤ 1) ↔
@@ -196,7 +191,7 @@ private lemma sum_heckePolyCoeff_mul_ite_integral_eq {ι₁ ι₂ : Type} [Finty
     rw [v_mul_inv_le_one_iff (basicCosetRep_mem_basicDoubleCoset U), residueKer_basicCosetRep U]
   have h_binom : ∑ U : Submodule (ResField w) (ι₂ → ResField w) with U ≤ residueKer y,
       heckePolyCoeff (X * c) U =
-        qPochhammer w.q (card ι₂ - (y.map residueOrZero).rank) (X * c) := by
+        qPochhammer (X * c) w.q (card ι₂ - (y.map residueOrZero).rank) := by
     rw [q_binomial_submodule, card_ResField, ← finrank_ker_mulVecLin]
   conv_rhs => rw [← mul_boole]
   simp only [h_integral, ← mul_assoc, heckePolyCoeff_mul_pow]
@@ -319,7 +314,7 @@ lemma sum_heckePolyCoeff_smul_pairWeil
     let segmentDatum (d : ℕ) (c : ℂ) : 𝒮 (S.hom T) :=
       schrodingerOp (S.hom T) {w}
         (residueDatum (fun () ↦ w) fun x : Unit → Matrix m n (ResField w) ↦
-          qPochhammer w.q (d - (x ()).rank) (X * c)) f
+          qPochhammer (X * c) w.q (d - (x ()).rank)) f
     ∑ U : Submodule (ResField w) (m → ResField w),
         heckePolyCoeff X U •
           pairWeil S T a b ((1, 1), 1, ofSplitPlace hw (transposeGL (basicCosetRep U))) f =
@@ -332,9 +327,9 @@ lemma sum_heckePolyCoeff_smul_pairWeil
   -- subspaces `U` is the `q`-binomial theorem, for the matrix `loc x` or its transpose.
   let loc (x : m × n → 𝔸f E) : Matrix m n (LocField w) := (vecToMatrix x).map (evalAt w)
   have h_dat (d : ℕ) (c : ℂ) :
-      residueDatum (fun () ↦ w) (fun x ↦ qPochhammer w.q (d - (x ()).rank) (X * c)) =
+      residueDatum (fun () ↦ w) (fun x ↦ qPochhammer (X * c) w.q (d - (x ()).rank)) =
         fun x ↦ if ∀ (i : m) (j : n), v (loc x i j) ≤ 1 then
-          qPochhammer w.q (d - ((loc x).map residueOrZero).rank) (X * c) else 0 := by
+          qPochhammer (X * c) w.q (d - ((loc x).map residueOrZero).rank) else 0 := by
     ext x
     simp [residueDatum, loc, vecToMatrix, ← evalAt_apply, mem_LocInt]
   simp only [pairWeil_transposeGL_basicCosetRep ha hw hf, pairWeil_basicCosetRep_inv hb hw hf,
@@ -361,7 +356,7 @@ lemma sum_heckePolyCoeff_smul_pairWeil_transposeGL
           pairWeil S T a b ((1, 1), 1, ofSplitPlace hw (transposeGL (basicCosetRep U))) f =
       schrodingerOp (S.hom T) {w}
         (residueDatum (fun () ↦ w) fun x : Unit → Matrix m n (ResField w) ↦
-          qPochhammer w.q (card m - (x ()).rank) (X * a.frobValue n w))
+          qPochhammer (X * a.frobValue n w) w.q (card m - (x ()).rank))
         f :=
   (sum_heckePolyCoeff_smul_pairWeil ha hb hw hf X).left
 
@@ -378,7 +373,7 @@ lemma sum_heckePolyCoeff_smul_pairWeil_inv
         heckePolyCoeff X U • pairWeil S T a b ((1, ofSplitPlace hw (basicCosetRep U)⁻¹), 1, 1) f =
       schrodingerOp (S.hom T) {w}
         (residueDatum (fun () ↦ w) fun x : Unit → Matrix m n (ResField w) ↦
-          qPochhammer w.q (card n - (x ()).rank) (X * b.frobValue m w))
+          qPochhammer (X * b.frobValue m w) w.q (card n - (x ()).rank))
         f :=
   (sum_heckePolyCoeff_smul_pairWeil ha hb hw hf X).right
 
@@ -419,7 +414,7 @@ lemma heckePolyOp_pairWeilTarget (hk : card m = card n + k)
     f ∈ sphericalAt (pairWeilTarget S T a b) w ∧
     ∀ X : ℂ,
       heckePolyOp (pairWeilTarget S T a b) hw (X / a.frobValue n w) f =
-        qPochhammer w.q k X •
+        qPochhammer X w.q k •
           heckePolyOp (pairWeilSource S T a b) hw.star (w.q ^ k * X / b.frobValue m w) f := by
   -- The maximal compact groups fix the vacuum, as the characters are unramified.
   have ⟨source_sph, target_sph⟩ : f ∈ sphericalAt (pairWeilSource S T a b) w ∧
@@ -431,7 +426,7 @@ lemma heckePolyOp_pairWeilTarget (hk : card m = card n + k)
   let N (d : ℕ) (Y : ℂ) : 𝒮 (S.hom T) :=
     schrodingerOp (S.hom T) {w}
       (residueDatum (fun () ↦ w) fun x : Unit → Matrix m n (ResField w) ↦
-        qPochhammer w.q (d - (x ()).rank) Y) f
+        qPochhammer Y w.q (d - (x ()).rank)) f
   have hT (Y : ℂ) :
       heckePolyOp (pairWeilTarget S T a b) hw Y f = N (card m) (Y * a.frobValue n w) :=
     (heckePolyOp_eq_sum hw target_sph Y).left.trans
@@ -442,9 +437,10 @@ lemma heckePolyOp_pairWeilTarget (hk : card m = card n + k)
       (sum_heckePolyCoeff_smul_pairWeil_inv ha hb hw hf Y)
   -- Modulo `w`, the kernel of `xᵀ` has `k` dimensions more than the kernel of `x`.
   have h_split (x : Matrix m n (ResField w)) :
-      qPochhammer w.q (card m - x.rank) X =
-        qPochhammer w.q k X * qPochhammer w.q (card n - x.rank) (w.q ^ k * X) := by
-    rw [hk, add_comm (card n), Nat.add_sub_assoc x.rank_le_card_width, qPochhammer_add]
+      qPochhammer X w.q (card m - x.rank) =
+        qPochhammer X w.q k * qPochhammer (w.q ^ k * X) w.q (card n - x.rank) := by
+    rw [hk, add_comm (card n), Nat.add_sub_assoc x.rank_le_card_width, TauCeti.qPochhammer_add,
+      mul_comm X]
   have hα_ne : a.frobValue n w ≠ 0 := by simp [frobValue, atUniformizer, w.ne_bot]
   have hβ_ne : b.frobValue m w ≠ 0 := by simp [frobValue, atUniformizer, w.ne_bot]
   rw [hT, hS, div_mul_cancel₀ X hα_ne, div_mul_cancel₀ (w.q ^ k * X) hβ_ne, smul_schrodingerOp]
@@ -468,7 +464,7 @@ lemma hecke_transfer_of_equivariant (hk : card m = card n + k)
     Λ f ∈ sphericalAt ρ w ∧
     ∀ X : ℂ,
       heckePolyOp ρ hw X (Λ f) =
-        qPochhammer w.q k (a.frobValue n w * X) •
+        qPochhammer (a.frobValue n w * X) w.q k •
           heckePolyOp π hw.star (w.q ^ k * a.frobValue n w / b.frobValue m w * X) (Λ f) := by
   -- Apply `Λ` to the identities of `heckePolyOp_pairWeilTarget` for the vacuum.
   obtain ⟨source_sph, target_sph, h_vacuum⟩ := heckePolyOp_pairWeilTarget hk ha hb hw hf
@@ -505,7 +501,7 @@ lemma hecke_transfer_of_pairing (hk : card m = card n + k)
     B ⟨f, hfM⟩ v ∈ sphericalAt ρ w ∧
     ∀ X : ℂ,
       heckePolyOp ρ hw X (B ⟨f, hfM⟩ v) =
-        qPochhammer w.q k (a.frobValue n w * X) •
+        qPochhammer (a.frobValue n w * X) w.q k •
           B ⟨f, hfM⟩ (heckePolyOp π hw (w.q ^ k * a.frobValue n w / b.frobValue m w * X) v) := by
   -- The Hecke operators of `T` on `B f v`, and those of `S` on `v`, move to the datum `f`, the
   -- latter from `w` to `w̄`; there the identity for the vacuum applies. As `hB` is known only at
@@ -523,7 +519,7 @@ lemma hecke_transfer_of_pairing (hk : card m = card n + k)
   obtain ⟨π_sph, ρ_sph, h_hecke⟩ :
       B f ∈ sphericalAt (π.linHom 1) w ∧ B f ∈ sphericalAt (Representation.linHom 1 ρ) w ∧
         ∀ X : ℂ, heckePolyOp (Representation.linHom 1 ρ) hw X (B f) =
-          qPochhammer w.q k (a.frobValue n w * X) •
+          qPochhammer (a.frobValue n w * X) w.q k •
             heckePolyOp (π.linHom 1) hw.star (w.q ^ k * a.frobValue n w / b.frobValue m w * X)
               (B f) :=
     hecke_transfer_of_equivariant hk ha hb hw hf B (π.linHom 1) (Representation.linHom 1 ρ) h_equiv
@@ -536,7 +532,7 @@ lemma hecke_transfer_of_pairing (hk : card m = card n + k)
   calc heckePolyOp ρ hw X (B f v)
       = heckePolyOp (Representation.linHom 1 ρ) hw X (B f) v :=
         (map_heckePolyOp (LinearMap.applyₗ v) X (by simp)).symm
-    _ = qPochhammer w.q k (a.frobValue n w * X) •
+    _ = qPochhammer (a.frobValue n w * X) w.q k •
           B f (heckePolyOp π hw (w.q ^ k * a.frobValue n w / b.frobValue m w * X) v) := by
       rw [h_hecke, LinearMap.smul_apply, h_adjoint]
 
@@ -557,7 +553,7 @@ lemma lift_swap_heckePolyOp (hk : card m = card n + k) (hw : w.IsSplit)
     lift (pairThetaKer S T a b).swap f y ∈ sphericalAt (finRightRep E s) w ∧
     ∀ X : ℂ,
       lift (pairThetaKer S T a b).swap f (heckePolyOp (finRightRep E t) hw X y) =
-        qPochhammer w.q k (a.frobValue n (star w) * X) •
+        qPochhammer (a.frobValue n (star w) * X) w.q k •
           heckePolyOp (finRightRep E s) hw
             (w.q ^ k * a.frobValue n (star w) / b.frobValue m (star w) * X)
             (lift (pairThetaKer S T a b).swap f y) := by
@@ -592,7 +588,7 @@ lemma lift_swap_heckePolyOp (hk : card m = card n + k) (hw : w.IsSplit)
       heckePolyOp (ρ.linHom 1) hw.star X (Θ.liftBilin f) y :=
     heckePolyOp_adjoint hw .applyₗ hy_sph' h_target (by simp) X
   have h_vacuum : heckePolyOp (ρ.linHom 1) hw.star X (Θ.liftBilin f) =
-      qPochhammer w.q k (a.frobValue n (star w) * X) •
+      qPochhammer (a.frobValue n (star w) * X) w.q k •
         heckePolyOp (Representation.linHom 1 (finRightRep E s)) hw X' (Θ.liftBilin f) := by
     simpa [X'] using h_transfer X
   -- Evaluation at `y` commutes with the action of the group of `S` on the values.
@@ -601,7 +597,7 @@ lemma lift_swap_heckePolyOp (hk : card m = card n + k) (hw : w.IsSplit)
     map_heckePolyOp (.applyₗ y) X' (by simp)
   rw [h_coe]
   change Θ.liftBilin f (heckePolyOp ρ hw X y) =
-    qPochhammer w.q k (a.frobValue n (star w) * X) •
+    qPochhammer (a.frobValue n (star w) * X) w.q k •
       heckePolyOp (finRightRep E s) hw X' (Θ.liftBilin f y)
   rw [h_adjoint, h_vacuum, LinearMap.smul_apply, h_eval]
 
@@ -623,7 +619,7 @@ lemma hasHeckePolynomial_of_pairing (hk : card m = card n + k)
     {v : W} (hv : HasHeckePolynomial π hw p v) :
     HasHeckePolynomial ρ hw
       (fun X : ℂ ↦
-        qPochhammer w.q k (a.frobValue n w * X) *
+        qPochhammer (a.frobValue n w * X) w.q k *
           p (w.q ^ k * a.frobValue n w / b.frobValue m w * X))
       (B ⟨f, hfM⟩ v) := by
   obtain ⟨hv_sph, hv_hecke⟩ := hv
@@ -644,7 +640,7 @@ lemma hasHeckePolynomial_formLift (hk : card m = card n + k)
     (hA : IsArrow (pairThetaKer S T a b) e e' f) (hy : HasHeckePolynomial (S.formRep e) hw p y) :
     HasHeckePolynomial (T.formRep e') hw
       (fun X : ℂ ↦
-        qPochhammer w.q k (a.frobValue n w * X) *
+        qPochhammer (a.frobValue n w * X) w.q k *
           p (w.q ^ k * a.frobValue n w / b.frobValue m w * X))
       (formLift (pairThetaKer S T a b) e e' f y) := by
   -- The theta lift is a pairing defined on all data, invariant by `IsArrow.formRep_formLift`.
@@ -664,7 +660,7 @@ lemma SiegelWeil.hasHeckePolynomial_of_apply_eq_smul_det (hw : w.IsSplit) {s : n
     {ρ : AutChar E} (hρ : CharUnramifiedAt ρ.baseChange.finPart w) {v : W}
     (hv : ∀ g : Gf E n, π g v = (ρ.val (detFin s g) : ℂ) • v) :
     HasHeckePolynomial π hw
-      (fun X : ℂ ↦ qPochhammer w.q (card n) (ρ.baseChange.atUniformizer w * X)) v := by
+      (fun X : ℂ ↦ qPochhammer (ρ.baseChange.atUniformizer w * X) w.q (card n)) v := by
   -- The coset representative of `U` scales `v` by `c ^ dim U`, so the Hecke polynomial at `X` acts
   -- by the sum of its coefficients at `c * X`, which the `q`-binomial theorem evaluates.
   set c : ℂ := ρ.baseChange.atUniformizer w
@@ -684,7 +680,7 @@ lemma SiegelWeil.hasHeckePolynomial_of_apply_eq_smul_det (hw : w.IsSplit) {s : n
   refine ⟨h_sph, fun X ↦ ?_⟩
   have h_binom :
       ∑ U : Submodule (ResField w) (n → ResField w), heckePolyCoeff (c * X) U =
-        qPochhammer w.q (card n) (c * X) := by
+        qPochhammer (c * X) w.q (card n) := by
     simpa [card_ResField] using q_binomial_submodule n (ResField w) ⊤ (c * X)
   calc heckePolyOp π hw X v
       = ∑ U : Submodule (ResField w) (n → ResField w),
@@ -692,13 +688,13 @@ lemma SiegelWeil.hasHeckePolynomial_of_apply_eq_smul_det (hw : w.IsSplit) {s : n
         (heckePolyOp_eq_sum hw h_sph X).left
     _ = ∑ U : Submodule (ResField w) (n → ResField w), heckePolyCoeff (c * X) U • v := by
         simp only [hv, h_rep, smul_smul, heckePolyCoeff_mul_pow, mul_comm X c]
-    _ = qPochhammer w.q (card n) (c * X) • v := by rw [← sum_smul, h_binom]
+    _ = qPochhammer (c * X) w.q (card n) • v := by rw [← sum_smul, h_binom]
 
 /-- At a split place w of norm q, a vector fixed by the finite adelic unitary group of rank n is
 spherical, and the Hecke polynomial acts on it by ∏_{l<n}(1 − q^l X). -/
 lemma SiegelWeil.hasHeckePolynomial_qPochhammer (hw : w.IsSplit) {v : W}
     (hv : ∀ g : Gf E n, π g v = v) :
-    HasHeckePolynomial π hw (qPochhammer w.q (card n)) v := by
+    HasHeckePolynomial π hw (qPochhammer · w.q (card n)) v := by
   simpa [atUniformizer] using
     hasHeckePolynomial_of_apply_eq_smul_det hw (ρ := 1) (s := 1) (fun u _ ↦ by simp)
       (by simpa using hv)

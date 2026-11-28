@@ -59,6 +59,7 @@ Bertolini, Darmon, Invent. Math. 126 (1996), adelic form Chida, Hsieh, J. reine 
 @[expose] public section
 
 open New Matrix Finset Complex Rows WeilData HeckeChar Data AlgHeckeChar AutChar HasWeight Unitary
+open TauCeti (qPochhammer)
 
 namespace New.Data.CriticalPair
 
@@ -217,8 +218,7 @@ lemma detPeriod_mul_upsilonU1_insert {p : D.CriticalPair} {ϑ ϑ' : D.TameChar} 
     (hψ : ϑ'.tamePart = ϑ.tamePart) :
     detPeriod (Fin 2) (p.character * ϑ'.toAutChar * upsilonU1 ^ 1) (fun τ : D.Φ ↦ p.negWeight τ - 1)
         (D.twistModulus ϑ' 2) (p.tamePart * ϑ'.tamePart) =
-      SiegelWeil.qPochhammer v.q 2
-          ((p.character * ϑ.toAutChar * upsilonU1 ^ 1).frobValue (Fin 2) v)⁻¹ *
+      qPochhammer ((p.character * ϑ.toAutChar * upsilonU1 ^ 1).frobValue (Fin 2) v)⁻¹ (v.q : ℂ) 2 *
         detPeriod (Fin 2) (p.character * ϑ.toAutChar * upsilonU1 ^ 1)
           (fun τ : D.Φ ↦ p.negWeight τ - 1)
           (D.twistModulus ϑ 2) (p.tamePart * ϑ.tamePart) := by
@@ -338,12 +338,13 @@ theorem exists_isTwistMeasure_of_z_eq_one {p : D.CriticalPair} (h_ram : p.IsRami
   · obtain ⟨h_ne_zero, -, -⟩ := Λ_twist 1
     simp [NeZero.ne, hN, h_ne_zero]
   · -- The squared norm of `(1 - X) * (1 - v.q * X)` is the stated product of inverse Euler factors.
-    have h_period : Λ ϑ' = SiegelWeil.qPochhammer v.q 2
-        ((p.character * ϑ.toAutChar * upsilonU1 ^ 1).frobValue (Fin 2) v)⁻¹ * Λ ϑ :=
+    have h_period : Λ ϑ' = qPochhammer
+        ((p.character * ϑ.toAutChar * upsilonU1 ^ 1).frobValue (Fin 2) v)⁻¹ (v.q : ℂ) 2 * Λ ϑ :=
       detPeriod_mul_upsilonU1_insert hv hQ hχ hψ
+    have hq : (v.q : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (zero_lt_one.trans v.one_lt_q).ne'
     simp [h_period, ↓← mul_conj', AutChar.frobValue, AutChar.spaceChar, ← ofReal_pow,
-      prod_range, inv_eq_conj, prod_mul_distrib, IsDedekindDomain.HeightOneSpectrum.ne_bot]
-    ring
+      TauCeti.qPochhammer_def, prod_range, inv_eq_conj, prod_mul_distrib]
+    field_simp
   · -- Compare `Λ_twist` at `ϑ` and at `1`: the two values of `lValueProd` differ by the factor
     -- in `lValueProd_eq_mul_prod_ratio_sq`, and `C ≠ 0` cancels.
     have h_sq : (‖Λ ϑ.toTameChar‖ : ℂ) ^ 2 =
