@@ -6,6 +6,7 @@ import Mathlib.NumberTheory.Padics.MahlerBasis
 import Mathlib.RingTheory.Valuation.Extension
 import Mathlib.RingTheory.Valuation.LocalSubring
 import TauCeti.RingTheory.PowerSeries.Binomial
+import TauCeti.RingTheory.PowerSeries.Substitution
 public import Lib.CM.FormalGroup.IntegralParameter
 import Lib.General.Algebra.AbsIntegrallyClosed
 
@@ -325,7 +326,8 @@ lemma subst_mem {B : Subring ℂ_[p]⟦X⟧} {T : ℂ_[p]⟦X⟧} (hB : IsSeries
   obtain ⟨G, rfl⟩ : ∃ G : (valRingCp p)⟦X⟧, seriesToCp G = f := hf
   obtain ⟨F, rfl⟩ := (hB.mem_iff h).1 hh
   have hF : constantCoeff F = 0 := by
-    simpa [hB.constantCoeff_eq_zero, constantCoeff_seriesToCp] using hh_zero
+    simpa [constantCoeff_subst_of_constantCoeff_zero' hB.constantCoeff_eq_zero,
+      constantCoeff_seriesToCp] using hh_zero
   exact (hB.mem_iff _).2 ⟨G.subst F, (subst_seriesToCp_subst hB.constantCoeff_eq_zero hF G).symm⟩
 
 /-- Let `B = 𝒪[[T]]` (`IsSeriesGenerator B T`), `c ≠ 0`, `v(c) ≥ 1 / (p - 1)`, that is,
@@ -360,7 +362,7 @@ lemma expSubst_mem_of_pow_mem {B : Subring ℂ_[p]⟦X⟧} {T : ℂ_[p]⟦X⟧}
   have hs : HasSubst u := .of_constantCoeff_zero' hu_zero
   have h_root : b.subst u = expSubst g := by
     refine eq_of_pow_eq_pow_of_constantCoeff_eq_one hm_ne
-      ((constantCoeff_subst_eq hu_zero).trans hb_one)
+      ((constantCoeff_subst_of_constantCoeff_zero' hu_zero _).trans hb_one)
       (constantCoeff_subst_exp hg_zero) ?_
     rw [← subst_pow hs, hb_pow, ← coe_substAlgHom hs, map_add, map_one, substAlgHom_X, hu]
     ring

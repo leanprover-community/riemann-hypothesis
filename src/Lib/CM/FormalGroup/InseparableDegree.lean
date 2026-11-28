@@ -100,12 +100,14 @@ lemma reducedOrder_subst {T : ℂ_[p]⟦X⟧} (hT : T ∈ C.integralSeriesRing) 
   obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hT
   set y : ℂ_[p]⟦X⟧ := taylorVia ιₚ C.translatedY
   have hy₀ : constantCoeff y = 0 := C.constantCoeff_taylorVia_translatedY
-  have hu₀ : constantCoeff u = 0 := Subtype.ext (by rwa [constantCoeff_subst_eq hy₀] at hT₀)
+  have hu₀ : constantCoeff u = 0 :=
+    Subtype.ext (by rwa [constantCoeff_subst_of_constantCoeff_zero' hy₀] at hT₀)
   have hu : HasSubst u := .of_constantCoeff_zero' hu₀
   have h_comp : (subst (subst y (seriesToCp u) : ℂ_[p]⟦X⟧) (seriesToCp g) : ℂ_[p]⟦X⟧) =
       subst y (seriesToCp (subst u g)) := by
     rw [show seriesToCp (subst u g) = subst (seriesToCp u) (seriesToCp g) from map_subst hu g,
-      subst_comp_subst_apply (.of_constantCoeff_zero (by rwa [constantCoeff_subst_eq hy₀] at hT₀))
+      subst_comp_subst_apply
+        (.of_constantCoeff_zero (by rwa [constantCoeff_subst_of_constantCoeff_zero' hy₀] at hT₀))
         (.of_constantCoeff_zero' hy₀)]
   rw [h_comp, reducedOrder_subst_translatedY, reducedOrder_subst_translatedY,
     show map (residue (valRingCp p)) (subst u g) = subst (u.map _) (g.map _) from map_subst hu g,
@@ -116,7 +118,7 @@ reduced order (the order in `y` modulo the maximal ideal) zero. -/
 lemma reducedOrder_eq_zero {f : ℂ_[p]⟦X⟧} (hf : f ∈ C.integralSeriesRing)
     (hf₀ : ‖constantCoeff f‖ = 1) : C.reducedOrder f = 0 := by
   obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hf
-  rw [constantCoeff_subst_eq C.constantCoeff_taylorVia_translatedY] at hf₀
+  rw [constantCoeff_subst_of_constantCoeff_zero' C.constantCoeff_taylorVia_translatedY] at hf₀
   have hu : IsUnit u := isUnit_iff_constantCoeff.2 (isUnit_integer_iff_norm_eq_one.2 hf₀)
   rw [reducedOrder_subst_translatedY, order_zero_of_isUnit (hu.map _)]
 
@@ -125,7 +127,7 @@ norm one has the reduced order (the order in `y` modulo the maximal ideal) one. 
 lemma reducedOrder_eq_one {T : ℂ_[p]⟦X⟧} (hT : T ∈ C.integralSeriesRing) (hT₀ : constantCoeff T = 0)
     (hT₁ : ‖coeff 1 T‖ = 1) : C.reducedOrder T = 1 := by
   obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hT
-  rw [constantCoeff_subst_eq C.constantCoeff_taylorVia_translatedY] at hT₀
+  rw [constantCoeff_subst_of_constantCoeff_zero' C.constantCoeff_taylorVia_translatedY] at hT₀
   rw [coeff_one_subst C.constantCoeff_taylorVia_translatedY, coeff_one_taylorVia_translatedY,
     mul_one, Algebra.algebraMap_self_apply] at hT₁
   rw [reducedOrder_subst_translatedY, ← Nat.cast_one, order_eq_nat]

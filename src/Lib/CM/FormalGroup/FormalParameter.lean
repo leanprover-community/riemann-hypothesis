@@ -198,7 +198,8 @@ lemma exists_rescale_piPrime_formalParam_eq : ∃ g : (valRingCp p)⟦X⟧,
     rw [← congruencePart_subst_formalParam, ← hg, congruencePart_rescale, formalParam,
       congruencePart_congruencePart]
   have hg₀ : coeff 0 g = 0 := by
-    simpa [constantCoeff_rescale, constantCoeff_subst_eq C.constantCoeff_formalParam,
+    simpa [constantCoeff_rescale,
+      constantCoeff_subst_of_constantCoeff_zero' C.constantCoeff_formalParam,
       constantCoeff_formalParam, constantCoeff_seriesToCp] using (congrArg constantCoeff hg).symm
   have hg₁ : coeff 1 g = piPrimeInt d := by
     simpa [← Subtype.coe_inj, coe_piPrimeInt, coeff_seriesToCp, coeff_rescale,

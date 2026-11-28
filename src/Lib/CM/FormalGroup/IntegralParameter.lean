@@ -66,6 +66,8 @@ section IntegralParameter
 
 open PowerSeries WithPiTopology
 
+attribute [local simp] PowerSeries.constantCoeff_subst_of_constantCoeff_zero'
+
 namespace New
 
 variable {p : ℕ} [Fact p.Prime]
@@ -92,12 +94,6 @@ structure IsSeriesGenerator (A : Subring ℂ_[p]⟦X⟧) (T : ℂ_[p]⟦X⟧) : 
   coeff_one : coeff 1 T = 1
   /-- The elements of `A` are the series `g(T)` with `g` integral. -/
   mem_iff (f : ℂ_[p]⟦X⟧) : f ∈ A ↔ ∃ g : (valRingCp p)⟦X⟧, f = subst T (seriesToCp g)
-
-/-- The series `f(T)` and `f` have the same constant term, if `T(0) = 0`. -/
-@[simp]
-lemma constantCoeff_subst_eq {T : ℂ_[p]⟦X⟧} (hT₀ : T.constantCoeff = 0) {f : ℂ_[p]⟦X⟧} :
-    constantCoeff (f.subst T) = f.constantCoeff :=
-  PowerSeries.constantCoeff_subst_of_constantCoeff_zero hT₀ f
 
 /-- Substituting `a X` in `f(T)` gives `f(T(a X))`, if `T(0) = 0`. -/
 lemma rescale_subst {a : ℂ_[p]} {T : ℂ_[p]⟦X⟧} (hT₀ : T.constantCoeff = 0) {f : ℂ_[p]⟦X⟧} :
