@@ -393,31 +393,33 @@ lemma linearFrob_zero_apply (h : IsPotentiallyCrystalline ρ) (hs : IsWeilPair (
     linearFrob ρ s 0 d = tensorAction Bmax (toGp s) (ρ s) d :=
   (linearFrob_apply h hs hd).trans (tensorAction_gp_eq_tensorAction_frobGal ..).symm
 
+/-- The period submodule `Dpcris ρ` is stable under the Galois action composed with any
+nonnegative power of Frobenius. Conjugation by the Galois element preserves the near-identity filter
+used to define the fixed periods. -/
+lemma tensorAction_mem_Dpcris (n : ℕ) (t : Γ) {d : Bmax ⊗[ℤ_[p]] T}
+    (hd : d ∈ Dpcris ρ) : tensorAction Bmax (ofAdd n, toGp t) (ρ t) d ∈ Dpcris ρ := by
+  have h_conj : Tendsto (fun g ↦ t⁻¹ * g * t) (nearOne Γ) (nearOne Γ) := by
+    simpa [nearOne, tendsto_comap_iff, comp_def] using
+      ((tendsto_comap (f := toGp) (x := nhds 1)).const_mul (toGp t)⁻¹).mul_const (toGp t)
+  filter_upwards [h_conj.eventually hd] with g hg
+  calc tensorAction Bmax (toGp g) (ρ g) (tensorAction Bmax (ofAdd n, toGp t) (ρ t) d)
+      = tensorAction Bmax (ofAdd n, toGp t) (ρ t)
+          (tensorAction Bmax (toGp (t⁻¹ * g * t)) (ρ (t⁻¹ * g * t)) d) := by
+        rw [tensorAction_gp_eq_tensorAction_frobGal, tensorAction_gp_eq_tensorAction_frobGal,
+          tensorAction_tensorAction, tensorAction_tensorAction]
+        simp [← map_mul, mul_assoc]
+    _ = tensorAction Bmax (ofAdd n, toGp t) (ρ t) d := congrArg _ hg
+
 include h hs in
 /-- Multiplicativity of the linear Frobenius: for `ρ` potentially crystalline (`h`) and Weil pairs
 `(toGp s, m)` (`hs`) and `(toGp t, k)` (`ht`), one has `β_{st, m+k} = β_{s,m} β_{t,k}`, where
 `β_{s,m}` is `linearFrob ρ s m`. -/
 lemma linearFrob_mul (ht : IsWeilPair (toGp t) k) :
     linearFrob ρ (s * t) (m + k) = linearFrob ρ s m * linearFrob ρ t k := by
-  -- Both sides are linear, so it suffices to compare them on `Dpcris ρ`, which spans, by
-  -- `linearFrob_apply`; for this the image of `d` under `t` must lie in `Dpcris ρ` again.
+  -- Both sides are linear, and the fixed periods span, so compare their actions there.
   refine ext_on h fun d hd ↦ ?_
-  -- Conjugation by `t` keeps elements near `1`, and the image of `d` under `t` is fixed by `g`
-  -- as soon as `d` is fixed by `t⁻¹ * g * t`.
-  have h_conj : Tendsto (fun g ↦ t⁻¹ * g * t) (nearOne Γ) (nearOne Γ) := by
-    simpa [nearOne, tendsto_comap_iff, comp_def] using
-      ((tendsto_comap (f := toGp) (x := nhds 1)).const_mul (toGp t)⁻¹).mul_const (toGp t)
-  have h_mem : tensorAction Bmax (ofAdd k, toGp t) (ρ t) d ∈ Dpcris ρ := by
-    filter_upwards [h_conj.eventually hd] with g hg
-    calc tensorAction Bmax (toGp g) (ρ g) (tensorAction Bmax (ofAdd k, toGp t) (ρ t) d)
-        = tensorAction Bmax (ofAdd k, toGp t) (ρ t)
-            (tensorAction Bmax (toGp (t⁻¹ * g * t)) (ρ (t⁻¹ * g * t)) d) := by
-          rw [tensorAction_gp_eq_tensorAction_frobGal, tensorAction_gp_eq_tensorAction_frobGal,
-            tensorAction_tensorAction, tensorAction_tensorAction]
-          simp [← map_mul, mul_assoc]
-      _ = tensorAction Bmax (ofAdd k, toGp t) (ρ t) d := congrArg _ hg
   rw [mul_apply_eq_comp, linearFrob_apply h (hs.mul ht) hd, linearFrob_apply h ht hd,
-    linearFrob_apply h hs h_mem, tensorAction_tensorAction]
+    linearFrob_apply h hs (tensorAction_mem_Dpcris k t hd), tensorAction_tensorAction]
   simp
 
 include h hs in
