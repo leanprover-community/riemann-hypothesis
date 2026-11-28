@@ -2,6 +2,7 @@ module
 
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import TauCeti.RepresentationTheory.Induction.Mackey.Subgroup
 public import Lib.GaloisRep.LocalGlobal.LocalFormTypes
 public import Lib.GaloisRep.Main.AllRanks
 public import Lib.Adelic.AutomorphicForms.PAdicGauge
@@ -832,15 +833,16 @@ lemma exists_orbit_weight {G H Δ : Type*} [Group G] [Group H] [Group Δ] [Finty
       simp [mul_smul, h_point, division_def]
     have h_mem : π (x (y⁻¹ • q) * y⁻¹ / x q) ∈ A q := mem_map_of_mem π h_stab_mem
     simp [hy, h_point, A, ← mul_mem_cancel_left (y := π (x q) / ψ d) h_mem]
-  · -- the stabiliser of the point `g Γ` in `K` embeds in `classAut Γ K g⁻¹` by conjugation
+  · -- The stabiliser of `g Γ` in `K` has the same order as `classAut Γ K g⁻¹` by conjugation.
     have h_stab (p : G ⧸ Γ) : Nat.card (stabilizer K p) ∣ c := by
       obtain ⟨g, rfl⟩ : ∃ a : G, (a : G ⧸ Γ) = p := QuotientGroup.mk_surjective p
-      let f : K →* G := (MulAut.conj g⁻¹).toMonoidHom.comp K.subtype
-      have h_le : stabilizer K (g : G ⧸ Γ) ≤ (classAut Γ K g⁻¹).comap f := fun k hk ↦ by
-        simpa [f, classAut, mul_assoc] using QuotientGroup.eq.mp hk.symm
-      calc _ ∣ Nat.card ((classAut Γ K g⁻¹).comap f) := card_dvd_of_le h_le
-        _ ∣ Nat.card (classAut Γ K g⁻¹) := card_comap_dvd_of_injective _ f (by simp [f])
-        _ ∣ c := h_aut g⁻¹
+      have h_classAut : TauCeti.mackeySubgroup g⁻¹ K Γ = classAut Γ K g⁻¹ := by
+        ext δ
+        simp
+      have h_card := TauCeti.natCard_mackeySubgroup_inv_subgroupOf Γ K g⁻¹
+      rw [inv_inv, h_classAut] at h_card
+      rw [TauCeti.stabilizer_eq_mackeySubgroup_subgroupOf, h_card]
+      exact h_aut g⁻¹
     have h_dvd : Nat.card ((A q).comap ψ) ∣ c :=
       calc Nat.card ((A q).comap ψ)
         _ ∣ Nat.card (A q) := (A q).card_comap_dvd_of_injective _ hψ
