@@ -57,21 +57,23 @@ namespace New
 /-- If the translates `y i * B` are disjoint and `f x ≤ c * f (x * z)` for `z ∈ B`, then the sum of
 the values `f (y i)`, times the measure of `B`, is at most `c` times the integral of `f`. -/
 lemma tsum_mul_measure_le_lintegral {G I : Type*} [Group G] [MeasurableSpace G] [MeasurableMul G]
-    (μ : Measure G) [μ.IsMulLeftInvariant] [Countable I] {y : I → G} {B : Set G}
+    (μ : Measure G) [μ.IsMulLeftInvariant] {y : I → G} {B : Set G}
     (hB : MeasurableSet B) (h_disjoint : ∀ i j : I, ∀ z ∈ B, ∀ z' ∈ B, y i * z = y j * z' → i = j)
     {f : G → ℝ≥0∞} {c : ℝ≥0∞} (hc : c ≠ ⊤) (h_le : ∀ x : G, ∀ z ∈ B, f x ≤ c * f (x * z)) :
     (∑' i : I, f (y i)) * μ B ≤ c * ∫⁻ x : G, f x ∂μ := by
   let S (i : I) : Set G := (fun x ↦ (y i)⁻¹ * x) ⁻¹' B
   have hS (i : I) : MeasurableSet (S i) := measurable_const_mul _ hB
-  have hS_disjoint : Pairwise (Function.onFun Disjoint S) := fun i j hij ↦
-    Set.disjoint_left.2 fun x hi hj ↦ hij (h_disjoint i j _ hi _ hj (by simp))
+  have h_overlap (x : G) : {i | x ∈ S i}.encard ≤ 1 :=
+    Set.encard_le_one_iff.2 fun i j hi hj ↦ h_disjoint i j _ hi _ hj (by simp)
   have h_term (i : I) : f (y i) * μ B ≤ ∫⁻ x in S i, c * f x ∂μ := by
     rw [← measure_preimage_mul μ (y i)⁻¹ B, ← setLIntegral_const]
     exact setLIntegral_mono' (hS i) fun x hx ↦ by simpa using h_le (y i) _ hx
   calc (∑' i : I, f (y i)) * μ B ≤ ∑' i : I, ∫⁻ x in S i, c * f x ∂μ :=
         ENNReal.tsum_mul_right.ge.trans (tsum_le_tsum h_term)
-    _ = ∫⁻ x in ⋃ i : I, S i, c * f x ∂μ := (lintegral_iUnion hS hS_disjoint _).symm
-    _ ≤ ∫⁻ x, c * f x ∂μ := setLIntegral_le_lintegral _ _
+    _ = ∫⁻ x, c * f x ∂Measure.sum (fun i ↦ μ.restrict (S i)) :=
+      (lintegral_sum_measure _ _).symm
+    _ ≤ ∫⁻ x, c * f x ∂μ := by
+      grw [Measure.sum_restrict_le hS h_overlap, one_nsmul, Measure.restrict_le_self]
     _ = c * ∫⁻ x, f x ∂μ := lintegral_const_mul' _ _ hc
 
 /-- A test function `φ` on the finite adelic unitary group is invariant on both sides under some
