@@ -48,21 +48,21 @@ lemma eventually_mem_spanOn_atPlace_mem_localIntGL (a : ℂ[Gf E n]) :
 variable [HasPrimitiveRoot5040 E]
 
 /-- The auxiliary place: let `E` contain the 5040th roots of unity. For an open subgroup `K`, an
-element `a` of the group algebra and a place `w`, some split place `v` is neither `w` nor its
-conjugate, `K` contains `maxCompactAt n v` (the integral elements that are `1` away from `v` and its
-conjugate), and `a` is a combination of elements that are integral at `v`. -/
+element `a` of the group algebra and a finite set `S` of places, there is a split place `v` outside
+`S` and its conjugates. The group `K` contains `maxCompactAt n v` (the integral elements that are
+`1` away from `v` and its conjugate), and `a` is a combination of elements integral at `v`. -/
 lemma exists_auxiliary_place {K : Subgroup (Gf E n)} (hK : K.IsOpen) (a : ℂ[Gf E n])
-    (w : FinPlace E) :
+    {S : Set (FinPlace E)} (hS : S.Finite) :
     ∃ v : FinPlace E, v.IsSplit ∧
-      v ∉ Set.conjClosure {w} ∧
+      v ∉ S.conjClosure ∧
       maxCompactAt n v ≤ K ∧
       a ∈ spanOn ℂ {g : Gf E n | g.atPlace v ∈ localIntGL n v} := by
   -- There are infinitely many split places, and the other conditions hold at almost all places.
   have h_split : ∃ᶠ v : FinPlace E in cofinite, v.IsSplit :=
     frequently_prime_q.mono fun _ ↦ isSplit_of_q_prime
-  have h_ne : ∀ᶠ v : FinPlace E in cofinite, v ∉ Set.conjClosure {w} :=
-    (Set.finite_singleton w).conjClosure.eventually_cofinite_notMem
-  exact (h_split.and_eventually (h_ne.and ((eventually_maxCompactAt_le hK).and
+  have h_avoid : ∀ᶠ v : FinPlace E in cofinite, v ∉ S.conjClosure :=
+    hS.conjClosure.eventually_cofinite_notMem
+  exact (h_split.and_eventually (h_avoid.and ((eventually_maxCompactAt_le hK).and
     (eventually_mem_spanOn_atPlace_mem_localIntGL a)))).exists
 
 variable [Nonempty n] {s s' : n → ℤˣ}
@@ -95,7 +95,8 @@ theorem trace_eq_of_isCuspidalAt (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ c
   -- Cut the level at an auxiliary split place `v` down to the stabiliser of a line. There the
   -- positive powers of `T⁺ = lineHecke v i` make `0` a simple root modulo `v` of the
   -- characteristic polynomial on the support, so `trace_comparison` applies.
-  obtain ⟨v, hv, hv_ne, h_max, h_int⟩ := exists_auxiliary_place hK.isOpen a w
+  obtain ⟨v, hv, hv_ne, h_max, h_int⟩ :=
+    exists_auxiliary_place hK.isOpen a (Set.finite_singleton w)
   obtain ⟨i⟩ : Nonempty n := inferInstance
   let K' : OpenSubgroup (Gf E n) := ⟨cutLevel K v (lineStabilizer v i), IsLevel.isOpen⟩
   have : Module.Finite ℂ (levelSpace (V.formRep (typeKernel l s)) K'.toSubgroup) :=
