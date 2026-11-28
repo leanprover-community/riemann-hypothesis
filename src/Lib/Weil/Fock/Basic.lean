@@ -608,7 +608,10 @@ lemma differentiableAt_integral_smul_realHeisenbergOp (ε : ι → ℤˣ) {E : T
         (Real.exp (2 * k * ‖(1 / 2 : ℝ) • x‖) * ‖realVac ((1 / 2 : ℝ) • x)‖))
       (normalizedVolume ι) :=
     ((integrable_exp_mul_realVac (2 * k)).comp_smul one_half_pos.ne').const_mul _
-  refine (eventually_differentiableAt_integral h_major_int (by fun_prop) ?_).self_of_nhds
+  refine (eventually_differentiableAt_integral h_major_int
+    (fun _ ↦ by
+      refine .fun_smul (by fun_prop) ?_
+      exact Continuous.aestronglyMeasurable (by fun_prop)) ?_).self_of_nhds
   filter_upwards [h_small_near_a] with z hz_small x
   refine ⟨by fun_prop, ?_⟩
   -- Scale `(1, x)` into the unit ball; both terms of `hz_small` are homogeneous of degree two.
@@ -753,6 +756,7 @@ def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace �
           (modelSubmodule _).smul_mem _ (exists_hasDerivAt_realHeisenbergOp _ hP).1
         convert add_mem (h_deriv 1) (h_deriv I)
         ext
+        clear hP h_deriv
         simp_all [heisenbergDeriv, holomorphicCoord_eq, sum_eq_single i]
         split <;> simp_all [units_ne_iff_eq_neg, raiseOp, lowerOp] <;> grind [I_sq]
 
