@@ -104,7 +104,7 @@ lemma formAdjoint_mul {p : Type} [Fintype p] {κ : p → ℤˣ} [DecidableEq p] 
   simp only [formAdjoint, conjTranspose_mul, Matrix.mul_assoc]
   rw [← Matrix.mul_assoc (signMatrix η) (signMatrix η), signMatrix_mul_self, Matrix.one_mul]
 
-/-- The bilinear form adjoint `formAdjoint` is linear and distributes over matrix subtraction. -/
+/-- The form adjoint of a difference is the difference of the form adjoints. -/
 lemma formAdjoint_sub (A A' : Matrix n m ℂ) :
     formAdjoint ε η (A - A') = formAdjoint ε η A - formAdjoint ε η A' := by
   simp only [formAdjoint, conjTranspose_sub, Matrix.mul_sub, Matrix.sub_mul]
