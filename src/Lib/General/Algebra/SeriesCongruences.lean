@@ -2,13 +2,11 @@ module
 
 public import Mathlib.RingTheory.MvPowerSeries.Substitution
 public import Mathlib.RingTheory.PowerSeries.PiTopology
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.PowerSeries.Expand
+public import Lib.General.Algebra.AdicCompletion
+import TauCeti.Analysis.Normed.Ring.Ultra
 import TauCeti.RingTheory.MvPowerSeries.Dvd
 import TauCeti.RingTheory.MvPowerSeries.Order
-public import Lib.General.Algebra.AdicCompletion
+import Mathlib.RingTheory.PowerSeries.Expand
 
 /-!
 # Power series with prime power exponents, congruences and convergent sums
@@ -354,14 +352,10 @@ lemma dvd_sub_smul_of_dvd_sub {R : Type*} [CommRing R] {l : R} {D F G H : R⟦X�
 lemma norm_sub_le_of_norm_one_sub_mul_sub_le {p : ℕ} [Fact p.Prime] {π t x a : ℂ_[p]}
     (hπ : ‖π‖ < 1) (ht : ‖t‖ ≤ ‖π‖) (ha : ‖a‖ ≤ 1) (hx : ‖(1 - t) * x - a‖ ≤ ‖π‖) :
     ‖x - a‖ ≤ ‖π‖ := by
-  have h_lt : ‖-t‖ < ‖(1 : ℂ_[p])‖ := by simpa using ht.trans_lt hπ
-  have h_unit : ‖1 - t‖ = 1 := by
-    rw [sub_eq_add_neg, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm h_lt.ne',
-      max_eq_left h_lt.le, norm_one]
-  have h_mul : ‖t * a‖ ≤ ‖π‖ := by grw [norm_mul, ha, mul_one, ht]
-  calc ‖x - a‖ = ‖(1 - t) * (x - a)‖ := by rw [norm_mul, h_unit, one_mul]
+  calc ‖x - a‖ = ‖(1 - t) * (x - a)‖ := by simp [ht.trans_lt hπ]
     _ = ‖((1 - t) * x - a) + t * a‖ := by ring_nf
-    _ ≤ ‖π‖ := (IsUltrametricDist.norm_add_le_max _ _).trans (max_le hx h_mul)
+    _ ≤ ‖π‖ := (IsUltrametricDist.norm_add_le_max _ _).trans
+      (max_le hx (by grw [norm_mul, ha, mul_one, ht]))
 
 end New
 
