@@ -12,7 +12,7 @@ volume disintegrates along the form, and on a quadric the mass of a box is bound
 of the content index over the box.
 
 * `New.Floors.IntegralPlace.isDisintegration_of_hyperbolic_basis`: the disintegration.
-* `New.Floors.IntegralPlace.quadricMeasure_coordinateBox_le`: the mass of a box on a quadric of
+* `New.Floors.IntegralPlace.quadricMeasure_univ_pi_le`: the mass of a box on a quadric of
   hyperbolic planes plus a form.
 * `New.Floors.IntegralPlace.exists_kernel_isDisintegration_le`: if ζ_R(μ) ≤ 2 and the rank is at
   least 2μ + 4, then some s-finite kernel is a disintegration of the volume for which the points y
@@ -25,7 +25,7 @@ Notions from other files:
 * `New.idealZeta`: the sum ζ_R(s) of [R : I]^(−s) over the ideals I of finite index in R.
 * `New.Floors.IntegralPlace.contentIndex`: the volume of the set of c with c p integral, for a
   vector p with a unit entry.
-* `New.Floors.coordinateBox`: the vectors with all coordinates in a given set.
+* `Set.pi univ fun _ ↦ S`: the box of a set S, that is, the vectors with all coordinates in S.
 
 ## Relation to the literature
 
@@ -122,14 +122,9 @@ variable {A : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A]
   {σ ν : Type} [Fintype σ] [DecidableEq σ] [Fintype ν] [DecidableEq ν]
 
 /-- The box of the vectors `y` with `u y` integral is measurable. -/
-lemma measurableSet_coordinateBox (κ : Type) [Finite κ] (u : Aˣ) :
-    MeasurableSet (coordinateBox κ {x : A | u.val * x ∈ P.integers}) := by
-  have h_eq : coordinateBox κ {x : A | u.val * x ∈ P.integers} =
-      ⋂ i, (fun v : κ → A ↦ u.val * v i) ⁻¹' (P.integers : Set A) := by
-    ext v
-    simp
-  rw [h_eq]
-  exact .iInter fun i ↦ isCompact_O.measurableSet.preimage (by fun_prop)
+lemma measurableSet_univ_pi_mul_mem_integers (κ : Type) [Finite κ] (u : Aˣ) :
+    MeasurableSet (pi univ fun _ : κ ↦ {x : A | u.val * x ∈ P.integers}) :=
+  .univ_pi fun _ ↦ isCompact_O.measurableSet.preimage (f := (u.val * ·)) (by fun_prop)
 
 /-- Let `ζ_R(μ) ≤ 2` and let `σ` have at least `μ + 1` elements. On the quadric of any skew `b`
 for one hyperbolic plane, the hyperbolic planes indexed by `σ` and a hermitian form `T`, the points
@@ -143,10 +138,10 @@ measure `|c|`, and keeps the box. So the mass on one quadric is at most `|c|⁻�
 of `v`, times the mass on all quadrics, which is the volume
 (`lintegral_form_eq_lintegral_flatChart`), and `lintegral_contentIndex_pow_le` bounds the integral
 of the content index over the box. -/
-theorem quadricMeasure_coordinateBox_le {μ : ℕ} (hμ : idealZeta P.integers μ ≤ 2)
+theorem quadricMeasure_univ_pi_le {μ : ℕ} (hμ : idealZeta P.integers μ ≤ 2)
     (hσ : μ + 1 ≤ card σ) {T : Matrix ν ν A} (hT : Tᴴ = T) (b : skewAdjoint A) (u : Aˣ) :
     P.quadricMeasure (hyperbolicGram σ T) b
-        (coordinateBox (Fin 2 ⊕ σ ⊕ ν ⊕ σ) {x : A | u.val * x ∈ P.integers}) ≤
+        (pi univ fun _ : Fin 2 ⊕ σ ⊕ ν ⊕ σ ↦ {x : A | u.val * x ∈ P.integers}) ≤
       idealZeta P.integers μ * (P.modulus u)⁻¹ ^ (2 * card σ + card ν + 1) := by
   classical
   obtain ⟨i₀⟩ : Nonempty σ := card_pos_iff.1 (by lia)
@@ -155,8 +150,8 @@ theorem quadricMeasure_coordinateBox_le {μ : ℕ} (hμ : idealZeta P.integers �
       conjTranspose_fromCols_eq_fromRows_conjTranspose,
       conjTranspose_fromRows_eq_fromCols_conjTranspose, hT]
   set H : Matrix (σ ⊕ ν ⊕ σ) (σ ⊕ ν ⊕ σ) A := hyperbolicGram σ T with hH_def
-  let S : Set (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) := coordinateBox _ {x : A | u.val * x ∈ P.integers}
-  have hS : MeasurableSet S := measurableSet_coordinateBox _ u
+  let S : Set (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) := pi univ fun _ ↦ {x : A | u.val * x ∈ P.integers}
+  have hS : MeasurableSet S := measurableSet_univ_pi_mul_mem_integers _ u
   let ind : (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) → ℝ≥0∞ := S.indicator 1
   have h_ind : Measurable ind := measurable_one.indicator hS
   -- The mass of the box in the fibre of the chart over `p`, on the quadric of `β`.
@@ -206,7 +201,7 @@ theorem quadricMeasure_coordinateBox_le {μ : ℕ} (hμ : idealZeta P.integers �
           rw [← lintegral_indicator hS]
           refine lintegral_congr fun x ↦ ?_
           by_cases hx : x ∈ S <;> simp [Φ, ind, hx]
-      _ ≤ _ := by simpa [eσ, W, S, coordinateBox, Fin.forall_fin_two] using h_le
+      _ ≤ _ := by simpa [eσ, W, S, Set.pi, Fin.forall_fin_two] using h_le
   rw [h_left]
   refine le_trans ?_ (h_mid.le.trans h_final)
   have hFb : Measurable fun p : A × (σ ⊕ ν ⊕ σ → A) ↦ F b p :=
@@ -429,16 +424,17 @@ lemma IntegralPlace.isDisintegration_of_hyperbolic_basis (h_rank : 2 ≤ card κ
 
 /-- Let A be a finite place, let ζ_R(μ) ≤ 2, and let κ have r + 1 ≥ 2μ + 4 elements. Then the
 volume of A^κ disintegrates along the standard form x ↦ x* x into an s-finite kernel l, with l β on
-the quadric x* x = δ⁻¹ β for skew β, and for a unit u the set `coordinateBox` of the points y with
-all u y_i in R has mass at most ζ_R(μ) |u|^(-r) for each l β. Here R is the ring of integers of A,
-δ = `skewUnit`, ζ_R(μ) = `idealZeta R μ` is the sum of [R : I]^(-μ) over the ideals I of finite
-index, and |x| = `modulus x` is the factor by which multiplication by x scales the volume of A. -/
+the quadric x* x = δ⁻¹ β for skew β, and for a unit u the box of the points y with all u y_i in R
+has mass at most ζ_R(μ) |u|^(-r) for each l β. Here R is the ring of integers of A, δ = `skewUnit`,
+ζ_R(μ) = `idealZeta R μ` is the sum of [R : I]^(-μ) over the ideals I of finite index, and
+|x| = `modulus x` is the factor by which multiplication by x scales the volume of A. -/
 theorem IntegralPlace.exists_kernel_isDisintegration_le {μ r : ℕ}
     (hμ : idealZeta P.integers μ ≤ 2) (h_card : card κ = r + 1) (h_rank : 2 * μ + 3 ≤ r) :
     ∃ l : Kernel (skewAdjoint A) (κ → A), IsSFiniteKernel l ∧
       P.IsDisintegration volume (1 : Matrix κ κ A) l ∧
-      ∀ (β : skewAdjoint A) (u : Aˣ), l β (coordinateBox κ {x : A | u.val * x ∈ P.integers}) ≤
-        idealZeta P.integers μ * (P.modulus u)⁻¹ ^ r := by
+      ∀ (β : skewAdjoint A) (u : Aˣ),
+        l β (Set.pi Set.univ fun _ ↦ {x : A | u.val * x ∈ P.integers}) ≤
+          idealZeta P.integers μ * (P.modulus u)⁻¹ ^ r := by
   -- A basis of `μ + 2` hyperbolic pairs followed by `r - (2 μ + 3)` orthonormal vectors.
   have h_index : card κ =
       card (Fin 2 ⊕ Fin (μ + 1) ⊕ Fin (r - (2 * μ + 3)) ⊕ Fin (μ + 1)) := by
@@ -477,23 +473,25 @@ theorem IntegralPlace.exists_kernel_isDisintegration_le {μ r : ℕ}
     all_goals simp [S, hyperbolicGram, Matrix.one_apply]
     all_goals split_ifs <;> simp
   have h_left : planeSumGram S * Bᴴ * B = 1 := by rw [Matrix.mul_assoc, hB, h_plane]
-  have h_box : (B *ᵥ ·) ⁻¹' coordinateBox κ {x : A | u.val * x ∈ P.integers} ⊆
-      coordinateBox _ {x : A | u.val * x ∈ P.integers} := by
-    intro y hy i
+  have h_box : (B *ᵥ ·) ⁻¹' Set.pi Set.univ (fun _ ↦ {x : A | u.val * x ∈ P.integers}) ⊆
+      Set.pi Set.univ fun _ ↦ {x : A | u.val * x ∈ P.integers} := by
+    intro y hy i _
     have h_eq : u.val • y = (planeSumGram S * Bᴴ) *ᵥ (u.val • B *ᵥ y) := by
       rw [mulVec_smul, mulVec_mulVec, h_left, one_mulVec]
-    have h_int := (h_gram_int.mul hB_int.conjTranspose).mulVec (v := u.val • B *ᵥ y) hy i
+    have h_int := (h_gram_int.mul hB_int.conjTranspose).mulVec (v := u.val • B *ᵥ y)
+      (fun j ↦ hy j (Set.mem_univ j)) i
     rw [← h_eq] at h_int
     exact h_int
-  calc l β (coordinateBox κ {x : A | u.val * x ∈ P.integers})
-      = P.quadricMeasure S β ((B *ᵥ ·) ⁻¹' coordinateBox κ {x : A | u.val * x ∈ P.integers}) := by
+  calc l β (Set.pi Set.univ fun _ ↦ {x : A | u.val * x ∈ P.integers})
+      = P.quadricMeasure S β
+          ((B *ᵥ ·) ⁻¹' Set.pi Set.univ fun _ ↦ {x : A | u.val * x ∈ P.integers}) := by
         rw [h_eq]
-        exact map_apply (by fun_prop) (measurableSet_coordinateBox κ u)
-    _ ≤ P.quadricMeasure S β (coordinateBox _ {x : A | u.val * x ∈ P.integers}) :=
+        exact map_apply (by fun_prop) (measurableSet_univ_pi_mul_mem_integers κ u)
+    _ ≤ P.quadricMeasure S β (Set.pi Set.univ fun _ ↦ {x : A | u.val * x ∈ P.integers}) :=
         measure_mono h_box
     _ ≤ idealZeta P.integers μ * (P.modulus u)⁻¹ ^
           (2 * card (Fin (μ + 1)) + card (Fin (r - (2 * μ + 3))) + 1) :=
-        quadricMeasure_coordinateBox_le hμ (by simp) conjTranspose_one β u
+        quadricMeasure_univ_pi_le hμ (by simp) conjTranspose_one β u
     _ = idealZeta P.integers μ * (P.modulus u)⁻¹ ^ r := by
         congr 2
         simp only [card_fin]

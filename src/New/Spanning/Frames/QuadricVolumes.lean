@@ -114,7 +114,7 @@ lemma exists_isSolvedIn {ρ : Measure (𝔰.BesselIndex → A)}
             ∀ (β : skewAdjoint A) (j : ℕ),
               l β (Γ.vecsOfSize j) ≤ Γ.loss ^ (F.blockRank * (j + 1)) := Γ.exists_blockKernel
     refine ⟨quadricMeasure (hyperbolicGram (FloorPairs b m) 1) _, rfl, fun blk h_inj j ↦ ?_⟩
-    refine hl.isSolvedIn_quadricMeasure (fun β ↦ h_mass β j) ?_
+    refine hl.isSolvedIn_quadricMeasure (fun β ↦ Γ.vecsOfSize_eq_univ_pi j ▸ h_mass β j) ?_
       (inr_injective.comp (inl_injective.comp h_inj)) ?_ _
     · -- the Gram matrix off the first pair is hermitian
       simp [fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
@@ -196,7 +196,7 @@ lemma setLIntegral_orthonormalPart_le {ρ : Measure (𝔰.BesselIndex → A)}
     simpa only [elim_comp_map, Function.comp_id, elim_comp_inr] using
       h_inj.comp (map_injective.2 ⟨Function.injective_id, inr_injective⟩)
   grw [setLIntegral_map_floorBasis_le, ← Γ.volume_pow_mul_le (b := b) (j := j + 4), ← hB]
-  simp only [h_coord]
+  simp only [h_coord, vecsOfSize_eq_univ_pi]
   refine (h_solved blk h_blk (j + 4)).setLIntegral_le (Γ.isCompact_ofSize _).measurableSet ?_ hφ
   simpa only [Function.comp_assoc, comp_elim] using
     inr_injective.comp (inr_injective.comp (inl_injective.comp h_disjoint))

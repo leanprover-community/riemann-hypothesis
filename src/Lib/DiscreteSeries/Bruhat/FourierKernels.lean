@@ -29,7 +29,7 @@ Notions from other files:
   c = `kernelBound` of Plancherel's inequality.
 * `New.Floors.Place.IsSolvedIn`: a measure on A^κ is the volume in the coordinates off a block times
   a family of measures in the coordinates of the block, each of mass at most M on a box.
-* `New.Floors.coordinateBox`: the box of a set R, that is, the vectors with all coordinates in R.
+* `Set.pi univ fun _ ↦ R`: the box of a set R, that is, the vectors with all coordinates in R.
 
 ## Relation to the literature
 Standard consequences of Fubini's theorem and the inequalities of Cauchy–Schwarz and Plancherel.
@@ -214,17 +214,11 @@ def blockChart {η : Type} (e : (η ⊕ ι) ⊕ B ≃ κ) (p : ((η → A) × (�
 omit [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] P [Fintype κ] [Fintype ι]
   in
 /-- A vector lies in the box of R exactly when its three parts do. -/
-lemma preimage_blockChart_coordinateBox {η : Type} (e : (η ⊕ ι) ⊕ B ≃ κ) (R : Set A) :
-    blockChart e ⁻¹' coordinateBox κ R =
-      (coordinateBox η R ×ˢ coordinateBox ι R) ×ˢ coordinateBox B R := by
+lemma preimage_blockChart_univ_pi {η : Type} (e : (η ⊕ ι) ⊕ B ≃ κ) (R : Set A) :
+    blockChart e ⁻¹' pi univ (fun _ ↦ R) =
+      (pi univ (fun _ : η ↦ R) ×ˢ pi univ (fun _ : ι ↦ R)) ×ˢ pi univ (fun _ : B ↦ R) := by
   ext p
   simp [blockChart, e.surjective.forall]
-
-omit [CommRing A] [StarRing A] [TopologicalSpace A] P in
-/-- The box of a measurable set is measurable. -/
-lemma measurableSet_coordinateBox (κ : Type) [Fintype κ] (hR : MeasurableSet R) :
-    MeasurableSet (coordinateBox κ R) :=
-  (MeasurableSet.univ_pi fun _ : κ ↦ hR).congr (Set.ext fun x ↦ by simp)
 
 omit [CommRing A] [StarRing A] [TopologicalSpace A] P [Fintype κ] in
 /-- If T(y, w, z) ≤ K H(y, w), the integral of H(y, w) over all w is at most D, and each measure
@@ -360,7 +354,7 @@ lemma IsSolvedIn.exists_blockChart (h : IsSolvedIn blk ρ R M)
       (ζ : Kernel ((η → A) × (ι → A)) (B → A)) (_ : IsSFiniteKernel ζ),
       e ∘ inl ∘ inr = inner ∧ e ∘ inr = blk ∧ card η = card κ - card ι - card B ∧
       MeasurePreserving (blockChart e) ((volume.prod volume) ⊗ₘ ζ) ρ ∧
-      ∀ q : (η → A) × (ι → A), ζ q (coordinateBox B R) ≤ M := by
+      ∀ q : (η → A) × (ι → A), ζ q (pi univ fun _ ↦ R) ≤ M := by
   obtain ⟨η₀, _, e₀, ζ, rfl, _, h_chart, h_mass⟩ := h
   -- Each inner index is a free index `j i`, and `f` lists the free indices.
   have h_free (i : ι) : ∃ k : η₀, e₀ (inl k) = inner i := by
@@ -404,25 +398,25 @@ coordinates off the block, the integral over the box of R is at most the volume 
 outer coordinates, times M, times the integral of G over the box in A^ι. -/
 theorem IsSolvedIn.setLIntegral_le (h : IsSolvedIn blk ρ R M) (hR : MeasurableSet R)
     (h_inj : Function.Injective (inner ⊕ᵥ blk)) {G : (ι → A) → ℝ≥0∞} (hG : Measurable G) :
-    ∫⁻ x : κ → A in coordinateBox κ R, G (x ∘ inner) ∂ρ ≤
-      volume R ^ (card κ - card ι - card B) * M * ∫⁻ w : ι → A in coordinateBox ι R, G w := by
+    ∫⁻ x : κ → A in pi univ (fun _ ↦ R), G (x ∘ inner) ∂ρ ≤
+      volume R ^ (card κ - card ι - card B) * M * ∫⁻ w : ι → A in pi univ (fun _ ↦ R), G w := by
   obtain ⟨η, _, e, ζ, _, rfl, rfl, h_card, h_chart, h_mass⟩ := h.exists_blockChart h_inj
-  calc ∫⁻ x : κ → A in coordinateBox κ R, G (x ∘ e ∘ inl ∘ inr) ∂ρ
+  calc ∫⁻ x : κ → A in pi univ (fun _ ↦ R), G (x ∘ e ∘ inl ∘ inr) ∂ρ
     _ = ∫⁻ p : ((η → A) × (ι → A)) × (B → A) in
-          (coordinateBox η R ×ˢ coordinateBox ι R) ×ˢ coordinateBox B R, G p.1.2
+          (pi univ (fun _ : η ↦ R) ×ˢ pi univ (fun _ : ι ↦ R)) ×ˢ pi univ (fun _ : B ↦ R), G p.1.2
           ∂(volume.prod volume) ⊗ₘ ζ := by
-      rw [← h_chart.setLIntegral_comp_preimage (measurableSet_coordinateBox κ hR) (by fun_prop),
-        preimage_blockChart_coordinateBox]
+      rw [← h_chart.setLIntegral_comp_preimage (.univ_pi fun _ ↦ hR) (by fun_prop),
+        preimage_blockChart_univ_pi]
       simp [blockChart, Function.comp_def]
-    _ ≤ M * ∫⁻ q : (η → A) × (ι → A) in coordinateBox η R ×ˢ coordinateBox ι R, G q.2
+    _ ≤ M * ∫⁻ q : (η → A) × (ι → A) in pi univ (fun _ : η ↦ R) ×ˢ pi univ (fun _ : ι ↦ R), G q.2
           ∂volume.prod volume :=
       setLIntegral_comp_fst_le (F := fun q : (η → A) × (ι → A) ↦ G q.2)
-        ((measurableSet_coordinateBox η hR).prod (measurableSet_coordinateBox ι hR))
-        (measurableSet_coordinateBox B hR) h_mass (by fun_prop)
+        ((MeasurableSet.univ_pi fun _ ↦ hR).prod (.univ_pi fun _ ↦ hR)) (.univ_pi fun _ ↦ hR)
+        h_mass (by fun_prop)
     _ = volume R ^ (card κ - card ι - card B) * M *
-          ∫⁻ w : ι → A in coordinateBox ι R, G w := by
+          ∫⁻ w : ι → A in pi univ (fun _ ↦ R), G w := by
       rw [← prod_restrict, lintegral_prod _ (by fun_prop)]
-      simp only [lintegral_const, restrict_apply_univ, volume_coordinateBox, h_card]
+      simp only [lintegral_const, restrict_apply_univ, volume_pi_pi_const, h_card]
       ring
 
 /-- Let ρ be solved in the block `blk`, meaning it is the volume in the other coordinates times an
@@ -438,7 +432,7 @@ theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSol
     (h_inj : Function.Injective (inner ⊕ᵥ (blk' ⊕ᵥ blk))) {J : Matrix κ κ A}
     (h_orth : ∀ (i : ι ⊕ B') (k : κ),
       J ((inner ⊕ᵥ blk') i) k = (1 : Matrix κ κ A) ((inner ⊕ᵥ blk') i) k) (ξ : Aˣ) :
-    FourierSqNormLe J ξ ρ' ρ (coordinateBox κ R') (coordinateBox κ R)
+    FourierSqNormLe J ξ ρ' ρ (pi univ fun _ ↦ R') (pi univ fun _ ↦ R)
       (volume R' ^ (card κ - card ι - card B') * M' * (volume R ^ (card κ - card ι - card B) * M) *
         (P.kernelBound / P.modulus ξ) ^ card ι) := by
   -- As the blocks are disjoint and the rows of J at the block of `v` are those of the identity, the
@@ -472,12 +466,12 @@ theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSol
   let T (v : κ → A) : ℝ≥0∞ := ‖∫ y : κ → A, P.ψ (ξ * star v ⬝ᵥ J *ᵥ y) * φ y ∂ρ‖ₑ ^ 2
   have h_chart_meas : Measurable (blockChart e) := h_chart.measurable
   have h_box (p : ((η → A) × (ι → A)) × (B → A)) (hp : φ (blockChart e p) ≠ 0) :
-      p ∈ (coordinateBox η R ×ˢ coordinateBox ι R) ×ˢ coordinateBox B R :=
-    (preimage_blockChart_coordinateBox e R).subset (hφ_supp _ hp)
+      p ∈ (pi univ (fun _ : η ↦ R) ×ˢ pi univ (fun _ : ι ↦ R)) ×ˢ pi univ (fun _ : B ↦ R) :=
+    (preimage_blockChart_univ_pi e R).subset (hφ_supp _ hp)
   have hH_meas : Measurable H :=
     measurable_lintegral_fourier_integral_kernel (ξ : A) (f := f) (by fun_prop)
   have h_schwarz (p' : ((η' → A) × (ι → A)) × (B' → A)) :
-      T (blockChart e' p') ≤ volume (coordinateBox η R) * H p'.1 :=
+      T (blockChart e' p') ≤ volume (pi univ fun _ : η ↦ R) * H p'.1 :=
     enorm_integral_fourier_sq_le h_chart hφ_meas hφ_int (fun p hp ↦ (mem_prod.1 (h_box p hp).1).1)
       ξ (blockChart e' p') _ (b := fun y : η → A ↦ star p'.2 ⬝ᵥ y ∘ out)
       (star_blockChart_dotProduct_mulVec e e' h_inner' h_out h_orth p')
@@ -488,7 +482,7 @@ theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSol
       (h_chart.integrable_comp_of_integrable hφ_int).bdd_mul (c := 1)
         (Measurable.aestronglyMeasurable (by fun_prop)) (by simp [norm_psi])
     have h_supp (p : ((η → A) × (ι → A)) × (B → A)) (hp : f y' p ≠ 0) :
-        p.2 ∈ coordinateBox B R := by
+        p.2 ∈ pi univ fun _ : B ↦ R := by
       obtain ⟨-, h_mem⟩ := h_box p (right_ne_zero_of_mul hp)
       exact h_mem
     grw [lintegral_lintegral_fourier_integral_kernel_le ξ (by fun_prop) hf_int h_supp h_mass,
@@ -498,20 +492,19 @@ theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSol
     rw [← h_chart.map_eq]
     infer_instance
   have h_transform : Measurable T := measurable_enorm_integral_fourier_sq hφ_meas J ξ
-  calc ∫⁻ v : κ → A in coordinateBox κ R', T v ∂ρ'
+  calc ∫⁻ v : κ → A in pi univ (fun _ ↦ R'), T v ∂ρ'
     _ = ∫⁻ p' : ((η' → A) × (ι → A)) × (B' → A) in
-          (coordinateBox η' R' ×ˢ coordinateBox ι R') ×ˢ coordinateBox B' R',
+          (pi univ (fun _ : η' ↦ R') ×ˢ pi univ (fun _ : ι ↦ R')) ×ˢ pi univ (fun _ : B' ↦ R'),
           T (blockChart e' p') ∂(volume.prod volume) ⊗ₘ ζ' := by
-      rw [← h_chart'.setLIntegral_comp_preimage (measurableSet_coordinateBox κ hR') h_transform,
-        preimage_blockChart_coordinateBox]
-    _ ≤ volume (coordinateBox η R) * (M' * (c * (M * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ) *
-          volume (coordinateBox η' R'))) :=
-      setLIntegral_le_of_le_comp_fst (measurableSet_coordinateBox η' hR')
-        (measurableSet_coordinateBox ι hR') (measurableSet_coordinateBox B' hR') h_mass' hH_meas
-        h_schwarz h_plancherel
+      rw [← h_chart'.setLIntegral_comp_preimage (.univ_pi fun _ ↦ hR') h_transform,
+        preimage_blockChart_univ_pi]
+    _ ≤ volume (pi univ fun _ : η ↦ R) * (M' * (c * (M * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ) *
+          volume (pi univ fun _ : η' ↦ R'))) :=
+      setLIntegral_le_of_le_comp_fst (.univ_pi fun _ ↦ hR') (.univ_pi fun _ ↦ hR')
+        (.univ_pi fun _ ↦ hR') h_mass' hH_meas h_schwarz h_plancherel
     _ = volume R' ^ (card κ - card ι - card B') * M' * (volume R ^ (card κ - card ι - card B) * M) *
           c * ∫⁻ y : κ → A, ‖φ y‖ₑ ^ 2 ∂ρ := by
-      rw [volume_coordinateBox, volume_coordinateBox, h_card, h_card']
+      rw [volume_pi_pi_const, volume_pi_pi_const, h_card, h_card']
       ring
 
 end Place

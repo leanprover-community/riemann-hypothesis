@@ -420,6 +420,10 @@ namespace Size
 /-- The vectors of size i for the sizes `S`: all entries have size i. -/
 def vecsOfSize (i : ℕ) : Set (n → A) := {v : n → A | ∀ a : n, v a ∈ S.ofSize i}
 
+/-- The vectors of size i form the box of the numbers of size i. -/
+lemma vecsOfSize_eq_univ_pi (i : ℕ) : S.vecsOfSize i = Set.pi Set.univ fun _ : n ↦ S.ofSize i :=
+  Set.ext fun _ ↦ Set.mem_univ_pi.symm
+
 /-- A matrix has size i for the sizes `S` if all its entries have size i. -/
 def HasMatrixSize (i : ℕ) (X : Matrix l n A) : Prop := ∀ (a : l) (b : n), X a b ∈ S.ofSize i
 

@@ -127,8 +127,8 @@ lemma floorMassLe_one (b : Fin 𝔰.n) :
       (Γ.loss ^ (99 * 𝔰.n * (7 + 6)) * volume (Γ.ofSize 11) ^ Fintype.card F.FreeIndex) 1 := by
   refine Γ.floorMassLe_of_chart (by simp) fun _ _ ↦ ⟨1, ?_, measurable_one, by simp⟩
   have h_vol : ∫⁻ _ : F.FreeIndex → A in Γ.vecsOfSize (7 + 4), 1 ≤
-      volume (Γ.ofSize 11) ^ Fintype.card F.FreeIndex :=
-    (setLIntegral_one _).le.trans (volume_coordinateBox F.FreeIndex (Γ.ofSize 11)).le
+      volume (Γ.ofSize 11) ^ Fintype.card F.FreeIndex := by
+    rw [setLIntegral_one, vecsOfSize_eq_univ_pi, volume_pi_pi_const]
   exact setLIntegral_orthonormalPart_le (φ := 1) (.inr rfl) h_vol measurable_one
 
 /-- Let ρ be the volume `floorVolume b` of Y^(b) or the measure of the quadric of floor b. The
@@ -155,6 +155,7 @@ lemma fourierSqNormLe_floorQuadricMeasure (ξ : Aˣ) {ρ : Measure (𝔰.BesselI
   rw [h_eq]
   refine FourierSqNormLe.map ?_ (by fun_prop) (by fun_prop) h_phase measurableSet_vecsOfSize
     (fun _ ↦ mem_vecsOfSize_of_floorBasis_mulVec) fun _ ↦ mem_vecsOfSize_of_floorBasis_mulVec
+  simp only [vecsOfSize_eq_univ_pi]
   refine (IsSolvedIn.fourierSqNormLe (inner := .inr ∘ .inr ∘ .inl ∘ F.freeIndex)
     (h_solved' blk' h_inj' (i + 4)) (h_solved blk h_inj₀ (j + 4))
     (Γ.isCompact_ofSize (i + 4)).measurableSet ?_ ?_ ξ).mono ?_

@@ -562,12 +562,12 @@ include h in
 2 m + 4. Its volume disintegrates along the standard form into an s-finite kernel, and on each
 quadric the points y with u y integral, u a unit, have mass at most ζ |u|^(-(2 m + 3)), where ζ is
 the ideal zeta sum `idealZeta P.integers m`. -/
-lemma exists_kernel_isDisintegration_coordinateBox_le :
+lemma exists_kernel_isDisintegration_univ_pi_le :
     ∃ q : ProbabilityTheory.Kernel (skewAdjoint A) (Fin F.blockRank → A),
       ProbabilityTheory.IsSFiniteKernel q ∧
       IsDisintegration volume 1 q ∧
       ∀ (β : skewAdjoint A) (u : Aˣ),
-        q β (coordinateBox (Fin F.blockRank) {x : A | u.val * x ∈ P.integers}) ≤
+        q β (Set.pi Set.univ fun _ ↦ {x : A | u.val * x ∈ P.integers}) ≤
           idealZeta P.integers m * (P.modulus u)⁻¹ ^ (2 * m + 3) :=
   exists_kernel_isDisintegration_le h.idealZeta_le_two
     (Fintype.card_fin _) (by lia)
@@ -760,10 +760,11 @@ def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
     lia
   exists_blockKernel := by
                  obtain ⟨l, h_sfinite, h_dis, h_mass⟩ :=
-                   h.exists_kernel_isDisintegration_coordinateBox_le
-                 exact ⟨l, h_sfinite, h_dis, fun β j ↦
-                   (h_mass β (α ^ j)).trans
-                     (h.idealZeta_mul_inv_modulus_pow_le hα (by simp only [blockRank]; nlinarith))⟩
+                   h.exists_kernel_isDisintegration_univ_pi_le
+                 refine ⟨l, h_sfinite, h_dis, fun β j ↦ ?_⟩
+                 rw [Size.vecsOfSize_eq_univ_pi]
+                 exact (h_mass β (α ^ j)).trans
+                   (h.idealZeta_mul_inv_modulus_pow_le hα (by simp only [blockRank]; nlinarith))
   exists_commonBound _ hx _ hz := h.exists_isCommonBound hα (fun _ ↦ rfl) hx hz
 
 include h in
@@ -899,7 +900,7 @@ theorem groupMeasure_boxSet_le : F.groupMeasure F.boxSet ≤ ENNReal.ofReal (1 +
   -- scale `1` every `ofSize j` is `P.integers`, of volume `1`.
   have h_floor (l : Fin 𝔰.n) : F.FloorMassLe l (idealZeta P.integers m) 1 := by
     -- Solve the equation in a block. The other coordinates are free in `P.integers`.
-    obtain ⟨q, _, h_dis, h_mass⟩ := h.exists_kernel_isDisintegration_coordinateBox_le
+    obtain ⟨q, _, h_dis, h_mass⟩ := h.exists_kernel_isDisintegration_univ_pi_le
     obtain ⟨blk', blk, h_inj⟩ : ∃ blk' blk : Fin F.blockRank → ι,
         Function.Injective (F.freeIndex ⊕ᵥ (blk' ⊕ᵥ blk)) := h.gauge.exists_blocks
     have h_blocks : Function.Injective (blk' ⊕ᵥ blk) := h_inj.comp inr_injective
@@ -920,7 +921,7 @@ theorem groupMeasure_boxSet_le : F.groupMeasure F.boxSet ≤ ENNReal.ofReal (1 +
         Fin F.blockRank ⊕ Fin F.blockRank →
           Fin 2 ⊕ FloorPairs l (m + 1) ⊕ ι ⊕ FloorPairs l (m + 1)) := by
       simpa only [comp_elim] using inr_injective.comp (h_mid.comp h_blocks)
-    simpa [SemilocalField.volume_O, volume_coordinateBox, Size.vecsOfSize, -Sum.forall,
+    simpa [SemilocalField.volume_O, volume_pi_pi_const, Size.vecsOfSize_eq_univ_pi, -Sum.forall,
       Set.univ_inter] using!
       h_solved.setLIntegral_le isOpen_O.measurableSet h_disjoint measurable_one
   calc F.groupMeasure F.boxSet

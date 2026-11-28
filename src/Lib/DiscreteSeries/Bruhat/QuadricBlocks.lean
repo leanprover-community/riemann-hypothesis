@@ -50,14 +50,10 @@ open Matrix MeasureTheory Measure ProbabilityTheory ENNReal Fintype Set Sum Func
 variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
   {B κ : Type} [Fintype B] [Fintype κ] {S : Set A} {M : ℝ≥0∞}
 
-/-- The vectors with all coordinates in S. -/
-abbrev coordinateBox (κ : Type) (S : Set A) : Set (κ → A) := {x : κ → A | ∀ i : κ, x i ∈ S}
-
-/-- The box of S in A^κ has volume vol(S)^(card κ). -/
-lemma volume_coordinateBox (κ : Type) [Fintype κ] (S : Set A) :
-    volume (coordinateBox κ S) = volume S ^ card κ := by
-  have h_box : coordinateBox κ S = univ.pi fun _ : κ ↦ S := Set.ext fun x ↦ by simp
-  rw [h_box, volume_pi_pi, Finset.prod_const, Finset.card_univ]
+/-- The box of S in A^κ, the vectors with all coordinates in S, has volume vol(S)^(card κ). -/
+lemma volume_pi_pi_const (κ : Type) [Fintype κ] (S : Set A) :
+    volume (pi univ fun _ : κ ↦ S) = volume S ^ card κ := by
+  rw [volume_pi_pi, Finset.prod_const, Finset.card_univ]
 
 /-- An injective map to a finite type κ extends to a bijection onto κ from the disjoint union of
 its source with a finite type. -/
@@ -94,7 +90,7 @@ def IsSolvedIn (blk : B → κ) (ρ : Measure (κ → A)) (S : Set A) (M : ℝ�
   ∃ (η : Type) (_ : Fintype η) (e : η ⊕ B ≃ κ) (ζ : Kernel (η → A) (B → A)),
     e ∘ inr = blk ∧ IsSFiniteKernel ζ ∧
     MeasurePreserving (fun p : (η → A) × (B → A) ↦ (p.1 ⊕ᵥ p.2) ∘ e.symm) (volume ⊗ₘ ζ) ρ ∧
-    ∀ w : η → A, ζ w (coordinateBox B S) ≤ M
+    ∀ w : η → A, ζ w (pi univ fun _ ↦ S) ≤ M
 
 /-- The volume is solved in any block: it is the volume in the other coordinates times the volume in
 the coordinates of the block. Any bound M for the volume of the box of S in A^B may be taken. -/
@@ -105,7 +101,7 @@ lemma isSolvedIn_volume {blk : B → κ} (h_inj : Injective blk) (hM : volume S 
   refine ⟨η, inferInstance, e, ζ, he, inferInstance, ?_, fun _ ↦ ?_⟩
   · rw [compProd_const]
     exact measurePreserving_sumElim_comp_symm e
-  · rwa [Kernel.const_apply, volume_coordinateBox]
+  · rwa [Kernel.const_apply, volume_pi_pi_const]
 
 /-- The index of the quadric h(x, x) = r: the skew element τδr − star (τδr), with τ of trace one and
 δ the skew unit of the place. It is δr if r is hermitian. -/
@@ -230,7 +226,7 @@ mass at most M on the box. -/
 theorem IsDisintegration.isSolvedIn_quadricMeasure [DecidableEq B] [DecidableEq κ]
     {l : Kernel (skewAdjoint A) (B → A)} [IsSFiniteKernel l]
     (hl : IsDisintegration volume (1 : Matrix B B A) l)
-    (h_mass : ∀ b : skewAdjoint A, l b (coordinateBox B S) ≤ M) {T : Matrix κ κ A} (hT : Tᴴ = T)
+    (h_mass : ∀ b : skewAdjoint A, l b (pi univ fun _ ↦ S) ≤ M) {T : Matrix κ κ A} (hT : Tᴴ = T)
     {blk : B → κ} (h_inj : Injective blk)
     (h_orth : ∀ (i : B) (k : κ), T (blk i) k = (1 : Matrix κ κ A) (blk i) k) (β : skewAdjoint A) :
     IsSolvedIn (inr ∘ blk) (quadricMeasure T β) S M := by
