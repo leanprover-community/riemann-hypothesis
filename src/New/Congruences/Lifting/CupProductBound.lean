@@ -289,6 +289,20 @@ lemma smul_smul_frobGroup_comm {N M : Type} [SMul N M] [SMul (FrobGroup Γ) M]
     [SMulCommClass (FrobGroup Γ) N M] (n : FrobGroup Γ) (a : N) (z : M) : n • a • z = a • n • z :=
   smul_comm n a z
 
+/-- Specialization of `wittFst_smul` when `x` projects to `p ^ e₁ • (1 ⊗ c)`. -/
+private lemma wittFst_smul_of_projTrivial {e₁ : ℕ} {c : S.paramLattice}
+    {x : S.extensionLattice.Ambient}
+    (hx : S.projTrivial.wittMap x = p ^ e₁ • DiagTensor.mk 1 c) :
+    S.wittFst (n • x) = n • S.wittFst x +
+      p ^ e₁ • DiagTensor.mk 1 ((S.cocycleMap c).val (FrobGroup.snd n)) := by
+  simp [wittFst_smul, hx, smul_smul_frobGroup_comm, extensionRep]
+
+/-- Frobenius commutes with `S.wittFst`. -/
+private lemma wittFst_phi_smul (x : S.extensionLattice.Ambient) :
+    S.wittFst (φ • x) = φ • S.wittFst x := by
+  revert x
+  exact diagTensor_induction (by simp)
+
 /-- Near `1` (the filter `nearOne Γ`) the group fixes each element of W(C^♭) ⊗ ℤ/p^m(1) up to an
 element of `smallPart m`, the image of W(𝔪^♭). -/
 lemma eventually_smul_sub_mem_smallPart {m : ℕ}
@@ -342,9 +356,12 @@ lemma Pairing.phi_smul_sub_mem_smallPart {e₁ e₂ : ℕ} {c : S.paramLattice} 
         B (w - x) (S'.wittFst (g₀ • w' - w')) + B (g₀ • x - x) (S'.wittFst (g₀ • (w' - x'))) := by
     -- What is left after inserting `h_y` follows from the bilinearity of `B`.
     linear_combination (norm := skip) h_y
-    simp +zetaDelta [k.galMonoid.smul_def, hB, hf, hx, hw, hx', hw', smul_smul_frobGroup_comm,
-      (commute_phi _).eq, wittFst_smul, extensionRep, smul_smul, smul_sub, smul_wittPairing,
-      MonoidHom.map_one, sub_eq_zero]
+    simp +zetaDelta [k.galMonoid.smul_def, hB, hf,
+      wittFst_smul_of_projTrivial (inr (g : Γ)) hx, wittFst_smul_of_projTrivial (inr (g : Γ)) hw,
+      wittFst_smul_of_projTrivial (inr (g : Γ)) hx', wittFst_smul_of_projTrivial (inr (g : Γ)) hw',
+      wittFst_smul_of_projTrivial (inr (g : Γ) * φ) hx', wittFst_phi_smul,
+      smul_smul_frobGroup_comm, (commute_phi _).eq, smul_smul, smul_sub, smul_wittPairing,
+      sub_eq_zero]
     abel
   rw [h_moves, hB, hB, hB, hB]
   exact add_mem (sub_mem (sub_mem (h_path.isSafeMoveSnd_start g₀) (h_path.isSafeMoveFst_start g₀))
@@ -386,9 +403,10 @@ lemma Pairing.nsmul_modPairing_eq_coboundary {e₁ e₂ e₃ r : ℕ} {c : S.par
         B (inr g.val • x - x) (S'.wittFst (inr g.val • (inr h.val • x' - x'))) +
           (inr g.val • f (inr h.val) - f (inr (g * h).val) + f (inr g.val)) := by
     -- `nsmul_eq_mul` would turn the multiples into products before `smul_smul` can collect them.
-    simp [hB, hf, hx, hx', smul_smul_frobGroup_comm, apply_mul (S.cocycleMap c).property,
+    simp [hB, hf, wittFst_smul_of_projTrivial _ hx, wittFst_smul_of_projTrivial _ hx',
+      smul_smul_frobGroup_comm, apply_mul (S.cocycleMap c).property,
       apply_mul (S'.cocycleMap c').property, pow_add, mul_comm, mul_left_comm, mul_assoc,
-      -nsmul_eq_mul, smul_sub, wittFst_smul, extensionRep, smul_smul, smul_wittPairing]
+      -nsmul_eq_mul, smul_sub, smul_smul, smul_wittPairing]
     abel
   let δ (g : k.subgroup) := f (inr g.val) - DiagTensor.mk 1 (κ g)
   have h_δ : inr g.val • δ h - δ (g * h) + δ g ∈ smallPart P.exponent :=
@@ -467,8 +485,8 @@ lemma Pairing.IsScaledCupCoboundary.of_isSafePath {e₁ e₂ e₃ : ℕ} {c : S.
     -- The cocycle terms are multiples of `p ^ m`, which kills the target of `B x`.
     have h_f : f (inr h.val) = inr h.val • y - y -
         B x (inr h.val • S'.wittFst x' - S'.wittFst x') := by
-      simp +zetaDelta [hx, hx', smul_smul_frobGroup_comm, hz, hz', TateTwist.pow_smul_eq_zero,
-        smul_sub, wittFst_smul, extensionRep, smul_wittPairing]
+      simp +zetaDelta [wittFst_smul_of_projTrivial _ hx, wittFst_smul_of_projTrivial _ hx',
+        smul_smul_frobGroup_comm, hz, hz', TateTwist.pow_smul_eq_zero, smul_sub, smul_wittPairing]
       abel
     have hf_small : f (inr h.val) ∈ smallPart P.exponent := by
       simpa only [h_f] using sub_mem hy' hB
