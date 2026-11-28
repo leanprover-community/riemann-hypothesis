@@ -364,21 +364,14 @@ lemma IsPosition.exists_mul_eq_frameCols_and_besselLength_le (hP : IsPosition ε
     exact ⟨Z * p.matrix⁻¹.val, by
       rw [Matrix.mul_assoc, ← Matrix.mul_assoc _ p.matrix.val, Units.inv_mul, Matrix.one_mul, hZ]⟩
   have h_indep' : HasLeftInv (fromCols 𝔰.definiteCols 𝔰.frameCols) := by
-    refine ⟨(fromCols 𝔰.definiteCols 𝔰.frameCols)ᴴ, ?_⟩
-    rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul_fromCols,
-      conjTranspose_inclMatrix_mul, conjTranspose_inclMatrix_mul,
-      conjTranspose_inclMatrix_mul, conjTranspose_inclMatrix_mul, ← fromBlocks_one]
-    refine fromBlocks_inj.2 ⟨?_, ?_, ?_, ?_⟩
-    · ext i j
-      simp only [submatrix_apply, id_eq, inclMatrix, Matrix.one_apply, Sum.inr.injEq, Sum.inl.injEq]
-    · ext i b
-      refine Fin.lastCases ?_ (fun c ↦ ?_) b <;>
-        simp [Shape.besselFrame, inclMatrix]
-    · ext a j
-      refine Fin.lastCases ?_ (fun c ↦ ?_) a <;>
-        simp [Shape.besselFrame, inclMatrix]
-    · ext a b
-      simp only [submatrix_apply, id_eq, inclMatrix, Matrix.one_apply, besselFrame_injective.eq_iff]
+    let e := Sum.elim 𝔰.indexX₀ 𝔰.besselFrame
+    have he : Function.Injective e := Sum.elim_injective.2
+      ⟨by simp [Function.Injective], besselFrame_injective,
+        by simp [forall_fin_succ', Shape.besselFrame]⟩
+    have h_cols : fromCols 𝔰.definiteCols 𝔰.frameCols = inclMatrix ℂ e := by
+      ext i (a | b) <;> rfl
+    rw [h_cols]
+    exact ⟨_, inclMatrix_gram_eq_one (fun _ _ h ↦ he h)⟩
   obtain ⟨x, hx⟩ : ∃ x : 𝔰.G₁,
       x.val.val * (p.matrix.val * fromCols i₀ v) = fromCols 𝔰.definiteCols 𝔰.frameCols :=
     witt ⟨Complex.I, by simp⟩ isHermitian.eq IsHermitianInvolution.isUnit h_indep h_indep' h_gram
