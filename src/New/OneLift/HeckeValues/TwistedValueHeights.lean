@@ -378,8 +378,6 @@ lemma testColumn_injective (hq : q.HasEmptyRow (Fin (2 * p.z - 20))) {j : ℕ} (
   simp only [testColumn, fromRows_mulVec] at h_eq
   exact inclMatrix_mulVecLin_injective _ _ (funext fun k ↦ congrFun h_eq (.inr k))
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 open MvPolynomial Ideal.Quotient Selmer Nat LevelPlaces in
 /-- Seesaw factorisation at one point. Let `X` be the lift data of a main pair `p`, with point
 `z = p.z`, at the twist `ϑ`; its `2 z` indices form blocks of sizes `12`, `4`, `4`, `2 z - 20`. Let
@@ -536,11 +534,13 @@ theorem inner_pointForm_kernelForm (hq : q.HasEmptyRow (Fin (2 * p.z - 20)))
   -- Join the four kernels by the seesaw identity.
   simp_rw [← modKernelStdSpace_block (.refl _)]
   rw [Complex.conj_conj, map_smul, smul_eq_mul, modKernelBilin_apply]
-  congr! 3
+  -- Close leftover goals only up to reducible unfolding, so the finite sums stay folded.
+  congr! (postTransparency := .reducible) 3
   · simp [DescentPair.charW]
   · exact h_datum _
   · simp only [map_one, mul_one, rename_rename]
     rfl
+  · rfl -- the block identity, which `congr!` now leaves open
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum Finset.prod Finset.univ in
