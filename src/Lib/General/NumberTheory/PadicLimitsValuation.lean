@@ -58,8 +58,7 @@ II.
 
 A transcendental number can be sent to any transcendental element of `PadicAlgCl ℓ` by
 `New.exists_ringEquiv_extend`, and these elements have unbounded norm. The isomorphisms here are
-of abstract fields; no continuity is required. This is the algebraicity input used for the
-common multiplier in `New.HeightLe.nonneg_of_one`.
+of abstract fields and may be discontinuous.
 -/
 
 /-- Let `ℓ` be a prime. If the `ℓ`-adic norms of the images of `x : ℂ` under all field isomorphisms

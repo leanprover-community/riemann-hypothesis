@@ -3,10 +3,10 @@ module
 public import Aesop.BuiltinRules
 public import Mathlib.NumberTheory.Padics.Complex
 import Mathlib.Algebra.Ring.IsFormallyReal
+import TauCeti.FieldTheory.IsAlgClosed.Automorphism
 import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.General.Geometry.GaloisCovers
-import Lib.General.NumberTheory.PadicLimitsValuation
 import Lib.PadicComparison.Descent.TestCategory
 
 /-!
@@ -76,6 +76,22 @@ lemma log_product_formula {M : ℕ} {q : ℚ} (h_num_lt : q.num.natAbs < M) (h_d
     simp [padicNorm.eq_zpow_of_ne_zero hq, padicValRat, padicValInt, Nat.padicValNat_def]
   rw [log_q, log_nat (by simpa using hq) h_num_lt, log_nat q.den_nz h_den_lt]
   simp [log_norm, sub_mul]
+
+/-- If the real parts of the iterates of `x` under each automorphism of `ℂ` over `K` are bounded
+above, then `x` is algebraic over `K`. A transcendental `x` has an automorphism taking it to
+`x + 1`, whose iterates take it to `x + n`. -/
+lemma isAlgebraic_of_bounded_real_orbits {K : Type*} [Field K] [Algebra K ℂ] {x : ℂ}
+    (h : ∀ σ : ℂ ≃ₐ[K] ℂ, ∃ b : ℝ, ∀ n : ℕ, ((σ ^ n) x).re ≤ b) : IsAlgebraic K x := by
+  by_contra hx
+  obtain ⟨σ, hσ⟩ := (show Transcendental K x from hx).exists_algEquiv_apply_eq_add_one
+  obtain ⟨b, hb⟩ := h σ
+  have shift (n : ℕ) : (σ ^ n) x = x + n := by
+    induction n with
+    | zero => simp
+    | succ n ih => simp [pow_succ', AlgEquiv.mul_apply, ih, hσ, add_comm, add_left_comm]
+  obtain ⟨n, hn⟩ := exists_nat_gt (b - x.re)
+  have hle : x.re + n ≤ b := by simpa only [shift, Complex.add_re, Complex.natCast_re] using hb n
+  linarith
 
 namespace HeightLe
 
@@ -203,11 +219,12 @@ lemma nonneg_of_one (h_one : HeightLe c 1) : 0 ≤ c := by
   -- product of `n` conjugates of `H`, so `log |q| ≤ n α` and `log |q|_l ≤ n (e l) log l`.
   -- The product formula for `q` then gives `0 ≤ n * c`.
   obtain ⟨H, α, e, hH, -, hα, he, h_sum⟩ := h_one
+  -- The archimedean bound already controls every iterate of each automorphism.
+  have h_alg : IsAlgebraic ℚ H := isAlgebraic_of_bounded_real_orbits fun σ ↦
+    ⟨exp α, fun n ↦ (Complex.re_le_norm _).trans (hα (σ ^ n).toRingEquiv)⟩
   have h_padic (l : ℕ) [hl : Fact l.Prime] (ι : ℂ ≃+* PadicAlgCl l) :
       ‖ι H‖ ≤ exp (e l * log l) := by
     simpa [rpow_def_of_pos, hl.out.pos, mul_comm] using he ⟨⟨l, hl.out⟩, ι⟩
-  -- `H` is algebraic, because its `2`-adic size is bounded uniformly in `ι`.
-  have h_alg : IsAlgebraic ℚ H := isAlgebraic_of_norm_complexToCp_le (by simpa using h_padic 2)
   have : FiniteDimensional ℚ ℚ⟮H⟯ := adjoin.finiteDimensional h_alg.isIntegral
   let q : ℚ := Algebra.norm ℚ (gen ℚ H)
   let n : ℕ := finrank ℚ ℚ⟮H⟯
