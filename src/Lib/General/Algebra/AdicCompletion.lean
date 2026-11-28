@@ -435,16 +435,6 @@ instance [IsPrecomplete I S] [Module.Finite S M] : IsPrecomplete I M := by
   simpa using (ofTensorProduct_surjective_of_finite I M).comp
     (TensorProduct.mk_surjective S M _ (of_surjective I S)) x
 
-/-- A module that embeds linearly in a product of copies of an `I`-adically separated module is
-`I`-adically separated. -/
-lemma isHausdorff_of_injective_pi [IsHausdorff I F] {ι : Type*} (f : M →ₗ[S] ι → F)
-    (hf : Function.Injective f) : IsHausdorff I M := by
-  -- If `x` and `y` agree in the completion of `M`, so do the coordinates of `f x` and `f y`.
-  refine of_injective_iff.mp fun x y hxy ↦ hf (funext fun i ↦ ?_)
-  have h_coord : of I F ((LinearMap.proj i ∘ₗ f) x) = of I F ((LinearMap.proj i ∘ₗ f) y) := by
-    rw [← map_of, ← map_of, hxy]
-  exact of_inj.mp h_coord
-
 /-- Let C be I-adically complete, β: F → M have I-adically dense image, and g: F → C satisfy
 g(f) ∈ I^n C whenever β(f) ∈ I^{2n} M. Then g = G ∘ β for some S-linear G: M → C. -/
 lemma exists_adic_extension (I : Ideal S) [IsAdicComplete I C] (β : F →ₗ[S] M)

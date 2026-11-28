@@ -655,7 +655,7 @@ lemma crysCocycles.finite_and_finrank_eq_of_rank_eq {n : ℕ}
     (h_rank : Module.rank ℤ_[p] (crysCocycles ρ) = n) :
     Module.Finite ℤ_[p] (crysCocycles ρ) ∧ finrank ℤ_[p] (crysCocycles ρ) = n := by
   have h_sep : IsHausdorff (IsLocalRing.maximalIdeal ℤ_[p]) (crysCocycles (overZp ρ)) :=
-    isHausdorff_of_injective_pi _ _ (crysCocycles (overZp ρ)).injective_subtype
+    IsHausdorff.of_injective _ _ (crysCocycles (overZp ρ)).injective_subtype
   obtain ⟨-, h_finite⟩ := free_finite_of_rank_le
     (maximalIdeal_eq_span_p.trans span_insert_zero.symm) h_sep (by simp [ne]) _ h_rank.le (by simp)
   exact ⟨h_finite, finrank_eq_of_rank_eq h_rank⟩

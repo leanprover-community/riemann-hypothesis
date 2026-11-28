@@ -477,7 +477,7 @@ lemma finite_free_of_fixed_periods {c : Chart} (hc : c.IsChartOf (Γ := Δ) Over
       (hy.map' D.subtype D.ker_subtype)
   -- `D` is `p`-adically separated and `p`-torsion free, of rank at most the rank of `A ⊗ T`.
   have hsep : IsHausdorff (Ideal.span {(p : WittFq c.f)}) D :=
-    isHausdorff_of_injective_pi _
+    IsHausdorff.of_injective _
       (.restrictScalars _ (finBasis Amax _).equivFun.toLinearMap ∘ₗ D.subtype)
       ((finBasis Amax _).equivFun.injective.comp D.injective_subtype)
   have hrank : Module.rank (WittFq c.f) D ≤ finrank Amax (Amax ⊗[ℤ_[p]] T) :=

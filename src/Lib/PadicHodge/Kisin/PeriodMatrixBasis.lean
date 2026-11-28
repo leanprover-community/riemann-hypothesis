@@ -532,7 +532,7 @@ lemma exists_spanning_matrix (hU : c.IsPeriodMatrix U h v) :
   have h_torsion : ∀ a : P, (p : c.S) • a = 0 → (p : c.S) = 0 ∨ a = 0 := by simp
   obtain ⟨⟨κ, b⟩, -⟩ : Module.Free c.S P ∧ Module.Finite c.S P :=
     free_finite_of_rank_le rfl
-      (isHausdorff_of_injective_pi c.maxIdeal P.subtype P.injective_subtype)
+      (IsHausdorff.of_injective c.maxIdeal P.subtype P.injective_subtype)
       h_sat_P (card d) h_rank h_torsion
   -- pad the basis `b` of `P` to a family `q` indexed by `d`
   obtain ⟨e⟩ : Nonempty (κ ↪ d) := by
