@@ -9,6 +9,7 @@ import Lib.Adelic.Adeles.LocalFactors
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.Witt.WittTheorem
 import Lib.General.Analysis.PackingAndSobolev
+import Lib.General.LinearAlgebra.HermiteForm
 import Lib.General.LinearAlgebra.PolarDecomposition
 import Lib.General.NumberTheory.LatticeCovolumes
 
@@ -142,10 +143,13 @@ lemma exists_isKernelExtension {A : Matrix σ P k} {x : Matrix P σ k} (h_det : 
 
 /-! ### The discriminant of the integral points of a subspace -/
 
-variable [HasPrimitiveRoot5040 E] {L : Matrix σ P (𝔸f E)} {H : Matrix P σ (𝔸f E)}
+variable {L : Matrix σ P (𝔸f E)} {H : Matrix P σ (𝔸f E)}
 
-/-- Let `E` be a CM field containing a primitive `5040`-th root of unity, and let the finite adelic
-matrix `H` have a left inverse `L`. A subspace `V` of `E^σ` of dimension `s` has a basis `y` (the
+section
+
+omit [IsCMField E]
+/-- Let `E` be a number field and let the finite adelic matrix `H` have a left inverse `L`.
+A subspace `V` of `E^σ` of dimension `s` has a basis `y` (the
 columns of a left invertible matrix over `E`) and an `a ∈ GL_s(𝔸_f)` such that `H y a` is
 primitive: it has entries in `Ô` and a left inverse with entries in `Ô`. -/
 lemma exists_isPrimitiveMatrix_mul_finAdeleMatrix (hLH : L * H = 1) (V : Submodule E (σ → E))
@@ -157,7 +161,8 @@ lemma exists_isPrimitiveMatrix_mul_finAdeleMatrix (hLH : L * H = 1) (V : Submodu
   obtain ⟨y, ⟨l, hl⟩, hy⟩ := exists_hasLeftInv_colSpan_eq V
   have h_left : finAdeleMatrix l * L * (H * finAdeleMatrix y) = 1 := by
     simp [← L.mul_assoc, hLH, hl, ← Matrix.map_mul, Matrix.mul_assoc]
-  obtain ⟨a, -, ha⟩ := exists_preimageLattice_eq_colLattice ⟨finAdeleMatrix l * L, h_left⟩
+  obtain ⟨a, -, ha⟩ := isValuationPair_Ô.exists_isPrimitiveMatrix_mul
+    ⟨finAdeleMatrix l * L, h_left⟩
   exact ⟨y, a, ⟨l, hl⟩, hy, by rwa [← H.mul_assoc]⟩
 
 open scoped Classical in
@@ -185,6 +190,8 @@ lemma exists_sublatticeBasis_eq_finAdeleMatrix_mul (hLH : L * H = 1) (V : Submod
       HasLeftInv y ∧ colSpan y = V ∧ (sublatticeBasis hLH V).val = finAdeleMatrix y * a.val :=
   (sublatticeBasis hLH V).property.right
 
+end
+
 /-- The discriminant `√[det mᴴ m]` of the lattice of adelic points of `V` that `H` makes integral,
 for its basis `m = New.Filling.sublatticeBasis hLH V`. Here `[·]` is the generalised index
 `New.genIndex`, which is `|N(z)|` at a nonzero `z ∈ E` for the norm `N` from `E` to `ℚ`. So for a
@@ -199,7 +206,7 @@ abbrev sublatticeIndex (hLH : L * H = 1) (V : Submodule E (σ → E)) (Y : Matri
     (K : Submodule (Ô E) (τ → 𝔸f E)) : ℕ :=
   submoduleIndex K (colLattice (Ô E) (Y * (H * (sublatticeBasis hLH V).val)))
 
-/-- Let `E` be a CM field containing a primitive `5040`-th root of unity, and let the finite adelic
+/-- Let `E` be a CM field, and let the finite adelic
 matrix `H` have a left inverse `L`. The columns of `m = sublatticeBasis hLH V` are an `Ô`-basis of
 the adelic points of the subspace `V` that `H` makes integral. Let the matrix `x` over `E` have
 `dim V` columns, all in `V`, with `det xᴴ x ≠ 0`. Then for every invertible finite adelic `w` there
@@ -222,6 +229,8 @@ lemma exists_finAdeleMatrix_mul_eq_sublatticeBasis_mul (hLH : L * H = 1) {V : Su
   obtain ⟨b, hb⟩ : IsUnit (finAdeleMatrix B) :=
     ((isUnit_iff_isUnit_det B).2 hB_det.isUnit).map (algebraMap E (𝔸f E)).mapMatrix
   exact ⟨a⁻¹ * b * w, by simp [hm, hb, Matrix.mul_assoc]⟩
+
+variable [HasPrimitiveRoot5040 E]
 
 /-- Let `E` be a CM field containing a primitive `5040`-th root of unity, and let the finite adelic
 matrix `H` have a left inverse `L`. Let `m = sublatticeBasis hLH V` be the chosen `Ô`-basis of the
