@@ -348,11 +348,11 @@ lemma hasLeftInv_toCols_of_hasLeftInv_toRows (e : b ⊕ a ≃ N ⊕ n) (k : GL (
   -- (`hasLeftInv_submatrix_invLastRows`).
   refine ⟨fun ⟨L, hL⟩ ↦ ?_, fun ⟨L, hL⟩ ↦ ?_⟩
   · have h_ext : fromCols L (0 : Matrix b n R) * firstCols e k = 1 := by
-      simpa [← ext_iff, Matrix.mul_apply] using hL
+      rw [← fromRows_toRows (firstCols e k), fromCols_mul_fromRows, Matrix.zero_mul, add_zero, hL]
     have h_zero : (fromCols L (0 : Matrix b n R)).submatrix id Sum.inr = 0 := toCols₂_fromCols L 0
     exact hasLeftInv_submatrix_invLastRows k h_ext Sum.inr_injective h_zero
   · have h_ext : fromCols (0 : Matrix b N R) L * firstCols e k = 1 := by
-      simpa [← ext_iff, Matrix.mul_apply] using hL
+      rw [← fromRows_toRows (firstCols e k), fromCols_mul_fromRows, Matrix.zero_mul, zero_add, hL]
     have h_zero : (fromCols (0 : Matrix b N R) L).submatrix id Sum.inl = 0 := toCols₁_fromCols 0 L
     exact hasLeftInv_submatrix_invLastRows k h_ext Sum.inl_injective h_zero
 
