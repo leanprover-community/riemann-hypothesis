@@ -208,26 +208,6 @@ lemma weak_transference_covering_radius (Λ : Submodule ℤ E) [Module.Finite �
         push_cast
         linarith [n.cast_nonneg (α := ℝ)]
 
-/-- Short vectors span. If every vector of a finite-dimensional Euclidean space lies within distance
-`r > 0` of a set `S`, then the vectors of `S` of length at most `3 r` span the space. -/
-lemma span_norm_le_eq_top_of_covering [Module.Finite ℝ E] {S : Set E} {r : ℝ} (hr : 0 < r)
-    (h_cover : ∀ u : E, ∃ x ∈ S, ‖u - x‖ ≤ r) :
-    span ℝ {x ∈ S | ‖x‖ ≤ 3 * r} = ⊤ := by
-  -- A vector `x` of `S` within `r` of a vector `u` of length `2 r` has length at most `3 r` and is
-  -- not orthogonal to `u`. So no nonzero vector is orthogonal to all short vectors.
-  rw [← Submodule.orthogonal_eq_bot_iff, Submodule.eq_bot_iff]
-  intro y hy
-  by_contra hy_ne
-  let u : E := (2 * r / ‖y‖) • y
-  have hu_norm : ‖u‖ = 2 * r := by simp [u, norm_smul, abs_of_pos hr, hy_ne]
-  obtain ⟨x, hx_mem, hx_near⟩ := h_cover u
-  have hx_norm : ‖x‖ ≤ 3 * r := by linarith [norm_sub_norm_le x u, norm_sub_rev x u]
-  have hx_span : x ∈ span ℝ {x ∈ S | ‖x‖ ≤ 3 * r} := subset_span ⟨hx_mem, hx_norm⟩
-  have h_orth : inner ℝ u x = 0 := inner_left_of_mem_orthogonal hx_span (smul_mem _ _ hy)
-  have h_sq : ‖u - x‖ ^ 2 ≤ r ^ 2 := by gcongr
-  rw [norm_sub_sq_real, h_orth, hu_norm] at h_sq
-  nlinarith [sq_nonneg ‖x‖]
-
 end New
 
 end Transference
@@ -819,31 +799,6 @@ lemma exists_norm_sub_archCoords_le {d : 𝓞 E} (hd : d ≠ 0) (h_diff : d ∈ 
   simpa [Λ, ← mem_toAddSubgroup, finrank_real_of_complex] using
     weak_transference_covering_radius Λ V.firstMinimum_pos h_dual u
 
-/-- A set `S` of rational vectors spans `E ^ n` over `E` if the archimedean coordinates
-`V.archCoords ξ` (the components of `x⁻¹ ξ` at the infinite places, `x` the point of `V`) of its
-members span their space over `ℝ`. -/
-lemma span_eq_top_of_span_archCoords {S : Set (n → E)}
-    (h_span : span ℝ (V.archCoords '' S) = ⊤) : span E S = ⊤ := by
-  -- A linear form `φ` on `E ^ n` extends at a place `w` to a real linear map `ψ` on the
-  -- coordinate space. If `φ` vanishes on `S`, then `ψ = 0`, so `φ = 0`.
-  by_contra h_ne
-  obtain ⟨φ, hφ_ne, hφ⟩ := (span E S).exists_le_ker_of_lt_top (lt_top_iff_ne_top.2 h_ne)
-  let w : InfinitePlace E := Classical.arbitrary _
-  let ψ : EuclideanSpace ℂ (InfinitePlace E × n) →ₗ[ℝ] ℂ :=
-    { toFun u := ∑ i : n, (∑ j : n, (V.x.val i j).1 w * u (w, j)) * Φ w (φ (Pi.single i 1))
-      map_add' u v := by simp [mul_add, add_mul, sum_add_distrib]
-      map_smul' t u := by simp [mul_sum, sum_mul, mul_assoc, mul_left_comm] }
-  have h_extend (ξ : n → E) : ψ (V.archCoords ξ) = Φ w (φ ξ) := by
-    have h_frame (i : n) : ∑ j : n, (V.x.val i j).1 w * V.archCoords ξ (w, j) = Φ w (ξ i) := by
-      simpa [mulVec, dotProduct, fst_sum, archCoords] using congrArg (fun v : n → 𝔸 E ↦ (v i).1 w)
-        (show V.x.val *ᵥ V.vecAtPoint ξ = toAdele ∘ ξ by simp [vecAtPoint])
-    have h_sum : φ ξ = ∑ i : n, ξ i * φ (Pi.single i 1) := by
-      simpa using congrArg φ (pi_eq_sum_univ' ξ)
-    simp [ψ, h_frame, h_sum]
-  have hψ : ψ = 0 := LinearMap.ext_on h_span <| Set.forall_mem_image.2 fun ξ hξ ↦ by
-    simp [h_extend, LinearMap.mem_ker.1 (hφ (subset_span hξ))]
-  exact hφ_ne (LinearMap.ext fun ξ ↦ by simpa [hψ] using (h_extend ξ).symm)
-
 section
 
 variable {E n : Type*} [Field E] [NumberField E] [Fintype n]
@@ -869,32 +824,34 @@ of `V`, cut off at `1`. The constant `shortBasisConst E n N` is `N / 2` times th
 lemma exists_short_basis (h_diff : (N : 𝓞 E) ∈ differentIdeal ℤ (𝓞 E)) :
     ∃ Y : GL n E, ∀ j : n,
       Y.val.col j ∈ V.latticeBall (shortBasisConst E n N / V.firstMinimum) := by
-  -- The vectors `(2 / N) a`, for `a` in the lattice, come within `r` of every point. So those of
-  -- length at most `3 r` span, and then `a` has length at most `3 r N / 2`.
-  suffices h_top : span E (V.latticeBall (shortBasisConst E n N / V.firstMinimum)) = ⊤ from
-    exists_GL_col_mem_of_span _ h_top.ge
+  -- Clear denominators, then descend within the lattice to show that short vectors span.
+  apply exists_GL_col_mem_of_span _
+  intro y _
+  obtain ⟨M, hM, h_mem⟩ := V.exists_smul_mem_baseLattice y
+  apply (smul_mem_iff (span E (V.latticeBall (shortBasisConst E n N / V.firstMinimum)))
+    (mod_cast hM : (M : E) ≠ 0)).1
+  suffices h_scaled : M • y ∈ span E
+      (V.latticeBall (shortBasisConst E n N / V.firstMinimum)) by exact_mod_cast h_scaled
+  generalize M • y = z at h_mem ⊢
   cases isEmpty_or_nonempty n
-  · exact Subsingleton.elim _ _
-  let r : ℝ := (2 * (Core.numInfPlaces E * card n)) ^ 2 / V.firstMinimum
-  have hr : 0 < r := div_pos (by positivity) V.firstMinimum_pos
-  have h_scale (a : n → E) :
-      V.archCoords ((2 / (N : 𝓞 E).val) • a) = (2 / N : ℝ) • V.archCoords a := by
-    simp [div_eq_inv_mul, mul_smul, map_inv_natCast_smul _ E ℝ, two_smul]
-  have hN : (0 : ℝ) < N := mod_cast NeZero.pos N
-  have h_span : span ℝ {x ∈ (fun a : n → E ↦ (2 / N : ℝ) • V.archCoords a) '' V.baseLattice |
-      ‖x‖ ≤ 3 * r} = ⊤ :=
-    span_norm_le_eq_top_of_covering hr fun u ↦
-      let ⟨a, ha, h_near⟩ := V.exists_norm_sub_archCoords_le NeZero.out h_diff u
-      ⟨_, ⟨a, ha, (h_scale a).symm⟩, h_near⟩
-  refine V.span_eq_top_of_span_archCoords (top_unique (h_span.ge.trans (span_le.2 ?_)))
-  rintro _ ⟨⟨a, ha, rfl⟩, h_short⟩
-  rw [norm_smul, Real.norm_of_nonneg (by positivity)] at h_short
-  refine smul_mem _ _ (subset_span ⟨a, ⟨ha, ?_⟩, rfl⟩)
-  calc ‖V.archCoords a‖
-    _ ≤ (2 / N : ℝ)⁻¹ * (3 * r) := (le_inv_mul_iff₀ (by positivity)).2 h_short
-    _ = shortBasisConst E n N / V.firstMinimum := by
-      simp [r, shortBasisConst]
-      field
+  · simp [Subsingleton.elim z 0]
+  have hr : 0 < shortBasisConst E n N / V.firstMinimum / 6 := by
+    simp [shortBasisConst, firstMinimum_pos, NeZero.pos]
+  obtain ⟨k, hk⟩ := Archimedean.arch
+    (‖V.archCoords z‖ - shortBasisConst E n N / V.firstMinimum) hr
+  induction' k with k ih generalizing z
+  · exact subset_span ⟨h_mem, by simpa using hk⟩
+  -- Approximate z by twice a lattice vector; both the remainder and the approximant
+  -- lie lower in the induction bound.
+  obtain ⟨a, ha, h_near⟩ := V.exists_norm_sub_archCoords_le NeZero.out h_diff
+    ((N : ℝ)⁻¹ • V.archCoords z)
+  have h_triangle := norm_le_insert (V.archCoords z) ((2 : ℝ) • V.archCoords a)
+  refine (sub_mem_iff_left _ (nsmul_mem (ih a ha ?_) 2)).1 (ih _ (by bound) ?_)
+  all_goals
+    simp [div_eq_inv_mul, -smul_add, ← smul_sub, ↓norm_smul,
+      map_inv_natCast_smul _ E ℝ, two_smul, inv_mul_le_iff₀, NeZero.pos, mul_smul,
+      shortBasisConst] at *
+    nlinarith
 
 /-- Short bases in the standard space `New.stdSpace`, which has all signs `1` and so is definite.
 Let `N ≠ 0` be a natural number in the different of `E` and `g` a finite adelic unitary matrix. Some
