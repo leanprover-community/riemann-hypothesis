@@ -626,7 +626,16 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
     simp only [hℓ, ite_true] at h_winU h_winU'
     have hbK : 2 * (b + δ) < h ^ 2 * K := by
       have h_add : h + δ ≤ b := by omega
-      nlinarith only [hK, h_loss, hℓ, hQ, h.le_mul_self, h_add]
+      have h_sq : Q * Q + Q ≤ h := by omega
+      -- Doubling the loss bound gives 4b < ℓ(2v + 2), with the latter at most hK + h.
+      have h_scale : 2 * (ℓ * (v + 1)) ≤ h * K + h := calc
+        2 * (ℓ * (v + 1)) = ℓ * (2 * v + 2) := by ring
+        _ ≤ Q * (K * Q + Q + 1) := Nat.mul_le_mul hℓ (by omega)
+        _ = (Q * Q) * K + (Q * Q + Q) := by ring
+        _ ≤ h * K + h := Nat.add_le_add (Nat.mul_le_mul_right K (by omega)) h_sq
+      have h_loss₂ := Nat.mul_lt_mul_of_pos_left h_loss (by decide : 0 < 2)
+      have h_small : 2 * (b + δ) < h * K := by omega
+      exact h_small.trans_le (Nat.mul_le_mul_right K (by simpa only [pow_two] using h.le_mul_self))
     have h_log : ℓ.log (h ^ 3) < m := natLog_lt_of_two_mul_log_lt h_sizes.log_lt (by omega)
     exact normLength_dualDefect_le_of_hasCupExponent hL.isPotentiallyCrystalline (h_exp h_log)
       (h_chart.hasCupExponent_of_le h_sizes hℓ hbK ζ h_open hL h_winU h_winU')
