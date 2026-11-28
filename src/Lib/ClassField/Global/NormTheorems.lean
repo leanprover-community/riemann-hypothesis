@@ -117,20 +117,15 @@ a continuous character χ : Gal(Ω/K) → ℚ/ℤ whose kernel acts on Ω as the
 lemma exists_isProGalois_ker_of_isCyclic (h_cyc : IsCyclic Gal(L/K)) :
     ∃ χ : QZChar Gal(Ω/K), IsProGalois (ker χ) L Ω := by
   -- Pull back a faithful character `ψ` of the cyclic group `Gal(L/K)` along restriction `φ`.
-  obtain ⟨φ, hφ⟩ : ∃ φ : Gal(Ω/K) →ₜ* Gal(L/K),
-      ∀ (g : Gal(Ω/K)) (x : L), algebraMap L Ω (φ g • x) = g • algebraMap L Ω x :=
-    exists_galois_restrict _ _ (algebraMap L Ω) (by simp [← algebraMap_apply])
+  let φ : Gal(Ω/K) →ₜ* Gal(L/K) :=
+    ⟨AlgEquiv.restrictNormalHom L, continuous_of_equivariant_emb (algebraMap L Ω)
+      fun g x ↦ g.restrictNormal_commutes L x⟩
   obtain ⟨ψ, hψ⟩ : ∃ ψ : QZChar Gal(L/K), ker ψ = ⊥ :=
     exists_ker_eq_of_isCyclic ⟨⊥, by simp⟩ (quotientBot.isCyclic.mpr h_cyc)
   refine ⟨comap φ ψ, .of_fixingSubgroup_eq (K := K) ?_⟩
-  -- `g` fixes `L` pointwise iff `φ g = 1` iff `ψ (φ g)` is trivial.
-  ext g
-  have h_fix_iff : g ∈ fixingSubgroup Gal(Ω/K) (Set.range (algebraMap L Ω)) ↔ φ g = 1 := by
-    simp only [mem_fixingSubgroup_iff, forall_mem_range, AlgEquiv.ext_iff, AlgEquiv.one_apply]
-    refine forall_congr' fun x ↦ ?_
-    rw [← hφ, (algebraMap L Ω).injective.eq_iff, AlgEquiv.smul_def]
-  rw [h_fix_iff, ← Subgroup.mem_bot, ← hψ]
-  rfl
+  change _ = (ker ψ).comap φ.toMonoidHom
+  rw [hψ, MonoidHom.comap_bot]
+  exact (AlgEquiv.ker_restrictNormalHom (F := K) (K₁ := Ω) L).symm
 
 omit [EmbeddedNumberField K] [EmbeddedNumberField L] in
 variable [NumberField K] [NumberField L] in
