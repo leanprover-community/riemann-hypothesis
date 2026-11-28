@@ -1,5 +1,6 @@
 module
 
+import TauCeti.RingTheory.Valuation.AddValuation
 public import New.Congruences.Selmer.OneSystem
 public import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 
@@ -523,7 +524,7 @@ lemma IsTiedPrimes.relLength_tied_le [ThePrime ℓ]
     _ ≤ ∑ v, ∑ b, addVal O' (Φ v b).det :=
       sum_le_sum fun v _ ↦ sum_le_sum fun b _ ↦ length_ker_le_addVal_det (Φ v b) _
     _ = addVal O' ((tiePolynomial ρ (J.erase P₀) d).eval₂ e y) := by
-      simp only [tiePolynomial, eval₂_finsetProd, eval₂_shiftedDet, addVal_prod,
+      simp only [tiePolynomial, eval₂_finsetProd, eval₂_shiftedDet, AddValuation.map_prod,
         Fintype.sum_prod_type, Φ]
 
 /-- Release of the first prime. Let `J` be a finite set of primes of the CM field `E` that lie, with
