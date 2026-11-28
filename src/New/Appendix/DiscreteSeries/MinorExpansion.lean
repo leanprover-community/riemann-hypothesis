@@ -410,14 +410,15 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
     linarith [mul_nonneg hX_nonneg hA_nonneg,
       mul_le_mul_of_nonneg_right hX_half (mul_nonneg hX_nonneg hA_nonneg)]
   -- The complementary minor of `g`.
-  let ⟨x, hx_eq, hx⟩ := exists_det_compress_eq_exp_logOneAdd (Y := -A) hP_compl hP_compl hX_half
-    (le_refl ‖X‖) (by simp) (by simp [A, mul_sub, sub_mul, mul_nonneg]) (norm_neg A).le (by simp)
+  obtain ⟨x, hx_eq, hx⟩ := exists_det_compress_eq_exp_logOneAdd (Y := -A) hP_compl hP_compl
+    hX_half (le_refl ‖X‖) (by simp) (by simp [A, mul_sub, sub_mul, mul_nonneg]) (norm_neg A).le
+    (by simp)
   -- The complementary minor of `y l`, which is that of `g`.
   have h_near_compl : ‖⁅1 - P, y l - 1⁆ - (B + C - A)‖ ≤ 4 * ‖X‖ * (4 * ‖A‖) := by
     rw [show ⁅1 - P, y l - 1⁆ - (B + C - A) = H by simp +zetaDelta only [lie_def]; noncomm_ring]
     linarith [mul_nonneg hX_nonneg hA_nonneg]
-  let ⟨z, hz_eq, hz⟩ := exists_det_compress_eq_exp_logOneAdd (Y := B + C - A) hP_compl hP_compl
-    hX_four (hy_near l) (by simp) h_near_compl
+  obtain ⟨z, hz_eq, hz⟩ := exists_det_compress_eq_exp_logOneAdd (Y := B + C - A) hP_compl
+    hP_compl hX_four (hy_near l) (by simp) h_near_compl
     (by linarith [norm_sub_le_of_le (norm_add_le_of_le hB_le hC_le) (le_refl ‖A‖)]) (by simp)
   -- The minor of `kᴴ (y l) k` on `p`, as `det (1 + Q (y l - 1))`.
   have h_comm : (⁅Q, P⁆ * (A - B - C)).trace = 0 := by
@@ -432,7 +433,7 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
     have := norm_sub_le_of_le (norm_sub_le_of_le (norm_mul_le_of_le (hy_near l) hPQ)
       (norm_mul_le_of_le hPQ (hy_near l))) hH
     linarith [mul_nonneg hX_nonneg hA_nonneg, mul_nonneg hX_nonneg hPk_nonneg]
-  let ⟨t, ht_eq, ht⟩ := exists_det_compress_eq_exp_logOneAdd (P := Q) (Y := A - B - C)
+  obtain ⟨t, ht_eq, ht⟩ := exists_det_compress_eq_exp_logOneAdd (P := Q) (Y := A - B - C)
     (hP.map (Unitary.conjStarAlgAut ℂ _ ⟨k, hk, hk'⟩)) hP hX_four (hy_near l) h_comm h_near
     (by linarith [norm_sub_le_of_le (norm_sub_le_of_le (le_refl ‖A‖) hB_le) hC_le])
     (by linarith)

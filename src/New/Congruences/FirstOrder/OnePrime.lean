@@ -516,7 +516,7 @@ lemma transfer_firstEntry (g : GL (Fin N) F) :
   set τ := (firstEntry (F := F) (N := N)).transfer
   have τ_diag : τ.comp diagGL = GeneralLinearGroup.det.comp diagGL := MonoidHom.pi_ext fun i x ↦
     (transfer_firstEntry_diagGL_mulSingle i x).trans <| Units.ext (by simp [← Units.coe_prod])
-  let ⟨g', h, h'⟩ := diagonal_transvection_induction_of_det_ne_zero
+  obtain ⟨g', h, h'⟩ := diagonal_transvection_induction_of_det_ne_zero
     (fun M ↦ ∃ g' : GL (Fin N) F, (g' : Matrix _ _ F) = M ∧ τ g' = GeneralLinearGroup.det g')
     g g.det_ne_zero
     (fun D hD ↦ ⟨diagGL fun i ↦ .mk0 (D i) (by simp_all [prod_ne_zero_iff]), rfl,
