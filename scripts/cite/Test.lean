@@ -103,7 +103,7 @@ error: The entry `testBadZbl` cannot be cited: the field `zbl` of `testBadZbl` i
 -/
 #guard_msgs in @[cite "testBadZbl" "p. 1"] def badZbl : Nat := 0
 
-/-- error: Unknown field `page`; a citation takes `quote` and `checked`. -/
+/-- error: Unknown field `page`; a citation takes `quote`, `checked`, `form` and `comparison`. -/
 #guard_msgs in @[cite "testDoi" "p. 1" (page := "1")] def unknownField : Nat := 0
 
 /-- error: The field `checked` is given twice. -/
@@ -214,17 +214,105 @@ testDoi
 -/
 #guard_msgs in #citations a
 
+/-! ### The form of a citation -/
+
+@[cite "testDoi" "Definition 1.1" (form := "same")]
+def h : Nat := 2
+
+/-- info: [testDoi], Definition 1\.1. In the cited form. Not yet checked against the work. -/
+#guard_msgs in #doc h
+
+@[cite "testDoi" "Definition 1.2" "as a sum" (form := "equivalent") (comparison := "i_eq")]
+def i : Nat := 1 + 1
+
+theorem i_eq : i = 2 := rfl
+
+/--
+info: [testDoi], Definition 1\.2 (as a sum). Equivalent to the cited form; the comparison is `i_eq`. Not yet checked against the work.
+-/
+#guard_msgs in #doc i
+
+@[cite "testZbl" "§2" "over the naturals only" (form := "special case") (checked := "A. Reader")]
+theorem i_pos : 0 < i := Nat.succ_pos 1
+
+@[cite "testZbl" "§3" "a different object" (form := "substitute") (comparison := "h")]
+def j : Nat := i + h
+
+/--
+info: [testZbl], §3 (a different object). Used in place of the cited object; the comparison is `h`. Not yet checked against the work.
+-/
+#guard_msgs in #doc j
+
+@[cite "testArxiv" "Lemma 2" "one direction" (form := "weaker") (comparison := "missing_thm")]
+def k : Nat := j
+
+theorem uses : k = 4 ∧ 0 < i := ⟨rfl, i_pos⟩
+
+/--
+info: Citations that `uses` depends on, among 75 declarations:
+
+testArxiv
+  Lemma 2 (one direction): k, not checked, weaker
+
+testDoi
+  Definition 1.1: h, not checked, same
+  Definition 1.2 (as a sum): i, not checked, equivalent
+
+testZbl
+  §2 (over the naturals only): i_pos, checked by A. Reader, special case
+  §3 (a different object): j, not checked, substitute
+
+5 citations of 3 works, 4 of them not checked against the work; 0 cross-references to 0 databases.
+
+Not in the cited form (4):
+  equivalent: i, testDoi, Definition 1.2 (as a sum), compared by i_eq
+  special case: i_pos, testZbl, §2 (over the naturals only), no comparison proved here
+  weaker: k, testArxiv, Lemma 2 (one direction), compared by missing_thm
+  substitute: j, testZbl, §3 (a different object), compared by h
+---
+warning: The citation of `j` names `h` as its comparison, whose statement does not mention `j`.
+---
+warning: The citation of `k` names `missing_thm` as its comparison, which is not a declaration.
+-/
+#guard_msgs in #citations uses
+
+/--
+error: Unknown form `close`; the forms are `same`, `equivalent`, `special case`, `generalisation`, `weaker` and `substitute`.
+-/
+#guard_msgs in @[cite "testDoi" "p. 1" "a comment" (form := "close")] def unknownForm : Nat := 0
+
+/--
+error: A citation of the form `weaker` must say what differs, in a comment after the locator.
+-/
+#guard_msgs in @[cite "testDoi" "p. 1" (form := "weaker")] def noDifference : Nat := 0
+
+/--
+error: The field `comparison` names the theorem that compares the declaration with the cited form, so it needs a `form` other than `same`.
+-/
+#guard_msgs in
+@[cite "testDoi" "p. 1" (form := "same") (comparison := "i_eq")] def sameCompared : Nat := 0
+
+/-- error: `i eq` is not the name of a declaration. -/
+#guard_msgs in
+@[cite "testDoi" "p. 1" "a comment" (form := "weaker") (comparison := "i eq")]
+def badComparison : Nat := 0
+
 /-! ### The export -/
 
 /--
-info: Wrote 8 Literature Links annotations to scripts/cite/test-out.jsonl
+info: Wrote 13 Literature Links annotations to scripts/cite/test-out.jsonl
 ---
 info: {"id":"testArxiv:Lemma 1","object":[{"location":{"declaration":"c","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"id":"testArxiv","title":"A test entry with an arXiv identifier","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"key":"testArxiv","locator":"Lemma 1"}},"title":"Lemma 1","type":"html","uri":"https://arxiv.org/abs/2101.00001v2"}]}
+{"id":"testArxiv:Lemma 2","object":[{"location":{"declaration":"k","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"id":"testArxiv","title":"A test entry with an arXiv identifier","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"comment":"one direction","comparison":"missing_thm","form":"weaker","key":"testArxiv","locator":"Lemma 2"}},"title":"Lemma 2 (one direction)","type":"html","uri":"https://arxiv.org/abs/2101.00001v2"}]}
+{"id":"testDoi:Definition 1.1","object":[{"location":{"declaration":"h","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"DOI":"10.5555/test-entry","author":[{"family":"Reader","given":"Anne"},{"family":"Writer","given":"Bo"}],"id":"testDoi","issued":{"date-parts":[[2001]]},"title":"A test entry with a DOI","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"form":"same","key":"testDoi","locator":"Definition 1.1"}},"title":"Definition 1.1","type":"html","uri":"https://doi.org/10.5555/test-entry"}]}
+{"id":"testDoi:Definition 1.2","object":[{"location":{"declaration":"i","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"DOI":"10.5555/test-entry","author":[{"family":"Reader","given":"Anne"},{"family":"Writer","given":"Bo"}],"id":"testDoi","issued":{"date-parts":[[2001]]},"title":"A test entry with a DOI","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"comment":"as a sum","comparison":"i_eq","form":"equivalent","key":"testDoi","locator":"Definition 1.2"}},"title":"Definition 1.2 (as a sum)","type":"html","uri":"https://doi.org/10.5555/test-entry"}]}
 {"id":"testDoi:Theorem 2.3","object":[{"location":{"declaration":"a","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"DOI":"10.5555/test-entry","author":[{"family":"Reader","given":"Anne"},{"family":"Writer","given":"Bo"}],"id":"testDoi","issued":{"date-parts":[[2001]]},"title":"A test entry with a DOI","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"comment":"with a comment","key":"testDoi","locator":"Theorem 2.3"}},"title":"Theorem 2.3 (with a comment)","type":"html","uri":"https://doi.org/10.5555/test-entry"}]}
 {"id":"testMr:p. 2","object":[{"location":{"declaration":"d","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"id":"testMr","title":"A test entry with a MathSciNet number","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"key":"testMr","locator":"p. 2"}},"title":"p. 2","type":"html","uri":"https://mathscinet.ams.org/mathscinet-getitem?mr=0000001"}]}
 {"id":"testOldArxiv:p. 3","object":[{"location":{"declaration":"c","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"id":"testOldArxiv","title":"A test entry with an old arXiv identifier","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"key":"testOldArxiv","locator":"p. 3"}},"title":"p. 3","type":"html","uri":"https://arxiv.org/abs/math.AG/0601001"}]}
 {"id":"testResolver:p. 1","object":[{"location":{"declaration":"d","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"DOI":"10.5555/resolved","id":"testResolver","title":"A test entry whose DOI is an address","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"key":"testResolver","locator":"p. 1"}},"title":"p. 1","type":"html","uri":"https://doi.org/10.5555/resolved"}]}
 {"id":"testZbl:§1, p. 2","object":[{"location":{"declaration":"b","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"id":"testZbl","title":"A test entry with a zbMATH number","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"checkedBy":"A. Reader","key":"testZbl","locator":"§1, p. 2","quote":"Every test passes."}},"title":"§1, p. 2","type":"html","uri":"https://zbmath.org/?q=an:0000.00000"}]}
+{"id":"testZbl:§2","object":[{"location":{"declaration":"i_pos","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"id":"testZbl","title":"A test entry with a zbMATH number","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"checkedBy":"A. Reader","comment":"over the naturals only","form":"special case","key":"testZbl","locator":"§2"}},"title":"§2 (over the naturals only)","type":"html","uri":"https://zbmath.org/?q=an:0000.00000"}]}
+{"id":"testZbl:§3","object":[{"location":{"declaration":"j","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"citation":{"id":"testZbl","title":"A test entry with a zbMATH number","type":"document"},"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"comment":"a different object","comparison":"h","form":"substitute","key":"testZbl","locator":"§3"}},"title":"§3 (a different object)","type":"html","uri":"https://zbmath.org/?q=an:0000.00000"}]}
 {"id":"testdb:A 1/2","object":[{"location":{"declaration":"e","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"comment":"a comment","id":"A 1/2","source":"testdb"}},"identifiers":{"test-db":"A 1/2"},"title":"the test database A 1/2 (a comment)","type":"html","uri":"https://example.com/entry/A%201/2"}]}
 {"id":"testpdf:Chapter 3","object":[{"location":{"declaration":"f","module":"scripts.cite.Test"},"type":"lean","uri":"https://example.com/repo","version":"abc123"}],"subject":[{"extensions":{"org.leanprover-community.riemann-hypothesis.cite":{"checkedBy":"B. Writer","id":"Chapter 3","source":"testpdf"}},"title":"a test book Chapter 3","type":"pdf","uri":"https://example.com/book.pdf"}]}
 -/

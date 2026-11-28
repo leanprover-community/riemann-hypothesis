@@ -451,9 +451,9 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `Lib/Speed` (23): Speed settings
 - `Lib/Base` (7): The adjoint of a matrix for the Hermitian dot product
 - `Lib/Cite/Bib` (152): The BibTeX file
-- `Lib/Cite` (164): Citations
-- `Lib/Cite/Report` (69): The citations that a declaration depends on
-- `Lib/Cite/Export` (143): Citations as Literature Links annotations
+- `Lib/Cite` (215): Citations
+- `Lib/Cite/Report` (90): The citations that a declaration depends on
+- `Lib/Cite/Export` (145): Citations as Literature Links annotations
 
 ### Adelic: Adeles, unitary groups and automorphic forms
 

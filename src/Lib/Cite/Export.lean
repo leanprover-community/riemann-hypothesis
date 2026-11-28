@@ -22,8 +22,8 @@ of this repository. `scripts/cite/Export.lean` runs it with `Main` imported.
   field `type`, which must be one of `endTypes`, and otherwise `html` when the entries have
   addresses of their own and `generic` when they share the source's. A source's field `registry`
   goes in `identifiers`.
-* The subject keeps the citation as recorded, with its comment, quote and checker, in its
-  `extensions`, under `citeExtension`.
+* The subject keeps the citation as recorded, with its comment, quote, checker, form and
+  comparison, in its `extensions`, under `citeExtension`.
 
 The export reads the BibTeX file again and checks every cited entry as `@[cite]` does, writing
 nothing if one fails. This catches a change to the file after which Lake did not rebuild a citing
@@ -147,7 +147,9 @@ def Citation.recorded (c : Citation) : Json :=
     | .bib key => [("key", toJson key), ("locator", toJson c.id)]
     | .source name => [("source", toJson (name.toString (escape := false))), ("id", toJson c.id)]
   Json.mkObj <| src ++ opt "comment" (nonempty? c.comment) ++ opt "quote" (nonempty? c.quote) ++
-    opt "checkedBy" (nonempty? c.checkedBy)
+    opt "checkedBy" (nonempty? c.checkedBy) ++ opt "form" (nonempty? c.form.word) ++
+    opt "comparison" (if c.comparison.isAnonymous then none
+      else some (c.comparison.toString (escape := false)))
 
 /-- The `id` and subject end of the citation `c`, given the BibTeX entries `bib`. -/
 def subject (bib : Array BibEntry) (c : Citation) : CoreM (String × Json) := do

@@ -21,6 +21,13 @@ Lean with `cite_source`, such as a web database whose entries have addresses of 
   - `(quote := "…")`, the words of the work at that place, as they are printed there;
   - `(checked := "name")`, the person who compared the citation with the work. A citation without
     this field has not been checked by anyone.
+* A citation can also state its *form*, that is, how the declaration stands to the cited place:
+  `(form := "same")` when it is the cited definition or statement up to notation, and otherwise
+  `"equivalent"`, `"special case"`, `"generalisation"`, `"weaker"` or `"substitute"`, the last
+  for a different object used where the literature uses the cited one. Every form but `same`
+  needs the comment, which says what differs, and can name the theorem that compares the
+  declaration with the cited form, `(comparison := "Full.name")`. That theorem usually comes
+  after the declaration, so `#citations` checks the name, not the attribute.
 
 The attribute appends a line to the declaration's docstring, such as
 `[key], §3.1, Definition 3.1, p. 244. Checked against the work by …`, where doc-gen4 links
@@ -121,6 +128,37 @@ inductive CitedSource where
   | bib (key : String)
   deriving Inhabited, Repr, BEq
 
+/-- How a declaration stands to the place that it cites. -/
+inductive Form where
+  /-- The citation does not say. -/
+  | unstated
+  /-- The cited definition or statement, up to notation. -/
+  | same
+  /-- A different definition or statement, equivalent to the cited one. -/
+  | equivalent
+  /-- The cited statement in less generality. -/
+  | specialCase
+  /-- The cited statement in more generality. -/
+  | generalisation
+  /-- A part or a consequence of the cited statement. -/
+  | weaker
+  /-- A different object, used where the literature uses the cited one. -/
+  | substitute
+  deriving Inhabited, Repr, BEq
+
+/-- The forms that `(form := "…")` can state, each with its word. -/
+def Form.words : List (String × Form) :=
+  [("same", .same), ("equivalent", .equivalent), ("special case", .specialCase),
+    ("generalisation", .generalisation), ("weaker", .weaker), ("substitute", .substitute)]
+
+/-- The word for the form `f` in `(form := "…")`, empty for a form that is not stated. -/
+def Form.word (f : Form) : String := ((Form.words.find? (·.2 == f)).map (·.1)).getD ""
+
+/-- Whether the form says that the declaration is not the cited definition or statement. -/
+def Form.departs : Form → Bool
+  | .unstated | .same => false
+  | _ => true
+
 /-- A citation: the declaration `declName` formalizes a part of a work. -/
 structure Citation where
   /-- The declaration that cites the work. -/
@@ -135,6 +173,10 @@ structure Citation where
   quote : String := ""
   /-- The person who compared the citation with the work, or empty if nobody has. -/
   checkedBy : String := ""
+  /-- How the declaration stands to the cited place. -/
+  form : Form := .unstated
+  /-- The theorem that compares the declaration with the cited form, or anonymous. -/
+  comparison : Name := .anonymous
   deriving Inhabited, Repr, BEq
 
 /-- The environment extension storing all citations. -/
@@ -186,6 +228,12 @@ def citedEntry (key : String) : CoreM BibEntry := do
 /-- A named field of a source or a citation: `(uri := "https://oeis.org/{id}")`. -/
 syntax citeField := "(" ident " := " str ")"
 
+/-- The words `ws` as they are listed in a sentence: `a, b and c`. -/
+def enumerate : List String → String
+  | [] => ""
+  | [w] => w
+  | ws => ", ".intercalate ws.dropLast ++ " and " ++ ws.getLast!
+
 /-- The fields `fields`, as names and values, or an error on one given twice or not in
 `allowed` (when it is given). -/
 def readFields (fields : Array (TSyntax ``citeField)) (allowed : Option (List String) := none) :
@@ -197,7 +245,7 @@ def readFields (fields : Array (TSyntax ``citeField)) (allowed : Option (List St
     if let some names := allowed then
       unless names.contains name do
         throwErrorAt key "Unknown field `{name}`; a citation takes \
-          {" and ".intercalate (names.map (s!"`{·}`"))}."
+          {enumerate (names.map (s!"`{·}`"))}."
     if values.any (·.1 == name) then throwErrorAt key "The field `{name}` is given twice."
     if value.getString.all Char.isWhitespace then
       throwErrorAt value "The field `{name}` cannot be empty."
@@ -237,17 +285,31 @@ def appendDocString (decl : Name) (text : String) : CoreM Unit := do
   let oldDoc := ((← findDocString? (← getEnv) decl).getD "").trimAscii.toString
   addDocStringCore decl ("\n\n".intercalate ([oldDoc, text].filter (· != "")))
 
+/-- The sentence of the docstring line that gives the form of the citation `c`, after a space, or
+nothing when the form is not stated. -/
+def formSentence (c : Citation) : String :=
+  let proved (otherwise : String) :=
+    if c.comparison.isAnonymous then otherwise else s!"; the comparison is `{c.comparison}`."
+  match c.form with
+  | .unstated => ""
+  | .same => " In the cited form."
+  | .equivalent => " Equivalent to the cited form" ++ proved "; the equivalence is not proved here."
+  | .specialCase => " A special case of the cited form" ++ proved "."
+  | .generalisation => " A generalisation of the cited form" ++ proved "."
+  | .weaker => " Weaker than the cited form" ++ proved "."
+  | .substitute => " Used in place of the cited object" ++ proved "; no comparison is proved here."
+
 /-- The line that `@[cite]` appends to the docstring for the citation `c`, whose work is linked
 by `link`. -/
 def docLine (c : Citation) (link : String) : String :=
   let comment := if c.comment.isEmpty then "" else s!" ({c.comment})"
   let check := if c.checkedBy.isEmpty then "Not yet checked against the work."
     else s!"Checked against the work by {c.checkedBy}."
-  s!"{link}{comment}. {check}"
+  s!"{link}{comment}.{formSentence c} {check}"
 
 /-- `@[cite "key" "locator" "comment"? (field := "…")*]` cites a part of an entry of the BibTeX
 file, and `@[cite src "id" "comment"? (field := "…")*]` an entry of a declared source. The fields
-are `quote` and `checked`. -/
+are `quote`, `checked`, `form` and `comparison`. -/
 syntax (name := citeAttr) &"cite" ppSpace (Lean.Parser.rawIdent <|> str)
   (ppSpace str (ppSpace str)?)? (ppSpace citeField)* : attr
 
@@ -263,11 +325,29 @@ initialize Lean.registerBuiltinAttribute {
       | `(attr| cite $key:str $[$locator $[$comment]?]? $fields*) =>
         pure (CitedSource.bib key.getString, key.raw, locator, comment.join, fields)
       | _ => throwUnsupportedSyntax
-    let fields ← readFields fields (allowed := ["quote", "checked"])
+    let fields ← readFields fields (allowed := ["quote", "checked", "form", "comparison"])
     let field (name : String) := ((fields.find? (·.1 == name)).map (·.2)).getD ""
+    let form ← match fields.find? (·.1 == "form") with
+      | none => pure Form.unstated
+      | some (_, word) => do
+        let some (_, form) := Form.words.find? (·.1 == word)
+          | throwError "Unknown form `{word}`; the forms are \
+              {enumerate (Form.words.map (s!"`{·.1}`"))}."
+        pure form
+    if form.departs && (str comment?).all Char.isWhitespace then
+      throwError "A citation of the form `{form.word}` must say what differs, in a comment \
+        after the locator."
+    let comparison := field "comparison"
+    unless comparison.isEmpty do
+      unless form.departs do
+        throwError "The field `comparison` names the theorem that compares the declaration \
+          with the cited form, so it needs a `form` other than `same`."
+      if comparison.any Char.isWhitespace then
+        throwError "`{comparison}` is not the name of a declaration."
     let c : Citation := {
       declName := decl, source, id := str id?, comment := str comment?
-      quote := field "quote", checkedBy := field "checked" }
+      quote := field "quote", checkedBy := field "checked"
+      form, comparison := if comparison.isEmpty then .anonymous else comparison.toName }
     let link ← withRef srcRef do
       match source with
       | .bib key =>

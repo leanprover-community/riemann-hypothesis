@@ -14,6 +14,11 @@ types, values and proofs: those that `@[cite]` records, and Mathlib's cross-refe
 declarations that cite each part, and says who checked each `@[cite]` citation. It ends with the
 number of citations that nobody has checked. Mathlib's cross-references have no such field.
 
+Then it lists the declarations among them whose citation states a form other than `same`: those
+that are not the cited definition or statement, with what differs and the theorem that compares
+the two, if the citation names one. It warns when that name is not a declaration, or is one
+whose statement does not mention the citing declaration.
+
 In a file that starts with `module`, the proofs of imported theorems are not loaded, so the
 command only follows their statements, and it says so. To follow the proofs, run it from a file
 without `module`, as `scripts/cite/Citations.lean` does for `riemannHypothesis`.
@@ -85,7 +90,8 @@ def elabCitations : CommandElab
         a.id < b.id || (a.id == b.id && a.declName.toString < b.declName.toString)
       for c in here do
         let check := if c.checkedBy.isEmpty then "not checked" else s!"checked by {c.checkedBy}"
-        lines := lines.push s!"  {c.id}{showComment c.comment}: {c.declName}, {check}"
+        let form := if c.form == .unstated then "" else s!", {c.form.word}"
+        lines := lines.push s!"  {c.id}{showComment c.comment}: {c.declName}, {check}{form}"
     -- Mathlib's cross-references, by database, then by tag and declaration
     let dbs := (tags.map (·.database.label)).toList.eraseDups.toArray.qsort (· < ·)
     for db in dbs do
@@ -98,7 +104,29 @@ def elabCitations : CommandElab
     lines := lines.push s!"\n{count cites.size "citation"} of {count works.size "work"}, \
       {unchecked} of them not checked against the work; \
       {count tags.size "cross-reference"} to {count dbs.size "database"}."
+    -- the citations whose declaration is not the cited definition or statement, by form
+    let departures := cites.filter (·.form.departs)
+    unless departures.isEmpty do
+      lines := lines.push s!"\nNot in the cited form ({departures.size}):"
+      for (word, form) in Form.words do
+        let here := (departures.filter (·.form == form)).qsort
+          (·.declName.toString < ·.declName.toString)
+        for c in here do
+          let proved := if c.comparison.isAnonymous then "no comparison proved here"
+            else s!"compared by {c.comparison}"
+          lines := lines.push s!"  {word}: {c.declName}, {workTitle env c.source}, \
+            {c.id}{showComment c.comment}, {proved}"
     logInfo (String.intercalate "\n" lines.toList)
+    -- the theorems named as comparisons must exist and be about the citing declaration
+    for c in cites do
+      unless c.comparison.isAnonymous do
+        match env.find? c.comparison with
+        | none => logWarning m!"The citation of `{c.declName}` names `{c.comparison}` as its \
+            comparison, which is not a declaration."
+        | some info =>
+          unless info.type.getUsedConstantsAsSet.contains c.declName do
+            logWarning m!"The citation of `{c.declName}` names `{c.comparison}` as its comparison, \
+              whose statement does not mention `{c.declName}`."
   | _ => throwUnsupportedSyntax
 
 end Lib.Cite
