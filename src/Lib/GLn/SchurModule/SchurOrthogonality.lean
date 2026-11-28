@@ -216,10 +216,7 @@ groups of signs `s`. -/
 @[fun_prop]
 lemma continuous_conjWeylRep (ξ : WeylIndex n κ → ℂ) :
     Continuous (conjWeylRep (s := s) κ e · ξ) := by
-  suffices Continuous fun x : Φ → USign s ↦
-      (∏ τ, ((x τ : GL n ℂ).map (starRingEnd ℂ)).det ^ e τ) •
-        schur κ (fun τ ↦ (x τ : Matrix n n ℂ).map (starRingEnd ℂ)) *ᵥ ξ by
-    simpa [conjWeylRep, weylRep, smul_mulVec] using this
+  simp [conjWeylRep, weylRep, smul_mulVec]
   fun_prop
 
 /-- For matrix representations S, R of a compact group with a Haar measure ν and a matrix M such

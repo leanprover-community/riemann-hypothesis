@@ -407,9 +407,7 @@ lemma New.GaloisRep.centralChar_mem_algHeckeChars_and_charUnramifiedAt {E : Type
   · -- The kernel contains the ideles whose central scalar has level `𝔑`, an open subgroup.
     refine isOpen_mono (fun x hx ↦ hω_level x ⟨mem_GU_centralScalar x, mem_comap.mp hx⟩)
       ((Variety.isOpen_congruenceGL_span h𝔑).preimage (.of_coeHom_comp <| .matrix_diagonal ?_))
-    simp only [Pi.constRingHom_eq_algebraMap, toMonoidHom_eq_coe, Units.coe_map,
-      MonoidHom.coe_ofClass, coe_comp, Function.comp_apply, starRingEnd_apply,
-      algebraMap_star_comm, continuous_fun_star_iff]
+    simp [starRingEnd_apply]
     fun_prop
   · -- On `(QuadField d)ˣ` the central scalar is rational, so it acts through `ξ`.
     let z : GL n E := .scalar n (star (x.map (algebraMap (QuadField d) E)))

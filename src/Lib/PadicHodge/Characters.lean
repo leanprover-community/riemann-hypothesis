@@ -747,9 +747,7 @@ lemma exists_period_of_character [TopologicalSpace Γ]
     refine isClosed_eq ?_ (by fun_prop)
     -- on a pure tensor `a ⊗ o` the left side is `(toGp g⁻¹ • θ a) * o`
     obtain ⟨s, rfl⟩ : ∃ s : Finset (Ainf × O), y = ∑ i ∈ s, i.1 ⊗ₜ[ℤ_[p]] i.2 := y.exists_finset
-    suffices h : Continuous fun g : Γ ↦
-        ∑ i ∈ s, (toGp g)⁻¹ • (theta i.1 : ℂ_[p]) * algebraMap (PadicAlgCl p) ℂ_[p] i.2 by
-      simpa [Θ, Finset.smul_sum, smul_tmul'] using h
+    simp [Θ, Finset.smul_sum, smul_tmul']
     fun_prop
   -- it holds at `φ ^ k * i` with `i` in inertia: the inverse is a Weil element of degree `f * k`,
   -- so it multiplies `y` by `a ^ (f * k) = (ν φ) ^ k`, and `ν i = 1`

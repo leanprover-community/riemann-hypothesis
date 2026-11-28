@@ -247,8 +247,8 @@ lemma GL.rowSubst_minor (z : ∀ τ : Φ, Matrix (n' τ) (n τ) R) (τ : Φ)
       det ((z τ).submatrix I (rowEquivFin n τ).symm) •
         minor R fun a : Fin (Fintype.card (n τ)) ↦ ⟨τ, (rowEquivFin n τ).symm a⟩ := by
   -- The substitution multiplies the matrix of variables on the left by the rows `I` of `z τ`.
-  simp only [rowSubst, reindex_equiv (rowEquivFin n τ).symm, ← C_mul', minor, AlgHom.map_det,
-    AlgHom.mapMatrix_apply, Matrix.map, of_apply, aeval_X, RingHom.map_det, ← det_mul]
+  simp [rowSubst, reindex_equiv (rowEquivFin n τ).symm, ← C_mul', minor, AlgHom.map_det, Matrix.map,
+    RingHom.map_det, ← det_mul]
   -- Both sides are the determinant of the same matrix: once entrywise, once as a product.
   change (of fun (a b : Fin (Fintype.card (n τ))) ↦ ∑ c : Fin (Fintype.card (n τ)),
         C (z τ (I a) ((rowEquivFin n τ).symm c)) *
@@ -928,17 +928,14 @@ lemma exists_equiv_schur_one_row_eq_symPowMatrix {a : ℕ} {m σ : Type} [Fintyp
     have h_mem : aeval (R := ℂ) (fun b ↦ X (⟨(), q b⟩, 0)) (monomial d 1) ∈
         nablaFamily ℂ (fun _ ↦ m) fun () ↦ k := by
       -- Only columns of height `1` count, `k 1 = a` of them: the weight is `a` at `((), 0)`.
-      have h_wt : diagramWeight (rankAt fun _ : Unit ↦ m) (fun () ↦ k) =
-          Finsupp.single ((), 0) a := by
-        simp only [diagramWeight, Fintype.sum_unique, PUnit.default_eq_unit]
-        rw [sum_eq_ite 1]
-        · simp [h_card, h_k_eq 1 one_pos h_card]
-        · intro h h_mem_range h_ne_one
-          rcases Nat.eq_zero_or_pos h with h_zero | h_pos
-          · simp [h_zero]
-          · simp [h_k_eq h h_pos (mem_range.mp h_mem_range), h_ne_one]
       simp_all [mem_nabla, monomial_eq, borelMul, mul_pow, prod_pow_eq_pow_sum,
-        prod_mul_distrib, mul_comm]
+        prod_mul_distrib, diagramWeight]
+      rw [sum_eq_ite 1]
+      · simp [h_card, h_k_eq 1 one_pos h_card, mul_comm]
+      · intro h h_mem_range h_ne_one
+        rcases Nat.eq_zero_or_pos h with h_zero | h_pos
+        · simp [h_zero]
+        · simp [h_k_eq h h_pos (mem_range.mp h_mem_range), h_ne_one]
     -- so it is a combination `Σ_i c_i b_i` of the basis vectors, which are the monomials `φ i`.
     by_contra h_miss
     -- Rename the first-column variables back to σ and take the coefficient of the missing monomial.

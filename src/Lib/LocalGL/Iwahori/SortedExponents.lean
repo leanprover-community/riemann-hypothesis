@@ -576,8 +576,8 @@ lemma exists_sorted_isIwahoriEigen_of_diagGL_smul (hϖ : v ϖ.val = exp (-1))
     rw [apply_symm_apply]
     exact (AwayMap.lift_eq _ loc hχs t).symm
   have hθτ (i : Fin N) (ε : Fˣ) (hε : v ε.val = 1) : θ i ε = τ (mulSingle i ε) := by
-    revert i ε
-    simpa +contextual [E, smul_left_inj, hy_eigen, hθ, y_ne, normAbsChar] using hyE
+    simp +contextual [E, smul_left_inj, hy_eigen, hθ, y_ne, normAbsChar] at hyE
+    exact hyE i ε hε
   have y_eig : IsIwahoriEigen ρ (torusChar θ) (y : ρ) := by
     refine ⟨by simpa using y_ne, y.prop, fun t ht ↦ ?_⟩
     rw [← hθ ⟨t, ht⟩]
