@@ -63,26 +63,23 @@ lemma Grading.exists_inclXFin_sub_one_eq {u : unitary (𝔸f E)} (hL : Y.SpansLa
   -- `X ⊕ Unit`. These are the rows `R` of `k`, the last divided by `star π` when `s` is odd.
   obtain ⟨k, hk, xFin_eq⟩ := hL
   set e : (X ⊕ Unit) ⊕ Fin s ≃ ι := Y.indexEquiv with he
-  set R : Matrix (X ⊕ Unit) ι (𝔸f E) := of fun x ↦ k.val (e (Sum.inl x)) with hR
+  set R : Matrix (X ⊕ Unit) ι (𝔸f E) := of fun x ↦ k.val (e (Sum.inl x))
   refine ⟨R, fun x ↦ hk.isIntMatrix _, fun h ↦ ?_⟩
   have h_conj : (Y.inclXFin h).val.val - 1 =
       V.xFin⁻¹ * (V.ratCoordMatrixFin (Y.inclXFin h) - 1) * V.xFin := by
     simp [ratCoordMatrixFin, sub_mul, mul_sub, mul_assoc]
-  set D : Matrix (X ⊕ Unit) (X ⊕ Unit) (𝔸f E) :=
-    if Odd s then scaleAt (star π⁻¹.val) (Sum.inr ()) else 1 with hD
+  set D := if Odd s then scaleAt (star π⁻¹.val) (Sum.inr () : X ⊕ Unit) else 1 with hD
   -- The Gram matrix times `(h ⊕ 1) - 1` lives on the block `X ⊕ Unit`, where it is `h - 1`.
   have h_block : V.J.map (↑) * (gradedBlocks e e h.val.val 1 - 1) =
       reindex e e (fromBlocks (h.val.val - 1) 0 0 0) := by
     ext i j
-    obtain ⟨⟨i, rfl⟩, ⟨j, rfl⟩⟩ := e.surjective i, e.surjective j
-    rcases i with i | i <;> rcases j with j | j <;>
+    obtain ⟨⟨i | i, rfl⟩, ⟨j | j, rfl⟩⟩ := e.surjective i, e.surjective j <;>
       simp [Y.gram_eq, ← he, gradedGram, gradedBlocks, Matrix.mul_apply, (reindex_equiv e).2,
         Matrix.one_apply, mul_sub]
   -- The rows of `V.xFin` in that block are those of `R`, the last divided by `star π` for odd `s`.
   have h_rows : V.xFin.val.submatrix (e ∘ Sum.inl) id = D * R := by
     ext (x | x) j <;> by_cases hs : Odd s <;>
-      simp [xFin_eq, hD, hR, hs, Matrix.mul_apply, gradedLatticeBasis, diagonal,
-        (reindex_equiv e).2]
+      simp [xFin_eq, D, R, hs, Matrix.mul_apply, gradedLatticeBasis, diagonal, (reindex_equiv e).2]
   have h_restrict (A : Matrix (X ⊕ Unit) (X ⊕ Unit) (𝔸f E)) :
       V.xFin.valᴴ * reindex e e (fromBlocks A 0 0 0) * V.xFin.val = (D * R)ᴴ * A * (D * R) := by
     rw [← h_rows]
@@ -104,7 +101,7 @@ lemma Grading.inclXFin_mem_stdLevel {P : Finset (FinPlace E)} {u : unitary (𝔸
     {h : Gf E (X ⊕ Unit)} (hL : Y.SpansLattice a π u) (hπ : IsSplitSquarefree P N π)
     (h_cong : h.val ∈ congruenceGL (Ô E ∙ π.val) Sum.inr) :
     Y.inclXFin h ∈ stdLevel E ι := by
-  obtain ⟨R, R_int, h_eq⟩ := Y.exists_inclXFin_sub_one_eq hL
+  obtain ⟨_, R_int, h_eq⟩ := Y.exists_inclXFin_sub_one_eq hL
   rw [mem_stdLevel, sub_eq_iff_eq_add.mp (h_eq h)]
   suffices M_int : IsIntMatrix (Ô E) (if Odd s then
       scaleAt π⁻¹.val (Sum.inr ()) * ((h.val.val - 1) * scaleAt (star π⁻¹.val) (Sum.inr ()))
@@ -144,7 +141,7 @@ lemma Grading.inclXFin_mem_levelOf {P : Finset (FinPlace E)} {u : unitary (𝔸f
     (hπ : IsSplitSquarefree P N π) (h_cong : h.val ∈ congruenceGL (Ô E ∙ π.val) Sum.inr)
     (hw : ∀ i : I, w i ∉ P) (hw_star : ∀ i : I, star (w i) ∉ P) (h_level : h ∈ levelOf w ⊥) :
     Y.inclXFin h ∈ levelOf w ⊥ := by
-  obtain ⟨R, R_int, h_eq⟩ := Y.exists_inclXFin_sub_one_eq hL
+  obtain ⟨_, R_int, h_eq⟩ := Y.exists_inclXFin_sub_one_eq hL
   refine mem_levelOf_bot.mpr ⟨Y.inclXFin_mem_stdLevel hL hπ h_cong, fun i b c ↦ ?_⟩
   obtain ⟨-, h_small⟩ := mem_levelOf_bot.mp h_level
   rw [h_eq h]

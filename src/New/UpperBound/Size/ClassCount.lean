@@ -69,8 +69,7 @@ lemma New.Space.norm_gram_apply_le_cube {E n : Type} [Field E] [CMType E] [Finty
       (Nat.le_mul_of_pos_left _ NeZero.one_le).trans (Nat.le_self_pow two_ne_zero _)
     _ ≤ c := Nat.le_mul_of_pos_left _ (by simp [NeZero.pos])
   constructor
-  · calc ‖Φ w ((Yᴴ * Y) i j)‖
-      _ ≤ c * (c * c) := (h_gram i j).trans (by gcongr)
+  · calc ‖Φ w ((Yᴴ * Y) i j)‖ ≤ c * (c * c) := (h_gram i j).trans (by gcongr)
       _ = c ^ 3 := by ring
   · calc ‖Φ w ((Yᴴ * Y * X) i j)‖
       _ ≤ card n * (card n * (c * c) * ((2 * Core.numInfPlaces E) ^ 2 * N)) :=
@@ -133,11 +132,8 @@ lemma New.Space.card_stdClasses_le {E : Type} [Field E] [CMType E] {N : ℕ} [Ne
   -- bounded rational matrix `X ≡ (g⁻¹ Y)⁻¹` modulo `Ô`. The pair `(G, G X)` has integral entries
   -- with conjugates of size at most `c ^ 3`, and it determines the class.
   let ι : E →+* 𝔸f E := algebraMap E (𝔸f E)
-  have h_basis (g : StdClasses (stdLevel E n)) : ∃ Y : GL n E,
-      IsIntMatrix (Ô E) (((g.out⁻¹ : Gf E n) : Matrix n n (𝔸f E)) * Y.val.map ι) ∧
-        ∀ (φ : E →+* ℂ) (i j : n), ‖φ (Y i j)‖ ≤ shortBasisConst E n N :=
-    exists_short_basis_stdSpace hN_different g.out
-  choose Y hY_int hY_le using h_basis
+  choose Y hY_int hY_le using
+    fun g : StdClasses (stdLevel E n) ↦ exists_short_basis_stdSpace hN_different g.out
   have h_near (y : 𝔸f E) : ∃ a : E, y - ι a ∈ Ô E ∧
       ∀ w : InfinitePlace E, ‖Φ w a‖ ≤ (2 * Core.numInfPlaces E) ^ 2 * N := by
     simpa using exists_principal_near_of_mem_differentIdeal NeZero.out hN_different 0 y
@@ -166,20 +162,17 @@ lemma New.Space.card_stdClasses_le {E : Type} [Field E] [CMType E] {N : ℕ} [Ne
         isIntegral_conjTranspose_mul_apply _ (hY_int g) (hYX g) i j
   have h_invariant_le (g : StdClasses (stdLevel E n)) (k : Bool) (i j : n) (w : InfinitePlace E) :
       ‖Φ w (invariant g (k, i, j))‖ ≤ shortBasisConst E n N ^ 3 := by
-    obtain ⟨hG_le, hGX_le⟩ : ‖Φ w (G g i j)‖ ≤ shortBasisConst E n N ^ 3 ∧
-        ‖Φ w ((G g * X g) i j)‖ ≤ shortBasisConst E n N ^ 3 :=
-      norm_gram_apply_le_cube (hY_le g (Φ w)) (fun i j ↦ h_approx_le _ w) i j
+    have h := norm_gram_apply_le_cube (hY_le g (Φ w)) (X := X g) (fun i j ↦ h_approx_le _ w) i j
     cases k
-    exacts [hG_le, hGX_le]
+    exacts [h.1, h.2]
   have h_invariant_inj : Function.Injective invariant := by
     intro g' g h_eq
     have hG : (G g').val = G g := Matrix.ext fun i j ↦ congrFun h_eq (false, i, j)
     have hGX : G g' * X g' = G g * X g := Matrix.ext fun i j ↦ congrFun h_eq (true, i, j)
     have hX : X g' = X g := (G g).mul_right_inj.1 (by rw [← hGX, hG])
     -- `A g' (A g)⁻¹` is the sum of the integral `A g' (A g)⁻¹ - A g' X g` and `A g' X g'`.
-    have h_int : IsIntMatrix (Ô E) (A g' * (A g)⁻¹).val := by
-      simpa only [hX, sub_add_cancel] using (hA_diff_int g g').add (hAX g')
-    exact stdClasses_eq_of_gram_eq rfl rfl hG h_int
+    exact stdClasses_eq_of_gram_eq rfl rfl hG (by
+      simpa only [hX, sub_add_cancel] using (hA_diff_int g g').add (hAX g'))
   -- Count the integral vectors with `2 (card n)²` entries whose conjugates are at most `c ^ 3`.
   have h_card : (Set.univ : Set (StdClasses (stdLevel E n))).encard ≤
       ENNReal.ofReal ((1 + 2 * shortBasisConst E n N ^ 3) ^

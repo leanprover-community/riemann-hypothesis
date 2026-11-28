@@ -1008,17 +1008,14 @@ lemma existsUnique_sub_neighbourCosetRep_mem {π : (𝔸f E)ˣ} {β : Ô E} {δ 
         -(e • (-z + neighbourTranslation X X'' y)) + (-q.out.val + (z - e • z)) := by
       rw [neighbourCosetRep, smul_add, smul_neg, idem_conjClosure_smul_neighbourTranslation hπ]
       abel
-    have h_class : q = z' ↔ -q.out.val + (z - e • z) ∈ stdLattice E _ := by
+    rw [show q = z' ↔ -q.out.val + (z - e • z) ∈ stdLattice E _ by
       conv_lhs => rw [← q.out_eq', QuotientAddGroup.eq]
-      rfl
-    rw [h_class]
-    refine ⟨fun h ↦ ?_, fun ⟨h_int, h_away⟩ ↦ ?_⟩
-    · have h_neg : -(e • (-z + neighbourTranslation X X'' y)) ∈ stdLattice E _ :=
-        by simpa only [← h_part] using smul_mem_stdLattice (idem_mem_Ô _) h
-      rw [h_split, add_mem_cancel_left h_neg] at h
-      exact ⟨neg_mem_iff.1 h_neg, h⟩
-    · rw [h_split]
-      exact add_mem (neg_mem h_int) h_away
+      rfl]
+    refine ⟨fun h ↦ ?_, fun ⟨h_int, h_away⟩ ↦ h_split.symm ▸ add_mem (neg_mem h_int) h_away⟩
+    have h_neg : -(e • (-z + neighbourTranslation X X'' y)) ∈ stdLattice E _ := by
+      simpa only [← h_part] using smul_mem_stdLattice (idem_mem_Ô _) h
+    rw [h_split, add_mem_cancel_left h_neg] at h
+    exact ⟨neg_mem_iff.1 h_neg, h⟩
   refine ⟨(y₀, z'), (h_iff _ _).2 ⟨hy₀, rfl⟩, fun ⟨y, q⟩ h ↦ ?_⟩
   obtain ⟨hy, hq⟩ := (h_iff y q).1 h
   exact Prod.ext (hy₀_unique y hy) hq

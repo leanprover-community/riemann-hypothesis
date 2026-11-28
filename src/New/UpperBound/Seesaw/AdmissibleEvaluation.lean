@@ -620,29 +620,16 @@ theorem isAdmissibleEval_finEval {Y'' : Grading V'' N μ m''} [Fact N.Prime]
   -- Replace `y` by its part `y'` away from `N`. The evaluation is `0` or a root of unity times the
   -- translate by the projection of `y'` of the zero term of the vacuum, which is `c` times the sum
   -- over the representatives `neighbourCosetRep r` of `neighbourLattice` modulo integral points.
-  have h_int : IsIntMatrix (Ô E) (D.latticeLift P π u κ) :=
-    D.isIntMatrix_latticeLift hP hπ hκ hL h_lift
+  have h_int := D.isIntMatrix_latticeLift hP hπ hκ hL h_lift
   classical
   let W := V'.hom (flipSum V V'')
-  let Z := stdPairSpace E X (X' ⊕ Unit) X''
-  obtain ⟨c, -, hc⟩ : ∃ c ≠ (0 : ℂ), zeroTermFin D.splitting W.vacElem =
-      c • ∑ r : (X' ⊕ Unit → P → ZMod N) × AwayLatticeQuotient (X' ⊕ Unit) hπ hκ,
-        Z.finHeisenbergOp (neighbourCosetRep r) Z.vacElem :=
-    D.exists_zeroTermFin_splitting_vacElem_eq_sum hP hπ hκ hL h_lift
+  obtain ⟨c, -, hc⟩ := D.exists_zeroTermFin_splitting_vacElem_eq_sum hP hπ hκ hL h_lift
   refine ⟨c * Fintype.card (AwayLatticeQuotient (X' ⊕ Unit) hπ hκ), fun n p hn y hy ↦ ?_⟩
-  obtain ⟨ξ, hξ, y', hy', hy'_vanish, h_away⟩ : ∃ ξ : ℂ, IsOfFinOrder ξ ∧
-      ∃ y' ∈ weightedTranslations n fun i : (ι ⊕ ι'') × ι' ↦ selfOrConj β i.1,
-        y' ∈ vanishingAbove ((ι ⊕ ι'') × ι') P ∧
-          W.finHeisenbergOp y W.vacElem = ξ • W.finHeisenbergOp y' W.vacElem :=
+  obtain ⟨ξ, hξ, y', hy', hy'_vanish, h_away⟩ :=
     exists_finHeisenbergOp_vacElem_eq_of_coprime hP hκ W hn hy
-  obtain ⟨ζ, hζ, h_value⟩ : ∃ ζ : ℂ, (ζ = 0 ∨ IsOfFinOrder ζ) ∧
-      D.finEval (W.finHeisenbergOp y' W.vacElem) = ζ • arrowTensor.leftInverse
-        (Z.finHeisenbergOp (D.splitting.iFinᴴ *ᵥ y') (zeroTermFin D.splitting W.vacElem)) :=
-    D.exists_finEval_finHeisenbergOp_vacElem hP hπ hκ h_int hy'_vanish
+  obtain ⟨ζ, hζ, h_value⟩ := D.exists_finEval_finHeisenbergOp_vacElem hP hπ hκ h_int hy'_vanish
   -- The projection of `y'` has the same denominators as `y'`.
-  have h_den : D.splitting.iFinᴴ *ᵥ y' ∈ weightedTranslations n
-      fun j : PairIndex X X'' × (X' ⊕ Unit) ↦ selfOrConj β j.1 :=
-    D.conjTranspose_iFin_mulVec_mem hP hπ hκ h_match h_int hy' hy'_vanish
+  have h_den := D.conjTranspose_iFin_mulVec_mem hP hπ hκ h_match h_int hy' hy'_vanish
   rw [h_away, map_smul, h_value, hc, map_smul, map_smul]
   simp only [mul_smul]
   -- Roots of unity and zero keep a combination admissible, and the constant is pulled out.
