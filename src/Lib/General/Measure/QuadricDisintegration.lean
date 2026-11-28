@@ -109,6 +109,11 @@ class Place extends IsTopologicalRing A, ContinuousStar A, LocallyCompactSpace A
     G 0 = 1 ∧
     ∫⁻ z : A, ‖∫ v : A, G v * ψ (star v * z)‖ₑ ≤ kernelBound
 
+-- The projections to Mathlib's classes rank below Mathlib's fallback instances (priority 100), so
+-- that Mathlib's instances on `ℂ` are found first.
+attribute [instance 10] Place.toIsTopologicalRing Place.toContinuousStar
+  Place.toLocallyCompactSpace Place.toPolishSpace Place.toBorelSpace Place.toIsAddHaarMeasure
+
 variable {A}
 
 /-! ### Skew elements -/
