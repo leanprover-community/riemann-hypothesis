@@ -239,10 +239,8 @@ variable {P : Parameters} {D : Data P}
 
 section DescentPair
 
-variable {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] {O : DescentPair D.E r n} {ℓ : ℕ}
-  [ThePrime ℓ]
+variable {r n : Type} [Fintype r] [Fintype n] {ℓ : ℕ} [ThePrime ℓ]
 
-omit [DecidableEq r] in
 /-- Let `r` and `n` be nonempty. Suppose that, for all `X`, the Hecke polynomial at `w` of rank `n`
 with eigenvalues `s` equals `qPochhammer q t (α X) = ∏_{l < t} (1 - q ^ l α X)` times the Hecke
 polynomial of rank `r` with eigenvalues `z` at `β X`, where `q` is the norm of `w`. Comparing the
@@ -256,6 +254,8 @@ lemma apply_one_eq_of_heckePolyEval_eq (r_pos : 0 < Fintype.card r) (n_pos : 0 <
   simp (disch := fun_prop) only [heckePolyEval, qPochhammer, smul_eq_mul, deriv_fun_mul,
     deriv_fun_finsetProd, deriv_fun_sum, deriv_fun_pow] at deriv_eq
   simpa [← sum_mul, zero_pow_eq, n_pos, r_pos, sum_range_succ'] using deriv_eq
+
+variable [DecidableEq r] {O : DescentPair D.E r n}
 
 /-- Let `O` be a descent pair over the CM field `D.E` of the data `D`: two spaces of dimensions
 `r < n`, a character `μ = O.u1Char` of `U(1)` of weight `O.weight`, and chosen places

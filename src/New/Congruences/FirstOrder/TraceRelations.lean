@@ -641,6 +641,28 @@ lemma hasTriangleCost_of_isCharacterCocycle [Fintype Y] [Fintype K] [LinearOrder
       (fun k ↦ hzs _ (by simp)) .rfl (by simp +contextual [tateTwist, cyclotomicInv])
   · exact fun g hg ↦ hzs g (mem_union_left _ hg)
 
+open Period Lift in
+/-- Ribet's cocycles above `ℓ`. At each place `v` above `ℓ`, let the restrictions of all `u x` and
+of `ρ` lie in the class `InClass (F v) (C v) (U v)` of local lattices. This means three things.
+Their periods are admissible along the filter `F v`. Their Hodge–Tate jumps lie in the sets `U v`.
+Each inertial `s` is killed by every polynomial `Q` with `C v s Q`. Take the cocycles of `ρ` modulo
+`ℓ ^ M` that obey the linear relations among the `u x g - 1`. Those that also obey the crystalline
+relations above `ℓ` have colength at most the sum over `v` of the `dualDefect`. This defect is the
+length of the crystalline cocycles of the Tate dual of `ρ`, modulo those orthogonal under cup
+product to the class. -/
+lemma crystallineColength_le_sum_dualDefect [Fintype Y] {u : Y → AbsGal D →* Matrix n n O}
+    {ρ : AbsGal D →* Matrix r r O}
+    {F : ∀ v : placesDividing D.E ℓ, Filter (decompGroup (AbsGal D) (placeOver v.val))}
+    {C : ∀ v : placesDividing D.E ℓ, decompGroup (AbsGal D) (placeOver v.val) → O[X] → Prop}
+    {U : placesDividing D.E ℓ → (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ}
+    (hu : ∀ (v : placesDividing D.E ℓ) (x : Y), InClass (F v) (C v) (U v) (localLattice (u x) v))
+    (hρ : ∀ v : placesDividing D.E ℓ, InClass (F v) (C v) (U v) (localLattice ρ v)) (M : ℕ) :
+    crystallineColength ρ u M ≤ ∑ v : placesDividing D.E ℓ,
+      dualDefect (InClass (F v) (C v) (U v)) (localLattice ρ v).tateDual := by
+  rw [crystallineColength, obeying_crysRelations]
+  exact (relLength_iInf_le _ _).trans (sum_le_sum fun v _ ↦
+    relLength_ribetCocycles_le (localChart ℓ D.E v).inducesPlace.2.1 (hu v) M (hρ v))
+
 variable [PadicIso ℓ]
 
 open Period Lift GaloisRep in
@@ -677,29 +699,6 @@ lemma isTameType_of_mem_placesAboveM {V : DescentPair D.E r n}
   -- `∏ (X - y)`, `y ∈ μ`, kills `s` on `R`, and `Q` vanishes on `μ`
   exact (hμ.polyKillsAt hR).isKilledBy_of_roots hs
     (by simpa [eval_multiset_prod, eval_map, sub_eq_zero] using! hQ)
-
-omit [PadicIso ℓ] in
-open Period Lift in
-/-- Ribet's cocycles above `ℓ`. At each place `v` above `ℓ`, let the restrictions of all `u x` and
-of `ρ` lie in the class `InClass (F v) (C v) (U v)` of local lattices. This means three things.
-Their periods are admissible along the filter `F v`. Their Hodge–Tate jumps lie in the sets `U v`.
-Each inertial `s` is killed by every polynomial `Q` with `C v s Q`. Take the cocycles of `ρ` modulo
-`ℓ ^ M` that obey the linear relations among the `u x g - 1`. Those that also obey the crystalline
-relations above `ℓ` have colength at most the sum over `v` of the `dualDefect`. This defect is the
-length of the crystalline cocycles of the Tate dual of `ρ`, modulo those orthogonal under cup
-product to the class. -/
-lemma crystallineColength_le_sum_dualDefect [Fintype Y] {u : Y → AbsGal D →* Matrix n n O}
-    {ρ : AbsGal D →* Matrix r r O}
-    {F : ∀ v : placesDividing D.E ℓ, Filter (decompGroup (AbsGal D) (placeOver v.val))}
-    {C : ∀ v : placesDividing D.E ℓ, decompGroup (AbsGal D) (placeOver v.val) → O[X] → Prop}
-    {U : placesDividing D.E ℓ → (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ}
-    (hu : ∀ (v : placesDividing D.E ℓ) (x : Y), InClass (F v) (C v) (U v) (localLattice (u x) v))
-    (hρ : ∀ v : placesDividing D.E ℓ, InClass (F v) (C v) (U v) (localLattice ρ v)) (M : ℕ) :
-    crystallineColength ρ u M ≤ ∑ v : placesDividing D.E ℓ,
-      dualDefect (InClass (F v) (C v) (U v)) (localLattice ρ v).tateDual := by
-  rw [crystallineColength, obeying_crysRelations]
-  exact (relLength_iInf_le _ _).trans (sum_le_sum fun v _ ↦
-    relLength_ribetCocycles_le (localChart ℓ D.E v).inducesPlace.2.1 (hu v) M (hρ v))
 
 open Period in
 /-- Let `R` be a main summand (`IsMainSummandLike`), in particular conjugate self-dual with

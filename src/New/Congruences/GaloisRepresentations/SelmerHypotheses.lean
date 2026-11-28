@@ -294,8 +294,11 @@ section RowColumnDefs
 
 open Fintype GaloisRep Set
 
-variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P} [PadicIso ℓ]
-  {n : Type} [Fintype n] [DecidableEq n]
+variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P}
+
+section
+
+variable {n : Type} [Fintype n] [DecidableEq n]
   (t : ℕ) (J : (D.E →+* ℂ) → Multiset ℤ) (ψ : AbsGal D →* PadicAlgCl ℓ) (S : Set (FinPlace D.E))
   (R : GalRep ℓ D.E n)
 
@@ -349,7 +352,6 @@ structure IsTwistedLattice {O : CoeffRing ℓ} (u : AbsGal D →* Matrix n n O) 
   mem_inertiaAbove : γ ∈ inertiaAbove (placesDividing D.E ℓ)ᶜ
 
 variable {ψ R γ} in
-omit [PadicIso ℓ] in
 /-- The cyclotomic character is `1` at `γ`, which lies in inertia at a place not above `ℓ`. -/
 lemma IsTwistedLattice.cyclotomicChar_eq_one {O : CoeffRing ℓ} {u : AbsGal D →* Matrix n n O}
     {ψ' : AbsGal D →* O} {ζ' : ↑O} (h : IsTwistedLattice ψ R γ u ψ' ζ') :
@@ -385,7 +387,6 @@ def HasDivisibleSelmerLengthLe {n : Type} [Fintype n] [DecidableEq n]
       IsTwistedLattice ψ R γ u ψ' ζ' ∧
       O.normLength (crystallineSelmerLength (twistRep (.id O) ψ' u) Q γ) ≤ sel
 
-omit [PadicIso ℓ] in
 /-- Let `ρ` be a matrix representation over `O` of the absolute Galois group of `E = D.E`, `Q` a
 finite set of places of `E` and `γ` an element of the Galois group. Consider the locally constant
 cocycles for `ρ` that are unramified at the places prime to `ℓ p₀ p₁` and outside `Q` and `Q̄`, obey
@@ -407,7 +408,6 @@ lemma length_selmerCocycles_le_crystallineSelmerLength {n : Type} [Fintype n] [D
     · simpa using hzγ
   exact (length_mono h_sub).trans (length_le_divisibleSelmerLength (NeZero.ne _))
 
-omit [PadicIso ℓ] in
 /-- A bound for the Selmer group with divisible coefficients comes with a twisted lattice. -/
 lemma HasDivisibleSelmerLengthLe.hasTwistedLattice {n : Type} [Fintype n] [DecidableEq n]
     {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E n} {Q : Finset (FinPlace D.E)} {γ : AbsGal D}
@@ -415,7 +415,6 @@ lemma HasDivisibleSelmerLengthLe.hasTwistedLattice {n : Type} [Fintype n] [Decid
     HasTwistedLattice ψ R γ :=
   Filter.Eventually.mono h fun _ ⟨u, ψ', ζ', h_lattice, _⟩ ↦ ⟨u, ψ', ζ', h_lattice⟩
 
-omit [PadicIso ℓ] in
 /-- A bound for the Selmer group with divisible coefficients holds for every larger bound. -/
 lemma HasDivisibleSelmerLengthLe.mono {n : Type} [Fintype n] [DecidableEq n]
     {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E n} {Q : Finset (FinPlace D.E)} {γ : AbsGal D}
@@ -423,6 +422,12 @@ lemma HasDivisibleSelmerLengthLe.mono {n : Type} [Fintype n] [DecidableEq n]
     (h_le : sel ≤ sel') : HasDivisibleSelmerLengthLe ψ R Q γ sel' :=
   Filter.Eventually.mono h fun _ ⟨u, ψ', ζ', h_lattice, h_len⟩ ↦
     ⟨u, ψ', ζ', h_lattice, h_len.trans h_le⟩
+
+end
+
+variable [PadicIso ℓ] {n : Type} [Fintype n] [DecidableEq n]
+  (t : ℕ) (J : (D.E →+* ℂ) → Multiset ℤ) (ψ : AbsGal D →* PadicAlgCl ℓ) (S : Set (FinPlace D.E))
+  (R : GalRep ℓ D.E n)
 
 variable (D)
 
@@ -502,7 +507,7 @@ section AptTupleDefs
 open Polynomial Fintype Set GaloisRep AlgHeckeChar AutChar
 
 variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P} [PadicIso ℓ] {r n : Type}
-  {m : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+  {m : Type} [Fintype r] [DecidableEq r] [Fintype n] [Fintype m] [DecidableEq m]
 
 /-! ### The normalising character -/
 
@@ -512,7 +517,6 @@ normalises the representations attached to forms on `V`, which has dimension `ca
 abbrev normalizingAvatar (O : DescentPair D.E r n) : Gal(Ω/D.E) →* (PadicAlgCl ℓ)ˣ :=
   ((HasWeight.inv (μ := O.charW)).toAlgebraic (-card r) 0).avatar
 
-omit [DecidableEq n] in
 /-- The value of the normalising character `New.Selmer.normalizingAvatar O` at `s` when `s⁻¹` fixes
 a place `A` over `w ∤ ℓ` and acts there as the `d`-th power of Frobenius: it is the `d`-th power of
 the image under the fixed isomorphism `ιℓ` of the inverse of `O.charW.frobValue r w`, the value at a
@@ -535,6 +539,8 @@ lemma normalizingAvatar_eq_of_isFrob_inv {O : DescentPair D.E r n} {w : FinPlace
     HasWeight.charUnramifiedAt_toAlgebraic (by simp) (by simp) _ _
   rw [avatar_localArtin _ hA (.inl hℓ) h_art, h_unr.apply_locIdele_eq_zpow z, hz]
   simp [θ, ← h_unif]
+
+variable [DecidableEq n]
 
 variable (O : DescentPair D.E r n) (k : ℕ) (J : (D.E →+* ℂ) → Multiset ℤ)
   (c : ∀ i : O.ChosenIndex, (ResField (O.chosenPlace i))[X]) (S : Set (FinPlace D.E))

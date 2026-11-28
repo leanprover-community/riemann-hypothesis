@@ -446,10 +446,9 @@ namespace New.Selmer
 
 open NumberField IsCMField InfinitePlace Matrix Submodule Polynomial Fintype GaloisRep Period
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {P : Parameters} {D : Data P}
+variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P}
   {r n m : Type} [Fintype r] [DecidableEq r] [Fintype n] [Fintype m] [DecidableEq m]
 
-omit [PadicIso ℓ] in
 /-- If the trace form on the image of `R` is non-degenerate, so is that on the image of its dual
 `R'`, `g ↦ (R g⁻¹)ᵀ`. -/
 lemma isTraceNondeg_transpose_inv {R R' : GalRep ℓ D.E m} (h_nondeg : IsTraceNondeg R)
@@ -472,6 +471,8 @@ lemma count_jumps_comp_star (κ : Weight D.E) (k : ℕ) (σ : D.E →+* ℂ) (u 
   simp only [h_conj, jumps, Multiset.count_map, Nat.pred_eq_sub_one]
   congr! 2
   grind [Φ_mk_eq_or_star_eq, mk_conjugate_eq, Multiset.mem_range]
+
+variable [PadicIso ℓ]
 
 /-- Let `R` be conjugate dual with twist `1 - k` and of finite type at the conjugate `conjPlace A`
 of the place `A`. Then (a) `R` is of finite type at `A`; (b) if `R` has the jumps of a weight `κ` in

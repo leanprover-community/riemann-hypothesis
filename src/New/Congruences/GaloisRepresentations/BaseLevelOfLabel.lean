@@ -56,8 +56,46 @@ namespace New.Selmer
 
 open Patching Subgroup Representation MonoidAlgebra Gf stdLevel Set Matrix Polynomial Space
 
-variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {P : Parameters} {D : Data P}
+variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P}
   {r n : Type} [Fintype r] [DecidableEq r] [Fintype n]
+
+/-- Let the labels `c` form a lift setting for `O` and `ϑ`. Let `ϑ.Q` be auxiliary: its places have
+prime norm, neither they nor their conjugates are bad, and the conjugates are not in `ϑ.Q`. Let `U`
+be a family of places that are not bad. Suppose that neither `v` nor its conjugate is a chosen
+place. Suppose also that `v` lies above `ℓ` or in `placesAboveM D`, or that neither `v` nor its
+conjugate is in `ϑ.Q` or `range U`. Then `v` and its conjugate avoid `range U` and the places of
+`O`. -/
+lemma notMem_and_star_notMem_range_union_places {O : DescentPair D.E r n} {ϑ : D.Twist}
+    {c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X]} (h_lift : IsLiftSetting O c ϑ)
+    (hQ : IsAuxiliary (badPlaces D ℓ) ϑ.Q) {K : Type} {U : K → FinPlace D.E}
+    (hU : ∀ k : K, U k ∉ badPlaces D ℓ) {v : FinPlace D.E}
+    (h_exc : v ∉ ((ϑ.Q : Set (FinPlace D.E)).conjClosure ∪ (range U).conjClosure) \
+      (placesDividing D.E ℓ ∪ placesAboveM D))
+    (h_chosen : v ∉ (range O.chosenPlace).conjClosure) :
+    v ∉ range U ∪ O.places ∧ star v ∉ range U ∪ O.places := by
+  have h_range : range O.twistPlace = ϑ.Q := by
+    rw [h_lift.toLevelPlaces_eq]
+    exact Subtype.range_coe
+  have h_places : O.places = range O.chosenPlace ∪ range O.twistPlace := Sum.elim_range ..
+  -- `ϑ.Q` and `range U` avoid the bad places, so `v` and its conjugate avoid both.
+  have h_off : v ∉ (ϑ.Q : Set (FinPlace D.E)).conjClosure ∪ (range U).conjClosure := by
+    intro h_mem
+    -- The places above `ℓ` or a level prime are bad, and they are stable under conjugation.
+    have h_above : v ∈ placesDividing D.E ℓ ∪ placesAboveM D := by
+      by_contra h_not
+      exact h_exc ⟨h_mem, h_not⟩
+    have hv_bad : v ∈ badPlaces D ℓ := placesDividing_union_subset_badPlaces D ℓ h_above
+    have h_star_bad : star v ∈ badPlaces D ℓ := placesDividing_union_subset_badPlaces D ℓ
+      (h_above.imp star_mem_placesDividing.2 star_mem_placesAboveM.2)
+    obtain (hv_mem | h_star_mem) | ⟨k, rfl⟩ | ⟨k, hk⟩ := h_mem
+    · exact (hQ v hv_mem).left hv_bad
+    · exact (hQ (star v) h_star_mem).left h_star_bad
+    · exact hU k hv_bad
+    · exact hU k (by rwa [hk])
+  simp only [h_places, h_range, mem_union, mem_preimage, not_or] at h_off h_chosen ⊢
+  exact ⟨⟨h_off.2.1, h_chosen.1, h_off.1.1⟩, h_off.2.2, h_chosen.2, h_off.1.2⟩
+
+variable [PadicIso ℓ]
 
 section
 
@@ -266,43 +304,6 @@ lemma chosenGroupOrder_nsmul_typeProjection_mem_ellIntegralForms {ϑ : D.Twist}
   rw [h_sum]
   exact NormedField.valuation.integer.sum_mem fun g _ ↦
     mul_mem (natCast_mem _ t) (mul_mem (h_coef g) (mul_mem (h_root g) (h_val _)))
-
-omit [DecidableEq n] [PadicIso ℓ] in
-/-- Let the labels `c` form a lift setting for `O` and `ϑ`. Let `ϑ.Q` be auxiliary: its places have
-prime norm, neither they nor their conjugates are bad, and the conjugates are not in `ϑ.Q`. Let `U`
-be a family of places that are not bad. Suppose that neither `v` nor its conjugate is a chosen
-place. Suppose also that `v` lies above `ℓ` or in `placesAboveM D`, or that neither `v` nor its
-conjugate is in `ϑ.Q` or `range U`. Then `v` and its conjugate avoid `range U` and the places of
-`O`. -/
-lemma notMem_and_star_notMem_range_union_places {ϑ : D.Twist}
-    {c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X]} (h_lift : IsLiftSetting O c ϑ)
-    (hQ : IsAuxiliary (badPlaces D ℓ) ϑ.Q) {K : Type} {U : K → FinPlace D.E}
-    (hU : ∀ k : K, U k ∉ badPlaces D ℓ) {v : FinPlace D.E}
-    (h_exc : v ∉ ((ϑ.Q : Set (FinPlace D.E)).conjClosure ∪ (range U).conjClosure) \
-      (placesDividing D.E ℓ ∪ placesAboveM D))
-    (h_chosen : v ∉ (range O.chosenPlace).conjClosure) :
-    v ∉ range U ∪ O.places ∧ star v ∉ range U ∪ O.places := by
-  have h_range : range O.twistPlace = ϑ.Q := by
-    rw [h_lift.toLevelPlaces_eq]
-    exact Subtype.range_coe
-  have h_places : O.places = range O.chosenPlace ∪ range O.twistPlace := Sum.elim_range ..
-  -- `ϑ.Q` and `range U` avoid the bad places, so `v` and its conjugate avoid both.
-  have h_off : v ∉ (ϑ.Q : Set (FinPlace D.E)).conjClosure ∪ (range U).conjClosure := by
-    intro h_mem
-    -- The places above `ℓ` or a level prime are bad, and they are stable under conjugation.
-    have h_above : v ∈ placesDividing D.E ℓ ∪ placesAboveM D := by
-      by_contra h_not
-      exact h_exc ⟨h_mem, h_not⟩
-    have hv_bad : v ∈ badPlaces D ℓ := placesDividing_union_subset_badPlaces D ℓ h_above
-    have h_star_bad : star v ∈ badPlaces D ℓ := placesDividing_union_subset_badPlaces D ℓ
-      (h_above.imp star_mem_placesDividing.2 star_mem_placesAboveM.2)
-    obtain (hv_mem | h_star_mem) | ⟨k, rfl⟩ | ⟨k, hk⟩ := h_mem
-    · exact (hQ v hv_mem).left hv_bad
-    · exact (hQ (star v) h_star_mem).left h_star_bad
-    · exact hU k hv_bad
-    · exact hU k (by rwa [hk])
-  simp only [h_places, h_range, mem_union, mem_preimage, not_or] at h_off h_chosen ⊢
-  exact ⟨⟨h_off.2.1, h_chosen.1, h_off.1.1⟩, h_off.2.2, h_chosen.2, h_off.1.2⟩
 
 /-- The jumps of a normalised representation (`normalizedRep`) attached to a form of weight
 `(O.columnCount, O.detExp)`: the jumps of the weight minus the infinity type of the algebraic Hecke

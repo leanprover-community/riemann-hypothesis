@@ -40,28 +40,9 @@ namespace New.Selmer
 
 open Submodule Finset IsDiscreteValuationRing fittingIdeal MvPolynomial
 
-variable {O G J n : Type} [CommRing O] [DVR O] [LinearOrder J] [Fintype n]
+variable {O G J n : Type} [CommRing O] [DVR O] [Fintype n]
   {s : Finset G} {Φ : (n → O) →ₗ[O] s → MvPolynomial J O}
 
-/-- There is a set `L ⊆ G` with two properties, where `Z₀` denotes the functions of `Z` that vanish
-on `L`. (a) Let `j ∈ I` and `c ∈ Z₀`. If `c (τ i) = c (τ' i)` for all `i < j`, and
-`c (φ i) = c (φ' i)` for those `i < j` in `I`, then `C • c (τ j) = C • c (τ' j)`. (b) Let `S ≤ Z₀`
-be a submodule whose members vanish at all `τ j` and `τ' j` and have `c (φ j) = c (φ' j)` for
-`j ∈ I`. Then the length of `Z / Z₀` plus the length of `S` modulo its `C`-torsion is at most
-`b`. Here `relLength S T` is the length of `S / (S ⊓ T)`. -/
-def HasTriangleCost {B : Type*} [AddCommGroup B] [Module O B] (Z : Submodule O (G → B))
-    (τ τ' φ φ' : J → G) (I : Finset J) (C : O) (b : ℕ∞) : Prop :=
-  ∃ L : Set G,
-    -- (a) the triangle along `I`
-    (∀ j ∈ I, ∀ c ∈ Z ⊓ Submodule.pi L ⊥,
-      (∀ i < j, c (τ i) = c (τ' i) ∧ (i ∈ I → c (φ i) = c (φ' i))) →
-      C • c (τ j) = C • c (τ' j)) ∧
-    -- (b) the cost
-    ∀ S ≤ Z ⊓ Submodule.pi L ⊥,
-      (∀ c ∈ S, (∀ j : J, c (τ j) = 0 ∧ c (τ' j) = 0) ∧ ∀ j ∈ I, c (φ j) = c (φ' j)) →
-      relLength Z (Submodule.pi L ⊥) + relLength S (torsionBy O (G → B) C) ≤ b
-
-omit [LinearOrder J] in
 /-- Let `R` be the polynomial ring over `O` in the variables `X j` and `Φ : O^n → R^s`. Suppose
 `p ≠ 0`, `Φ (p • O^n) ⊆ T`, and that modulo `T` the basis vector of `R^s` at each `g ∈ s` is
 `Φ (z g)`. Let `T₀` be `T` plus all vectors of polynomials without constant term. Then the Fitting
@@ -104,6 +85,26 @@ lemma exists_mem_fittingIdeal_addVal_constantCoeff_le [DecidableEq G] [Finite J]
   have hd_coeff : constantCoeff d = f * C ^ #s := by simp [eq_sub_of_add_eq hdr, hr]
   refine ⟨d, hd, ?_⟩
   grw [hd_coeff, addVal_mul, addVal_pow, hf, nsmul_eq_mul]
+
+variable [LinearOrder J]
+
+/-- There is a set `L ⊆ G` with two properties, where `Z₀` denotes the functions of `Z` that vanish
+on `L`. (a) Let `j ∈ I` and `c ∈ Z₀`. If `c (τ i) = c (τ' i)` for all `i < j`, and
+`c (φ i) = c (φ' i)` for those `i < j` in `I`, then `C • c (τ j) = C • c (τ' j)`. (b) Let `S ≤ Z₀`
+be a submodule whose members vanish at all `τ j` and `τ' j` and have `c (φ j) = c (φ' j)` for
+`j ∈ I`. Then the length of `Z / Z₀` plus the length of `S` modulo its `C`-torsion is at most
+`b`. Here `relLength S T` is the length of `S / (S ⊓ T)`. -/
+def HasTriangleCost {B : Type*} [AddCommGroup B] [Module O B] (Z : Submodule O (G → B))
+    (τ τ' φ φ' : J → G) (I : Finset J) (C : O) (b : ℕ∞) : Prop :=
+  ∃ L : Set G,
+    -- (a) the triangle along `I`
+    (∀ j ∈ I, ∀ c ∈ Z ⊓ Submodule.pi L ⊥,
+      (∀ i < j, c (τ i) = c (τ' i) ∧ (i ∈ I → c (φ i) = c (φ' i))) →
+      C • c (τ j) = C • c (τ' j)) ∧
+    -- (b) the cost
+    ∀ S ≤ Z ⊓ Submodule.pi L ⊥,
+      (∀ c ∈ S, (∀ j : J, c (τ j) = 0 ∧ c (τ' j) = 0) ∧ ∀ j ∈ I, c (φ j) = c (φ' j)) →
+      relLength Z (Submodule.pi L ⊥) + relLength S (torsionBy O (G → B) C) ≤ b
 
 /-- Let `Φ : O^n → R^s` with `R = O[X j]`, `p ≠ 0`, `Φ (p • O^n) ⊆ T`, and put `y g = Φ (z g)`.
 Suppose that `y (τ i) - y (τ' i) = X i • (y (φ i) - y (φ' i))` modulo `T` for all `i`, and that

@@ -44,8 +44,32 @@ open Finset Filter Module MvPolynomial IsDiscreteValuationRing IsLocalRing
 
 open scoped NNReal ENNReal NNRat
 
-variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
-  {S₀ : Finset (FinPlace E)}
+variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E]
+
+open Pointwise in
+/-- Let `ψ` be a locally constant character of `Gal(Ω/E)` with `ψ ^ q = 1`. Let `A` be a place of
+`Ω` (a valuation subring) above `w` at which `q` is a unit. Let `γ` be a tame generator of the
+inertia group of `A`: for each `n` that is a unit at `A`, it multiplies an `n`-th root of some
+uniformiser of `E` by a primitive `n`-th root of unity. Then `ψ` maps every element of an inertia
+group above `w` to a power of `ψ γ`. -/
+lemma exists_map_eq_map_pow_of_isTameGenerator {C : Type} [CommMonoid C] {ψ : Gal(Ω/E) →* C}
+    (hψ : IsLocallyConstant ψ) {q : ℕ} (hq : ψ ^ q = 1) {w : FinPlace E} {A : ClosurePlace}
+    (hA : IsPlaceOver A w) (hqA : A.valuation q = 1) {γ : inertiaGroup Gal(Ω/E) A}
+    (hγ : IsTameGenerator γ) {g : Gal(Ω/E)} (hg : g ∈ inertiaAbove {w}) :
+    ∃ a : ℕ, ψ g = ψ γ ^ a := by
+  -- The inertia groups above `w` are conjugate, and `ψ` is constant on conjugacy classes.
+  obtain ⟨w', rfl, A', hA', hg⟩ := hg
+  obtain ⟨s, rfl⟩ : ∃ s : Gal(Ω/E), s • A' = A := hA'.exists_smul Gal(Ω/E) hA
+  have h_conj : ψ (s * g * s⁻¹) = ψ g := by
+    rw [map_mul, map_mul, mul_right_comm, ← map_mul, mul_inv_cancel, map_one, one_mul]
+  have h_near : ∀ᶠ u : Gal(Ω/E) in nhds 1, u ∈ inertiaGroup Gal(Ω/E) (s • A') → ψ u = 1 :=
+    (hψ.eventually_eq 1).mono fun u hu _ ↦ hu.trans (map_one ψ)
+  have h_power : ∃ a : ℕ, ψ (s * g * s⁻¹) = ψ γ ^ a :=
+    (hA.exists_eq_pow_and_apply_conj_eq_pow hγ ψ h_near hqA (fun u _ ↦ DFunLike.congr_fun hq u)
+      ⟨s * g * s⁻¹, hg.conj s⟩).left
+  rwa [h_conj] at h_power
+
+variable [NumberField.IsCMField E] {S₀ : Finset (FinPlace E)}
   {g₀ : Gal(Ω/E)} {ι κ : Type} {n : ι → Type} [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
   {O : CoeffRing ℓ} (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i))
   (Y : κ → StickelbergerSystem ℓ S₀ g₀)
@@ -99,30 +123,6 @@ lemma IsSmallTwist.sum_ellVal_tameGenerator_sub_one_le {ε : ℝ≥0} {Q : Finse
     (hA : ∀ w : FinPlace E, IsPlaceOver (A w) w) :
     ∑ w ∈ Q ∪ Q.image star, ellVal (ψ (hA w).tameGenerator - 1) ≤ ε :=
   hψ.sum_le_of_isTameGenerator A hA _ fun w ↦ (hA w).isTameGenerator_tameGenerator
-
-open Pointwise in
-omit [NumberField.IsCMField E] in
-/-- Let `ψ` be a locally constant character of `Gal(Ω/E)` with `ψ ^ q = 1`. Let `A` be a place of
-`Ω` (a valuation subring) above `w` at which `q` is a unit. Let `γ` be a tame generator of the
-inertia group of `A`: for each `n` that is a unit at `A`, it multiplies an `n`-th root of some
-uniformiser of `E` by a primitive `n`-th root of unity. Then `ψ` maps every element of an inertia
-group above `w` to a power of `ψ γ`. -/
-lemma exists_map_eq_map_pow_of_isTameGenerator {C : Type} [CommMonoid C] {ψ : Gal(Ω/E) →* C}
-    (hψ : IsLocallyConstant ψ) {q : ℕ} (hq : ψ ^ q = 1) {w : FinPlace E} {A : ClosurePlace}
-    (hA : IsPlaceOver A w) (hqA : A.valuation q = 1) {γ : inertiaGroup Gal(Ω/E) A}
-    (hγ : IsTameGenerator γ) {g : Gal(Ω/E)} (hg : g ∈ inertiaAbove {w}) :
-    ∃ a : ℕ, ψ g = ψ γ ^ a := by
-  -- The inertia groups above `w` are conjugate, and `ψ` is constant on conjugacy classes.
-  obtain ⟨w', rfl, A', hA', hg⟩ := hg
-  obtain ⟨s, rfl⟩ : ∃ s : Gal(Ω/E), s • A' = A := hA'.exists_smul Gal(Ω/E) hA
-  have h_conj : ψ (s * g * s⁻¹) = ψ g := by
-    rw [map_mul, map_mul, mul_right_comm, ← map_mul, mul_inv_cancel, map_one, one_mul]
-  have h_near : ∀ᶠ u : Gal(Ω/E) in nhds 1, u ∈ inertiaGroup Gal(Ω/E) (s • A') → ψ u = 1 :=
-    (hψ.eventually_eq 1).mono fun u hu _ ↦ hu.trans (map_one ψ)
-  have h_power : ∃ a : ℕ, ψ (s * g * s⁻¹) = ψ γ ^ a :=
-    (hA.exists_eq_pow_and_apply_conj_eq_pow hγ ψ h_near hqA (fun u _ ↦ DFunLike.congr_fun hq u)
-      ⟨s * g * s⁻¹, hg.conj s⟩).left
-  rwa [h_conj] at h_power
 
 /-- Evaluation at `x` of `P` with `f j` put for the variable `j` is evaluation of `P` at the values
 of the `f j` at `x`. -/

@@ -78,9 +78,7 @@ namespace New.Lift
 open Period Polynomial Module Finset KummerChart JumpLattice Function IsLocalRing Topology Selmer
   Filter
 
-variable {p : ℕ} [l : ThePrime p] [Γ : GroupOverGp p] {O : Type} [CommRing O] {r N : ℕ}
-  [PadicIntegerRing O p] {L : GalLattice O Γ}
-  {U U' : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ} (k : KummerChart Γ) (ζ : k.LetterRoot O)
+variable {p : ℕ} [l : ThePrime p] {O : Type} [CommRing O] {r N : ℕ} [PadicIntegerRing O p]
 
 variable (p r N) in
 /-- `K` holds for `X ^ e - 1`, with `e` the least common multiple of the `p ^ i - 1` for
@@ -88,6 +86,23 @@ variable (p r N) in
 def IsTameType (K : O[X] → Prop) : Prop :=
   K (X ^ ((Icc 1 r).lcm fun i ↦ p ^ i - 1) - 1) ∧
   ∃ q : ℤ_[p][X], q.Monic ∧ q.natDegree ≤ N ∧ K (q.map (algebraMap ℤ_[p] O))
+
+/-- The length of `O / p` over `O` times the residue degree of `O` is the rank of `O` over
+`ℤ_[p]`. -/
+lemma length_quotient_mul_length_residueField :
+    length O (O ⧸ Ideal.span {(p : O)}) * length (ResidueField ℤ_[p]) (ResidueField O) =
+      finrank ℤ_[p] O := by
+  let _ : DivisionRing (ℤ_[p] ⧸ maximalIdeal ℤ_[p]) := Ideal.Quotient.divisionRing _
+  have span_eq : Ideal.span {(p : O)} = (maximalIdeal ℤ_[p]).map (algebraMap ℤ_[p] O) := by
+    simp [PadicInt.maximalIdeal_eq_span_p, Ideal.map_span]
+  -- Over `ℤ_[p]` the left side is the length of `O / p`, which is a vector space over `ℤ_[p] / p`.
+  rw [← length_restrictScalars, span_eq,
+    length_eq_of_surjective residue_surjective (R := ℤ_[p] ⧸ maximalIdeal ℤ_[p])
+      (M := O ⧸ (maximalIdeal ℤ_[p]).map (algebraMap ℤ_[p] O)),
+    length_eq_finrank, finrank_quotient_map]
+
+variable [Γ : GroupOverGp p] {L : GalLattice O Γ}
+  {U U' : (O →ₐ[ℤ_[p]] ℂ_[p]) → Finset ℤ} (k : KummerChart Γ) (ζ : k.LetterRoot O)
 
 open scoped Classical in
 /-- The jump set at the letter `i`: the union of `{0}` and the sets `U g` for the embeddings `g` of
@@ -147,21 +162,6 @@ lemma KummerChart.sum_card_algHom_le_finrank (k : KummerChart Γ) (ζ : k.Letter
   rw [← card_biUnion fun i _ i' _ hi ↦
     disjoint_filter.2 fun g _ hg hg' ↦ theta_ne hi (hg.symm.trans hg')]
   exact (card_le_univ _).trans_eq card_algHom_eq_finrank
-
-omit [GroupOverGp p] in
-/-- The length of `O / p` over `O` times the residue degree of `O` is the rank of `O` over
-`ℤ_[p]`. -/
-lemma length_quotient_mul_length_residueField :
-    length O (O ⧸ Ideal.span {(p : O)}) * length (ResidueField ℤ_[p]) (ResidueField O) =
-      finrank ℤ_[p] O := by
-  let _ : DivisionRing (ℤ_[p] ⧸ maximalIdeal ℤ_[p]) := Ideal.Quotient.divisionRing _
-  have span_eq : Ideal.span {(p : O)} = (maximalIdeal ℤ_[p]).map (algebraMap ℤ_[p] O) := by
-    simp [PadicInt.maximalIdeal_eq_span_p, Ideal.map_span]
-  -- Over `ℤ_[p]` the left side is the length of `O / p`, which is a vector space over `ℤ_[p] / p`.
-  rw [← length_restrictScalars, span_eq,
-    length_eq_of_surjective residue_surjective (R := ℤ_[p] ⧸ maximalIdeal ℤ_[p])
-      (M := O ⧸ (maximalIdeal ℤ_[p]).map (algebraMap ℤ_[p] O)),
-    length_eq_finrank, finrank_quotient_map]
 
 /-- For a lattice `L` in the class `InClass F K U` and an embedding `g : O →ₐ[ℤ_[p]] ℂ_[p]`, the
 Hodge–Tate jumps of `L` at `g` in a finite set `J`, counted with multiplicity (`jump L.ρ g u`),

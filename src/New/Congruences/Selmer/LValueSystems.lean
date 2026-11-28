@@ -43,9 +43,8 @@ open scoped NumberField
 
 namespace New.Selmer
 
-variable {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+variable {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ]
 
-omit [PadicIso ℓ] in
 /-- Let `p₀`, `p₁` and `N` be the three primes of the data `D` and `E` its number field. A place `v`
 of `E` outside `badPlaces D ℓ`, the finite set of places dividing `ℓ p₀ p₁ N`, does not lie over
 `ℓ`, and neither `v` nor its conjugate is chosen (the chosen places divide a fixed integer of norm
@@ -57,14 +56,6 @@ lemma not_isChosen_of_notMem_badPlaces {v : FinPlace D.E} (hv : v ∉ badPlaces 
   exact ⟨fun h ↦ h_bad (.inl h), fun h ↦ h_bad (.inr h.mem_placesAboveM),
     fun h ↦ h_bad (.inr (star_mem_placesAboveM.1 h.mem_placesAboveM))⟩
 
-/-- A pair `p = (ν, z)` consists of a character `ν` of `U(1)(𝔸)` and an integer `z`. For such a pair
-and a sign `δ` this is `ϑ`: the `ℓ`-adic Galois character (avatar) that class field theory attaches
-to the algebraic Hecke character of `E` given by the base change of `ν ^ (-δ)`. -/
-noncomputable def _root_.New.Data.CriticalPair.stickelbergerChar (p : D.CriticalPair) (δ : ℤˣ) :
-    AbsGal D →* (PadicAlgCl ℓ)ˣ :=
-  ((p.hasWeight.zpow (-δ : ℤˣ)).toAlgebraic 0 0).avatar
-
-omit [PadicIso ℓ] in
 /-- Let `p = (ν, z)` be a pair, so that the residue characters of `ν` are trivial outside the chosen
 places, and `δ` a sign. The algebraic Hecke character of the base change of `ν ^ (-δ)` to the field
 `E` of the data `D` is unramified at every place outside `badPlaces D ℓ`, the places dividing
@@ -76,6 +67,39 @@ lemma charUnramifiedAt_zpow_neg_of_notMem_badPlaces (p : D.CriticalPair) (δ : �
   exact (p.hasWeight.zpow _).charUnramifiedAt_toAlgebraic
     (by simp [p.tamePart_eq_one, hv_not_chosen])
     (by simp [p.tamePart_eq_one, hv_star_not_chosen]) 0 0
+
+/-- The power `τ ^ δ` of a tame character `τ`, as a tame character of modulus `I`, where `I` is an
+auxiliary set outside which the residue characters of `τ` are trivial. -/
+noncomputable abbrev _root_.New.Data.TameChar.zpowOfAuxiliary (τ : D.TameChar) (δ : ℤˣ)
+    {I : Finset (FinPlace D.E)} (hI : IsAuxiliary (badPlaces D ℓ) I)
+    (hτ : ∀ v : FinPlace D.E, v ∉ I → τ.tamePart v = 1) : D.TameChar :=
+  tameCharOfAuxiliary I hI (⟨(τ.toAutChar, τ.tamePart), τ.hasWeight, hτ⟩ ^ δ.val)
+
+/-- Let `‖x‖ = ‖x₀‖ ‖r‖ ^ i` with `x₀ ≠ 0` integral and `i ≥ 1`. If `v(x) ≤ v(x₀) + c`, then
+`v(r) ≤ c`, where `v` is the valuation `ellVal`. -/
+lemma ellVal_le_of_norm_eq_mul_pow {x x₀ r : PadicAlgCl ℓ} {i : ℕ} {c : ENNReal} (hi : i ≠ 0)
+    (hx₀ : x₀ ≠ 0) (hx₀_int : ‖x₀‖ ≤ 1) (hx : ‖x‖ = ‖x₀‖ * ‖r‖ ^ i)
+    (h_le : ellVal x ≤ ellVal x₀ + c) : ellVal r ≤ c := by
+  obtain hr | hr := le_total ‖r‖ 1
+  · have h_eq : ellVal x = ellVal x₀ + i * ellVal r := by
+      rw [ellVal_congr_norm (y := x₀ * r ^ i) (by simp [hx]), ← ellVal_pow]
+      simpa using ellVal_val_mul (⟨x₀, hx₀_int⟩ : intQpBar ℓ) ((⟨r, hr⟩ : intQpBar ℓ) ^ i)
+    rw [h_eq, ENNReal.add_le_add_iff_left (ellVal_eq_top_iff.not.2 hx₀)] at h_le
+    calc ellVal r ≤ i * ellVal r :=
+          le_mul_of_one_le_left zero_le (mod_cast Nat.one_le_iff_ne_zero.2 hi)
+      _ ≤ c := h_le
+  · -- `ellVal` is truncated at `0`, so it vanishes on elements of norm at least `1`.
+    calc ellVal r ≤ ellVal (1 : PadicAlgCl ℓ) := ellVal_le_ellVal (norm_one.trans_le hr)
+      _ ≤ c := by simp [ellVal]
+
+variable [PadicIso ℓ]
+
+/-- A pair `p = (ν, z)` consists of a character `ν` of `U(1)(𝔸)` and an integer `z`. For such a pair
+and a sign `δ` this is `ϑ`: the `ℓ`-adic Galois character (avatar) that class field theory attaches
+to the algebraic Hecke character of `E` given by the base change of `ν ^ (-δ)`. -/
+noncomputable def _root_.New.Data.CriticalPair.stickelbergerChar (p : D.CriticalPair) (δ : ℤˣ) :
+    AbsGal D →* (PadicAlgCl ℓ)ˣ :=
+  ((p.hasWeight.zpow (-δ : ℤˣ)).toAlgebraic 0 0).avatar
 
 /-- Let `p = (ν, z)` be a ramified pair: the residue characters of `ν` are nontrivial exactly at the
 chosen places, which divide a fixed integer of norm `p₀ p₁`. Let `w` be a chosen place not above
@@ -149,14 +173,6 @@ lemma exists_finPart_baseChange_eq (x : unitary (𝔸 D.E)) :
       eq_of_mem_integralU1 τ.tamePart_eq_one τ.hasWeight.2 _ (mem_integralU1_of_snd_eq_one _ hy)
   change (τ.toAutChar.val x).val = (τ.toAutChar.val (divStar (finIdeleIncl y))).val
   simpa [field] using h_one
-
-omit [PadicIso ℓ] in
-/-- The power `τ ^ δ` of a tame character `τ`, as a tame character of modulus `I`, where `I` is an
-auxiliary set outside which the residue characters of `τ` are trivial. -/
-noncomputable abbrev _root_.New.Data.TameChar.zpowOfAuxiliary (τ : D.TameChar) (δ : ℤˣ)
-    {I : Finset (FinPlace D.E)} (hI : IsAuxiliary (badPlaces D ℓ) I)
-    (hτ : ∀ v : FinPlace D.E, v ∉ I → τ.tamePart v = 1) : D.TameChar :=
-  tameCharOfAuxiliary I hI (⟨(τ.toAutChar, τ.tamePart), τ.hasWeight, hτ⟩ ^ δ.val)
 
 /-- Let `F` be a function on tame characters `τ` that is an integral measure: on each modulus `I` it
 is `τ ↦ ∑ j, α j τ(u j)` for finitely many points `u j` and coefficients `α j` that are integral
@@ -347,24 +363,6 @@ theorem exists_stickelbergerSystem_β_le_and_norm_eq {w : FinPlace D.E} (hw : D.
   · -- The norms at twists.
     simp only [hΘ_one, hΘ ξ.Q hξ ξ ξ.tamePart_eq_one hψ, norm_apply_twist hF δ ξ hξ]
     split_ifs <;> rfl
-
-omit [PadicIso ℓ] in
-/-- Let `‖x‖ = ‖x₀‖ ‖r‖ ^ i` with `x₀ ≠ 0` integral and `i ≥ 1`. If `v(x) ≤ v(x₀) + c`, then
-`v(r) ≤ c`, where `v` is the valuation `ellVal`. -/
-lemma ellVal_le_of_norm_eq_mul_pow {x x₀ r : PadicAlgCl ℓ} {i : ℕ} {c : ENNReal} (hi : i ≠ 0)
-    (hx₀ : x₀ ≠ 0) (hx₀_int : ‖x₀‖ ≤ 1) (hx : ‖x‖ = ‖x₀‖ * ‖r‖ ^ i)
-    (h_le : ellVal x ≤ ellVal x₀ + c) : ellVal r ≤ c := by
-  obtain hr | hr := le_total ‖r‖ 1
-  · have h_eq : ellVal x = ellVal x₀ + i * ellVal r := by
-      rw [ellVal_congr_norm (y := x₀ * r ^ i) (by simp [hx]), ← ellVal_pow]
-      simpa using ellVal_val_mul (⟨x₀, hx₀_int⟩ : intQpBar ℓ) ((⟨r, hr⟩ : intQpBar ℓ) ^ i)
-    rw [h_eq, ENNReal.add_le_add_iff_left (ellVal_eq_top_iff.not.2 hx₀)] at h_le
-    calc ellVal r ≤ i * ellVal r :=
-          le_mul_of_one_le_left zero_le (mod_cast Nat.one_le_iff_ne_zero.2 hi)
-      _ ≤ c := h_le
-  · -- `ellVal` is truncated at `0`, so it vanishes on elements of norm at least `1`.
-    calc ellVal r ≤ ellVal (1 : PadicAlgCl ℓ) := ellVal_le_ellVal (norm_one.trans_le hr)
-      _ ≤ c := by simp [ellVal]
 
 /-- Let `D` be the data, `ℓ` a prime with an isomorphism `ιℓ` of `ℂ` with `ℚ̄_ℓ` (`PadicIso ℓ`), and
 `v = ellVal` the `ℓ`-adic valuation truncated below at `0`. Let `δ` be a sign, `p = (ν, z)` a

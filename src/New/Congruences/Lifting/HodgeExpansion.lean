@@ -507,8 +507,7 @@ section OneStepGain
 
 open Period Submodule FrobGroup Module Finset IsDiscreteValuationRing Algebra
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
-  {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O}
+variable {p : ℕ} [ThePrime p]
 
 /-- The system of exponents obtained from `o` by raising the single value `o a u` by 1. -/
 @[grind]
@@ -520,7 +519,6 @@ def raiseOrder (o : ℕ → ℤ → ℤ) (a : ℕ) (u : ℤ) (b : ℕ) (v : ℤ)
 def raiseOrdersAt (o : ℕ → ℤ → ℤ) (a : ℕ) (b : ℕ) (v : ℤ) : ℤ :=
   o b v + if b = a then 1 else 0
 
-omit [GroupOverGp p] in
 /-- Let `t` be an `N × r` matrix over `B_dR⁺`. There are `d ≤ r` rows `s i` such that, modulo the
 kernel of `θ : B_dR⁺ → ℂ_p`, every row of `t` is an `A_inf`-combination of the rows `s i`. -/
 lemma exists_thetaBdR_sub_sum_smul_eq_zero {N r : ℕ} (t : Fin N → Fin r → BdRPlus) :
@@ -544,6 +542,8 @@ lemma exists_thetaBdR_sub_sum_smul_eq_zero {N r : ℕ} (t : Fin N → Fin r → 
   let col : U := ⟨fun i ↦ thetaBdR (t i m), Pi.single m 1, by ext; simp⟩
   have h_expand : col.val j = (∑ i, z.repr col i • z i : U).val j := by rw [z.sum_repr]
   simpa [smul_def', ← z.coord_apply, mul_comm, h_coord, entry, hA, sub_eq_zero, col] using h_expand
+
+variable [Γ : GroupOverGp p] {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O}
 
 /-- Let `o` be a system of exponents. Let `i = l.stepBack b` and assume `o b u < o b v` for all
 `v < u` in `L.jumpSet i`. Among points `x j` with exponents `o` at `l` there are `d` points

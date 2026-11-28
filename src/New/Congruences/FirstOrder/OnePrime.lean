@@ -695,27 +695,8 @@ noncomputable def cosetDerivative (H : Subgroup Γ) (B : (ZMod m → ℤ) →+ R
 noncomputable def cosetComponent (H : Subgroup Γ) (g x : Γ) : H :=
   ⟨(g • x : Γ ⧸ H).out⁻¹ * (g * x), QuotientGroup.eq.1 (g • x : Γ ⧸ H).out_eq⟩
 
-variable {H : Subgroup Γ} [Fintype H]
+variable {H : Subgroup Γ}
 
-/-- Let `ρ` be a multiplicative map from a finite group `Γ` to a ring `R`, let `H` be a subgroup,
-and let `h` run over the representatives `η.out` that `Quotient.out` chooses for the cosets
-`η ∈ Γ / H`, so that `cosetNorm ρ H = ∑ ρ h`. For a weight `f : H → ℤ` and `x ∈ Γ`, the product
-`(∑ ρ h) (∑_{p ∈ H} f p ρ p) ρ x⁻¹` is the sum over `g ∈ Γ` of `f p ρ g` with
-`p = cosetComponent H g x`, the element of `H` in the unique factorisation `g = h p x⁻¹`. -/
-lemma cosetNorm_mul_sum_mul (f : H → ℤ) (x : Γ) :
-    cosetNorm ρ H * (∑ p : H, f p • ρ p) * ρ x⁻¹ = ∑ g : Γ, f (cosetComponent H g x) • ρ g := by
-  have component_eq (η : Γ ⧸ H) (p : H) : cosetComponent H (η.out * p * x⁻¹) x = p := by
-    simp [cosetComponent]
-  rw [cosetNorm, sum_mul_sum, ← sum_product', sum_mul]
-  refine sum_nbij' (fun (η, p) ↦ η.out * p * x⁻¹) (fun g ↦ (↑(g * x), cosetComponent H g x))
-    (by simp) (by simp) (by simp [component_eq]) (by simp [cosetComponent]) ?_
-  rintro ⟨η, p⟩ -
-  simp only [component_eq, map_mul, mul_smul_comm, smul_mul_assoc]
-
-lemma cosetNorm_mul_norm : cosetNorm ρ H * ∑ p : H, ρ p = ∑ g : Γ, ρ g := by
-  simpa using cosetNorm_mul_sum_mul ρ (H := H) 1 1
-
-omit [Fintype H] in
 open scoped Classical in
 /-- The transfer of `a : H → A` at `g` is the product, over the fixed representatives `h` of
 `Γ / H`, of the values of `a` at the components `p ∈ H` of `g h = h' p`. -/
@@ -730,44 +711,6 @@ lemma transfer_eq_prod_cosetComponent {A : Type*} [CommGroup A] (a : H →* A) (
   congr! 3 with η
   simp [cosetComponent, smul_apply_eq_smul_apply_inv_smul, default_apply, mul_assoc]
 
-/-- Let `ρ` map the finite group `Γ` to the ring `R`, and let `σ : R → S` be a ring map with `m = 0`
-in `S`. For a homomorphism `c` to `ℤ/m` let `L c = ∑ valMinAbs (c g) ρ g` be its logarithm, the
-`weightedSum` for the lift `valMinAbs : ℤ/m → ℤ`. For `a : H → ℤ/m` on a subgroup `H`, the elements
-`(∑ ρ h) (L a) (∑ ρ h⁻¹)` and `L a.transfer` have the same image under `σ`, where `h` runs over the
-fixed representatives of `Γ / H` and `a.transfer` is the transfer of `a` from `H` to `Γ`. -/
-lemma map_cosetNorm_mul_weightedSum_mul_cosetNormInv (hm : (m : S) = 0)
-    (a : H →* Multiplicative (ZMod m)) :
-    σ (cosetNorm ρ H * weightedSum (ρ.comp H.subtype) a valMinAbs * cosetNormInv ρ H) =
-      σ (weightedSum ρ a.transfer valMinAbs) := by
-  classical
-  -- The coefficient of `g` on the left is the sum over the representatives `h` of the logarithms of
-  -- the components of `g h`, which is congruent modulo `m` to the logarithm of the transfer.
-  let C : (Γ → ℤ) →+ R := (Fintype.linearCombination ℤ ρ).toAddMonoidHom
-  let weight (η : Γ ⧸ H) (g : Γ) : ℤ := valMinAbs (a (cosetComponent H g η.out)).toAdd
-  have h_term (η : Γ ⧸ H) :
-      cosetNorm ρ H * weightedSum (ρ.comp H.subtype) a valMinAbs * ρ η.out⁻¹ = C (weight η) :=
-    cosetNorm_mul_sum_mul ρ (fun p ↦ valMinAbs (a p).toAdd) η.out
-  have h_weights (g : Γ) :
-      (valMinAbs (a.transfer g).toAdd : ZMod m) = (∑ η : Γ ⧸ H, weight η) g := by
-    simp [weight, transfer_eq_prod_cosetComponent, toAdd_prod]
-  calc σ (cosetNorm ρ H * weightedSum (ρ.comp H.subtype) a valMinAbs * cosetNormInv ρ H)
-      = σ (C (∑ η : Γ ⧸ H, weight η)) := by
-        simp only [cosetNormInv, map_sum C, mul_sum, h_term]
-    _ = σ (weightedSum ρ a.transfer valMinAbs) := map_eq_of_weights_modEq hm C _ _ h_weights
-
-/-- Let `ρ` map the finite group `Γ` to the ring `R`, and let `σ : R → S` be a ring map with `m = 0`
-in `S`. Let `L = ∑ valMinAbs (c g) ρ g` be the logarithm of a homomorphism `c : Γ → ℤ/m` that sends
-`γ` to the generator `1`. Then `(ρ γ - 1) L` and `-∑ ρ g` have the same image under `σ`. -/
-lemma map_sub_one_mul_weightedSum_valMinAbs (hm : (m : S) = 0) (c : Γ →* Multiplicative (ZMod m))
-    {γ : Γ} (hγ : c γ = .ofAdd 1) :
-    σ ((ρ γ - 1) * weightedSum ρ c valMinAbs) = -σ (∑ g : Γ, ρ g) := by
-  calc σ ((ρ γ - 1) * weightedSum ρ c valMinAbs)
-      = σ (weightedSum ρ c ((fun x : ZMod m ↦ valMinAbs (x - 1)) - valMinAbs)) := by
-        rw [sub_one_mul, mul_weightedSum, ← map_sub, hγ, toAdd_ofAdd]
-    _ = σ (weightedSum ρ c (-1)) := map_eq_of_weights_modEq hm _ _ _ (by simp)
-    _ = -σ (∑ g : Γ, ρ g) := by rw [map_neg, map_neg, weightedSum_one]
-
-omit [Fintype H] in
 /-- Let `ρ` map the finite group `Γ` to the ring `R`, and let `σ : R → S` be a ring map with `m = 0`
 in `S`. Let `a : H → ℤ/m` be a homomorphism on a subgroup `H`. Let `B` be an additive map on weights
 `ℤ/m → ℤ` such that right multiplication by `ρ p` shifts the weight by `a p`, as for the weighted
@@ -808,6 +751,63 @@ lemma exists_map_valMinAbs_mul_sub_one (hm : (m : S) = 0) (a : H →* Multiplica
   rw [mul_assoc, mul_sub_one, permute, cosetNormInv, ← sum_sub_distrib, mul_sum, mul_sum,
     map_sum, map_sum]
   exact sum_congr rfl fun η _ ↦ term_congr η
+
+variable [Fintype H]
+
+/-- Let `ρ` be a multiplicative map from a finite group `Γ` to a ring `R`, let `H` be a subgroup,
+and let `h` run over the representatives `η.out` that `Quotient.out` chooses for the cosets
+`η ∈ Γ / H`, so that `cosetNorm ρ H = ∑ ρ h`. For a weight `f : H → ℤ` and `x ∈ Γ`, the product
+`(∑ ρ h) (∑_{p ∈ H} f p ρ p) ρ x⁻¹` is the sum over `g ∈ Γ` of `f p ρ g` with
+`p = cosetComponent H g x`, the element of `H` in the unique factorisation `g = h p x⁻¹`. -/
+lemma cosetNorm_mul_sum_mul (f : H → ℤ) (x : Γ) :
+    cosetNorm ρ H * (∑ p : H, f p • ρ p) * ρ x⁻¹ = ∑ g : Γ, f (cosetComponent H g x) • ρ g := by
+  have component_eq (η : Γ ⧸ H) (p : H) : cosetComponent H (η.out * p * x⁻¹) x = p := by
+    simp [cosetComponent]
+  rw [cosetNorm, sum_mul_sum, ← sum_product', sum_mul]
+  refine sum_nbij' (fun (η, p) ↦ η.out * p * x⁻¹) (fun g ↦ (↑(g * x), cosetComponent H g x))
+    (by simp) (by simp) (by simp [component_eq]) (by simp [cosetComponent]) ?_
+  rintro ⟨η, p⟩ -
+  simp only [component_eq, map_mul, mul_smul_comm, smul_mul_assoc]
+
+lemma cosetNorm_mul_norm : cosetNorm ρ H * ∑ p : H, ρ p = ∑ g : Γ, ρ g := by
+  simpa using cosetNorm_mul_sum_mul ρ (H := H) 1 1
+
+/-- Let `ρ` map the finite group `Γ` to the ring `R`, and let `σ : R → S` be a ring map with `m = 0`
+in `S`. For a homomorphism `c` to `ℤ/m` let `L c = ∑ valMinAbs (c g) ρ g` be its logarithm, the
+`weightedSum` for the lift `valMinAbs : ℤ/m → ℤ`. For `a : H → ℤ/m` on a subgroup `H`, the elements
+`(∑ ρ h) (L a) (∑ ρ h⁻¹)` and `L a.transfer` have the same image under `σ`, where `h` runs over the
+fixed representatives of `Γ / H` and `a.transfer` is the transfer of `a` from `H` to `Γ`. -/
+lemma map_cosetNorm_mul_weightedSum_mul_cosetNormInv (hm : (m : S) = 0)
+    (a : H →* Multiplicative (ZMod m)) :
+    σ (cosetNorm ρ H * weightedSum (ρ.comp H.subtype) a valMinAbs * cosetNormInv ρ H) =
+      σ (weightedSum ρ a.transfer valMinAbs) := by
+  classical
+  -- The coefficient of `g` on the left is the sum over the representatives `h` of the logarithms of
+  -- the components of `g h`, which is congruent modulo `m` to the logarithm of the transfer.
+  let C : (Γ → ℤ) →+ R := (Fintype.linearCombination ℤ ρ).toAddMonoidHom
+  let weight (η : Γ ⧸ H) (g : Γ) : ℤ := valMinAbs (a (cosetComponent H g η.out)).toAdd
+  have h_term (η : Γ ⧸ H) :
+      cosetNorm ρ H * weightedSum (ρ.comp H.subtype) a valMinAbs * ρ η.out⁻¹ = C (weight η) :=
+    cosetNorm_mul_sum_mul ρ (fun p ↦ valMinAbs (a p).toAdd) η.out
+  have h_weights (g : Γ) :
+      (valMinAbs (a.transfer g).toAdd : ZMod m) = (∑ η : Γ ⧸ H, weight η) g := by
+    simp [weight, transfer_eq_prod_cosetComponent, toAdd_prod]
+  calc σ (cosetNorm ρ H * weightedSum (ρ.comp H.subtype) a valMinAbs * cosetNormInv ρ H)
+      = σ (C (∑ η : Γ ⧸ H, weight η)) := by
+        simp only [cosetNormInv, map_sum C, mul_sum, h_term]
+    _ = σ (weightedSum ρ a.transfer valMinAbs) := map_eq_of_weights_modEq hm C _ _ h_weights
+
+/-- Let `ρ` map the finite group `Γ` to the ring `R`, and let `σ : R → S` be a ring map with `m = 0`
+in `S`. Let `L = ∑ valMinAbs (c g) ρ g` be the logarithm of a homomorphism `c : Γ → ℤ/m` that sends
+`γ` to the generator `1`. Then `(ρ γ - 1) L` and `-∑ ρ g` have the same image under `σ`. -/
+lemma map_sub_one_mul_weightedSum_valMinAbs (hm : (m : S) = 0) (c : Γ →* Multiplicative (ZMod m))
+    {γ : Γ} (hγ : c γ = .ofAdd 1) :
+    σ ((ρ γ - 1) * weightedSum ρ c valMinAbs) = -σ (∑ g : Γ, ρ g) := by
+  calc σ ((ρ γ - 1) * weightedSum ρ c valMinAbs)
+      = σ (weightedSum ρ c ((fun x : ZMod m ↦ valMinAbs (x - 1)) - valMinAbs)) := by
+        rw [sub_one_mul, mul_weightedSum, ← map_sub, hγ, toAdd_ofAdd]
+    _ = σ (weightedSum ρ c (-1)) := map_eq_of_weights_modEq hm _ _ _ (by simp)
+    _ = -σ (∑ g : Γ, ρ g) := by rw [map_neg, map_neg, weightedSum_one]
 
 /-- Let `σ` be a reduction modulo `m / (2 k)`, that is, let it kill every `x` with `2 k x ∈ m R`.
 If an additive map `C` on weights `ℤ/m → ℤ` kills every `f (· - k) - f`, then `σ` kills its value

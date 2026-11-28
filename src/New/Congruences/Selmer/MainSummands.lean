@@ -56,9 +56,18 @@ lemma ne_top_of_normLength_le {ℓ : ℕ} [ThePrime ℓ] {O : CoeffRing ℓ} {k 
   rintro rfl
   exact hb (top_le_iff.1 hk)
 
-variable {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {n : Type} [Fintype n]
+variable {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ] {n : Type} [Fintype n]
   [DecidableEq n] {t : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ} {R : GalRep ℓ D.E n}
   {O : CoeffRing ℓ} {u : AbsGal D →* Matrix n n O}
+
+/-- For a lattice `u` in `R`, the valuation of `det (u g - 1)` in `O`, normalised by `v(ℓ) = 1`, is
+the valuation `ellVal` of `det (R g - 1)` in `ℚ̄_ℓ`. -/
+lemma IsLatticeIn.normLength_addVal_det_sub_one (hu : IsLatticeIn R u) (g : AbsGal D) :
+    O.normLength (addVal O (u g - 1).det) = ellVal ((R g).val - 1).det := by
+  obtain ⟨Φ, -, hΦ_u, hΦ_det_trace⟩ := hu.exists_algHom
+  rw [O.normLength_addVal, ← (hΦ_det_trace (u g - 1)).1, map_sub, map_one, hΦ_u]
+
+variable [PadicIso ℓ]
 
 lemma IsMainSummandLike.nonempty (hrow : IsMainSummandLike D t J R) : Nonempty n :=
   card_pos_iff.1 hrow.rank_mem.1
@@ -169,14 +178,6 @@ lemma IsMainSummandLike.normLength_congruenceTerm_le (hrow : IsMainSummandLike D
     congruenceTerm_le h_span_top hg (hrow.conjGal_inv_eq_smul_one hu h_span_top hg)
   grw [h_term, O.normLength_natCast_mul, O.normLength_addVal, h_gap,
     ellVal_levelPrime_pow_sub_one_le D ℓ l hd]
-
-omit [PadicIso ℓ] in
-/-- For a lattice `u` in `R`, the valuation of `det (u g - 1)` in `O`, normalised by `v(ℓ) = 1`, is
-the valuation `ellVal` of `det (R g - 1)` in `ℚ̄_ℓ`. -/
-lemma IsLatticeIn.normLength_addVal_det_sub_one (hu : IsLatticeIn R u) (g : AbsGal D) :
-    O.normLength (addVal O (u g - 1).det) = ellVal ((R g).val - 1).det := by
-  obtain ⟨Φ, -, hΦ_u, hΦ_det_trace⟩ := hu.exists_algHom
-  rw [O.normLength_addVal, ← (hΦ_det_trace (u g - 1)).1, map_sub, map_one, hΦ_u]
 
 /-- The local term. Let `u` be an `O`-lattice (`IsLatticeIn R u`) in a main summand `R` and `v` a
 place above one of the primes `p₀, p₁` of the data and prime to `ℓ`. The number `localTerm u v` is

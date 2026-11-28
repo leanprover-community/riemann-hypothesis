@@ -150,6 +150,151 @@ lemma not_q₂_dvd_mul_pow_mul {j t : ℕ} (hj : j ∈ Set.Icc 1 D.m)
   exact Nat.not_dvd_of_pos_of_lt (mul_pos hj.1 ht.1) h_lt
     ((Nat.coprime_pow_primes D.towerExp b hp_prime out hpℓ).dvd_mul_left.1 h_pow_dvd)
 
+section
+
+variable {O : DescentPair D.E r n} {ϑ : D.Twist}
+  {c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X]}
+
+variable (ℓ O c) in
+/-- The roots of the scaled type polynomial `scaledTypePoly O c i`, taken in an algebraic closure of
+the residue field of `O.chosenPlace i`, have the common `e`-th power `y`, of large order relative to
+`j`. With `q` the order of the residue field, each root is fixed by the `q ^ card r`-th power, and
+its Frobenius conjugates stay distinct after raising to powers of `ℓ`. -/
+structure IsCommonRootPower (i : O.ChosenIndex) (j e : ℕ)
+    (y : AlgebraicClosure (ResField (O.chosenPlace i))) : Prop where
+  /-- Each root `ξ` has `ξ ^ e = y`. -/
+  pow_eq : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))),
+    ξ ^ e = y
+  /-- Each root is fixed by the `q ^ card r`-th power. -/
+  pow_q_pow_card_eq : ∀ ξ ∈ (scaledTypePoly O c i).aroots
+    (AlgebraicClosure (ResField (O.chosenPlace i))), ξ ^ (O.chosenPlace i).q ^ card r = ξ
+  /-- For each root `ξ` and each `u`, the powers `(ξ ^ q ^ a) ^ ℓ ^ u`, `a < card r`, are
+  distinct. -/
+  injOn_pow : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))),
+    ∀ u : ℕ, (Set.Iio (card r)).InjOn fun a : ℕ ↦ (ξ ^ (O.chosenPlace i).q ^ a) ^ ℓ ^ u
+  /-- If `y ^ x = 1` then `P.q₂ D.towerExp`, the order of `D.chiMLocal` at the chosen places,
+  divides `j * x`. -/
+  dvd_of_pow_eq_one (x : ℕ) (hx : y ^ x = 1) : P.q₂ D.towerExp ∣ j * x
+
+/-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`, so that `c i` is a type
+polynomial over the residue field, of order `q`, of the place `O.chosenPlace i` above the level, and
+let `O.tamePart = D.chiMLocal ^ j * ϑ.tamePart`, where `D.chiMLocal` has order `N = P.q₂ D.towerExp`
+at the chosen places (`P`: the parameters of the data `D`). Let `card r = D.r` and let `c i` be a
+primitive polynomial: monic irreducible of degree `card r` with a root of order `q ^ card r - 1`.
+Then the roots `ξ` of the scaled type polynomial `scaledTypePoly O c i` have a common `e`-th power
+`y` such that, for every `x : ℕ`, `y ^ x = 1` forces `N ∣ j * x`; moreover (`IsCommonRootPower`)
+`ξ ^ q ^ card r = ξ`, and for each `u` the powers `(ξ ^ q ^ a) ^ ℓ ^ u`, `a < card r`, are
+distinct. -/
+lemma IsLiftSetting.exists_isCommonRootPower_of_isPrimitivePolynomial (hc : IsLiftSetting O c ϑ)
+    {i : O.ChosenIndex} (h_card : card r = D.r)
+    (h_primitive : IsPrimitivePolynomial (card r) (c i)) {j : ℕ}
+    (h_tamePart : O.tamePart = D.chiMLocal ^ (j : ℤ) * ϑ.tamePart) :
+    ∃ (e : ℕ) (y : AlgebraicClosure (ResField (O.chosenPlace i))),
+      IsCommonRootPower ℓ O c i j e y := by
+  -- A primitive polynomial stays primitive after normalisation; `y` is the product of its roots.
+  have h_chosen : D.IsChosen (O.chosenPlace i) := hc.isChosen_chosenPlace i
+  obtain ⟨l, hl⟩ : O.chosenPlace i ∈ placesAboveM D := h_chosen.mem_placesAboveM
+  obtain ⟨r_exp, hr_exp⟩ := D.exists_r_eq_three_pow
+  -- `q = D.levelPrime l`, so `q₂ ^ 2` divides `q - 1`; and so does `9`, as `3 ∣ 18480 ∣ q₀ ∣ q₂`
+  have h_Mω_sq : P.q₂ D.towerExp ^ 2 ∣ Nat.card (ResField (O.chosenPlace i)) - 1 := by
+    simpa only [card_ResField, D.q_eq_levelPrime hl] using D.dvd_levelPrime_sub_one l
+  have h_nine : 3 ^ 2 ∣ Nat.card (ResField (O.chosenPlace i)) - 1 := by
+    refine (pow_dvd_pow_of_dvd ?_ 2).trans h_Mω_sq
+    exact dvd_pow ((Nat.dvd_trans (by norm_num) P.dvd_q₀).mul_right P.d) (by omega)
+  have h_tamePart_pow : O.tamePart (O.chosenPlace i) ^ P.q₂ D.towerExp = 1 := by
+    rw [h_tamePart, D.chiMLocal_zpow_mul_pow_eq_one j (ϑ.tamePart_eq_one_of_isChosen h_chosen)]
+  have h_twisted : IsPrimitivePolynomial (card r) (Selmer.scaledTypePoly O c i) :=
+    h_primitive.scaleRoots _ (charName_pow_eq_one (by
+      simp only [inv_pow, h_tamePart_pow, inv_one])) h_Mω_sq
+  let K : Type := AlgebraicClosure (ResField (O.chosenPlace i))
+  let roots : Multiset K := (Selmer.scaledTypePoly O c i).aroots K
+  obtain ⟨h_prod, e, h_pow⟩ :
+      IsPrimitiveRoot roots.prod (Nat.card (ResField (O.chosenPlace i)) - 1) ∧
+      ∃ e : ℕ, ∀ ξ ∈ roots, ξ ^ e = roots.prod :=
+    h_twisted.isPrimitiveRoot_prod_aroots_and_exists_pow_eq
+  obtain ⟨⟨-, -, h_deg, -⟩, h_irred, η, hη, hη_order⟩ := h_twisted
+  refine ⟨e, roots.prod,
+    { pow_eq := h_pow
+      pow_q_pow_card_eq := fun ξ hξ ↦ ?_
+      injOn_pow := fun ξ hξ u a ha b hb hab ↦ ?_
+      dvd_of_pow_eq_one := fun x hx ↦ ?_ }⟩
+  · -- the type polynomial is irreducible of degree `card r`
+    rw [← card_ResField, root_pow_card_pow_eq_self_iff h_irred (mem_aroots.mp hξ).2, h_deg]
+  · -- `ξ` is a Frobenius conjugate of the primitive root `η`; as `9 ∣ q - 1` and `card r` is a
+    -- power of `3`, the conjugates of `η ^ ℓ ^ u` are distinct
+    obtain ⟨d, -, rfl⟩ := exists_pow_card_pow_eq_of_root h_irred (mem_aroots.mp hξ).2 hη
+    rw [h_card, hr_exp] at hη_order ha hb
+    apply injOn_Iio_pow_card_pow_of_isPrimitiveRoot u h_nine hη_order hp.out ha hb
+    have h_comm (q a : ℕ) : ((ξ ^ q ^ d) ^ ℓ ^ u) ^ q ^ a = ((ξ ^ q ^ a) ^ ℓ ^ u) ^ q ^ d := by ring
+    simp only [h_comm, card_ResField, hab]
+  · -- `y` has order `q - 1`, a multiple of `q₂ ^ 2`
+    grw [dvd_pow_self (P.q₂ D.towerExp) two_ne_zero, h_Mω_sq, h_prod.dvd_of_pow_eq_one x hx]
+    exact dvd_mul_left x j
+
+omit hp in
+/-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`, so that `c i` is a type
+polynomial over the residue field, of order `q`, of the place `O.chosenPlace i` above the level, and
+let `O.tamePart = D.chiMLocal ^ j * ϑ.tamePart`, where `D.chiMLocal` has order
+`N = P.q₂ D.towerExp` at the chosen places (`P`: the parameters of the data `D`). Let `card r = 1`
+and `c i = X - 1`, so that `scaledTypePoly O c i` has as only root `ξ` the element naming
+`O.tamePart⁻¹`. Then some power `y = ξ ^ e` has the property that, for every `x : ℕ`, `y ^ x = 1`
+forces `N ∣ j * x`; moreover (`IsCommonRootPower`) `ξ ^ q = ξ`, the remaining condition being
+empty in rank `1`. -/
+lemma IsLiftSetting.exists_isCommonRootPower_of_eq_X_sub_one (hc : IsLiftSetting O c ϑ)
+    {i : O.ChosenIndex} (h_card : card r = 1) (h_eq : c i = X - 1) {j : ℕ}
+    (h_tamePart : O.tamePart = D.chiMLocal ^ (j : ℤ) * ϑ.tamePart) :
+    ∃ (e : ℕ) (y : AlgebraicClosure (ResField (O.chosenPlace i))),
+      IsCommonRootPower ℓ O c i j e y := by
+  -- The only root is the name `z` of `ω⁻ʲ`, where the character
+  -- `ω = D.chiMLocal (O.chosenPlace i)` has order `q₂`.
+  have h_chosen : D.IsChosen (O.chosenPlace i) := hc.isChosen_chosenPlace i
+  let K : Type := AlgebraicClosure (ResField (O.chosenPlace i))
+  let z : (ResField (O.chosenPlace i))ˣ :=
+    charName (faithfulChar (ResField (O.chosenPlace i))) (O.tamePart (O.chosenPlace i))⁻¹
+  let y : K := algebraMap _ K z.val
+  have h_scaled_eq : Selmer.scaledTypePoly O c i = X - C z.val := by
+    rw [Selmer.scaledTypePoly, h_eq, ← C_1, X_sub_C_scaleRoots, one_mul]
+  have h_root (ξ : K) (hξ : ξ ∈ (Selmer.scaledTypePoly O c i).aroots K) : ξ = y := by
+    simpa only [h_scaled_eq, aroots_X_sub_C, mem_singleton] using hξ
+  refine ⟨1, y,
+    { pow_eq := fun ξ hξ ↦ by rw [pow_one, h_root ξ hξ]
+      pow_q_pow_card_eq := fun ξ hξ ↦ ?_
+      injOn_pow := fun ξ hξ u a ha b hb _ ↦ ?_
+      dvd_of_pow_eq_one := fun x hx ↦ ?_ }⟩
+  · simp only [h_root ξ hξ, ← card_ResField, Nat.card_eq_fintype_card, h_card, pow_one, ← map_pow,
+      FiniteField.pow_card, y]
+  · -- the only index below `card r = 1` is `0`
+    rw [h_card, Set.mem_Iio] at ha hb
+    omega
+  · have hz : z ^ x = 1 := by
+      simpa only [y, K, ← map_pow, ← Units.val_pow_eq_pow_val, FaithfulSMul.algebraMap_eq_one_iff,
+        Units.val_eq_one] using hx
+    have hω : O.tamePart (O.chosenPlace i) = D.chiMLocal (O.chosenPlace i) ^ j := by
+      simp only [h_tamePart, zpow_natCast, Pi.mul_apply, Pi.pow_apply,
+        ϑ.toTameChar.tamePart_eq_one_of_isChosen h_chosen, mul_one]
+    rw [← D.orderOf_chiMLocal h_chosen, orderOf_dvd_iff_pow_eq_one, pow_mul, ← hω]
+    simpa only [z, map_inv, inv_pow, ← map_pow, inv_eq_one, MulEquiv.map_eq_one_iff] using hz
+
+/-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`, so that `c i` is a type
+polynomial over the residue field, of order `q`, of the place `O.chosenPlace i` above the level, and
+let `O.tamePart = D.chiMLocal ^ j * ϑ.tamePart`, where `D.chiMLocal` has order `N = P.q₂ D.towerExp`
+at the chosen places (`P`: the parameters of the data `D`). Let `c i` be primitive with
+`card r = D.r`, or `X - 1` with `card r = 1`. Then the roots `ξ` of `scaledTypePoly O c i` have a
+common `e`-th power `y` such that, for every `x : ℕ`, `y ^ x = 1` forces `N ∣ j * x`; moreover
+`ξ ^ q ^ card r = ξ`, and for each `u` the powers `(ξ ^ q ^ a) ^ ℓ ^ u`, `a < card r`, are
+distinct. -/
+lemma IsLiftSetting.exists_isCommonRootPower (hc : IsLiftSetting O c ϑ) {i : O.ChosenIndex}
+    (h_primitive_or_one :
+      (card r = D.r ∧ IsPrimitivePolynomial (card r) (c i)) ∨ (card r = 1 ∧ c i = X - 1))
+    {j : ℕ} (h_tamePart : O.tamePart = D.chiMLocal ^ (j : ℤ) * ϑ.tamePart) :
+    ∃ (e : ℕ) (y : AlgebraicClosure (ResField (O.chosenPlace i))),
+      IsCommonRootPower ℓ O c i j e y := by
+  obtain ⟨h_card, h_primitive⟩ | ⟨h_card, h_eq⟩ := h_primitive_or_one
+  · exact hc.exists_isCommonRootPower_of_isPrimitivePolynomial h_card h_primitive h_tamePart
+  · exact hc.exists_isCommonRootPower_of_eq_X_sub_one h_card h_eq h_tamePart
+
+end
+
 variable [PadicIso ℓ]
   {O : DescentPair D.E r n} {ϑ : D.Twist}
   {c : (i : O.ChosenIndex) → (ResField (O.chosenPlace i))[X]}
@@ -360,146 +505,6 @@ lemma IsRepOfType.exists_map_pow_eq_one_and_ellVal_det_le (hc : IsLiftSetting O 
     · exact ellVal_det_sub_one_le_card_mul h_roots ((hμ.polyKillsAt hR_zero).1 h_val)
     · apply ellVal_det_sub_one_le_card_mul h_roots
       simpa only [map_inv, coe_units_inv] using (hμ.polyKillsAt_conjPlace hR_zero).1 h_val_conj
-
-variable (ℓ O c) in
-/-- The roots of the scaled type polynomial `scaledTypePoly O c i`, taken in an algebraic closure of
-the residue field of `O.chosenPlace i`, have the common `e`-th power `y`, of large order relative to
-`j`. With `q` the order of the residue field, each root is fixed by the `q ^ card r`-th power, and
-its Frobenius conjugates stay distinct after raising to powers of `ℓ`. -/
-structure IsCommonRootPower (i : O.ChosenIndex) (j e : ℕ)
-    (y : AlgebraicClosure (ResField (O.chosenPlace i))) : Prop where
-  /-- Each root `ξ` has `ξ ^ e = y`. -/
-  pow_eq : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))),
-    ξ ^ e = y
-  /-- Each root is fixed by the `q ^ card r`-th power. -/
-  pow_q_pow_card_eq : ∀ ξ ∈ (scaledTypePoly O c i).aroots
-    (AlgebraicClosure (ResField (O.chosenPlace i))), ξ ^ (O.chosenPlace i).q ^ card r = ξ
-  /-- For each root `ξ` and each `u`, the powers `(ξ ^ q ^ a) ^ ℓ ^ u`, `a < card r`, are
-  distinct. -/
-  injOn_pow : ∀ ξ ∈ (scaledTypePoly O c i).aroots (AlgebraicClosure (ResField (O.chosenPlace i))),
-    ∀ u : ℕ, (Set.Iio (card r)).InjOn fun a : ℕ ↦ (ξ ^ (O.chosenPlace i).q ^ a) ^ ℓ ^ u
-  /-- If `y ^ x = 1` then `P.q₂ D.towerExp`, the order of `D.chiMLocal` at the chosen places,
-  divides `j * x`. -/
-  dvd_of_pow_eq_one (x : ℕ) (hx : y ^ x = 1) : P.q₂ D.towerExp ∣ j * x
-
-omit [PadicIso ℓ] in
-/-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`, so that `c i` is a type
-polynomial over the residue field, of order `q`, of the place `O.chosenPlace i` above the level, and
-let `O.tamePart = D.chiMLocal ^ j * ϑ.tamePart`, where `D.chiMLocal` has order `N = P.q₂ D.towerExp`
-at the chosen places (`P`: the parameters of the data `D`). Let `card r = D.r` and let `c i` be a
-primitive polynomial: monic irreducible of degree `card r` with a root of order `q ^ card r - 1`.
-Then the roots `ξ` of the scaled type polynomial `scaledTypePoly O c i` have a common `e`-th power
-`y` such that, for every `x : ℕ`, `y ^ x = 1` forces `N ∣ j * x`; moreover (`IsCommonRootPower`)
-`ξ ^ q ^ card r = ξ`, and for each `u` the powers `(ξ ^ q ^ a) ^ ℓ ^ u`, `a < card r`, are
-distinct. -/
-lemma IsLiftSetting.exists_isCommonRootPower_of_isPrimitivePolynomial (hc : IsLiftSetting O c ϑ)
-    {i : O.ChosenIndex} (h_card : card r = D.r)
-    (h_primitive : IsPrimitivePolynomial (card r) (c i)) {j : ℕ}
-    (h_tamePart : O.tamePart = D.chiMLocal ^ (j : ℤ) * ϑ.tamePart) :
-    ∃ (e : ℕ) (y : AlgebraicClosure (ResField (O.chosenPlace i))),
-      IsCommonRootPower ℓ O c i j e y := by
-  -- A primitive polynomial stays primitive after normalisation; `y` is the product of its roots.
-  have h_chosen : D.IsChosen (O.chosenPlace i) := hc.isChosen_chosenPlace i
-  obtain ⟨l, hl⟩ : O.chosenPlace i ∈ placesAboveM D := h_chosen.mem_placesAboveM
-  obtain ⟨r_exp, hr_exp⟩ := D.exists_r_eq_three_pow
-  -- `q = D.levelPrime l`, so `q₂ ^ 2` divides `q - 1`; and so does `9`, as `3 ∣ 18480 ∣ q₀ ∣ q₂`
-  have h_Mω_sq : P.q₂ D.towerExp ^ 2 ∣ Nat.card (ResField (O.chosenPlace i)) - 1 := by
-    simpa only [card_ResField, D.q_eq_levelPrime hl] using D.dvd_levelPrime_sub_one l
-  have h_nine : 3 ^ 2 ∣ Nat.card (ResField (O.chosenPlace i)) - 1 := by
-    refine (pow_dvd_pow_of_dvd ?_ 2).trans h_Mω_sq
-    exact dvd_pow ((Nat.dvd_trans (by norm_num) P.dvd_q₀).mul_right P.d) (by omega)
-  have h_tamePart_pow : O.tamePart (O.chosenPlace i) ^ P.q₂ D.towerExp = 1 := by
-    rw [h_tamePart, D.chiMLocal_zpow_mul_pow_eq_one j (ϑ.tamePart_eq_one_of_isChosen h_chosen)]
-  have h_twisted : IsPrimitivePolynomial (card r) (Selmer.scaledTypePoly O c i) :=
-    h_primitive.scaleRoots _ (charName_pow_eq_one (by
-      simp only [inv_pow, h_tamePart_pow, inv_one])) h_Mω_sq
-  let K : Type := AlgebraicClosure (ResField (O.chosenPlace i))
-  let roots : Multiset K := (Selmer.scaledTypePoly O c i).aroots K
-  obtain ⟨h_prod, e, h_pow⟩ :
-      IsPrimitiveRoot roots.prod (Nat.card (ResField (O.chosenPlace i)) - 1) ∧
-      ∃ e : ℕ, ∀ ξ ∈ roots, ξ ^ e = roots.prod :=
-    h_twisted.isPrimitiveRoot_prod_aroots_and_exists_pow_eq
-  obtain ⟨⟨-, -, h_deg, -⟩, h_irred, η, hη, hη_order⟩ := h_twisted
-  refine ⟨e, roots.prod,
-    { pow_eq := h_pow
-      pow_q_pow_card_eq := fun ξ hξ ↦ ?_
-      injOn_pow := fun ξ hξ u a ha b hb hab ↦ ?_
-      dvd_of_pow_eq_one := fun x hx ↦ ?_ }⟩
-  · -- the type polynomial is irreducible of degree `card r`
-    rw [← card_ResField, root_pow_card_pow_eq_self_iff h_irred (mem_aroots.mp hξ).2, h_deg]
-  · -- `ξ` is a Frobenius conjugate of the primitive root `η`; as `9 ∣ q - 1` and `card r` is a
-    -- power of `3`, the conjugates of `η ^ ℓ ^ u` are distinct
-    obtain ⟨d, -, rfl⟩ := exists_pow_card_pow_eq_of_root h_irred (mem_aroots.mp hξ).2 hη
-    rw [h_card, hr_exp] at hη_order ha hb
-    apply injOn_Iio_pow_card_pow_of_isPrimitiveRoot u h_nine hη_order hp.out ha hb
-    have h_comm (q a : ℕ) : ((ξ ^ q ^ d) ^ ℓ ^ u) ^ q ^ a = ((ξ ^ q ^ a) ^ ℓ ^ u) ^ q ^ d := by ring
-    simp only [h_comm, card_ResField, hab]
-  · -- `y` has order `q - 1`, a multiple of `q₂ ^ 2`
-    grw [dvd_pow_self (P.q₂ D.towerExp) two_ne_zero, h_Mω_sq, h_prod.dvd_of_pow_eq_one x hx]
-    exact dvd_mul_left x j
-
-omit hp [PadicIso ℓ] in
-/-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`, so that `c i` is a type
-polynomial over the residue field, of order `q`, of the place `O.chosenPlace i` above the level, and
-let `O.tamePart = D.chiMLocal ^ j * ϑ.tamePart`, where `D.chiMLocal` has order
-`N = P.q₂ D.towerExp` at the chosen places (`P`: the parameters of the data `D`). Let `card r = 1`
-and `c i = X - 1`, so that `scaledTypePoly O c i` has as only root `ξ` the element naming
-`O.tamePart⁻¹`. Then some power `y = ξ ^ e` has the property that, for every `x : ℕ`, `y ^ x = 1`
-forces `N ∣ j * x`; moreover (`IsCommonRootPower`) `ξ ^ q = ξ`, the remaining condition being
-empty in rank `1`. -/
-lemma IsLiftSetting.exists_isCommonRootPower_of_eq_X_sub_one (hc : IsLiftSetting O c ϑ)
-    {i : O.ChosenIndex} (h_card : card r = 1) (h_eq : c i = X - 1) {j : ℕ}
-    (h_tamePart : O.tamePart = D.chiMLocal ^ (j : ℤ) * ϑ.tamePart) :
-    ∃ (e : ℕ) (y : AlgebraicClosure (ResField (O.chosenPlace i))),
-      IsCommonRootPower ℓ O c i j e y := by
-  -- The only root is the name `z` of `ω⁻ʲ`, where the character
-  -- `ω = D.chiMLocal (O.chosenPlace i)` has order `q₂`.
-  have h_chosen : D.IsChosen (O.chosenPlace i) := hc.isChosen_chosenPlace i
-  let K : Type := AlgebraicClosure (ResField (O.chosenPlace i))
-  let z : (ResField (O.chosenPlace i))ˣ :=
-    charName (faithfulChar (ResField (O.chosenPlace i))) (O.tamePart (O.chosenPlace i))⁻¹
-  let y : K := algebraMap _ K z.val
-  have h_scaled_eq : Selmer.scaledTypePoly O c i = X - C z.val := by
-    rw [Selmer.scaledTypePoly, h_eq, ← C_1, X_sub_C_scaleRoots, one_mul]
-  have h_root (ξ : K) (hξ : ξ ∈ (Selmer.scaledTypePoly O c i).aroots K) : ξ = y := by
-    simpa only [h_scaled_eq, aroots_X_sub_C, mem_singleton] using hξ
-  refine ⟨1, y,
-    { pow_eq := fun ξ hξ ↦ by rw [pow_one, h_root ξ hξ]
-      pow_q_pow_card_eq := fun ξ hξ ↦ ?_
-      injOn_pow := fun ξ hξ u a ha b hb _ ↦ ?_
-      dvd_of_pow_eq_one := fun x hx ↦ ?_ }⟩
-  · simp only [h_root ξ hξ, ← card_ResField, Nat.card_eq_fintype_card, h_card, pow_one, ← map_pow,
-      FiniteField.pow_card, y]
-  · -- the only index below `card r = 1` is `0`
-    rw [h_card, Set.mem_Iio] at ha hb
-    omega
-  · have hz : z ^ x = 1 := by
-      simpa only [y, K, ← map_pow, ← Units.val_pow_eq_pow_val, FaithfulSMul.algebraMap_eq_one_iff,
-        Units.val_eq_one] using hx
-    have hω : O.tamePart (O.chosenPlace i) = D.chiMLocal (O.chosenPlace i) ^ j := by
-      simp only [h_tamePart, zpow_natCast, Pi.mul_apply, Pi.pow_apply,
-        ϑ.toTameChar.tamePart_eq_one_of_isChosen h_chosen, mul_one]
-    rw [← D.orderOf_chiMLocal h_chosen, orderOf_dvd_iff_pow_eq_one, pow_mul, ← hω]
-    simpa only [z, map_inv, inv_pow, ← map_pow, inv_eq_one, MulEquiv.map_eq_one_iff] using hz
-
-omit [PadicIso ℓ] in
-/-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`, so that `c i` is a type
-polynomial over the residue field, of order `q`, of the place `O.chosenPlace i` above the level, and
-let `O.tamePart = D.chiMLocal ^ j * ϑ.tamePart`, where `D.chiMLocal` has order `N = P.q₂ D.towerExp`
-at the chosen places (`P`: the parameters of the data `D`). Let `c i` be primitive with
-`card r = D.r`, or `X - 1` with `card r = 1`. Then the roots `ξ` of `scaledTypePoly O c i` have a
-common `e`-th power `y` such that, for every `x : ℕ`, `y ^ x = 1` forces `N ∣ j * x`; moreover
-`ξ ^ q ^ card r = ξ`, and for each `u` the powers `(ξ ^ q ^ a) ^ ℓ ^ u`, `a < card r`, are
-distinct. -/
-lemma IsLiftSetting.exists_isCommonRootPower (hc : IsLiftSetting O c ϑ) {i : O.ChosenIndex}
-    (h_primitive_or_one :
-      (card r = D.r ∧ IsPrimitivePolynomial (card r) (c i)) ∨ (card r = 1 ∧ c i = X - 1))
-    {j : ℕ} (h_tamePart : O.tamePart = D.chiMLocal ^ (j : ℤ) * ϑ.tamePart) :
-    ∃ (e : ℕ) (y : AlgebraicClosure (ResField (O.chosenPlace i))),
-      IsCommonRootPower ℓ O c i j e y := by
-  obtain ⟨h_card, h_primitive⟩ | ⟨h_card, h_eq⟩ := h_primitive_or_one
-  · exact hc.exists_isCommonRootPower_of_isPrimitivePolynomial h_card h_primitive h_tamePart
-  · exact hc.exists_isCommonRootPower_of_eq_X_sub_one h_card h_eq h_tamePart
 
 /-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`. Let `R` be a rank `card r`
 representation of `AbsGal D = Gal(Ω/D.E)` over `ℚ̄_ℓ` of empty level whose inertia at each chosen

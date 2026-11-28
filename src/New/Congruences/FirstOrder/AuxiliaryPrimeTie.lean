@@ -77,17 +77,33 @@ namespace New.Patching.BaseLevel
 
 variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E : Type} [Field E] [CMType E]
   [Algebra E Ω] {n : Type} [Fintype n] [DecidableEq n]
-  [Nonempty n] {V : Space E n 1} {κ : Weight E} {J : Type} [Fintype J] [DecidableEq J] {ν c : ℕ}
-  {D : BaseLevel V κ c} (Q : TaylorWilesPlaces E J (ℓ ^ ν)) {N : Isotypic V κ → GalRep ℓ E n}
-  [V.IsStd] [WeilData E] {a : Gal(Ω/E) →* EllAdicIntegers}
+  {V : Space E n 1} {κ : Weight E} {J : Type} {ν c : ℕ} {D : BaseLevel V κ c}
+
+/-- If `f` multiplies every selected `β (g k)` into the ideal `I`, it multiplies
+`∏ k, (value k - β (g k)) - ∏ k, value k` into `I`: that difference lies in the ideal spanned by
+the selected `β (g k)`. -/
+lemma C_prod_sub_prod_mul_mem {R : Type*} [CommRing R] {ι K : Type*} [Fintype K]
+    {I : Ideal (MvPolynomial J R)} {f : MvPolynomial J R} {β : ι → R}
+    (g : K → ι) (hI : ∀ k : K, .C (β (g k)) * f ∈ I) (value : K → R) :
+    .C (∏ k, (value k - β (g k)) - ∏ k, value k) * f ∈ I := by
+  -- The elements that `f` multiplies into `I` form an ideal modulo which each selected factor is
+  -- zero.
+  suffices h_mem : ∏ k, (value k - β (g k)) - ∏ k, value k ∈ (I.colon {f}).comap MvPolynomial.C by
+    simpa [Submodule.mem_colon_singleton] using h_mem
+  have h_zero_mod (k : K) : Ideal.Quotient.mk ((I.colon {f}).comap MvPolynomial.C) (β (g k)) = 0 :=
+    Ideal.Quotient.eq_zero_iff_mem.2 (by simpa [Submodule.mem_colon_singleton] using hI k)
+  rw [← Ideal.Quotient.eq_zero_iff_mem]
+  simp [map_prod, h_zero_mod]
 
 /-! ### One place: the operator `∂` -/
 
-omit [Nonempty n] [Fintype J] [DecidableEq J] [V.IsStd] [WeilData E] in
+section
+
+variable (Q : TaylorWilesPlaces E J (ℓ ^ ν))
+
 lemma integralEnd_mul_apply (s s' : D.integralEnd Q.place) (y : D.formsOfLevel Q.place) :
     (s * s').val y = s.val (s'.val y) := rfl
 
-omit [Nonempty n] [Fintype J] [DecidableEq J] [V.IsStd] [WeilData E] in
 lemma isSMulRegular_integralEnd {k : ℕ} (hk : k ≠ 0) :
     IsSMulRegular (D.integralEnd Q.place) k := by
   intro s s' h
@@ -95,6 +111,27 @@ lemma isSMulRegular_integralEnd {k : ℕ} (hk : k ≠ 0) :
   have h_apply : k • s.val y = k • s'.val y := congr(($h).val y)
   simp only [← cast_smul_eq_nsmul ℂ] at h_apply
   exact smul_right_injective _ (cast_ne_zero.2 hk) h_apply
+
+open Algebra in
+/-- Integral operators made of translates at two different auxiliary places (`localOperators`)
+commute. -/
+lemma commute_of_mem_localOperators_of_ne (i j : J) (hij : i ≠ j) (s : D.integralEnd Q.place)
+    (hs : s ∈ D.localOperators Q i)
+    (s' : D.integralEnd Q.place) (hs' : s' ∈ D.localOperators Q j) : Commute s s' := by
+  obtain ⟨g, hg⟩ := hs
+  obtain ⟨g', hg'⟩ := hs'
+  have h_comm : Commute g.val g'.val := by
+    refine commute_of_mem_adjoin_of_forall_mem_commute g'.property ?_
+    rintro _ ⟨h, hh, rfl⟩
+    exact (commute_of_mem_localGroupAlgebra g.property
+      (by simp [Gf.mem_supportedOn.1 hh, Q.apart.injective.ne hij, Q.apart.star_ne])).symm
+  ext y : 3
+  simpa [hg, hg'] using LinearMap.congr_fun h_comm.eq y.val
+
+end
+
+variable [Nonempty n] [Fintype J] [DecidableEq J] (Q : TaylorWilesPlaces E J (ℓ ^ ν))
+  {N : Isotypic V κ → GalRep ℓ E n} [V.IsStd] [WeilData E] {a : Gal(Ω/E) →* EllAdicIntegers}
 
 omit [DecidableEq J] in
 /-- Let `N x` be the twist of `x.galRep` by `a` (`hN`), and let `frob` be the Frobenius element and
@@ -215,23 +252,6 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
       isSMulRegular_integralEnd Q card_ne_zero
     exact exists_map_nsmul_mul_sub_one_eq_sum_mul ρ hσ_char P.indLine B B_shift B_fixed hΨ
       norm_inv norm_B_zero no_torsion g
-
-open Algebra in
-omit [Nonempty n] [Fintype J] [DecidableEq J] [V.IsStd] [WeilData E] in
-/-- Integral operators made of translates at two different auxiliary places (`localOperators`)
-commute. -/
-lemma commute_of_mem_localOperators_of_ne (i j : J) (hij : i ≠ j) (s : D.integralEnd Q.place)
-    (hs : s ∈ D.localOperators Q i)
-    (s' : D.integralEnd Q.place) (hs' : s' ∈ D.localOperators Q j) : Commute s s' := by
-  obtain ⟨g, hg⟩ := hs
-  obtain ⟨g', hg'⟩ := hs'
-  have h_comm : Commute g.val g'.val := by
-    refine commute_of_mem_adjoin_of_forall_mem_commute g'.property ?_
-    rintro _ ⟨h, hh, rfl⟩
-    exact (commute_of_mem_localGroupAlgebra g.property
-      (by simp [Gf.mem_supportedOn.1 hh, Q.apart.injective.ne hij, Q.apart.star_ne])).symm
-  ext y : 3
-  simpa [hg, hg'] using LinearMap.congr_fun h_comm.eq y.val
 
 open Finset in
 /-- The family. Let the auxiliary places `w j = Q.place j` be off the base level (`hQ`), and let
@@ -362,9 +382,6 @@ lemma heckeAction_pow_apply {A δ₀ : D.heckeAlgebra Q.place} {n₀ : EllAdicIn
   rw [split, map_add, map_smul, AddMemClass.coe_add, FormEnd.add_apply, kill, add_zero]
   rfl
 
-end
-
-omit [Nonempty n] [V.IsStd] [WeilData E] in
 /-- Assume that the auxiliary places are off the level of `D`. Let `Nm` be the sum of the action
 `residueRep` of the finite group `∏ GL_n(𝔽_{w j})` and `δ = c² A δ₀`, with `A`, `δ₀` in the Hecke
 algebra. If the forms `u`, `l`, `y` satisfy `Nm u = d c l` and `A δ₀ l = n₀ A y`, then
@@ -393,9 +410,7 @@ lemma norm_mul_heckeAction_apply (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] 
         push_cast
         ring_nf
 
-omit [Nonempty n] in
 open Finset in
-omit [V.IsStd] [WeilData E] in
 /-- A sum in which only the top term survives. Assume that the auxiliary places are off the level of
 `D`, whose common multiple of stabiliser orders is `c`. Let `Nm` be the sum of `residueRep`,
 `δ = c² A δ₀`, and let `Y ∅ = δ ^ i`. If `Nm u = d c l`, `A δ₀ l = n₀ A y`, `δ₀ y = n₀ y` and the
@@ -436,6 +451,8 @@ lemma sum_mul_residueRep_apply_eq_smul (h_offLevel : ∀ j : J, D.IsOffLevel (�
     _ = n₁ • d • c • n₁ ^ i • (heckeAction (A ^ (i + 1) * coef univ)).val y := by rw [on_y]
     _ = n₁ ^ (i + 1) • d • c • (heckeAction (A ^ (i + 1) * coef univ)).val y := by
       rw [smul_comm c, smul_comm d, smul_smul, ← _root_.pow_succ']
+
+end
 
 open Finset in
 /-- The top coefficient `𝒟_J` clears denominators. Assume that the places `Q.place j` are off the
@@ -537,23 +554,6 @@ theorem smul_top_coeff_mem_ellIntegralForms (hQ : ∀ j : J, D.IsOffLevel (ℓ :
   change (d • c • (heckeAction (A ^ (i + 1) * coef univ)).val y).val ∈ ellIntegralForms
   rw [integral]
   exact (heckeAction (A ^ (i + 1)) * G - μ' • W).property u (Ψ.property (d • l) hd)
-
-omit [Fintype J] [DecidableEq J] in
-/-- If `f` multiplies every selected `β (g k)` into the ideal `I`, it multiplies
-`∏ k, (value k - β (g k)) - ∏ k, value k` into `I`: that difference lies in the ideal spanned by
-the selected `β (g k)`. -/
-lemma C_prod_sub_prod_mul_mem {R : Type*} [CommRing R] {ι K : Type*} [Fintype K]
-    {I : Ideal (MvPolynomial J R)} {f : MvPolynomial J R} {β : ι → R}
-    (g : K → ι) (hI : ∀ k : K, .C (β (g k)) * f ∈ I) (value : K → R) :
-    .C (∏ k, (value k - β (g k)) - ∏ k, value k) * f ∈ I := by
-  -- The elements that `f` multiplies into `I` form an ideal modulo which each selected factor is
-  -- zero.
-  suffices h_mem : ∏ k, (value k - β (g k)) - ∏ k, value k ∈ (I.colon {f}).comap MvPolynomial.C by
-    simpa [Submodule.mem_colon_singleton] using h_mem
-  have h_zero_mod (k : K) : Ideal.Quotient.mk ((I.colon {f}).comap MvPolynomial.C) (β (g k)) = 0 :=
-    Ideal.Quotient.eq_zero_iff_mem.2 (by simpa [Submodule.mem_colon_singleton] using hI k)
-  rw [← Ideal.Quotient.eq_zero_iff_mem]
-  simp [map_prod, h_zero_mod]
 
 omit [DecidableEq J] in
 open Function Finset Selmer in

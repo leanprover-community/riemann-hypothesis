@@ -45,7 +45,7 @@ open Finset Polynomial Filter
 
 open scoped NNReal ENNReal NNRat
 
-variable {ℓ : ℕ} [ThePrime ℓ]
+variable {ℓ : ℕ}
 
 /-! ### The radii `ρ_h` and the harmonic sum -/
 
@@ -53,6 +53,16 @@ variable (ℓ) in
 /-- The number `ρ_h = 1 / φ(ℓ ^ h)`, where `φ` is Euler's totient. For `h ≥ 1` it is the valuation
 `v(ζ - 1)`, normalised by `v ℓ = 1`, for `ζ` of order `ℓ ^ h`. -/
 def rootRadius (h : ℕ) : ℚ≥0 := (Nat.totient (ℓ ^ h) : ℚ≥0)⁻¹
+
+variable (ℓ) in
+/-- The exponents `h` with `1 ≤ h ≤ h₀` and `ρ_h ≤ ρ`, where `ρ_h = rootRadius ℓ h`. -/
+def radiusExponents (ρ : ℚ≥0) (h₀ : ℕ) : Finset ℕ := {h ∈ Icc 1 h₀ | rootRadius ℓ h ≤ ρ}
+
+lemma mem_radiusExponents {ρ : ℚ≥0} {h h₀ : ℕ} :
+    h ∈ radiusExponents ℓ ρ h₀ ↔ 1 ≤ h ∧ h ≤ h₀ ∧ rootRadius ℓ h ≤ ρ := by
+  rw [radiusExponents, mem_filter, mem_Icc, and_assoc]
+
+variable [ThePrime ℓ]
 
 lemma totient_pow_pos (h : ℕ) : 0 < Nat.totient (ℓ ^ h) :=
   Nat.totient_pos.2 (pow_pos (Fact.out : ℓ.Prime).pos h)
@@ -90,15 +100,6 @@ lemma eventually_rootRadius_le {ρ : ℚ≥0} (hρ : 0 < ρ) :
   have h_totient : ⌈ρ⁻¹⌉₊ ≤ Nat.totient (ℓ ^ (k + 1)) :=
     (Nat.le_of_succ_le_succ hh).trans strictMono_totient_pow_succ.le_apply
   exact inv_le_of_inv_le₀ hρ ((Nat.le_ceil _).trans (Nat.cast_le.2 h_totient))
-
-variable (ℓ) in
-/-- The exponents `h` with `1 ≤ h ≤ h₀` and `ρ_h ≤ ρ`, where `ρ_h = rootRadius ℓ h`. -/
-def radiusExponents (ρ : ℚ≥0) (h₀ : ℕ) : Finset ℕ := {h ∈ Icc 1 h₀ | rootRadius ℓ h ≤ ρ}
-
-omit [ThePrime ℓ] in
-lemma mem_radiusExponents {ρ : ℚ≥0} {h h₀ : ℕ} :
-    h ∈ radiusExponents ℓ ρ h₀ ↔ 1 ≤ h ∧ h ≤ h₀ ∧ rootRadius ℓ h ≤ ρ := by
-  rw [radiusExponents, mem_filter, mem_Icc, and_assoc]
 
 /-- Let `ρ > 0` and `δ > 0`. As the harmonic series diverges, there is an `h₀` such that `δ` times
 the sum of `1 / (h + 1)` over `radiusExponents ℓ ρ h₀` (the `h` with `1 ≤ h ≤ h₀` and

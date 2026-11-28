@@ -75,6 +75,18 @@ namespace New.Lift.KummerChart
 open Period MulAction Pointwise Submodule Set FrobGroup NeZero MulSemiringAction Polynomial Finset
   Algebra LinearMap
 
+/-- The image under `thetaPhiInv a = θ ∘ φ^{-a}` of the Teichmüller lift `[ε]` of
+`epsTilt = (1, ζ_p, ζ_{p²}, …)` is a primitive `p ^ a`-th root of unity. -/
+lemma isPrimitiveRoot_thetaPhiInv_teichmuller_epsTilt {p : ℕ} [P : ThePrime p] [Γ : GroupOverGp p]
+    (a : ℕ) :
+    IsPrimitiveRoot (thetaPhiInv a (WittVector.teichmuller p epsTilt)) (p ^ a) := by
+  let s : Multiplicative ℚ := .ofAdd ((p : ℚ) ^ a)⁻¹
+  have h_image : (epsPow s).untilt = thetaPhiInv a (WittVector.teichmuller p epsTilt) := by
+    simp [s, ← theta_teichmuller, ← thetaPhiInv_phi_pow a, phi_pow_smul, ne, ← map_pow,
+      ← ofAdd_nsmul]
+  have h_den : s.toAdd.den = p ^ a := by simp [s, ne]
+  simpa only [h_image, h_den] using isPrimitiveRoot_untilt_epsPow s
+
 variable {p : ℕ} [P : ThePrime p] [Γ : GroupOverGp p] [k : KummerChart Γ]
   {O : Coeffs} {L : JumpLattice O} (a : ℕ) (i : Letter) (c : ℕ → ℤ → ℤ) {l : ℕ} {n u : ℤ}
 
@@ -258,18 +270,6 @@ lemma exists_smul_frobE_eq_mul_and_zTau_mul_eq (a : ℕ) {n : ℤ} (hn : n ≠ 0
   let ⟨g, ω, υ, X, h⟩ := exists_isDepthStep a hn
   ⟨g, ω, υ, X, h.smul_frobE, h.frobE_dvd_smul_sub, h.frobE_dvd_mul_sub_pow,
     h.zTau_mul_eq_pow_sub_one⟩
-
-omit [KummerChart Γ] in
-/-- The image under `thetaPhiInv a = θ ∘ φ^{-a}` of the Teichmüller lift `[ε]` of
-`epsTilt = (1, ζ_p, ζ_{p²}, …)` is a primitive `p ^ a`-th root of unity. -/
-lemma isPrimitiveRoot_thetaPhiInv_teichmuller_epsTilt :
-    IsPrimitiveRoot (thetaPhiInv a (WittVector.teichmuller p epsTilt)) (p ^ a) := by
-  let s : Multiplicative ℚ := .ofAdd ((p : ℚ) ^ a)⁻¹
-  have h_image : (epsPow s).untilt = thetaPhiInv a (WittVector.teichmuller p epsTilt) := by
-    simp [s, ← theta_teichmuller, ← thetaPhiInv_phi_pow a, phi_pow_smul, ne, ← map_pow,
-      ← ofAdd_nsmul]
-  have h_den : s.toAdd.den = p ^ a := by simp [s, ne]
-  simpa only [h_image, h_den] using isPrimitiveRoot_untilt_epsPow s
 
 /-- If `ζ` is a primitive `q`-th root of unity in a domain, `q ∣ N` and `q ∤ m`, then the sum of
 `(ζ ^ m) ^ l` over `l < N` vanishes. -/
