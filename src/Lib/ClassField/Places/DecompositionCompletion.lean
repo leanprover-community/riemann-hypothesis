@@ -7,6 +7,7 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Ring.Compact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Analysis.Normed.Field.Approximation
 import TauCeti.NumberTheory.Padics.Complex.Basic
 import TauCeti.RingTheory.Valuation.ValuationSubring
 public import Lib.PadicHodge.PeriodRings.AxTheorem
@@ -117,28 +118,18 @@ lemma padic_mem_topologicalClosure {F : Type*} [NormedField F] [PadicField F p] 
 
 /-- A ring homomorphism `ι` from the algebraic closure `Ω` of `ℚ` to `ℚ̄_p` has dense image. -/
 lemma denseRange_emb_padicAlgCl : DenseRange ι := by
-  -- The closure `L` of the image of `ι` in the completion `ℂ_p` is a complete field in which the
-  -- algebraically closed field `Ω` is dense, so it is algebraically closed. It contains `ℚ_p`,
-  -- hence every element that is algebraic over `ℚ_p`.
-  let L : IntermediateField ℚ_[p] ℂ_[p] :=
-    Subfield.toIntermediateField _ (padic_mem_topologicalClosure (coeRingHom.comp ι).fieldRange)
-  let ιL : Ω →+* L := (coeRingHom.comp ι).codRestrict L fun x ↦ subset_closure ⟨x, rfl⟩
-  have h_dense : DenseRange ιL := by
-    rw [DenseRange, dense_iff, ← range_comp]
-    exact le_rfl
-  have h_closed : IsAlgClosed L := by
-    have hL_complete : CompleteSpace L := isClosed_closure.completeSpace_coe
-    let alg : Algebra Ω L := ιL.toAlgebra
-    exact IsAlgClosed.of_denseRange (K := Ω) h_dense
-  -- Density in `ℚ̄_p` may be tested in the completion.
-  refine isDenseInducing_coe.dense_iff.mpr fun x ↦ ?_
-  -- `x` is algebraic over `ℚ_p` and its minimal polynomial splits in `L`, so `x` lies in `L`.
-  have h_mem : algebraMap (PadicAlgCl p) ℂ_[p] x ∈ L :=
-    (IsGalois.integral ℚ_[p] x).algebraMap.mem_intermediateField_of_minpoly_splits
-      (IsAlgClosed.splits _)
-  -- `L` is by definition the closure of the image of `ι` in `ℂ_p`.
-  rw [← range_comp]
-  exact h_mem
+  let L := ι.toRatAlgHom.fieldRange
+  have : IsAlgClosed L := IsAlgClosed.of_ringEquiv Ω L ι.toRatAlgHom.equivFieldRange.toRingEquiv
+  -- The image of `ι` contains each element algebraic over `ℚ`, since its minimal polynomial
+  -- splits over the algebraically closed field `L`.
+  have h_range : {y : PadicAlgCl p | IsAlgebraic ℚ y} ⊆ range ι := by
+    intro y hy
+    change y ∈ L
+    exact hy.isIntegral.mem_intermediateField_of_minpoly_splits (IsAlgClosed.splits _)
+  -- Because `ℚ` is dense in `ℚ_p`, the elements algebraic over `ℚ` are dense in `ℚ̄_p`.
+  intro x
+  have h_alg : IsAlgebraic ℚ_[p] x := Algebra.IsAlgebraic.isAlgebraic x
+  exact closure_mono h_range (h_alg.mem_closure_setOf_isAlgebraic (Padic.denseRange_ratCast p))
 
 /-! ### Open subgroups of the Galois group of `ℚ_p` -/
 
