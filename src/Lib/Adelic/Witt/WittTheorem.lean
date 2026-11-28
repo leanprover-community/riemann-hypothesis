@@ -124,6 +124,7 @@ variable {R n k : Type _} [Field R] [Fintype n] [DecidableEq n] [Fintype k] [Dec
 variable {X Y : Matrix n k R}
 
 omit [DecidableEq n] in
+/-- If a matrix `X` has a left inverse, its matrix-vector multiplication map is injective. -/
 lemma HasLeftInv.injective_mulVec (hX : HasLeftInv X) : X.mulVec.Injective :=
   let ⟨L, (hL : L * X = 1)⟩ := hX
   Function.LeftInverse.injective (g := L.mulVec) fun x ↦ by simp [hL]
@@ -153,6 +154,7 @@ lemma Filling.exists_hasLeftInv_colSpan_eq (L : Submodule R (n → R)) :
 variable [StarRing R] {J : Matrix n n R}
 
 omit [DecidableEq n] in
+/-- A matrix `X` whose Gram matrix with respect to `J` is invertible has a left inverse. -/
 lemma HasLeftInv.of_isUnit_gram (h_gram : IsUnit (Xᴴ * J * X)) : HasLeftInv X :=
   ⟨h_gram.unit⁻¹.val * (Xᴴ * J), by rw [Matrix.mul_assoc, h_gram.val_inv_mul]⟩
 
