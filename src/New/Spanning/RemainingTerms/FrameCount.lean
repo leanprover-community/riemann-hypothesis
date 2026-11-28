@@ -109,11 +109,9 @@ lemma col_eq_zero_of_norm_lt_one {n : Type} {l : Matrix 𝔰.κ n E}
   let w : 𝔰.κ ⊕ Unit → E := l.col i ⊕ᵥ 0
   have h_form : star w ⬝ᵥ S.ratMiddle E *ᵥ w = (lᴴ * l) i i := by
     simp [w, dotProduct, mulVec, middleGram, Matrix.one_apply, Matrix.mul_apply]
-  have h_gram : IsIntMatrix (Ô E) ((finAdeleMatrix l)ᴴ * finAdeleMatrix l) := by
-    simpa only [gram_mul, gram_classCoordX₀, Matrix.mul_one] using
-      (hl_int.conjTranspose.mul S.isUnimodular_latticeMiddle.isIntMatrix).mul hl_int
   have h_int : IsIntegral ℤ ((lᴴ * l) i i) := by
-    simpa [← algebraMap_mem_Ô, Matrix.mul_apply] using h_gram i i
+    simpa [← algebraMap_mem_Ô, Matrix.mul_apply] using
+      isIntMatrix_conjTranspose_mul_of_classCoordX₀ hl_int hl_int i i
   have h_small (v : NumberField.InfinitePlace E) : ‖Φ v ((lᴴ * l) i i)‖ < 1 :=
     calc _ = ‖∑ k, star (Φ v (l k i)) * Φ v (l k i)‖ := by simp [Matrix.mul_apply]
       _ ≤ ∑ k, ‖star (Φ v (l k i)) * Φ v (l k i)‖ := norm_sum_le _ _

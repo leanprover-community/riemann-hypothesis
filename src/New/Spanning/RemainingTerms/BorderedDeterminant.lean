@@ -220,6 +220,24 @@ lemma gram_classCoordX₀ : (S.classCoordX₀ c)ᴴ * S.latticeMiddle (𝔸f E) 
   simpa [classCoord_eq_fromBlocks, splitGram, fromBlocks_conjTranspose, fromBlocks_multiply] using!
     congrArg (submatrix · 𝔰.indexX₀ 𝔰.indexX₀) (classCoord_conj_splitGram c)
 
+variable {c} in
+/-- Vectors of `Λ ∩ X₀`, for the lattice `Λ` of the class `c` in the definite space `X₀`, have
+integral products. Here `S.classCoordX₀ c` changes from an orthonormal basis of `X₀` to the
+coordinates of `Λ`, and integral means with entries in the ring `Ô E` of integral elements of the
+finite adeles `𝔸f E`. -/
+lemma isIntMatrix_conjTranspose_mul_of_classCoordX₀ {σ τ : Type} {m : Matrix 𝔰.κ σ (𝔸f E)}
+    {m' : Matrix 𝔰.κ τ (𝔸f E)} (hm : IsIntMatrix (Ô E) (S.classCoordX₀ c * m))
+    (hm' : IsIntMatrix (Ô E) (S.classCoordX₀ c * m')) : IsIntMatrix (Ô E) (mᴴ * m') := by
+  -- The basis is orthonormal for the integral Gram matrix of the lattice.
+  have h_gram : mᴴ * m' =
+      (S.classCoordX₀ c * m)ᴴ * S.latticeMiddle (𝔸f E) * (S.classCoordX₀ c * m') :=
+    calc mᴴ * m'
+      _ = mᴴ * ((S.classCoordX₀ c)ᴴ * S.latticeMiddle (𝔸f E) * S.classCoordX₀ c) * m' := by
+        rw [gram_classCoordX₀, Matrix.mul_one]
+      _ = _ := by simp only [conjTranspose_mul, Matrix.mul_assoc]
+  rw [h_gram]
+  exact (hm.conjTranspose.mul S.isUnimodular_latticeMiddle.isIntMatrix).mul hm'
+
 omit [Fintype τ] [DecidableEq τ] in
 /-- The products of rational vectors `t`, `t'` for the form `S.ratGram` can be computed in the
 lattice coordinates `S.classCoord c` of a class `c`, with the Gram matrix of `S.latticeMiddle`. -/

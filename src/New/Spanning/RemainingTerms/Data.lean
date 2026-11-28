@@ -118,24 +118,6 @@ lemma HasCellRank.hasCellRank_cellRank {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
     (h : S.HasCellRank j γ) : S.HasCellRank (S.cellRank γ) γ :=
   Classical.epsilon_spec (p := fun i : Fin (𝔰.ϱ + 2) ↦ S.HasCellRank i γ) ⟨j, h⟩
 
-omit [HasPrimitiveRoot5040 E] in
-/-- Vectors of `Λ ∩ X₀`, for the lattice `Λ` of the class `c` in the definite space `X₀`, have
-integral products. Here `S.classCoordX₀ c` changes from an orthonormal basis of `X₀` to the
-coordinates of `Λ`, and integral means with entries in the ring `Ô E` of integral elements of the
-finite adeles `𝔸f E`. -/
-lemma isIntMatrix_conjTranspose_mul_of_classCoordX₀ {σ τ : Type} {m : Matrix 𝔰.κ σ (𝔸f E)}
-    {m' : Matrix 𝔰.κ τ (𝔸f E)} (hm : IsIntMatrix (Ô E) (S.classCoordX₀ c * m))
-    (hm' : IsIntMatrix (Ô E) (S.classCoordX₀ c * m')) : IsIntMatrix (Ô E) (mᴴ * m') := by
-  -- The basis is orthonormal for the integral Gram matrix of the lattice.
-  have h_gram : mᴴ * m' =
-      (S.classCoordX₀ c * m)ᴴ * S.latticeMiddle (𝔸f E) * (S.classCoordX₀ c * m') :=
-    calc mᴴ * m'
-      _ = mᴴ * ((S.classCoordX₀ c)ᴴ * S.latticeMiddle (𝔸f E) * S.classCoordX₀ c) * m' := by
-        rw [gram_classCoordX₀, Matrix.mul_one]
-      _ = _ := by simp only [conjTranspose_mul, Matrix.mul_assoc]
-  rw [h_gram]
-  exact (hm.conjTranspose.mul S.isUnimodular_latticeMiddle.isIntMatrix).mul hm'
-
 /-- For a subspace `V` of the definite space `X₀` and the lattice `Λ` of the class `c`, the real
 number `S.latticeDisc c V` is at least `1`. It is the square root of the generalised index
 (`New.genIndex`) of the Gram determinant of a basis of `Λ ∩ V` over `Ô E`: for an integral
