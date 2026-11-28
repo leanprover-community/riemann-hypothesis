@@ -652,19 +652,26 @@ lemma norm_archCoords_pos {y : n → E} (hy_ne : y ≠ 0) : 0 < ‖V.archCoords 
 
 /-- The first minimum of `V`, cut off at `1`, is positive. -/
 lemma firstMinimum_pos : 0 < V.firstMinimum := by
-  -- By discreteness only finitely many lengths are at most `1`. Let `l` be the least of `1` and
-  -- the nonzero ones among them.
-  let S : Set ℝ := insert 1 ((fun y : n → E ↦ ‖V.archCoords y‖) '' {y ∈ V.latticeBall 1 | y ≠ 0})
-  have hS : S.Finite := (((V.finite_latticeBall 1).sep _).image _).insert 1
-  obtain ⟨l, hl_mem, hl_least⟩ := Set.exists_min_image S id hS (Set.insert_nonempty _ _)
-  have hl_pos : 0 < l := by
-    obtain rfl | ⟨y, ⟨-, hy_ne⟩, rfl⟩ := hl_mem
-    exacts [one_pos, norm_archCoords_pos hy_ne]
-  have hl_one : l ≤ 1 := hl_least 1 (Set.mem_insert _ _)
-  refine hl_pos.trans_le (le_firstMinimum_iff.2 ⟨hl_one, fun y hy hy_ne ↦ ?_⟩)
-  obtain h_short | h_long := le_total ‖V.archCoords y‖ 1
-  · exact hl_least _ (Set.mem_insert_of_mem _ ⟨y, ⟨⟨hy, h_short⟩, hy_ne⟩, rfl⟩)
-  · exact hl_one.trans h_long
+  -- Clear denominators in the point and compare with the positive-definite standard lattice.
+  obtain ⟨N, hN, h_integral⟩ := exists_forall_mul_mem_Ô V.xFin.val.uncurry
+  let c : ℝ := ‖fun w : NumberField.InfinitePlace E ↦ V.x.val.map (fun a : 𝔸 E ↦ a.1 w)‖
+  let C : ℝ := max 1 (N * c)
+  have hC : 0 < C := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
+  refine (div_pos zero_lt_one hC).trans_le (le_firstMinimum_iff.2 ⟨?_, ?_⟩)
+  · exact div_le_self zero_le_one (le_max_left _ _)
+  · intro y hy hy_ne
+    obtain ⟨h_mem, h_norm⟩ := (stdSpace E n).mem_and_norm_le_of_vecAtPoint (N • y) V y
+      V.x.val N (c := c)
+      (fun w ↦ norm_le_pi_norm (fun w ↦ V.x.val.map (fun a : 𝔸 E ↦ a.1 w)) w)
+      (by simp [vecAtPoint, funext_iff])
+    have h_scaled : N • y ∈ (stdSpace E n).baseLattice :=
+      h_mem (fun i j ↦ h_integral (i, j)) hy
+    have h_ne : N • y ≠ 0 := smul_ne_zero hN hy_ne
+    have h_one : 1 ≤ ‖(stdSpace E n).archCoords (N • y)‖ :=
+      (one_le_firstMinimum (V := stdSpace E n) (by simp)).trans (firstMinimum_le h_scaled h_ne)
+    apply (div_le_iff₀' hC).2
+    exact h_one.trans (h_norm.trans
+      (mul_le_mul_of_nonneg_right (le_max_right 1 (N * c)) (norm_nonneg _)))
 
 end New.Space
 
