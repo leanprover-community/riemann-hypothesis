@@ -939,30 +939,48 @@ section FirstMinimumSum
 
 open Function New Space EuclideanSpace
 
-/-- The shortest vector length, cut off at 1 (`New.Space.firstMinimum`), of the lattice of V ⊕ W
-(`New.Space.sum`) moved by the block sum `G.sum (g, h)` is at least the minimum of those of V moved
-by g and W moved by h. -/
-lemma New.Rows.inf_le_firstMinimum_sum {E n n' : Type*} [Field E] [CMType E] [Fintype n]
+/-- The first minimum, cut off at 1, of an orthogonal sum is the smaller first minimum of its
+two summands. A nonzero lattice vector in either summand can be padded with zeros without
+changing its length. -/
+lemma New.Rows.firstMinimum_sum {E n n' : Type*} [Field E] [CMType E] [Fintype n]
     [DecidableEq n] [Fintype n'] [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} {g : G E s}
     {h : G E s'} {V : Space E n s} {W : Space E n' s'} :
-    (V.move g).firstMinimum ⊓ (W.move h).firstMinimum ≤
-      ((V.sum W).move (G.sum (g, h))).firstMinimum := by
-  refine le_firstMinimum_iff.2 ⟨by simp [firstMinimum_le_one], fun y hy hy₀ ↦ ?_⟩
-  -- both components of `y` are lattice vectors, and their squared lengths add up
-  obtain ⟨h_inl, h_inr⟩ :
-      y ∘ .inl ∈ (V.move g).baseLattice ∧ y ∘ .inr ∈ (W.move h).baseLattice := by
-    simpa [baseLattice, ↓vecAtPoint_move, vecAtPoint, sum, comp_def, ← map_inv,
-      Matrix.fromBlocks_mulVec] using hy
-  have h_sq : ‖((V.sum W).move (.sum (g, h))).archCoords y‖ ^ 2 =
-      ‖(V.move g).archCoords (y ∘ .inl)‖ ^ 2 + ‖(W.move h).archCoords (y ∘ .inr)‖ ^ 2 := by
+    ((V.sum W).move (G.sum (g, h))).firstMinimum =
+      (V.move g).firstMinimum ⊓ (W.move h).firstMinimum := by
+  have h_lattice (y : n ⊕ n' → E) :
+      y ∈ ((V.sum W).move (G.sum (g, h))).baseLattice ↔
+        y ∘ .inl ∈ (V.move g).baseLattice ∧ y ∘ .inr ∈ (W.move h).baseLattice := by
+    simp [baseLattice, ↓vecAtPoint_move, vecAtPoint, sum, comp_def, ← map_inv,
+      Matrix.fromBlocks_mulVec]
+  have h_sq (y : n ⊕ n' → E) :
+      ‖((V.sum W).move (.sum (g, h))).archCoords y‖ ^ 2 =
+        ‖(V.move g).archCoords (y ∘ .inl)‖ ^ 2 + ‖(W.move h).archCoords (y ∘ .inr)‖ ^ 2 := by
     simp [norm_sq_eq, archCoords, ↓vecAtPoint_move, vecAtPoint, sum, comp_def, ← map_inv,
       Fintype.sum_prod_type, Matrix.fromBlocks_mulVec, Finset.sum_add_distrib]
-  -- one of the components is nonzero, and it is not longer than `y`
-  obtain h_left | h_right := Sum.exists.1 (ne_iff.1 hy₀)
-  · exact inf_le_left.trans <| (firstMinimum_le h_inl (ne_iff.2 h_left)).trans <|
-      le_of_sq_le_sq (by simp [h_sq]) (norm_nonneg _)
-  · exact inf_le_right.trans <| (firstMinimum_le h_inr (ne_iff.2 h_right)).trans <|
-      le_of_sq_le_sq (by simp [h_sq]) (norm_nonneg _)
+  apply le_antisymm
+  · apply le_inf
+    · refine le_firstMinimum_iff.2 ⟨firstMinimum_le_one, fun y hy hy₀ ↦ ?_⟩
+      let y' : n ⊕ n' → E := Sum.elim y 0
+      have h_ne : y' ≠ 0 := fun h_eq ↦ hy₀ (congrArg (fun f ↦ f ∘ Sum.inl) h_eq)
+      refine (firstMinimum_le ((h_lattice y').2 ⟨hy, zero_mem _⟩) h_ne).trans ?_
+      refine le_of_sq_le_sq ?_ (norm_nonneg _)
+      rw [h_sq]
+      simp [show y' ∘ Sum.inr = 0 from rfl, show y' ∘ Sum.inl = y from rfl]
+    · refine le_firstMinimum_iff.2 ⟨firstMinimum_le_one, fun y hy hy₀ ↦ ?_⟩
+      let y' : n ⊕ n' → E := Sum.elim 0 y
+      have h_ne : y' ≠ 0 := fun h_eq ↦ hy₀ (congrArg (fun f ↦ f ∘ Sum.inr) h_eq)
+      refine (firstMinimum_le ((h_lattice y').2 ⟨zero_mem _, hy⟩) h_ne).trans ?_
+      refine le_of_sq_le_sq ?_ (norm_nonneg _)
+      rw [h_sq]
+      simp [show y' ∘ Sum.inl = 0 from rfl, show y' ∘ Sum.inr = y from rfl]
+  · refine le_firstMinimum_iff.2 ⟨by simp [firstMinimum_le_one], fun y hy hy₀ ↦ ?_⟩
+    obtain ⟨h_inl, h_inr⟩ := (h_lattice y).1 hy
+    -- One of the components is nonzero, and it is no longer than the original vector.
+    obtain h_left | h_right := Sum.exists.1 (ne_iff.1 hy₀)
+    · exact inf_le_left.trans <| (firstMinimum_le h_inl (ne_iff.2 h_left)).trans <|
+        le_of_sq_le_sq (by simp [h_sq]) (norm_nonneg _)
+    · exact inf_le_right.trans <| (firstMinimum_le h_inr (ne_iff.2 h_right)).trans <|
+        le_of_sq_le_sq (by simp [h_sq]) (norm_nonneg _)
 
 end FirstMinimumSum
 

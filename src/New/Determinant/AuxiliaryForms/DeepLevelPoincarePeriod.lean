@@ -399,7 +399,9 @@ lemma New.Space.IsLastColumn.le_norm_archCoords_sub {E n : Type} {s : n → ℤ�
     exact h_left.symm.trans (h_entry.trans h_right)
   -- the definite summand `⟨1⟩` has no short vector, so it does not lower the first minimum
   have firstMinimum_le_sum : (V.move x).firstMinimum ≤ Zx.firstMinimum := by
-    refine .trans (le_inf le_rfl ?_) Rows.inf_le_firstMinimum_sum
+    change _ ≤ ((V.sum (signedSpace (n := Unit) E 1)).move (G.sum (x, 1))).firstMinimum
+    rw [Rows.firstMinimum_sum]
+    refine le_inf le_rfl ?_
     exact firstMinimum_le_one.trans (one_le_firstMinimum fun _ _ ↦ rfl)
   -- a nonzero lattice vector has norm at least `firstMinimum`; `a` stretches it by at least `R`
   calc

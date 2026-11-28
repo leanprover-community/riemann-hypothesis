@@ -514,7 +514,7 @@ lemma Rows.isPrimitiveMatrix_of_liftFn_ne_zero {ι : Type*} {Ψ : (ι → 𝔪.R
 /-- The height on the orthogonal sum of `S` and `T` is at most the product of the heights. -/
 lemma Space.height_sum_le (g : G E s) (h : G E s') :
     (S.sum T).height (G.sum (g, h)) ≤ S.height g * T.height h := by
-  simp [height, field, firstMinimum_pos, inf_le_firstMinimum_sum.trans']
+  simp [height, field, firstMinimum_pos, Rows.firstMinimum_sum]
 
 variable [WeilData E]
 

@@ -397,18 +397,15 @@ lemma exists_isPeak_carrierForm {o : D.CarrierIndex → ℤ} (ho : IsPosFirstOrd
 noncomputable abbrev paddedSpace : Space D.E (D.RowIndex ⊕ PadIndex j) (padSigns j) :=
   (D.spaceW j).sum ((stdSpace D.E (Fin j)).neg.sum (stdSpace D.E (Fin (2 * D.m + (D.m - j)))))
 
-/-- For `g` in the group of `W_j = D.spaceW j`, the first minimum (cut off at `1`) of `W_j` moved by
-`g` is at most that of the padded space `W̃ = paddedSpace j` moved by `G.sum (g, 1)`. So extending
-`g` by `1` to `W̃` does not lower the first minimum. -/
-lemma firstMinimum_le_paddedSpace (g : New.G D.E (D.signsW j)) :
-    ((D.spaceW j).move g).firstMinimum ≤ ((paddedSpace j).move (G.sum (g, 1))).firstMinimum := by
-  have h_pad : 1 ≤ (((stdSpace D.E (Fin j)).neg.sum
-      (stdSpace D.E (Fin (2 * D.m + (D.m - j))))).move 1).firstMinimum := by
-    rw [← G.sum.map_one]
-    -- Both summands are definite, so both have first minimum at least `1`.
-    exact (le_inf (Space.one_le_firstMinimum fun _ _ ↦ rfl)
-      (Space.one_le_firstMinimum fun _ _ ↦ rfl)).trans inf_le_firstMinimum_sum
-  grw [← inf_le_firstMinimum_sum, ← h_pad, inf_of_le_left Space.firstMinimum_le_one]
+/-- Extending `g` by `1` on the two definite summands of `paddedSpace j` preserves the first
+minimum, cut off at `1`. -/
+lemma firstMinimum_paddedSpace (g : New.G D.E (D.signsW j)) :
+    ((paddedSpace j).move (G.sum (g, 1))).firstMinimum = ((D.spaceW j).move g).firstMinimum := by
+  rw [Rows.firstMinimum_sum, ← G.sum.map_one, Rows.firstMinimum_sum]
+  rw [Space.firstMinimum_move_eq_one (V := (stdSpace D.E (Fin j)).neg) (fun _ _ ↦ rfl),
+    Space.firstMinimum_move_eq_one (V := stdSpace D.E (Fin (2 * D.m + (D.m - j))))
+      (fun _ _ ↦ rfl), inf_idem]
+  exact inf_eq_left.2 Space.firstMinimum_le_one
 
 /-- Step 1 of the proof that products span. Let `1 ≤ j ≤ m`, let `W_j` be the diagonal space with
 signs `D.signsW j`, let `W̃ = paddedSpace j` be its sum with a definite space of each sign, and let
@@ -534,7 +531,7 @@ lemma inv_pow_le_firstMinimum_mul {g₁ : New.G D.E (1 ⊕ᵥ -1 : D.CarrierInde
     (D.b ^ 13)⁻¹ ≤ ((signedSpace D.E (1 ⊕ᵥ -1)).move g₁).firstMinimum *
       ((paddedSpace j).move (G.sum (g, 1))).firstMinimum := by
   have h_pos : 0 < ((signedSpace D.E (1 ⊕ᵥ -1)).move g₁).firstMinimum := Space.firstMinimum_pos
-  grw [← firstMinimum_le_paddedSpace, ← h_g, ← h_g₁]
+  grw [firstMinimum_paddedSpace, ← h_g, ← h_g₁]
   exact D.le_of_hasLogBound
 
 /-- Let `S` be the space with index set `D.CarrierIndex` of `3 m` elements, and let `W̃` be the
