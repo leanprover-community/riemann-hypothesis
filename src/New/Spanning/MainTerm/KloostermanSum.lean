@@ -139,6 +139,17 @@ lemma PlaceData.inv_mul_mem_congruenceSubgroup_iff {s z : T.G}
   ⟨fun h ↦ by simpa [mul_assoc] using conj_mem_unitaryLevel hs h,
     fun h ↦ by simpa [mul_assoc] using conj_mem_unitaryLevel (inv_mem hs) h⟩
 
+/-- For an integral point `s` of the unitary group and `y ∈ x u' K(M)`, the Kloosterman condition
+`u⁻¹ x u' ∈ s K(M)` holds if and only if `y s⁻¹ ∈ u K(M)`. Here `K(M) = F.congruenceSubgroup` is
+the principal congruence subgroup of level `M = F.levelUnit`. -/
+private lemma PlaceData.kloosterman_mem_congruenceSubgroup_iff {s x y u u' : T.G}
+    (hs : s ∈ unitaryLevel P.integers 1 T.splitGram)
+    (hy : u'⁻¹ * (x⁻¹ * y) ∈ F.congruenceSubgroup) :
+    s⁻¹ * (u⁻¹ * x * u') ∈ F.congruenceSubgroup ↔ u⁻¹ * (y * s⁻¹) ∈ F.congruenceSubgroup := by
+  rw [← F.congruenceSubgroup.mul_mem_cancel_right hy, ← mul_assoc u⁻¹,
+    ← inv_mul_mem_congruenceSubgroup_iff hs]
+  simp [mul_assoc]
+
 /-- If `s⁻¹ a b⁻¹` lies in `K(M) = F.congruenceSubgroup` and `a`, `b` are integral points of the
 unitary group, then `s` is an integral point. -/
 lemma PlaceData.mem_unitaryLevel_one_of_inv_mul_mul_inv_mem {s a b : T.G}
@@ -192,9 +203,8 @@ lemma PlaceData.tsum_extendedBesselChar_mul_star_extendedBesselChar {F : PlaceDa
     obtain ⟨w', h_right : (w'.out : T.G)⁻¹ * (x⁻¹ * q.out) ∈ F.congruenceSubgroup⟩ :=
       exists_out_inv_mul_mem
         (exists_besselU_of_extendedBesselChar_ne_zero (star_ne_zero.1 (right_ne_zero_of_mul hq)))
-    have h_cond : s⁻¹ * ((w.out : T.G)⁻¹ * x * (w'.out : T.G)) ∈ F.congruenceSubgroup := by
-      rw [← mul_assoc, ← inv_mul_mem_congruenceSubgroup_iff hs] at h_left
-      simpa [mul_assoc] using mul_mem h_left (inv_mem h_right)
+    have h_cond : s⁻¹ * ((w.out : T.G)⁻¹ * x * (w'.out : T.G)) ∈ F.congruenceSubgroup :=
+      (kloosterman_mem_congruenceSubgroup_iff hs h_right).2 h_left
     have h_coset : ((x * (w'.out : T.G) : T.G) : T.G ⧸ F.congruenceSubgroup) = q :=
       (QuotientGroup.eq.2 (by simpa [mul_assoc] using h_right)).trans q.out_eq'
     refine ⟨⟨(w, w'), ?_⟩, h_coset⟩
@@ -207,9 +217,8 @@ lemma PlaceData.tsum_extendedBesselChar_mul_star_extendedBesselChar {F : PlaceDa
     let y : T.G := ((x * (w'.out : T.G) : T.G) : T.G ⧸ F.congruenceSubgroup).out
     have h_right : (w'.out : T.G)⁻¹ * (x⁻¹ * y) ∈ F.congruenceSubgroup := by
       simpa [mul_assoc] using inv_mul_out_coe_mem F.congruenceSubgroup (x * (w'.out : T.G))
-    have h_left : (w.out : T.G)⁻¹ * (y * s⁻¹) ∈ F.congruenceSubgroup := by
-      rw [← mul_assoc, ← inv_mul_mem_congruenceSubgroup_iff hs]
-      simpa [mul_assoc] using mul_mem h_cond h_right
+    have h_left : (w.out : T.G)⁻¹ * (y * s⁻¹) ∈ F.congruenceSubgroup :=
+      (kloosterman_mem_congruenceSubgroup_iff hs h_right).1 h_cond
     rw [ite_eq_left h_cond, extendedBesselChar_eq_of_inv_mul_mem h_left,
       extendedBesselChar_eq_of_inv_mul_mem h_right]
 
