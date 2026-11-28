@@ -703,8 +703,6 @@ theorem isTestForm_trivialLiftClassSum_pointForm {l : ℕ} [Fact l.Prime]
   simp only [h_period]
   simp only [classSum, smul_zero, finsum_zero, mul_zero]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 open MvPolynomial Ideal.Quotient Selmer Nat LevelPlaces in
 /-- Seesaw factorisation. Let `l` be a prime with a chosen embedding `ℂ → ℂ_l`. Let `p` be a main
 pair for `j` with point `z = p.z`, and let `X` be the lift data of `p` at the twist `ϑ`, with `l`
@@ -760,7 +758,8 @@ theorem exists_isTestForm_inner_kernelForm_eq {l : ℕ} [Fact l.Prime]
   -- integrality and orthogonality to the false lifts.
   have h_test (h₂ h₃ : Gf D.E (Fin 4)) :
       X.descentPair.IsTestForm l (trivialLiftClassSum hq u fun h₁ ↦ F h₁ h₂ h₃) := by
-    dsimp only [F, X, u]
+    -- `h_fix` is stated with `X`: unfold it there too, so that `exact` compares equal terms
+    dsimp only [F, X, u] at h_fix ⊢
     exact isTestForm_trivialLiftClassSum_pointForm hq hp ϑ x₀ h_fix h₂ h₃
   refine ⟨trivialLiftClassSum hq₂ ϑ fun h₂ ↦ trivialLiftClassSum hq₃ u fun h₃ ↦
     trivialLiftClassSum hq u fun h₁ ↦ F h₁ h₂ h₃, fun g ↦ ?_,
