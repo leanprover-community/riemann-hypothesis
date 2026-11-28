@@ -17,6 +17,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Lib.General.Groups.BesselGroups
 public import Lib.General.Groups.CharacterTheory
+import TauCeti.LinearAlgebra.Charpoly.Quotient
 
 /-!
 # Hall algebra of class functions: induction product, Mackey formula, Frobenius reciprocity
@@ -768,21 +769,8 @@ omit [Finite k] in
 /-- For an `a`-stable subspace `U`, the characteristic polynomial of `a` is the product of those of
 its restriction to `U` and of the induced map on `V ⧸ U`. -/
 lemma charpoly_endOnSub_mul_endOnQuot (U : StableSubspace a) :
-    U.endOnSub.charpoly * U.endOnQuot.charpoly = a.charpoly := by
-  -- In a basis of `V` made of a basis of `U` and lifts of a basis of `V ⧸ U`, the matrix of `a`
-  -- is block upper triangular, with the matrices of `U.endOnSub` and `U.endOnQuot` on the diagonal.
-  let bU := chooseBasis k U.val
-  let bQ := chooseBasis k (V ⧸ U.val)
-  let M := toMatrix (bU.sumQuot bQ) (bU.sumQuot bQ) a
-  have h_block :
-      M = .fromBlocks (toMatrix bU bU U.endOnSub) M.toBlocks₁₂ 0 (toMatrix bQ bQ U.endOnQuot) := by
-    -- For the lower right block, `bQ j` is the class of the lifted basis vector. (Without
-    -- `-Basis.sumQuot_inr` the reversed rewrite loops.)
-    ext (i | i) (j | j) <;>
-      simp [M, U.property, endOnSub, restrict_apply, (mk_eq_zero _).2, Matrix.toBlocks₁₂, endOnQuot,
-        ← Basis.sumQuot_inr bU bQ, -Basis.sumQuot_inr, toMatrix_apply]
-  have h_charpoly : a.charpoly = M.charpoly := (charpoly_toMatrix a _).symm
-  rw [h_charpoly, h_block, Matrix.charpoly_fromBlocks_zero₂₁, charpoly_toMatrix, charpoly_toMatrix]
+    U.endOnSub.charpoly * U.endOnQuot.charpoly = a.charpoly :=
+  (LinearMap.charpoly_eq_charpoly_restrict_mul_charpoly_mapQ U.val a U.prop).symm
 
 end MackeyFormula
 
