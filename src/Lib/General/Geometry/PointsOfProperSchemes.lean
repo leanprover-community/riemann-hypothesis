@@ -33,11 +33,11 @@ change to `k`, it also has an étale atlas.
   every point with values in a comparable ring (`New.Variety.IsComparableRing`) factors.
 * `New.Variety.isProperOver_pointsToBase`: the functor of points of `X` over `R` satisfies
   `New.Variety.IsProperOver`.
-* `New.Variety.isSeparatedFunctor_algPointsOf`: for an `R`-algebra `k` and a proper scheme `W` over
-  `Spec R`, the points of `W` with values in `k`-algebras form a separated functor
+* `New.Variety.isSeparatedFunctor_algPointsOf`: if `W` is separated over `Spec R` and `k` is an
+  `R`-algebra, the points of `W` with values in `k`-algebras form a separated functor
   (`New.Variety.IsSeparatedFunctor`).
-* `New.Variety.hasAtlas_algPointsOf`: if moreover `W` is smooth of relative dimension `d` after base
-  change to `k`, the functor has an atlas of dimension `d`.
+* `New.Variety.hasAtlas_algPointsOf`: if `W` is proper over `Spec R` and smooth of relative
+  dimension `d` after base change to `k`, the functor has an atlas of dimension `d`.
 * `New.Variety.isAffinelyCovered_algPointsOf`: on rings satisfying `New.Variety.IsComparableRing`,
   one affine scheme surjects onto the points of a proper `W`.
 * `New.Variety.exists_hom_of_rel` builds a homomorphism A → B of commutative group objects over S
@@ -208,6 +208,15 @@ lemma New.Variety.exists_locallyOfFiniteType_forall_factors [IsProper s] :
       simp [piece]
   exact ⟨preimage (glued ≫ toSpecΓ _), by simpa using h_glued⟩
 
+/-- For two `A`-valued points of a separated scheme, pulling back the diagonal gives an ideal
+of `A`. The points agree after a ring map exactly when it kills this ideal. -/
+private lemma exists_ideal_le_ker_iff_points_eq {X : Scheme.{0}} [X.IsSeparated] {A : CommRingCat}
+    (x y : Spec A ⟶ X) :
+    ∃ I : Ideal A, ∀ (B : CommRingCat) (f : A ⟶ B), Spec.map f ≫ x = Spec.map f ≫ y ↔
+      I ≤ RingHom.ker f.hom := by
+  obtain ⟨I, -, hI⟩ := New.Variety.exists_ideal_le_ker_iff_factors (diag X) (lift x y)
+  exact ⟨I, fun B f ↦ by simp [hI, prod.hom_ext_iff]⟩
+
 /-- If `s : X ⟶ Spec R` is a proper morphism of schemes, then the functor of points `A ↦ X(A)` with
 its structure map `pointsToBase s` is proper over `R` (`New.Variety.IsProperOver`). The locus where
 two points agree is cut out by an ideal. There are a ring `T` and a point `a ∈ X(T)` such that each
@@ -216,11 +225,8 @@ the image of `a` under some `T → O ⊆ K`. -/
 lemma New.Variety.isProperOver_pointsToBase [IsProper s] : IsProperOver (pointsToBase s) := by
   have : X.IsSeparated := Scheme.IsSeparated.of_isSeparated s
   refine ⟨fun C ⟨x⟩ ⟨y⟩ ↦ ?_, ?_⟩
-  · -- Two points agree exactly where the pair factors through the closed diagonal, and
-    -- `exists_ideal_le_ker_iff_factors` cuts that locus out by an ideal `I`.
-    obtain ⟨I, -, hI⟩ := exists_ideal_le_ker_iff_factors (diag X) (lift x y)
-    refine ⟨I, fun B f ↦ ULift.up_inj.trans ?_⟩
-    simp [hI, prod.hom_ext_iff]
+  · obtain ⟨I, hI⟩ := exists_ideal_le_ker_iff_points_eq x y
+    exact ⟨I, fun B f ↦ ULift.up_inj.trans (hI B f)⟩
   · -- A geometric point `z` whose ring map on `R` lands in the valuation ring `O` extends to
     -- an `O`-point by the valuative criterion, and `O`-points factor through the atlas `a`,
     -- as a valuation ring is a comparable ring.
@@ -313,17 +319,18 @@ lemma exists_hom_specMap_eq {A B : CommAlg k} (u : CommRingCat.of A ⟶ CommRing
     ∃ φ : A ⟶ B, specMap (φ.hom : A →+* B) = Spec.map u := by
   exact ⟨ofHom ⟨u.hom, ConcreteCategory.congr_hom (map_inj.1 ((Spec.map_comp ..).trans hu))⟩, rfl⟩
 
-/-- If `W` is proper over `Spec R`, its functor of points on `k`-algebras is separated: the locus
+/-- If `W` is separated over `Spec R`, its functor of points on `k`-algebras is separated: the locus
 where two points of `W` with values in `A` agree is cut out by an ideal of `A`. -/
-instance isSeparatedFunctor_algPointsOf [IsProper W.hom] :
+instance isSeparatedFunctor_algPointsOf [IsSeparated W.hom] :
     IsSeparatedFunctor (algPointsOf k R W) := by
   refine ⟨fun A ⟨x⟩ y ↦ ?_⟩
   -- the ideal that cuts out the coincidence of the underlying morphisms of schemes
-  obtain ⟨I, hI⟩ := (isProperOver_pointsToBase W.hom).diagonal_closed _ ⟨x.left⟩ ⟨y.down.left⟩
+  have : W.left.IsSeparated := Scheme.IsSeparated.of_isSeparated W.hom
+  obtain ⟨I, hI⟩ := exists_ideal_le_ker_iff_points_eq x.left y.down.left
   refine ⟨I, fun B φ ↦ Iff.trans ⟨fun h_eq ↦ ?_, fun h_eq ↦ ?_⟩
     (hI (.of B) (CommRingCat.ofHom (φ.hom : A →+* B)))⟩
-  · exact congrArg (fun p : PointsIn W B ↦ up p.down.left) h_eq
-  · exact PointsIn.eq_of_left_eq (congrArg down h_eq)
+  · exact congrArg (fun p : PointsIn W B ↦ p.down.left) h_eq
+  · exact PointsIn.eq_of_left_eq h_eq
 
 section SmoothAtlas
 
