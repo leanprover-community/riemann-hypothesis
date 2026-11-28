@@ -659,9 +659,7 @@ lemma hundred_mul_m_le_k : 100 * D.m ≤ D.k := D.nat_le_of_hasLogBound
 
 /-- The rank `k = r + 1 - m` is positive. -/
 @[simp]
-lemma k_pos : 0 < D.k := by
-  have h_one : 1 ≤ D.k := D.nat_le_of_hasLogBound
-  exact h_one
+lemma k_pos : 0 < D.k := D.nat_le_of_hasLogBound
 
 /-- The ranks `n j = k + j (t + 1)` increase with `j`. -/
 lemma n_mono : Monotone D.n := fun i j hij ↦ by

@@ -962,9 +962,7 @@ since `ϱ 0` is the identity. The factor `ϱ 0` makes `V.θ f = f 0` hold by def
 `f x = V.rawTheta (ϱ x f)` is the theta function of `f`. -/
 def θ : 𝒮 V →L[ℂ] ℂ := V.rawTheta ∘L V.ϱ 0
 
-lemma theta_eq_rawTheta : V.θ = V.rawTheta := by
-  ext
-  simp [θ]
+lemma theta_eq_rawTheta : V.θ = V.rawTheta := by ext; simp [θ]
 
 /-- The functional `V.rawTheta` is a theta functional of `V`: it is invariant under the rational
 points, and |θ(ϱ(x)vac)|² has mean 1 over adelic vectors x modulo these. -/
