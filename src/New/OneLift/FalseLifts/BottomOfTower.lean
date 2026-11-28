@@ -75,6 +75,7 @@ lemma submatrix_inclMatrix [DecidableEq r] [Fintype n] : (inclMatrix R ι).subma
   rw [← inclMatrix_transpose_mul, inclMatrix_transpose_mul_self]
 
 omit [Fintype r] in
+/-- Evaluation of `inclMatrix R ι a b` is zero when the row index `a` is outside `range ι`. -/
 lemma inclMatrix_apply_of_notMem_range {a : n} (ha : a ∉ Set.range ι) (b : r) :
     inclMatrix R ι a b = 0 :=
   one_apply_ne fun h : a = ι b ↦ ha ⟨b, h.symm⟩
@@ -84,6 +85,7 @@ lemma inclMatrix_mulVec_apply_embedding [DecidableEq r] (μ : r → R) (b : r) :
     (inclMatrix R ι *ᵥ μ) (ι b) = μ b := by
   simp [inclMatrix, mulVec, dotProduct, Matrix.one_apply]
 
+/-- Matrix-vector product with `inclMatrix` vanishes on indices outside the range of `ι`. -/
 lemma inclMatrix_mulVec_apply_of_notMem_range (μ : r → R) {a : n} (ha : a ∉ Set.range ι) :
     (inclMatrix R ι *ᵥ μ) a = 0 := by
   simp [mulVec, dotProduct, inclMatrix_apply_of_notMem_range ι ha]
@@ -119,6 +121,7 @@ lemma completeColumns_apply_of_notMem [DecidableEq r]
   have h_ne (c : r) : ι c ≠ b := fun h ↦ hb ⟨c, h⟩
   simp [completeColumns, inclMatrix, Matrix.mul_apply, Matrix.one_apply, h_ne]
 
+/-- Completing matrix columns commutes with scalar ring homomorphisms `f`. -/
 lemma map_completeColumns (f : R →+* R') (u : Matrix n r R) :
     (completeColumns ι u).map f = completeColumns ι (u.map f) := by
   ext a b
@@ -127,6 +130,7 @@ lemma map_completeColumns (f : R →+* R') (u : Matrix n r R) :
 variable [Fintype n]
 
 omit [Fintype r] in
+/-- Row-vector multiplication by `inclMatrix` restricts the vector to the indices `ι`. -/
 lemma vecMul_inclMatrix (l : n → R) : l ᵥ* inclMatrix R ι = l ∘ ι := by
   ext b
   simp [inclMatrix, vecMul, dotProduct, Matrix.one_apply]
