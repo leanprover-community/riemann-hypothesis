@@ -72,8 +72,7 @@ lemma smul_eq_self_iff_eq_one {v : P.Φ s} {w : FinPlace (P.E s)}
 lemma q_eq_of_modEq_one {w : FinPlace (P.E s)} (hp_mod : p ≡ 1 [MOD P.q₁ s * P.d])
     (hp_mem : (p : 𝓞 (P.E s)) ∈ w.asIdeal) : w.q = p := by
   rw [q_eq_pow_orderOf_frobElem hp_mem (not_dvd_q₁_mul_d_of_modEq_one hp_mod),
-    frobElem_eq_one hp_mod, orderOf_one,
-    pow_one]
+    frobElem_eq_one hp_mod, orderOf_one, pow_one]
 
 /-- Let `E = P.E s`, the field generated over `K` by a primitive `P.q₁ s`-th root of unity. Let `w`
 be a finite place of `E` above a prime `p ≡ 1` modulo `P.q₁ s * P.d`. Let `a` in `𝓞 E` satisfy
@@ -135,8 +134,7 @@ lemma nonempty_infinitePlace_equiv_finPlace (hp_mod : p ≡ 1 [MOD P.q₁ s * P.
       (P.Φ s ≃ {w : FinPlace (P.E s) // a ∈ w.asIdeal ∧ (p : 𝓞 (P.E s)) ∈ w.asIdeal}) := by
   classical
   -- Fix `w` above `p` and send `v` to the one of `v • w`, `star (v • w)` that contains `a`.
-  obtain ⟨w, hw⟩ : ∃ w : FinPlace (P.E s), (p : 𝓞 (P.E s)) ∈ w.asIdeal :=
-    FinPlace.exists_natCast_mem (P.E s) p
+  obtain ⟨w, hw⟩ := FinPlace.exists_natCast_mem (P.E s) p
   have p_mem (v : P.Φ s) : (p : 𝓞 (P.E s)) ∈ (v • w).asIdeal :=
     mem_asIdeal_smul_iff.2 (by simpa using hw)
   have star_iff (v : P.Φ s) : a ∈ (star (v • w)).asIdeal ↔ a ∉ (v • w).asIdeal := by
@@ -145,27 +143,22 @@ lemma nonempty_infinitePlace_equiv_finPlace (hp_mod : p ≡ 1 [MOD P.q₁ s * P.
   have place_cases (v : P.Φ s) : place v = v • w ∨ place v = star (v • w) := ite_eq_or_eq _ _ _
   have place_mem (v : P.Φ s) : a ∈ (place v).asIdeal ∧ (p : 𝓞 (P.E s)) ∈ (place v).asIdeal := by
     by_cases ha_mem : a ∈ (v • w).asIdeal
-    · rw [show place v = v • w from ite_eq_left ha_mem]
-      exact ⟨ha_mem, p_mem v⟩
-    · rw [show place v = star (v • w) from ite_eq_right ha_mem, star_iff, mem_star_place,
-        star_natCast]
-      exact ⟨ha_mem, p_mem v⟩
+    · simpa only [place, ite_eq_left ha_mem] using ⟨ha_mem, p_mem v⟩
+    · simpa only [place, ite_eq_right ha_mem, star_iff, mem_star_place, star_natCast] using
+        ⟨ha_mem, p_mem v⟩
   refine ⟨.ofBijective (fun v ↦ ⟨place v, place_mem v⟩) ⟨fun u v huv ↦ ?_, fun w' ↦ ?_⟩⟩
   · -- `place u = place v` makes `v • w` equal to `u • w` or to its conjugate
     have place_eq : place u = place v := congrArg Subtype.val huv
     have h_or : v • w = u • w ∨ v • w = star (u • w) := by
-      rcases place_cases u with hu | hu
-      · rcases place_cases v with hv | hv
-        · exact .inl (by rw [← hu, place_eq, hv])
-        · exact .inr (by rw [← hu, place_eq, hv, star_star])
-      · rcases place_cases v with hv | hv
-        · exact .inr (by rw [← hu, place_eq, hv])
-        · exact .inl (star_injective (by rw [← hu, place_eq, hv]))
+      rcases place_cases u with hu | hu <;> rcases place_cases v with hv | hv
+      · exact .inl (by rw [← hu, place_eq, hv])
+      · exact .inr (by rw [← hu, place_eq, hv, star_star])
+      · exact .inr (by rw [← hu, place_eq, hv])
+      · exact .inl (star_injective (by rw [← hu, place_eq, hv]))
     exact eq_of_smul_eq_or_smul_eq_star hp_mod hw h_or
   · -- `w'` is `v • w` or its conjugate for some `v`, and `a` lies in just one of the two
     obtain ⟨w', ha_mem, hp_mem⟩ := w'
-    obtain ⟨v, rfl | rfl⟩ : ∃ v : P.Φ s, v • w = w' ∨ star (v • w) = w' :=
-      exists_smul_eq_or_star hw hp_mem
+    obtain ⟨v, rfl | rfl⟩ := exists_smul_eq_or_star hw hp_mem
     · exact ⟨v, Subtype.ext (ite_eq_left ha_mem)⟩
     · exact ⟨v, Subtype.ext (ite_eq_right ((star_iff v).1 ha_mem))⟩
 
@@ -350,8 +343,7 @@ lemma twelve_dvd_q₁ : 12 ∣ P.q₁ s :=
 /-- The powers of `ζ`, that is the roots of unity of `E` (see `exists_zeta_pow_eq`), have norm `1`
 over `K`. -/
 lemma norm_zeta_pow_eq_one (k : ℕ) : Algebra.norm P.K (P.ζ s ^ k) = 1 := by
-  have h_ne_two : P.q₁ s ≠ 2 := fun h ↦ by simpa [h] using twelve_dvd_q₁ (P := P) (s := s)
-  rw [map_pow, isPrimitiveRoot_zeta.norm_eq_one h_ne_two (P.irreducible_cyclotomic s), one_pow]
+  rw [map_pow, norm_zeta_eq_one, one_pow]
 
 /-- For the chosen primitive `q₁`-th root of unity `ζ` of `E = K(ζ)`, the element `ζ - 1` has norm
 `1` over `K`. -/
@@ -360,8 +352,7 @@ lemma norm_zeta_sub_one_eq_one : Algebra.norm P.K (P.ζ s - 1) = 1 := by
   -- of 2 and of 3, is no prime power.
   have h_dvd : 12 ∣ P.q₁ s := twelve_dvd_q₁
   have h_two_lt : 2 < P.q₁ s := lt_of_lt_of_le (by norm_num) (le_of_dvd (NeZero.pos _) h_dvd)
-  have h_not_prime_pow {p : ℕ} (hp : p.Prime) (k : ℕ) : p ^ k ≠ P.q₁ s := by
-    intro h_eq
+  have h_not_prime_pow {p : ℕ} (hp : p.Prime) (k : ℕ) : p ^ k ≠ P.q₁ s := fun h_eq ↦ by
     rw [← h_eq] at h_dvd
     have h_two : 2 = p := prime_eq_prime_of_dvd_pow prime_two hp (.trans (by norm_num) h_dvd)
     have h_three : 3 = p := prime_eq_prime_of_dvd_pow prime_three hp (.trans (by norm_num) h_dvd)
@@ -439,8 +430,7 @@ lemma weilData_j_eq : (WeilData.j : P.E s) = -(P.sqrtNegDInE s : P.E s)⁻¹ := 
 
 /-- Every embedding of the CM type sends `ȷ` to `i / √d`. -/
 lemma phi_weilData_j (τ : P.Φ s) : Φ τ (WeilData.j : P.E s) = Complex.I / √P.d := by
-  have h_sqrt : Φ τ (P.sqrtNegDInE s : P.E s) = Complex.I * √P.d := by
-    simp
+  have h_sqrt : Φ τ (P.sqrtNegDInE s : P.E s) = Complex.I * √P.d := by simp
   rw [weilData_j_eq, map_neg, map_inv₀, h_sqrt, mul_inv, Complex.inv_I, neg_mul, neg_neg,
     div_eq_mul_inv]
 
@@ -486,15 +476,12 @@ lemma vacuumRoot_pow_numInfPlaces (P : Parameters) (s : ℕ) :
 lemma exists_chiFin_alpha_pow_mem (P : Parameters) (s : ℕ) :
     ∃ k : ℕ, 0 < k ∧ chiFin (P.α s) ^ k ∈ K P := by
   obtain ⟨k, hk, y, -, hy⟩ := WeilData.exists_chiFin_pow_eq_prod (P.α s)
-  have h_norm : chiFin (P.α s) ^ k = Algebra.norm P.K (starRingEnd (P.E s) y) := by
-    rw [hy, prod_phi_eq_norm]
-  exact ⟨k, hk, by simp [h_norm]⟩
+  exact ⟨k, hk, by simp [hy, prod_phi_eq_norm]⟩
 
 /-- A positive power of `s₀ = vacuumRoot P s`, a root of `(chiFin α)⁻¹`, lies in `K = ℚ(√-d)`. -/
 lemma exists_vacuumRoot_pow_mem (P : Parameters) (s : ℕ) :
     ∃ n : ℕ, 0 < n ∧ vacuumRoot P s ^ n ∈ K P := by
-  obtain ⟨k, hk, h_mem⟩ : ∃ k : ℕ, 0 < k ∧ chiFin (P.α s) ^ k ∈ K P :=
-    exists_chiFin_alpha_pow_mem P s
+  obtain ⟨k, hk, h_mem⟩ := exists_chiFin_alpha_pow_mem P s
   refine ⟨Core.numInfPlaces (P.E s) * k, Nat.mul_pos Fintype.card_pos hk, ?_⟩
   simpa [pow_mul, vacuumRoot_pow_numInfPlaces] using h_mem
 
@@ -525,8 +512,7 @@ lemma norm_gal_vacuumRoot (P : Parameters) (s : ℕ) (σ : Gal(ℂ/K P)) :
     ‖σ (vacuumRoot P s)‖ ^ 2 = rootDiscr (P.E s) / √P.d := by
   -- A power of `s₀` lies in `K`, so `σ` fixes it and preserves the absolute value of `s₀`.
   have h_norm : ‖σ (vacuumRoot P s)‖ = ‖vacuumRoot P s‖ := by
-    obtain ⟨n, hn_pos, h_mem⟩ : ∃ n : ℕ, 0 < n ∧ vacuumRoot P s ^ n ∈ K P :=
-      exists_vacuumRoot_pow_mem P s
+    obtain ⟨n, hn_pos, h_mem⟩ := exists_vacuumRoot_pow_mem P s
     have h_fixed : σ (vacuumRoot P s ^ n) = vacuumRoot P s ^ n := σ.commutes ⟨_, h_mem⟩
     rw [← pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) hn_pos.ne', ← norm_pow, ← map_pow, h_fixed,
       norm_pow]
