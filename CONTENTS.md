@@ -626,7 +626,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 **HeckeL**: Hecke L-functions
 
-- `Lib/ClassField/HeckeL/EulerProduct` (420): Euler products over primes of a number field and densities at primes of degree one
+- `Lib/ClassField/HeckeL/EulerProduct` (236): Euler products over primes of a number field
 - `Lib/ClassField/HeckeL/IdelicThetaSum` (301): Idelic theta sums over principal ideles as Riemann sums
 - `Lib/ClassField/HeckeL/ContinuationAtOne` (657): Analyticity at 1 of L-functions of nontrivial Hecke characters
 

@@ -2,6 +2,7 @@ module
 
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.NumberTheory.ArithmeticDirichletSeries.DirichletDensity.PrimeDensity
 public import Lib.ClassField.Local.ArtinMap
 import Lib.ClassField.Global.AlbertBrauerHasseNoether
 import Lib.ClassField.Global.ArtinMap
@@ -101,11 +102,12 @@ lemma artinMap_surjective : Surjective (artinMap (K := K) Γ) := by
     congr! with w
     exact and_iff_left_of_imp (h_same_q w)
   -- The family `v ↦ #{places of F over v with the same norm}` has density `1`
-  -- (`hasPrimeDensity_card_degree_one`); by `h_count` it is the constant `[F : K]`, so
-  -- `[F : K] ≤ 1`.
+  -- (`TauCeti.hasPrimeDensity_mul_ncard_setOf_under_eq_and_absNorm_eq`); by `h_count` it is the
+  -- constant `[F : K]`, so `[F : K] ≤ 1`.
   have h_re_le : (finrank K F : ℂ).re ≤ (1 : ℂ).re :=
-    (hasPrimeDensity_const (K := K) (finrank K F : ℂ)).re_le_re
-      (hasPrimeDensity_card_degree_one F 1) (.of_forall fun v _ ↦ by simp [h_count v])
+    (TauCeti.hasPrimeDensity_const (K := K) (finrank K F : ℂ)).re_le_re
+      (TauCeti.hasPrimeDensity_mul_ncard_setOf_under_eq_and_absNorm_eq F 1)
+      (.of_forall fun v _ ↦ by simp; exact (h_count v).ge)
   -- The degree `[F : K]` is the index of `U` (`finrank_fixedFieldOf`).
   have h_le : finrank K F ≤ 1 := by simpa using h_re_le
   exact (finrank_fixedFieldOf U).symm.trans (h_le.antisymm finrank_pos)
