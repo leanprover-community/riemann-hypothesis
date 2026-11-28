@@ -168,8 +168,8 @@ lemma taylorVia_theta_eq_expSubst : taylorVia ιₚ C.θ = expSubst (-C.negLogTh
 
 lemma derivative_taylorVia_theta :
     d⁄dX (taylorVia ιₚ C.θ) = -(taylorVia ιₚ C.θ * d⁄dX C.negLogTheta) := by
-  rw [negLogTheta, map_neg, mul_neg, neg_neg,
-    mul_derivative_logOf C.constantCoeff_taylorVia_theta]
+  rw [negLogTheta, map_neg, mul_neg, neg_neg, ← logDeriv_def, mul_comm,
+    logDeriv_mul _ C.constantCoeff_taylorVia_theta]
 
 /-- The linear coefficient of `g = -log θ` vanishes, since `θ'(0) = 0`. -/
 lemma coeff_one_negLogTheta : coeff 1 C.negLogTheta = 0 := by

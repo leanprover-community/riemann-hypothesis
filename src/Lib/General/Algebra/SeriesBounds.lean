@@ -136,11 +136,6 @@ lemma constantCoeff_smul_sub_rescale {g : ℂ_[p]⟦X⟧} (hg_zero : constantCoe
     (s δ : ℂ_[p]) : constantCoeff (s • g - rescale δ g) = 0 := by
   simp [constantCoeff_rescale, hg_zero]
 
-/-- The logarithmic derivative: `f (log f)' = f'` if `f(0) = 1`. -/
-lemma mul_derivative_logOf {f : ℂ_[p]⟦X⟧} (hf : constantCoeff f = 1) :
-    f * d⁄dX (logOf f) = d⁄dX f := by
-  rw [← PowerSeries.logDeriv_def, mul_comm, PowerSeries.logDeriv_mul f hf]
-
 section Bounds
 
 /-- Let `g` be a series in any variables. If the coefficients of `g` in degrees `≤ l`
