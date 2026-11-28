@@ -114,6 +114,16 @@ omit [WeilData E] [DecidableEq n] in
 lemma coe_isotropicShear {z : 𝔸f E} (hz : star z = -z) {x : Matrix m n (𝔸f E)} (hx : xᴴ * x = 0) :
     ((isotropicShear hz hx : Gf E m) : Matrix m m (𝔸f E)) = 1 + z • (x * xᴴ) := rfl
 
+omit [WeilData E] in
+/-- If the row `j` of `x` is the unit vector at `l`, the column `j` of the shear `1 + z x xᴴ` is
+the unit vector at `j` plus `z` times the column `l` of `x`. -/
+lemma coe_isotropicShear_apply_of_row_eq_single {z : 𝔸f E} (hz : star z = -z)
+    {x : Matrix m n (𝔸f E)} (hx : xᴴ * x = 0) {j : m} {l : n} (hj : x j = Pi.single l 1)
+    (r : m) :
+    (isotropicShear hz hx : Matrix m m (𝔸f E)) r j = (if r = j then 1 else 0) + z * x r l := by
+  simp [coe_isotropicShear, Matrix.one_apply, Matrix.mul_apply, conjTranspose_apply, hj,
+    Pi.single_apply, apply_ite star]
+
 omit [WeilData E] [DecidableEq n] in
 /-- If `z` is zero outside `A` and its conjugate, the shear `1 + z x xᴴ` is supported there. -/
 lemma isotropicShear_mem_supportedOn {A : Set (FinPlace E)} {z : 𝔸f E} (hz : star z = -z)
@@ -148,6 +158,22 @@ lemma star_frame_dotProduct {R : Type*} [CommRing R] [StarRing R] (u : n ↪ m)
       ∑ k, M (u k) k := by
   rw [dotProduct, Fintype.sum_prod_type, Finset.sum_comm]
   simp [matrixToVec, apply_ite star]
+
+omit [WeilData E] in
+/-- Let the rows `u k` of `x` form the identity matrix, and let `F` be the matrix with entry `1` at
+the places `(u k, k)` and `0` elsewhere. With `E_{u l, i}(a)` the matrix with the single entry `a`
+at `(u l, i)`, the pairing of `F` with `(1 + z x xᴴ) E_{u l, i}(a) N`, read as vectors, is
+`(1 + z) a N i l`. -/
+lemma star_frame_dotProduct_isotropicShear_mul_single_mul {z : 𝔸f E} (hz : star z = -z)
+    {x : Matrix m n (𝔸f E)} (hx : xᴴ * x = 0) {u : n ↪ m} (hu : ∀ k, x (u k) = Pi.single k 1)
+    (i l : n) (a : 𝔸f E) (N : Matrix n n (𝔸f E)) :
+    star (matrixToVec (of fun r k ↦ if r = u k then (1 : 𝔸f E) else 0)) ⬝ᵥ
+      matrixToVec ((isotropicShear hz hx : Matrix m m (𝔸f E)) * single (u l) i a * N) =
+      (1 + z) * a * N i l := by
+  rw [star_frame_dotProduct]
+  simp only [mul_single_mul_apply, coe_isotropicShear_apply_of_row_eq_single hz hx (hu l), hu,
+    Pi.single_apply, u.injective.eq_iff, add_mul, Finset.sum_add_distrib]
+  simp
 
 omit [WeilData E] in
 /-- The points of `G_f` whose inverse has integral entries at every place of `A` and its conjugate
@@ -201,6 +227,148 @@ lemma selfDualAddChar_eq_one_of_dataInner_ne_zero {k : Type} [Fintype k] [Decida
     (mul_eq_right₀ h_ne).1 h
   simpa using congrArg (starRingEnd ℂ) h_conj
 
+/-- Let `f` be a vacuum above `A`, `f₀` a datum with `projOn A f₀ = f` and `y` an integral vector.
+At a point `g` integral at `A`, the matrix coefficient of `ϱ(idem (A ∪ Ā) • y) f₀` against `f`
+equals that of `f`. -/
+lemma weilMatrixCoeff_finHeisenbergOp_of_mem_localLevel (b : AutChar E) {f f₀ : 𝒮 (S.hom T)}
+    {A : Set (FinPlace E)} (hf : projOn (S.hom T) A f = f) (h₀ : projOn (S.hom T) A f₀ = f)
+    {y : m × n → 𝔸f E} (hy : y ∈ stdLattice E (m × n)) {g : G E s}
+    (hg : g.2 ∈ localLevel n A) :
+    weilMatrixCoeff b f ((S.hom T).finHeisenbergOp (idem A.conjClosure • y) f₀) g =
+      weilMatrixCoeff b f f g := by
+  -- `ω(g) f` is a vacuum above `A`, fixed by `ϱ(idem (A ∪ Ā) • y)` and `projOn A`.
+  set w₀ : 𝒮 (S.hom T) := pairWeil S T 1 b (g, 1) f
+  have h_vac : (S.hom T).projOn A w₀ = w₀ :=
+    projOn_pairWeil hf (g, 1) fun w hw ↦ onHom_atPlace_mem (hg w hw) (by simp)
+  have h_e : (S.hom T).finHeisenbergOp (idem A.conjClosure • y) w₀ = w₀ := by
+    conv_lhs => rw [← h_vac]
+    rw [(S.hom T).finHeisenbergOp_projOn hy, h_vac]
+  calc weilMatrixCoeff b f ((S.hom T).finHeisenbergOp (idem A.conjClosure • y) f₀) g
+      = (S.hom T).dataInner ((S.hom T).finHeisenbergOp (idem A.conjClosure • y) f₀)
+          ((S.hom T).finHeisenbergOp (idem A.conjClosure • y) w₀) := by rw [h_e]
+    _ = (S.hom T).dataInner f₀ ((S.hom T).projOn A w₀) := by rw [dataInner_finHeisenbergOp, h_vac]
+    _ = weilMatrixCoeff b f f g := by rw [← dataInner_projOn, h₀]
+
+/-- Let `f` be a vacuum above `A`, `x` an integral isotropic frame whose rows `u k` form the
+identity, `κ = 1 + z x xᴴ` with `z̄ = -z`, and `e` the frame vector (`1` at the places `(u k, k)`)
+cut to `A` and its conjugate. If the matrix coefficient at `g` of a multiple of `ϱ(e) ω(κ) f` is
+not zero, then `ψ(idem (A ∪ Ā) z a h i l) = 1`, with `h = g⁻¹` and `ψ = selfDualAddChar E`, for
+every adele `a` such that `a`, `z a` and all the `a h i k` are integral. -/
+lemma selfDualAddChar_eq_one_of_weilMatrixCoeff_ne_zero {b : AutChar E} {f : 𝒮 (S.hom T)}
+    {A : Set (FinPlace E)} (hf : projOn (S.hom T) A f = f) {x : Matrix m n (𝔸f E)}
+    (hx_int : ∀ (r : m) (k : n), x r k ∈ Ô E) (hx_iso : xᴴ * x = 0) {u : n ↪ m}
+    (hu : ∀ k, x (u k) = Pi.single k 1) {z : 𝔸f E} (hz : star z = -z) {c : ℂ} {g : G E s}
+    (h_ne : weilMatrixCoeff b f ((S.hom T).finHeisenbergOp
+      (idem A.conjClosure • matrixToVec (of fun r k ↦ if r = u k then (1 : 𝔸f E) else 0))
+      (c • (S.hom T).ω ((onHom ((1 : G E s), ((1, isotropicShear hz hx_iso) : G E t))).2 :
+        G E (homSigns s t)) f)) g ≠ 0)
+    (i l : n) {a : 𝔸f E} (ha : a ∈ Ô E) (hza : z * a ∈ Ô E)
+    (hah : ∀ k, a * ((g.2⁻¹ : Gf E n) : Matrix n n (𝔸f E)) i k ∈ Ô E) :
+    selfDualAddChar E
+      (idem A.conjClosure * (z * a * ((g.2⁻¹ : Gf E n) : Matrix n n (𝔸f E)) i l)) = 1 := by
+  set K : Gf E (m × n) := (onHom ((1 : G E s), ((1, isotropicShear hz hx_iso) : G E t))).2
+  set h : Matrix n n (𝔸f E) := ((g.2⁻¹ : Gf E n) : Matrix n n (𝔸f E))
+  -- `K` acts on `Hom(S, T)` by `X ↦ κ X`, and the finite part of `onHom (g, 1)` by `X ↦ X h`.
+  have hK_act (X : Matrix m n (𝔸f E)) :
+      (K : Matrix (m × n) (m × n) (𝔸f E)) *ᵥ matrixToVec X =
+        matrixToVec ((isotropicShear hz hx_iso : Matrix m m (𝔸f E)) * X) := by
+    simp [K, onHom_snd_mulVec_matrixToVec]
+  have hP_act (X : Matrix m n (𝔸f E)) :
+      ((onHom (g, (1 : G E t))).2 : Matrix (m × n) (m × n) (𝔸f E)) *ᵥ matrixToVec X =
+        matrixToVec (X * h) := by
+    simp [h, onHom_snd_mulVec_matrixToVec]
+  -- The Heisenberg operator of `Y = κ E_{u l, i}(a) h`, cut to `A` and its conjugate, fixes
+  -- `ω(κ) f`, as `E_{u l, i}(a) h` is integral, and `ω(g, 1) f`, as `κ E_{u l, i}(a)` is.
+  have hY₀ : (S.hom T).finHeisenbergOp (idem A.conjClosure •
+      matrixToVec ((isotropicShear hz hx_iso : Matrix m m (𝔸f E)) * single (u l) i a * h))
+      (c • (S.hom T).ω (K : G E (homSigns s t)) f) =
+        c • (S.hom T).ω (K : G E (homSigns s t)) f := by
+    have h_lat : matrixToVec (single (u l) i a * h) ∈ stdLattice E (m × n) := by
+      rw [mem_stdLattice]
+      rintro ⟨r, k⟩
+      by_cases hr : r = u l
+      · subst hr
+        simpa [matrixToVec, Matrix.single_mul_apply_same] using hah k
+      · simp [matrixToVec, Matrix.single_mul_apply_of_ne (h := hr)]
+    have := finHeisenbergOp_omega_of_projOn hf ((1, K) : G E (homSigns s t)) h_lat
+    rw [map_smul]
+    simp only [hK_act] at this
+    simp only [Matrix.mul_assoc, this]
+  have hYu : (S.hom T).finHeisenbergOp (idem A.conjClosure •
+      matrixToVec ((isotropicShear hz hx_iso : Matrix m m (𝔸f E)) * single (u l) i a * h))
+      ((S.hom T).ω (onHom (g, (1 : G E t))) f) = (S.hom T).ω (onHom (g, (1 : G E t))) f := by
+    have h_lat : matrixToVec ((isotropicShear hz hx_iso : Matrix m m (𝔸f E)) * single (u l) i a) ∈
+        stdLattice E (m × n) := by
+      rw [mem_stdLattice]
+      rintro ⟨r, k⟩
+      by_cases hk : k = i
+      · subst hk
+        simp only [matrixToVec, mul_single_apply_same,
+          coe_isotropicShear_apply_of_row_eq_single hz hx_iso (hu l), add_mul]
+        refine add_mem (mul_mem (by simp [ite_mem]) ha) ?_
+        rw [show z * x r l * a = x r l * (z * a) by ring]
+        exact mul_mem (hx_int r l) hza
+      · simp [matrixToVec, mul_single_apply_of_ne (hbj := hk)]
+    simpa [hP_act] using finHeisenbergOp_omega_of_projOn hf (onHom (g, (1 : G E t))) h_lat
+  -- so it acts on `ϱ(e) ω(κ) f` by a trivial character
+  rw [weilMatrixCoeff, pairWeil_apply, map_smul, smul_eq_mul, mul_ne_zero_iff] at h_ne
+  have h_one := selfDualAddChar_eq_one_of_dataInner_ne_zero hY₀ hYu h_ne.2
+  -- `ē ⬝ Y = idem (A ∪ Ā) (1 + z) a h i l`, and the part `idem (A ∪ Ā) a h i l` is integral
+  rwa [star_smul, smul_dotProduct, dotProduct_smul,
+    star_frame_dotProduct_isotropicShear_mul_single_mul hz hx_iso hu, star_idem_conjClosure,
+    smul_eq_mul, smul_eq_mul, ← mul_assoc, idem_mul_self, add_mul, add_mul, one_mul, mul_add,
+    AddChar.map_add_eq_mul, selfDualAddChar_eq_one_of_mem (mul_mem (idem_mem_Ô _) (hah l)),
+    one_mul] at h_one
+
+omit [DecidableEq n] in
+/-- Let `w` be a place of `A` or its conjugate, `z` a finite adele with `1 < v (z w)` and
+`y : n → 𝔸f E`. If `ψ(idem (A ∪ Ā) z a y l) = 1`, with `ψ = selfDualAddChar E`, for every `l` and
+every adele `a` such that `a`, `z a` and all the `a y k` are integral, then every `y k` is integral
+at `w`. -/
+lemma v_le_one_of_forall_selfDualAddChar_eq_one {A : Set (FinPlace E)} {w : FinPlace E}
+    (hw : w ∈ A.conjClosure) {z : 𝔸f E} (hz : 1 < v (z w)) {y : n → 𝔸f E}
+    (h_char : ∀ (l : n) (a : 𝔸f E), a ∈ Ô E → z * a ∈ Ô E → (∀ k, a * y k ∈ Ô E) →
+      selfDualAddChar E (idem A.conjClosure * (z * a * y l)) = 1) (k : n) :
+    v (y k w) ≤ 1 := by
+  by_contra h_big
+  rw [not_le] at h_big
+  have : Nonempty n := ⟨k⟩
+  -- a largest entry `y l` at `w`, and `μ` with `v μ = max (v (z w)) (v (y l w))`
+  obtain ⟨l, hl⟩ := Finite.exists_max fun l ↦ v (y l w)
+  have h_l : 1 < v (y l w) := h_big.trans_le (hl k)
+  let μ : LocField w := if v (z w) ≤ v (y l w) then y l w else z w
+  have hμ : v μ = max (v (z w)) (v (y l w)) := by
+    by_cases h_le : v (z w) ≤ v (y l w)
+    · simp [μ, h_le]
+    · simp [μ, h_le, max_eq_left (le_of_not_ge h_le)]
+  have hμ_one : 1 < v μ := hμ ▸ hz.trans_le (le_max_left _ _)
+  have hμ_ne : μ ≠ 0 := (Valuation.ne_zero_iff _).1 (ne_of_gt (zero_lt_one.trans hμ_one))
+  set σ : 𝔸f E := singleAdele w μ⁻¹
+  have hσ (t : 𝔸f E) : t * σ ∈ Ô E ↔ v (t w) ≤ v μ := mul_singleAdele_inv_mem_Ô hμ_ne t
+  have hσ_idem : idem A.conjClosure * σ = σ := by
+    ext u
+    by_cases hu : u = w
+    · subst hu; simp [σ, hw]
+    · simp [σ, hu]
+  -- the integrality of the adeles used below
+  have hσ_int : σ ∈ Ô E := by simpa using (hσ 1).2 (by simpa using hμ_one.le)
+  have hzσ_int : z * σ ∈ Ô E := (hσ z).2 (hμ ▸ le_max_left _ _)
+  have hyσ_int (k' : n) : y k' * σ ∈ Ô E := (hσ _).2 (hμ ▸ (hl k').trans (le_max_right _ _))
+  -- so `z y l σ` is integral, against the choice of `μ`
+  have h_mem : z * y l * σ ∈ Ô E := by
+    refine (forall_selfDualAddChar_mul_eq_one_iff _).1 fun d hd ↦ ?_
+    have h_one := h_char l (d * σ) (mul_mem hd hσ_int)
+      (by rw [mul_left_comm]; exact mul_mem hd hzσ_int)
+      fun k' ↦ by rw [mul_assoc, mul_comm σ]; exact mul_mem hd (hyσ_int k')
+    rwa [show idem A.conjClosure * (z * (d * σ) * y l) = z * y l * σ * d by
+      rw [show idem A.conjClosure * (z * (d * σ) * y l) =
+        z * d * y l * (idem A.conjClosure * σ) by ring, hσ_idem]
+      ring] at h_one
+  have h_le := (hσ _).1 h_mem
+  rw [finAdele_mul_apply, map_mul, hμ] at h_le
+  exact (max_lt (lt_mul_of_one_lt_right (zero_lt_one.trans hz) h_l)
+    (lt_mul_of_one_lt_left (zero_lt_one.trans h_l) hz)).not_ge h_le
+
 open scoped Classical in
 /-- The dual datum. Let `2 rk S ≤ rk T`, let `A` be a finite set of places and let `f` be a vacuum
 above `A` (fixed by `projOn A`). There is a datum `f'` whose matrix coefficient
@@ -223,10 +391,6 @@ theorem exists_dualDatum (b : AutChar E) (h_rank : 2 * card n ≤ card m) {f : �
   let K : Gf E (m × n) := (onHom ((1 : G E s), ((1, κ) : G E t))).2
   have hK_supp : K ∈ supportedOn (m × n) A :=
     onHom_mem_supportedOn (one_mem _) (isotropicShear_mem_supportedOn hz_star hz_supp hx_iso)
-  have hK_act (X : Matrix m n (𝔸f E)) :
-      (K : Matrix (m × n) (m × n) (𝔸f E)) *ᵥ matrixToVec X =
-        matrixToVec ((κ : Matrix m m (𝔸f E)) * X) := by
-    simp [K, onHom_snd_mulVec_matrixToVec]
   let f₀ : 𝒮 (S.hom T) := finMultiplier K⁻¹ • (S.hom T).ω (K : G E (homSigns s t)) f
   have h_proj₀ : (S.hom T).projOn A f₀ = f := by
     rw [map_smul, projOn_omega (S.hom T) hK_supp hf, smul_smul,
@@ -239,125 +403,13 @@ theorem exists_dualDatum (b : AutChar E) (h_rank : 2 * card n ≤ card m) {f : �
     simp [F, matrixToVec, ite_mem]
   let e : m × n → 𝔸f E := idem A.conjClosure • matrixToVec F
   refine ⟨(S.hom T).finHeisenbergOp e f₀, fun g ↦ ?_⟩
-  set w₀ : 𝒮 (S.hom T) := pairWeil S T 1 b (g, 1) f with hw₀
   split_ifs with hg
   · -- At `g` integral at `A`, `ω(g) f` is a vacuum above `A`, fixed by `ϱ(e)` and `projOn A`.
-    have h_vac : (S.hom T).projOn A w₀ = w₀ :=
-      projOn_pairWeil hf (g, 1) fun w hw ↦ onHom_atPlace_mem (hg w hw) (by simp)
-    have h_e : (S.hom T).finHeisenbergOp e w₀ = w₀ := by
-      conv_lhs => rw [← h_vac]
-      rw [(S.hom T).finHeisenbergOp_projOn hF_int, h_vac]
-    calc weilMatrixCoeff b f ((S.hom T).finHeisenbergOp e f₀) g
-        = (S.hom T).dataInner ((S.hom T).finHeisenbergOp e f₀)
-            ((S.hom T).finHeisenbergOp e w₀) := by rw [h_e]
-      _ = (S.hom T).dataInner f₀ ((S.hom T).projOn A w₀) := by rw [dataInner_finHeisenbergOp, h_vac]
-      _ = weilMatrixCoeff b f f g := by rw [← dataInner_projOn, h_proj₀]
+    exact weilMatrixCoeff_finHeisenbergOp_of_mem_localLevel b hf h_proj₀ hF_int hg
   · -- Otherwise suppose the coefficient is not zero; then `g⁻¹` is integral at `A ∪ Ā`.
     by_contra h_ne
-    apply hg
-    have h_ne' : (S.hom T).dataInner ((S.hom T).finHeisenbergOp e f₀)
-        ((S.hom T).ω (onHom (g, (1 : G E t))) f) ≠ 0 := by
-      intro h_zero
-      apply h_ne
-      change (S.hom T).dataInner _ (pairWeil S T 1 b (g, 1) f) = 0
-      rw [pairWeil_apply, map_smul, h_zero, smul_zero]
-    have hP_act (X : Matrix m n (𝔸f E)) :
-        ((onHom (g, (1 : G E t))).2 : Matrix (m × n) (m × n) (𝔸f E)) *ᵥ matrixToVec X =
-          matrixToVec (X * ((g.2⁻¹ : Gf E n) : Matrix n n (𝔸f E))) := by
-      simp [onHom_snd_mulVec_matrixToVec]
-    refine mem_localLevel_of_inv fun w hw i k ↦ ?_
-    set h : Matrix n n (𝔸f E) := ((g.2⁻¹ : Gf E n) : Matrix n n (𝔸f E))
-    by_contra h_big
-    rw [not_le] at h_big
-    have : Nonempty n := ⟨i⟩
-    -- a largest entry `h i l` of the row `i` at `w`, and `μ` with `v μ = max (v (z w)) (v (h i l))`
-    obtain ⟨l, hl⟩ := Finite.exists_max fun l ↦ v (h i l w)
-    have h_il : 1 < v (h i l w) := h_big.trans_le (hl k)
-    have hz_w : 1 < v (z w) := hz_big w hw
-    let μ : LocField w := if v (z w) ≤ v (h i l w) then h i l w else z w
-    have hμ : v μ = max (v (z w)) (v (h i l w)) := by
-      by_cases h_le : v (z w) ≤ v (h i l w)
-      · simp [μ, h_le]
-      · simp [μ, h_le, max_eq_left (le_of_not_ge h_le)]
-    have hμ_one : 1 < v μ := hμ ▸ hz_w.trans_le (le_max_left _ _)
-    have hμ_ne : μ ≠ 0 := (Valuation.ne_zero_iff _).1 (ne_of_gt (zero_lt_one.trans hμ_one))
-    set σ : 𝔸f E := singleAdele w μ⁻¹
-    have hσ (y : 𝔸f E) : y * σ ∈ Ô E ↔ v (y w) ≤ v μ := mul_singleAdele_inv_mem_Ô hμ_ne y
-    have hσ_idem : idem A.conjClosure * σ = σ := by
-      ext u'
-      by_cases hu' : u' = w
-      · subst hu'; simp [σ, hw]
-      · simp [σ, hu']
-    -- the integrality of the vectors used below
-    have hσ_int : σ ∈ Ô E := by simpa using (hσ 1).2 (by simpa using hμ_one.le)
-    have hzσ_int : z * σ ∈ Ô E := (hσ z).2 (hμ ▸ le_max_left _ _)
-    have hhσ_int (k' : n) : h i k' * σ ∈ Ô E := (hσ _).2 (hμ ▸ (hl k').trans (le_max_right _ _))
-    -- `κ` applied to the single entry `d σ` at `(u l, i)`
-    have hκ_entry (r : m) :
-        (κ : Matrix m m (𝔸f E)) r (u l) = (if r = u l then 1 else 0) + z * x r l := by
-      simp [κ, coe_isotropicShear, Matrix.one_apply, Matrix.mul_apply, conjTranspose_apply, hu,
-        Pi.single_apply, apply_ite star]
-    -- For every integral `d`, the character of `ē ⬝ Y` is trivial, `Y = κ E_{u l, i}(d σ) h`.
-    have h_char (d : 𝔸f E) (hd : d ∈ Ô E) :
-        selfDualAddChar E (idem A.conjClosure * ((1 + z) * (d * σ) * h i l)) = 1 := by
-      let D : Matrix m n (𝔸f E) := single (u l) i (d * σ)
-      let Y : m × n → 𝔸f E := idem A.conjClosure •
-        matrixToVec ((κ : Matrix m m (𝔸f E)) * D * h)
-      have hY₀ : (S.hom T).finHeisenbergOp Y f₀ = f₀ := by
-        have h_lat : matrixToVec (D * h) ∈ stdLattice E (m × n) := by
-          rw [mem_stdLattice]
-          rintro ⟨r, k'⟩
-          by_cases hr : r = u l
-          · subst hr
-            simpa [D, matrixToVec, Matrix.single_mul_apply_same, mul_assoc, mul_comm σ] using
-              mul_mem hd (hhσ_int k')
-          · simp [D, matrixToVec, Matrix.single_mul_apply_of_ne (h := hr)]
-        have := finHeisenbergOp_omega_of_projOn hf ((1, K) : G E (homSigns s t)) h_lat
-        rw [map_smul]
-        simp only [hK_act] at this
-        simp only [Y, Matrix.mul_assoc, this]
-        rfl
-      have hYu : (S.hom T).finHeisenbergOp Y ((S.hom T).ω (onHom (g, (1 : G E t))) f) =
-          (S.hom T).ω (onHom (g, (1 : G E t))) f := by
-        have h_lat : matrixToVec ((κ : Matrix m m (𝔸f E)) * D) ∈ stdLattice E (m × n) := by
-          rw [mem_stdLattice]
-          rintro ⟨r, k'⟩
-          by_cases hk' : k' = i
-          · subst hk'
-            simp only [D, matrixToVec, mul_single_apply_same, hκ_entry, add_mul]
-            refine add_mem (mul_mem (by simp [ite_mem]) (mul_mem hd hσ_int)) ?_
-            rw [show z * x r l * (d * σ) = x r l * d * (z * σ) by ring]
-            exact mul_mem (mul_mem (hx_int r l) hd) hzσ_int
-          · simp [D, matrixToVec, mul_single_apply_of_ne (hbj := hk')]
-        simpa [hP_act] using finHeisenbergOp_omega_of_projOn hf (onHom (g, (1 : G E t))) h_lat
-      have h_one := selfDualAddChar_eq_one_of_dataInner_ne_zero hY₀ hYu h_ne'
-      have h_dot : star e ⬝ᵥ Y = idem A.conjClosure * ((1 + z) * (d * σ) * h i l) := by
-        change star (idem A.conjClosure •
-            matrixToVec (of fun r k ↦ if r = u k then (1 : 𝔸f E) else 0)) ⬝ᵥ
-          (idem A.conjClosure •
-            matrixToVec ((κ : Matrix m m (𝔸f E)) * single (u l) i (d * σ) * h)) = _
-        rw [star_smul, smul_dotProduct, dotProduct_smul, star_frame_dotProduct,
-          star_idem_conjClosure, smul_eq_mul, smul_eq_mul, ← mul_assoc, idem_mul_self]
-        congr 1
-        simp only [mul_single_mul_apply, hκ_entry, hu, Pi.single_apply, u.injective.eq_iff,
-          add_mul, Finset.sum_add_distrib]
-        simp
-      rwa [h_dot] at h_one
-    -- so `z σ h i l` is integral, against the choice of `μ`
-    have h_mem : z * h i l * σ ∈ Ô E := by
-      refine (forall_selfDualAddChar_mul_eq_one_iff _).1 fun d hd ↦ ?_
-      have h_split := h_char d hd
-      rw [show idem A.conjClosure * ((1 + z) * (d * σ) * h i l) =
-          d * (h i l * σ) + z * h i l * σ * d by
-        rw [show idem A.conjClosure * ((1 + z) * (d * σ) * h i l) =
-          (1 + z) * d * h i l * (idem A.conjClosure * σ) by ring, hσ_idem]
-        ring,
-        AddChar.map_add_eq_mul, selfDualAddChar_eq_one_of_mem (mul_mem hd (hhσ_int l)), one_mul]
-        at h_split
-      exact h_split
-    have h_le := (hσ _).1 h_mem
-    rw [finAdele_mul_apply, map_mul, hμ] at h_le
-    exact (max_lt (lt_mul_of_one_lt_right (zero_lt_one.trans hz_w) h_il)
-      (lt_mul_of_one_lt_left (zero_lt_one.trans h_il) hz_w)).not_ge h_le
+    exact hg (mem_localLevel_of_inv fun w hw i ↦ v_le_one_of_forall_selfDualAddChar_eq_one hw
+      (hz_big w hw) fun l _ ha hza hah ↦ selfDualAddChar_eq_one_of_weilMatrixCoeff_ne_zero hf
+        hx_int hx_iso hu hz_star h_ne i l ha hza hah)
 
 end New.SiegelWeil
