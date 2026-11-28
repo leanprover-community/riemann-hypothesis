@@ -289,8 +289,6 @@ open Matrix Finset Valued WithZero New IsSplitLevel Gf NeZero Fintype
 namespace New.Data
 
 variable {P : Parameters} (D : Data P) {p : ℕ} [Fact p.Prime] [PadicPlace p]
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 open scoped Classical in
 /-- Let `φ : D.FormX D.m` be an algebraic automorphic form on the unitary group of the hermitian
 space `X_m`, and `D.restrictToY φ` its restriction to the subspace `Y_m` orthogonal to the last

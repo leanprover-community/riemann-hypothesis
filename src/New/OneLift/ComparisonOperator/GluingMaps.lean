@@ -215,8 +215,6 @@ lemma classAut_gluingLevel_eq_bot
   have h_le : gluingLevel j ϑ Λ ≤ D.chosenLevel := rowFixingLevel_le_levelOf (splittingV j ϑ) Λ
   exact D.classAut_eq_bot_of_le_chosenLevel h_le (card_firstFactorIndex_le_two_mul_n j) g
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- The lattice `L_Λ` of a choice `i` with matrix `Λ = i.1`, given by the matrix `𝗀` (the field
 `point`) of a basis. It is chosen once, for the trivial twist, and read as a lattice for the twist
 `ϑ`. -/
@@ -892,8 +890,6 @@ lemma tamePart_twistPlace_ne_one (i : (D.descentPair ϑ j).TwistIndex) :
     (D.descentPair ϑ j).tamePart ((D.descentPair ϑ j).twistPlace i) ≠ 1 :=
   (liftTamePart_eq_of_mem_Q ..).trans_ne (ϑ.tamePart_ne_one _ i.property)
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Slices of false lifts vanish. Let `w` be a split place (`star w ≠ w`) off the level of the pair
 `descentPair ϑ j`, and let `Ξ` be a false lift at `w`: a form on `V_j = V″ ⊕ V°` in the image of the
 projection `e₀` that is killed by the Hecke polynomial operator at `w` and is orthogonal to the

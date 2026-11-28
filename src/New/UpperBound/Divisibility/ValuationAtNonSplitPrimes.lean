@@ -471,8 +471,6 @@ lemma IsMarked.exists_q_eq_sq (hΛ : D.IsMarked Λ) {l : FinPlace D.E} (hl : l �
   refine ⟨h, ?_, h_order.ge.trans orderOf_le_card_univ⟩
   simp [q_eq_pow_lcm_of_inert (hΛ.natCast_mem_asIdeal hl) hΛ.isExceptional.1, h_order, pow_mul']
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let `ϑ` be a twist and `Ψ` a weak chain datum for `ϑ`: the coefficients, on tuples `x = (x_j)`
 of finite adelic matrices, of a jointly invariant sum of the tensors `⊗_j D.translateDatum x j`. Let
 `p` be a prime coprime to the norm of `ϑ.Q`, and let `Λ` be a marked set of primes of `E = D.E`

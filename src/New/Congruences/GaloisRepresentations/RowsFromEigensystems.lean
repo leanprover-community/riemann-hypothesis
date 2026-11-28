@@ -479,8 +479,6 @@ theorem _root_.New.Data.isEigenform_of_hasHeckePolyAt [DecidableEq n] (D : Data 
 
 end DescentPair
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let the Hecke eigenvalues `p (w, i)` occur in a nonzero good form on `D.spaceW D.m`: a form of
 principal level at the chosen places, in the image of the idempotent `D.e₀`. Let `O` be the `j`-th
 descent pair of the trivial twist, `1 ≤ j ≤ m = D.m`: its two spaces have dimensions `r = D.r` and
