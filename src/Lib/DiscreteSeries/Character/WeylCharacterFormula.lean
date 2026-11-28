@@ -964,9 +964,10 @@ variable {a : ℕ} {ι : Type} [Fintype ι]
 
 /-- If the `r i` are nonzero, a common integer shift `d` of the exponents comes out of
 `det (r i ^ (d + k j))` as the factor `(∏ r i) ^ d`. -/
-lemma det_zpow_add {r : Fin a → ℂ} (h_ne : ∀ i : Fin a, r i ≠ 0) (d : ℤ) (k : Fin a → ℤ) :
-    (of fun i j : Fin a ↦ r i ^ (d + k j)).det =
-      univ.prod r ^ d * (of fun i j : Fin a ↦ r i ^ k j).det := by
+lemma det_zpow_add {K m : Type*} [Field K] [Fintype m] [DecidableEq m]
+    {r : m → K} (h_ne : ∀ i : m, r i ≠ 0) (d : ℤ) (k : m → ℤ) :
+    (of fun i j : m ↦ r i ^ (d + k j)).det =
+      univ.prod r ^ d * (of fun i j : m ↦ r i ^ k j).det := by
   -- Row `i` has the factor `r i ^ d`.
   simp only [zpow_add₀ (h_ne _), ← prod_zpow]
   exact det_mul_column _ _

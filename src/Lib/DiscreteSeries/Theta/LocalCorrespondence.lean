@@ -4,6 +4,7 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Topology.Sheaves.Presheaf
 public import Lib.DiscreteSeries.Rigidity.KernelFixes
 public import Lib.Weil.Fock.OscillatorPair
+public import TauCeti.RingTheory.Derivation.Determinant
 import Lib.DiscreteSeries.Rigidity.HighestVectorsAndFiltration
 import Lib.DiscreteSeries.Theta.CasimirComparison
 import Lib.DiscreteSeries.Theta.FockJointHarmonics
@@ -90,43 +91,22 @@ variable {L : Type*} [Fintype L] {I : L → Type} [∀ t : L, Fintype (I t)]
   {ε : R → ℤˣ} {ε' : C → ℤˣ} {ι : Type} [Fintype ι] {T : FockDualPair ε ε' ι} {l ν : HCParam ε}
   {l' ν' : HCParam ε'} {ρ : (t : L) → I t → R} {κ : (t : L) → I t → C}
 
-/-- A derivation of a polynomial ring sends a finite product to the sum of the products in which
-one factor is replaced by its derivative. -/
-theorem derivation_apply_prod {α : Type*} [DecidableEq α]
-    (D : Derivation ℂ (MvPolynomial R ℂ) (MvPolynomial R ℂ)) (s : Finset α)
-    (f : α → MvPolynomial R ℂ) :
-    D (s.prod f) = ∑ i ∈ s, s.prod (update f i (D (f i))) := by
-  induction s using cons_induction with
-  | empty => simp
-  | cons a s ha ih =>
-    have h_tail : ∀ i ∈ s, (cons a s ha).prod (update f i (D (f i))) =
-        f a * s.prod (update f i (D (f i))) := fun i hi ↦ by grind
-    calc D ((cons a s ha).prod f) = D (f a) * s.prod f + f a * D (s.prod f) := by
-          simp [prod_cons, D.leibniz, mul_comm, add_comm, -cons_eq_insert]
-      _ = D (f a) * s.prod f + ∑ i ∈ s, f a * s.prod (update f i (D (f i))) := by rw [ih, mul_sum]
-      _ = ∑ i ∈ cons a s ha, (cons a s ha).prod (update f i (D (f i))) := by
-          rw [sum_cons, prod_cons, update_self, prod_update_of_notMem ha, sum_congr rfl h_tail]
-
-/-- If a derivation `D` acts on the columns of each matrix `M t` of polynomials through the matrix
-`N t` (column `i` goes to `∑ j, N t i j •` column `j`), then it multiplies `∏ t, det (M t)` by
-the sum of the traces of the `N t`. -/
-theorem derivation_prod_det (D : Derivation ℂ (MvPolynomial R ℂ) (MvPolynomial R ℂ))
-    (N M : (t : L) → Matrix (I t) (I t) (MvPolynomial R ℂ))
+/-- If a derivation `D` acts on the columns of each matrix `M t` over a commutative algebra
+through the matrix `N t` (column `i` goes to `∑ j, N t i j •` column `j`), then it multiplies
+`∏ t, det (M t)` by the sum of the traces of the `N t`. -/
+theorem derivation_prod_det {𝕜 A : Type*} [CommSemiring 𝕜] [CommRing A] [Algebra 𝕜 A]
+    (D : Derivation 𝕜 A A) (N M : (t : L) → Matrix (I t) (I t) A)
     (h_col : ∀ (t : L) (i k : I t), D (M t k i) = ∑ j : I t, N t i j • M t k j) :
     D (∏ t : L, det (M t)) = (∑ t : L, ∑ i : I t, N t i i) * ∏ t : L, det (M t) := by
-  -- Each determinant is an eigenvector of `D` with eigenvalue the trace of `N t`; by the Leibniz
-  -- rule the eigenvalues add up on the product.
-  have h_det {t : L} : D (M t).det = ∑ i : I t, N t i i • (M t).det := by
-    -- Expanding the determinant, `D` acts on one column at a time; replacing column `i` by a
-    -- combination of the columns scales the determinant by `N t i i`.
-    calc D (M t).det = ∑ i, ((M t).updateCol i fun k : I t ↦ ∑ j : I t, N t i j • M t k j).det := by
-          simp +contextual [det_apply', updateCol, update_apply, mul_sum, derivation_apply_prod,
-            h_col, sum_comm (α := I t)]
-      _ = ∑ i : I t, N t i i • (M t).det := by simp only [det_updateCol_sum]
+  have h_det {t : L} : D (M t).det = (∑ i : I t, N t i i) * (M t).det := by
+    rw [D.leibniz_det_of_map_eq_mul_sub_mul (P := (N t)ᵀ) (Q := 0) ?_]
+    · simp [Matrix.trace, mul_comm]
+    · ext k i
+      simpa [Matrix.mul_apply, smul_eq_mul, mul_comm] using h_col t i k
   induction (univ : Finset L) using cons_induction with
   | empty => simp
   | cons t s ht ih =>
-    simp only [prod_cons, D.leibniz, ih, h_det, sum_cons, _root_.smul_eq_mul, ← sum_mul]
+    simp only [prod_cons, D.leibniz, ih, h_det, sum_cons, _root_.smul_eq_mul]
     ring
 
 variable [DecidableEq R]
