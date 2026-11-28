@@ -114,6 +114,7 @@ abbrev PlaceField : Type := j.prime.asIdeal.ResidueField
 abbrev toFieldProd : prodValuationRing α ⟶ ⟨∀ j : ResiduePlace α, j.PlaceField⟩ :=
   ofHom (algebraMap ..)
 
+/-- Any element outside the valuation subring is nonzero. -/
 lemma ne_zero_of_notMem_valuationSubring (h_notMem : ↑t ∉ j.valuationSubring) :
     ↑t ≠ (0 : j.PlaceField) :=
   fun h_zero ↦ by simp [h_zero] at h_notMem
