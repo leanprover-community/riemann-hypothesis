@@ -350,25 +350,20 @@ lemma beta_eq_coords (y y' : n → 𝔸 E) :
         (adelicHeisenberg E 1).β (D.lCoord *ᵥ y) (D.kCoord *ᵥ y') *
         (adelicHeisenberg E s₀).β (D.iCoord *ᵥ y) (D.iCoord *ᵥ y') := by
   -- Split `y` along `k`, `ι`, `l` and pair each part with `y'`.
-  have h_k : star (D.lCoord *ᵥ y') ⬝ᵥ stdForm E 1 *ᵥ (D.kCoord *ᵥ y) =
-      star y' ⬝ᵥ stdForm E s *ᵥ ((D.kAdelic * D.kCoord) *ᵥ y) := by
-    rw [stdForm_one, one_mulVec, star_mulVec_dotProduct, D.conjTranspose_lCoord,
-      mulVec_mulVec, mulVec_mulVec, Matrix.mul_assoc]
-  have h_l : star (D.kCoord *ᵥ y') ⬝ᵥ stdForm E 1 *ᵥ (D.lCoord *ᵥ y) =
-      star y' ⬝ᵥ stdForm E s *ᵥ ((D.lAdelic * D.lCoord) *ᵥ y) := by
-    rw [stdForm_one, one_mulVec, star_mulVec_dotProduct, D.conjTranspose_kCoord,
-      mulVec_mulVec, mulVec_mulVec, Matrix.mul_assoc]
-  have h_i : star (D.iCoord *ᵥ y') ⬝ᵥ stdForm E s₀ *ᵥ (D.iCoord *ᵥ y) =
-      star y' ⬝ᵥ stdForm E s *ᵥ ((D.iAdelic * D.iCoord) *ᵥ y) := by
-    rw [star_mulVec_dotProduct, mulVec_mulVec, D.conjTranspose_iCoord, Matrix.mul_assoc,
-      Matrix.mul_assoc, stdForm_mul_self, Matrix.mul_one, mulVec_mulVec, mulVec_mulVec,
-      Matrix.mul_assoc]
+  have h_i : D.iCoordᴴ * stdForm E s₀ = stdForm E s * D.iAdelic := by
+    rw [D.conjTranspose_iCoord, Matrix.mul_assoc, stdForm_mul_self, Matrix.mul_one]
+  have h_form : D.lCoordᴴ * stdForm E 1 * D.kCoord + D.kCoordᴴ * stdForm E 1 * D.lCoord +
+      D.iCoordᴴ * stdForm E s₀ * D.iCoord = stdForm E s := by
+    rw [h_i, stdForm_one, Matrix.mul_one, Matrix.mul_one, D.conjTranspose_lCoord,
+      D.conjTranspose_kCoord]
+    simp only [Matrix.mul_assoc, ← Matrix.mul_add]
+    rw [add_right_comm, D.sum_frame_mul_coord_eq_one, Matrix.mul_one]
   have h_dot : star y' ⬝ᵥ stdForm E s *ᵥ y =
       star (D.lCoord *ᵥ y') ⬝ᵥ stdForm E 1 *ᵥ (D.kCoord *ᵥ y) +
       star (D.kCoord *ᵥ y') ⬝ᵥ stdForm E 1 *ᵥ (D.lCoord *ᵥ y) +
       star (D.iCoord *ᵥ y') ⬝ᵥ stdForm E s₀ *ᵥ (D.iCoord *ᵥ y) := by
-    rw [h_k, h_l, h_i, ← dotProduct_add, ← dotProduct_add, ← mulVec_add, ← mulVec_add,
-      ← add_mulVec, ← add_mulVec, add_right_comm, D.sum_frame_mul_coord_eq_one, one_mulVec]
+    simpa only [star_mulVec_dotProduct, mulVec_mulVec, Matrix.mul_assoc, add_mulVec,
+      dotProduct_add] using congrArg (fun A ↦ star y' ⬝ᵥ A *ᵥ y) h_form.symm
   simp only [adelicHeisenberg, h_dot, mul_add, AddChar.map_add_eq_mul, Circle.coe_mul]
 
 /-- If a bounded map `L : 𝒮 V → 𝒮 V₀` is (a) invariant under the Heisenberg operators along `k`
