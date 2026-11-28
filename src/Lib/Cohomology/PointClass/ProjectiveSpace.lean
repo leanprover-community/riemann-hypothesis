@@ -106,8 +106,7 @@ lemma mk_eq_mk_iff_cross_mul {hv : span (Set.range v) = ⊤} {hw : span (Set.ran
   refine ⟨fun ⟨u, hu⟩ a b ↦ ?_, fun h_minor ↦ ?_⟩
   · simp [← hu, Units.smul_def, mul_assoc, mul_left_comm]
   · -- Write `1 = ∑ i, a i * v i`; the factor of proportionality is `c = ∑ i, a i * w i`.
-    obtain ⟨a, ha⟩ : ∃ a : Fin (d + 1) → A, ∑ i, a i * v i = 1 :=
-      mem_span_range_iff_exists_fun.mp ((eq_top_iff_one _).mp hv)
+    obtain ⟨a, ha⟩ := mem_span_range_iff_exists_fun.mp ((eq_top_iff_one _).mp hv)
     set c : A := ∑ i, a i * w i with hc
     have h_prop (l : Fin (d + 1)) : c * v l = w l :=
       calc c * v l = (∑ i, a i * v i) * w l := by simp only [hc, Finset.sum_mul, mul_assoc, h_minor]
@@ -134,8 +133,7 @@ lemma mk_mem_stdChart_iff {hv : span (Set.range v) = ⊤} :
     obtain ⟨u, hu⟩ :
         ∃ u : Aˣ, u • (φ.down.hom ∘ (i.insertNth 1 X : Fin (d + 1) → MvPolynomial (Fin d) k)) = v :=
       mk_eq_mk_iff_exists_unit.mp hφ
-    have h_vi : v i = u := by simp [← hu, Units.smul_def]
-    simp [h_vi]
+    simp [← hu, Units.smul_def]
   · -- If `v i = u` is a unit, the affine coordinates are the other entries divided by `u`.
     let φ : of k (MvPolynomial (Fin d) k) ⟶ A := ofHom (aeval (u⁻¹ • v ∘ i.succAbove))
     refine ⟨⟨φ⟩, mk_eq_mk_iff_exists_unit.mpr ⟨u, ?_⟩⟩
@@ -158,18 +156,13 @@ private lemma exists_isUnit_coord_of_mul_eq_zero [CharZero k] [IsLocalRing A] {u
   have h_le : span (Set.range u) ≤ span {u 0} := by
     simp [span_le, range_subset_iff, mem_span_singleton, ← hu1]
   have hu0 : IsUnit (u 0) := span_singleton_eq_top.mp (eq_top_mono h_le hu)
-  refine ⟨j, hj, hu0, hu1, fun i hij ↦ by_contra fun hi ↦ hij ?_⟩
-  -- Put `u 1 = j * u 0` in `h_mul_eq_zero i`; cancel the unit `u 0` and the nonzero `v i`.
-  have h_mul : u 0 * ((i : k) • v i) = u 0 * ((j : k) • v i) := by
-    have h0 := h_mul_eq_zero i
-    rw [← hu1, sub_mul] at h0
-    have h1 : (i : A) * u 0 * v i = (j : A) * u 0 * v i := (sub_eq_zero.mp h0).symm
-    rw [Nat.cast_smul_eq_nsmul, Nat.cast_smul_eq_nsmul, nsmul_eq_mul, nsmul_eq_mul]
-    calc u 0 * ((i : A) * v i) = (i : A) * u 0 * v i := by ring
-      _ = (j : A) * u 0 * v i := h1
-      _ = u 0 * ((j : A) * v i) := by ring
-  have h_cast : (i : k) = j := smul_left_injective k hi (hu0.mul_left_cancel h_mul)
-  exact Fin.ext (Nat.cast_injective h_cast)
+  refine ⟨j, hj, hu0, hu1, fun i hij ↦ ?_⟩
+  -- Put `u 1 = j * u 0` in `h_mul_eq_zero i`: `(j - i) * (u 0 * v i) = 0`, with `j - i` a unit.
+  have h_ne : (j : k) - i ≠ 0 := sub_ne_zero.mpr fun h ↦ hij (Fin.ext (Nat.cast_injective h)).symm
+  have h_unit : IsUnit ((j : A) - i) := by simpa using h_ne.isUnit.map (algebraMap k A)
+  refine hu0.mul_right_eq_zero.mp (h_unit.mul_right_eq_zero.mp ?_)
+  rw [← h_mul_eq_zero i, ← hu1]
+  ring
 
 /-- Let `v`, `u` be unimodular vectors over a local algebra over a field of characteristic `0`,
 of lengths `d + 1` and `2`, with `(u 1 - i * u 0) * v i = 0` for all `i`. Then the first
@@ -253,18 +246,12 @@ lemma span_range_cons_mul_eq_top [CharZero k] {u : Fin 2 → A} (hv : span (Set.
   rw [← (span _).map_id]
   refine (map_eq_top_iff_forall_isField _ (𝟙 A)).mpr fun K ψ hK h_le ↦ ?_
   let fieldK : Field K := hK.toField
-  obtain ⟨h_first, h_rest⟩ : ψ (u 0) * ∑ i : Fin (d + 1), ψ (v i) = 0 ∧
-      ∀ i : Fin (d + 1), (ψ (u 1) - i * ψ (u 0)) * ψ (v i) = 0 := by
-    rw [span_le, range_subset_iff] at h_le
-    refine ⟨?_, fun i ↦ ?_⟩
-    · have h0 : ψ (u 0 * ∑ i : Fin (d + 1), v i) = 0 := h_le 0
-      simpa only [map_mul, map_sum] using h0
-    · have hi : ψ ((u 1 - i * u 0) * v i) = 0 := h_le i.succ
-      simpa only [map_mul, map_sub, map_natCast] using hi
-  have h_unit : IsUnit (ψ (u 0) * ∑ i : Fin (d + 1), ψ (v i)) :=
-    isUnit_mul_sum_of_mul_eq_zero
-      (unimodular.map ψ (a := ⟨v⟩) hv) (unimodular.map ψ (a := ⟨u⟩) hu) h_rest
-  exact h_unit.ne_zero h_first
+  rw [span_le, range_subset_iff] at h_le
+  have h_first : ψ (u 0 * ∑ i : Fin (d + 1), v i) = 0 := h_le 0
+  have h_rest (i : Fin (d + 1)) : ψ ((u 1 - i * u 0) * v i) = 0 := h_le i.succ
+  simp only [map_mul, map_sum, map_sub, map_natCast] at h_first h_rest
+  exact (isUnit_mul_sum_of_mul_eq_zero (unimodular.map ψ (a := ⟨v⟩) hv)
+    (unimodular.map ψ (a := ⟨u⟩) hu) h_rest).ne_zero h_first
 
 /-- In characteristic `0`, the map `ℙ^d × ℙ¹ → ℙ^(d+1)` that sends `([v], [w 0 : w 1])` to the
 point with coordinates `w 0 * ∑ i, v i` and `(w 1 - i * w 0) * v i` for `i = 0, …, d`. -/
@@ -275,28 +262,22 @@ def lineProductMap [CharZero k] : projSpace k d ⊗ projSpace k 1 ⟶ projSpace 
         (span_range_cons_mul_eq_top k d hv hw))
     -- Scaling `w`, or `v`, by a unit scales every coordinate by that unit.
     (by
-      rintro ⟨⟨v⟩, hv⟩ ⟨⟨w⟩, hw⟩ ⟨⟨w'⟩, hw'⟩ ⟨c, h⟩
-      have hc : ∀ j, (c : A) * w' j = w j := fun j ↦ congrFun h j
+      rintro ⟨⟨v⟩, hv⟩ ⟨⟨w⟩, hw⟩ ⟨⟨w'⟩, hw'⟩ ⟨c, rfl⟩
       refine (mk_eq_mk_iff_exists_unit.mpr ⟨c, funext fun j ↦ ?_⟩).symm
-      refine Fin.cases ?_ (fun i ↦ ?_) j
-      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, ← hc, mul_assoc]
-      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_succ, ← hc]
-        ring)
+      cases j using Fin.cases <;>
+        simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, cons_succ] <;> ring)
     (by
-      rintro ⟨⟨v⟩, hv⟩ ⟨⟨v'⟩, hv'⟩ ⟨⟨w⟩, hw⟩ ⟨c, h⟩
-      have hc : ∀ j, (c : A) * v' j = v j := fun j ↦ congrFun h j
+      rintro ⟨⟨v⟩, hv⟩ ⟨⟨v'⟩, hv'⟩ ⟨⟨w⟩, hw⟩ ⟨c, rfl⟩
       refine (mk_eq_mk_iff_exists_unit.mpr ⟨c, funext fun j ↦ ?_⟩).symm
-      refine Fin.cases ?_ (fun i ↦ ?_) j
-      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, ← hc,
-          ← Finset.mul_sum, mul_left_comm]
-      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_succ, ← hc]
-        ring)
+      cases j using Fin.cases <;>
+        simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, cons_succ,
+          ← Finset.mul_sum] <;> ring)
   naturality A B f := by
     ext ⟨⟨v⟩, ⟨w⟩⟩
     refine mk_eq_mk_iff_exists_unit.mpr ⟨1, funext fun j ↦ ?_⟩
-    refine Fin.cases ?_ (fun i ↦ ?_) j
-    · simp only [one_smul, Function.comp_apply, cons_zero, map_mul, map_sum]
-    · simp only [one_smul, Function.comp_apply, cons_succ, map_mul, map_sub, map_natCast]
+    cases j using Fin.cases <;>
+      simp only [one_smul, Function.comp_apply, cons_zero, cons_succ, map_mul, map_sum, map_sub,
+        map_natCast]
 
 end New.Variety.projSpace
 
@@ -381,10 +362,9 @@ lemma New.Variety.CutsOutLocus.exists_lift_near_prime {k A B σ : Type} [Field k
   let θ : MvPolynomial (Fin N) (MvPolynomial σ k) →ₐ[k] A := aevalTower (aeval (R := k) w) r
   have h_comm : κ.comp θ = φ.comp q := by
     ext i : 2
-    · simp only [AlgHom.comp_apply, IsScalarTower.coe_toAlgHom', θ, q, aevalTower_algebraMap]
-      exact (AlgHom.congr_fun hφ (X i)).symm
-    · simp only [AlgHom.comp_apply, θ, q, aevalTower_X]
-      exact hr i
+    · simpa only [AlgHom.comp_apply, IsScalarTower.coe_toAlgHom', θ, q, aevalTower_algebraMap]
+        using (AlgHom.congr_fun hφ (X i)).symm
+    · simpa only [AlgHom.comp_apply, θ, q, aevalTower_X] using hr i
   have h_rel (x : rel) : κ (θ x) = κ 0 := by
     have hqx : q x.val = 0 := RingHom.mem_ker.mp (h_ker.le (subset_span x.prop))
     calc κ (θ x) = φ (q x.val) := AlgHom.congr_fun h_comm x.val
@@ -397,9 +377,7 @@ lemma New.Variety.CutsOutLocus.exists_lift_near_prime {k A B σ : Type} [Field k
     rw [← h_ker, span_le]
     intro x hx
     have h_ax : ψ a * ψ (θ x) = 0 := by
-      have h0 := congrArg ψ (h_mul ⟨x, hx⟩)
-      rw [mul_zero, map_mul, map_zero] at h0
-      exact h0
+      simpa only [mul_zero, map_mul, map_zero] using congrArg ψ (h_mul ⟨x, hx⟩)
     exact hψ.mul_right_eq_zero.mp h_ax
   let v : B →ₐ[k] C := q.liftOfSurjective h_surj (ψ.comp θ) h_kill
   have h_fac (x : MvPolynomial (Fin N) (MvPolynomial σ k)) : v (q x) = ψ (θ x) :=
@@ -476,9 +454,7 @@ lemma New.Variety.CutsOutLocus.exists_cover_point_near_prime {k ι F G : Type} [
     intro h_zero
     have h_forms : v ∘ f ∘ X = 0 := by
       rw [← hb_forms σ, ← evalForms_map, h_zero]
-      have h0 := evalForms_smul Λ (u := (0 : m.ResidueField)) (v := 0)
-      simp only [zero_smul] at h0
-      exact h0
+      simpa only [zero_smul] using evalForms_smul Λ (u := (0 : m.ResidueField)) (v := 0)
     rw [hv] at h_forms
     have h_le : span (Set.range w) ≤ m := by
       rw [span_le, Set.range_subset_iff]
@@ -489,13 +465,9 @@ lemma New.Variety.CutsOutLocus.exists_cover_point_near_prime {k ι F G : Type} [
     hi σ ((hv_s _).trans (algebraMap_residueField_eq_zero.mpr h_mem))
   refine ⟨a * ∏ σ : G, s (b σ (i σ)), m.primeCompl.mul_mem ha (prod_mem fun σ _ ↦ h_notMem σ),
     fun C ψ h_unit ↦ ?_⟩
-  rw [map_mul, map_prod] at h_unit
-  obtain ⟨ha_unit, h_prod⟩ := IsUnit.mul_iff.mp h_unit
-  have h_unit_s (σ : G) : IsUnit (ψ (s (b σ (i σ)))) :=
-    isUnit_of_dvd_unit
-      (Finset.dvd_prod_of_mem (fun x ↦ ψ (s (b x (i x)))) (Finset.mem_univ σ)) h_prod
-  obtain ⟨v', hv', hv'_s⟩ : ∃ v' : B →ₐ[k] C, v' ∘ f ∘ X = ψ ∘ w ∧ ∀ y : B, v' y = ψ (s y) :=
-    h_lift C ψ.hom ha_unit
+  rw [map_mul, map_prod, IsUnit.mul_iff, IsUnit.prod_univ_iff] at h_unit
+  obtain ⟨ha_unit, h_unit_s⟩ := h_unit
+  obtain ⟨v', hv', hv'_s⟩ := h_lift C ψ.hom ha_unit
   have h_unit' (σ : G) : IsUnit (v' (b σ (i σ))) := (hv'_s _).symm ▸ h_unit_s σ
   have h_point (σ : G) : ∃ y : PointsIn Y C, IsCoordsWithUnit L y (v' ∘ b σ) :=
     exists_point_of_isUnit_coord (A := .of k m.ResidueField) (v := v ∘ b σ) (u := v' ∘ b σ) hξ
@@ -528,8 +500,7 @@ lemma New.Variety.CutsOutLocus.exists_map_mul_eq_map_near_prime {k ι G : Type} 
     funext fun j ↦ by
       simpa only [Pi.smul_apply, Units.smul_def, smul_eq_mul, Function.comp_apply,
         map_mul, AlgHom.comp_apply] using congrArg κ (congrFun hu j)
-  obtain ⟨τ, hτ⟩ : ∃ τ : G, ∀ σ : G, κ.comp v₁ ∘ b σ = κ u • κ.comp v₀ ∘ b (τ * σ) :=
-    h_conj (κ.comp v₀) (κ.comp v₁) (κ u) h_κ
+  obtain ⟨τ, hτ⟩ := h_conj (κ.comp v₀) (κ.comp v₁) (κ u) h_κ
   have h_eq_κ (l : G × ι) : κ (v₁ (b l.fst l.snd)) = κ (u * v₀ (b (τ * l.fst) l.snd)) := by
     simpa only [Function.comp_apply, AlgHom.comp_apply, Pi.smul_apply, smul_eq_mul,
       map_mul] using congrFun (hτ l.fst) l.snd
@@ -629,10 +600,7 @@ lemma New.Variety.CutsOutLocus.IsNoetherNormalization.pullback_injective {p : �
     obtain ⟨a, ha, h_cover⟩ :=
       exists_cover_point_near_prime hξ hb_hom hb_forms h_fin h_inj (h_test c) m hw
     refine ⟨a, ha, fun c' φ h_unit ↦ ?_⟩
-    obtain ⟨y, v', hy, hv'⟩ :
-        ∃ (y : G → PointsIn Y (T.obj c')) (v' : B →ₐ[k] T.obj c'),
-          (∀ σ : G, IsCoordsWithUnit L (y σ) (v' ∘ b σ)) ∧ v' ∘ f ∘ X = T.map φ ∘ w :=
-      h_cover _ (T.map φ) h_unit
+    obtain ⟨y, v', hy, hv'⟩ := h_cover _ (T.map φ) h_unit
     have h_span_w : span (Set.range (T.map φ ∘ w)) = ⊤ := unimodular.map (T.map φ) (a := ⟨w⟩) hw
     have h_span : span (Set.range (v' ∘ f ∘ X)) = ⊤ := by rwa [hv']
     have h_pt : projSpace.mk (v' ∘ f ∘ X) h_span = projSpace.mk (T.map φ ∘ w) h_span_w := by
