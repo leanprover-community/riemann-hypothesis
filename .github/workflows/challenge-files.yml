@@ -1,12 +1,13 @@
 name: challenge files
 
 # The Comparator challenge files say what the proof is judged against, so a pull request may not
-# change them. `Challenge.lean` imports `src/Statements.lean`, which defines the propositions that
-# four of the five theorems state, and `src/Main.lean` imports it as well. Comparator would accept
-# a change there, since both sides would see it, so it is a challenge file too.
+# change them. The first setup is `Challenge.lean`, `comparator.json` and `export-targets.txt`; the
+# second, with formal-conjectures' statements, is in `comparator/`. `Challenge.lean` imports only
+# Mathlib and repeats the definitions of `src/Statements.lean`, which `src/Main.lean` imports.
+# Comparator requires the two to agree, so that file is on the list as well.
 #
 # Comparator builds `Challenge` and `Main` with Lake, so the build configuration decides which files
-# those names stand for and which Mathlib they import. Leaving the three files as they are, a pull
+# those names stand for and which Mathlib they import. Leaving these files as they are, a pull
 # request could point the `Challenge` or `Main` library at other copies, add a `lakefile.lean`
 # (which Lake reads instead of `lakefile.toml`), or require Mathlib or a toolchain from elsewhere.
 # So this also fails a pull request that
@@ -81,7 +82,9 @@ jobs:
                 comparator/FormalConjecturesChallenge.lean comparator/formal-conjectures.json
                 comparator/formal-conjectures-export-targets.txt" ;;
             *)
-              frozen="Challenge.lean comparator.json src/Statements.lean" ;;
+              frozen="Challenge.lean comparator.json export-targets.txt src/Statements.lean
+                comparator/FormalConjecturesChallenge.lean comparator/formal-conjectures.json
+                comparator/formal-conjectures-export-targets.txt" ;;
           esac
           git init -q pr
           git -C pr remote add origin "https://github.com/$REPO"

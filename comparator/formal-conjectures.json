@@ -1,0 +1,15 @@
+{
+  "challenge_module": "FormalConjecturesChallenge",
+  "solution_module": "FormalConjecturesSolution",
+  "theorem_names": [
+    "RiemannHypothesis.riemannHypothesis",
+    "GRH.generalized_riemann_hypothesis"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

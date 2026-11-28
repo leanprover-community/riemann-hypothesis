@@ -57,14 +57,20 @@ jobs:
               lakefile.toml | lakefile.lean | lake-manifest.json | lean-toolchain)
                 lake+="  $shown"$'\n' ;;
             esac
-            # Challenge.lean imports src/Statements.lean, which defines the propositions that
-            # four of the five theorems state, so that file is part of the challenge.
+            # The challenge files of both Comparator setups, as challenge-files.yml lists them.
+            # src/Statements.lean is among them: Challenge.lean repeats its definitions, and
+            # Comparator requires the two to agree.
             case "$path" in
-              Challenge.lean | comparator.json | src/Statements.lean)
+              Challenge.lean | comparator.json | export-targets.txt | src/Statements.lean | \
+              comparator/FormalConjecturesChallenge.lean | comparator/formal-conjectures.json | \
+              comparator/formal-conjectures-export-targets.txt)
                 challenge+="  $shown"$'\n' ;;
             esac
+            # The solution modules of both setups, and the two files the second one's solution
+            # is built on.
             case "$path" in
-              src/Main.lean)
+              src/Main.lean | comparator/FormalConjecturesSolution.lean | \
+              comparator/FormalConjecturesBridge.lean | comparator/FormalConjecturesStatement.lean)
                 solution+="  $shown"$'\n' ;;
             esac
             case "$path" in

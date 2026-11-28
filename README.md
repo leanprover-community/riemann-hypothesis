@@ -39,12 +39,17 @@ It keeps the published Lean source unchanged and provides a prebuilt cache for i
 | `LFunction_eq_zero_re` | every zero of L(χ, s) with 0 < Re s < 1 has Re s = 1/2 |
 | `LFunction_eq_zero_re_of_isPrimitive` | the special case of `LFunction_eq_zero_re` for primitive characters |
 
-[`src/Statements.lean`](src/Statements.lean) provides the statements of all of these theorems, and only imports Mathlib to state them. It is imported by both [`src/Main.lean`](src/Main.lean) and [`Challenge.lean`](Challenge.lean)
+[`src/Statements.lean`](src/Statements.lean) provides the statements of all of these theorems, and only imports Mathlib to state them. It is imported by [`src/Main.lean`](src/Main.lean).
 
-[`Challenge.lean`](Challenge.lean) imports *only* [`src/Statements.lean`](src/Statements.lean), and declares the same five theorems with `sorry` in place of the proofs.
+[`Challenge.lean`](Challenge.lean) imports *only* Mathlib. It repeats the four definitions of [`src/Statements.lean`](src/Statements.lean), and declares the same five theorems with `sorry` in place of the proofs.
 
-Comparator checks that `Main.lean` proves exactly those statements, that it uses no axioms other than `propext`, `Quot.sound` and
+Comparator checks that `Main.lean` proves exactly those statements, with the definitions as `Challenge.lean` has them, that it uses no axioms other than `propext`, `Quot.sound` and
 `Classical.choice`, and that Lean's kernel and nanoda both accept the proof.
+
+A second Comparator setup, in [`comparator/`](comparator/), takes as its challenge the Riemann
+Hypothesis and the Generalized Riemann Hypothesis as
+[formal-conjectures](https://github.com/google-deepmind/formal-conjectures) states them.
+[`comparator/README.md`](comparator/README.md) describes it.
 
 ## Cache
 
@@ -78,9 +83,7 @@ Thanks to the Lean FRO and BAIF for providing resources to run CI here; others h
 
 The proof belongs to its author Levent Alpöge with Claude and was originally published without a license. The repo https://github.com/lsernau/grh-lean uses Apache 2.0, and so does this repo; see [`LICENSE`](LICENSE), [`NOTICE`](NOTICE) and [`ATTRIBUTION.md`](ATTRIBUTION.md).
 
-*Soon, we will re-integrate Formal Conjectures. This is out of date.*
-
-The declarations in `comparator/` that will be copied from
+The declarations in `comparator/` that are copied from
 [formal-conjectures](https://github.com/google-deepmind/formal-conjectures) are copyright The Formal
 Conjectures Authors, under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 The files that hold them carry the notice.
