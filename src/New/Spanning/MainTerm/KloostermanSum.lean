@@ -51,11 +51,8 @@ lemma New.integral_comp_quotientMk {G E : Type*} [Group G] [TopologicalSpace G]
     (f : G ⧸ J → E) : ∫ y : G, f y ∂μ = μ.real J • ∑' q : G ⧸ J, f q := by
   -- The image of `μ` on the countable discrete quotient is `μ J` times the counting measure.
   have : DiscreteTopology (G ⧸ J) := QuotientGroup.discreteTopology hJ
-  have : TopologicalSpace.SeparableSpace (G ⧸ J) := by
-    have h := ((TopologicalSpace.isSeparable_univ_iff (α := G)).2 inferInstance).image
-      (QuotientGroup.continuous_mk (N := J))
-    rw [Set.image_univ, (QuotientGroup.mk_surjective (s := J)).range_eq] at h
-    exact TopologicalSpace.isSeparable_univ_iff.1 h
+  have : TopologicalSpace.SeparableSpace (G ⧸ J) :=
+    (QuotientGroup.isQuotientMap_mk J).separableSpace
   have : Countable (G ⧸ J) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
   let : MeasurableSpace (G ⧸ J) := ⊤
   have h_meas : Measurable (QuotientGroup.mk : G → G ⧸ J) := fun s _ ↦
