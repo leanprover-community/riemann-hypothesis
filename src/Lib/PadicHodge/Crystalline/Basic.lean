@@ -3,6 +3,7 @@ module
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 public import Lib.PadicHodge.PeriodRings.CrystallineRings
 public import Lib.ClassField.Places.DecompositionCompletion -- shake: keep (needed public by an exposed definition)
+import Lib.ClassField.Places.DecompositionCyclotomic
 import Lib.PadicHodge.PeriodRings.DeRhamPeriods
 
 /-!
@@ -146,6 +147,36 @@ lemma isWeilPair_zero_iff {s : Gp p} : IsWeilPair s 0 ↔ s ∈ inertiaGroup (Gp
   rw [IsWeilPair, pow_zero]
   -- The inertia group is by definition the set of Frobenius elements for `q = 1`.
   exact inv_mem_iff (H := inertiaGroup (Gp p) (intQpBar p))
+
+namespace IsWeilPair
+
+variable {m m' : ℕ} {Γ : Type*} {s t : Γ} [Group Γ] {j : Γ →* Gp p}
+
+/-- Weil pairs multiply: the degrees add. -/
+lemma mul (h : IsWeilPair (j s) m) (h' : IsWeilPair (j t) m') :
+    IsWeilPair (j (s * t)) (m + m') := by
+  simpa [IsWeilPair, p.pow_add', h'.mul_iff] using h
+
+/-- If `(j s, m)` is a Weil pair, then so is `(j (s ^ n), n * m)`. -/
+lemma pow (h : IsWeilPair (j s) m) (n : ℕ) : IsWeilPair (j (s ^ n)) (n * m) := by
+  -- A Frobenius for `p ^ m` raised to the `n`-th power is a Frobenius for `(p ^ m) ^ n`.
+  rw [IsWeilPair, map_pow, ← inv_pow, mul_comm n m, pow_mul]
+  exact IsFrob.pow h n
+
+/-- If `(j s, m)` is a Weil pair and `(j s)⁻¹` acts on the residue field as `x ↦ x ^ q`, then
+`q = p ^ m`. -/
+lemma eq_pow_of_isFrob (h : IsWeilPair (j s) m) {q : ℕ} (hq : IsFrob (intQpBar p) q (j s)⁻¹) :
+    q = p ^ m := by
+  -- The `l`-adic cyclotomic character of `(j s)⁻¹`, for a prime `l > p`, is both `q` and `p ^ m`
+  -- (`IsFrob.cyclotomicChar_eq`: on `l`-power roots of unity a Frobenius for `q` acts as
+  -- `x ↦ x ^ q`).
+  obtain ⟨l, hpl, hl⟩ : ∃ l : ℕ, p.succ ≤ l ∧ l.Prime := p.succ.exists_infinite_primes
+  have hl_fact : Fact l.Prime := ⟨hl⟩
+  have h_not_dvd : ¬p ∣ l := (Nat.prime_dvd_prime_iff_eq Fact.out hl).not.mpr (by omega)
+  have hval : (intQpBar p).valuation l = 1 := Selmer.valuation_natCast_eq_one h_not_dvd
+  exact_mod_cast (hq.cyclotomicChar_eq l hval).symm.trans (h.cyclotomicChar_eq l hval)
+
+end IsWeilPair
 
 /-- The p-adic cyclotomic character of `Γ`: the cyclotomic character of `Gp p` composed with `j`. -/
 abbrev χ : Γ →* ℤ_[p]ˣ := cyclotomicGp.comp 𝒥.toGp
