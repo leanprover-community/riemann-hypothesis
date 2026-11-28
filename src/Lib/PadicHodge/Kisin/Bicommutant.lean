@@ -105,6 +105,75 @@ lemma mem_bicommutant_iff {y : BPlus} :
 lemma ainfToBPlus_mem_bicommutant {c : Chart} (s : c.S) : ainfToBPlus s ∈ c.bicommutant :=
   c.bicommutant.algebraMap_mem' s
 
+/-- A `c.S`-linear endomorphism `f` of `Ainf` preserves divisibility by `p ^ n` in `Amax`, since
+it preserves the ideal `(p, E) ^ n = (p, ξ) ^ n`. -/
+private lemma p_pow_dvd_map_of_dvd (f : Ainf →ₗ[c.S] Ainf) {n : ℕ} {a : Ainf}
+    (ha : (p : Amax) ^ n ∣ algebraMap Ainf Amax a) :
+    (p : Amax) ^ n ∣ algebraMap Ainf Amax (f a) := by
+  have h_mem_pow : a ∈ span {↑p, xi} ^ n → f a ∈ span {↑p, xi} ^ n := by
+    simpa [span_singleton_eq_span_singleton.mpr c.associated_E_xi, span_insert, Ideal.map_pow,
+      Ideal.map_sup, map_span] using (span {↑p, c.E} ^ n).smul_top_le_comap_smul_top f (x := a)
+  exact p_pow_dvd_of_mem_pow (h_mem_pow (mem_span_pow_of_p_pow_dvd ha))
+
+/-- Every `y ∈ Amax` is congruent modulo `p` to some `x ∈ Amax` for which `(x, z)` lies in the
+`p`-saturation of the graph of `f` (meaning `p ^ d * (x, z) = (a, f a)` for some `d` and
+`a ∈ Ainf`). -/
+private lemma exists_graph_approx_mod_p (f : Ainf →ₗ[c.S] Ainf) (y : Amax) :
+    ∃ x : Amax, (∃ (z : Amax) (d : ℕ) (a : Ainf), algebraMap Ainf Amax a = p ^ d * x ∧
+      algebraMap Ainf Amax (f a) = p ^ d * z) ∧ (p : Amax) ∣ x - y := by
+  obtain ⟨d, a, w, hw⟩ : ∃ (d : ℕ) (a : Ainf) (w : Amax),
+      algebraMap Ainf Amax a = p ^ d * (y - p ^ 1 * w) :=
+    y.exists_algebraMap_eq_p_pow_mul_sub 1
+  obtain ⟨z, hz⟩ : (p : Amax) ^ d ∣ algebraMap Ainf Amax (f a) :=
+    c.p_pow_dvd_map_of_dvd f ⟨y - p ^ 1 * w, hw⟩
+  exact ⟨y - p ^ 1 * w, ⟨z, d, a, hw, hz⟩, ⟨-w, by ring⟩⟩
+
+/-- `p`-adic continuity on the `p`-saturation of the graph of `f`: if
+`p ^ d * (x, z) = (a, f a)` and `p ^ n ∣ x`, then `p ^ n ∣ z`. -/
+private lemma p_pow_dvd_of_graph_p_pow_dvd (f : Ainf →ₗ[c.S] Ainf) {n d : ℕ} {x z : Amax}
+    {a : Ainf} (hx : algebraMap Ainf Amax a = p ^ d * x)
+    (hz : algebraMap Ainf Amax (f a) = p ^ d * z) (h_dvd_x : (p : Amax) ^ n ∣ x) :
+    (p : Amax) ^ n ∣ z := by
+  have h_dvd_a : (p : Amax) ^ (d + n) ∣ algebraMap Ainf Amax a := by
+    rw [hx, pow_add]
+    exact mul_dvd_mul_left _ h_dvd_x
+  have h_dvd_fa : (p : Amax) ^ d * p ^ n ∣ p ^ d * z := by
+    rw [← pow_add, ← hz]
+    exact c.p_pow_dvd_map_of_dvd f h_dvd_a
+  exact (mul_dvd_mul_iff_left (pow_ne_zero d (NeZero.ne (p : Amax)))).mp h_dvd_fa
+
+/-- Every `c.S`-linear endomorphism `f` of `Ainf` extends to a `c.S`-linear endomorphism `G₀` of
+`Amax` agreeing with `f` on `Ainf`, constructed by `p`-adic continuity on the `p`-saturation of
+the graph of `f`. -/
+private lemma exists_extendToAmax (f : Ainf →ₗ[c.S] Ainf) :
+    ∃ G₀ : Amax →ₗ[c.S] Amax, ∀ a : Ainf,
+      G₀ (algebraMap Ainf Amax a) = algebraMap Ainf Amax (f a) := by
+  let i : Ainf →ₗ[c.S] Amax := (toAlgHom c.S Ainf Amax).toLinearMap
+  -- Form the `p`-saturation of the graph of `f`; by `exists_adic_extension` the second projection
+  -- factors through the first, using density modulo `p` and `p`-adic continuity.
+  let saturation : Submodule c.S (Amax × Amax) :=
+    (primaryComponent _ (span {↑p})).comap (i.prod (i ∘ₗ f)).range.mkQ
+  have h_mem (x z : Amax) : (x, z) ∈ saturation ↔ ∃ (d : ℕ) (a : Ainf),
+      algebraMap Ainf Amax a = p ^ d * x ∧ algebraMap Ainf Amax (f a) = p ^ d * z := by
+    simp [saturation, i, primaryComponent_mem, ← Submodule.Quotient.mk_smul,
+      smul_def (A := Amax), span_singleton_pow]
+  have h_smul_top (n : ℕ) (y : Amax) :
+      y ∈ (span {(p : c.S)} ^ n • ⊤ : Submodule c.S Amax) ↔ (p : Amax) ^ n ∣ y := by
+    simp [span_singleton_pow, map_span, mem_span_singleton]
+  obtain ⟨G₀, hG₀⟩ : ∃ G₀ : Amax →ₗ[c.S] Amax, ∀ q : saturation, G₀ q.val.1 = q.val.2 := by
+    refine exists_adic_extension (span {↑p}) (LinearMap.fst c.S Amax Amax ∘ₗ saturation.subtype)
+      (LinearMap.snd c.S Amax Amax ∘ₗ saturation.subtype) ?_ fun n q hq ↦ ?_
+    · rintro ⟨y⟩
+      obtain ⟨x, ⟨z, d, a, ha, hz⟩, hxy⟩ := c.exists_graph_approx_mod_p f y
+      refine ⟨⟨(x, z), (h_mem x z).mpr ⟨d, a, ha, hz⟩⟩, (Submodule.Quotient.eq _).mpr ?_⟩
+      simpa using (h_smul_top 1 (x - y)).mpr (by simpa using hxy)
+    · obtain ⟨d, a, ha, hz⟩ := (h_mem q.val.1 q.val.2).mp q.prop
+      have h_dvd_x : (p : Amax) ^ n ∣ q.val.1 :=
+        (pow_dvd_pow _ (Nat.le_add_right n n)).trans ((h_smul_top (n + n) _).mp hq)
+      exact (h_smul_top n _).mpr (c.p_pow_dvd_of_graph_p_pow_dvd f ha hz h_dvd_x)
+  exact ⟨G₀, fun a ↦ hG₀ ⟨(algebraMap Ainf Amax a, algebraMap Ainf Amax (f a)),
+    (h_mem _ _).mpr ⟨0, a, by simp, by simp⟩⟩⟩
+
 /-- Every `c.S`-linear map `f` from A_inf to itself extends along `ainfToBPlus` to a `c.S`-linear
 map from B^+ to itself that keeps `amaxImage`, the image of A_max in B^+. Here `c.S` is the subring
 of A_inf that is the image of the chart's map Λ⟦X⟧ → A_inf, and `BPlus` is B^+ = A_max[1/p], with
@@ -112,70 +181,13 @@ A_max the period ring `Amax`. -/
 lemma exists_extendToBPlus (f : Ainf →ₗ[c.S] Ainf) :
     ∃ G : BPlus →ₗ[c.S] BPlus,
       (∀ a : Ainf, G (ainfToBPlus a) = ainfToBPlus (f a)) ∧ ∀ y ∈ amaxImage, G y ∈ amaxImage := by
-  -- Extend `f` first to the `x` in `Amax` with `p ^ d * x` in `Ainf`, then to `Amax` by
-  -- `p`-adic continuity, then to `BPlus` by inverting `p`.
-  let i : Ainf →ₗ[c.S] Amax := (toAlgHom c.S Ainf Amax).toLinearMap
-  -- `f` keeps `(p, E) ^ n = (p, ξ) ^ n`, hence divisibility by `p ^ n` in `Amax`.
-  have h_dvd_f_of_dvd {n : ℕ} {a : Ainf} (ha : (p : Amax) ^ n ∣ algebraMap Ainf Amax a) :
-      (p : Amax) ^ n ∣ algebraMap Ainf Amax (f a) := by
-    have h_mem_pow : a ∈ span {↑p, xi} ^ n → f a ∈ span {↑p, xi} ^ n := by
-      simpa [span_singleton_eq_span_singleton.mpr c.associated_E_xi, span_insert, Ideal.map_pow,
-        Ideal.map_sup, map_span] using (span {↑p, c.E} ^ n).smul_top_le_comap_smul_top f (x := a)
-    exact p_pow_dvd_of_mem_pow (h_mem_pow (mem_span_pow_of_p_pow_dvd ha))
-  -- The pairs `(x, z)` with `p ^ d * (x, z) = (a, f a)`: the `x` fill `Amax` modulo `p`, and
-  -- `x ↦ z` is `p`-adically continuous.
-  have h_dense (y : Amax) : ∃ x : Amax,
-      (∃ (z : Amax) (d : ℕ) (a : Ainf), algebraMap Ainf Amax a = p ^ d * x ∧
-        algebraMap Ainf Amax (f a) = p ^ d * z) ∧ (p : Amax) ∣ x - y := by
-    obtain ⟨d, a, w, hw⟩ : ∃ (d : ℕ) (a : Ainf) (w : Amax),
-        algebraMap Ainf Amax a = p ^ d * (y - p ^ 1 * w) :=
-      y.exists_algebraMap_eq_p_pow_mul_sub 1
-    obtain ⟨z, hz⟩ : (p : Amax) ^ d ∣ algebraMap Ainf Amax (f a) :=
-      h_dvd_f_of_dvd ⟨y - p ^ 1 * w, hw⟩
-    exact ⟨y - p ^ 1 * w, ⟨z, d, a, hw, hz⟩, ⟨-w, by ring⟩⟩
-  have h_cont (n : ℕ) (x z : Amax) (d : ℕ) (a : Ainf) (hx : algebraMap Ainf Amax a = p ^ d * x)
-      (hz : algebraMap Ainf Amax (f a) = p ^ d * z) :
-      (p : Amax) ^ (n + n) ∣ x → (p : Amax) ^ n ∣ z := by
-    -- Already `p ^ n ∣ x` is enough: then `p ^ (d + n)` divides `a`, hence also `f a = p ^ d * z`,
-    -- so `p ^ n` divides `z`.
-    intro h_dvd_x
-    have h_dvd_a : (p : Amax) ^ (d + n) ∣ algebraMap Ainf Amax a := by
-      rw [hx, pow_add]
-      exact mul_dvd_mul_left _ ((pow_dvd_pow _ (Nat.le_add_right n n)).trans h_dvd_x)
-    have h_dvd_fa : (p : Amax) ^ d * p ^ n ∣ p ^ d * z := by
-      rw [← pow_add, ← hz]
-      exact h_dvd_f_of_dvd h_dvd_a
-    exact (mul_dvd_mul_iff_left (pow_ne_zero d (NeZero.ne (p : Amax)))).mp h_dvd_fa
-  obtain ⟨G₀, hG₀⟩ : ∃ G₀ : Amax →ₗ[c.S] Amax, ∀ (x z : Amax) (d : ℕ) (a : Ainf),
-      algebraMap Ainf Amax a = p ^ d * x → algebraMap Ainf Amax (f a) = p ^ d * z → G₀ x = z := by
-    -- These pairs form the `p`-saturation of the graph of `f`. By `exists_adic_extension` the
-    -- second projection factors through the first, by `h_dense` and `h_cont`.
-    let saturation : Submodule c.S (Amax × Amax) :=
-      (primaryComponent _ (span {↑p})).comap (i.prod (i ∘ₗ f)).range.mkQ
-    have h_mem (x z : Amax) : (x, z) ∈ saturation ↔ ∃ (d : ℕ) (a : Ainf),
-        algebraMap Ainf Amax a = p ^ d * x ∧ algebraMap Ainf Amax (f a) = p ^ d * z := by
-      simp [saturation, i, primaryComponent_mem, ← Submodule.Quotient.mk_smul,
-        smul_def (A := Amax), span_singleton_pow]
-    have h_smul_top (n : ℕ) (y : Amax) :
-        y ∈ (span {(p : c.S)} ^ n • ⊤ : Submodule c.S Amax) ↔ (p : Amax) ^ n ∣ y := by
-      simp [span_singleton_pow, map_span, mem_span_singleton]
-    obtain ⟨G₀, hG₀⟩ : ∃ G₀ : Amax →ₗ[c.S] Amax, ∀ q : saturation, G₀ q.val.1 = q.val.2 := by
-      refine exists_adic_extension (span {↑p}) (LinearMap.fst c.S Amax Amax ∘ₗ saturation.subtype)
-        (LinearMap.snd c.S Amax Amax ∘ₗ saturation.subtype) ?_ fun n q hq ↦ ?_
-      · rintro ⟨y⟩
-        obtain ⟨x, ⟨z, d, a, ha, hz⟩, hxy⟩ := h_dense y
-        refine ⟨⟨(x, z), (h_mem x z).mpr ⟨d, a, ha, hz⟩⟩, (Submodule.Quotient.eq _).mpr ?_⟩
-        simpa using (h_smul_top 1 (x - y)).mpr (by simpa using hxy)
-      · obtain ⟨d, a, ha, hz⟩ := (h_mem q.val.1 q.val.2).mp q.prop
-        exact (h_smul_top n _).mpr (h_cont n _ _ d a ha hz ((h_smul_top (n + n) _).mp hq))
-    exact ⟨G₀, fun x z d a ha hz ↦ hG₀ ⟨(x, z), (h_mem x z).mpr ⟨d, a, ha, hz⟩⟩⟩
+  -- Extend `f` to `G₀ : Amax →ₗ[c.S] Amax` by `p`-adic continuity, then invert `p` to `BPlus`.
+  obtain ⟨G₀, hG₀_ainf⟩ := c.exists_extendToAmax f
   let j : Amax →ₗ[c.S] BPlus := (toAlgHom c.S Amax BPlus).toLinearMap
   have h_away : IsLocalization.Away (algebraMap c.S Amax p) BPlus := by
     simpa using (inferInstance : IsLocalization.Away (p : Amax) BPlus)
   -- `hG x`: the extension sends `j x` to `j (G₀ x)`.
   have hG := IsLocalizedModule.map_apply (.powers ↑p) j j G₀
-  have hG₀_ainf (a : Ainf) : G₀ (algebraMap Ainf Amax a) = algebraMap Ainf Amax (f a) :=
-    hG₀ _ _ 0 a (by simp) (by simp)
   refine ⟨IsLocalizedModule.map (.powers ↑p) j j G₀, fun a ↦ ?_, ?_⟩
   · -- On `Ainf` the extension is `G₀`, which is `f` there.
     exact (hG _).trans (congrArg j (hG₀_ainf a))
