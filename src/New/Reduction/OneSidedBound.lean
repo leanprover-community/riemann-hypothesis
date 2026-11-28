@@ -12,14 +12,18 @@ public import TauCeti.NumberTheory.DirichletCharacter.LFunction.ZeroReflection -
 /-!
 # The one-sided bound, and the theorem in half-plane form
 
-For admissible data at an integer `x`, the main inequality and the prime number theorem at a much
-larger cut-off `x₁` give the bound `R_{q₀}(x) ≤ (128 φ(q₀) + 32) x ^ (-1/2 + ε)` for large `x`.
-The one-sided criterion gives non-vanishing of Dirichlet `L`-functions in `re s > 1/2`.
+For `0 < δ < 1/100` and all sufficiently large integers `x`, choose admissible data with
+`log b ≤ 2 x ^ δ` and `m ≥ √x`. The term `log⁶ b / m` from the main inequality
+then gives the exponent `-1/2 + 6 δ`. The prime number theorem bounds both remainders at the
+larger cut-off `x₁` by `x ^ (-2)` in absolute value. Together these estimates give
+`R_{q₀}(x) ≤ (64 φ(q₀) + 3) x ^ (-1/2 + 6 δ)`.
 
-The exponent `-1/2 + 6 ε` comes from the term `log⁶ b / m`: choose `log b ≤ 2 x^ε` and
-`m ≥ √x`. The auxiliary cutoff is large enough for the prime number theorem to bound both
-remainders there by `x^(-2)`. The passage to real `x` and the choice of a smaller `ε` preserve
-the resulting exponent bound.
+Given `ε > 0`, choose `0 < δ < 1/100` with `6 δ ≤ ε`.
+For real `y ≥ 2`, compare `R_{q₀}(y)` with `R_{q₀}(⌊y⌋)`, allowing an error of `26 / y`
+and a factor of two in the bound for the power of the floor. This gives
+`R_{q₀}(y) ≤ (128 φ(q₀) + 32) y ^ (-1/2 + ε)` for all large real `y`. The one-sided criterion
+then gives non-vanishing of Dirichlet `L`-functions in `re s > 1/2`, with the pole of the
+principal character at `s = 1` excluded.
 
 Notions from other files:
 * `Parameters`: a multiple `q₀ = P.q₀` of `18480` and a prime `d = P.d ≡ q₀ / 2 - 1` modulo `q₀`.
