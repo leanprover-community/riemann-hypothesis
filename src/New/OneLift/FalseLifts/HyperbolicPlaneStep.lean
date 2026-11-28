@@ -289,49 +289,43 @@ lemma exists_norm_theta_sub_zeroTerm_le (D : W'.Splitting W Unit) (χ : AutChar 
       ‖(θ (W'.hom V) - θ (W.hom V) ∘L (D.homSource V).zeroTerm) (pairWeil W' V χ 1 (γ * g, h)
         (integrated (W'.hom V) (polyVector (realSigns E (homSigns t 1)) P)
           (schrodingerOp (W'.hom V) A Ψ (vacElem (W'.hom V)))))‖ ≤ K := by
-  -- The functional `ℓ = θ - θ₀` grows like a power of the height of `g`. Where that height exceeds
-  -- two, `D.k` is short after a rational translation, and the decay cancels the growth. The
-  -- estimate `exists_norm_pairWeil_schrodingerOp_mul_pow_le` treats small and large heights
-  -- together.
+  -- Where the height of `g` exceeds two, `D.k` is short after a rational translation.
+  -- In `exists_norm_pairWeil_schrodingerVacuum_le`, the decay from this short frame cancels
+  -- the growth of the functional `ℓ = θ - θ₀`.
   let ℓ : 𝒮 (W'.hom V) →L[ℂ] ℂ := θ (W'.hom V) - θ (W.hom V) ∘L (D.homSource V).zeroTerm
   let v : fockSpace (realSigns E (homSigns t 1)) := polyVector (realSigns E (homSigns t 1)) P
   obtain ⟨C, i, h_growth⟩ := (pairThetaKer W' V χ 1).swap.moderate_growth
   obtain ⟨c, h_basis⟩ := V.exists_short_basis_matrix
-  obtain ⟨C', h_decay⟩ := exists_norm_pairWeil_schrodingerOp_mul_pow_le (S := W') (T := V) (p := n)
-    (q := Unit) χ 1
-    hA (Ψ := Ψ) vacElem_mem_finitePart 0 i (C + C) c
-  refine ⟨C' * (fockMoment i v).toReal, fun g ↦ ?_⟩
+  obtain ⟨K, h_bound⟩ := exists_norm_pairWeil_schrodingerVacuum_le (S := W') (T := V)
+    (p := n) (q := Unit) χ 1 hA (Ψ := Ψ) i (C + C) c (fockMoment_polyVector_ne_top _ P)
+  refine ⟨K, fun g ↦ ?_⟩
   obtain ⟨γ, h_frame⟩ := exists_col_k_mem_latticeBall D g
   refine ⟨W'.ratEmbed γ, ⟨γ, rfl⟩, fun h ↦ ?_⟩
   set g' : G E t := W'.ratEmbed γ * g
-  -- `γ` is rational, so the kernel at `g' = γ g` is the kernel at `g`.
-  have h_growth' (φ : 𝒮 (W'.hom V)) : ‖θ (W'.hom V) (pairWeil W' V χ 1 (g', h) φ)‖ ≤
-      C * ‖φ‖ * (V.height h * W'.height g) ^ i :=
-    (congrArg norm ((pairThetaKer W' V χ 1).theta_rat_mul _ ⟨γ, rfl⟩ g)).trans_le (h_growth h g φ)
+  -- The definite target has height one, and the theta kernel is invariant under rational
+  -- translation of `g`.
+  have h_height : V.height h = 1 := by rw [height, firstMinimum_move_eq_one (by simp), inv_one]
+  have h_growth' (φ : 𝒮 (W'.hom V)) :
+      ‖θ (W'.hom V) (pairWeil W' V χ 1 (g', h) φ)‖ ≤ C * ‖φ‖ * W'.height g ^ i := by
+    rw [congrArg norm ((pairThetaKer W' V χ 1).theta_rat_mul _ ⟨γ, rfl⟩ g)]
+    simpa [h_height] using h_growth h g φ
   have h_norm (φ : 𝒮 (W'.hom V)) :
-      ‖ℓ (pairWeil W' V χ 1 (g', h) φ)‖ ≤ (C + C) * ‖φ‖ * (V.height h * W'.height g) ^ i := by
+      ‖ℓ (pairWeil W' V χ 1 (g', h) φ)‖ ≤ (C + C) * ‖φ‖ * W'.height g ^ i := by
     refine norm_theta_sub_zeroTerm_le D fun b ↦ ?_
     grw [rho_pairWeil, norm_sub_le, h_growth', h_growth']
     simp [add_mul, Heisenberg.Rep.norm_map]
   -- `d` is a basis of `V` in the lattice at `h`, of bounded lengths.
   obtain ⟨d, hd⟩ := h_basis h
-  have h_pair (h_high : 2 < W'.height g) : IsShortPair g' h ℓ Ψ d.val D.k (c * V.height h)
-      (2 / W'.height g) (c * V.height h * (2 / W'.height g)) :=
-    { short_target := hd
+  have h_pair (h_high : 2 < W'.height g) : IsShortPair g' h ℓ Ψ d.val D.k c
+      (2 / W'.height g) (c * (2 / W'.height g)) :=
+    { short_target := by simpa [h_height] using hd
       short_source := h_frame h_high
       mul_le := le_rfl
       isotropic := .inr D.gram_kk
       invariant := theta_sub_zeroTerm_rho_ratMap D
       ne_zero_or_mean_eq_zero := .inr (subspaceMean_theta_sub_zeroTerm_eq_zero D d.isUnit) }
-  have h_est : ‖ℓ (pairWeil W' V χ 1 (g', h)
-        (integrated (W'.hom V) v (schrodingerOp (W'.hom V) A Ψ (vacElem (W'.hom V)))))‖ * W'.height
-          g ^ 0 ≤
-      C' * (fockMoment (0 + i) v).toReal * V.height h ^ (0 + 2 * i) :=
-    h_decay v g' h ℓ (V.height h) (W'.height g) (fockMoment_polyVector_ne_top _ P)
-      (one_le_height ..) (W'.height_pos g) h_norm fun h_high ↦ ⟨_, _, _, _, h_pair h_high⟩
-  -- The height on the definite space `V` is one.
-  have h_height : V.height h = 1 := by rw [height, firstMinimum_move_eq_one (by simp), inv_one]
-  simpa only [h_height, pow_zero, one_pow, mul_one, zero_add] using h_est
+  exact h_bound g' h ℓ (W'.height g) (W'.height_pos g) h_norm fun h_high ↦
+    ⟨_, _, _, _, h_pair h_high⟩
 
 /-- Let `D` be an adapted splitting of `W'` into `W` and one hyperbolic plane, and let `A` be a set
 of finite places disjoint from its conjugate. If the descents of the automorphic function `Y` to

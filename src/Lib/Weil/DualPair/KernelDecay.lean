@@ -363,6 +363,29 @@ lemma exists_norm_pairWeil_schrodingerOp_mul_pow_le {S : Space E n s} {T : Space
     _ = C' * |Y| * 2 ^ (N + A) * m * ρ ^ (N + 2 * A) := by
       simp [mul_pow, div_pow, pow_add, two_mul, field]
 
+/-- For the datum `v ⊗ Ψ ⊗ vac`, suppose the Fock vector `v` has finite moment of order `A`.
+When the functional grows at most as `Y * ‖f‖ * H ^ A` and admits a short pair with length product
+at most `2 Z / H` for `H > 2`, its value on the translated datum is bounded uniformly in `H`.
+The bound depends on `v` through its moment. This is
+`exists_norm_pairWeil_schrodingerOp_mul_pow_le` at `N = 0` and `ρ = 1`. -/
+lemma exists_norm_pairWeil_schrodingerVacuum_le {S : Space E n s} {T : Space E n' s'}
+    (a b : AutChar E) {P : Set (FinPlace E)} (hP : Set.IsConjDisjoint P)
+    {Ψ : (n' × n → 𝔸f E) → ℂ} [IsSchwartzBruhat P Ψ]
+    (A : ℕ) (Y Z : ℝ) {v : fockSpace (realSigns E (homSigns s s'))}
+    (hv : fockMoment A v ≠ ⊤) :
+    ∃ K : ℝ, ∀ (g : G E s) (h : G E s') (ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ) (H : ℝ),
+      0 < H →
+      (∀ f : 𝒮 (S.hom T), ‖ℓ (pairWeil S T a b (g, h) f)‖ ≤ Y * ‖f‖ * H ^ A) →
+      (2 < H → ∃ (d : Matrix n' p E) (c : Matrix n q E) (x y : ℝ),
+        IsShortPair g h ℓ Ψ d c x y (Z * (2 / H))) →
+      ‖ℓ (pairWeil S T a b (g, h)
+        (integrated (S.hom T) v (schrodingerOp (S.hom T) P Ψ (vacElem (S.hom T)))))‖ ≤ K := by
+  obtain ⟨C, h_decay⟩ := exists_norm_pairWeil_schrodingerOp_mul_pow_le (p := p) (q := q)
+    (S := S) (T := T) (Ψ := Ψ) a b hP vacElem_mem_finitePart 0 A Y Z
+  refine ⟨C * (fockMoment A v).toReal, fun g h ℓ H hH h_growth h_short ↦ ?_⟩
+  simpa using h_decay v g h ℓ 1 H (by simpa using hv) le_rfl hH
+    (by simpa using h_growth) (by simpa using h_short)
+
 /-- The adelic coordinate matrix of a rational basis at `g`, as an invertible matrix. -/
 private noncomputable def basisCoordMatrix (S : Space E n s) (g : G E s) (c : GL n E) :
     GL n (𝔸 E) := g⁻¹.toUnitary.val * (S.x⁻¹ * c.map toAdele)

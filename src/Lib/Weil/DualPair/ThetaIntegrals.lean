@@ -241,9 +241,8 @@ lemma exists_tsum_thetaTerm_schrodingerOp_le {P : Set (FinPlace E)} (hP : Set.Is
       ∑' x : Matrix n' p E, ‖D.thetaTerm T a b
         (integrated (S.hom T) v (schrodingerOp (S.hom T) P Ψ (vacElem (S.hom T)))) g x k‖ₑ ≤ C := by
   -- A sum over finitely many `x` is the value of a functional `ℓ = ∑ u_x θ(·[x])` with phases
-  -- `u_x`. The decay estimate `exists_norm_pairWeil_schrodingerOp_mul_pow_le`, with `N = 0`,
-  -- `ρ = 1` and `H` the height of `k`, turns the bound `|C| ‖f‖ H ^ B` for `ℓ ∘ ω` into a bound
-  -- free of `H` at the datum `F`.
+  -- `u_x`. Apply `exists_norm_pairWeil_schrodingerVacuum_le` at the height of `k`.
+  -- The decay from the short pair cancels the growth of the functional.
   obtain ⟨C, B, h_sum⟩ : ∃ (C : ℝ) (B : ℕ), ∀ (f : 𝒮 (S.hom T)) (k : G E s'),
       ∑' x : Matrix n' p E, ‖D.thetaTerm T a b f g x k‖ₑ ≤
         ENNReal.ofReal (|C| * ‖f‖ * T.height k ^ B) := D.exists_tsum_thetaTerm_le T a b g
@@ -253,17 +252,8 @@ lemma exists_tsum_thetaTerm_schrodingerOp_le {P : Set (FinPlace E)} (hP : Set.Is
       ((d : E) • D.k.fromCols D.i).col j ∈ (S.move g).latticeBall Z :=
     exists_smul_col_mem_latticeBall g (D.k.fromCols D.i)
   set F : 𝒮 (S.hom T) := integrated (S.hom T) v (schrodingerOp (S.hom T) P Ψ (vacElem (S.hom T)))
-  obtain ⟨K, h_bound⟩ : ∃ K : ℝ, ∀ (k : G E s') (ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ),
-      (∀ f : 𝒮 (S.hom T), ‖ℓ (pairWeil S T a b (g, k) f)‖ ≤ |C| * ‖f‖ * T.height k ^ B) →
-      (2 < T.height k → ∃ (x : Matrix n' Unit E) (c : Matrix n (p ⊕ n₀) E) (r r' : ℝ),
-        IsShortPair g k ℓ Ψ x c r r' (Z * (2 / T.height k))) →
-      ‖ℓ (pairWeil S T a b (g, k) F)‖ ≤ K := by
-    obtain ⟨K, h_decay⟩ := exists_norm_pairWeil_schrodingerOp_mul_pow_le (p := Unit) (q := p ⊕ n₀)
-      (S := S) (T := T)
-      (Ψ := Ψ) a b hP vacElem_mem_finitePart 0 B |C| Z
-    refine ⟨K * (Fock.fockMoment (0 + B) v).toReal, fun k ℓ hℓ h_ex ↦ ?_⟩
-    simpa using h_decay v g k ℓ 1 (T.height k) (hv (0 + B)) le_rfl (height_pos k)
-      (by simpa using hℓ) (by simpa using h_ex)
+  obtain ⟨K, h_bound⟩ := exists_norm_pairWeil_schrodingerVacuum_le (p := Unit) (q := p ⊕ n₀)
+    (S := S) (T := T) (Ψ := Ψ) a b hP B |C| Z (hv B)
   refine ⟨K.toNNReal, fun k ↦ tsum_le_of_sum_le' bot_le fun t ↦ ?_⟩
   let ℓ : 𝒮 (S.hom T) →L[ℂ] ℂ := ∑ x ∈ t, u (D.thetaTerm T a b F g x k) •
     θ (S₀.hom T) ∘L D.homSlice T (T.x⁻¹.val * x.map toAdele)
@@ -305,7 +295,8 @@ lemma exists_tsum_thetaTerm_schrodingerOp_le {P : Set (FinPlace E)} (hP : Set.Is
   calc ∑ x ∈ t, ‖D.thetaTerm T a b F g x k‖ₑ
     _ = ENNReal.ofReal ‖ℓ (pairWeil S T a b (g, k) F)‖ := by
       rw [h_sum_eq, h_phase, Complex.norm_of_nonneg (by positivity)]
-    _ ≤ ENNReal.ofReal K := ofReal_le_ofReal (h_bound k ℓ h_growth h_pair)
+    _ ≤ ENNReal.ofReal K := ofReal_le_ofReal
+      (h_bound g k ℓ (T.height k) (height_pos k) h_growth h_pair)
 
 /-- Let `D` split `S` over `S₀`, let `Ψ` be Schwartz–Bruhat above a set `P` of finite places
 disjoint from its conjugate, and let `v` be a Fock vector whose moments `fockMoment N v` are all
