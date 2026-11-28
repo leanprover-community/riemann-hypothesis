@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Ring.IsFormallyReal
 public import New.Spanning.Unfolding.Link
 import Lib.Adelic.Adeles.StrongApproximation
+import TauCeti.Analysis.Matrix.PosSemidef.Determinant
 
 /-!
 # Links, lifts and gauges of a term
@@ -93,9 +94,8 @@ lemma liouville_gram [Fintype σ] [Fintype τ]
   -- the product of the ‖Φ w z‖².
   have h_place (w : NumberField.InfinitePlace E) :
       ‖Φ w (aᴴ * Q * b).det‖ ^ 2 ≤ ‖Φ w (aᴴ * Q * a).det‖ * ‖Φ w (bᴴ * Q * b).det‖ := by
-    have h_gram := (hQ w).posSemidef.conjTranspose_mul_mul_same ((a.fromCols b).map (Φ w))
-    rw [← fromBlocks_toBlocks (_ * _)] at h_gram
-    simpa [map_conjTranspose, map_det] using! norm_det_sq_le_of_posSemidef h_gram
+    simpa [map_conjTranspose, map_det] using
+      (hQ w).posSemidef.norm_det_conjTranspose_mul_mul_sq_le (a.map (Φ w)) (b.map (Φ w))
   have h_norm : |↑(norm ℚ (aᴴ * Q * b).det)| ^ 2 ≤
       |(norm ℚ (aᴴ * Q * a).det : ℝ)| * |↑(norm ℚ (bᴴ * Q * b).det)| := by
     simp only [abs_norm_eq_prod_norm_sq, ← prod_pow, ← prod_mul_distrib, ← mul_pow]
