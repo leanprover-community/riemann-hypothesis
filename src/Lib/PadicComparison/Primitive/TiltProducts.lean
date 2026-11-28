@@ -37,11 +37,11 @@ section TiltProducts
 open CategoryTheory Limits PadicTest Perfection Equiv Function
 
 /-- If `x ↦ (f x, g x)` is bijective for linear maps `f : X ⟶ Y` and `g : X ⟶ Z`, then so is
-`x ↦ (U.map f x, U.map g x)` for every functor `U` from modules to types that preserves finite
-products. -/
+`x ↦ (U.map f x, U.map g x)` for every functor `U` from modules to types that preserves the
+product of `Y` and `Z`. -/
 lemma _root_.Function.Bijective.map_prod {S : Type*} [Ring S] {X Y Z : ModuleCat S} {f : X ⟶ Y}
     {g : X ⟶ Z} (hfg : Bijective fun x : X ↦ (f x, g x)) (U : ModuleCat S ⥤ Type*)
-    [PreservesFiniteProducts U] :
+    [PreservesLimit (pair Y Z) U] :
     Bijective fun x : U.obj X ↦ (U.map f x, U.map g x) := by
   -- `X` with `f` and `g` is a product of `Y` and `Z`, so its image under `U` is a product of types.
   have h_iso : IsIso ((Y.binaryProductLimitCone Z).isLimit.lift (BinaryFan.mk f g)) :=
@@ -121,7 +121,7 @@ lemma hasPartitions_periodAlg (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorW
     simp
   have hθ' (A : PadicTest) : Function.Bijective (θ'.hom.app A) := (θ'.app A).toLinearEquiv.bijective
   exact ((Comparison.bijective_iff_of_comm_sq h_comm (hθ' A) ((hθ' B₁).prodMap (hθ' B₂))).mp
-    h_ten).map_prod (forget _ ⋙ uliftFunctor)
+    h_ten).map_prod (forget _ ⋙ uliftFunctor.{1})
 
 end PeriodPairs
 
