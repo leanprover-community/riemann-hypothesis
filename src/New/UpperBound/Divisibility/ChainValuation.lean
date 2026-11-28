@@ -168,7 +168,7 @@ theorem chainCombination_eq_sum {Φ : D.Translations → ∀ j : ℕ, (D.homX j)
         Ψ x • kernelProduct (D.liftKernel ϑ) (Φ x) φ (classPoints c g) D.m := by
   -- The classes for the levels below `D.m` have trivial automorphism groups.
   have free (j : ℕ) (hj : j < D.m) : ∀ g, classAut stdRatPoints (D.levelX j) g = ⊥ :=
-    D.classAut_eq_bot_of_le_chosenLevel inf_le_left (by grind [card_X, D.n_mono hj.le])
+    D.classAut_eq_bot_of_le_chosenLevel inf_le_left (by rw [card_X]; have := D.n_mono hj.le; omega)
   simpa [Finsupp.sum] using h_inv.sum_chain_eq_sum_kernelProduct _ free φ.prop g
 
 /-- Let `Ψ` be a weak chain datum for the twist `ϑ`; only the support condition is used: each tuple
@@ -338,6 +338,7 @@ lemma GaugeLe.restrictToY_of_diag {d : Gf D.E (D.X D.m)}
       NormedField.valuation.comap (weightEmbedding ιₚ τ)
         (if star (inducedPlace τ) ∈ D.piNPlaces then D.N else 1) := by
     rw [(isEquiv_placeOfEmb (weightEmbedding ιₚ τ)).eq_iff]
+    clear h_intertwine h_restrict h_block h_integral hφ hd
     split <;> simp_all [inducedPlace, placeOfEmb_comp_star, ← v_algebraMap_eq_valuation,
       v_algebraMap_eq_intValuation, intValuation_piN, D.isSplitLevel_piNPlaces.v_natCast, piNPlaces]
   have h_scalar : ‖ιₚ a‖ = ‖((∏ τ, s τ ^ D.branchExponent τ : ℂ_[p]ˣ) : ℂ_[p])‖ := by
