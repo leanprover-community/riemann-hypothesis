@@ -2,6 +2,7 @@ module
 
 public import Aesop.BuiltinRules
 import Mathlib.LinearAlgebra.Matrix.Module
+import TauCeti.RingTheory.Valuation.FinsetDvd
 public import Lib.Speed
 import Lib.General.LinearAlgebra.HermiteForm
 
@@ -130,11 +131,10 @@ lemma IsOntoUpToColength.prod {s : ℕ} {T : ι → End O V} {t : ι → ℝ} (L
 
 /-! ### The image of a square matrix over a valuation domain -/
 
-/-- Let `O` be a valuation domain, `M` a submodule of `V`, `f` a linear form on `V` and `a : O`. The
-vectors of `M` on which `f` is divisible by `a` have colength dividing `a` in `M`, in the sense of
-`ColengthDvd`: every finite family in `M` is carried into them by a square matrix whose determinant
-divides `a`. -/
-lemma colengthDvd_inf_comap_span [IsDomain O] [ValuationRing O] (M : Submodule O V) (f : V →ₗ[O] O)
+/-- Suppose divisibility in the commutative ring `O` is total. The vectors of a submodule `M` on
+which a linear form `f` takes values divisible by `a` have colength dividing `a` in `M`: every
+finite family in `M` is carried into them by a square matrix whose determinant divides `a`. -/
+lemma colengthDvd_inf_comap_span [PreValuationRing O] (M : Submodule O V) (f : V →ₗ[O] O)
     (a : O) : ColengthDvd M (M ⊓ Submodule.comap f (Ideal.span {a})) a := by
   intro n Φ hΦ
   obtain rfl | hn := n.eq_zero_or_pos
@@ -142,9 +142,8 @@ lemma colengthDvd_inf_comap_span [IsDomain O] [ValuationRing O] (M : Submodule O
   -- Take a member `Φ p` whose value divides the others, subtract multiples of it to clear them,
   -- and multiply it by `a`.
   classical
-  obtain ⟨p, -, hp⟩ := exists_max_image univ (fun k ↦ Ideal.span {f (Φ k)}) ⟨⟨0, hn⟩, mem_univ _⟩
-  replace hp (k : Fin n) : f (Φ p) ∣ f (Φ k) :=
-    Ideal.span_singleton_le_span_singleton.1 (hp k (mem_univ k))
+  have : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
+  obtain ⟨p, hp⟩ := TauCeti.PreValuationRing.exists_forall_dvd (fun k ↦ f (Φ k))
   choose c hc using hp
   let m : Matrix (Fin n) (Fin n) O := updateCol 1 p fun i ↦ if i = p then a else -c i
   have h_det : m.det = a := by simp [m, ← cramer_apply, cramer_one]
