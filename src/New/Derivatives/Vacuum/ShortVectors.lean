@@ -156,16 +156,9 @@ lemma exists_cyclotomic_different_factor {R : Type*} [CommRing R] [IsDomain R] [
   have h_root : (cyclotomic N R).eval ζ = 0 := hζ.isRoot_cyclotomic hN_pos
   have h_deriv_N :
       (N : R) = (ζ ^ r - 1) * (cyclotomic N R).derivative.eval ζ * (q.eval ζ * ζ) := by
-    have h_eq := congrArg (fun f : R[X] ↦ f.derivative.eval ζ * ζ) hq
-    simp only [derivative_sub, derivative_X_pow, derivative_one, sub_zero, eval_mul, eval_sub,
-      eval_one, eval_C, eval_pow, eval_X, derivative_mul, eval_add, h_root, zero_mul, mul_zero,
-      add_zero, zero_add] at h_eq
-    have h_pow : ζ ^ (N - 1) * ζ = 1 := by
-      rw [← pow_succ, Nat.sub_add_cancel hN_pos, hζ.pow_eq_one]
-    calc (N : R) = (N : R) * (ζ ^ (N - 1) * ζ) := by rw [h_pow, mul_one]
-      _ = (N : R) * ζ ^ (N - 1) * ζ := by ring
-      _ = (ζ ^ r - 1) * (cyclotomic N R).derivative.eval ζ * (q.eval ζ * ζ) := by
-          rw [h_eq]; ring
+    have hz : ((X ^ r - 1) * cyclotomic N R).eval ζ = 0 := by simp [h_root]
+    simpa [derivative_mul, h_root, mul_assoc] using
+      natCast_eq_eval_derivative_mul hN_ne hζ.pow_eq_one hz hq
   -- Expand `Φ_M(X ^ l) = Φ_{M l}(X) * Φ_M(X)` by `l ^ a` and differentiate at `ζ`.
   have hN_fac : M * l * l ^ a = N := by rw [hN_eq, hr_eq]; ring
   have h_exp_eq : expand R (l ^ a * l) (cyclotomic M R) =
