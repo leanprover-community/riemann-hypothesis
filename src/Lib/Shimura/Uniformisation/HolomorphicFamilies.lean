@@ -605,6 +605,186 @@ lemma HolomorphicAt.isFirstOrderConst_of_nsmul {v : P} {𝒜 : Over X} [AddObj �
   have y_eq : y = y₀ := sub_eq_zero.mp (h_inj h_unit h_nsmul_sub)
   rwa [show τ = τ₀ from congrArg CommaMorphism.left y_eq] at hτ
 
+/-- Let the linear equivalence `D : W ≃ₗ[K] ι → K` carry each map `F a` to the matrix `m a`. Then
+`HasSignature ρ b c m` holds iff some `Y ≠ 0` in `W` has `F a Y = ρ a • Y` for all `a`, and
+`F b - ρ c` maps `W` into the line of `Y`. -/
+lemma hasSignature_iff_of_linearEquiv {K ι O : Type} {W : Type*} [Field K] [Fintype ι]
+    [DecidableEq ι] [CommRing O] [AddCommGroup W] [Module K W] {F : O → W →ₗ[K] W}
+    {m : O → Matrix ι ι K} (D : W ≃ₗ[K] ι → K) (hD : ∀ (a : O) (w : W), D (F a w) = m a *ᵥ D w)
+    {ρ : O →+* K} {b c : O} :
+    HasSignature ρ b c m ↔
+      ∃ Y ≠ (0 : W), (∀ a : O, F a Y = ρ a • Y) ∧
+        ∃ ξ : W →ₗ[K] K, ∀ w : W, F b w - ρ c • w = ξ w • Y := by
+  -- Transport vectors along `D` and linear forms along its dual.
+  constructor
+  · rintro ⟨X, ξ, k, hXk, h_eig, h_mat⟩
+    refine ⟨D.symm X,
+      fun hY ↦ hXk.ne_zero (congrFun (show X = 0 by rw [← D.apply_symm_apply X, hY, map_zero]) k),
+      fun a ↦ D.injective ?_,
+      { toFun w := ξ ⬝ᵥ D w
+        map_add' w w' := by rw [map_add, dotProduct_add]
+        map_smul' r w := by rw [map_smul, dotProduct_smul, RingHom.id_apply] },
+      fun w ↦ D.injective ?_⟩
+    · rw [hD, map_smul, D.apply_symm_apply, h_eig a]
+    · rw [map_sub, hD, map_smul, map_smul, D.apply_symm_apply]
+      have h_app := congrArg (· *ᵥ D w) h_mat
+      rw [sub_mulVec, smul_mulVec, one_mulVec, vecMulVec_mulVec, op_smul_eq_smul] at h_app
+      exact h_app
+  · rintro ⟨Y, hY, h_eig, ξ, h_mat⟩
+    have hDY_ne : D Y ≠ 0 := fun h0 ↦ hY (D.injective (h0.trans (map_zero D).symm))
+    obtain ⟨k, hk⟩ := Function.ne_iff.mp hDY_ne
+    refine ⟨D Y, fun j ↦ ξ (D.symm (Pi.single j 1)), k, hk.isUnit, fun a ↦ ?_, ?_⟩
+    · rw [← hD, h_eig a, map_smul]
+    · ext i j
+      have h_col := congrFun (congrArg D (h_mat (D.symm (Pi.single j 1)))) i
+      rw [map_sub, hD, map_smul, map_smul, D.apply_symm_apply, mulVec_single_one] at h_col
+      simp only [Pi.sub_apply, Pi.smul_apply, Matrix.col_apply, smul_eq_mul, Matrix.sub_apply,
+        Matrix.smul_apply, Matrix.one_apply, vecMulVec_apply, Pi.single_apply] at h_col ⊢
+      exact h_col.trans (mul_comm _ _)
+
+/-- The uniformising map has a jet at `z₀` in every direction `v`: the tangent vector at `z₀` in the
+direction `v`, a point of `A` over the dual numbers. -/
+lemma Uniformisation.exists_isJet (z₀ v : V) :
+    ∃ τ : specOver ℂ (TrivSqZeroExt ℂ ℂ) ⟶ A,
+      IsJet (M := ℂ) (atGeneric u.expMap) z₀ (.applyₗ v) τ.left := by
+  obtain ⟨τ, hτ⟩ := (u.immersive z₀).1.exists_isJet (M := ℂ) (.applyₗ v)
+  exact ⟨homMk τ (by simpa using hτ.comp_base_eq fun w ↦ (u.expMap w).w), hτ⟩
+
+/-- Let `a : O` act on `V` by `F a`, compatibly with `u.expMap`. If the point `τ` of `A` over the
+dual numbers is the jet of `u.expMap` at `0` in the direction `v`, then `a • τ` is its jet in the
+direction `F a v`. -/
+lemma Uniformisation.isJet_smul {O : Type} [CommRing O] [ModuleObj O A] {F : O → V →L[ℂ] V}
+    (hF : ∀ (a : O) (w : V), u.expMap (F a w) = a • u.expMap w) {v : V}
+    {τ : specOver ℂ (TrivSqZeroExt ℂ ℂ) ⟶ A}
+    (hτ : IsJet (M := ℂ) (atGeneric u.expMap) 0 (.applyₗ v) τ.left) (a : O) :
+    IsJet (M := ℂ) (atGeneric u.expMap) 0 (.applyₗ (F a v)) (a • τ).left := by
+  -- `a • τ` is the jet in the direction `v` of `w ↦ a • u.expMap w = u.expMap (F a w)`; by the
+  -- chain rule, this is the jet of `u.expMap` at `F a 0 = 0` in the direction `F a v`.
+  have h_jet_smul := hτ.comp_hom (a • 𝟙 A).left
+  have h_fn : (fun w ↦ atGeneric u.expMap w ≫ (a • 𝟙 A).left) =
+      fun w ↦ atGeneric u.expMap (F a w) :=
+    funext fun w ↦ by
+      change (u.expMap w).left ≫ (a • 𝟙 A).left = (u.expMap (F a w)).left
+      rw [← Over.comp_left, ModuleObj.comp_smul, Category.comp_id, ← hF]
+  have h_τ : τ.left ≫ (a • 𝟙 A).left = (a • τ).left := by
+    rw [← Over.comp_left, ModuleObj.comp_smul, Category.comp_id]
+  rw [h_fn, h_τ] at h_jet_smul
+  have chain := (isJet_comp_iff (F a).hasFDerivAt (u.immersive (F a 0)).1).mp h_jet_smul
+  rwa [map_zero] at chain
+
+/-- A group base change `p` along `s` carries the zero section of `A` to the zero section of `𝒜`
+above `s`. -/
+private lemma IsGroupBaseChange.zero_left_comp {O : Type} [CommRing O] [ModuleObj O A]
+    {𝒜 : Over S} [AddObj 𝒜] [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S}
+    {p : (Over.map s).obj A ⟶ 𝒜} (h_bc : IsGroupBaseChange (R := O) s p) :
+    (AddMonObj.zero (X := A)).left ≫ p.left = s ≫ (AddMonObj.zero (X := 𝒜)).left := by
+  have h_comp_zero := h_bc.pullSection_comp 0
+  rw [map_zero] at h_comp_zero
+  simpa [Hom.zero_def] using h_comp_zero
+
+/-- Let `p` present `A` as the fibre of `𝒜` at `s`. If the point `τ` of `A` over the dual numbers
+is a jet of `u.expMap` at `0`, its image in `𝒜` vanishes modulo `ε`. -/
+private lemma Uniformisation.isInfinitesimal_pointEquiv {O : Type} [CommRing O] [ModuleObj O A]
+    {𝒜 : Over S} [AddObj 𝒜] [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S}
+    {p : (Over.map s).obj A ⟶ 𝒜} (h_bc : IsGroupBaseChange (R := O) s p) {v : V}
+    {τ : specOver ℂ (TrivSqZeroExt ℂ ℂ) ⟶ A}
+    (hτ : IsJet (M := ℂ) (atGeneric u.expMap) 0 (.applyₗ v) τ.left) :
+    IsInfinitesimal (ofHom (fstHom ℂ ℂ ℂ).toRingHom) (h_bc.pointEquiv τ) := by
+  -- `τ` reduces to the point `u.expMap 0 = 0`, and `p` carries `0` to `0`.
+  refine OverMorphism.ext ((hτ.fst_comp =≫ _).trans ?_)
+  have h_sec : specMap (fstHom ℂ ℂ ℂ).toRingHom ≫ specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) =
+      𝟙 (Spec (CommRingCat.of ℂ)) := by
+    rw [specMap, specMap, ← Spec.map_comp, ← ofHom_comp]
+    exact (congrArg (fun φ ↦ Spec.map (ofHom φ)) (RingHom.ext fun _ ↦ rfl)).trans (Spec.map_id _)
+  rw [Hom.zero_def]
+  change (u.expMap 0).left ≫ p.left =
+    (specMap (fstHom ℂ ℂ ℂ).toRingHom ≫ specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) ≫ s) ≫
+      (AddMonObj.zero (X := 𝒜)).left
+  rw [map_zero, Hom.zero_def]
+  change (𝟙 _ ≫ (AddMonObj.zero (X := A)).left) ≫ p.left = _
+  rw [Category.id_comp, h_bc.zero_left_comp, ← Category.assoc, h_sec, Category.id_comp]
+
+/-- Let `p` present `A` as the fibre of `𝒜` at `s`, and let the open `U` of `𝒜` contain the zero
+section above `s`. If the point `τ` of `A` over the dual numbers is the jet of `u.expMap` at `0` in
+the direction `v`, the coordinates `z(y) - z(0)` of its image `y` in `𝒜` are `ε` times the
+derivatives at `0` in the direction `v` of the `z j` along `u.expMap` followed by `p`. -/
+lemma Uniformisation.tangentCoords_pointEquiv {O : Type} [CommRing O] [ModuleObj O A]
+    {𝒜 : Over S} [AddObj 𝒜] [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S}
+    {p : (Over.map s).obj A ⟶ 𝒜} (h_bc : IsGroupBaseChange (R := O) s p) {ι : Type}
+    {U : 𝒜.left.Opens} {z : ι → Γ(𝒜.left, U)}
+    (hU : LandsIn (s ≫ (AddMonObj.zero (X := 𝒜)).left) U) {v : V}
+    {τ : specOver ℂ (TrivSqZeroExt ℂ ℂ) ⟶ A}
+    (hτ : IsJet (M := ℂ) (atGeneric u.expMap) 0 (.applyₗ v) τ.left) :
+    tangentCoords z (h_bc.pointEquiv τ) = fun j ↦
+      inr (fderiv ℂ (fun w ↦ PointFn.ofSection (z j) _ (atGeneric u.expMap w ≫ p.left)) 0 v) := by
+  -- This is the definition of a jet, applied to the sections `z j`.
+  simp [isRegularOn_ofSection _ _, tangentCoords, h_bc.zero_left_comp, hτ.comp_hom _ U,
+    IsGroupBaseChange.pointEquiv, hU, funext_iff, Hom.zero_def, algebraMap_eq_inl]
+
+/-- The open `U` of a Lie chart of `𝒜` over `s` contains the zero section above `s`. -/
+private lemma IsLieChart.landsIn_zero {O : Type} [CommRing O] {𝒜 : Over S} [AddObj 𝒜]
+    [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S} {ι : Type} [Fintype ι] {U : 𝒜.left.Opens}
+    {z : ι → Γ(𝒜.left, U)} {m : O → Matrix ι ι ℂ} (h_lieChart : IsLieChart 𝒜 s U z m) :
+    LandsIn (s ≫ (AddMonObj.zero (X := 𝒜)).left) U := by
+  simpa [Hom.zero_def] using (h_lieChart.2 (map_id _ =≫ s)).left
+
+/-- Let `z` be a Lie chart of `𝒜` over `s`, and let `p` present `A` as the fibre of `𝒜` at `s`.
+Then a direction `v` in `V` is determined by the derivatives at `0` in the direction `v` of the
+`z j` along `u.expMap` followed by `p`. -/
+lemma Uniformisation.injective_fderiv_ofSection {O : Type} [CommRing O] [ModuleObj O A]
+    {𝒜 : Over S} [AddObj 𝒜] [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S} {ι : Type}
+    [Fintype ι] {U : 𝒜.left.Opens} {z : ι → Γ(𝒜.left, U)} {m : O → Matrix ι ι ℂ}
+    {p : (Over.map s).obj A ⟶ 𝒜} (h_lieChart : IsLieChart 𝒜 s U z m)
+    (h_bc : IsGroupBaseChange (R := O) s p) :
+    Function.Injective fun (v : V) (j : ι) ↦
+      fderiv ℂ (fun w ↦ PointFn.ofSection (z j) _ (atGeneric u.expMap w ≫ p.left)) 0 v := by
+  -- If the derivatives vanish in the direction `v`, the image in `𝒜` of the jet `τ` of `u.expMap`
+  -- in the direction `v` is `0`, as `z` is a chart; and `u.expMap` followed by `p` is an immersion.
+  let D₀ : V →ₗ[ℂ] ι → ℂ := LinearMap.pi fun j ↦
+    (fderiv ℂ (fun w ↦ PointFn.ofSection (z j) _ (atGeneric u.expMap w ≫ p.left)) 0).toLinearMap
+  obtain ⟨-, h_imm_p⟩ := u.isHolomorphicImmersionAt_of_isPullback h_bc.isPullback 0
+  refine (injective_iff_map_eq_zero D₀).mpr fun v hv ↦ h_imm_p v ?_
+  obtain ⟨τ, hτ⟩ := u.exists_isJet 0 v
+  have h_coords_zero : tangentCoords z (h_bc.pointEquiv τ) = 0 := by
+    rw [u.tangentCoords_pointEquiv h_bc h_lieChart.landsIn_zero hτ]
+    exact funext fun j ↦ (congrArg inr (congrFun hv j)).trans (inr_zero ℂ)
+  have τ_zero : h_bc.pointEquiv τ = 0 :=
+    h_lieChart.isEtaleChart.eq_zero_of_tangentCoords_eq_zero (h_lieChart.2 rfl).left
+      (u.isInfinitesimal_pointEquiv h_bc hτ) h_coords_zero
+  have const : τ.left ≫ p.left =
+      specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) ≫ atGeneric u.expMap 0 ≫ p.left := by
+    refine (congrArg CommaMorphism.left τ_zero).trans ?_
+    simp [h_bc.zero_left_comp, Hom.zero_def]
+  have h_jet_p : IsJet (M := ℂ) (atGeneric u.expMap · ≫ p.left) 0 (.applyₗ v) (τ.left ≫ p.left) :=
+    hτ.comp_hom p.left
+  rwa [const] at h_jet_p
+
+/-- Let `a : O` act on `V` by `F a`, compatibly with `u.expMap`, let `z` be a Lie chart of `𝒜` over
+`s`, in which `a` acts on tangent vectors by the matrix `m a`, and let `p` present `A` as the fibre
+of `𝒜` at `s`, compatibly with the action of `O`. Then the derivatives at `0` of the `z j` along
+`u.expMap` followed by `p` carry `F a` to `m a`. -/
+lemma Uniformisation.fderiv_ofSection_apply_eq_mulVec {O : Type} [CommRing O] [ModuleObj O A]
+    {F : O → V →L[ℂ] V} (hF : ∀ (a : O) (w : V), u.expMap (F a w) = a • u.expMap w)
+    {𝒜 : Over S} [AddObj 𝒜] [ModuleObj O 𝒜] {s : Spec (CommRingCat.of ℂ) ⟶ S} {ι : Type}
+    [Fintype ι] {U : 𝒜.left.Opens} {z : ι → Γ(𝒜.left, U)} {m : O → Matrix ι ι ℂ}
+    {p : (Over.map s).obj A ⟶ 𝒜} (h_lieChart : IsLieChart 𝒜 s U z m)
+    (h_bc : IsGroupBaseChange (R := O) s p) (a : O) (v : V) :
+    (fun j ↦ fderiv ℂ (fun w ↦ PointFn.ofSection (z j) _ (atGeneric u.expMap w ≫ p.left)) 0
+        (F a v)) =
+      m a *ᵥ fun j ↦ fderiv ℂ (fun w ↦ PointFn.ofSection (z j) _ (atGeneric u.expMap w ≫ p.left))
+        0 v := by
+  -- Take the `ε`-part of the equation `tangentCoords z (a • y) = m a *ᵥ tangentCoords z y` of the
+  -- chart, for the image `y` in `𝒜` of the jet `τ` in the direction `v`; then `a • y` is the image
+  -- of `a • τ`, the jet in the direction `F a v`.
+  obtain ⟨τ, hτ⟩ := u.exists_isJet 0 v
+  obtain ⟨h_act, -⟩ := (h_lieChart.2 rfl).right (u.isInfinitesimal_pointEquiv h_bc hτ)
+  have h_snd := congrArg (fun c ↦ snd ∘ c) (h_act a)
+  rw [← map_smul, u.tangentCoords_pointEquiv h_bc h_lieChart.landsIn_zero hτ,
+    u.tangentCoords_pointEquiv h_bc h_lieChart.landsIn_zero (u.isJet_smul hF hτ a)] at h_snd
+  funext i
+  simpa [mulVec_eq_sum, snd_sum, funext_iff, algebraMap_eq_inl, -atGeneric_eq] using
+    congrFun h_snd i
+
 /-- The signature condition read on a uniformisation. Let `u` uniformise `A`, a group scheme over
 `ℂ` on which `O` acts, by a space `V` of dimension `d`, and let `A` be the fibre at the complex
 point `s` of the group scheme `𝒜`, with `p` the map of the fibre square, compatible with the action
@@ -625,108 +805,12 @@ lemma Uniformisation.hasSignature_iff {O : Type} {d : ℕ} [CommRing O] [ModuleO
         ∃ ξ : V →ₗ[ℂ] ℂ, ∀ w : V, F b w - ρ c • w = ξ w • Y := by
   -- The derivative `D` at `0` of the coordinates `z` along the uniformisation is an isomorphism
   -- `V ≃ ℂ ^ d` that carries `F a` to the matrix `m a`; both sides then say the same.
-  -- `τ v` is the tangent vector at `0` in the direction `v`, a point over the dual numbers.
-  obtain ⟨h_hol₀, -⟩ := u.immersive 0
-  obtain ⟨h_etale, h_chart⟩ := h_lieChart
-  have h_jets : ∀ v : V, ∃ τ : Spec (CommRingCat.of (TrivSqZeroExt ℂ ℂ)) ⟶ A.left,
-      IsJet (M := ℂ) (atGeneric u.expMap) 0 (.applyₗ v) τ :=
-    fun v ↦ h_hol₀.exists_isJet (M := ℂ) (.applyₗ v)
-  choose τ₀ jet using h_jets
-  have τ₀_over (v : V) : τ₀ v ≫ A.hom = (specOver ℂ (TrivSqZeroExt ℂ ℂ)).hom := by
-    simpa using (jet v).comp_base_eq fun w ↦ (u.expMap w).w
-  let τ (v : V) : specOver ℂ (TrivSqZeroExt ℂ ℂ) ⟶ A := homMk (τ₀ v) (τ₀_over v)
-  have zero_p : (AddMonObj.zero (X := A)).left ≫ p.left = s ≫ (AddMonObj.zero (X := 𝒜)).left := by
-    have h_comp_zero := h_bc.pullSection_comp 0
-    rw [map_zero] at h_comp_zero
-    simpa [Hom.zero_def] using h_comp_zero
-  have zero_mem : LandsIn (s ≫ (AddMonObj.zero (X := 𝒜)).left) U := by
-    simpa [Hom.zero_def] using (h_chart (map_id _ =≫ s)).left
-  have h_infinitesimal (v : V) :
-      IsInfinitesimal (ofHom (fstHom ℂ ℂ ℂ).toRingHom) (h_bc.pointEquiv (τ v)) := by
-    refine OverMorphism.ext (((jet v).fst_comp =≫ _).trans ?_)
-    have h_sec : specMap (fstHom ℂ ℂ ℂ).toRingHom ≫ specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) =
-        𝟙 (Spec (CommRingCat.of ℂ)) := by
-      rw [specMap, specMap, ← Spec.map_comp, ← ofHom_comp]
-      exact (congrArg (fun φ ↦ Spec.map (ofHom φ)) (RingHom.ext fun _ ↦ rfl)).trans (Spec.map_id _)
-    rw [Hom.zero_def]
-    change (u.expMap 0).left ≫ p.left =
-      (specMap (fstHom ℂ ℂ ℂ).toRingHom ≫ specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) ≫ s) ≫
-        (AddMonObj.zero (X := 𝒜)).left
-    rw [map_zero, Hom.zero_def]
-    change (𝟙 _ ≫ (AddMonObj.zero (X := A)).left) ≫ p.left = _
-    rw [Category.id_comp, zero_p, ← Category.assoc, h_sec, Category.id_comp]
   let D₀ : V →ₗ[ℂ] Fin d → ℂ := LinearMap.pi fun j ↦
     (fderiv ℂ (fun w ↦ PointFn.ofSection (z j) _ (atGeneric u.expMap w ≫ p.left)) 0).toLinearMap
-  -- The coordinates of `τ v` differ from those of `0` by `ε • D₀ v`, by the definition of a jet.
-  have dv_eq (v : V) : tangentCoords z (h_bc.pointEquiv (τ v)) = inr ∘ D₀ v := by
-    simp [isRegularOn_ofSection _ _, tangentCoords, τ, zero_p, D₀, (jet v).comp_hom _ U,
-      IsGroupBaseChange.pointEquiv, zero_mem, funext_iff, Hom.zero_def, algebraMap_eq_inl]
-  -- If `D₀ v = 0`, the image of `τ v` in `𝒜` is `0` as `z` is a chart; and `u` is an immersion.
-  have D₀_inj : Function.Injective D₀ := by
-    obtain ⟨-, h_imm_p⟩ := u.isHolomorphicImmersionAt_of_isPullback h_bc.isPullback 0
-    refine (injective_iff_map_eq_zero _).mpr fun v hv ↦ h_imm_p v ?_
-    have h_coords_zero : tangentCoords z (h_bc.pointEquiv (τ v)) = 0 := by simp [dv_eq, hv]
-    have τ_zero : h_bc.pointEquiv (τ v) = 0 :=
-      h_etale.eq_zero_of_tangentCoords_eq_zero (h_chart rfl).left (h_infinitesimal v) h_coords_zero
-    have const : τ₀ v ≫ p.left =
-        specMap (algebraMap ℂ (TrivSqZeroExt ℂ ℂ)) ≫ atGeneric u.expMap 0 ≫ p.left := by
-      refine (congrArg CommaMorphism.left τ_zero).trans ?_
-      simp [zero_p, Hom.zero_def]
-    have h_jet_p : IsJet (M := ℂ) (atGeneric u.expMap · ≫ p.left) 0 (.applyₗ v) (τ₀ v ≫ p.left) :=
-      (jet v).comp_hom p.left
-    rwa [const] at h_jet_p
-  let D : V ≃ₗ[ℂ] Fin d → ℂ := D₀.linearEquivOfInjective D₀_inj (by simpa using hd)
-  -- Both sides are the jet at `0` of `w ↦ u.expMap (F a w) = a • u.expMap w` in the direction `v`.
-  have τ_F (a : O) (v : V) : τ (F a v) = a • τ v := by
-    have h_jet_F :
-        IsJet (M := ℂ) (atGeneric u.expMap) (F a 0) (.applyₗ (F a v)) (τ₀ (F a v)) := by
-      simpa using jet (F a v)
-    have chain : IsJet (fun w ↦ atGeneric u.expMap (F a w)) 0 (.applyₗ v) (τ₀ (F a v)) :=
-      (isJet_comp_iff (F a).hasFDerivAt (u.immersive (F a 0)).1).mpr h_jet_F
-    refine OverMorphism.ext (chain.unique ?_)
-    have h_jet_smul := (jet v).comp_hom (τ := (τ v).left) (a • 𝟙 A).left
-    have h_fn : (fun w ↦ atGeneric u.expMap w ≫ (a • 𝟙 A).left) =
-        fun w ↦ atGeneric u.expMap (F a w) :=
-      funext fun w ↦ by
-        change (u.expMap w).left ≫ (a • 𝟙 A).left = (u.expMap (F a w)).left
-        rw [← Over.comp_left, ModuleObj.comp_smul, Category.comp_id, ← hF]
-    have h_τ : (τ v).left ≫ (a • 𝟙 A).left = (a • τ v).left := by
-      rw [← Over.comp_left, ModuleObj.comp_smul, Category.comp_id]
-    rw [h_fn, h_τ] at h_jet_smul
-    exact h_jet_smul
-  -- Take the `ε`-part of the equation `tangentCoords z (a • y) = m a *ᵥ tangentCoords z y` of the
-  -- chart, for the image `y` of `τ v` in `𝒜`.
-  have D_F (a : O) (v : V) : D (F a v) = m a *ᵥ D v := by
-    obtain ⟨h_act, -⟩ := (h_chart rfl).right (h_infinitesimal v)
-    have hD_apply (w : V) : D w = D₀ w := rfl
-    simpa [dv_eq, mulVec_eq_sum, snd_sum, ← map_smul, ← τ_F, funext_iff, hD_apply,
-      algebraMap_eq_inl] using congrArg (fun c ↦ snd ∘ c) (h_act a)
-  -- Transport vectors along `D` and linear forms along its dual.
-  constructor
-  · rintro ⟨X, ξ, k, hXk, h_eig, h_mat⟩
-    refine ⟨D.symm X,
-      fun hY ↦ hXk.ne_zero (congrFun (show X = 0 by rw [← D.apply_symm_apply X, hY, map_zero]) k),
-      fun a ↦ D.injective ?_,
-      { toFun w := ξ ⬝ᵥ D w
-        map_add' u v := by rw [map_add, dotProduct_add]
-        map_smul' r v := by rw [map_smul, dotProduct_smul, RingHom.id_apply] },
-      fun w ↦ D.injective ?_⟩
-    · rw [D_F, map_smul, D.apply_symm_apply, h_eig a]
-    · rw [map_sub, D_F, map_smul, map_smul, D.apply_symm_apply]
-      have h_app := congrArg (· *ᵥ D w) h_mat
-      rw [sub_mulVec, smul_mulVec, one_mulVec, vecMulVec_mulVec, op_smul_eq_smul] at h_app
-      exact h_app
-  · rintro ⟨Y, hY, h_eig, ξ, h_mat⟩
-    have hDY_ne : D Y ≠ 0 := fun h0 ↦ hY (D.injective (h0.trans (map_zero D).symm))
-    obtain ⟨k, hk⟩ := Function.ne_iff.mp hDY_ne
-    refine ⟨D Y, fun j ↦ ξ (D.symm (Pi.single j 1)), k, hk.isUnit, fun a ↦ ?_, ?_⟩
-    · rw [← D_F, h_eig a, map_smul]
-    · ext i j
-      have h_col := congrFun (congrArg D (h_mat (D.symm (Pi.single j 1)))) i
-      rw [map_sub, D_F, map_smul, map_smul, D.apply_symm_apply, mulVec_single_one] at h_col
-      simp only [Pi.sub_apply, Pi.smul_apply, Matrix.col_apply, smul_eq_mul, Matrix.sub_apply,
-        Matrix.smul_apply, Matrix.one_apply, vecMulVec_apply, Pi.single_apply] at h_col ⊢
-      exact h_col.trans (mul_comm _ _)
+  let D : V ≃ₗ[ℂ] Fin d → ℂ :=
+    D₀.linearEquivOfInjective (u.injective_fderiv_ofSection h_lieChart h_bc) (by simpa using hd)
+  exact hasSignature_iff_of_linearEquiv (F := fun a ↦ (F a : V →ₗ[ℂ] V)) D
+    (u.fderiv_ofSection_apply_eq_mulVec hF h_lieChart h_bc)
 
 end HolomorphicFamily
 
