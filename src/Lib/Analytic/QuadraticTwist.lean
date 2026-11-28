@@ -1,5 +1,6 @@
 module
 
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.Mollifier
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.Hadamard
 import Mathlib.NumberTheory.LSeries.PrimesInAP
@@ -145,7 +146,18 @@ lemma norm_cpow_smul_thetaSeries_le (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (hz : z.
     norm_num [norm_cpow_eq_rpow_re_of_pos hu, sqrt_eq_rpow, hz]
   grw [norm_smul, h_pow, norm_thetaSeries_le hc hu, mul_div_cancel₀ _ (sqrt_pos.2 hu).ne']
 
-variable {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
+variable {q : ℕ} {χ : DirichletCharacter ℂ q}
+
+private lemma mollifier_eq_gaussianMollifier (hT : 0 < T) :
+    mollifier j (χ ·) T z = χ.gaussianMollifier j.val T⁻¹ z := by
+  rw [mollifier, DirichletCharacter.gaussianMollifier_def]
+  refine setIntegral_congr_fun measurableSet_Ioi fun u hu ↦ ?_
+  rw [cpow_smul_thetaSeries z ((inv_pos.2 hT).trans hu), smul_eq_mul]
+  congr 1
+  rw [gaussianTheta, TauCeti.gaussianDirichletTheta_def, ← Equiv.pnatEquivNat.symm.tsum_eq]
+  simp [gaussianMonomial, Nat.succPNat]
+
+variable [NeZero q]
 
 /-- For a Dirichlet character `χ`, `T > 0` and `re z = 2` we have
 `|Γ_j(z) L(z, χ) 𝓜(z) - Γ_j(z)²| ≤ 9 / T`. Here `Γ_j(s) = ∫_0^∞ w(x) x ^ s dx / x` is
@@ -156,27 +168,25 @@ variable {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
 lemma norm_mul_mollifier_sub_le (hT : 0 < T) (hz : z.re = 2) :
     ‖gaussianMellin j z * χ.LFunction z * mollifier j (χ ·) T z - gaussianMellin j z ^ 2‖ ≤
       9 / T := by
-  -- The difference `Γ_j / L - 𝓜` is the integral over `u ≤ 1 / T`.
   have hz_one : 1 < z.re := by norm_num [hz]
   have hχ (n : ℕ) : ‖χ n‖ ≤ 1 := χ.norm_le_one n
-  have h_exp : IntegrableOn (fun u : ℝ ↦ 3 * rexp (-u)) (Ioi 0) :=
-    (integrableOn_exp_neg_Ioi 0).const_mul 3
-  let F (u : ℝ) : ℂ := (u : ℂ) ^ (z - 2⁻¹ - 1) • thetaSeries j (fun n : ℕ ↦ χ n * μ n) u
-  have hF (u : ℝ) (hu : 0 < u) : ‖F u‖ ≤ 3 * rexp (-u) :=
-    norm_cpow_smul_thetaSeries_le (norm_mul_moebius_le_one hχ) hz hu
-  have hF_int : IntegrableOn F (Ioi 0) := h_exp.mono'
-    ((measurable_ofReal.pow_const _).smul measurable_thetaSeries).aestronglyMeasurable
-    (ae_restrict_of_forall_mem measurableSet_Ioi hF)
-  have h_head : gaussianMellin j z / χ.LFunction z - mollifier j (χ ·) T z =
-      ∫ u : ℝ in Ioc 0 T⁻¹, F u := by
-    rw [← mellin_thetaSeries_moebius χ hz_one, mellin, mollifier, ← Ioi_sdiff_Ioi,
-      setIntegral_sdiff measurableSet_Ioi hF_int (Ioi_subset_Ioi (inv_pos.2 hT).le)]
-  have h_head_le : ‖∫ u : ℝ in Ioc 0 T⁻¹, F u‖ ≤ 3 * T⁻¹ := by
-    refine (norm_setIntegral_le_of_norm_le_const (C := 3) measure_Ioc_lt_top fun u hu ↦ ?_).trans_eq
-      (by simp [hT.le])
-    grw [hF u hu.1, exp_le_one_iff.2 (neg_nonpos.2 hu.1.le), mul_one]
+  -- The difference between `Γ_j / L` and `𝓜` is the integral over `u ≤ 1 / T`.
+  have h_tail : ‖mollifier j (χ ·) T z - gaussianMellin j z / χ.LFunction z‖ ≤ 3 * T⁻¹ := by
+    have h_inv : χ.LFunction z * LSeries (fun n : ℕ ↦ χ n * μ n) z = 1 := by
+      rw [χ.LFunction_eq_LSeries hz_one]
+      exact DirichletCharacter.LSeries.mul_mu_eq_one χ hz_one
+    have h_factorial : j.val.factorial = 1 := by fin_cases j <;> rfl
+    have h_bound := TauCeti.norm_integral_gaussianDirichletTheta_sub j.val
+      (fun n _ ↦ norm_mul_moebius_le_one hχ n) (inv_pos.2 hT).le hz
+    rw [mollifier_eq_gaussianMollifier hT, DirichletCharacter.gaussianMollifier_def,
+      div_eq_mul_inv, mul_comm (gaussianMellin j z)]
+    rw [eq_inv_of_mul_eq_one_right h_inv, ← gaussianMellin_eq (zero_lt_one.trans hz_one),
+      h_factorial, Nat.cast_one, mul_one, one_mul] at h_bound
+    exact h_bound.trans (mul_le_mul_of_nonneg_right Real.exp_one_lt_three.le (inv_pos.2 hT).le)
   -- By Riemann's formula and the trivial bound, `|Γ_j L| ≤ ∫_0^∞ 3 e^(-u) du = 3`.
-  have h_prod : ‖gaussianMellin j z * χ.LFunction z‖ ≤ 3 :=
+  have h_prod : ‖gaussianMellin j z * χ.LFunction z‖ ≤ 3 := by
+    have h_exp : IntegrableOn (fun u : ℝ ↦ 3 * rexp (-u)) (Ioi 0) :=
+      (integrableOn_exp_neg_Ioi 0).const_mul 3
     calc _ = ‖mellin (thetaSeries j (χ ·)) (z - 2⁻¹)‖ := by
           rw [χ.LFunction_eq_LSeries hz_one, mellin_thetaSeries hχ hz_one]
       _ ≤ ∫ u : ℝ in Ioi 0, 3 * rexp (-u) := norm_integral_le_of_norm_le h_exp
@@ -186,7 +196,7 @@ lemma norm_mul_mollifier_sub_le (hT : 0 < T) (hz : z.re = 2) :
     χ.LFunction_ne_zero_of_one_le_re (.inr (ne_of_apply_ne re hz_one.ne')) hz_one.le
   calc _ = ‖gaussianMellin j z * χ.LFunction z *
         (mollifier j (χ ·) T z - gaussianMellin j z / χ.LFunction z)‖ := congrArg norm (by field)
-    _ ≤ 3 * (3 * T⁻¹) := by grw [norm_mul, norm_sub_rev, h_head, h_prod, h_head_le]
+    _ ≤ 3 * (3 * T⁻¹) := by grw [norm_mul, h_prod, h_tail]
     _ = 9 / T := by ring
 
 /-- Let `χ ≠ 1` be primitive of parity `j` and conductor `q ≤ T²`. On `re z = 1/2` we have
