@@ -810,13 +810,12 @@ lemma saturateBy_tau_span_kisinModule :
   exact le_antisymm (h_le tau_pow_jumpBound_smul_mem_ainfLattice_of_mem_kisinAinf)
     (h_le tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice)
 
-/-- In W(C^♭) ⊗ L, `kisinAinf` is the A_inf-module of those `x` in A_inf[1/τ] ⊗ L with
-μ(φ^n x) ∈ B_dR⁺ for all n ≥ 1 and all μ in `L.forms`. Then `x` lies in `kisinAinf` if
-and only if two conditions hold. First, some power of `tau` = [ε^{1/p}] − 1 multiplies `x` into
-`ainfLattice`, the A_inf-span of the elements 1 ⊗ y with y in L. Second, for some `n` and every `μ`
-in `crysForms`, `E ^ n • μ x` is the image in `BdR` of an element of `BPlus`; here `crysForms` are
-the invariant forms whose restriction to 1 ⊗ L comes from a Z_p-linear map L → `Bmax`, and `E` is
-`k.E`. -/
+/-- In W(C^♭) ⊗ L, `kisinAinf` is the A_inf-module of those `x` in A_inf[1/τ] ⊗ L with μ(φ^n x) ∈
+B_dR⁺ for all n ≥ 1 and all μ in `L.forms`. Then `x` lies in `kisinAinf` if two conditions hold.
+First, some power of `tau` = [ε^{1/p}] − 1 multiplies `x` into `ainfLattice`, the A_inf-span of the
+elements 1 ⊗ y with y in L. Second, for some `n` and every `μ` in `crysForms`, `E ^ n • μ x` is the
+image in `BdR` of an element of `BPlus`; here `crysForms` are the invariant forms whose restriction
+to 1 ⊗ L comes from a Z_p-linear map L → `Bmax`, and `E` is `k.E`. -/
 theorem mem_kisinAinf_of_crysForms {x : L.Ambient}
     (hx_sat : x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice) {n : ℕ}
     (h_val : ∀ μ ∈ L.crysForms, ∃ s : BPlus, k.E.val ^ n • μ x = algebraMap BPlus BdR s) :
