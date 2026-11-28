@@ -7,10 +7,10 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.Analysis.InnerProductSpace.NearIsometry.SecondMoment
 public import Lib.Speed
 import Lib.PadicComparison.Descent.TestCategory
 import Lib.Shimura.Uniformisation.HolomorphicFamilies
-import New.Spanning.SecondMoment.PositiveType
 
 /-!
 # Few translates fill
@@ -272,6 +272,19 @@ lemma adjoint_rep_of_unitary (hρ : ∀ (s : Γ) (x y : T), ⟪ρ s x, ρ s y⟫
   refine ((eq_adjoint_iff _ _).2 fun x y ↦ ?_).symm
   rw [← hρ s, ρ.self_inv_apply]
 
+/-- `hilbertSchmidtNorm` has the same square as Tau Ceti's Frobenius seminorm. -/
+private lemma hilbertSchmidtNorm_sq_eq_sq_frobenius (A : S →ₗ[ℂ] T) :
+    hilbertSchmidtNorm A ^ 2 =
+      TauCeti.UnitarilyInvariantSeminorm.frobenius ℂ S T A ^ 2 :=
+  (hilbertSchmidtNorm_sq_eq_sum (stdOrthonormalBasis ℂ S) A).trans
+    (TauCeti.UnitarilyInvariantSeminorm.sq_frobenius_apply (stdOrthonormalBasis ℂ S) A).symm
+
+omit [FiniteDimensional ℂ T] in
+/-- A representation that preserves inner products preserves norms. -/
+private lemma norm_rep_of_unitary (hρ : ∀ (s : Γ) (x y : T), ⟪ρ s x, ρ s y⟫_ℂ = ⟪x, y⟫_ℂ)
+    (s : Γ) (x : T) : ‖ρ s x‖ = ‖x‖ := by
+  simp only [norm_eq_sqrt_re_inner (𝕜 := ℂ), hρ]
+
 /-- Let `ρ` be a unitary representation of `Γ` on `T`. The vector `hilbertSchmidtVector X` lists the
 values of a map `X` on an orthonormal basis, so `⟪hilbertSchmidtVector X, hilbertSchmidtVector Y⟫`
 is the Hilbert–Schmidt inner product `tr (X* Y)`. This product of `s B B* s⁻¹` and `t B B* t⁻¹` is
@@ -282,47 +295,9 @@ lemma inner_hilbertSchmidtVector_translate (hρ : ∀ (s : Γ) (x y : T), ⟪ρ 
     ⟪hilbertSchmidtVector ((ρ s ∘ₗ B) ∘ₗ (ρ s ∘ₗ B).adjoint),
       hilbertSchmidtVector ((ρ t ∘ₗ B) ∘ₗ (ρ t ∘ₗ B).adjoint)⟫_ℂ =
       (hilbertSchmidtNorm (B.adjoint ∘ₗ ρ (s⁻¹ * t) ∘ₗ B) ^ 2 : ℝ) := by
-  set X : S →ₗ[ℂ] T := ρ s ∘ₗ B with hX
-  set Y : S →ₗ[ℂ] T := ρ t ∘ₗ B with hY
-  have h_factor : B.adjoint ∘ₗ ρ (s⁻¹ * t) ∘ₗ B = X.adjoint ∘ₗ Y := by
-    simp [hX, hY, adjoint_comp, adjoint_rep_of_unitary hρ, End.mul_eq_comp, comp_assoc]
-  rw [h_factor, hilbertSchmidtNorm_sq_eq_trace, inner_hilbertSchmidtVector]
-  calc trace ℂ T ((X ∘ₗ X.adjoint).adjoint ∘ₗ Y ∘ₗ Y.adjoint)
-      = trace ℂ T (((X ∘ₗ X.adjoint) ∘ₗ Y) ∘ₗ Y.adjoint) := by
-        rw [adjoint_comp, adjoint_adjoint, comp_assoc _ Y]
-    _ = trace ℂ S (Y.adjoint ∘ₗ (X ∘ₗ X.adjoint) ∘ₗ Y) := trace_comp_comm' _ _
-    _ = trace ℂ S ((X.adjoint ∘ₗ Y).adjoint ∘ₗ X.adjoint ∘ₗ Y) := by
-        simp only [adjoint_comp, adjoint_adjoint, comp_assoc]
-
-/-- Cauchy–Schwarz for the projection onto `W` and the sum of the operators `s B B* s⁻¹`, where
-`s` runs through a finite group that acts unitarily: the sum of the squared Hilbert–Schmidt norms
-`‖pr_W s B‖²` has square at most `dim W` times the order of the group times the sum of
-`‖B* s B‖²`. -/
-lemma sq_sum_hilbertSchmidtNorm_orthoProj_comp_le [Fintype Γ]
-    (hρ : ∀ (s : Γ) (x y : T), ⟪ρ s x, ρ s y⟫_ℂ = ⟪x, y⟫_ℂ) (B : S →ₗ[ℂ] T) (W : Submodule ℂ T) :
-    (∑ s : Γ, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2) ^ 2 ≤
-      finrank ℂ W * (Fintype.card Γ * ∑ s : Γ, hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2) := by
-  set sumBB : PiLp 2 fun _ : Fin (finrank ℂ T) ↦ T :=
-    ∑ s : Γ, hilbertSchmidtVector ((ρ s ∘ₗ B) ∘ₗ (ρ s ∘ₗ B).adjoint)
-  have h_norm : ‖sumBB‖ ^ 2 = Fintype.card Γ * ∑ s,
-    hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2 := by
-    rw [norm_sq_eq_re_inner (𝕜 := ℂ), inner_sum_sum_eq_card_mul
-      (fun s ↦ ((hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2 : ℝ) : ℂ))
-        (inner_hilbertSchmidtVector_translate hρ B),
-      ← ofReal_sum, ← ofReal_natCast, ← ofReal_mul]
-    exact ofReal_re _
-  have h_inner : ∑ s, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2 =
-      re ⟪hilbertSchmidtVector (orthoProj W), sumBB⟫_ℂ := by
-    simp only [sumBB, hilbertSchmidtNorm_orthoProj_comp_sq, inner_sum, re_sum]
-  have h_cs : re ⟪hilbertSchmidtVector (orthoProj W),
-    sumBB⟫_ℂ ≤ hilbertSchmidtNorm (orthoProj W) * ‖sumBB‖ :=
-    (re_le_norm _).trans (norm_inner_le_norm _ _)
-  calc (∑ s : Γ, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2) ^ 2
-      ≤ (hilbertSchmidtNorm (orthoProj W) * ‖sumBB‖) ^ 2 :=
-        pow_le_pow_left₀ (sum_nonneg fun _ _ ↦ sq_nonneg _) (h_inner.trans_le h_cs) 2
-    _ = finrank ℂ W * (Fintype.card Γ * ∑ s : Γ,
-      hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2) := by
-        rw [mul_pow, hilbertSchmidtNorm_orthoProj_sq, h_norm]
+  rw [inner_hilbertSchmidtVector, hilbertSchmidtNorm_sq_eq_sq_frobenius]
+  exact TauCeti.trace_adjoint_comp_eq_sq_frobenius_adjoint_comp_comp
+    (norm_rep_of_unitary hρ) B s t
 
 /-- **One translate.** Let a finite group `Γ` act unitarily on `T` by `ρ`, and let `pr₀` be the
 orthogonal projection onto a stable subspace `T₀`, so that `pr₀ s = s pr₀`. Suppose that `pr₀ B` is
@@ -337,60 +312,36 @@ theorem isSpread_of_second_moment [Fintype Γ]
     (h_moment : finrank ℂ (range pr₀) * ∑ s : Γ, hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2 ≤
       Fintype.card Γ * ((1 + ε) * finrank ℂ S ^ 2)) :
     IsSpread (fun s : Γ ↦ pr₀.rangeRestrict ∘ₗ ρ s ∘ₗ B) (3 / 2 * ε) := by
-  -- Cauchy–Schwarz bounds the mean of `‖pr_W s B‖²`, so for some `s` this squared norm is within
-  -- that bound. For this `s` the near isometry, applied to the preimage of `W`, bounds the
-  -- dimension of that preimage. Here `W₀` is `W` inside `T₀`, and `α = dim W / dim T₀`.
-  intro W₀ α
-  set W : Submodule ℂ T := W₀.map (range pr₀).subtype
-  have h_dim : (finrank ℂ W : ℝ) = α * finrank ℂ (range pr₀) := by
-    rw [Submodule.finrank_map_subtype_eq]
-    have h_zero (h : (finrank ℂ (range pr₀) : ℝ) = 0) : (finrank ℂ W₀ : ℝ) = 0 :=
-      mod_cast Nat.eq_zero_of_le_zero (W₀.finrank_le.trans_eq (mod_cast h))
-    exact (div_mul_cancel_of_imp h_zero).symm
-  set moment : ℝ := ∑ s : Γ, hilbertSchmidtNorm (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2
-  have h_mean : ∑ s, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2 ≤
-      Fintype.card Γ * ((α + 1 + ε) / 2 * finrank ℂ S) := by
-    refine (abs_le_of_sq_le_sq' ?_ (by positivity)).2
-    calc (∑ s, hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2) ^ 2
-        ≤ finrank ℂ W * (Fintype.card Γ * moment) :=
-          sq_sum_hilbertSchmidtNorm_orthoProj_comp_le hρ B W
-      _ = α * Fintype.card Γ * (finrank ℂ (range pr₀) * moment) := by
-          rw [h_dim]
-          ring
-      _ ≤ α * Fintype.card Γ * (Fintype.card Γ * ((1 + ε) * finrank ℂ S ^ 2)) := by gcongr
-      _ = α * (1 + ε) * (Fintype.card Γ * finrank ℂ S) ^ 2 := by ring
-      _ ≤ ((α + 1 + ε) / 2) ^ 2 * (Fintype.card Γ * finrank ℂ S) ^ 2 := by
-          gcongr
-          nlinarith [sq_nonneg (α - (1 + ε))]
-      _ = (Fintype.card Γ * ((α + 1 + ε) / 2 * finrank ℂ S)) ^ 2 := by ring
-  obtain ⟨s, -, hs⟩ : ∃ s ∈ (Finset.univ : Finset Γ),
-      hilbertSchmidtNorm (orthoProj W ∘ₗ ρ s ∘ₗ B) ^ 2 ≤ (α + 1 + ε) / 2 * finrank ℂ S :=
-    exists_le_of_sum_le univ_nonempty (by rwa [sum_const, card_univ, nsmul_eq_mul])
-  refine ⟨s, ?_⟩
-  set W' : Submodule ℂ S := W₀.comap (pr₀.rangeRestrict ∘ₗ ρ s ∘ₗ B)
-  -- On the preimage `W'` of `W` the maps `s pr₀ B` and `pr_W s B` agree.
-  have h_agree (x : S) (hx : x ∈ W') : ρ s (pr₀ (B x)) = orthoProj W (ρ s (B x)) := by
-    have h_mem : pr₀ (ρ s (B x)) ∈ W :=
-      Submodule.mem_map_of_mem (f := (range pr₀).subtype) hx
-    have h_orth (w : T) (hw : w ∈ W) : ⟪ρ s (B x) - pr₀ (ρ s (B x)), w⟫_ℂ = 0 := by
-      obtain ⟨y, rfl⟩ : w ∈ range pr₀ := Submodule.map_subtype_le _ W₀ hw
-      simp [← hpr₀.isSymmetric _ y, ← mul_apply_eq_comp pr₀ pr₀, hpr₀.isIdempotentElem.eq]
-    rw [← mul_apply_eq_comp, ← (h_comm s).eq, mul_apply_eq_comp]
-    exact (Submodule.eq_starProjection_of_mem_of_inner_eq_zero h_mem h_orth).symm
-  have h_preimage : hilbertSchmidtNorm ((pr₀ ∘ₗ B) ∘ₗ orthoProj W') ≤ hilbertSchmidtNorm
-    (orthoProj W ∘ₗ ρ s ∘ₗ B) := by
-    refine (hilbertSchmidtNorm_le_of_norm_le fun x ↦ ?_).trans
-      (hilbertSchmidtNorm_comp_orthoProj_le _ W')
-    have h_isometry (y : T) : ‖ρ s y‖ = ‖y‖ := by
-      rw [norm_eq_sqrt_re_inner (𝕜 := ℂ), hρ, ← norm_eq_sqrt_re_inner]
-    calc ‖pr₀ (B (orthoProj W' x))‖
-        = ‖ρ s (pr₀ (B (orthoProj W' x)))‖ := (h_isometry _).symm
-      _ ≤ ‖orthoProj W (ρ s (B (orthoProj W' x)))‖ := by
-          rw [h_agree (orthoProj W' x) (W'.starProjection_apply_mem x)]
-  have h_near : finrank ℂ W' - ε * finrank ℂ S ≤ hilbertSchmidtNorm ((pr₀ ∘ₗ B) ∘ₗ orthoProj W') ^
-    2 :=
-    h_isom W'
-  linarith [pow_le_pow_left₀ (hilbertSchmidtNorm_nonneg _) h_preimage 2]
+  -- Identify `pr₀` with the orthogonal projection onto `T₀ = range pr₀` so that `pr₀.rangeRestrict`
+  -- agrees with `T₀.orthogonalProjectionOnto`.
+  let T₀ : Submodule ℂ T := range pr₀
+  obtain ⟨_, h_proj⟩ := pr₀.isSymmetricProjection_iff_eq_coe_starProjection_range.mp hpr₀
+  have h_apply (x : T) : pr₀ x = T₀.starProjection x := DFunLike.congr_fun h_proj x
+  have h_onto : pr₀.rangeRestrict = (T₀.orthogonalProjectionOnto : T →ₗ[ℂ] T₀) := by
+    ext x
+    simp [h_apply]
+  have h_comm' (s : Γ) (x : T) : T₀.starProjection (ρ s x) = ρ s (T₀.starProjection x) := by
+    simpa only [mul_apply_eq_comp, comp_apply, h_apply] using DFunLike.congr_fun (h_comm s).eq x
+  -- Transport the near-isometry and second-moment bounds to `T₀.orthogonalProjectionOnto` and
+  -- Tau Ceti's Frobenius seminorm, then apply `TauCeti.isSpread_of_sum_sq_frobenius_le`.
+  have h_isom' : ((T₀.orthogonalProjectionOnto : T →ₗ[ℂ] T₀) ∘ₗ B).IsNearIsometry ε := by
+    refine isNearIsometry_iff.2 fun U ↦ ?_
+    have h_sub : T₀.subtypeₗᵢ.toLinearMap ∘ₗ
+        (((T₀.orthogonalProjectionOnto : T →ₗ[ℂ] T₀) ∘ₗ B) ∘ₗ (U.starProjection : S →ₗ[ℂ] S)) =
+        (pr₀ ∘ₗ B) ∘ₗ orthoProj U := by
+      ext x
+      simp [h_apply, orthoProj]
+    rw [← LinearMap.frobenius_linearIsometry_comp T₀.subtypeₗᵢ, h_sub,
+      ← hilbertSchmidtNorm_sq_eq_sq_frobenius]
+    exact h_isom U
+  have h_moment' : finrank ℂ T₀ * ∑ s : Γ,
+      TauCeti.UnitarilyInvariantSeminorm.frobenius ℂ S S (B.adjoint ∘ₗ ρ s ∘ₗ B) ^ 2 ≤
+      Fintype.card Γ * ((1 + ε) * finrank ℂ S ^ 2) := by
+    simpa only [hilbertSchmidtNorm_sq_eq_sq_frobenius] using h_moment
+  have h_spread := TauCeti.isSpread_of_sum_sq_frobenius_le (norm_rep_of_unitary hρ) h_comm' hε
+    h_isom' h_moment'
+  rw [← h_onto] at h_spread
+  exact TauCeti.isSpread_iff.1 h_spread
 
 end HilbertSchmidt
 
@@ -537,6 +488,7 @@ theorem IsSpread.exists_few_le_finrank_iSup_range [Nontrivial V] (h_spread : IsS
     _ = 5 / 2 * (l * rate) * finrank ℂ W := by rw [h_rate]; field
     _ ≤ 5 / 2 * (1 + log (16 * ε)⁻¹) * finrank ℂ W := by gcongr
 
+omit [Module.Finite ℂ W] in
 /-- The images of a subspace `C` under `#t` maps span at most `#t dim C` dimensions. -/
 lemma finrank_biSup_map_le (B : Θ → V →ₗ[ℂ] W) (t : Finset Θ) (C : Submodule ℂ V) :
     finrank ℂ ↥(⨆ s ∈ t, C.map (B s)) ≤ #t * finrank ℂ C := by
@@ -551,6 +503,7 @@ lemma finrank_biSup_map_le (B : Θ → V →ₗ[ℂ] W) (t : Finset Θ) (C : Sub
       _ ≤ finrank ℂ C + #t * finrank ℂ C := add_le_add (finrank_map_le (B s) C) ih
       _ = (#t + 1) * finrank ℂ C := by ring
 
+omit [Module.Finite ℂ W] in
 /-- Restricting finitely many maps to a subspace `U` lowers the dimension of the span of their
 images by at most the codimension of `U` for each map. -/
 lemma finrank_biSup_range_le (B : Θ → V →ₗ[ℂ] W) (t : Finset Θ) (U : Submodule ℂ V) :
