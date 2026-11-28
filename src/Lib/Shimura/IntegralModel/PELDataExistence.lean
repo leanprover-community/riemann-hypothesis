@@ -235,12 +235,15 @@ lemma exists_cmBase_restrict_ne {d : ℕ} {E : Type} [Field E] [NumberField E] [
           (Ψ.Φ Ψ.v₀).comp (algebraMap (QuadField d) E) := by
   classical
   let i : QuadField d →+* E := algebraMap (QuadField d) E
-  -- Conjugate `v.embedding` exactly when its restriction to `QuadField d` is on the wrong side.
+  -- Pick `σ` at `mk σ`, and elsewhere conjugate `v.embedding` when it agrees with `σ` on
+  -- `QuadField d`.
   let Φfun (v : InfinitePlace E) : E →+* ℂ :=
-    if (v.embedding.comp i = σ.comp i ↔ v ≠ mk σ) then star v.embedding else v.embedding
+    if v = mk σ then σ
+    else if v.embedding.comp i = σ.comp i then star v.embedding else v.embedding
   have hmk (v : InfinitePlace E) : mk (Φfun v) = v := by
     dsimp only [Φfun]
-    split_ifs
+    split_ifs with h1 _
+    · exact h1.symm
     · exact (mk_eq_iff.mpr (.inr rfl)).symm.trans (mk_embedding v)
     · exact mk_embedding v
   have h_star_ne (f : E →+* ℂ) : (star f).comp i ≠ f.comp i := fun h ↦ by
@@ -252,27 +255,14 @@ lemma exists_cmBase_restrict_ne {d : ℕ} {E : Type} [Field E] [NumberField E] [
     have hsq := sqrtNegD_sq d
     rw [h0, zero_pow two_ne_zero] at hsq
     exact neg_ne_zero.mpr (Nat.cast_ne_zero.mpr (NeZero.ne d)) hsq.symm
-  have hv0 : Φfun (mk σ) = σ := by
-    dsimp only [Φfun]
-    rcases mk_eq_iff.mp (mk_embedding (mk σ)) with h | h
-    · split_ifs with hif
-      · exact (hif.mp (by rw [h]) rfl).elim
-      · exact h
-    · change star (mk σ).embedding = σ at h
-      split_ifs with hif
-      · exact h
-      · exfalso
-        apply hif
-        exact ⟨fun heq ↦ (h_star_ne (mk σ).embedding (by rw [h, heq])).elim,
-          fun hne ↦ (hne rfl).elim⟩
-  refine ⟨{ v₀ := mk σ, Φ := Φfun, mk_Φ := hmk }, hv0, fun v hv ↦ ?_⟩
+  refine ⟨{ v₀ := mk σ, Φ := Φfun, mk_Φ := hmk }, ite_eq_left rfl, fun v hv ↦ ?_⟩
   change (Φfun v).comp i ≠ (Φfun (mk σ)).comp i
-  rw [hv0]
   dsimp only [Φfun]
-  split_ifs with hif
-  · rw [← hif.mpr hv]
-    exact h_star_ne v.embedding
-  · exact fun h ↦ hif (iff_of_true h hv)
+  rw [ite_eq_left rfl]
+  split_ifs with h1 h_eq
+  · exact absurd h1 hv
+  · exact h_eq ▸ h_star_ne v.embedding
+  · exact h_eq
 
 /-- On integers, the map `𝓞 (QuadField d) → 𝓞 E` induced by the inclusion is the algebra map. -/
 private lemma mapRingHom_algebraMap_eq {d : ℕ} {E : Type} [Field E]
