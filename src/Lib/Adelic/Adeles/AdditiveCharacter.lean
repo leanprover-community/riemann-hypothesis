@@ -295,9 +295,11 @@ class IsCovolOneLattice (Λ : AddSubgroup B) extends DiscreteTopology Λ, Compac
 
 variable {E m n f C}
 
+/-- A vector of adeles lies in `ratVectors E n` iff every entry lies in `ratAdeles E`. -/
 lemma mem_ratVectors {x : n → 𝔸 E} : x ∈ ratVectors E n ↔ ∀ i : n, x i ∈ ratAdeles E := by
   simp [ratVectors, ratAdeles, funext_iff, Classical.skolem]
 
+/-- A matrix of adeles lies in `ratMatrices E m n` iff every entry lies in `ratAdeles E`. -/
 lemma mem_ratMatrices {x : Matrix m n (𝔸 E)} :
     x ∈ ratMatrices E m n ↔ ∀ (i : m) (j : n), x i j ∈ ratAdeles E := by
   simp [ratMatrices, ratAdeles, ← ext_iff, Classical.skolem, of.exists_congr_left]
