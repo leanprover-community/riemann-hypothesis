@@ -493,9 +493,8 @@ theorem sectionMatrix_mul_frameCols {Z : 𝔰.FrameMatrix} :
 /-- The Gram matrix of the frame `F = (e₁, …, e_ϱ, z)` for the form `𝔰.J₁` is
 `diagLast 0 - 1 = diag(0, …, 0, -1)`. -/
 lemma frameCols_gram_frameCols : 𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.frameCols = diagLast 0 - 1 := by
-  rw [conjTranspose_inclMatrix_mul_mul_inclMatrix]
-  simp [splitGram, middleGram, diagLast, ← ext_iff, Matrix.one_apply, diagonal_apply,
-    forall_fin_succ', Fin.ne_of_gt]
+  rw [conjTranspose_inclMatrix_mul_mul_inclMatrix, middleGram_submatrix_besselFrame]
+  simp [diagLast, ← ext_iff, Matrix.one_apply, diagonal_apply, forall_fin_succ', Fin.ne_of_gt]
 
 /-- The products for the form `𝔰.J₁` of the columns of `𝔰.frameCols` = (e₁, …, e_ϱ, z) with those of
 `𝔰.dualFrameCols` = (e*₁, …, e*_ϱ, x_{k₀}) form the matrix `diagLast 0 = diag(1, …, 1, 0)`, that is,

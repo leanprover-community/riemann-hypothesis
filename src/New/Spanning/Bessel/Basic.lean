@@ -709,6 +709,15 @@ abbrev isotropicFramePair : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ
 
 /-! ### The Gram determinant of two frames -/
 
+omit [StarRing R] in
+/-- On the Bessel frame the split form has only the last diagonal entry `-N`. -/
+lemma middleGram_submatrix_besselFrame (N : R) :
+    (𝔰.middleGram N).splitGram.submatrix 𝔰.besselFrame 𝔰.besselFrame = single 𝔰.top 𝔰.top (-N) := by
+  ext a b
+  cases a using lastCases <;> cases b using lastCases <;>
+    simp [Shape.besselFrame, Shape.Form.splitGram, Shape.middleGram,
+      (castSucc_ne_last _).symm]
+
 /-- Let `N` be self-adjoint in the commutative star ring `R`, let h be the form of ϱ hyperbolic
 planes and the middle block diag(1, …, 1, −N), and let `γ` be an isometry of h. The Gram matrix of
 the frame f = (e₁, …, e_ϱ, z) and its image γf, side by side in `framePair γ`, has both diagonal
@@ -718,12 +727,6 @@ lemma gram_framePair (N : R) (hN : star N = N) (γ : (𝔰.middleGram N).G) :
     (framePair γ)ᴴ * (𝔰.middleGram N).splitGram * framePair γ =
       fromBlocks (single 𝔰.top 𝔰.top (-N)) ((𝔰.middleGram N).frameGram γ)
         ((𝔰.middleGram N).frameGram γ)ᴴ (single 𝔰.top 𝔰.top (-N)) := by
-  have h_frame : (𝔰.middleGram N).splitGram.submatrix 𝔰.besselFrame 𝔰.besselFrame =
-      single 𝔰.top 𝔰.top (-N) := by
-    ext a b
-    cases a using lastCases <;> cases b using lastCases <;>
-      simp [Shape.besselFrame, Shape.Form.splitGram, Shape.middleGram,
-        (castSucc_ne_last _).symm]
   have h_herm : (𝔰.middleGram N).splitGramᴴ = (𝔰.middleGram N).splitGram := by
     simp [Shape.Form.splitGram, Shape.middleGram, ← Matrix.ext_iff, hN, Matrix.one_apply,
       apply_ite star, @eq_comm (Fin 𝔰.ϱ), @eq_comm 𝔰.κ]
@@ -733,7 +736,7 @@ lemma gram_framePair (N : R) (hN : star N = N) (γ : (𝔰.middleGram N).G) :
   rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul, fromRows_mul_fromCols,
     h_block, h_block, h_block, h_block,
     show γ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 γ.property]
-  simp [h_frame, h_herm, Shape.Form.frameGram]
+  simp [middleGram_submatrix_besselFrame, h_herm, Shape.Form.frameGram]
 
 /-- Let `N` be self-adjoint in the commutative star ring `R`, let h be the form of ϱ hyperbolic
 planes and the middle block diag(1, …, 1, −N), and let `γ` be an isometry of h. The columns of
