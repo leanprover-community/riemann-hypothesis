@@ -2,6 +2,7 @@ module
 
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.NumberTheory.NumberField.Units.Signature.Integer
 public import Lib.GaloisRep.Main.SelmerModules
 public import Lib.Weil.Construction.WeilData
 import Lib.Adelic.Adeles.LocalFactors
@@ -163,6 +164,37 @@ lemma exists_abelianLift_artinAt_ne_one [Algebra L Ω] {χ : QZChar Gal(Ω/maxim
 
 end CMField
 
+open TauCeti.GlobalNumberFields in
+/-- Every prescribed pattern of signs at the infinite places of a CM number field `L` is attained
+by a nonzero element of its maximal real subfield. At each complex embedding `φ` of `L`, the
+element `a` is chosen so that `r (mk φ) * φ a` is a positive real number. -/
+lemma exists_maximalRealSubfield_sign_eq {L : Type*} [Field L] [NumberField L] [IsCMField L]
+    (r : InfinitePlace L → ℤˣ) :
+    ∃ a : (maximalRealSubfield L)ˣ, ∀ φ : L →+* ℂ, 0 < r (InfinitePlace.mk φ) * φ a.val := by
+  -- Prescribe the signs at the real places of the maximal real subfield.
+  let K := maximalRealSubfield L
+  let s (v : {v : InfinitePlace K // v.IsReal}) := r ((equivInfinitePlace L).symm v.val)
+  obtain ⟨a, ha⟩ := signHom_surjective s
+  refine ⟨a, fun φ ↦ ?_⟩
+  let ψ : K →+* ℂ := φ.comp K.subtype
+  have h_real : ComplexEmbedding.IsReal ψ := complexEmbedding_isReal ψ
+  let v : {v : InfinitePlace K // v.IsReal} :=
+    ⟨InfinitePlace.mk ψ, InfinitePlace.isReal_mk_iff.mpr h_real⟩
+  have h_place : v.val = equivInfinitePlace L (InfinitePlace.mk φ) := by
+    rw [equivInfinitePlace_apply, comap_mk]
+    rfl
+  have h_sign : signHom a v = r (InfinitePlace.mk φ) := by
+    simpa only [s, h_place, Equiv.symm_apply_apply] using congrFun ha v
+  have h_eval : ((embedding_of_isReal v.property a.val : ℝ) : ℂ) = φ a.val := by
+    rw [embedding_of_isReal_apply]
+    exact RingHom.congr_fun (embedding_mk_eq_of_isReal h_real) a.val
+  rw [← h_eval]
+  rcases Int.units_eq_one_or (r (InfinitePlace.mk φ)) with hr | hr <;> rw [hr] at h_sign ⊢
+  · simpa [Complex.lt_def, -embedding_of_isReal_apply] using
+      (signHom_apply_eq_one_iff a v).mp h_sign
+  · simpa [Complex.lt_def, -embedding_of_isReal_apply] using
+      (signHom_apply_eq_neg_one_iff a v).mp h_sign
+
 section CMTypeField
 
 variable {L : Type} [Field L] [CMType L]
@@ -184,31 +216,6 @@ lemma bijective_cmType_restrict :
   refine .of_comp_left ?_ h_inj
   rw [h_comp]
   exact (equivInfinitePlace L).bijective
-
-/-- For any signs `r w = ±1` at the infinite places `w` of `L`, there is a nonzero `a ∈ L⁺` such
-that `r (mk φ) * φ a` is a positive real number for every complex embedding `φ` of `L` (weak
-approximation for the signs of `L⁺`). -/
-lemma exists_maximalRealSubfield_sign_eq (r : InfinitePlace L → ℤˣ) :
-    ∃ a : (maximalRealSubfield L)ˣ, ∀ φ : L →+* ℂ, 0 < r (InfinitePlace.mk φ) * φ a.val := by
-  -- Take the trace of a `y ∈ L` whose real parts have these signs.
-  obtain ⟨y, hy⟩ : ∃ y : L, ∀ w : InfinitePlace L, 0 < r w * (Φ w y).re := by
-    let V : Set (InfinitePlace L → ℂ) := Set.univ.pi fun w ↦ {c : ℂ | 0 < r w * c.re}
-    have h_open : IsOpen V := isOpen_set_pi Set.finite_univ fun w _ ↦
-      isOpen_lt continuous_zero (continuous_re.const_mul (r w))
-    have h_mem : (fun w ↦ (r w : ℂ)) ∈ V := by simp [V]
-    obtain ⟨y, hy⟩ : ∃ y : L, RingHom.pi Φ y ∈ V := denseRange_Φ.exists_mem_open h_open ⟨_, h_mem⟩
-    exact ⟨y, fun w ↦ hy w (Set.mem_univ w)⟩
-  have h_sign (φ : L →+* ℂ) :
-      0 < r (InfinitePlace.mk φ) * φ (trace (maximalRealSubfield L) L y) := by
-    -- `φ` is `Φ (mk φ)` or its conjugate, and the trace is `y + ȳ`
-    have h_re : (φ y).re = (Φ (InfinitePlace.mk φ) y).re := by
-      rcases Φ_mk_eq_or_star_eq φ with h_eq | h_eq <;> simp [← RingHom.congr_fun h_eq y]
-    have h_pos : 0 < r (InfinitePlace.mk φ) * (φ y).re := by
-      simpa [h_re] using hy (InfinitePlace.mk φ)
-    simpa [trace_maximalRealSubfield_eq_add_star, lt_def, field] using h_pos
-  have h_trace_ne : trace (maximalRealSubfield L) L y ≠ 0 := fun h_zero ↦ by
-    simp [h_zero] at h_sign
-  exact ⟨.mk0 _ h_trace_ne, h_sign⟩
 
 section Character
 
