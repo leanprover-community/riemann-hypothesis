@@ -6,7 +6,7 @@ import Mathlib.AlgebraicGeometry.Sites.Fpqc
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
-import TauCeti.AlgebraicGeometry.Scheme.AffinePoints
+public import TauCeti.AlgebraicGeometry.Frobenius.Iterate
 import TauCeti.RingTheory.MvPolynomial.Homogeneous
 public import Lib.Shimura.ThetaGroup
 public import Lib.Shimura.ThetaNormality.NormalGeneration
@@ -68,45 +68,40 @@ lemma natCast_eq_zero_of_over_charP {k : Type} [Field k] {l : ℕ} {B : CommRing
 
 variable {k : Type} {l : ℕ} [Field k] [CharP k l] [Fact l.Prime] (f : ℕ) (X Y : Over (Spec ⟨k⟩))
 
-/-- For a scheme `X` over a field `k` of prime characteristic `l`, there is an endomorphism of the
-underlying scheme that acts on `B`-valued points through `x ↦ x ^ l ^ f` on `B`, for every ring
-`B`. -/
-lemma exists_absFrobenius :
-    ∃ F : X.left ⟶ X.left, ∀ (B : CommRingCat) (t : Spec B ⟶ X.left),
-      t ≫ F =
-        specMap (frobPow (natCast_eq_zero_of_over_charP (l := l) (B := B) (t ≫ X.hom)) f) ≫ t := by
-  -- Glue the maps `Spec (x ↦ x ^ l ^ f) ≫ t` on the trivial open cover `⊤` of `X`.
-  refine (exists_hom_of_cover isOpenCover_top
-    (fun (_ : Unit) _ t _ ↦
-      specMap (frobPow (natCast_eq_zero_of_over_charP (l := l) (t ≫ X.hom)) f) ≫ t)
-    fun _ _ _ _ φ t _ _ ↦ ?_).imp fun F hF B t ↦ hF () B t landsIn_top
-  simp only [← map_comp_assoc]
-  congr 2
-  ext x
-  simp
-
-/-- For a scheme `X` over a field `k` of prime characteristic `l`, the absolute `l ^ f`-Frobenius of
-the underlying scheme. It acts on `B`-valued points through `x ↦ x ^ l ^ f` on `B`
-(`comp_absFrobenius`: `t ≫ absFrobenius f X = specMap (frobPow _ f) ≫ t`, where `frobPow` is that
-map on `B` and `specMap` its map on spectra), and this determines it. -/
+/-- The absolute `l ^ f`-Frobenius of the underlying scheme of `X` over a field of
+characteristic `l`, using Tau Ceti's iterated absolute Frobenius. -/
 noncomputable def absFrobenius : X.left ⟶ X.left :=
-  (exists_absFrobenius (l := l) f X).choose
+  X.left.iterateFrobenius l
+    (Scheme.natCast_eq_zero_of_hom X.hom (Scheme.natCast_spec_eq_zero (.of k))) f
 
+/-- On an affine point the absolute Frobenius is precomposition by the spectrum of the
+`l ^ f`-power map on its coordinate ring. -/
 lemma comp_absFrobenius {B : CommRingCat} (t : Spec B ⟶ X.left) :
     t ≫ absFrobenius f X =
-      specMap (frobPow (natCast_eq_zero_of_over_charP (B := B) (t ≫ X.hom)) f) ≫ t :=
-  (exists_absFrobenius f X).choose_spec B t
+      specMap (frobPow (natCast_eq_zero_of_over_charP (B := B) (t ≫ X.hom)) f) ≫ t := by
+  have hB := natCast_eq_zero_of_over_charP (l := l) (t ≫ X.hom)
+  have hSpecB : (l : Γ(Spec B, ⊤)) = 0 := by
+    simpa using congr((Scheme.ΓSpecIso B).inv $hB)
+  rw [absFrobenius, ← Scheme.iterateFrobenius_naturality hSpecB _]
+  congr 1
+  -- Compare on global sections, which also works for the zero ring.
+  refine AlgebraicGeometry.ext_of_isAffine (CommRingCat.hom_ext <| RingHom.ext fun s ↦ ?_)
+  let φ := CommRingCat.ofHom (frobPow hB f)
+  have h := congr($(Scheme.ΓSpecIso_naturality φ).hom s)
+  apply (Scheme.ΓSpecIso B).commRingCatIsoToRingEquiv.injective
+  rw [Scheme.iterateFrobenius_appTop_apply]
+  simp only [φ, CommRingCat.hom_comp, RingHom.comp_apply, CommRingCat.hom_ofHom,
+    frobPow_apply] at h
+  change (Scheme.ΓSpecIso B).hom.hom (s ^ l ^ f) =
+    (Scheme.ΓSpecIso B).hom.hom ((Spec.map φ).appTop.hom s)
+  rw [map_pow]
+  exact h.symm
 
 lemma absFrobenius_comm (g : X.left ⟶ Y.left) : absFrobenius f X ≫ g = g ≫ absFrobenius f Y :=
-  -- Test on ring-valued points, where both sides are given by `comp_absFrobenius`.
-  Scheme.hom_ext_of_forall_spec (by simp [← Category.assoc, comp_absFrobenius])
+  Scheme.iterateFrobenius_naturality _ _ g f
 
-lemma absFrobenius_apply (x : X.left) : absFrobenius f X x = x := by
-  -- Test on the spectrum of the residue field at `x`, which has a single point.
-  let t := X.left.fromSpecResidueField x
-  have ht (s : Spec (X.left.residueField x)) : t s = x := X.left.fromSpecResidueField_apply x s
-  calc absFrobenius f X x = (t ≫ absFrobenius f X) default := by rw [Scheme.Hom.comp_apply, ht]
-    _ = x := by rw [comp_absFrobenius, Scheme.Hom.comp_apply, ht]
+lemma absFrobenius_apply (x : X.left) : absFrobenius f X x = x :=
+  Scheme.iterateFrobenius_apply _ f x
 
 /-- Let `L` be a linear system (the data of a map to projective space) on a scheme `X` over a field
 of characteristic `l`. The pull-back of `L` along the absolute `l ^ f`-Frobenius has class `l ^ f`
