@@ -203,7 +203,8 @@ lemma arrowProduct_twistedPairWeil (g' : G E ε') (g'' : G E ε'') :
   · -- The scalars on the two sides are the same product of character values.
     module
   · -- The matrix of `(g', g.neg ⊕ g'')` on `Hom(V', V⁻ ⊕ V'')` is block diagonal.
-    aesop
+    ext i j : 1
+    rcases i with i | i <;> rcases j with j | j <;> simp
 
 /-! ### The joining map on finite parts -/
 
