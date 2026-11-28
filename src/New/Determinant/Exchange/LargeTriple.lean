@@ -835,6 +835,15 @@ lemma adeleMatrix_inv_sum_mul_mul_fromRows (y : G E t') (y' : G E s) (k : G E (t
       k⁻¹.adeleMatrix * fromRows (y⁻¹.adeleMatrix * Y) (0 : Matrix n b (𝔸 E)) := by
   simp [← map_inv, Matrix.mul_assoc, fromBlocks_mul_fromRows]
 
+/-- For the pair `(W₁, V')`, the theta functional `thetaOnRealData` for the character `𝔠` and for
+its inverse differ by the factor `𝔠.character (det y) ^ 2`. -/
+private lemma thetaOnRealData_twist_of_character (y : G E t') (β : AutChar E)
+    (f : 𝒮 (W₁.hom V')) (c : Matrix b n (𝔸 E)) (g : G E s) (φ : PairFock E s t') :
+    thetaOnRealData W₁ V' (rankTwist 𝔠.character n) β f c (g, y) φ =
+      (𝔠.character.val y.det : ℂ) ^ 2 *
+        thetaOnRealData W₁ V' (rankTwist 𝔠.character⁻¹ n) β f c (g, y) φ := by
+  simp [thetaOnRealData, rankTwist, pairWeil, sq, mul_assoc]
+
 open scoped Classical in
 /-- Let `D` split `X` as `W₁`, of even rank `n`, plus a hyperbolic space, let `lFrame` be the
 L-block of the dual frame at the ramified places of `𝔠`, and let
@@ -945,12 +954,7 @@ lemma exists_integral_thetaTerm_eq_of_periods {σ' : b ⊕ b ⊕ n ≃ m} {v : P
       invOnUnits 𝔠.semilocalChar (evalPlaces 𝔠.ramifiedPlaces (star x.det)) :=
     eq_of_div_eq_one (𝔠.invOnUnits_mul_finPart_div_star_eq_one det_unit)
   -- the two functionals of `(W₁, V')` differ by the factor `ν (det y) ^ 2`
-  have h_twist (β : AutChar E) (f : 𝒮 (W₁.hom V')) (c' : Matrix b n (𝔸 E)) (φ : PairFock E s t') :
-      thetaOnRealData W₁ V' (rankTwist 𝔠.character n) β f c' (g, y) φ =
-        (𝔠.character.val y.det : ℂ) ^ 2 * thetaOnRealData W₁ V' (rankTwist 𝔠.character⁻¹ n) β f c'
-          (g, y) φ := by
-    simp [thetaOnRealData, rankTwist, pairWeil, sq, mul_assoc]
-  rw [abs_inf, det_inf, ← cut_star, h_twist]
+  rw [abs_inf, det_inf, ← cut_star, thetaOnRealData_twist_of_character]
   simp [HeckeChar.finPart, rankTwist, AutChar.spaceChar, AutChar.baseChange_toUnits, det_y, κ₀, hN,
     B, G.adeleMatrix, Matrix.mul_assoc]
   field (disch := simp)
