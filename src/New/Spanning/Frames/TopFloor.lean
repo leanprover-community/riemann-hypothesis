@@ -494,8 +494,8 @@ lemma floorForm_top_eq_integral_floorQuadric {F : PlaceData ι T (m + 1)} (Z : F
     measurePreserving_orbitPoint 𝔰.top
   calc
     _ = ∫ l, ∫ k, f (k * l) ∂F.measureH ∂F.floorMeasure 𝔰.ϱ := by
-      rw [h_form, mconv, integral_map measurable_mul.aemeasurable f_int.aestronglyMeasurable]
-      exact integral_prod_symm _ (f_int.comp_measurable measurable_mul)
+      rw [h_form]
+      exact integral_mconv_symm f_int
     _ = ∫ l, P.ψ (ξ * (T.splitGram *ᵥ orbitPoint 𝔰.top l) 𝔰.z) * Φ (orbitPoint 𝔰.top l)
         ∂F.floorMeasure 𝔰.ϱ := by
       refine integral_congr_ae (F.ae_floorMeasure_mem.mono fun l hl ↦ ?_)

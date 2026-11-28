@@ -485,11 +485,8 @@ lemma partialCorrelation_eq_integral_floorMeasure (hk : F.IsPairingKernel j k d)
   calc F.partialCorrelation l k g y
     _ = ∫ x : T.G, k (x * g) (x * y) ∂(F.quotientMeasureFrom (l + 1) ∗ₘ F.floorMeasure l) := by
       rw [partialCorrelation, F.quotientMeasureFrom_eq_succ_mconv (l := l)]
-    _ = ∫ x : T.G, ∫ σ : T.G, k (x * σ * g) (x * σ * y)
-          ∂F.floorMeasure l ∂F.quotientMeasureFrom (l + 1) := integral_mconv h_int
     _ = ∫ σ : T.G, ∫ x : T.G, k (x * σ * g) (x * σ * y)
-          ∂F.quotientMeasureFrom (l + 1) ∂F.floorMeasure l :=
-      integral_integral_swap (h_int.comp_measurable measurable_mul)
+          ∂F.quotientMeasureFrom (l + 1) ∂F.floorMeasure l := integral_mconv_symm h_int
     _ = ∫ σ : T.G, F.partialCorrelation (l + 1) k (σ * g) (σ * y) ∂F.floorMeasure l := by
       simp only [partialCorrelation, mul_assoc]
 

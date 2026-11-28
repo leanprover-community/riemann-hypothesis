@@ -647,7 +647,7 @@ theorem enorm_integral_extendedBesselChar_eq_enorm_mul :
     calc
       _ = ∫ z : T.G, f z ∂(ν ∗ₘ θ) := by rw [← integral_indicator Z.isOpen.measurableSet, h_conv]
       _ = ∫ y : T.G, ∫ u : T.G, f (u * y) ∂ν ∂θ :=
-        (integral_mconv h_int).trans (integral_integral_swap (h_int.comp_measurable measurable_mul))
+        integral_mconv_symm h_int
       _ = ∫ y : T.G, F.unipotentMass.toReal * ⟪Z.besselVector y, Z.besselVector (y * x)⟫_ℂ ∂θ := by
         simp only [unipotentMass_mul_inner_besselVector Z, f, ν]
       _ = F.unipotentMass.toReal * F.partialCorrelation 0 (frameCorrelation Z.besselVector 1) 1

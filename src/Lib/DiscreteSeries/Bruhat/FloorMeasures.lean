@@ -4,6 +4,7 @@ import TauCeti.Algebra.Group.AddChar.Basic
 import Mathlib.Algebra.GroupWithZero.Torsion
 import Mathlib.CategoryTheory.Countable
 import Mathlib.MeasureTheory.Function.FactorsThrough
+import Mathlib.MeasureTheory.Group.IntegralConvolution
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
 import TauCeti.MeasureTheory.Integral.Pi
@@ -736,6 +737,14 @@ lemma lintegral_eq_of_dirac_mconv_eq {t : T.G} (h : dirac s ∗ₘ μ = μ ∗�
 lemma lintegral_mconv_symm (hf : Measurable f) :
     lintegral (μ ∗ₘ ν) f = ∫⁻ y : T.G, ∫⁻ x : T.G, f (x * y) ∂μ ∂ν :=
   (lintegral_mconv hf).trans (lintegral_lintegral_swap (by fun_prop))
+
+/-- The integral of an integrable function against a convolution, with the right measure in the
+outer integral and the integrand evaluated at `x * y`. -/
+lemma integral_mconv_symm {M F : Type*} [Monoid M] [MeasurableSpace M] [MeasurableMul₂ M]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] {μ ν : Measure M} [SFinite μ] [SFinite ν]
+    {f : M → F} (hf : Integrable f (μ ∗ₘ ν)) :
+    ∫ z, f z ∂(μ ∗ₘ ν) = ∫ y, ∫ x, f (x * y) ∂μ ∂ν :=
+  (integral_mconv hf).trans (integral_integral_swap (hf.comp_measurable measurable_mul))
 
 /-- The mass of `Y` under `μ ∗ₘ ν` is the `ν`-integral of the mass of `Y * y⁻¹` under `μ`. -/
 lemma mconv_apply_eq_lintegral {Y : Set T.G} (hY : MeasurableSet Y) :
