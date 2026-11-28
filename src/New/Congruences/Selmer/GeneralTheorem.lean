@@ -124,14 +124,6 @@ lemma exists_map_eq_map_pow_of_isTameGenerator {C : Type} [CommMonoid C] {ψ : G
       ⟨s * g * s⁻¹, hg.conj s⟩).left
   rwa [h_conj] at h_power
 
-/-- Evaluation at `x` of `P` with `f j` put for the variable `j` is evaluation of `P` at the values
-of the `f j` at `x`. -/
-lemma eval_aeval {σ R : Type*} [CommSemiring R] (x : σ → R) (f : σ → MvPolynomial σ R)
-    (P : MvPolynomial σ R) :
-    eval x (aeval f P) = eval (fun j : σ ↦ eval x (f j)) P := by
-  rw [map_aeval, algebraMap_eq, show (eval x).comp C = RingHom.id R from RingHom.ext eval_C]
-  rfl
-
 /-- A finite length `b` has finite normalised length `O.normLength b` (the multiple of `b` by the
 valuation of a uniformiser of `O`). -/
 lemma normLength_ne_top {b : ℕ∞} (hb : b ≠ ⊤) : O.normLength b ≠ ⊤ := by
@@ -349,7 +341,10 @@ lemma exists_rootsOfUnity_ellVal_eval_le (s₀ : ℕ) {m : ℕ} (hm : 1 ≤ m) {
     aeval (fun u : σ ↦ ((1 + X u) ^ (p.2 : ℕ) - 1 : MvPolynomial σ (intQpBar ℓ))) (P p.1)
   have eval_Ppow (p : ι × Set.Icc 1 m) (y : σ → intQpBar ℓ) :
       eval y (Ppow p) = eval (fun u : σ ↦ (1 + y u) ^ (p.2 : ℕ) - 1) (P p.1) := by
-    simp only [Ppow, eval_aeval, map_sub, map_pow, map_add, map_one, eval_X]
+    change aeval y (Ppow p) = aeval _ (P p.1)
+    dsimp only [Ppow]
+    rw [MvPolynomial.comp_aeval_apply]
+    simp
   have h_point : ∀ (p : ι × Set.Icc 1 m) (u : σ), ∃ x' : intQpBar ℓ,
       (1 + x') ^ (p.2 : ℕ) - 1 = x p.1 u ∧ (↑(r / m) : ℝ≥0) ≤ ellVal x'.val :=
     fun p u ↦ exists_one_add_pow_eq p.2.property (hx p.1 u)
