@@ -586,6 +586,15 @@ abbrev colSpan [Fintype k] : Submodule R (n → R) := X.mulVecLin.range
 /-- The matrix X has entries in the subring O and a left inverse with entries in O. -/
 def IsPrimitiveMatrix : Prop := IsIntMatrix O X ∧ ∃ L : Matrix k n R, IsIntMatrix O L ∧ L * X = 1
 
+/-- Selecting distinct columns preserves primitivity. The matching rows of an integral left
+inverse give an integral left inverse of the selected columns. -/
+lemma IsPrimitiveMatrix.submatrix_cols {j : Type*} [DecidableEq j] {O : Subring R}
+    {X : Matrix n k R} (hX : IsPrimitiveMatrix O X) {p : j → k} (hp : Function.Injective p) :
+    IsPrimitiveMatrix O (X.submatrix id p) := by
+  obtain ⟨hX, L, hL, hLX⟩ := hX
+  refine ⟨fun i t ↦ hX i (p t), L.submatrix p id, fun t i ↦ hL (p t) i, ?_⟩
+  rw [← submatrix_mul L X p id p Function.bijective_id, hLX, submatrix_one p hp]
+
 end New
 
 end PrimitiveMatrices

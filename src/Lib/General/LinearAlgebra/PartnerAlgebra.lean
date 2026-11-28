@@ -136,9 +136,7 @@ lemma isPrimitiveMatrix_iff_mem_intGL : IsPrimitiveMatrix O k.val ↔ k ∈ intG
 /-- A block of columns of a matrix in `GL n O` is primitive over `O`. -/
 lemma isPrimitiveMatrix_firstCols [DecidableEq b] {k : GL n R} (hk : k ∈ intGL n O) :
     IsPrimitiveMatrix O (firstCols e k) :=
-  -- `invFirstRows e k` is an integral left inverse.
-  ⟨fun i j ↦ (mem_intGL.1 hk).1 i (e (Sum.inl j)), invFirstRows e k,
-    fun i j ↦ (mem_intGL.1 hk).2 (e (Sum.inl i)) j, invFirstRows_mul_firstCols e k⟩
+  ((isPrimitiveMatrix_iff_mem_intGL k).2 hk).submatrix_cols (e.injective.comp Sum.inl_injective)
 
 /-! ### Columns of a matrix and rows of its inverse -/
 

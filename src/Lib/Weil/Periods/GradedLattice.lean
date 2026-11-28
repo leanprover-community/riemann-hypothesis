@@ -110,15 +110,6 @@ end DegreeZeroPart
 variable {E X ι : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι]
   [DecidableEq X] {ε : ι → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} (Y : Grading V N X s)
 
-/-- Distinct columns of an element of `GL(Ô)` form a primitive matrix: one with integral entries
-and an integral left inverse. -/
-lemma isPrimitiveMatrix_submatrix_of_mem_intGL {κ : Type} [DecidableEq κ] {a : GL ι (𝔸f E)}
-    (ha : a ∈ intGL ι (Ô E)) {p : κ → ι} (hp : Function.Injective p) :
-    IsPrimitiveMatrix (Ô E) (a.val.submatrix id p) := by
-  refine ⟨fun i j ↦ ha.isIntMatrix i (p j), a⁻¹.val.submatrix p id,
-    fun i j ↦ ha.isIntMatrix_inv (p i) j, ?_⟩
-  rw [← submatrix_mul a⁻¹.val a.val p id p Function.bijective_id, a.inv_mul, submatrix_one p hp]
-
 /-- For the orthonormal frame `g = V.xFin * x` (`V.xFin` is a fixed finite adelic frame with
 `V.xFinᴴ * V.J * V.xFin = 1`) of the lattice of a point `x` of the finite adelic unitary group, the
 matrix `g * gᴴ` is the image in the finite adeles of the inverse of the Gram matrix `V.J` of `V`. -/
@@ -168,8 +159,9 @@ lemma exists_gram_eq_degreeZeroPart [HasPrimitiveRoot5040 E] {w : ι → ℤ} {k
     have h_cols (i j : {i : ι // 0 ≤ w i}) :
         (m⁻¹.valᴴ * m⁻¹.val) (p i) (p j) = G (p i) (p j) := by
       rw [← h_agree (add_nonneg i.property j.property), ← hG₀, mul_one]
-    exact witt_Ô (isPrimitiveMatrix_submatrix_of_mem_intGL (inv_mem hm) Subtype.val_injective)
-      (isPrimitiveMatrix_submatrix_of_mem_intGL hk Subtype.val_injective) (ext h_cols)
+    refine witt_Ô ?_ ?_ (ext h_cols)
+    · exact (isPrimitiveMatrix_iff.2 ⟨m⁻¹, inv_mem hm, rfl⟩).submatrix_cols Subtype.val_injective
+    · exact (isPrimitiveMatrix_iff.2 ⟨k, hk, rfl⟩).submatrix_cols Subtype.val_injective
   let n : GL ι (𝔸f E) := k⁻¹ * (κ.val * m⁻¹)
   have hκ_gram : κ.val.valᴴ * 1 * κ.val.val = 1 := mem_unitaryGroupOf_iff.1 κ.property
   have hn_gram : n.valᴴ * G * n.val = G₀ :=
