@@ -218,7 +218,7 @@ end Modulus
 
 /-- Let `j s = (g, g')` in `U(ε) × U(η)`. If `s ↦ g` is proper and `s ↦ g'` is continuous, then the
 block diagonal sum `s ↦ g ⊕ g'` is a proper map to `U(ε ⊕ η)`. -/
-lemma isProperMap_sum {n m S : Type} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+lemma isProperMap_sum {n m S : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
     [Group S] {ε : n → ℤˣ} {η : m → ℤˣ} {j : S →* USign ε × USign η} [TopologicalSpace S]
     (hj : IsProperMap fun s : S ↦ (j s).1) (hj' : Continuous fun s : S ↦ (j s).2) :
     IsProperMap ((U.sum (signMatrix_sum ε η)).comp j) := by
@@ -235,6 +235,12 @@ lemma isProperMap_sum {n m S : Type} [Fintype n] [DecidableEq n] [Fintype m] [De
     change IsProperMap ((fun g : USign ε ↦ (g : Matrix n n ℂ)) ∘ fun s : S ↦ (j s).1)
     exact isClosedEmbedding_U.isProperMap.comp hj
   exact isProperMap_of_comp_of_t2 h_cont (by fun_prop [toBlocks₁₁]) h_comp
+
+/-- The embedding `a ↦ diag(a, 1)` of unitary groups is proper. -/
+@[fun_prop]
+theorem isProperMap_inl {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+    {ε : n → ℤˣ} {η : m → ℤˣ} : IsProperMap (U.inl ε η) :=
+  isProperMap_sum (j := MonoidHom.inl (USign ε) (USign η)) isProperMap_id continuous_const
 
 open Norms.L2Operator in
 /-- Let `j` and `φ`, defined on a group `S`, satisfy `IsLaplaceDatum` (so `φ` is imaginary). Let the

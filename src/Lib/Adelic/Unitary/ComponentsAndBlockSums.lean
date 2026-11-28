@@ -401,6 +401,14 @@ def U.sum {J' : Matrix n n R} {J'' : Matrix (m ⊕ n) (m ⊕ n) R} (h : fromBloc
     aesop (add simp [mem_unitaryGroupOf_iff, star_eq_conjTranspose, fromBlocks_conjTranspose,
       fromBlocks_multiply])
 
+/-- The block embedding a ↦ diag(a, 1) of U(diag ε) into the unitary group of the concatenated
+signs (ε, η). -/
+@[simps! apply_coe_val]
+noncomputable def U.inl {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
+    (ε : n → ℤˣ) (η : m → ℤˣ) :
+    U (signMatrix ε) →* U (signMatrix (Sum.elim ε η)) :=
+  (sum (signMatrix_sum ε η)).comp (MonoidHom.inl (U (signMatrix ε)) (U (signMatrix η)))
+
 /-- The block diagonal homomorphism U_m(R) × U_n(R) → U_{m+n}(R), (g, h) ↦ diag(g, h), between
 the unitary groups of identity matrices. -/
 abbrev U.blockSumOne :

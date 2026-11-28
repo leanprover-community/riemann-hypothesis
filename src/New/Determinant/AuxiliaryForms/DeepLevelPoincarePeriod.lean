@@ -8,9 +8,9 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Topology.UniformSpace.Uniformizable
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
+import New.Appendix.DiscreteSeries.Periods
 public import New.Appendix.DiscreteSeries.SteepParameters
 public import New.UpperBound.Objects.Parameters
-public import Lib.General.LinearAlgebra.BlockEmbeddings
 import Lib.Adelic.Unitary.RationalPoints
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.DiscreteSeries.Haar.TotalMass

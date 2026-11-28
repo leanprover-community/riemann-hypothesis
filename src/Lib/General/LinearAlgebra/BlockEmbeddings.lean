@@ -10,9 +10,7 @@ public import Lib.Weil.Unramified.HeckeGL
 
 For an embedding `ι : r ↪ n` of index sets, `New.inclMatrix k ι` has the standard basis vectors
 `e (ι j)` as columns. Such a map splits `n` into two blocks, and the file studies the corresponding
-block matrices. Over a field, independent columns extend to an invertible matrix. The embedding
-`a ↦ diag(a, 1)` of unitary groups of sign matrices is a proper map, and the norm of a block
-diagonal matrix is the larger of those of its blocks, for the L² operator norm.
+block matrices. Over a field, independent columns extend to an invertible matrix.
 
 ## Main definitions and results
 
@@ -25,13 +23,10 @@ diagonal matrix is the larger of those of its blocks, for the L² operator norm.
   the first block, and over a finite field the latter index is computed.
 * `New.residueDatum`: a function of adelic matrices given by their reductions at a family of
   places.
-* `New.DiscreteSeries.isProperMap_inl`: the embedding `a ↦ diag(a, 1)` is a proper map.
 
 Notions from other files:
 * `New.parabolic`: the subgroup of GL_n(R) of matrices that are block upper triangular for a given
   level function on the indices.
-* `New.U`, `New.U.sum`: U(J) is the group of g with gᴴJg = J; for a block diagonal sum J'' of J
-  and J', `New.U.sum` is the homomorphism U(J) × U(J') → U(J'') sending (g,h) to diag(g,h).
 -/
 
 @[expose] public section
@@ -342,48 +337,5 @@ lemma cast_index_stabilizer_inclMatrix (u : r ↪ n) :
     Finset.card_range, pow_mul, h_reindex]
 
 end New
-
-/-!
-## The block embedding of unitary groups
-
-`New.U.inl` embeds `New.U (New.signMatrix ε)`, the unitary group of the diagonal matrix of signs
-`ε`, into the group `New.U (New.signMatrix (Sum.elim ε η))` of the concatenated signs, by
-`a ↦ diag(a, 1)`.
--/
-
-/-- The block embedding a ↦ diag(a, 1) of U(diag ε) into the unitary group of the concatenated
-signs (ε, η). -/
-@[simps! apply_coe_val]
-noncomputable def New.U.inl {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
-    (ε : n → ℤˣ) (η : m → ℤˣ) :
-    U (signMatrix ε) →* U (signMatrix (Sum.elim ε η)) :=
-  (sum (signMatrix_sum ε η)).comp (MonoidHom.inl (U (signMatrix ε)) (U (signMatrix η)))
-
-/-!
-## Properness of block embeddings
--/
-
-section BlockEmbeddingNorm
-
-open Matrix Norms.L2Operator
-
-variable {n m : Type*} [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m] {ε : n → ℤˣ}
-  {ε' : m → ℤˣ}
-
-/-- For families of signs ε and ε', the embedding a ↦ diag(a, 1) of U(diag ε) into
-U(diag(ε, ε')) is a proper map. -/
-@[fun_prop]
-theorem New.DiscreteSeries.isProperMap_inl : IsProperMap (U.inl ε ε') := by
-  -- Followed by the continuous map "upper left block", `U.inl` is the closed embedding of the
-  -- unitary group in the matrices.
-  have h_val (g : U (signMatrix ε)) : (U.inl ε ε' g).val.val = fromBlocks g.val.val 0 0 1 := by
-    simp
-  have h_cont : Continuous (U.inl ε ε') := by
-    simp only [continuous_U_iff_matrix, h_val]
-    fun_prop
-  exact isProperMap_of_comp_of_t2 h_cont (g := fun g ↦ g.val.val.submatrix .inl .inl)
-    (by fun_prop) isClosedEmbedding_U.isProperMap
-
-end BlockEmbeddingNorm
 
 end
