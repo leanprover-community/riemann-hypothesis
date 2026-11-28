@@ -663,6 +663,87 @@ lemma sum_letterProj (x : L.Ambient) : ∑ i : Letter, L.letterProj i x = x := b
 
 /-! ### Functionals of given type and Hodge–Tate jumps -/
 
+/-- For a functional `μ` of type `u` at the letter `i` and `t ∈ L`, the unique element `y` of
+`B_dR⁺` such that `μ (letterProj i (1 ⊗ t)) = y • tUnit ^ (-u)`. -/
+private def formsOfTypeCoeff (i : Letter) (u : ℤ) (μ : L.formsOfType i u)
+    (t : Rep.of (overZp L.ρ)) : BdRPlus :=
+  (mem_span_singleton.1 (μ.property.2 t)).choose
+
+/-- Defining equation of `formsOfTypeCoeff`: `formsOfTypeCoeff i u μ t • tUnit ^ (-u)` equals
+`μ (letterProj i (1 ⊗ t))`. -/
+private lemma formsOfTypeCoeff_smul (i : Letter) (u : ℤ) (μ : L.formsOfType i u)
+    (t : Rep.of (overZp L.ρ)) :
+    L.formsOfTypeCoeff i u μ t • (tUnit ^ (-u)).val = μ.val (L.letterProj i (.mk 1 t)) :=
+  (mem_span_singleton.1 (μ.property.2 t)).choose_spec
+
+/-- The image under `thetaBdR` of `formsOfTypeCoeff i u μ t` can be read off from any
+representation `μ (letterProj i (1 ⊗ t)) = y • tUnit ^ (-u)` with `y ∈ B_dR⁺`. (`hz` is an
+explicit argument: as a default tactic it was slow to elaborate.) -/
+private lemma thetaBdR_formsOfTypeCoeff_eq {i : Letter} {u : ℤ} {μ : L.formsOfType i u}
+    {t : Rep.of (overZp L.ρ)} {z : ℂ_[p]} {y : BdRPlus}
+    (h : μ.val (L.letterProj i (.mk 1 t)) = y • (tUnit ^ (-u)).val) (hz : thetaBdR y = z) :
+    thetaBdR (L.formsOfTypeCoeff i u μ t) = z := by
+  have hy : L.formsOfTypeCoeff i u μ t = y :=
+    (smul_left_inj (Units.ne_zero _)).1 ((L.formsOfTypeCoeff_smul i u μ t).trans h)
+  rw [hy, hz]
+
+/-- The leading symbol of a functional `μ` of type `u` at the letter `i`: the `ℤ_p`-semilinear
+map `L → ℂ_p` sending `t` to `θ (formsOfTypeCoeff i u μ t)`, the residue in `ℂ_p` of the
+coefficient of `tUnit ^ (-u)` in `μ (letterProj i (1 ⊗ t))`. -/
+private def leadingSymbol (i : Letter) (u : ℤ) (μ : L.formsOfType i u) :
+    L.Carrier →ₛₗ[(ofId ℤ_[p] ℂ_[p] : ℤ_[p] →+* ℂ_[p])] ℂ_[p] where
+  toFun := thetaBdR ∘ L.formsOfTypeCoeff i u μ
+  map_add' _ _ := thetaBdR_formsOfTypeCoeff_eq
+    (by simp [add_smul, ← L.formsOfTypeCoeff_smul i u]) (map_add ..)
+  map_smul' c t := thetaBdR_formsOfTypeCoeff_eq (y := c • L.formsOfTypeCoeff i u μ t)
+    (by simp [← L.formsOfTypeCoeff_smul i u]) (by simp [smul_def', -toRingHom_ofId])
+
+/-- The leading symbol of a functional of type `u` at `i` is a Hodge–Tate map of weight `u` for
+the subgroup `Γ'` of the Kummer chart: `g ∈ Γ'` acts on `tUnit ^ (-u)` by `χ(g) ^ (-u)`. -/
+private lemma leadingSymbol_gal (i : Letter) (u : ℤ) (μ : L.formsOfType i u)
+    (t : Rep.of (overZp L.ρ)) (g : k.subgroup) :
+    L.leadingSymbol i u μ (L.ρ g t) = (χ g ^ (-u)).val • toGp g • L.leadingSymbol i u μ t :=
+  thetaBdR_formsOfTypeCoeff_eq (hz := by simp [leadingSymbol, smul_def', -toRingHom_ofId]) <| by
+    have h_inv : μ.val (L.letterProj i (.mk 1 (L.ρ g t))) =
+        toGp g.val • μ.val (L.letterProj i (.mk 1 t)) :=
+      comp_letterProj_mem_forms μ.property.1 t g
+    rw [h_inv, ← formsOfTypeCoeff_smul, smul_distrib_smul, smul_tUnit_zpow, smul_comm, ← smul_assoc]
+
+/-- The root of unity `ζ` of the coefficient ring acts on the leading symbol at the letter `i` as
+multiplication by `θ(ω(i))`, where `ω(i) = k.letterTeich i`. -/
+private lemma leadingSymbol_zeta (i : Letter) (u : ℤ) (μ : L.formsOfType i u)
+    (t : Rep.of (overZp L.ρ)) :
+    L.leadingSymbol i u μ (O.ζ.val • t) = theta (k.letterTeich i) * L.leadingSymbol i u μ t :=
+  thetaBdR_formsOfTypeCoeff_eq (hz := by simp [leadingSymbol, smul_def', -toRingHom_ofId]) <| by
+    have h_mk : (DiagTensor.mk 1 (O.ζ.val • t) : L.Ambient) = L.mulZeta.wittMap (.mk 1 t) := by
+      simp [mulZeta]
+    rw [h_mk, ← mulZeta.wittMap_letterProj (.mk 1 t),
+      mem_letterPart_iff_mulZeta.1 letterProj_mem_letterPart, smul_eq_val_smul,
+      μ.val.map_smul, ← formsOfTypeCoeff_smul, ← smul_assoc]
+
+/-- If `c' m ∈ PadicAlgCl p` are fixed by `Γ'` (lie in `localFieldOf k.subgroup`) and the linear
+combination `∑ m, c' m • leadingSymbol (ν m)` equals `leadingSymbol μ`, then the difference
+`μ - ∑ m, c' m • ν m` is still `Γ'`-invariant and has vanishing leading coefficient, so it lies
+in `L.formsOfType i (u - 1)`. -/
+private lemma sub_sum_mem_formsOfType_pred {r : ℕ} (i : Letter) (u : ℤ)
+    (ν : Fin r → L.formsOfType i u) (μ : L.formsOfType i u) {c' : Fin r → PadicAlgCl p}
+    (hc' : ∀ m : Fin r, c' m ∈ localFieldOf k.subgroup)
+    (h_sym : ∑ m : Fin r, (c' m : ℂ_[p]) • L.leadingSymbol i u (ν m) = L.leadingSymbol i u μ) :
+    μ.val - ∑ m : Fin r, c' m • (ν m).val ∈ L.formsOfType i (u - 1) := by
+  refine ⟨fun t g ↦ ?_, fun t ↦ ?_⟩
+  · -- The difference is invariant, since `Γ'` fixes the coefficients.
+    have c'_fixed (m) : toGp g.val • algebraMap _ BdR (c' m) = algebraMap _ BdR (c' m) :=
+      (BdR.smul_algebraMap_padicAlgCl _ _).trans (congrArg _ (mem_localFieldOf.1 (hc' m) g))
+    simp only [LinearMap.sub_apply, LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply,
+      μ.property.1 t, (ν _).property.1 t, smul_sub, smul_sum, smul_def', smul_mul', c'_fixed]
+  · -- The leading coefficient of the difference vanishes, so its pole has order at most `u - 1`.
+    have lead :
+        thetaBdR (L.formsOfTypeCoeff i u μ t - ∑ m, c' m • L.formsOfTypeCoeff i u (ν m) t) = 0 := by
+      simpa [leadingSymbol, smul_def', sub_eq_zero, -toRingHom_ofId] using!
+        LinearMap.congr_fun h_sym.symm t
+    simpa [← L.formsOfTypeCoeff_smul i u, ↓← smul_def', sub_smul, sum_smul] using!
+      mul_mem_hodgeFil (n := -u) (algebraMap_mem_hodgeFil_one_iff.2 lead) (subset_span rfl)
+
 /-- For a lattice with jump sets `L`, a letter `i` and `u : ℤ`, `formsOfType i u` is the set of
 A_inf-linear maps W(C^♭) ⊗ L → B_dR that are Γ'-equivariant on 1 ⊗ L and send the projection of
 1 ⊗ L to `i` into t^{−u}B_dR^+. `L.jumpMultiplicity i u` is the total multiplicity of the Hodge–Tate
@@ -673,78 +754,34 @@ lemma exists_span_formsOfType_mod_pred (i : Letter) (u : ℤ) :
     ∃ r ≤ L.jumpMultiplicity i u, ∃ ν : Fin r → L.formsOfType i u, ∀ μ ∈ L.formsOfType i u,
       ∃ c : Fin r → PadicAlgCl p,
       μ - ∑ m : Fin r, c m • (ν m).val ∈ formsOfType i (u - 1) := by
-  -- The symbol `f μ : L.Carrier → ℂ_p` of `μ` is its leading coefficient on the letter `i`; the
-  -- symbols are Hodge–Tate maps of weight `u`, so
-  -- `IsPotentiallyCrystalline.sum_jump_eq_jump_overZp` bounds their span. In a basis of symbols the
-  -- coordinates are Galois invariant, hence algebraic (Ax–Sen–Tate).
-  have h_type (μ : L.formsOfType i u) (t : Rep.of (overZp L.ρ)) :
-      ∃ y : BdRPlus, y • (tUnit ^ (-u)).val = μ.val (L.letterProj i (.mk 1 t)) :=
-    mem_span_singleton.1 (μ.property.2 t)
-  -- Write `μ (letterProj i (1 ⊗ t)) = a μ t • tUnit ^ (-u)` with `a μ t` in `B_dR⁺`.
-  choose a ha using h_type
-  -- The leading coefficient can be computed from any expression `y • tUnit ^ (-u)`. (`hz` is an
-  -- explicit argument: as a default tactic it was slow to elaborate.)
-  have theta_a {μ : L.formsOfType i u} {t : Rep.of (overZp L.ρ)} {z : ℂ_[p]} {y : BdRPlus}
-      (h : μ.val (L.letterProj i (.mk 1 t)) = y • (tUnit ^ (-u)).val)
-      (hz : thetaBdR y = z) :
-      thetaBdR (a μ t) = z := by
-    rw [show a μ t = y from (smul_left_inj (Units.ne_zero _)).1 ((ha μ t).trans h), hz]
-  let f (μ : L.formsOfType i u) : L.Carrier →ₛₗ[(ofId ℤ_[p] ℂ_[p] : ℤ_[p] →+* ℂ_[p])] ℂ_[p] :=
-    { toFun := thetaBdR ∘ a μ
-      map_add' _ _ := theta_a (by simp [add_smul, ← ha]) (map_add ..)
-      map_smul' c t := theta_a (y := c • a μ t) (by simp [← ha])
-        (by simp +zetaDelta [smul_def', -toRingHom_ofId]) }
-  -- `g` multiplies `tUnit ^ (-u)` by the cyclotomic character to the power `-u`, and `ζ` acts on
-  -- the letter `i` by `letterTeich i`.
-  have f_gal (μ : L.formsOfType i u) (t : Rep.of (overZp L.ρ)) (g : k.subgroup) :
-      f μ (L.ρ g t) = (χ g ^ (-u)).val • toGp g • f μ t :=
-    theta_a (hz := by simp +zetaDelta [smul_def', -toRingHom_ofId]) <| by
-      have h_inv : μ.val (L.letterProj i (.mk 1 (L.ρ g t))) =
-          toGp g.val • μ.val (L.letterProj i (.mk 1 t)) :=
-        comp_letterProj_mem_forms μ.property.1 t g
-      rw [h_inv, ← ha, smul_distrib_smul, smul_tUnit_zpow, smul_comm, ← smul_assoc]
-  have f_ζ (μ : L.formsOfType i u) (t : Rep.of (overZp L.ρ)) :
-      f μ (O.ζ.val • t) = theta (k.letterTeich i) * f μ t :=
-    theta_a (hz := by simp +zetaDelta [smul_def', -toRingHom_ofId]) <| by
-      have h_mk : (DiagTensor.mk 1 (O.ζ.val • t) : L.Ambient) = L.mulZeta.wittMap (.mk 1 t) := by
-        simp [mulZeta]
-      rw [h_mk, ← mulZeta.wittMap_letterProj (.mk 1 t),
-        mem_letterPart_iff_mulZeta.1 letterProj_mem_letterPart, smul_eq_val_smul,
-        μ.val.map_smul, ← ha, ← smul_assoc]
-  -- A basis `b` of the span of the symbols, made of symbols `b m = f (ν m)`.
-  obtain ⟨b, hb, span_b, b_indep⟩ := exists_fun_fin_finrank_span_eq ℂ_[p] (.range f)
+  -- Choose a `ℂ_p`-basis `b m = leadingSymbol (ν m)` for the span of the leading symbols.
+  obtain ⟨b, hb, span_b, b_indep⟩ :=
+    exists_fun_fin_finrank_span_eq ℂ_[p] (.range (L.leadingSymbol i u))
   choose ν hν using hb
   -- The symbols are Hodge–Tate maps of weight `u` on which `ζ` acts by `letterTeich i`, so their
   -- span has dimension at most the jump multiplicity.
   have h_rank :
-      Module.finrank ℂ_[p] (Submodule.span ℂ_[p] (Set.range f)) ≤ L.jumpMultiplicity i u :=
-    L.inClass.isPotentiallyCrystalline.sum_jump_eq_jump_overZp.2 O.ζ.val (theta (k.letterTeich i)) u
-      (range f)
-      (forall_mem_range.2 fun μ ↦ ⟨fun t ↦ nearOne_le (f_gal μ t), f_ζ μ⟩)
-  refine ⟨_, h_rank, ν, ?_⟩
-  -- `μ` is taken as an element of the subtype `L.formsOfType i u`, the domain of `a` and `f`.
-  refine SetCoe.forall'.2 fun μ ↦ ?_
-  obtain ⟨c, hc⟩ : ∃ c : _ → ℂ_[p], ∑ m, c m • b m = f μ :=
+      Module.finrank ℂ_[p] (Submodule.span ℂ_[p] (Set.range (L.leadingSymbol i u))) ≤
+        L.jumpMultiplicity i u :=
+    L.inClass.isPotentiallyCrystalline.sum_jump_eq_jump_overZp.2 O.ζ.val
+      (theta (k.letterTeich i)) u (range (L.leadingSymbol i u))
+      (forall_mem_range.2 fun μ ↦
+        ⟨fun t ↦ nearOne_le (L.leadingSymbol_gal i u μ t), L.leadingSymbol_zeta i u μ⟩)
+  refine ⟨_, h_rank, ν, SetCoe.forall'.2 fun μ ↦ ?_⟩
+  obtain ⟨c, hc⟩ : ∃ c : _ → ℂ_[p], ∑ m, c m • b m = L.leadingSymbol i u μ :=
     (mem_span_range_iff_exists_fun _).1 (span_b.ge (subset_span ⟨μ, rfl⟩))
-  -- `f μ` and the `b m` transform in the same way, so `toGp g • c` are coordinates of `f μ` too.
+  -- `leadingSymbol μ` and the `b m` transform in the same way, so `toGp g • c` are coordinates
+  -- of `leadingSymbol μ` too, hence each `c m` is fixed by `Γ'` and algebraic (Ax–Sen–Tate).
   have c_fixed (g : k.subgroup) (m : Fin _) : toGp g • c m = c m := by
     refine (b_indep.eq_coords_of_eq (g := toGp g • c) (LinearMap.ext ?_) m).symm
     refine (L.ρ.apply_bijective g).2.forall.2 ?_
-    simpa [← hc, ← hν, f_gal, smul_sum, -toRingHom_ofId] using (f_gal μ · g)
+    simpa [← hc, ← hν, L.leadingSymbol_gal, smul_sum, -toRingHom_ofId] using
+      (L.leadingSymbol_gal i u μ · g)
   choose c' hc' c_eq using fun m ↦ exists_mem_localFieldOf_of_forall_smul_eq k.subgroup fun g ↦
     c_fixed g m
-  refine ⟨c', fun t g ↦ ?_, fun t ↦ ?_⟩
-  · -- The difference is invariant, since `Γ'` fixes the coefficients.
-    have c'_fixed (m) : toGp g.val • algebraMap _ BdR (c' m) = algebraMap _ BdR (c' m) :=
-      (BdR.smul_algebraMap_padicAlgCl _ _).trans (congrArg _ (mem_localFieldOf.1 (hc' m) g))
-    simp only [LinearMap.sub_apply, LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply,
-      μ.property.1 t, (ν _).property.1 t, smul_sub, smul_sum, smul_def', smul_mul', c'_fixed]
-  · -- The leading coefficient of the difference vanishes, so its pole has order at most `u - 1`.
-    have lead : thetaBdR (a μ t - ∑ m, c' m • a (ν m) t) = 0 := by
-      simpa [← hν, c_eq, smul_def', sub_eq_zero, -toRingHom_ofId] using!
-        LinearMap.congr_fun hc.symm t
-    simpa [← ha, ↓← smul_def', sub_smul, sum_smul] using!
-      mul_mem_hodgeFil (n := -u) (algebraMap_mem_hodgeFil_one_iff.2 lead) (subset_span rfl)
+  have h_sym : ∑ m, (c' m : ℂ_[p]) • L.leadingSymbol i u (ν m) = L.leadingSymbol i u μ := by
+    simpa only [← c_eq, hν] using hc
+  exact ⟨c', L.sub_sum_mem_formsOfType_pred i u ν μ hc' h_sym⟩
 
 /-- If n is not in `L.jumpSet i`, every functional of type n at the letter i is of type n - 1. -/
 lemma formsOfType_subset_pred_of_notMem (h : n ∉ L.jumpSet i) :
