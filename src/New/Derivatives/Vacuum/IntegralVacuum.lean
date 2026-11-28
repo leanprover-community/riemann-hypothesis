@@ -737,15 +737,8 @@ lemma exists_isJetConjugate_translates (P : Parameters) (s : ℕ) :
   -- maps the Taylor series of `θ` translated by `x cmPeriod` to that of its conjugate translated by
   -- `x' * Ω σ`. The vectors `F`, `F'` are the theta products for the two lattices.
   let C (σ : Gal(ℂ/K P)) : CMLattice P.d := P.cmCurve.galConjugate σ
-  have h_cm (σ : Gal(ℂ/K P)) : ∃ (Ω : ℂˣ) (β : 𝔸f P.K),
-      (C σ).area = ‖Ω.val‖ ^ 2 * √P.d / 2 ∧ (∃ e : ℕ+, Ω.val * e ∈ (C σ).latticeModule) ∧
-      ∀ x : P.K, ∃ U ∈ nhds (β * x), ∀ x' : P.K, ↑x' ∈ U →
-        taylorVia σ (P.cmCurve.twistedTranslate 1 (x * P.cmPeriod) P.cmCurve.θ) =
-          taylorAtZero ((C σ).twistedTranslate 1 (x' * Ω) (C σ).θ) := by
-    obtain ⟨Ω, β, h_area, h_multiple, h_translate⟩ :=
-      complex_multiplication_theta P.cmCurve σ latticeModule_cmCurve
-    exact ⟨Ω, β, h_area, h_multiple, h_translate⟩
-  choose Ω β h_area h_multiple U hU h_translate using h_cm
+  choose Ω β h_cm using fun σ ↦ complex_multiplication_theta P.cmCurve σ latticeModule_cmCurve
+  choose U hU h_translate using fun σ ↦ (h_cm σ).taylorVia_twistedTranslate_theta
   refine ⟨fun σ ↦ finAdeleIncl P.K (P.E s) (β σ), fun {n _ _ ε} V _ ↦ ?_⟩
   obtain ⟨F, hF⟩ : ∃ F : 𝒮 V, IsThetaProduct V P.cmCurve P.cmPeriod 1 F :=
     exists_isThetaProduct_cmCurve V
@@ -753,13 +746,13 @@ lemma exists_isJetConjugate_translates (P : Parameters) (s : ℕ) :
   · -- The vacuum is a combination of translates of `F`, and so are its translates.
     obtain ⟨c, hc_ne, Γ, _, a, b, -, hc⟩ := hF.exists_smul_vacElem_eq_sum
     exact finitePart_le_span_translates hc_ne hc
-  obtain ⟨e, he⟩ := h_multiple σ
+  obtain ⟨e, he⟩ := (h_cm σ).exists_mul_mem_latticeModule
   obtain ⟨F', hF'⟩ : ∃ F' : 𝒮 V, IsThetaProduct V (C σ) (Ω σ) e F' :=
-    exists_isThetaProduct V he (h_area σ)
+    exists_isThetaProduct V he (h_cm σ).area_eq
   let B : 𝔸f (P.E s) := finAdeleIncl P.K (P.E s) (β σ)
   let t : ℂ := σ (P.periodFactor s) / Ω σ * P.areaScale
-  refine ⟨t, F', hF'.mem_finitePart, P.norm_gal_periodFactor_div_mul_areaScale_sq s (h_area σ),
-    fun y ↦ ?_⟩
+  refine ⟨t, F', hF'.mem_finitePart,
+    P.norm_gal_periodFactor_div_mul_areaScale_sq s (h_cm σ).area_eq, fun y ↦ ?_⟩
   -- Both sides are locally constant in `y` and the rational points are dense, so let `y` be a
   -- rational point `γ`.
   have h_lc : IsLocallyConstant
