@@ -88,6 +88,63 @@ lemma New.volume_upperEntries_closedBall_le {j : ℕ} {R : ℝ} (hR : 1 ≤ R) :
     exact ENNReal.ofReal_le_ofReal h_pow
   grw [h_disc, pow_le_pow_right₀ (by nlinarith) h_card]
 
+/-- For `1 ≤ R` and a measurable `φ` of integral at most `K` on each orbit of `𝖴⁰`, the integral of
+`φ (u * y)` over `u ∈ 𝖴` is at most `K (2 R) ^ (2 n ^ 2)`, provided that for every point `x` and
+every `s ∈ 𝖴` with `φ x ≠ 0` and `φ (s * x) ≠ 0`, the entries of `frameMatrix s` have norm at most
+`R`. -/
+lemma New.lintegral_besselU_le_of_frameMatrix_le {𝔰 : Shape} {φ : 𝔰.G₁ → ENNReal} {K : ENNReal}
+    {R : ℝ} (hφ : Measurable φ)
+    (hK : ∀ y : 𝔰.G₁, ∫⁻ u : (𝔰.middleGram (1 : ℂ)).besselU0, φ (u * y) ∂𝔰.besselHaar₀ ≤ K)
+    (hR : ∀ y : 𝔰.G₁, φ y ≠ 0 → ∀ s ∈ besselU, φ (s * y) ≠ 0 → ∀ a b : Fin (𝔰.ϱ + 1),
+      ‖frameMatrix s a b‖ ≤ R) (h_one_le : 1 ≤ R) (y : 𝔰.G₁) :
+    ∫⁻ u : (𝔰.middleGram (1 : ℂ)).besselU, φ (u * y) ∂𝔰.besselHaar ≤
+      K * ENNReal.ofReal ((2 * R) ^ (2 * 𝔰.n ^ 2)) := by
+  -- Write `s = u * liftUnitriangular x * u₀` with `u ∈ besselU0` and `φ (u₀ * y) ≠ 0`: the integral
+  -- over `u` is at most `K`, and it vanishes unless all coordinates of `x` have norm at most `R`.
+  let box : Set (UpperEntries 𝔰.n) := .pi ⊤ fun _ ↦ Metric.closedBall 0 R
+  by_cases! hφy : ∀ u : (𝔰.middleGram (1 : ℂ)).besselU, φ (u * y) = 0
+  · rw [lintegral_congr hφy, lintegral_zero]
+    exact zero_le
+  obtain ⟨u₀, hu₀⟩ := hφy
+  -- Outside the box the integrand vanishes, by `hR` at `u₀ * y`.
+  have h_zero (x : UpperEntries 𝔰.n) (hx : x ∉ box) (u : (𝔰.middleGram (1 : ℂ)).besselU0) :
+      φ (u * (liftUnitriangular x * (u₀ * y))) = 0 := by
+    refine by_contra fun hu ↦ hx fun ⟨(a, b), hab⟩ _ ↦ ?_
+    obtain ⟨hu_mem, hu_frame⟩ := mem_besselU0_iff.1 u.prop
+    have h_entry : ‖frameMatrix (u * liftUnitriangular x : 𝔰.G₁) a b‖ ≤ R :=
+      hR _ hu₀ _ (mul_mem hu_mem (liftUnitriangular_mem_besselU x)) (by rwa [mul_assoc]) a b
+    have h_frame : frameMatrix (u * liftUnitriangular x : 𝔰.G₁) = unitriangularMatrix x := by
+      simp [frameMatrix_mul, liftUnitriangular_mem_besselU, hu_frame]
+    simpa [h_frame, unitriangularMatrix, hab] using h_entry
+  calc
+    _ = ∫⁻ x, ∫⁻ u, φ (u.val * (liftUnitriangular x * (u₀.val * y))) ∂𝔰.besselHaar₀ := by
+      have h_map : Continuous fun p : UpperEntries 𝔰.n × (𝔰.middleGram (1 : ℂ)).besselU0 ↦
+          (⟨p.2.val * liftUnitriangular p.1,
+            mul_mem (mem_besselU0_iff.1 p.2.prop).1 (liftUnitriangular_mem_besselU p.1)⟩ :
+            (𝔰.middleGram (1 : ℂ)).besselU) :=
+        ((continuous_subtypeVal.comp continuous_snd).mul
+          (continuous_liftUnitriangular.comp continuous_fst)).subtype_mk _
+      have h_fn : Measurable fun u : (𝔰.middleGram (1 : ℂ)).besselU ↦
+          φ ((u * u₀ : (𝔰.middleGram (1 : ℂ)).besselU).val * y) :=
+        hφ.comp ((continuous_subtypeVal.mul continuous_const).mul continuous_const).measurable
+      have h_comp : AEMeasurable
+          (fun a : UpperEntries 𝔰.n × (𝔰.middleGram (1 : ℂ)).besselU0 ↦
+            φ ((⟨a.2.val * liftUnitriangular a.1,
+              mul_mem (mem_besselU0_iff.1 a.2.prop).1 (liftUnitriangular_mem_besselU a.1)⟩ *
+              u₀ : (𝔰.middleGram (1 : ℂ)).besselU).val * y))
+          (volume.prod 𝔰.besselHaar₀) :=
+        (h_fn.comp h_map.measurable).aemeasurable
+      rw [← lintegral_mul_right_eq_self _ u₀, Shape.besselHaar,
+        lintegral_map h_fn h_map.measurable, lintegral_prod _ h_comp]
+      refine lintegral_congr fun x ↦ lintegral_congr fun u ↦ congrArg φ ?_
+      simp only [Subgroup.coe_mul, mul_assoc]
+    _ = ∫⁻ x in box, ∫⁻ u, φ (u.val * (liftUnitriangular x * (u₀.val * y))) ∂𝔰.besselHaar₀ :=
+      (setLIntegral_eq_of_support_subset <|
+        Function.support_subset_iff'.2 fun x hx ↦
+          (lintegral_congr (h_zero x hx)).trans lintegral_zero).symm
+    _ ≤ K * volume box := by grw [hK, setLIntegral_const]
+    _ ≤ _ := mul_le_mul' le_rfl (volume_upperEntries_closedBall_le h_one_le)
+
 /-- The frame is e₁, …, e_ϱ, z and `frameMatrix s` is the block of `s` on its rows and columns. Let
 `w, φ ≥ 0` be measurable functions on `G₁`, `w` left invariant under the Bessel subgroup `besselS`
 and `φ` of integral at most `K` on each orbit of `𝖴⁰ = besselU0`, the subgroup of the unipotent
@@ -102,53 +159,6 @@ lemma New.lintegral_mul_le_of_frameMatrix_le {𝔰 : Shape} {w φ : 𝔰.G₁ �
     ∫⁻ y : 𝔰.G₁, φ y * w y ≤
       K * ENNReal.ofReal ((2 * R) ^ (2 * 𝔰.n ^ 2)) * ∫⁻ y : 𝔰.G₁, w y ∂besselQuotMeasure := by
   -- Unfold along `besselU`; it suffices to bound the integral of `φ (s * y)` over `s ∈ besselU`.
-  -- Write `s = u * liftUnitriangular x * u₀` with `u ∈ besselU0` and `φ (u₀ * y) ≠ 0`: the integral
-  -- over `u` is at most `K`, and it vanishes unless all coordinates of `x` have norm at most `R`.
-  let box : Set (UpperEntries 𝔰.n) := .pi ⊤ fun _ ↦ Metric.closedBall 0 R
-  have inner_le (y : 𝔰.G₁) : ∫⁻ u : (𝔰.middleGram (1 : ℂ)).besselU, φ (u * y) ∂𝔰.besselHaar ≤
-      K * .ofReal ((2 * R) ^ (2 * 𝔰.n ^ 2)) := by
-    by_cases! hφy : ∀ u : (𝔰.middleGram (1 : ℂ)).besselU, φ (u * y) = 0
-    · rw [lintegral_congr hφy, lintegral_zero]
-      exact zero_le
-    obtain ⟨u₀, hu₀⟩ := hφy
-    -- Outside the box the integrand vanishes, by `hR` at `u₀ * y`.
-    have h_zero (x : UpperEntries 𝔰.n) (hx : x ∉ box) (u : (𝔰.middleGram (1 : ℂ)).besselU0) :
-        φ (u * (liftUnitriangular x * (u₀ * y))) = 0 := by
-      refine by_contra fun hu ↦ hx fun ⟨(a, b), hab⟩ _ ↦ ?_
-      obtain ⟨hu_mem, hu_frame⟩ := mem_besselU0_iff.1 u.prop
-      have h_entry : ‖frameMatrix (u * liftUnitriangular x : 𝔰.G₁) a b‖ ≤ R :=
-        hR _ hu₀ _ (mul_mem hu_mem (liftUnitriangular_mem_besselU x)) (by rwa [mul_assoc]) a b
-      have h_frame : frameMatrix (u * liftUnitriangular x : 𝔰.G₁) = unitriangularMatrix x := by
-        simp [frameMatrix_mul, liftUnitriangular_mem_besselU, hu_frame]
-      simpa [h_frame, unitriangularMatrix, hab] using h_entry
-    calc
-      _ = ∫⁻ x, ∫⁻ u, φ (u.val * (liftUnitriangular x * (u₀.val * y))) ∂𝔰.besselHaar₀ := by
-        have h_map : Continuous fun p : UpperEntries 𝔰.n × (𝔰.middleGram (1 : ℂ)).besselU0 ↦
-            (⟨p.2.val * liftUnitriangular p.1,
-              mul_mem (mem_besselU0_iff.1 p.2.prop).1 (liftUnitriangular_mem_besselU p.1)⟩ :
-              (𝔰.middleGram (1 : ℂ)).besselU) :=
-          ((continuous_subtypeVal.comp continuous_snd).mul
-            (continuous_liftUnitriangular.comp continuous_fst)).subtype_mk _
-        have h_fn : Measurable fun u : (𝔰.middleGram (1 : ℂ)).besselU ↦
-            φ ((u * u₀ : (𝔰.middleGram (1 : ℂ)).besselU).val * y) :=
-          hφ.comp ((continuous_subtypeVal.mul continuous_const).mul continuous_const).measurable
-        have h_comp : AEMeasurable
-            (fun a : UpperEntries 𝔰.n × (𝔰.middleGram (1 : ℂ)).besselU0 ↦
-              φ ((⟨a.2.val * liftUnitriangular a.1,
-                mul_mem (mem_besselU0_iff.1 a.2.prop).1 (liftUnitriangular_mem_besselU a.1)⟩ *
-                u₀ : (𝔰.middleGram (1 : ℂ)).besselU).val * y))
-            (volume.prod 𝔰.besselHaar₀) :=
-          (h_fn.comp h_map.measurable).aemeasurable
-        rw [← lintegral_mul_right_eq_self _ u₀, Shape.besselHaar,
-          lintegral_map h_fn h_map.measurable, lintegral_prod _ h_comp]
-        refine lintegral_congr fun x ↦ lintegral_congr fun u ↦ congrArg φ ?_
-        simp only [Subgroup.coe_mul, mul_assoc]
-      _ = ∫⁻ x in box, ∫⁻ u, φ (u.val * (liftUnitriangular x * (u₀.val * y))) ∂𝔰.besselHaar₀ :=
-        (setLIntegral_eq_of_support_subset <|
-          Function.support_subset_iff'.2 fun x hx ↦
-            (lintegral_congr (h_zero x hx)).trans lintegral_zero).symm
-      _ ≤ K * volume box := by grw [hK, setLIntegral_const]
-      _ ≤ _ := mul_le_mul' le_rfl (volume_upperEntries_closedBall_le h_one_le)
   have : MeasurableSMul₂ (𝔰.middleGram (1 : ℂ)).besselU 𝔰.G₁ :=
     ⟨((continuous_subtypeVal.comp continuous_fst).mul continuous_snd).measurable⟩
   have : SMulInvariantMeasure (𝔰.middleGram (1 : ℂ)).besselU 𝔰.G₁ volume :=
@@ -164,7 +174,8 @@ lemma New.lintegral_mul_le_of_frameMatrix_le {𝔰 : Shape} {w φ : 𝔰.G₁ �
       refine lintegral_congr fun u ↦ ?_
       rw [smul_def, smul_eq_mul,
         hw_inv u.val (mem_besselS.2 ⟨u.val, u.prop, 1, one_mem _, (mul_one _).symm⟩)]
-    _ ≤ _ := by grw [inner_le, lintegral_const_mul _ hw]
+    _ ≤ _ := by
+      grw [New.lintegral_besselU_le_of_frameMatrix_le hφ hK hR h_one_le, lintegral_const_mul _ hw]
 
 end BoxVolume
 
