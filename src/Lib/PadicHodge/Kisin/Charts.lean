@@ -374,8 +374,10 @@ lemma exists_eq_const_add_z_mul (s : c.S) :
 instance : c.maxIdeal.IsMaximal := by
   -- The maximal ideal of the power series ring is `(p, X)`; transport it along `c.seriesEquiv`.
   have h_const :
-      span {(p : WittFq c.f)} = (maximalIdeal (WittFq c.f)⟦X⟧).map PowerSeries.constantCoeff := by
-    rw [map_maximalIdeal_of_surjective _ constantCoeff_surj, (irreducible p).maximalIdeal_eq]
+      span {(p : WittFq c.f)} = (maximalIdeal (WittFq c.f)⟦X⟧).map PowerSeries.constantCoeff :=
+    (irreducible p).maximalIdeal_eq.symm.trans
+      (map_maximalIdeal_of_surjective (PowerSeries.constantCoeff : (WittFq c.f)⟦X⟧ →+* _)
+        constantCoeff_surj).symm
   have h_max : maximalIdeal (WittFq c.f)⟦X⟧ = span {X, C (p : WittFq c.f)} := by
     simpa using eq_span_insert_X_of_X_mem_of_span_eq prime_X.not_isUnit h_const
   have h_map : (maximalIdeal (WittFq c.f)⟦X⟧).map c.seriesEquiv = c.maxIdeal := by
