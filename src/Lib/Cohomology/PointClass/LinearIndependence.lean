@@ -405,6 +405,28 @@ lemma New.Variety.isChartCovered_graph_projection {k : Type} [Field k]
       ((a.mem_locus_away g ζ).mpr ?_)⟩
   simpa [u.smul_def] using hi
 
+/-- The graph of the projection of `Y` to projective space by the linear forms `Λ`: the pairs
+`(x, [Λ(v)])` where `v` are coordinates of `x` with a unit entry and the values `Λ(v)` generate the
+unit ideal. -/
+def New.Variety.projectionGraph {k : Type} [Field k] {R : CommRingCat} [Algebra R.carrier k]
+    {Y : Over (AlgebraicGeometry.Spec R)} {ι : Type} (L : LineBundle Y.left ι)
+    [Fact (L.IsProjEmbedding Y.hom)] {n : ℕ} (Λ : Fin (n + 1) → homogeneousSubmodule ι k 1) :
+    Subfunctor (algPointsOf k R Y ⊗ projSpace k n) :=
+  ⟨fun _ ↦ {x | ∃ v h, IsCoordsWithUnit L x.1 v ∧ x.2 = projSpace.mk (evalForms Λ v) h},
+    fun φ _ ⟨v, _, hv, e⟩ ↦ ⟨φ ∘ v, evalForms_map Λ φ.hom' _ ▸ ⟨_, hv.comp φ, congrArg _ e⟩⟩⟩
+
+/-- The first projection of the graph of the projection by `Λ` is injective: two coordinates of a
+point differ by a unit, and so do the values of `Λ` at them. -/
+instance New.Variety.mono_projectionGraph_ι_fst {k : Type} [Field k] {R : CommRingCat}
+    [Algebra R.carrier k] {Y : Over (AlgebraicGeometry.Spec R)} {ι : Type} [Finite ι]
+    {L : LineBundle Y.left ι} [Fact (L.IsProjEmbedding Y.hom)] {n : ℕ}
+    {Λ : Fin (n + 1) → homogeneousSubmodule ι k 1} :
+    Mono ((projectionGraph L Λ).ι ≫ fst (algPointsOf k R Y) (projSpace k n)) :=
+  mono_of_app_injective <| by
+    rintro A ⟨⟨⟩, v, _, hv, ⟨⟩⟩ ⟨⟨⟩, v', _, hv', ⟨⟩⟩ ⟨⟩
+    obtain ⟨u, rfl⟩ : ∃ u : Aˣ, u • v = v' := hv.exists_unit_smul_eq hv'
+    congrm ⟨(_, $(mk_eq_mk_iff_exists_unit.mpr ⟨u, (evalForms_smul _).symm⟩)), _⟩
+
 /-- Let `u` and `u'` be maps to a separated `X` and `V` an open subfunctor of `W`. The points `x` of
 `W` whose values in fields lie in `V` wherever `u` and `u'` agree (the `fieldLocus` of this
 condition: points all of whose images in fields satisfy it) form an open subfunctor. -/
@@ -449,6 +471,29 @@ lemma New.Variety.mem_offPoints_of_isHomogeneousSolution {k : Type} [Field k] [C
     exact hx.comp φ
   exact hy_class (pointClass_eq_of_isHomogeneousSolution hg hz₀ hv₀ hy_coords (hv.map φ.hom'))
 
+/-- A `k`-point `x` in the locus of a chart `a` whose point has coordinates `w` on the cone of `g`,
+the coordinates of a field point, has the class of a `k`-point `z₀` whose coordinates lie on that
+cone. -/
+lemma New.Variety.pointClass_eq_of_mem_locus {k : Type} [Field k] [CharZero k] [IsAlgClosed k]
+    {R : CommRingCat} [Algebra R.carrier k] {Y : Over (AlgebraicGeometry.Spec R)} {d m : ℕ}
+    [HasAtlas d (algPointsOf k R Y)] {ι : Type} [Finite ι] {L : LineBundle Y.left ι}
+    [Fact (L.IsProjEmbedding Y.hom)] {F : Type} [Field F] [Algebra k F] {η : PointsIn Y (of k F)}
+    {g : ι → F} (hg : IsCoordsWithUnit L η g) {z₀ : PointsIn Y (of k k)} {v₀ : ι → k}
+    (hz₀ : IsCoordsWithUnit L z₀ v₀) (hv₀ : CutsOutLocus.IsHomogeneousSolution k g v₀)
+    {a : EtaleChart m (algPointsOf k R Y)} {w : ι → a.coordRing} (hw : IsCoordsWithUnit L a.point w)
+    (hw_hom : CutsOutLocus.IsHomogeneousSolution k g w) {x : PointsIn Y (of k k)}
+    (hx : x ∈ a.locus.obj (of k k)) :
+    pointClass (X := algPointsOf k R Y) d x = pointClass (X := algPointsOf k R Y) d z₀ := by
+  obtain ⟨ζ, hζ⟩ := hx
+  -- `ζ` sends the point of `a` to `x`, so `x` avoids the points of another class.
+  have h_point : (algPointsOf k R Y).map ζ.down a.point =
+      (algPointsOf k R Y).map structureMap x := by
+    simp [← hζ]
+    rfl
+  by_contra h_ne
+  exact mem_offPoints_of_isHomogeneousSolution hg hz₀ hv₀ hw hw_hom {x} _ ζ.down
+    (toIsField k) ⟨_, ⟨rfl, h_ne⟩, h_point⟩
+
 /-- Pull-back along a map `u` injective on points sends the class of `x` to the sum of the classes
 of the points of `s`, if `u` sends the points of `s` to `x` and every field point over `x` comes
 from a point of `s`. -/
@@ -488,6 +533,46 @@ lemma New.Variety.map_pointClass_eq_zero_of_injective {k : Type} [Field k] [Char
     HodgeH.map (freeAb.map u) (pointClass d z) = 0 := by
   simpa using map_pointClass_eq_sum_of_injective z u hu ∅ (by simp)
     fun K hK y hy ↦ absurd hy (h_none K hK y)
+
+/-- Let `U` be an étale chart of `X` with `n` coordinates, `u : W ⟶ X` a monomorphism and
+`proj : W ⟶ ℙⁿ` a map that sends a lift `y₀` of the point of `U` to the point with affine
+coordinates `[1 : U.coordinate]`. If `u` sends the field points of `W` over a `k`-point `[1 : q]`
+into `U`, then the fibre of `proj` over `[1 : q]` is a finite reduced set of `k`-points
+(`IsCoincidenceSet`): a tangent vector in it fixes the coordinates of `U`. -/
+lemma New.Variety.EtaleChart.exists_isCoincidenceSet_affinePoint {k : Type} [Field k]
+    [IsAlgClosed k] {n : ℕ} {W X : CommAlg k ⥤ Type 1} (U : EtaleChart n X) (u : W ⟶ X) [Mono u]
+    (proj : W ⟶ projSpace k n) {y₀ : W.obj U.coordRing} (hy₀ : u.app U.coordRing y₀ = U.point)
+    (h_proj : proj.app U.coordRing y₀ = affinePoint 0 U.coordinate) (q : Fin n → k)
+    (h_mem : ∀ K : CommAlg k, IsField K → ∀ y : W.obj K,
+      proj.app K y = (constMap (affinePoint 0 q)).app K y → u.app K y ∈ U.locus.obj K) :
+    ∃ t : Finset (W.obj (of k k)), IsCoincidenceSet (constMap (affinePoint 0 q)) proj t := by
+  -- `U` is also a chart `C` of `W`, and it contains all points of `W` over `[1 : q]`.
+  let C : EtaleChart n W := U.comap u y₀ hy₀
+  have h_over {A : CommAlg k} {y : W.obj A}
+      (hy : proj.app A y = (constMap (affinePoint 0 q)).app A y) : y ∈ C.locus.obj A :=
+    (U.range_pointMap_eq_preimage_locus u hy₀).ge _ <|
+      U.isOpenSubfunctor.fieldLocus_le _ fun K φ hK ↦ by
+        rw [← u.naturality_apply]
+        refine h_mem K hK _ ?_
+        rw [proj.naturality_apply, hy]
+        exact map_map_structureMap (X := projSpace k n) φ (affinePoint 0 q)
+  refine exists_isCoincidenceSet _ _ (fun y hy ↦ ?_) ![C] fun _ _ _ hy ↦ ⟨0, h_over hy⟩
+  obtain ⟨⟨ψ : U.coordRing ⟶ _⟩, ⟨⟩⟩ : y ∈ C.locus.obj (of k (DualNumber k)) := h_over hy
+  have hψ : (ψ ≫ SqZeroExt.fst) ≫ structureMap = ψ := by
+    refine U.lift_unique (π := SqZeroExt.fst) fst_surjective_and_kerIdeal_sq_eq_bot (by rfl)
+      fun i ↦ ?_
+    change proj.app _ (W.map ψ y₀) = _ at hy
+    rw [proj.naturality_apply, h_proj] at hy
+    have h_coord : ψ (U.coordinate i) = algebraMap k _ (q i) := by
+      simpa using mk_eq_mk_iff_cross_mul (v := ψ ∘ _).mp hy i.succ 0
+    simp [h_coord]
+  let A := of k (DualNumber k)
+  let σ : A ⟶ A := SqZeroExt.fst ≫ structureMap
+  let α := pointMap C.point
+  have h_comp : ψ ≫ σ = ψ := (Category.assoc ψ SqZeroExt.fst structureMap).symm.trans hψ
+  have h_nat := α.naturality_apply σ (⟨ψ⟩ : (reprBy C.coordRing).obj A)
+  change α.app A ⟨ψ ≫ σ⟩ = _ at h_nat
+  exact (congrArg (fun f : U.coordRing ⟶ A ↦ α.app A ⟨f⟩) h_comp).symm.trans h_nat
 
 /-- Let `O` be separated and covered by charts of dimension `n`, with a map `proj` to projective
 space `ℙⁿ` such that pull-back along `proj` is injective on the `genericCoeff` classes of degree
@@ -547,14 +632,8 @@ lemma New.Variety.exists_map_separating_class {p : ℕ} {k : Type} [Field k] [Em
   have hg : IsCoordsWithUnit L (PointsIn.map κ c.point) (κ ∘ w₀) := hw₀.comp κ
   let Q : (projSpace k n).obj (of k k) := projSpace.affinePoint 0 q
   -- `Γ` is the graph of the projection; its first projection `π` is injective.
-  let Γ : Subfunctor (algPointsOf k R Y ⊗ projSpace k n) :=
-    ⟨fun _ ↦ {x | ∃ v h, IsCoordsWithUnit L x.1 v ∧ x.2 = projSpace.mk (evalForms Λ v) h},
-      fun φ _ ⟨v, _, hv, e⟩ ↦ ⟨φ ∘ v, evalForms_map Λ φ.hom' _ ▸ ⟨_, hv.comp φ, congrArg _ e⟩⟩⟩
+  let Γ : Subfunctor (algPointsOf k R Y ⊗ projSpace k n) := projectionGraph L Λ
   let π : Γ.toFunctor ⟶ algPointsOf k R Y := Γ.ι ≫ fst (algPointsOf k R Y) (projSpace k n)
-  have h_mono : Mono π := mono_of_app_injective <| by
-    rintro A ⟨⟨⟩, v, _, hv, ⟨⟩⟩ ⟨⟨⟩, v', _, hv', ⟨⟩⟩ ⟨⟩
-    obtain ⟨u, rfl⟩ : ∃ u : Aˣ, u • v = v' := hv.exists_unit_smul_eq hv'
-    congrm ⟨(_, $(mk_eq_mk_iff_exists_unit.mpr ⟨u, (evalForms_smul _).symm⟩)), _⟩
   -- `O` is `Γ` without the points of `T` of another class and the points over `Q` outside `U`.
   let O : Subfunctor Γ.toFunctor :=
     (offPoints (T \ pointClass n ⁻¹' {pointClass n z₀})).preimage π ⊓
@@ -571,37 +650,22 @@ lemma New.Variety.exists_map_separating_class {p : ℕ} {k : Type} [Field k] [Em
         (Γ.ι ≫ SemiCartesianMonoidalCategory.snd (algPointsOf k R Y) (projSpace k n))
         (U.isOpenSubfunctor.preimage π))
   have hO : IsChartCovered n O.toFunctor := IsChartCovered.comap O.ι h_open
-  -- `U` is also a chart `C` of `O`, and it contains all points of `O` over `Q`.
-  let C : EtaleChart n O.toFunctor :=
-    U.comap j ⟨⟨(_, _), _, span_eq_top_of_isUnit 0 (by simp [hw₁]), hw, rfl⟩,
-      mem_offPoints_of_isHomogeneousSolution hg hz₀ hv₀ hw hw_hom T,
-      fun _ φ _ _ ↦ ⟨⟨φ⟩, rfl⟩⟩ rfl
-  have h_over {A : CommAlg k} {y : O.toFunctor.obj A}
-      (hy : y.val.val.2 = (projSpace k n).map structureMap Q) : y ∈ C.locus.obj A :=
-    (U.range_pointMap_eq_preimage_locus j rfl).ge _ <|
-      U.isOpenSubfunctor.fieldLocus_le _ fun K φ hK ↦
-      y.prop.2 K φ hK (show (projSpace k n).map structureMap Q = (projSpace k n).map φ y.val.val.2
-        by rw [hy, map_map_structureMap])
-  -- The fibre over `Q` is finite and reduced: a tangent vector in it fixes the coordinates of `U`.
   let proj : O.toFunctor ⟶ projSpace k n :=
     O.ι ≫ Γ.ι ≫ SemiCartesianMonoidalCategory.snd (algPointsOf k R Y) (projSpace k n)
-  obtain ⟨t, ht⟩ :
-      ∃ t : Finset (O.toFunctor.obj (of k k)), IsCoincidenceSet (constMap Q) proj t := by
-    refine exists_isCoincidenceSet _ _ (fun y hy ↦ ?_) ![C] fun _ _ _ hy ↦ ⟨0, h_over hy⟩
-    obtain ⟨⟨ψ : U.coordRing ⟶ _⟩, ⟨⟩⟩ : y ∈ C.locus.obj (of k (DualNumber k)) := h_over hy
-    have hψ : (ψ ≫ SqZeroExt.fst) ≫ structureMap = ψ := by
-      refine U.lift_unique (π := SqZeroExt.fst) fst_surjective_and_kerIdeal_sq_eq_bot (by rfl)
-        fun i ↦ ?_
-      have h_coord : ψ (evalForms Λ w i.succ) = algebraMap k _ (q i) := by
-        simpa [hw₁, hU] using mk_eq_mk_iff_cross_mul (v := ψ ∘ _).mp hy i.succ 0
-      simp [hU, h_coord]
-    let A := of k (DualNumber k)
-    let σ : A ⟶ A := SqZeroExt.fst ≫ structureMap
-    let α := pointMap C.point
-    have h_comp : ψ ≫ σ = ψ := (Category.assoc ψ SqZeroExt.fst structureMap).symm.trans hψ
-    have h_nat := α.naturality_apply σ (⟨ψ⟩ : (reprBy C.coordRing).obj A)
-    change α.app A ⟨ψ ≫ σ⟩ = _ at h_nat
-    exact (congrArg (fun f : U.coordRing ⟶ A ↦ α.app A ⟨f⟩) h_comp).symm.trans h_nat
+  -- The field points of `O` over `Q` lie in `U`.
+  have h_mem (K : CommAlg k) (hK : IsField K) (y : O.toFunctor.obj K)
+      (hy : proj.app K y = (constMap Q).app K y) : j.app K y ∈ U.locus.obj K := by
+    have h_y := y.prop.2 K (𝟙 K) hK
+    rw [Functor.map_id_apply] at h_y
+    exact h_y hy.symm
+  -- The fibre over `Q` is finite and reduced, as `proj` is given on `U` by its coordinates.
+  have h_proj : projSpace.mk (evalForms Λ w) (span_eq_top_of_isUnit 0 (by simp [hw₁])) =
+      affinePoint 0 U.coordinate :=
+    mk_eq_mk_iff_exists_unit.mpr ⟨1, funext fun i ↦ by cases i using Fin.cases <;> simp [hU, hw₁]⟩
+  obtain ⟨t, ht⟩ := U.exists_isCoincidenceSet_affinePoint j proj
+    (y₀ := ⟨⟨(_, _), _, span_eq_top_of_isUnit 0 (by simp [hw₁]), hw, rfl⟩,
+      mem_offPoints_of_isHomogeneousSolution hg hz₀ hv₀ hw hw_hom T,
+      fun _ φ _ _ ↦ ⟨⟨φ⟩, rfl⟩⟩) rfl h_proj q h_mem
   have h_sep : IsSeparatedFunctor O.toFunctor := isSeparatedFunctor_of_injective j hj
   -- Pull-back along `proj` is injective, by the Noether normalisation `Λ`.
   have h_inj :
@@ -615,18 +679,8 @@ lemma New.Variety.exists_map_separating_class {p : ℕ} {k : Type} [Field k] [Em
   · -- A point `y` of `t` lies in `U`, so `j y` has the class of `z₀`. The fibre of `j` over
     -- `j y` is `{y}`, so the class of `y` is the pull-back of the class of `z₀`.
     refine hodgeTateMap_ne_zero_of_isCoincidenceSet proj h_inj Q t ht _ fun y hy ↦ ?_
-    obtain ⟨-, h_t_mem, -⟩ := ht
-    obtain ⟨ζ, hζ⟩ : y ∈ C.locus.obj (of k k) := h_over (h_t_mem y hy)
-    -- `ζ` sends the point of `U` to `j y`, so `j y` avoids the points of another class.
-    have h_point : (algPointsOf k R Y).map ζ.down U.point =
-        (algPointsOf k R Y).map structureMap (j.app (of k k) y) := by
-      simp [← hζ]
-      rfl
-    have h_eq : pointClass n (j.app (of k k) y) = pointClass n z₀ := by
-      by_contra h_ne
-      exact mem_offPoints_of_isHomogeneousSolution hg hz₀ hv₀ hw hw_hom {j.app _ y} _ ζ.down
-        (toIsField k) ⟨_, ⟨rfl, h_ne⟩, h_point⟩
-    rw [← h_eq, map_pointClass_app_of_injective j hj y]
+    rw [← pointClass_eq_of_mem_locus hg hz₀ hv₀ hw hw_hom (h_mem _ (toIsField k) y (ht.2.1 y hy)),
+      map_pointClass_app_of_injective j hj y]
   · -- No point of `O` lies over `z`, as `O` avoids the points of `T` of another class.
     refine map_pointClass_eq_zero_of_injective j hj z fun K hK y hy ↦ ?_
     obtain ⟨h_off, -⟩ := y.prop
