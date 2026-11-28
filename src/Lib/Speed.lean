@@ -1,4 +1,6 @@
-module -- shake: keep-all (its imports stay public: its settings apply to them, and the tactic extensions below are used by nearly every file)
+module -- shake: keep-all
+-- Its imports stay public: its settings apply to them, and the tactic extensions below are used
+-- by nearly every file.
 
 public import Mathlib.Algebra.DirectSum.Internal
 public import Mathlib.Algebra.Order.Floor.Extended
