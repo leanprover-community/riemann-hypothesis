@@ -133,6 +133,97 @@ lemma New.Variety.map_scaledGraph_baseChange_cross {E k : Type} [Field E] [CharZ
     (HodgeTest.scaleModule t _ ≫ whiskerLeft _ (freeAbMap f))
       (whiskerLeft _ (freeAbMap g)) freeAb.hom_ext
 
+/-- If a linear form `L` on `k → k` reads off the `X ^ h` coefficient of polynomial functions, then
+it maps `t ↦ ∑ j ∈ range (d + 1), t ^ j * a j` to `a h` when `h ≤ d` and to `0` otherwise. -/
+private lemma Polynomial.dual_sum_pow_mul {k : Type} [Field k] {d h : ℕ}
+    {L : Module.Dual k (k → k)}
+    (hL : ∀ (Q : k[X]) (a : k), L (fun t : k ↦ Q.eval t * a) = Q.coeff h * a) (a : ℕ → k) :
+    L (fun t : k ↦ ∑ j ∈ range (d + 1), t ^ j * a j) = if h ≤ d then a h else 0 := by
+  have h_sum : (fun t : k ↦ ∑ j ∈ range (d + 1), t ^ j * a j) =
+      ∑ j ∈ range (d + 1), fun t : k ↦ (X ^ j : k[X]).eval t * a j := by
+    ext t
+    simp
+  rw [h_sum, _root_.map_sum]
+  simp_rw [hL]
+  simp
+
+-- Keeps definitional checks from unfolding the Ext groups.
+seal CategoryTheory.Abelian.Ext in
+/-- Applying `hodgeTateMap d` to the pull-back of a cross product `x × y` along `scaledGraph t f g`
+expands as a polynomial in `t` of degree `d`, whose `t ^ j` coefficient is the diagonal pull-back of
+the cross product of `λ_{d - j} (g^* y)` and `λ_j (f^* x)` with the Koszul sign and binomial weight
+from `hodgeTateMap_cup`. -/
+private lemma New.Variety.hodgeTateMap_scaledGraph_baseChange_cross {p : ℕ} {E k : Type}
+    [Field E] [CharZero E] [Field k] [EmbeddedInQpBar p k] [Algebra E k]
+    {X : CommAlg E ⥤ Type 1} {W : CommAlg k ⥤ Type 1}
+    (f g : W ⟶ restrictAlg E k ⋙ X) (t : k) {d q q' : ℕ} (e : q' + q = d)
+    (x : HodgeH (freeAb X) q) (y : HodgeH (freeAb X) q') :
+    hodgeTateMap (N := freeAb W) d
+        (H.map hodgeCoeff (freeAb.map (scaledGraph t f g)) d
+          (HodgeH.baseChange (HodgeH.map (freeAb.prod X X)
+            (cup exteriorAlg.mulPairing x y e :)))) =
+      ∑ j ∈ range (d + 1), t ^ j •
+        PairH.map (freeAb.map (lift (𝟙 W) (𝟙 W)) ≫ freeAb.prod W W)
+          ((d.choose j • (-1 : k) ^ ((q + j) * (d - j)) • HodgeTatePair.cross
+            (hodgeTateMap (d - j) (HodgeH.map (freeAbMap g) y.baseChange)))
+            (hodgeTateMap j (HodgeH.map (freeAbMap f) x.baseChange))) := by
+  let Δ := PairH.map (freeAb.map (lift (𝟙 W) (𝟙 W)) ≫ freeAb.prod W W)
+  refine (congrArg (hodgeTateMap (N := freeAb W) d)
+    (map_scaledGraph_baseChange_cross f g t e x y)).trans ?_
+  refine (hodgeTateMap_map _ _).trans ?_
+  rw [hodgeTateMap_cup]
+  refine (_root_.map_sum Δ _ _).trans (sum_congr rfl fun j _ ↦ ?_)
+  rw [hodgeTateMap_scale]
+  exact (congrArg Δ (_root_.map_smul _ _ _)).trans (_root_.map_smul _ _ _)
+
+-- Keeps definitional checks from unfolding the Ext groups.
+seal CategoryTheory.Abelian.Ext in
+/-- On a single cross product `x × y`, if the `b`-weighted sum of `λ_h (f_i^* x)` vanishes when
+`h ≤ d`, then the `b`-weighted sum of `L (t ↦ φ (λ_d ((f_i ∘ s_t, g)^* (x × y))))` vanishes. -/
+private lemma New.Variety.sum_mul_hodgeTateMap_scaledGraph_cross_eq_zero {p : ℕ} {E k : Type}
+    {d h : ℕ} {I : Type} [Field E] [CharZero E] [Field k] [EmbeddedInQpBar p k] [Algebra E k]
+    {X : CommAlg E ⥤ Type 1} {W : CommAlg k ⥤ Type 1}
+    (f : I → (W ⟶ restrictAlg E k ⋙ X)) (g : W ⟶ restrictAlg E k ⋙ X) {b : I →₀ k}
+    {q q' : ℕ} (e : q' + q = d) (x : HodgeH (freeAb X) q) (y : HodgeH (freeAb X) q')
+    (h_wt : h ≤ d →
+      ∑ i : b.support, b i • hodgeTateMap h (HodgeH.map (freeAbMap (f i)) x.baseChange) = 0)
+    (φ : Module.Dual k (PairH (freeAb W))) (L : Module.Dual k (k → k))
+    (hL : ∀ (Q : k[X]) (a : k), L (fun t : k ↦ Q.eval t * a) = Q.coeff h * a) :
+    ∑ i : b.support, b i * L (fun t : k ↦ φ (hodgeTateMap d
+      (H.map hodgeCoeff (freeAb.map (scaledGraph t (f i) g)) d
+        (HodgeH.baseChange (HodgeH.map (freeAb.prod X X)
+          (cup exteriorAlg.mulPairing x y e :)))))) = 0 := by
+  let Δ := PairH.map (freeAb.map (lift (𝟙 W) (𝟙 W)) ≫ freeAb.prod W W)
+  let M (j : ℕ) : PairH (freeAb W) →ₗ[k] k := φ ∘ₗ Δ ∘ₗ
+    (d.choose j • (-1 : k) ^ ((q + j) * (d - j)) • HodgeTatePair.cross
+      (hodgeTateMap (d - j) (HodgeH.map (freeAbMap g) y.baseChange)))
+  have h_eval (i : b.support) :
+      L (fun t : k ↦ φ (hodgeTateMap d
+        (H.map hodgeCoeff (freeAb.map (scaledGraph t (f i) g)) d
+          (HodgeH.baseChange (HodgeH.map (freeAb.prod X X)
+            (cup exteriorAlg.mulPairing x y e :)))))) =
+        if h ≤ d then M h (hodgeTateMap h (HodgeH.map (freeAbMap (f i)) x.baseChange)) else 0 := by
+    have h_fn : (fun t : k ↦ φ (hodgeTateMap d
+          (H.map hodgeCoeff (freeAb.map (scaledGraph t (f i) g)) d
+            (HodgeH.baseChange (HodgeH.map (freeAb.prod X X)
+              (cup exteriorAlg.mulPairing x y e :)))))) =
+        fun t : k ↦ ∑ j ∈ range (d + 1),
+          t ^ j * M j (hodgeTateMap j (HodgeH.map (freeAbMap (f i)) x.baseChange)) := by
+      ext t
+      rw [hodgeTateMap_scaledGraph_baseChange_cross (f i) g t e x y, _root_.map_sum]
+      refine sum_congr rfl fun j _ ↦ ?_
+      rw [_root_.map_smul, smul_eq_mul]
+      rfl
+    rw [h_fn, Polynomial.dual_sum_pow_mul hL]
+  simp_rw [h_eval]
+  split_ifs with hd
+  · calc ∑ i : b.support, b i * M h (hodgeTateMap h (HodgeH.map (freeAbMap (f i)) x.baseChange))
+      _ = M h (∑ i : b.support,
+            b i • hodgeTateMap h (HodgeH.map (freeAbMap (f i)) x.baseChange)) := by
+        simp [_root_.map_sum, _root_.map_smul]
+      _ = 0 := by rw [h_wt hd, map_zero]
+  · simp
+
 -- Keeps definitional checks from unfolding the Ext groups.
 seal CategoryTheory.Abelian.Ext in
 /-- The vanishing half of the Woods Hole argument. Let `u i : W ⟶ Y` be maps over `R` and `b i ∈ k`
@@ -173,49 +264,22 @@ lemma New.Variety.sum_mul_hodgeTateMap_scaledGraph_eq_zero {p : ℕ} {A : Type*}
   revert φ z
   intro (φ : Module.Dual k (PairH (freeAb XW))) (z : HodgeH (freeAb.obj (XY ⊗ XY)) d)
   change ∑ i : b.support, b i * L (fun t : k ↦ φ (hodgeTateMap d (Φ t i z))) = 0
-  -- the diagonal of `W`, followed by the map to the tensor square
-  let diag := freeAb.map (lift (𝟙 _) (𝟙 _)) ≫ freeAb.prod XW XW
-  -- `diag` as a linear map on `PairH`, so that `simp` can use its linearity
-  let Δ : PairH ((abTensor.obj (freeAb.obj XW)).obj (freeAb.obj XW)) →ₗ[k] PairH (freeAb.obj XW) :=
-    PairH.map diag
-  -- `z` is a finite sum of cross products (`kunneth`); on each, `L` keeps the part of weight `h`.
+  -- `z` is a finite sum of cross products (`kunneth`); the functional is additive and vanishes on
+  -- each cross product.
   induction kunneth z using AddSubmonoid.closure_induction_left with
   | zero => simp [← Pi.zero_def]
   | add_left g hg z _ ih =>
     obtain ⟨q, q', e, x, y, rfl⟩ := hg
-    -- on a cross product `x × y` the pull-back is `s_t (u i)^* x × c^* y` restricted to the
-    -- diagonal (`map_scaledGraph_baseChange_cross`), and `hodgeTateMap_cup` expands its `λ_d`
-    have h_lam (t : k) (i : b.support) :
-        hodgeTateMap d
-            (Φ t i (HodgeH.map (freeAb.prod XY XY) (cup exteriorAlg.mulPairing x y e :))) =
-          ∑ j ∈ range (d + 1), t ^ j • Δ
-            ((d.choose j • (-1 : k) ^ ((q + j) * (d - j)) • HodgeTatePair.cross
-              (hodgeTateMap (d - j) (.map (freeAbMap (D c)) y.baseChange)))
-              (hodgeTateMap j (.map (freeAbMap (D (u i))) x.baseChange))) := by
-      -- `refine` sees through `Φ`, which `rw` does not
-      refine (congrArg (hodgeTateMap d)
-        (map_scaledGraph_baseChange_cross (D (u i)) (D c) t e x y)).trans ?_
-      refine (hodgeTateMap_map _ _).trans ?_
-      rw [hodgeTateMap_cup]
-      refine (map_sum Δ _ _).trans (sum_congr rfl fun j _ ↦ ?_)
-      rw [hodgeTateMap_scale]
-      exact (congrArg Δ (map_smul _ _ _)).trans (map_smul _ _ _)
     -- the sum of `h_null`, read through the pull-backs along `D (u i)`
     have h_wt (hd : h ≤ d) :
         ∑ i : b.support, b i • hodgeTateMap h (.map (freeAbMap (D (u i))) x.baseChange) = 0 := by
       -- `using!`: `h_null` pulls back along `algPoints E` then restricts, `D` along `algPoints k`;
       -- the two agree only by unfolding
       simpa using! (sum_attach b.support _).trans (h_null hd q (by omega) x)
-    -- By `h_lam` the term of weight `j` carries `t ^ j`, so `L` keeps the term of
-    -- weight `h` of the sum over `i` (none if `h > d`): the image under `M` of the sum in `h_wt`,
-    -- with `M = φ ∘ diag ∘ (cross with λ_{d - h} (c^* y))` scaled as in `hodgeTateMap_cup`
-    let M : PairH (freeAb XW) →ₗ[k] k := φ ∘ₗ Δ ∘ₗ
-      (d.choose h • (-1 : k) ^ ((q + h) * (d - h)) • HodgeTatePair.cross
-        (hodgeTateMap (d - h) (HodgeH.map (freeAbMap (D c)) y.baseChange)))
-    -- `using!`: the two sides agree only up to unfolding in implicit arguments
-    simpa [M, h_lam, ih, hL, ← Pi.add_def, ← sum_fn, mul_add, sum_add_distrib,
-      -univ_eq_attach, -LinearMap.smul_apply, -LinearMap.coe_smul, ← eval_X_pow (R := k),
-      -eval_pow] using! fun hd ↦ congrArg M (h_wt hd)
+    have h_cross : ∑ i : b.support, b i * L (fun t : k ↦ φ (hodgeTateMap d
+        (Φ t i (HodgeH.map (freeAb.prod XY XY) (cup exteriorAlg.mulPairing x y e :))))) = 0 :=
+      sum_mul_hodgeTateMap_scaledGraph_cross_eq_zero (fun i ↦ D (u i)) (D c) e x y h_wt φ L hL
+    simp [← Pi.add_def, mul_add, sum_add_distrib, -univ_eq_attach, h_cross, ih]
 
 /-- Half of the Atiyah–Bott formula. Let `Y` be proper and `W` projective over `R`, a subalgebra of
 `E`; let `R → E → k → ℚ̄_p` with `E`, `k` fields of characteristic 0 and `k` algebraically closed
