@@ -99,23 +99,19 @@ lemma piM_ne_zero : D.piM ≠ 0 := by simp
 `D.piM` and its conjugate is p_i = `D.levelPrime i` times a natural number prime to p_i. -/
 lemma exists_piM_mul_star_eq_levelPrime_mul_coprime {i : Fin 2} : ∃ c : ℕ,
     D.piM * star D.piM = D.levelPrime i * c ∧ (D.levelPrime i).Coprime c := by
-  have h_ne : i ≠ i.rev := by fin_cases i <;> decide
-  have h_coprime : (D.levelPrime i).Coprime (D.levelPrime i.rev) :=
-    (coprime_primes (D.levelPrime_prime i) (D.levelPrime_prime i.rev)).2
-      (D.levelPrime_injective.ne h_ne)
-  have h_prod : D.M = D.levelPrime i * D.levelPrime i.rev := by
-    fin_cases i <;> simp [M, mul_comm]
-  exact ⟨D.levelPrime i.rev, by rw [piM_mul_star, h_prod, Nat.cast_mul], h_coprime⟩
+  refine ⟨D.levelPrime i.rev, ?_, (coprime_primes (D.levelPrime_prime i)
+    (D.levelPrime_prime i.rev)).2 (D.levelPrime_injective.ne (by fin_cases i <;> decide))⟩
+  rw [piM_mul_star]
+  fin_cases i <;> simp [M, mul_comm]
 
 /-- If a finite place w of E is chosen, that is, its prime ideal contains `D.piM` (an integer of E
 whose product with its complex conjugate is p₀p₁), then w lies above one of the two primes
 p₀ = `D.levelPrime 0`, p₁ = `D.levelPrime 1` of the data `D`. -/
 lemma exists_levelPrime_mem_of_isChosen (hw : D.IsChosen w) :
-    ∃ i : Fin 2, ↑(D.levelPrime i) ∈ w.asIdeal := by
+    ∃ i : Fin 2, ↑(D.levelPrime i) ∈ w.asIdeal :=
   -- The prime `w` contains `D.piM * star D.piM = p₀ p₁`, hence one of the two factors.
-  have h_mem : D.piM * star D.piM ∈ w.asIdeal := mul_mem_right _ _ hw
-  rw [piM_mul_star, M, Nat.cast_mul] at h_mem
-  exact Fin.exists_fin_two.2 (w.isPrime.mem_or_mem h_mem)
+  Fin.exists_fin_two.2 <| w.isPrime.mem_or_mem <| by
+    simpa only [piM_mul_star, M, Nat.cast_mul] using mul_mem_right (star D.piM) w.asIdeal hw
 
 /-- A finite place w of E whose prime ideal contains `D.piM` (`D.IsChosen w`) lies above p₀ or p₁.
 So the set of such places is the union over i = 0, 1 of the places that contain both `D.piM` and p_i
@@ -141,12 +137,10 @@ character `T` of order q₂², where q₂ = `P.q₂ D.towerExp` is (q₀d)^(s+6)
 lemma exists_mulChar_orderOf_eq_sq_of_isChosen (hw : D.IsChosen w) :
     ∃ T : MulChar (ResField w) ℂ, orderOf T = P.q₂ D.towerExp ^ 2 := by
   -- The residue field has `p_i` elements for some `i`, and `q₂ ^ 2 ∣ p_i - 1`.
-  obtain ⟨i, h_mem⟩ : ∃ i : Fin 2, ↑(D.levelPrime i) ∈ w.asIdeal :=
-    D.exists_levelPrime_mem_of_isChosen hw
-  have h_dvd : P.q₂ D.towerExp ^ 2 ∣ Fintype.card (ResField w) - 1 := by
+  obtain ⟨i, h_mem⟩ := D.exists_levelPrime_mem_of_isChosen hw
+  exact exists_mulChar_orderOf _ (by
     simpa [← Nat.card_eq_fintype_card, card_ResField, D.q_eq_levelPrime h_mem] using
-      D.dvd_levelPrime_sub_one i
-  exact exists_mulChar_orderOf _ h_dvd (Complex.isPrimitiveRoot_exp _ (NeZero.ne _))
+      D.dvd_levelPrime_sub_one i) (Complex.isPrimitiveRoot_exp _ (NeZero.ne _))
 
 /-- A fixed complex multiplicative character of order q₂² of the residue field at a chosen place. -/
 def chiMLocalRoot (h : D.IsChosen w) : MulChar (ResField w) ℂ :=
@@ -181,15 +175,10 @@ lemma chiMLocal_apply_eq_one_of_pow_q₁_eq_one {x : ResField w} (hx : x ^ D.q�
     D.chiMLocal w x = 1 := by
   by_cases hw : D.IsChosen w
   · -- At a chosen place `D.chiMLocal w` is a `q₂`-th power, and `q₁ ∣ q₂`.
-    have h_dvd : D.q₁ ∣ P.q₂ D.towerExp := (dvd_mul_right _ P.d).trans q₁_mul_d_dvd_q₂
-    have hx_pow : x ^ P.q₂ D.towerExp = 1 := by
-      obtain ⟨c, hc⟩ := h_dvd
-      rw [hc, pow_mul, hx, one_pow]
-    calc D.chiMLocal w x = D.chiMLocalRoot hw (x ^ P.q₂ D.towerExp) := by
-          rw [D.chiMLocal_of_isChosen hw, pow_apply' _ (NeZero.ne _), map_pow]
-      _ = 1 := by rw [hx_pow, map_one]
-  · have hx_unit : IsUnit x := .of_pow_eq_one hx (NeZero.ne _)
-    rw [D.chiMLocal_eq_one_of_not_isChosen hw, MulChar.one_apply hx_unit]
+    obtain ⟨c, hc⟩ := (dvd_mul_right D.q₁ P.d).trans q₁_mul_d_dvd_q₂
+    rw [D.chiMLocal_of_isChosen hw, pow_apply' _ (NeZero.ne _), ← map_pow, hc, pow_mul, hx,
+      one_pow, map_one]
+  · rw [D.chiMLocal_eq_one_of_not_isChosen hw, MulChar.one_apply (.of_pow_eq_one hx (NeZero.ne _))]
 
 /-- Let `ψ` give, for each finite place w of E, a complex multiplicative character of the residue
 field at w. If `ψ w = 1`, then for every integer n the w-component of ωⁿψ, where ω = `D.chiMLocal`,
@@ -205,10 +194,9 @@ lemma chiMLocal_zpow_mul_pow_eq_one {ψ : (w : FinPlace D.E) → MulChar (ResFie
 /-- Let γ be an element of `unitary D.E`, that is, γγ̄ = 1 in E, and suppose γ is integral over ℤ.
 Then γ is a power of ζ = `P.ζ D.towerExp`, the primitive root of unity of order q₁. -/
 lemma exists_zeta_pow_eq_of_isIntegral {γ : unitary D.E} (hγ : IsIntegral ℤ (γ : D.E)) :
-    ∃ k : ℕ, P.ζ D.towerExp ^ k = γ := by
-  have h_order : IsOfFinOrder (γ : D.E) :=
-    isOfFinOrder_iff_pow_eq_one.2 ⟨_, NeZero.pos _, pow_torsionOrder_eq_one γ hγ⟩
-  exact (exists_zeta_pow_eq h_order).imp fun _ hk ↦ hk.right
+    ∃ k : ℕ, P.ζ D.towerExp ^ k = γ :=
+  (exists_zeta_pow_eq <| isOfFinOrder_iff_pow_eq_one.2
+    ⟨_, NeZero.pos _, pow_torsionOrder_eq_one γ hγ⟩).imp fun _ hk ↦ hk.right
 
 /-- For every k, the product ∏_v γ_v^{w₀(v)} over the infinite places v of E is 1 at γ = ζ^k. Here
 γ_v = `New.Φ v γ` is the image of γ under the complex embedding chosen at v, and
@@ -241,8 +229,7 @@ lemma exists_char_hasWeight (a n : ℕ) :
   -- `γ ^ q₁ = 1`.
   refine exists_hasWeight_of_prod_eq_one (S := D.finite_isChosen.toFinset)
     (fun w hw ↦ by simp [D.chiMLocal_eq_one_of_not_isChosen (by simpa using hw)]) fun γ hγ ↦ ?_
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, P.ζ D.towerExp ^ k = γ :=
-    D.exists_zeta_pow_eq_of_isIntegral (algebraMap_mem_Ô.1 hγ)
+  obtain ⟨k, hk⟩ := D.exists_zeta_pow_eq_of_isIntegral (algebraMap_mem_Ô.1 hγ)
   have hγ_pow : (γ : D.E) ^ D.q₁ = 1 := by
     rw [← hk, pow_right_comm, isPrimitiveRoot_zeta.pow_eq_one, one_pow]
   have h_inf : ∏ v : D.Φ, New.Φ v (γ : D.E) ^ (-a * D.liftWeight 0 v : ℤ) = 1 := by
@@ -318,13 +305,11 @@ instance New.Data.finite_criticalPair {P : Parameters} {D : Data P} : Finite D.C
       Iic (fun _ : D.Φ ↦ ⌊4 * D.b⌋₊) × Icc 1 D.t × ∀ w : S, MulChar (ResField w.val) ℂ :=
     (⟨p.negWeight, fun v ↦ Nat.le_floor (p.negWeight_le v)⟩, ⟨p.z, p.z_mem⟩, S.restrict p.tamePart)
   have h_data {p q : D.CriticalPair} (h_eq : data p = data q) :
-    p.negWeight = q.negWeight ∧ p.z = q.z ∧ p.tamePart = q.tamePart := by
-    obtain ⟨hc, hz, hψ⟩ : p.negWeight = q.negWeight ∧ p.z = q.z ∧ S.restrict p.tamePart = S.restrict
-      q.tamePart := by
-      simpa [data, Subtype.ext_iff] using h_eq
-    refine ⟨hc, hz, funext fun w ↦ ?_⟩
+      p.negWeight = q.negWeight ∧ p.z = q.z ∧ p.tamePart = q.tamePart := by
+    simp only [data, Prod.mk.injEq, Subtype.mk.injEq] at h_eq
+    refine ⟨h_eq.1, h_eq.2.1, funext fun w ↦ ?_⟩
     by_cases hw : D.IsChosen w
-    · exact congrFun hψ ⟨w, by simpa [S] using hw⟩
+    · exact congrFun h_eq.2.2 ⟨w, by simpa [S] using hw⟩
     · rw [p.tamePart_eq_one w hw, q.tamePart_eq_one w hw]
   rw [← finite_univ_iff]
   refine .of_finite_fibers data (toFinite _) ?_
@@ -333,8 +318,7 @@ instance New.Data.finite_criticalPair {P : Parameters} {D : Data P} : Finite D.C
     ((finite_setOf_hasWeight (fun v : D.Φ ↦ -p.negWeight v) p.tamePart).subset ?_) ?_
   · rintro _ ⟨q, ⟨-, hq⟩, rfl⟩
     obtain ⟨hc, -, hψ⟩ := h_data hq
-    rw [← hc, ← hψ]
-    exact q.hasWeight
+    exact hc ▸ hψ ▸ q.hasWeight
   · -- Two pairs with the same data and the same character agree; the other fields are proofs.
     rintro q ⟨-, hq⟩ q' ⟨-, hq'⟩ hν
     obtain ⟨hc, hz, hψ⟩ := h_data (hq.trans hq'.symm)
