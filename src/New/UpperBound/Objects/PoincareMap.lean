@@ -44,28 +44,17 @@ section Riesz
 variable {M F : Type*} [AddCommGroup M] [Module ℂ M] [NormedAddCommGroup F] [InnerProductSpace ℂ F]
   [FiniteDimensional ℂ F]
 
-/-- On an inner product space `F` of finite dimension, every conjugate linear form is `y ↦ ⟨y, z⟩`
-for a unique vector `z` (Riesz). -/
-lemma bijective_flip_innerₛₗ : Function.Bijective (innerₛₗ ℂ (E := F)).flip := by
-  have : CompleteSpace F := FiniteDimensional.completeSpace ℂ F
-  refine ⟨fun z z' h_eq ↦ ext_inner_left ℂ (LinearMap.congr_fun h_eq), fun l ↦ ?_⟩
-  -- Apply the Riesz theorem to the linear form `conj ∘ l`.
-  let z : F := (InnerProductSpace.toDual ℂ F).symm
-    ((starRingEnd ℂ).toSemilinearMap ∘ₛₗ l).toContinuousLinearMap
-  have hz (y : F) : inner ℂ z y = conj (l y) := InnerProductSpace.toDual_symm_apply
-  refine ⟨z, LinearMap.ext fun y ↦ ?_⟩
-  rw [LinearMap.flip_apply, innerₛₗ_apply_apply, ← inner_conj_symm, hz, Complex.conj_conj]
-
-/-- The linear map that sends `x` to the vector representing the conjugate linear form `B x`. -/
+/-- The linear map that sends `x` to the vector representing the conjugate linear form `B x`,
+given by the adjoint of the linear form `conj ∘ B x` evaluated at `1`. -/
 def rieszMap (B : M →ₗ[ℂ] F →ₗ⋆[ℂ] ℂ) : M →ₗ[ℂ] F :=
-  (LinearEquiv.ofBijective (innerₛₗ ℂ).flip bijective_flip_innerₛₗ).symm.toLinearMap ∘ₗ B
+  LinearMap.applyₗ (1 : ℂ) ∘ₗ LinearMap.adjoint.toLinearMap ∘ₛₗ
+    B.compr₂ₛₗ (starLinearEquiv ℂ).toLinearMap
 
 /-- The inner product of `y` with `rieszMap B x` is `B x y`. -/
 lemma inner_rieszMap (B : M →ₗ[ℂ] F →ₗ⋆[ℂ] ℂ) (x : M) (y : F) :
     inner ℂ y (rieszMap B x) = B x y := by
-  have h_flip : (innerₛₗ ℂ).flip (rieszMap B x) = B x :=
-    (LinearEquiv.ofBijective (innerₛₗ ℂ).flip bijective_flip_innerₛₗ).apply_symm_apply (B x)
-  rw [← h_flip, LinearMap.flip_apply, innerₛₗ_apply_apply]
+  simpa [rieszMap] using
+    LinearMap.adjoint_inner_right ((B.compr₂ₛₗ (starLinearEquiv ℂ).toLinearMap) x) y 1
 
 end Riesz
 
