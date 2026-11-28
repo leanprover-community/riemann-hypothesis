@@ -3,7 +3,6 @@ module
 public import Mathlib.LinearAlgebra.Lagrange
 public import New.Appendix.DiscreteSeries.Positions
 import Lib.General.Algebra.ResidueSums
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # The stationary position
