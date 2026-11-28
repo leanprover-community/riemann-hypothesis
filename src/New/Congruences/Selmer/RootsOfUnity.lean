@@ -157,7 +157,6 @@ lemma ellVal_eval_add_card_mul (g : (intQpBar ℓ)[X]) {r : ℚ≥0} {y : intQpB
     ellVal (g.eval y).val + (rootsOfValuation g r).card * ((r : ℝ≥0) : ℝ≥0∞) =
       gaussVal r g +
         ((rootsOfValuation g r).map fun α : intQpBar ℓ ↦ ellVal (y - α).val).sum := by
-  classical
   set R : Multiset (intQpBar ℓ) := rootsOfValuation g r
   set R' : Multiset (intQpBar ℓ) := g.roots.filter fun α ↦ ¬ellVal α.val = (r : ℝ≥0)
   have h_split : g.roots = R + R' := (Multiset.filter_add_not _ g.roots).symm
@@ -197,7 +196,6 @@ valuation `gaussVal ρ g = min_i (v(y_i) + ρ i)`. -/
 lemma sum_card_rootsOfValuation_mul_le {ρ : ℚ≥0} {h₀ : ℕ} (g : (intQpBar ℓ)[X]) :
     ∑ h ∈ radiusExponents ℓ ρ h₀, (rootsOfValuation g (rootRadius ℓ h)).card *
       ((rootRadius ℓ h : ℝ≥0) : ℝ≥0∞) ≤ gaussVal ρ g := by
-  classical
   -- A root lies in at most one `R_h`, and its summand `min (v(α)) ρ` in `v_ρ(g)` is then `ρ_h`.
   calc _ = (g.roots.map fun α ↦
           ∑ h ∈ radiusExponents ℓ ρ h₀ with ellVal α.val = (rootRadius ℓ h : ℝ≥0),
