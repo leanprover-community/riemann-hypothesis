@@ -196,21 +196,14 @@ def liftDiagram (j : ℕ) (τ : D.Φ) (p : ℕ) : ℤ :=
 rank `D.n j` and `κ_{j+1}` is `D.liftWeight (j + 1) τ`. -/
 lemma weightX_succ (j : ℕ) (τ : D.Φ) {p : ℕ} (hp : p < D.n (j + 1)) :
     D.weightX (j + 1) τ p = D.liftDiagram j τ p + (D.n j / 2 - D.liftWeight (j + 1) τ) := by
-  obtain ⟨s, hs⟩ : Odd D.t := D.t_odd
-  have h_rank : D.n (j + 1) = D.n j + (D.t + 1) := D.n_succ j
+  obtain ⟨s, hs⟩ := D.t_odd
   rcases lt_or_ge p (D.n j) with h_old | h_new
   · -- The first `n_j` entries of `[n_{j+1}]` are `[n_j] + (t + 1) / 2`.
-    have h_shift : twiceBlockEntry (D.n (j + 1)) p = twiceBlockEntry (D.n j) p + (D.t + 1) := by
-      grind [twiceBlockEntry]
-    rw [liftDiagram, ite_eq_left h_old, weightX, weightX, h_shift]
-    omega
+    grind [liftDiagram, weightX, twiceBlockEntry, D.n_succ j]
   · -- The last `t + 1` entries of `[n_{j+1}]` are `[t + 1] - n_j / 2`.
-    obtain ⟨b, rfl⟩ : ∃ b, p = D.n j + b := Nat.exists_eq_add_of_le h_new
-    have h_shift :
-        twiceBlockEntry (D.n (j + 1)) (D.n j + b) = twiceBlockEntry (D.t + 1) b - D.n j := by
-      grind [twiceBlockEntry]
-    rw [liftDiagram, ite_eq_right h_new.not_gt, weightX, h_shift, D.paramX_block j τ (by omega)]
-    omega
+    obtain ⟨b, rfl⟩ := Nat.exists_eq_add_of_le h_new
+    have hb : b < D.t + 1 := by grind [D.n_succ j]
+    grind [liftDiagram, weightX, twiceBlockEntry, D.n_succ j, D.paramX_block j τ hb]
 
 /-- For `p < k` the rows of the first diagram are given by
 `μ_1^+ = (a_τ, 0, …, 0) + κ_1 - n_1 / 2`, where `a_τ` is `D.firstRowExcess τ`, `κ_1` is
@@ -565,19 +558,12 @@ lemma sum_paramX (j : ℕ) (τ : D.Φ) :
       2 * D.firstRowExcess τ - 2 * (D.t + 1) * ∑ i ∈ range j, (D.liftWeight (i + 1) τ : ℤ) := by
   induction j with
   | zero =>
-    have h_head (p : ℕ) (hp : p ∈ range D.k) : D.paramX τ p =
-        twiceBlockEntry D.k p + if p = 0 then 2 * (D.firstRowExcess τ : ℤ) else 0 :=
-      ite_eq_left (mem_range.1 hp)
-    simp [n_zero, sum_congr rfl h_head, sum_add_distrib, sum_twiceBlockEntry, D.k_pos]
+    simp [n_zero, paramX, sum_congr rfl fun p hp ↦ if_pos (mem_range.1 hp),
+      sum_add_distrib, sum_twiceBlockEntry, D.k_pos]
   | succ j ih =>
-    have h_block : ∑ b ∈ range (D.t + 1), D.paramX τ (D.n j + b) =
-        -2 * (D.t + 1) * D.liftWeight (j + 1) τ := by
-      rw [sum_congr rfl fun b hb ↦ D.paramX_block j τ (mem_range.1 hb), sum_sub_distrib,
-        sum_twiceBlockEntry, sum_const, card_range, nsmul_eq_mul]
-      push_cast
-      ring
-    rw [n_succ, sum_range_add, ih, h_block, sum_range_succ]
-    ring
+    rw [n_succ, sum_range_add, ih, sum_congr rfl fun b hb ↦ D.paramX_block j τ (mem_range.1 hb),
+      sum_sub_distrib, sum_twiceBlockEntry, sum_const, card_range, nsmul_eq_mul, sum_range_succ]
+    grind
 
 /-- The first `n_m - 1` entries of `D.sortedParamY τ` are twice the Harish-Chandra parameter of the
 definite space `Y_m` at the place `τ`, in decreasing order. For each `j`, the sum of the first

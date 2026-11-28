@@ -738,22 +738,16 @@ lemma exists_isBranchingMap :
       D.IsBranchingMap br := by
   -- The weights interlace: the columns counted by `keptColumns` keep their height, the others lose
   -- a box. As `keptColumns` vanishes below height `k`, the norm bound omits the heights below `k`.
-  have h_split : (D.columnCount - fun _ ↦ D.keptColumns) + (fun _ ↦ D.keptColumns) =
-    D.columnCount :=
-    tsub_add_cancel_of_le fun τ u ↦ D.keptColumns_le_columnCount τ u
-  have h_last (τ : D.Φ) :
-      D.lastEntry D.m τ = D.lastEntry D.m τ + D.keptColumns (card (D.Y D.m)) := by
-    rw [card_Y_m, keptColumns_n_sub_one, Nat.cast_zero, add_zero]
-  have h_interlace (τ : D.Φ) (u : ℕ) (_ : u ∈ Ioo 0 (card (D.Y D.m))) :
-      D.columnsY τ u = D.keptColumns u + (D.columnCount τ (u + 1) - D.keptColumns (u + 1)) := rfl
-  obtain ⟨br, h_equivariant, h_norm, h_span⟩ := exists_branching_matrix
+  obtain ⟨br, h_eq, h_norm, h_span⟩ := exists_branching_matrix
     (fun _ : D.Φ ↦ D.lastIndexEquiv.sumCongr (.refl Unit)) D.columnsY D.k (D.lastEntry D.m)
-    (D.lastEntry D.m) h_split h_interlace (fun _ _ ↦ D.keptColumns_eq_zero_of_lt_k) h_last
-  refine ⟨br, fun R _ _ g z y hy ↦ ?_, fun ξ ↦ ?_, h_span⟩
-  · rw [h_equivariant R g z y hy]
-    simp only [diagramWeight_apply, rankAt, card_X, branchExponent_eq_sum_columns, Pi.sub_apply]
-  · obtain ⟨l, h_boxes, h_exp⟩ := D.exists_sum_columnsY_le_and_pow_le_exp
-    exact (h_norm l h_boxes ξ).trans (mul_le_mul_of_nonneg_right h_exp (weylNormSq_nonneg ξ))
+    (D.lastEntry D.m) (tsub_add_cancel_of_le (b := D.columnCount) D.keptColumns_le_columnCount)
+    (fun _ _ _ ↦ rfl) (fun _ _ ↦ D.keptColumns_eq_zero_of_lt_k)
+    (fun _ ↦ by simp only [rankAt, card_Y_m, keptColumns_n_sub_one, Nat.cast_zero, add_zero])
+  obtain ⟨l, h_boxes, h_exp⟩ := D.exists_sum_columnsY_le_and_pow_le_exp
+  refine ⟨br, fun R _ _ g z y hy ↦ ?_, fun ξ ↦
+    (h_norm l h_boxes ξ).trans (mul_le_mul_of_nonneg_right h_exp (weylNormSq_nonneg ξ)), h_span⟩
+  rw [h_eq R g z y hy]
+  simp only [diagramWeight_apply, rankAt, card_X, branchExponent_eq_sum_columns, Pi.sub_apply]
 
 /-- A fixed branching map `br` from the Weyl module of `μ(X_m)` to that of `μ(Y_m)`. -/
 def branching : Matrix (WeylIndex (D.Y D.m) D.columnsY) (WeylIndex (D.X D.m) D.columnCount) ℤ :=

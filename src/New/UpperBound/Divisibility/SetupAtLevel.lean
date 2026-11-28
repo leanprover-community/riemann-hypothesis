@@ -205,19 +205,14 @@ of the unitary group of the hermitian space `X_j` (basis `D.X j`) that lie in th
 lemma atPlaces_conj_mem_mirabolic {j : ℕ} (k : D.levelX j) :
     atPlaces D.nonInducedPlaces ((D.diagPointN j)⁻¹ * k.val * D.diagPointN j) ∈ mirabolic := by
   have h_ne (k' : D.levelX j) : directDatum
-      (atPlaces D.nonInducedPlaces ((D.diagPointN j)⁻¹ * k'.val * D.diagPointN j)).val ≠ 0 := by
-    obtain ⟨h_level, h_row⟩ := D.mem_levelX.1 k'.prop
-    obtain ⟨-, h_row_inv⟩ := D.mem_levelX.1 k'⁻¹.prop
-    exact (D.directDatum_conj_ne_zero_iff _).2 fun w _ ↦
-      ⟨(mem_stdLevel_iff.1 (levelOf_le_stdLevel h_level) w).isIntMatrix, h_row_inv (star w),
-        h_row w⟩
-  have h_ne_inv : directDatum
-      (atPlaces D.nonInducedPlaces ((D.diagPointN j)⁻¹ * k.val * D.diagPointN j))⁻¹.val ≠ 0 := by
-    simpa [mul_assoc] using h_ne k⁻¹
-  obtain ⟨a, h_col, ha⟩ := exists_inclGL_eq (h_ne k) h_ne_inv
+      (atPlaces D.nonInducedPlaces ((D.diagPointN j)⁻¹ * k'.val * D.diagPointN j)).val ≠ 0 :=
+    (D.directDatum_conj_ne_zero_iff _).2 fun w _ ↦
+      ⟨(mem_stdLevel_iff.1 (levelOf_le_stdLevel (D.mem_levelX.1 k'.prop).1) w).isIntMatrix,
+        (D.mem_levelX.1 k'⁻¹.prop).2 (star w), (D.mem_levelX.1 k'.prop).2 w⟩
+  obtain ⟨a, h_col, ha⟩ := exists_inclGL_eq (h_ne k)
+    (show directDatum _ ≠ 0 by simpa [mul_assoc] using h_ne k⁻¹)
   -- `h_col`: the indicator of "the last column is the last basis vector" is non-zero at `a`
-  have h_last : (reductionGL a).valᵀ (.inr ()) = lastBasisVector := (ite_ne_right_iff.1 h_col).1
-  exact ⟨a, (mulVec_single_one ..).trans h_last, ha⟩
+  exact ⟨a, (mulVec_single_one ..).trans (ite_ne_right_iff.1 h_col).1, ha⟩
 
 /-- Let `Σ_N = D.nonInducedPlaces` be the conjugates of the places of `E` above `N = D.N` induced by
 the embedding `ιₚ` of `[PadicPlace D.N]`, and let `δ_j = D.diagPointN j` be the point supported

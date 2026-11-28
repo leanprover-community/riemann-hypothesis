@@ -244,18 +244,13 @@ exponent `β` is `w ^ depth β`, where `depth β` is the degree in the variables
 even letters and `b < r` in odd letters. -/
 lemma commute_depthScaling_letterRep {r : ℕ} {g : GL (Fin k) W} (hg : g ∈ levi W (twoBlock k r)) :
     Commute (T.depthScaling k n r) (T.letterRep n g) := by
-  have h_letter (s : ZMod N) :
-      (diagonal fun b : Fin k ↦ T.sqrtPrime ^ T.deepIndicator r (b, s)) * T.letterMatrix s g =
-        T.letterMatrix s g * diagonal fun b : Fin k ↦ T.sqrtPrime ^ T.deepIndicator r (b, s) := by
-    ext i j
-    rw [diagonal_mul, mul_diagonal, mul_comm]
-    by_cases hij : twoBlock k r i = twoBlock k r j
-    · have h_depth : T.deepIndicator r (i, s) = T.deepIndicator r (j, s) := by
-        grind [deepIndicator, twoBlock]
-      rw [h_depth]
-    · simp [T.letterMatrix_eq_zero_of_mem_levi hg s hij]
   simp only [commute_iff_eq, depthScaling_eq_kroneckerPi, letterRep_apply, ← kroneckerPi_mul,
-    ← map_mul, h_letter]
+    ← map_mul]
+  refine congrArg kroneckerPi <| funext fun s ↦ congrArg (symPowMatrix n) <| Matrix.ext fun i j ↦ ?_
+  rw [diagonal_mul, mul_diagonal, mul_comm]
+  by_cases hij : twoBlock k r i = twoBlock k r j
+  · grind [deepIndicator, twoBlock]
+  · simp [T.letterMatrix_eq_zero_of_mem_levi hg s hij]
 
 /-- The forms that lie in the halfway lattices of all edges from the origin, in the normalized
 coefficients `v` of one edge. The form is `w ^ (-m) h` for an integral form `h`; every edge from
