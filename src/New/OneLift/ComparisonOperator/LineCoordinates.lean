@@ -4,9 +4,11 @@ public import Mathlib.Analysis.CStarAlgebra.CStarMatrix
 import Mathlib.Data.Rat.Cast.OfScientific
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import TauCeti.Analysis.InnerProductSpace.Gram.Hadamard
 public import New.OneLift.ComparisonOperator.DeterminantProducts
 public import New.OneLift.ComparisonOperator.GluedLattices
 public import Lib.General.LinearAlgebra.MinorProducts
+import Lib.General.LinearAlgebra.PolarDecomposition
 import Lib.PadicComparison.Descent.TestCategory
 
 /-!
@@ -143,53 +145,95 @@ lemma New.eval_weylKernel_single_eq_det {N : Type} [Fintype N] (τ : Φ) {h : �
   simp [weylKernel, highestPoly, tableauPoly, minor, det_apply, rowSubst,
     Fin.val_eq_val _ ⟨h, h_lt⟩, Pi.single_apply, ite_apply, apply_ite]
 
-open Matrix in
-/-- Let a function `F` of `h` columns be the sum, over the `h`-subsets `S` of `N`, of the minor on
-`S` times the value of `F` at the unit columns on `S`. Take the weight whose diagram is one column
-of height `h < card N` at the place `τ` in `Φ` and is empty at the other places; `WeylIndex` indexes
-a basis of its Weyl module. Then `F` is the polynomial `toPoly ξ` = ∑ (G ξ)ᵢ bᵢ of a vector `ξ`,
-where G is the Gram matrix and the bᵢ are the basis products of minors, and the squared norm
-`weylNormSq ξ` = ξ* G ξ is the sum of the squared moduli of these values. -/
-lemma New.exists_toPoly_single_eq {N : Type} [Fintype N] [LinearOrder N] [DecidableEq N]
-    (τ : Φ) {h : ℕ} (h_lt : h < Fintype.card N) (F : Matrix N (Fin h) ℂ → ℂ)
-    (h_expand : ∀ X : Matrix N (Fin h) ℂ, F X = ∑ S : Set.powersetCard N h,
-      (X.submatrix (enumSubset S) id).det * F ((1 : Matrix N N ℂ).submatrix id (enumSubset S))) :
-    ∃ ξ : WeylIndex N (Pi.single τ (Pi.single h 1) : Φ → ℕ → ℕ) → ℂ,
-      (∀ x : (Σ _ : Φ, N) × ℕ → ℂ,
-        (toPoly (fun _ : Φ ↦ N) (Pi.single τ (Pi.single h 1)) ξ).eval x =
-          F (.of fun (u : N) (a : Fin h) ↦ x (⟨τ, u⟩, a))) ∧
-      weylNormSq ξ = ∑ S : Set.powersetCard N h,
-        ‖F ((1 : Matrix N N ℂ).submatrix id (enumSubset S))‖ ^ 2 := by
-  -- `unit S` is the array of the unit columns on `S`; evaluation at it has the minor on `S` as its
-  -- polynomial. The vector `ξ` combines these evaluations with the values `c S` of `F`.
-  let κ : Φ → ℕ → ℕ := Pi.single τ (Pi.single h 1)
-  let unit (S : Set.powersetCard N h) : (Σ _ : Φ, N) × ℕ → ℂ := fun (⟨_, u⟩, a) ↦
-    if ha : a < h then (1 : Matrix N N ℂ) u (enumSubset S ⟨a, ha⟩) else 0
-  have h_minor (S : Set.powersetCard N h) (x : (Σ _ : Φ, N) × ℕ → ℂ) :
-      (weylKernel (fun _ ↦ N) κ (unit S)).eval x =
-        ((of fun u (a : Fin h) ↦ x (⟨τ, u⟩, a)).submatrix (enumSubset S) id).det := by
-    rw [eval_weylKernel_single_eq_det τ h_lt]
-    simp [unit, Matrix.one_apply, Matrix.submatrix]
-  let c (S : Set.powersetCard N h) : ℂ := F ((1 : Matrix N N ℂ).submatrix id (enumSubset S))
-  let ξ : WeylIndex N κ → ℂ := ∑ S, c S • weylEval (fun _ ↦ N) κ (unit S)
-  have h_eval (x : (Σ _ : Φ, N) × ℕ → ℂ) :
-      (toPoly (fun _ ↦ N) κ ξ).eval x = F (.of fun u a ↦ x (⟨τ, u⟩, a)) := by
-    rw [h_expand]
-    simp [ξ, c, toPoly_weylEval, MvPolynomial.smul_eval, h_minor, mul_comm]
-  refine ⟨ξ, h_eval, ?_⟩
-  -- The pairing of `ξ` with evaluation at `unit S` is the value `c S` of its polynomial there.
-  have h_pair (S : Set.powersetCard N h) :
-      weylEval (fun _ ↦ N) κ (unit S) ⬝ᵥ (weylGram (fun _ ↦ N) κ).map (↑) *ᵥ ξ = c S := by
-    simp [← GL.eval_toPoly, h_eval, c, unit, Matrix.submatrix, Matrix.one_apply]
-  have h_unit (S : Set.powersetCard N h) : star (unit S) = unit S := by
-    ext ⟨⟨τ', u⟩, a⟩
-    simp [unit, Matrix.one_apply, apply_dite (starRingEnd ℂ), apply_ite (starRingEnd ℂ)]
-  have h_star : star ξ = ∑ S, star (c S) • weylEval (fun _ ↦ N) κ (unit S) := by
-    simp_rw [ξ, star_sum, star_smul, GL.star_weylEval, h_unit]
-  have h_sum : star ξ ⬝ᵥ (weylGram (fun _ ↦ N) κ).map (↑) *ᵥ ξ = ∑ S, star (c S) * c S := by
-    simp_rw [h_star, sum_dotProduct, smul_dotProduct, h_pair, smul_eq_mul]
-  rw [weylNormSq, h_sum]
-  simp [c, Complex.conj_mul', ← Complex.ofReal_pow]
+open Matrix Finset in
+/-- The real part of a Gram determinant is bounded by the product of the squared column norms. -/
+private lemma re_det_gram_le_prod_col_norm_sq {L c : Type} [Fintype L] [Fintype c] [DecidableEq c]
+    (Z : Matrix L c ℂ) :
+    (Zᴴ * Z).det.re ≤ ∏ b : c, ∑ x : L, ‖Z x b‖ ^ 2 := by
+  have h_gram : Matrix.gram ℂ (fun j ↦ WithLp.toLp 2 (Z.col j)) = Zᴴ * Z :=
+    Matrix.gram_eq_conjTranspose_mul (EuclideanSpace.basisFun L ℂ) _
+  simpa [h_gram, EuclideanSpace.norm_sq_eq] using
+    Matrix.re_det_gram_le_prod_norm_sq (𝕜 := ℂ) (fun j ↦ WithLp.toLp 2 (Z.col j))
+
+open Matrix Finset in
+/-- Gram–Schmidt applied to the fixed columns first factors the determinant into a constant and
+a determinant of projected columns. The squared modulus of the constant is at most the product
+of the squared lengths of the fixed columns. -/
+private lemma exists_det_mul_fromRows {a N c : Type} [Fintype a] [Fintype N] [Fintype c]
+    [DecidableEq a] [DecidableEq N] {h : ℕ} (e : a ⊕ N ≃ Fin h ⊕ c)
+    (Z : Matrix (a ⊕ N) c ℂ) :
+    ∃ (d : ℂ) (A : Matrix (Fin h) N ℂ),
+      (∀ X : Matrix N (Fin h) ℂ, ((fromCols (fromRows 0 X) Z).submatrix id e).det = d * (A * X).det) ∧
+      ‖d‖ ^ 2 ≤ ∏ b : c, ∑ x : a ⊕ N, ‖Z x b‖ ^ 2 ∧
+      (A * Aᴴ).det.re ≤ 1 := by
+  classical
+  let M (X : Matrix N (Fin h) ℂ) := (fromCols (fromRows 0 X) Z).submatrix id e
+  by_cases h_zero : ∀ X, (M X).det = 0
+  · refine ⟨0, 0, fun X ↦ by simpa using h_zero X, ?_, ?_⟩
+    · simpa only [norm_zero, zero_pow two_ne_zero] using
+        (prod_nonneg fun b _ ↦ sum_nonneg fun x _ ↦ sq_nonneg ‖Z x b‖)
+    · cases h <;> simp [Matrix.det_zero]
+  obtain ⟨X₀, hX₀⟩ := not_forall.mp h_zero
+  -- Complete the fixed columns using any nonsingular instance of the determinant.
+  let wt : a ⊕ N → ℕ := Sum.elim (fun _ ↦ 1) (fun _ ↦ 0) ∘ e
+  obtain ⟨B, hB, hU⟩ := New.exists_orthonormal_mul wt
+    (X := M X₀) ⟨(M X₀)⁻¹, nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr hX₀)⟩
+  let U := M X₀ * B.val
+  change Uᴴ * U = 1 at hU
+  have hUU : U * Uᴴ = 1 := mul_eq_one_comm.mp hU
+  have hdetU : ‖U.det‖ = 1 := by
+    simpa [det_mul, det_conjTranspose, ← sq, pow_eq_one_iff_of_nonneg (norm_nonneg U.det)]
+      using congrArg (fun P : Matrix (a ⊕ N) (a ⊕ N) ℂ ↦ ‖P.det‖) hU
+  have hUM : Uᴴ * M X₀ = B⁻¹.val := by
+    simpa only [U, Matrix.mul_assoc, Units.mul_inv, one_mul, mul_one] using
+      congrArg (· * B⁻¹.val) hU
+  have hBinv : B⁻¹.val.BlockTriangular wt := by
+    simpa [coe_units_inv] using blockTriangular_inv_of_blockTriangular hB
+  let Q := Uᴴ.submatrix e.symm id
+  have hQ : Qᴴ * Q = 1 := by
+    simp only [Q, conjTranspose_submatrix, conjTranspose_conjTranspose, submatrix_mul_equiv, hUU,
+      submatrix_id_id]
+  -- The fixed columns have zero projection to the first block of the orthonormal basis.
+  let C := (Q * Z).toRows₂
+  have h_fixed : Q * Z = fromRows 0 C := by
+    refine (fromRows_toRows _).symm.trans (congrArg (fromRows · C) ?_)
+    ext i j
+    have h_entry := hBinv (i := e.symm (.inl i)) (j := e.symm (.inr j)) (by simp [wt])
+    rw [← hUM] at h_entry
+    simpa [Q, M, Matrix.mul_apply] using h_entry
+  let A : Matrix (Fin h) N ℂ := Q.toRows₁.toCols₂
+  refine ⟨U.det * C.det, A, fun X ↦ ?_, ?_, ?_⟩
+  · have h_blocks :
+        (Uᴴ * M X).submatrix e.symm e.symm = fromBlocks (A * X) 0 (Q.toRows₂.toCols₂ * X) C := by
+      have h_reindex : (Uᴴ * M X).submatrix e.symm e.symm = Q * fromCols (fromRows 0 X) Z := by
+        ext i j
+        simp [M, Q, Matrix.mul_apply]
+      rw [h_reindex, mul_fromCols, h_fixed]
+      ext (i | i) (j | j) <;> simp [A, Matrix.mul_apply, Fintype.sum_sum_type]
+    have h_det : (M X).det = U.det * (Uᴴ * M X).det := by
+      rw [← det_mul, ← Matrix.mul_assoc, hUU, one_mul]
+    change (M X).det = _
+    rw [h_det, ← det_submatrix_equiv_self e.symm (Uᴴ * M X), h_blocks, det_fromBlocks_zero₁₂]
+    ac_rfl
+  · have h_gram : Cᴴ * C = Zᴴ * Z := by
+      simpa [conjTranspose_mul, Matrix.mul_assoc, ← Matrix.mul_assoc Qᴴ Q, hQ,
+        conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromRows] using
+        congrArg (fun T ↦ Tᴴ * T) h_fixed.symm
+    have h_bound := re_det_gram_le_prod_col_norm_sq Z
+    rw [← h_gram] at h_bound
+    simpa [norm_mul, hdetU, det_mul, det_conjTranspose, Complex.conj_mul', ← Complex.ofReal_pow]
+      using h_bound
+  · refine (show (A * Aᴴ).det.re ≤ ∏ i : Fin h, ∑ u : N, ‖A i u‖ ^ 2 from by
+      simpa only [conjTranspose_conjTranspose, conjTranspose_apply, norm_star]
+        using re_det_gram_le_prod_col_norm_sq Aᴴ).trans ?_
+    refine prod_le_one₀ (fun _ _ ↦ by positivity) fun i _ ↦ ?_
+    let j := e.symm (.inl i)
+    have hi : ∑ v : a ⊕ N, ‖U v j‖ ^ 2 = 1 := by
+      simpa [Matrix.mul_apply, Complex.conj_mul', ← Complex.ofReal_pow] using
+        congrArg (fun P : Matrix (a ⊕ N) (a ⊕ N) ℂ ↦ (P j j).re) hU
+    rw [Fintype.sum_sum_type] at hi
+    simpa [A, Q, j, Complex.norm_conj] using
+      (le_add_of_nonneg_left (sum_nonneg fun x _ ↦ sq_nonneg ‖U (Sum.inl x) j‖)).trans_eq hi
 
 open Matrix in
 /-- Take the weight whose diagram is one column of height `h < card N` at the place `τ` in `Φ` and
@@ -207,30 +251,27 @@ lemma New.exists_toPoly_eq_det_and_weylNormSq_le {a N c : Type} [Fintype a] [Dec
           (((fromRows 0 (of fun (u : N) (b : Fin h) ↦ x (⟨τ, u⟩, b))).fromCols Z).submatrix
             id e).det) ∧
       weylNormSq ξ ≤ ∏ b : c, ∑ x : a ⊕ N, ‖Z x b‖ ^ 2 := by
-  -- Expand along the first `h` columns. Up to sign the coordinates are the complementary minors;
-  -- the Cauchy–Binet formula and Hadamard's inequality bound the sum of their squared moduli.
-  let _ : LinearOrder N := .lift' (Fintype.equivFin N) (Equiv.injective _)
-  let one : Matrix (a ⊕ N) (a ⊕ N) ℂ := 1
-  let F (X : Matrix N (Fin h) ℂ) : ℂ :=
-    ((fromCols (one.submatrix id Sum.inr * X) Z).submatrix id e).det
-  have h_rows (X : Matrix N (Fin h) ℂ) : one.submatrix id Sum.inr * X = fromRows 0 X := by
-    ext (u | u) b <;> simp [one, Matrix.mul_apply, Matrix.one_apply]
-  have h_unit (S : Set.powersetCard N h) :
-      one.submatrix id Sum.inr * (1 : Matrix N N ℂ).submatrix id (enumSubset S) =
-        one.submatrix id (Sum.inr ∘ enumSubset S) := by
-    ext
-    simp [Matrix.mul_apply, Matrix.one_apply]
-  have h_expand (X : Matrix N (Fin h) ℂ) : F X = ∑ S : Set.powersetCard N h,
-      (X.submatrix (enumSubset S) id).det *
-        F ((1 : Matrix N N ℂ).submatrix id (enumSubset S)) := by
-    simp only [F, h_unit]
-    exact det_fromCols_eq_sum_minors e Sum.inr X Z
-  obtain ⟨ξ, h_eval, h_norm⟩ := exists_toPoly_single_eq τ h_lt F h_expand
-  refine ⟨ξ, fun x ↦ by simp only [h_eval, F, h_rows], ?_⟩
-  calc weylNormSq ξ = ∑ S : Set.powersetCard N h,
-        ‖((fromCols (one.submatrix id (Sum.inr ∘ enumSubset S)) Z).submatrix id e).det‖ ^ 2 := by
-        simp only [h_norm, F, h_unit]
-    _ ≤ ∏ b, ∑ x, ‖Z x b‖ ^ 2 := sum_norm_det_fromCols_sq_le e .inr Z
+  obtain ⟨d, A, h_det, h_d, h_A⟩ := exists_det_mul_fromRows e Z
+  let κ : Φ → ℕ → ℕ := Pi.single τ (Pi.single h 1)
+  let y : (Σ _ : Φ, N) × ℕ → ℂ := fun (⟨_, u⟩, j) ↦ if hj : j < h then A ⟨j, hj⟩ u else 0
+  have h_y (x : (Σ _ : Φ, N) × ℕ → ℂ) :
+      (weylKernel (fun _ ↦ N) κ y).eval x =
+        (A * of (fun u (b : Fin h) ↦ x (⟨τ, u⟩, b))).det := by
+    rw [eval_weylKernel_single_eq_det τ h_lt]
+    congr 1
+    ext i j
+    simp [y, Matrix.mul_apply]
+  refine ⟨d • weylEval (fun _ ↦ N) κ y, fun x ↦ ?_, ?_⟩
+  · change (toPoly _ κ (d • weylEval _ κ y)).eval x = _
+    rw [map_smul, MvPolynomial.smul_eval, toPoly_weylEval, h_y, h_det]
+  · have h_weyl : weylNormSq (weylEval (fun _ ↦ N) κ y) = (A * Aᴴ).det.re := by
+      rw [weylNormSq, GL.star_weylEval, ← GL.eval_toPoly, toPoly_weylEval, h_y]
+      congr 3
+      ext i j
+      simp [y, Pi.star_apply]
+    rw [weylNormSq_smul, h_weyl]
+    exact (mul_le_of_le_one_right (by positivity) h_A).trans h_d
+
 
 end SemiInvariantNorm
 
