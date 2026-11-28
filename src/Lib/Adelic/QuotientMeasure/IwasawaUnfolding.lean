@@ -3,6 +3,9 @@ module
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Topology.Algebra.ProperAction.Torsor
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Algebra.Group.Subgroup.SubgroupOf
+import TauCeti.MeasureTheory.Group.OrbitCutoff.Iwasawa
+import TauCeti.MeasureTheory.Integral.Bochner.SMulMeasure
 public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
@@ -23,11 +26,11 @@ under a closed subgroup `N` are then written in Iwasawa coordinates `G = N · i(
   group that keeps `C`. `New.integral_tsum_block` adds integrability and termwise integration.
 * `New.integral_tsum_orbit_eq_integral_stabilizer`: the case of one orbit, with `S` the image of the
   stabiliser of a point.
-* `New.lintegral_iwasawa`: `dn dm dk` in the coordinates `i m * n * k` is a multiple of Haar
-  measure.
 * `New.integral_quotMeasure_iwasawa`: the integral over `Γ \ G` of a function `F` invariant under
   `N` and `Γ` is a nonzero constant times the integral of `w m * F (i m * k)`, where conjugation by
-  `i m` scales the Haar measure of `N` by `w m`.
+  `i m` scales the Haar measure of `N` by `w m`. It rests on Tau Ceti's Iwasawa formula
+  `MeasureTheory.exists_lintegral_iwasawa_eq_mul`: `dn dm dk` in the coordinates `i m * n * k` is a
+  multiple of Haar measure.
 
 ## Relation to the literature
 
@@ -355,85 +358,6 @@ section IwasawaIntegration
 
 open MeasureTheory Measure ENNReal NeZero ProbabilityTheory Function
 
-/-- Let `J f x` be measurable in `x`, and let `J f x₀` be obtained from `J f y` by a finite nonzero
-factor that depends on `y` only. Then this factor can be absorbed into a measurable weight: for
-measurable `β` there is a measurable `g` with `g y * J f y = β y * J f x₀`. -/
-lemma New.exists_measurable_mul_eq_of_scale {X : Type*} [MeasurableSpace X]
-    {J : (X → ℝ≥0∞) → X → ℝ≥0∞} {x₀ : X} (hJ : ∀ f : X → ℝ≥0∞, Measurable f → Measurable (J f))
-    (h_scale : ∀ y : X, ∃ r : ℝ≥0∞, r ≠ 0 ∧ r ≠ ∞ ∧
-      ∀ f : X → ℝ≥0∞, Measurable f → r * J f y = J f x₀)
-    {β : X → ℝ≥0∞} (hβ : Measurable β) :
-    ∃ g : X → ℝ≥0∞, Measurable g ∧
-      ∀ (y : X) (f : X → ℝ≥0∞), Measurable f → g y * J f y = β y * J f x₀ := by
-  by_cases! h_const : ∀ (y : X) (f : X → ℝ≥0∞), Measurable f → J f y = J f x₀
-  · exact ⟨β, hβ, fun y f hf ↦ by rw [h_const y f hf]⟩
-  -- Otherwise some `J f` is everywhere finite and nonzero; the factor at `x` is `J f x₀ / J f x`.
-  obtain ⟨y₀, f, hf, h_ne⟩ := h_const
-  obtain ⟨r, hr_zero, hr_top, hr⟩ := h_scale y₀
-  have h_zero : J f x₀ ≠ 0 := fun h ↦ h_ne (by simpa [h, hr_zero] using hr f hf)
-  have h_top : J f x₀ ≠ ∞ := fun h ↦
-    h_ne (by simpa [h, hr_zero, hr_top, mul_eq_top] using hr f hf)
-  refine ⟨fun x ↦ β x * (J f x₀ / J f x), hβ.mul (measurable_const.div (hJ f hf)),
-    fun x φ hφ ↦ ?_⟩
-  obtain ⟨s, hs_zero, -, hs⟩ := h_scale x
-  have hx_zero : J f x ≠ 0 := fun h ↦ h_zero (by rw [← hs f hf, h, mul_zero])
-  have hx_top : J f x ≠ ∞ := fun h ↦ h_top (by rw [← hs f hf, h, mul_top hs_zero])
-  have h_div : J f x₀ / J f x = s := by
-    rw [← hs f hf, ENNReal.mul_div_cancel_right hx_zero hx_top]
-  simp only [h_div, mul_assoc, hs φ hφ]
-
-/-- A function that is integrable for `∞ • q` vanishes `q`-almost everywhere. -/
-lemma New.ae_eq_zero_of_integrable_top_smul {X : Type*} [MeasurableSpace X] {q : Measure X}
-    {F : X → ℂ} (h_int : Integrable F (∞ • q)) : F =ᵐ[q] 0 := by
-  have hF : AEStronglyMeasurable F q :=
-    h_int.aestronglyMeasurable.mono_ac (absolutelyContinuous_smul top_ne_zero)
-  have h_lt : ∞ * ∫⁻ x, ‖F x‖ₑ ∂q < ∞ := by
-    simpa [HasFiniteIntegral] using h_int.hasFiniteIntegral
-  have h_norm : ∫⁻ x, ‖F x‖ₑ ∂q = 0 := by simpa [mul_lt_top_iff] using h_lt
-  filter_upwards [(lintegral_eq_zero_iff' hF.eNorm).1 h_norm] with x hx using by simpa using hx
-
-/-- Division of an integral formula by a factor `c ∈ (0, ∞]` of the measure. For finite nonzero `V`
-there is `a ≠ 0` such that, if `F` is measurable and integrable for `c • q` with integral `V * I`,
-then `F` is integrable for `q` with integral `a * I`. -/
-lemma New.exists_integral_eq_mul_of_smul_measure {X : Type*} [MeasurableSpace X] (q : Measure X)
-    {c V : ℝ≥0∞} (hc : c ≠ 0) (hV_zero : V ≠ 0) (hV_top : V ≠ ∞) :
-    ∃ a ≠ (0 : ℝ), ∀ (F : X → ℂ) (I : ℂ), Measurable F → Integrable F (c • q) →
-      ∫ x : X, F x ∂(c • q) = V.toReal * I → Integrable F q ∧ ∫ x : X, F x ∂q = a * I := by
-  have hV : V.toReal ≠ 0 := toReal_ne_zero.2 ⟨hV_zero, hV_top⟩
-  rcases eq_or_ne c ∞ with rfl | hc_top
-  · -- For `c = ∞`, integrability forces `F = 0` almost everywhere, and both sides vanish.
-    refine ⟨1, one_ne_zero, fun F I _ h_int h_eq ↦ ?_⟩
-    have hF_zero : F =ᵐ[q] 0 := ae_eq_zero_of_integrable_top_smul h_int
-    obtain rfl : I = 0 := by simpa [hV] using h_eq
-    exact ⟨(integrable_zero X ℂ q).congr hF_zero.symm, by simp [integral_eq_zero_of_ae hF_zero]⟩
-  · have hc_real : c.toReal ≠ 0 := toReal_ne_zero.2 ⟨hc, hc_top⟩
-    refine ⟨V.toReal / c.toReal, div_ne_zero hV hc_real,
-      fun F I _ h_int h_eq ↦ ⟨(integrable_smul_measure hc hc_top).1 h_int, ?_⟩⟩
-    rw [integral_smul_measure, Complex.real_smul] at h_eq
-    simp [div_mul_eq_mul_div, ← h_eq, hc_real]
-
-/-- Let `i a` lie in `N` only for `a = 1`, let `δ` be injective, and let `Γ` contain every `i (δ d)`
-and lie in the union of the `N · i (δ d)⁻¹`. Then every element of `Γ` is uniquely `i (δ d) * γ`
-with `γ ∈ Γ ∩ N`. -/
-lemma New.exists_equiv_prod_subgroupOf {G M D : Type*} [Group G] [Group M] {N Γ : Subgroup G}
-    {i : M →* G} (h_triv : ∀ a : M, i a ∈ N → a = 1) {δ : D → M} (hδ : δ.Injective)
-    (hδ_mem : ∀ d : D, i (δ d) ∈ Γ) (hΓ : ∀ g ∈ Γ, ∃ d : D, g * i (δ d) ∈ N) :
-    ∃ e : D × Γ.subgroupOf N ≃ Γ,
-      ∀ (d : D) (γ : Γ.subgroupOf N), (e (d, γ) : G) = i (δ d) * (γ : N) := by
-  let φ (p : D × Γ.subgroupOf N) : Γ :=
-    ⟨i (δ p.1) * (p.2 : N), mul_mem (hδ_mem p.1) (Subgroup.mem_subgroupOf.1 p.2.property)⟩
-  refine ⟨.ofBijective φ ⟨?_, fun g ↦ ?_⟩, fun d γ ↦ rfl⟩
-  · rintro ⟨d, γ⟩ ⟨d', γ'⟩ h
-    have h_eq : i (δ d) * (γ : N) = i (δ d') * (γ' : N) := congrArg Subtype.val h
-    have h_mem : i ((δ d)⁻¹ * δ d') ∈ N := by
-      simpa [QuotientGroup.eq] using congrArg (QuotientGroup.mk : G → G ⧸ N) h_eq
-    obtain rfl : d = d' := hδ (inv_mul_eq_one.1 (h_triv _ h_mem))
-    simpa using h_eq
-  · obtain ⟨d, h_mem⟩ : ∃ d : D, (g : G)⁻¹ * i (δ d) ∈ N := hΓ _ (inv_mem g.property)
-    let γ : Γ.subgroupOf N :=
-      ⟨⟨(g : G)⁻¹ * i (δ d), h_mem⟩, mul_mem (inv_mem g.property) (hδ_mem d)⟩
-    exact ⟨(d, γ⁻¹), by simp [φ, γ]⟩
-
 variable {G M : Type*} [Group G] [Group M] [TopologicalSpace G] [IsTopologicalGroup G]
   [PolishSpace G] (w : M → ℝ) [MeasurableSpace G] [BorelSpace G] [TopologicalSpace M]
   [IsTopologicalGroup M] [MeasurableSpace M] [BorelSpace M]
@@ -443,124 +367,7 @@ variable {G M : Type*} [Group G] [Group M] [TopologicalSpace G] [IsTopologicalGr
   (κ : Measure K) [IsHaarMeasure κ]
   {lam : Measure N} [IsHaarMeasure lam] (i : M →* G)
 
-omit [IsHaarMeasure ν] [IsHaarMeasure lam] in
-/-- Let `N` be unimodular, and let conjugation by `i m` multiply integrals over `N` by `w m`. The
-integral of `f (i a * u * (n * i m * k) * l⁻¹)` over `K × M × N`, times `w m`, is the integral of
-`f (i a * u * l⁻¹)`. -/
-lemma New.ofReal_mul_lintegral_iwasawa_translate [IsMulRightInvariant lam]
-    (h_conj : ∀ (m : M) (f : G → ℝ≥0∞), Measurable f →
-      ∫⁻ n : N, f (i m * n * (i m)⁻¹) ∂lam = ENNReal.ofReal (w m) * ∫⁻ n : N, f n ∂lam)
-    {f : G → ℝ≥0∞} (hf : Measurable f) (n : N) (m : M) (k : K) :
-    ENNReal.ofReal (w m) *
-        ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, f (i a * u * (n * i m * k) * l⁻¹) ∂lam ∂ν ∂κ =
-      ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, f (i a * u * l⁻¹) ∂lam ∂ν ∂κ := by
-  -- Absorb `n` into `u`, move `i m` past `u`, then absorb `m` into `a` and `k` into `l`.
-  have h_move (x z : G) : ENNReal.ofReal (w m) * ∫⁻ u : N, f (x * u * (n * i m * k) * z) ∂lam =
-      ∫⁻ u : N, f (x * i m * u * (k * z)) ∂lam :=
-    calc ENNReal.ofReal (w m) * ∫⁻ u : N, f (x * u * (n * i m * k) * z) ∂lam
-      _ = ENNReal.ofReal (w m) * ∫⁻ u : N, f (x * u * i m * (k * z)) ∂lam := by
-        rw [← lintegral_mul_right_eq_self (fun u : N ↦ f (x * u * i m * (k * z))) n]
-        simp [mul_assoc]
-      _ = ∫⁻ u : N, f (x * (i m * u * (i m)⁻¹) * i m * (k * z)) ∂lam :=
-        (h_conj m (fun y ↦ f (x * y * i m * (k * z))) (by fun_prop)).symm
-      _ = ∫⁻ u : N, f (x * i m * u * (k * z)) ∂lam := by simp [mul_assoc]
-  calc
-    _ = ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, f (i (a * m) * u * (k * l⁻¹)) ∂lam ∂ν ∂κ := by
-      simp only [← lintegral_const_mul' _ _ ofReal_ne_top, map_mul, ← h_move]
-    _ = ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, f (i a * u * (k * l⁻¹)) ∂lam ∂ν ∂κ :=
-      lintegral_congr fun l ↦
-        lintegral_mul_right_eq_self (fun a : M ↦ ∫⁻ u : N, f (i a * u * (k * l⁻¹)) ∂lam) m
-    _ = ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, f (i a * u * l⁻¹) ∂lam ∂ν ∂κ := by
-      rw [← lintegral_mul_right_eq_self _ k]
-      simp
-
-omit [PolishSpace G] [IsMulRightInvariant ν] [CompactSpace K] in
-/-- Suppose that conjugation by `i m` multiplies integrals over `N` by `w m`. The integral of
-`g ((i a * u)⁻¹ * (x * l))` over `K × M × N` is the same for `x = n * i m * k` as for `x = 1`. -/
-lemma New.lintegral_iwasawa_inv_mul_translate
-    (h_conj : ∀ (m : M) (f : G → ℝ≥0∞), Measurable f →
-      ∫⁻ n : N, f (i m * n * (i m)⁻¹) ∂lam = ENNReal.ofReal (w m) * ∫⁻ n : N, f n ∂lam)
-    {g : G → ℝ≥0∞} (hg : Measurable g) (n : N) (m : M) (k : K) :
-    ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, g ((i a * u)⁻¹ * (n * i m * k * l)) ∂lam ∂ν ∂κ =
-      ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, g ((i a * u)⁻¹ * l) ∂lam ∂ν ∂κ := by
-  -- Move `(i a)⁻¹` past `u⁻¹` to absorb `n` into `u`; then absorb `m` into `a` and `k` into `l`.
-  have h_absorb (a : M) (z : G) :
-      ∫⁻ u : N, g ((i a * u)⁻¹ * (n * z)) ∂lam = ∫⁻ u : N, g ((i a * u)⁻¹ * z) ∂lam := by
-    have h_move (y : G) : ∫⁻ u : N, g ((i a * u)⁻¹ * y) ∂lam =
-        ENNReal.ofReal (w a) * ∫⁻ u : N, g ((i a)⁻¹ * ((u : G)⁻¹ * y)) ∂lam := by
-      simpa [mul_assoc] using h_conj a (fun x ↦ g ((i a)⁻¹ * (x⁻¹ * y))) (by fun_prop)
-    rw [h_move, h_move, ← lintegral_mul_left_eq_self _ n]
-    simp [mul_assoc]
-  calc
-    _ = ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, g ((i a * u)⁻¹ * (i m * (k * l))) ∂lam ∂ν ∂κ := by
-      simp only [mul_assoc, h_absorb]
-    _ = ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, g ((i a * u)⁻¹ * (k * l)) ∂lam ∂ν ∂κ := by
-      refine lintegral_congr fun l ↦ ?_
-      rw [← lintegral_mul_left_eq_self _ m]
-      simp [mul_assoc]
-    _ = ∫⁻ l : K, ∫⁻ a : M, ∫⁻ u : N, g ((i a * u)⁻¹ * l) ∂lam ∂ν ∂κ :=
-      lintegral_mul_left_eq_self (fun l : K ↦ ∫⁻ a : M, ∫⁻ u : N, g ((i a * u)⁻¹ * l) ∂lam ∂ν) k
-
 variable [LocallyCompactSpace G]
-
-/-- Iwasawa integration formula. Let `G`, `M` and the closed subgroup `N` be unimodular, `K`
-compact, `i : M →* G` continuous, and `w : M → ℝ`. Suppose that `G = N · i(M) · K` and that
-conjugation by `i m` multiplies integrals over `N` by `w m > 0`. Then the measure `dn dm dk` in the
-coordinates `i m * n * k` is `d` times the Haar measure `μ` on `G`, for some `d ∈ [0, ∞]` (`d` may
-be infinite, for instance if `i` has noncompact kernel). Here `lam`, `ν`, `κ` are Haar measures on
-`N`, `M`, `K`. -/
-lemma New.lintegral_iwasawa [PolishSpace M] [LocallyCompactSpace M]
-    (hN : IsClosed (N : Set G)) (hw_pos : ∀ m : M, 0 < w m) (hi : Continuous i)
-    (h_dec : ∀ g : G, ∃ n : N, ∃ m : M, ∃ k : K, g = n * i m * k)
-    (h_conj : ∀ (m : M) (f : G → ℝ≥0∞), Measurable f →
-      ∫⁻ n : N, f (i m * n * (i m)⁻¹) ∂lam = ENNReal.ofReal (w m) * ∫⁻ n : N, f n ∂lam)
-    [IsMulRightInvariant lam] :
-    ∃ d : ℝ≥0∞, ∀ f : G → ℝ≥0∞, Measurable f →
-      ∫⁻ k : K, ∫⁻ m : M, ∫⁻ n : N, f (i m * n * k) ∂lam ∂ν ∂κ = d * ∫⁻ g : G, f g ∂μ := by
-  -- Let `J f y` be the integral of `f (i m * n * y * k⁻¹)`; the left side is `J f 1`. Moving `y`
-  -- only divides `J f y` by `w`, so `J f 1 = ∫ g y * J f y` for a suitable weight `g`. After Fubini
-  -- and a translation of `y`, this is `∫ d x * f x`, where `d x`, an integral of `g`, is constant.
-  obtain ⟨β, hβ, hβ_int⟩ := (inferInstance : HasCutoff μ G).out
-  have hβ_one : ∫⁻ x, β x ∂μ = 1 := by simpa using hβ_int 1
-  let π : Measure ((M × N) × K) := (ν.prod lam).prod κ
-  let b (p : M × N) : G := i p.1 * p.2
-  have hπ (φ : G → K → ℝ≥0∞) (hφ : Measurable (uncurry φ)) :
-      ∫⁻ h, φ (b h.1) h.2 ∂π = ∫⁻ k : K, ∫⁻ m : M, ∫⁻ n : N, φ (i m * n) k ∂lam ∂ν ∂κ := by
-    rw [lintegral_prod_symm _ (by fun_prop)]
-    exact lintegral_congr fun k ↦ lintegral_prod _ (by fun_prop)
-  let J (f : G → ℝ≥0∞) (y : G) : ℝ≥0∞ := ∫⁻ h, f (b h.1 * y * h.2⁻¹) ∂π
-  have hJ (f : G → ℝ≥0∞) (hf : Measurable f) (y : G) :
-      J f y = ∫⁻ k : K, ∫⁻ m : M, ∫⁻ n : N, f (i m * n * y * k⁻¹) ∂lam ∂ν ∂κ :=
-    hπ (fun x k ↦ f (x * y * k⁻¹)) (by fun_prop)
-  have h_scale (y : G) : ∃ r : ℝ≥0∞, r ≠ 0 ∧ r ≠ ∞ ∧
-      ∀ f : G → ℝ≥0∞, Measurable f → r * J f y = J f 1 := by
-    obtain ⟨n, m, k, rfl⟩ := h_dec y
-    refine ⟨.ofReal (w m), (ofReal_pos.2 (hw_pos m)).ne', ofReal_ne_top, fun f hf ↦ ?_⟩
-    simpa only [hJ f hf, mul_one] using
-      ofReal_mul_lintegral_iwasawa_translate w ν κ i h_conj hf n m k
-  -- The weight `g` satisfies `g y * J f y = β y * J f 1`.
-  obtain ⟨g, hg, hgJ⟩ := exists_measurable_mul_eq_of_scale (fun f hf ↦ by fun_prop) h_scale hβ
-  let d (x : G) : ℝ≥0∞ := ∫⁻ h, g ((b h.1)⁻¹ * (x * h.2)) ∂π
-  have hd (x : G) : d x = d 1 := by
-    obtain ⟨n, m, k, rfl⟩ := h_dec x
-    have hd_eq (z : G) := hπ (fun y l ↦ g (y⁻¹ * (z * l))) (by fun_prop)
-    simpa only [d, hd_eq, one_mul] using lintegral_iwasawa_inv_mul_translate w ν κ i h_conj hg n m k
-  refine ⟨d 1, fun f hf ↦ ?_⟩
-  calc ∫⁻ k : K, ∫⁻ m : M, ∫⁻ n : N, f (i m * n * k) ∂lam ∂ν ∂κ
-    _ = J f 1 := by
-      rw [hJ f hf, ← lintegral_inv_eq_self]
-      simp
-    _ = ∫⁻ y, g y * J f y ∂μ := by simp [hgJ _ f hf, lintegral_mul_const _ hβ, hβ_one]
-    _ = ∫⁻ h, ∫⁻ y, g y * f (b h.1 * y * h.2⁻¹) ∂μ ∂π := by
-      simp (disch := fun_prop) only [J, ← lintegral_const_mul]
-      exact lintegral_lintegral_swap (by fun_prop)
-    _ = ∫⁻ h, ∫⁻ x, g ((b h.1)⁻¹ * (x * h.2)) * f x ∂μ ∂π := by
-      congr with ⟨p, k⟩
-      rw [← lintegral_mul_left_eq_self _ (b p)⁻¹, ← lintegral_mul_right_eq_self _ (k : G)]
-      simp [mul_assoc]
-    _ = ∫⁻ x, ∫⁻ h, g ((b h.1)⁻¹ * (x * h.2)) * f x ∂π ∂μ := lintegral_lintegral_swap (by fun_prop)
-    _ = ∫⁻ x, d x * f x ∂μ := lintegral_congr fun x ↦ lintegral_mul_const _ (by fun_prop)
-    _ = d 1 * ∫⁻ x, f x ∂μ := by simp_rw [hd, lintegral_const_mul _ hf]
 
 omit [TopologicalSpace M] [IsTopologicalGroup M] [MeasurableSpace M] [BorelSpace M] in
 /-- Let `i a` lie in the closed unimodular subgroup `N` only for `a = 1`, let `δ` be injective, and
@@ -580,7 +387,7 @@ lemma New.ofReal_mul_lintegral_quotMeasure_tsum
       ∑' d : D, ∫⁻ n : N, f (i (δ d * m) * n * k) ∂lam := by
   -- Write the elements of `Γ` as `i (δ d) * γ` with `γ ∈ Γ ∩ N`, unfold the quotient measure to
   -- `lam`, and move `i m` past `n`.
-  obtain ⟨e, he⟩ := exists_equiv_prod_subgroupOf h_triv hδ hδ_mem hΓ
+  obtain ⟨e, he⟩ := Subgroup.exists_equiv_prod_subgroupOf h_triv hδ hδ_mem hΓ
   simp only [← e.tsum_eq, tsum_prod', he]
   rw [lintegral_tsum (by fun_prop), ← ENNReal.tsum_mul_left]
   refine tsum_congr fun d ↦ ?_
@@ -625,7 +432,8 @@ lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
   let lam' : Measure N := (Γ.subgroupOf N).quotMeasure lam
   have h_finite : IsFiniteMeasure lam' := isFiniteMeasure_quotMeasure_of_cocompact lam h_cocpt
   have : lam.IsMulRightInvariant := isMulRightInvariant_of_finite_covolume h_finite
-  obtain ⟨r, h_iwa⟩ := lintegral_iwasawa (lam := lam) w μ ν κ i hN hw_pos hi h_dec h_conj
+  obtain ⟨r, h_iwa⟩ := exists_lintegral_iwasawa_eq_mul (ν := ν) (κ := κ) (lam := lam) μ hN hw_pos hi
+    h_dec h_conj
   -- For `f = 1` the left side of `h_iwa` is a product of nonzero total masses.
   have hr : r ≠ 0 := fun h ↦ by simpa [h, NeZero.ne] using h_iwa 1 measurable_one
   have hw_meas : Measurable fun p : M × K ↦ ENNReal.ofReal (w p.1) := by fun_prop
@@ -647,7 +455,7 @@ lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
       _ = ∫⁻ k : K, ∫⁻ m : M, ∫⁻ n : N, f (i m * n * k) ∂lam ∂ν ∂κ :=
         lintegral_congr fun k ↦ (hα (fun m ↦ ∫⁻ n : N, f (i m * n * k) ∂lam) (by fun_prop)).symm
       _ = ∫⁻ g, f g ∂(r • μ) := by rw [h_iwa f hf, lintegral_smul_measure, smul_eq_mul]
-  obtain ⟨c, hc, h_div⟩ := exists_integral_eq_mul_of_smul_measure (Γ.quotMeasure μ) hr
+  obtain ⟨c, hc, h_div⟩ := exists_integral_eq_mul_of_smul_measure (E := ℂ) (Γ.quotMeasure μ) hr
     (NeZero.ne (lam' .univ)) (measure_ne_top lam' .univ)
   refine ⟨c, hc, fun F hF hFN hFΓ h_weighted ↦ ?_⟩
   -- By `h_unfold`, `F` on `Γ \ G` has the law of `F ∘ τ`, and `F ∘ τ` does not depend on `n`.
@@ -661,8 +469,10 @@ lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
   have h_int : Integrable (fun p : M × K ↦ F (σ p)) ρ := by
     simpa [ρ, integrable_withDensity_iff_integrable_smul' hw_meas, hw_pos, le_of_lt]
       using h_weighted
-  refine h_div F _ hF (h_law.integrable_iff.2 (h_int.smul_measure (measure_ne_top lam' .univ))) ?_
+  rw [← Complex.real_smul]
+  refine h_div F _ (h_law.integrable_iff.2 (h_int.smul_measure (measure_ne_top lam' .univ))) ?_
   rw [h_law.integral_eq, integral_smul_measure,
     integral_withDensity_eq_integral_toReal_smul hw_meas (by simp)]
   simp [σ, hw_pos, le_of_lt]
+
 end IwasawaIntegration
