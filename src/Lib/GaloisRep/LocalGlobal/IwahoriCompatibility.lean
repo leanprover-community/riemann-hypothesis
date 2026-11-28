@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.GaloisRep.Main.AllRanks
 public import Lib.LocalGL.Iwahori.SphericalExponents
 public import Lib.GaloisRep.LocalGlobal.LocalFormTypes
@@ -654,7 +655,7 @@ lemma mul_sub_one_eq_smul_sub_one {k : Type*} {N : ℕ} [Field k] [NeZero N] {F 
     have h_prod : ∏ i, (X - C (α i * d i ^ b)) = q * (X - C (α 0 * d 0 ^ b)) := by
       simp [Fin.prod_univ_succ, hd, q, mul_comm]
     have h_move : aeval (d 0 ^ b • F) q * (d 0 ^ b • (F - α 0 • 1)) * (T - 1) = 0 := by
-      rw [← mul_zero (T - 1), ← hF b, aeval_semiconj (h_semi b), h_prod, map_mul]
+      rw [← mul_zero (T - 1), ← hF b, ← Matrix.aeval_mul_eq_mul_aeval (h_semi b).symm, h_prod, map_mul]
       simp [smul_sub, _root_.smul_pow, smul_smul, mul_comm, algebraMap_eq_smul_one]
     rw [aeval_eq_sum_range, show q.natDegree = N by simp [q], sum_range] at h_move
     simpa [hd_ne, sum_mul, _root_.smul_pow, ← smul_sum, smul_comm (q.coeff _)] using h_move

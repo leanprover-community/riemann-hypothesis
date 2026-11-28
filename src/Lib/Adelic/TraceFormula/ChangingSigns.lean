@@ -4,6 +4,7 @@ import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
 import Mathlib.LinearAlgebra.Matrix.IsDiag
 import Mathlib.RingTheory.PicardGroup
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.Shimura.HeckeTower.HeckeData
 import Lib.ClassField.Global.CMSplittingCharacters
 import Lib.General.LinearAlgebra.Eigenvalues
@@ -138,7 +139,7 @@ lemma exists_eigenbasis_diag_form {ν : ℚ} {β : Matrix n n E} (h : IsElliptic
   refine ⟨k, d, hd, fun q ↦ ?_, fun t ht ↦ ?_⟩
   · -- conjugating by `k` turns `B q(g)` into `diagonal d * q(diagonal x)`
     have h_conjugate : k.valᴴ * (B * aeval g q) * k = diagonal fun i ↦ d i * q.eval (x i) := by
-      rw [← mul_assoc, mul_assoc, ← aeval_semiconj hk q, ← mul_assoc, hd]
+      rw [← mul_assoc, mul_assoc, Matrix.aeval_mul_eq_mul_aeval hk.symm q, ← mul_assoc, hd]
       have h_diagonal : aeval (diagonal x) q = diagonal (aeval x q) :=
         aeval_algHom_apply (diagonalAlgHom ℂ) x q
       simp [h_diagonal]
@@ -192,7 +193,7 @@ lemma posDef_mul_interpolate_iff {ν : ℚ} {β : Matrix n n E} (h : IsEllipticS
       0 < d i * ((δ.map (Φ w)).eval (r i) * ((ε i : ℂ) * (η i : ℂ))) := by
     rw [← mul_pos_iff_of_pos_right (h_sign i)]
     simp only [r, mul_assoc, mul_comm, mul_left_comm]
-  rw [Matrix.map_mul, map_aeval_matrix, mul_assoc, ← map_mul, h_diag, h_diag]
+  rw [Matrix.map_mul, ← Matrix.aeval_map, mul_assoc, ← map_mul, h_diag, h_diag]
   simpa [r, -interpolate_apply, eval_interpolate_univ_node] using forall_congr' h_scalar
 
 /-- Let y be an elliptic similitude of a form with multiplier ν
@@ -215,7 +216,7 @@ lemma isEllipticSimilitude_mul_aeval_iff {ν : ℚ} {β : Matrix n n E} {δ : E[
   have h_sim : y.valᴴ * β * y.val = (ν : E) • β ↔
       y.valᴴ * (β * aeval y.val δ) * y.val = (ν : E) • (β * aeval y.val δ) := by
     rw [← h_unit.mul_left_inj]
-    simp [aeval_semiconj, mul_assoc]
+    simp [Matrix.aeval_mul_eq_mul_aeval, mul_assoc]
   exact ⟨fun h ↦ { h with conjTranspose_mul_mul := h_sim.2 h.conjTranspose_mul_mul },
     fun h ↦ { h with conjTranspose_mul_mul := h_sim.1 h.conjTranspose_mul_mul }⟩
 
@@ -252,7 +253,7 @@ lemma aeval_conj_comp_mul_aeval_eq {c δ : E[X]} {g : (𝔸f E)[X]}
         ((g.map (starRingEnd (𝔸f E))).comp (c.map (algebraMap E (𝔸f E)))) *
         aeval (y.val.map (algebraMap E (𝔸f E))) g =
       (aeval y.val δ).map (algebraMap E (𝔸f E)) := by
-  rw [map_aeval_matrix, ← sub_eq_zero, ← map_mul, ← map_sub]
+  rw [← Matrix.aeval_map, ← sub_eq_zero, ← map_mul, ← map_sub]
   exact aeval_eq_zero_of_dvd_aeval_eq_zero (by rwa [charpoly_map]) (aeval_self_charpoly _)
 
 /-- Let y be an elliptic similitude with multiplier ν₀ and characteristic polynomial P, and let η be
@@ -326,11 +327,11 @@ lemma gram_aeval_eq_map_mul_aeval {ν : ℚ} {β : Matrix n n E}
       aeval_eq_zero_of_dvd_aeval_eq_zero hc y.val.aeval_self_charpoly
   -- `c(y)` is the adjoint of `y`, hence `ḡ(c(y))` is that of `g(y)`
   have h_adj : β.map j * aeval Y (c.map j) = Yᴴ * β.map j := by
-    rw [← map_aeval_matrix, ← Matrix.map_mul, mul_aeval_eq_conjTranspose_mul h h_mul,
+    rw [Matrix.aeval_map, ← Matrix.map_mul, mul_aeval_eq_conjTranspose_mul h h_mul,
       Matrix.map_mul, conjTranspose_map j fun a : E ↦ by simp [j]]
   calc (aeval Y g)ᴴ * β.map j * aeval Y g
       = β.map j * (aeval Y ((g.map (starRingEnd (𝔸f E))).comp (c.map j)) * aeval Y g) := by
-        rw [← star_eq_conjTranspose, star_aeval, star_eq_conjTranspose, ← aeval_semiconj h_adj,
+        rw [← star_eq_conjTranspose, star_aeval, star_eq_conjTranspose, Matrix.aeval_mul_eq_mul_aeval h_adj.symm,
           aeval_comp, mul_assoc]
     _ = (β * aeval y.val δ).map j := by rw [aeval_conj_comp_mul_aeval_eq hg, Matrix.map_mul]
 
@@ -403,7 +404,7 @@ lemma exists_hasSignType_mul_iff (η : Z → InfinitePlace E → n → ℤˣ)
     have h_charpoly : (z * y * z⁻¹).val.charpoly = y.val.charpoly := by simp
     refine .units_of_val ?_
     simp only [V, hU, h_charpoly]
-    exact aeval_semiconj h_semiconj.units_val (υ y.val.charpoly μ)
+    exact (Matrix.aeval_mul_eq_mul_aeval h_semiconj.units_val.eq.symm (υ y.val.charpoly μ)).symm
   -- hence `(q, y, μ) ↦ (U • q, y, μ)` is equivariant and passes to the orbits
   let σ : Perm (MarkedTriple K Z) := prodCongrLeft fun (y, μ) ↦ toPerm (V μ y)
   have h_equiv (z : GL n E) : ∀ p : MarkedTriple K Z, σ (z • p) = z • σ p := fun (q, y, μ) ↦ by

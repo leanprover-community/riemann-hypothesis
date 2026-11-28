@@ -2,6 +2,7 @@ module
 
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
 public import Lib.GaloisRep.LocalGlobal.LocalFormTypes
 import Lib.Adelic.Landherr
@@ -240,7 +241,7 @@ private lemma aeval_eq_conj_diagonal_eval {c c' : Fin N → F} {k γ : GL (Fin N
   have h_aeval_diag : aeval (diagonalAlgHom F c) z = diagonal fun i : Fin N ↦ z.eval (c i) := by
     rw [aeval_algHom_apply, diagonalAlgHom_apply, aeval_pi_apply]
     simp
-  rw [← h_aeval_diag, aeval_semiconj h_semi z, mul_assoc, Units.mul_inv, mul_one]
+  rw [← h_aeval_diag, ← Matrix.aeval_mul_eq_mul_aeval h_semi.symm z, mul_assoc, Units.mul_inv, mul_one]
 
 omit [CompactSpace 𝒪[F']] in
 /-- Descent for clause (a) of `New.proIwahori_doubleCoset_match`. Let `σ` preserve `v` and let the

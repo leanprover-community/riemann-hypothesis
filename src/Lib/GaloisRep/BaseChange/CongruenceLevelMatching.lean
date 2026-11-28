@@ -2,6 +2,7 @@ module
 
 import Mathlib.RingTheory.Polynomial.IsIntegral
 import Mathlib.RingTheory.Valuation.Integral
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 import Lib.Adelic.Witt.WittTheorem
 import Lib.ClassField.Local.ArtinMap
@@ -115,7 +116,7 @@ lemma New.aeval_charpoly_dvd_of_smul_sub_one {O R n k : Type} [CommRing O] [Comm
   -- `charpoly g` divides `(charpoly s(g)).comp s`; evaluate at `B` and read `s(g)` as `ι (r(Y))`.
   let s : R[X] := (r.map ι).comp (v • (X - 1))
   have h_dvd : g.charpoly ∣ (aeval g s).charpoly.comp s := charpoly_dvd_charpoly_aeval_comp s
-  simpa [s, ← hY, ← map_aeval_matrix, charpoly_map, aeval_comp] using aeval_dvd B h_dvd
+  simpa [s, ← hY, Matrix.aeval_map, charpoly_map, aeval_comp] using aeval_dvd B h_dvd
 
 /-- For a unitary `γ`, a hermitian `v` and `a` with `a * v * v = v`, the matrix `B = v • (γ - 1)`
 satisfies `star B * (1 + a • B) = -B`. -/
@@ -314,7 +315,7 @@ lemma New.exists_isNormRoot_and_mem_of_mem {O R n : Type} [CommRing O] [CommRing
     (z'.aeval (Y γ hγ_mem))ᴴ), ?_⟩
   rw [map_smul' (hf := map_mul ι), ← RingHom.mapMatrix_apply, map_add, map_mul]
   simp only [RingHom.mapMatrix_apply]
-  rw [conjTranspose_map _ hι, map_aeval_matrix, map_aeval_matrix, map_aeval_matrix,
+  rw [conjTranspose_map _ hι, ← Matrix.aeval_map, ← Matrix.aeval_map, ← Matrix.aeval_map,
     aeval_map_algebraMap, aeval_map_algebraMap, aeval_map_algebraMap, hY, smul_sub v a.val.val 1,
     h_va_eq, ← hmv, mul_comm (ι m) v, mul_smul, ← smul_sub]
   congr 1

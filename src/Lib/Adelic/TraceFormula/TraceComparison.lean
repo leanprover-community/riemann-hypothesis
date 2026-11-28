@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.MeasureTheory.Integral.Pi
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.TraceFormula.OrbitalUnfolding
@@ -535,7 +536,7 @@ lemma frameClass_mem_signedClasses_iff {γ : U V.J} (hγ : IsEllipticSimilitude 
       star (g.map (Φ w)).val * V.J.map (Φ w) * (g.map (Φ w)).val :=
     map_conjTranspose_mul_mul (Φ w) (by simp) g.val V.J
   rw [← (g.map (Φ w)).isUnit.posDef_star_left_conjugate_iff, mul_assoc, mul_assoc,
-    ← aeval_semiconj h_conj, ← h_poly, ← mul_assoc, ← mul_assoc, ← h_form]
+    Matrix.aeval_mul_eq_mul_aeval h_conj.eq.symm, ← h_poly, ← mul_assoc, ← mul_assoc, ← h_form]
   exact h_pos w
 
 /-- At the infinite place `w` the frame `V.x` carries the form `V.J` to the diagonal matrix of the

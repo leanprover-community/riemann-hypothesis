@@ -4,6 +4,7 @@ import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unitary
 import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.ClassField.Global.AlbertBrauerHasseNoether
@@ -290,7 +291,7 @@ lemma U.isRootQuotient_conj (hc : γ * c = c * γ') (ha : IsRootQuotient γ' z a
   have h_semiconj : SemiconjBy c.val.val γ'.val.val γ.val.val :=
     congrArg (fun g : U (1 : Matrix n n R) ↦ g.val.val) hc.symm
   have h_conj : c.val.val * aeval γ'.val.val z * c.val⁻¹.val = aeval γ.val.val z :=
-    c.val.mul_inv_eq_iff_eq_mul.mpr (aeval_semiconj h_semiconj z)
+    c.val.mul_inv_eq_iff_eq_mul.mpr (Matrix.aeval_mul_eq_mul_aeval h_semiconj.eq.symm z).symm
   have ha_conj : c.val.val * (a.val.val * (aeval γ'.val.val z)ᴴ) * c.val⁻¹.val =
       c.val.val * aeval γ'.val.val z * c.val⁻¹.val :=
     congrArg (fun M : Matrix n n R ↦ c.val.val * M * c.val⁻¹.val) ha
@@ -308,7 +309,7 @@ lemma U.isRootQuotient_map {f : R →+* S} (hf : ∀ x : R, f (star x) = star (f
     congrArg (fun M : Matrix n n R ↦ M.map f) h_root
   change (a.val.val).map f * (aeval ((γ.val.val).map f) (z.map f))ᴴ =
     aeval ((γ.val.val).map f) (z.map f)
-  simpa [conjTranspose_map _ hf, map_aeval_matrix] using h_map
+  simpa [conjTranspose_map _ hf, ← Matrix.aeval_map] using h_map
 
 /-- If `z(γ)` is invertible, exactly one unitary `a` satisfies `a * z(γ)ᴴ = z(γ)`
 (`New.IsRootQuotient`), namely `z(γ) * (z(γ)ᴴ)⁻¹`. -/
@@ -471,7 +472,7 @@ lemma IsRootQuotient.twistedNorm_eq_mul
           have h_conj_eq : aeval γ.val.val ((twistedNorm (.map σ) q z).map σ) =
               c.val.val * σ.mapMatrix (aeval γ.val.val (twistedNorm (.map σ) q z)) *
                 c.val⁻¹.val := by
-            rw [RingHom.mapMatrix_apply, map_aeval_matrix, aeval_semiconj h_semiconj,
+            rw [RingHom.mapMatrix_apply, ← Matrix.aeval_map, ← Matrix.aeval_mul_eq_mul_aeval h_semiconj.eq.symm,
               mul_assoc, Units.mul_inv, mul_one]
           rw [h_conj_eq]
           exact h_unit.mul c.val⁻¹.isUnit

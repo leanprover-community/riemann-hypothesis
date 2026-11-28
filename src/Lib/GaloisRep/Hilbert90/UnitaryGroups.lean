@@ -2,6 +2,7 @@ module
 
 import Mathlib.Algebra.Ring.Divisibility.Lemmas
 import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.GaloisRep.BaseChange.Defs
 import Lib.GaloisRep.Hilbert90.TameActions
 import Lib.General.LinearAlgebra.MatrixPolynomials
@@ -291,7 +292,7 @@ lemma exists_fixed_orthonormal_frame (hO : IsProfiniteRing O) {c : O}
   -- `y` is fixed by `τ` at `h - 1`, and `T * h * Tᴴ = 1`
   obtain ⟨hy_fix, -, -, h_polar⟩ := hy (h - 1).aeval_self_charpoly
   refine ⟨1 + (y.aeval (h - 1))ᴴ * (h - 1), (y.aeval (h - 1))ᴴ, rfl, ?_, ?_⟩
-  · simp [conjTranspose_map _ hτ, map_aeval_matrix, h_fixed, hy_fix, Matrix.map_add, Matrix.map_sub]
+  · simp [conjTranspose_map _ hτ, ← Matrix.aeval_map, h_fixed, hy_fix, Matrix.map_add, Matrix.map_sub]
   · -- `g` is `Tᴴ`, as `h - 1` is hermitian
     simpa [h_herm, star] using h_polar
 

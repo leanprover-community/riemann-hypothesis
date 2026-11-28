@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Algebra.FiniteSupport.Basic
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 import Lib.Adelic.Adeles.StrongApproximation
@@ -530,7 +531,7 @@ private lemma New.exists_isUnit_aeval_and_isRootQuotient_le {E E' n : Type} [Fie
   rw [mul_comm z] at hb
   refine ⟨z₀, b, fun ν hν ↦ hb (e ν) ?_⟩
   -- A unitary matrix is normal, so the radical of its characteristic polynomial kills it.
-  exact (map_aeval_matrix _ _ _).symm.trans (by simp [← hν])
+  exact (Matrix.aeval_map _ _ _).trans (by simp [← hν])
 
 /-- Let `C` be a class of `σ`-fixed polynomials over `E'` with norm roots `z P` (`IsNormRoot`: among
 other things, the twisted norm `z * σ z * ⋯` of `z P` has root quotient `g` at each adelic `g` of
@@ -582,7 +583,7 @@ lemma New.exists_isRootQuotient_of_isNormRoot {E E' n : Type} [Field E] [CMType 
   have h_unit_rat {ν : U 1} (hν_C : C (q ν)) : IsUnit (aeval (ν : Matrix n n E') (z₀ (q ν))) := by
     -- `e ν` is `ν` with `algebraMap E' (𝔸f E')` applied to the entries.
     refine isUnit_of_mapMatrix (algebraMap E' (𝔸f E')) ?_
-    rw [RingHom.mapMatrix_apply, map_aeval_matrix]
+    rw [RingHom.mapMatrix_apply, ← Matrix.aeval_map]
     simpa [e, U.map] using (h_unit hν_C).left
   -- `A ν` and `B ν` are the unique roots for `z₀` at `ν` and for `x` at `e ν`.
   choose! A hA hA_uniq using fun ν (hν_C : C (q ν)) ↦ existsUnique_isRootQuotient (h_unit_rat hν_C)

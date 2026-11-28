@@ -105,8 +105,9 @@ end TraceFormDefs
 /-!
 ## Polynomials evaluated at matrices, fixed matrices and twisted norms
 
-`New.star_aeval`, `New.map_aeval_matrix` and `New.aeval_semiconj` say that `z(Y)` is compatible
-with star, with ring maps and with intertwining matrices.
+`New.star_aeval` says that `z(Y)` is compatible with star; Tau Ceti's `Matrix.aeval_map` and
+`Matrix.aeval_mul_eq_mul_aeval` give the compatibility with ring maps and with intertwining
+matrices.
 -/
 
 open Polynomial in
@@ -134,12 +135,6 @@ lemma star_aeval {A : Type*} [StarRing R] [Ring A] [StarRing A] [Algebra R A] [S
     simp only [Polynomial.map_monomial, aeval_monomial, ← Algebra.smul_def, star_smul, star_pow,
       starRingEnd_apply]
 
-/-- Applying the ring map `ψ` to the entries of `z(Y)` gives the value at the matrix `Y.map ψ` of
-the polynomial `z.map ψ`. -/
-lemma map_aeval_matrix (ψ : R →+* S) (Y : Matrix n n R) (z : R[X]) :
-    (aeval Y z).map ψ = aeval (Y.map ψ) (z.map ψ) :=
-  (aeval_map Y ψ z).symm
-
 /-- The twisted norm `z · σ(z) ⋯ σ^(p-1)(z)` of a polynomial `z`, with `σ` acting on coefficients,
 is the product of the polynomials `z.map (σ ^ i)` for `i < p`. -/
 lemma twistedNorm_map_eq_prod {σ : R →+* R} (p : ℕ) (z : R[X]) :
@@ -147,18 +142,13 @@ lemma twistedNorm_map_eq_prod {σ : R →+* R} (p : ℕ) (z : R[X]) :
   rw [twistedNorm, ← List.prod_toFinset _ List.nodup_range, List.toFinset_range]
   exact Finset.prod_congr rfl fun i _ ↦ Polynomial.mapRingHom_pow_apply σ i z
 
-/-- If `c` intertwines the square matrices `x` and `y`, then it intertwines `q(x)` and `q(y)`. -/
-lemma aeval_semiconj [DecidableEq m] {y : Matrix m m R} (h_semiconj : c * x = y * c) (q : R[X]) :
-    c * aeval x q = aeval y q * c :=
-  (aeval_mul_eq_mul_aeval h_semiconj.symm q).symm
-
 /-- For a normal matrix `x`, the conjugate transpose of `w(x)` commutes with `z(x)`. -/
 lemma commute_conjTranspose_aeval [StarRing R] (x : Matrix n n R) [IsStarNormal x] {w z : R[X]} :
     Commute (aeval x w)ᴴ (aeval x z) := by
   -- `star x` commutes with `x`, hence with `w(x)`; so `w(x)ᴴ` commutes with `x`, hence with `z(x)`.
-  have h_star : Commute (star x) (aeval x w) := aeval_semiconj (star_comm_self' x) w
+  have h_star : Commute (star x) (aeval x w) := (Matrix.aeval_mul_eq_mul_aeval (star_comm_self' x).symm w).symm
   have h_conj : Commute (aeval x w)ᴴ x := h_star.symm.star_left
-  exact aeval_semiconj h_conj.eq z
+  exact (Matrix.aeval_mul_eq_mul_aeval h_conj.eq.symm z).symm
 
 /-- The characteristic polynomial of `Y` divides `χ(q(X))`, where `χ` is the characteristic
 polynomial of `q(Y)`. -/

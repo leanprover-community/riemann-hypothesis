@@ -4,6 +4,7 @@ public import Aesop.BuiltinRules
 import Mathlib.Topology.Algebra.Valued.LocallyCompact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.ClassField.Places.DecompositionCompletion
 public import Lib.PadicHodge.Crystalline.Basic
 import Lib.ClassField.Places.DecompositionCyclotomic
@@ -498,7 +499,7 @@ lemma polyKillsAt_of_retract (hφ : ∀ (g : Gal(Ω/E')) (x : Ω), φ g (c x) = 
   refine ⟨fun hℓ ↦ ?_, ?_⟩
   · -- Away from `ℓ`: `Q (r (φ s)) = P' Q (r' s) P = 0`.
     have h_semiconj : P * Polynomial.aeval (r (φ s)).val Q = Polynomial.aeval (r' s).val Q * P :=
-      aeval_semiconj (h_comm s hs).symm Q
+      (Matrix.aeval_mul_eq_mul_aeval (h_comm s hs) Q).symm
     calc Polynomial.aeval (r (φ s)).val Q = P' * (P * Polynomial.aeval (r (φ s)).val Q) := by
           rw [← Matrix.mul_assoc, hP, Matrix.one_mul]
       _ = 0 := by rw [h_semiconj, h_kills_away (valuation_comap_eq_one c hℓ), Matrix.zero_mul,

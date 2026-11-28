@@ -6,6 +6,7 @@ import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.LocallyConstant.Algebra
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 import TauCeti.LinearAlgebra.Trace.Idempotent
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
@@ -353,7 +354,7 @@ lemma trace_aeval_eq_natDegree (huv : u * A + v * B = 1) (hy : y.charpoly = A * 
   apply f.injective
   calc f (aeval y (v * B)).trace
       = ((A.map f * B.map f).roots.map ((v * B).map f).eval).sum := by
-        rw [AddMonoidHom.map_trace, map_aeval_matrix, trace_aeval_eq_sum_roots, charpoly_map, hy,
+        rw [AddMonoidHom.map_trace, ← Matrix.aeval_map, trace_aeval_eq_sum_roots, charpoly_map, hy,
           Polynomial.map_mul (p := A)]
     _ = ((A.map f).roots.map fun _ ↦ 1).sum + ((B.map f).roots.map fun _ ↦ 0).sum := by
         rw [roots_mul hAB, Multiset.map_add, Multiset.sum_add, Multiset.map_congr rfl hA,
@@ -484,7 +485,7 @@ def blockLocus (P p : (LocField w)[X]) (ε : Matrix n n (LocField w)) : Set (Gf 
 lemma semiconjBy_aeval_atPlace_conj (g : GL n (LocField w)) (x : Gf E n) (p : (LocField w)[X]) :
     SemiconjBy g.val (aeval (((ofSplitPlace hw g)⁻¹ * x * ofSplitPlace hw g).atPlace w).val p)
       (aeval (x.atPlace w).val p) :=
-  aeval_semiconj (by simp [atPlace_ofSplitPlace, ← mul_assoc]) p
+  (Matrix.aeval_mul_eq_mul_aeval (by simp [atPlace_ofSplitPlace, ← mul_assoc]) p).symm
 
 /-- The conjugate `g⁻¹ x g` has characteristic polynomial `P` and `p`-value `ε` at `w` exactly if
 `x` has characteristic polynomial `P` at `w` and `p(x_w) = g ε g⁻¹`. -/

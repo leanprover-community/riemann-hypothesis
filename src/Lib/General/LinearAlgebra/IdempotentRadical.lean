@@ -2,6 +2,7 @@ module
 
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.Speed
 import Lib.General.LinearAlgebra.MatrixPolynomials
 
@@ -111,7 +112,7 @@ lemma aeval_sub_aeval_mem_upperBlocks {g x : Matrix n n k} (hg : ε * (g * ε) =
     (hx : x - g ∈ upperBlocks ε) (p : k[X]) : aeval x p - aeval g p ∈ upperBlocks ε := by
   -- `x` and `g` induce the same map on the image of `ε`, and the same map on the quotient by it.
   obtain ⟨hx_range, hx_ker⟩ := mem_upperBlocks_iff.mp hx
-  -- By `aeval_semiconj`, `a b = c a` gives `a p(b) = p(c) a`; here `a` is `ε` or `1 - ε`.
+  -- By `Matrix.aeval_mul_eq_mul_aeval`, `c a = a b` gives `p(c) a = a p(b)`; here `a` is `ε` or `1 - ε`.
   have hx_image : ε * (g * ε) = x * ε := by
     linear_combination (norm := noncomm_ring) hg - hx_ker
   have hg_quot : (1 - ε) * g = (1 - ε) * g * (1 - ε) := by
@@ -119,9 +120,9 @@ lemma aeval_sub_aeval_mem_upperBlocks {g x : Matrix n n k} (hg : ε * (g * ε) =
   have hx_quot : (1 - ε) * x = (1 - ε) * g * (1 - ε) := by
     linear_combination (norm := noncomm_ring) hg_quot - hx_range
   have h_image : aeval x p * ε = aeval g p * ε :=
-    (aeval_semiconj hx_image p).symm.trans (aeval_semiconj hg p)
+    (Matrix.aeval_mul_eq_mul_aeval hx_image.symm p).trans (Matrix.aeval_mul_eq_mul_aeval hg.symm p).symm
   have h_quot : (1 - ε) * aeval x p = (1 - ε) * aeval g p :=
-    (aeval_semiconj hx_quot p).trans (aeval_semiconj hg_quot p).symm
+    (Matrix.aeval_mul_eq_mul_aeval hx_quot.symm p).symm.trans (Matrix.aeval_mul_eq_mul_aeval hg_quot.symm p)
   refine mem_upperBlocks_iff.mpr ⟨?_, by rw [sub_mul, h_image, sub_self]⟩
   linear_combination (norm := noncomm_ring) -h_quot
 
@@ -129,7 +130,7 @@ lemma aeval_sub_aeval_mem_upperBlocks {g x : Matrix n n k} (hg : ε * (g * ε) =
 the image of `ε`), then `ε g ε = g ε` (`g` keeps the image of `ε`). -/
 lemma mul_mul_eq_mul_of_aeval {g : Matrix n n k} {p : k[X]} (h_range : ε * aeval g p = aeval g p)
     (h_fix : aeval g p * ε = ε) : ε * (g * ε) = g * ε := by
-  have h_comm : g * aeval g p = aeval g p * g := aeval_semiconj rfl p
+  have h_comm : g * aeval g p = aeval g p * g := (Matrix.aeval_mul_eq_mul_aeval rfl p).symm
   have h_eq : g * ε = aeval g p * (g * ε) := by
     rw [← mul_assoc, ← h_comm, mul_assoc, h_fix]
   rw [h_eq, ← mul_assoc, h_range]
@@ -143,8 +144,8 @@ lemma semiconjBy_one_add_aeval_sub {g x : Matrix n n k} {p : k[X]}
   obtain ⟨hεD, -⟩ := mem_upperBlocks_iff.mp
     (aeval_sub_aeval_mem_upperBlocks (mul_mul_eq_mul_of_aeval h_range h_fix) hx p)
   obtain ⟨hεZ, -⟩ := mem_upperBlocks_iff.mp hx
-  have hg_comm : g * aeval g p = aeval g p * g := aeval_semiconj rfl p
-  have hx_comm : x * aeval x p = aeval x p * x := aeval_semiconj rfl p
+  have hg_comm : g * aeval g p = aeval g p * g := (Matrix.aeval_mul_eq_mul_aeval rfl p).symm
+  have hx_comm : x * aeval x p = aeval x p * x := (Matrix.aeval_mul_eq_mul_aeval rfl p).symm
   -- Write `Z = x - g`, `D = p(x) - p(g)` and `e = p(g)`. The claim is `Z = g D - D x`, and
   -- `g D - D x = e Z - Z (e + D)`, where `Z e = 0`, `Z D = 0` and `e Z = Z`.
   have hZe : (x - g) * aeval g p = 0 := mul_eq_zero_of_mem_upperBlocks hx h_range

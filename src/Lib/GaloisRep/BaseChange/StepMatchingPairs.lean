@@ -1,6 +1,7 @@
 module
 
 import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Lift
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 import Lib.GaloisRep.Hilbert90.UnitaryGroups
 import Lib.General.LinearAlgebra.MatrixPolynomials
@@ -97,14 +98,14 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
         obtain ⟨q, hq⟩ := hP u hu
         have h_norm_u : (twistedNorm (Polynomial.map (adeleMap σ)) p z).map (evalAt u) =
             g.val.val.charpoly.map (evalAt u) * q + X := sub_eq_iff_eq_add.1 hq
-        rw [map_aeval_matrix, h_norm_u]
+        rw [← Matrix.aeval_map, h_norm_u]
         simp [ev_idem, hu, aeval_self_charpoly, ← charpoly_map, cutGL, Matrix.map_add, map_smul']
       · -- no conjugate of `u` lies above `T`, so every factor of the norm is `1` at `u`
         have h_conj (f : E' →+* E') : (z.map (adeleMap f)).map (evalAt u) =
             (z.map (evalAt (u.comap f))).map (locMap f rfl) :=
           (z.map_map (adeleMap f) (evalAt u)).trans
             (z.map_map (evalAt (u.comap f)) (locMap f rfl)).symm
-        simp [h_conj, hz, hu, ev_idem, twistedNorm_map_eq_prod, adeleMap_gal_pow, map_aeval_matrix,
+        simp [h_conj, hz, hu, ev_idem, twistedNorm_map_eq_prod, adeleMap_gal_pow, ← Matrix.aeval_map,
           Polynomial.map_prod, cutGL, Matrix.map_add, map_smul']
     have h_coprime :
         IsCoprime g.val.val.charpoly (∏ i ∈ .range p, z.map (adeleMap σ ^ i)) := by
@@ -124,7 +125,7 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
       by_cases hu : u.below E ∈ T
       · simp [adeleNorm_locIdele, hμ_loc _ hu]
       · have hd_val : (ideleAt u d : LocField u) = 1 := by
-          simp [ideleAt, map_det, hd, hz u hu, map_aeval_matrix]
+          simp [ideleAt, map_det, hd, hz u hu, ← Matrix.aeval_map]
         simp [Units.val_eq_one.1 hd_val]
     · -- above `T` this reads `g * 1 = g`, at the conjugate places `g * g⁻¹ = 1`, and at the
       -- other places `1 * 1 = 1`
@@ -144,7 +145,7 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
     change (a : Matrix n n (𝔸f E')).map (evalAt u) =
       aeval ((γ : Matrix n n (𝔸f E')).map (evalAt u)) (z.map (evalAt u))
     simpa [hB, mem_B, ev_idem, hz, hT, hu, h_adj, placesAbove, star_idem, map_smul', below_star,
-      map_aeval_matrix] using ha_u
+      ← Matrix.aeval_map] using ha_u
 
 /-- Let `π` be a representation of the unitary group over `E'`, let `u` be a split place of `E'`
 whose place `w` below is split, and let `E_w → E'_u` be onto. Let `x` be spherical at `u` (fixed by

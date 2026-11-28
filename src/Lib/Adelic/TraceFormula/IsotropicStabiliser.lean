@@ -2,6 +2,7 @@ module
 
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.Adelic.Reduction.FirstMinimumShortBases
 import Lib.General.LinearAlgebra.MatrixPolynomials
 
@@ -52,7 +53,7 @@ lemma not_irreducible_charpoly_of_mul_eq_mul {γ X r : Matrix n n E} (hγ : γ.d
   -- The polynomial of `r`, taken at `γ`, kills `X`. So it has a common factor with the
   -- polynomial of `γ`, hence equals it, and then `γ` is singular.
   have h_kills : aeval γ r.charpoly * X = 0 := by
-    rw [← aeval_semiconj h_keeps.symm, aeval_self_charpoly, mul_zero]
+    rw [Matrix.aeval_mul_eq_mul_aeval h_keeps, aeval_self_charpoly, mul_zero]
   have h_dvd : γ.charpoly ∣ r.charpoly := by
     by_contra h_not_dvd
     have h_unit : IsUnit (aeval γ r.charpoly) :=
@@ -81,7 +82,7 @@ def spanStabilizer (J X : Matrix n n E) : Subgroup (U J) where
     have h_inv : aeval (γ : Matrix n n E) q * (γ : Matrix n n E) = 1 := by
       simpa [aeval_self_charpoly] using congrArg (aeval (γ : Matrix n n E)) hpq
     exact ⟨aeval r q,
-      by rw [aeval_semiconj hr.symm, Subgroup.coe_inv, Units.inv_eq_of_mul_eq_one_left h_inv]⟩
+      by rw [← Matrix.aeval_mul_eq_mul_aeval hr, Subgroup.coe_inv, Units.inv_eq_of_mul_eq_one_left h_inv]⟩
 
 variable {J X Y : Matrix n n E}
 

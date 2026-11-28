@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Polynomial.Eval.Irreducible
 import Mathlib.RingTheory.PiTensorProduct
 import TauCeti.Analysis.Normed.Ring.Ultra
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 public import Lib.General.LinearAlgebra.IdempotentRadical
 public import Lib.Adelic.TraceFormula.ChangingSigns
 import Lib.General.Combinatorics
@@ -246,7 +247,7 @@ lemma splittingIdempotent_ne_zero_and_ne_one [Nonempty n] {g : GL n F}
 lemma aeval_units_conj (b g : GL n F) (p : F[X]) :
     aeval (b⁻¹ * g * b).val p = b⁻¹.val * aeval g.val p * b.val := by
   have h_semiconj : b.val * (b⁻¹ * g * b).val = g.val * b.val := by simp [← mul_assoc]
-  rw [mul_assoc b⁻¹.val, ← aeval_semiconj h_semiconj p, Units.inv_mul_cancel_left]
+  rw [mul_assoc b⁻¹.val, Matrix.aeval_mul_eq_mul_aeval h_semiconj.symm p, Units.inv_mul_cancel_left]
 
 /-- Conjugating `g` conjugates its idempotent. -/
 lemma splittingIdempotent_conj (b g : GL n F) :
