@@ -9,7 +9,6 @@ public import New.Determinant.Exchange.LargeTriple
 import Lib.Adelic.Unitary.RationalPoints
 import Lib.General.Analysis.MeanValueAndTaylor
 import Lib.PadicComparison.Descent.TestCategory
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.Weil.MixedModel.ThetaInvariance
 
 /-!

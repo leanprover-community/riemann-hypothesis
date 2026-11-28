@@ -14,7 +14,6 @@ import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Adelic.Unitary.RationalPoints
 import Lib.DiscreteSeries.Bruhat.ComplexPlace
 import Lib.PadicComparison.Descent.TestCategory
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.SiegelWeil.Formula.LagrangianZeroTerms
 import Lib.Weil.DualPair.FiniteAction
 

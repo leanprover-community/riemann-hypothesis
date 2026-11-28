@@ -12,7 +12,6 @@ public import Lib.CM.ChowlaSelberg -- shake: keep (needed public by an exposed d
 import Lib.CM.Integrality.TorsionValues
 import Lib.ClassField.HeckeCharacter.AlgebraicValues
 import Lib.Cohomology.Etale.Basic
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.Weil.Construction.FourierInversion
 
 /-!

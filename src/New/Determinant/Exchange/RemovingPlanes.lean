@@ -9,7 +9,6 @@ public import Lib.SiegelWeil.Tower.LargeSideConstantTerm
 import Lib.Adelic.Landherr
 import Lib.Adelic.Unitary.RationalPoints
 import Lib.Adelic.Witt.WittTheorem
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.Weil.Construction.CanonicalTheta
 import Lib.Weil.DualPair.ThetaLiftConvergence
 

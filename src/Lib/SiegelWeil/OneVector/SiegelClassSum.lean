@@ -14,7 +14,6 @@ public import Lib.SiegelWeil.Mass
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Adelic.Unitary.RationalPoints
 import Lib.Analytic.EntireLFunction
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.SiegelWeil.Formula.WeilRange
 import Lib.Weil.Construction.CanonicalTheta
 import Lib.Weil.DualPair.ThetaLiftConvergence

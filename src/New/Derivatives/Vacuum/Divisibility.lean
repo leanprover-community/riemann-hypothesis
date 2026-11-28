@@ -2,7 +2,6 @@ module
 
 public import New.Derivatives.Divisibility.Count
 public import New.Derivatives.Vacuum.IntegralVacuum
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import New.Derivatives.Vacuum.JetIntegrality
 import New.Derivatives.Vacuum.Scale
 import New.Derivatives.Vacuum.StandardDataProducts

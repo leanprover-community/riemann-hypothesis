@@ -12,7 +12,6 @@ public import Lib.ClassField.HeckeCharacter.TameModulus
 public import New.Determinant.Exchange.LargeTriple
 import Lib.Adelic.Unitary.RationalPoints
 import Lib.ClassField.HeckeCharacter.SplittingCharacters
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.Weil.DualPair.ThetaLiftConvergence
 import New.Determinant.Exchange.RealVectors
 import New.Determinant.Exchange.RemovingPlanes

@@ -11,7 +11,6 @@ public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 public import Lib.General.LinearAlgebra.MatrixPolynomials
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.GLn.SchurModule.SchurNorm
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.Weil.Unramified.HeckeGL
 
 /-!

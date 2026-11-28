@@ -9,7 +9,6 @@ import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.DiscreteSeries.Theta.FockJointHarmonics
 import Lib.GLn.SchurModule.WeylKernel
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Theta lifts between definite unitary groups and algebraic lifts by jets
