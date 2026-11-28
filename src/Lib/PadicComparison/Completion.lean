@@ -152,9 +152,7 @@ lemma IsDerivedComplete.baseChange [IsDomain W] [IsDiscreteValuationRing W] (hπ
   obtain ⟨m, r, h_bound⟩ : ∃ (m : ℕ) (r : X), ∀ y : X, ∃ z : X,
       π ^ m • (r + π ^ m • (y + π • z)) ∈ τ.range := by
     by_contra! bad
-    have h_bad : ∀ (m : ℕ) (r : X), ∃ y : X, ∀ z : X,
-        π ^ m • (r + π ^ m • (y + π • z)) ∉ τ.range := bad
-    choose y hy using h_bad
+    choose y hy using bad
     let t : ℕ → X := partialSums π y
     obtain ⟨u, hu⟩ : ∃ u : ℕ → X, shiftDiff X π u = fun j ↦ y j (t j) := hX.surjective _
     have u_succ (j : ℕ) : y j (t j) + π • u (j + 1) = u j := by simp [← congrFun hu, shiftDiff]
@@ -166,8 +164,7 @@ lemma IsDerivedComplete.baseChange [IsDomain W] [IsDiscreteValuationRing W] (hπ
       by_cases hu_mem : u 0 ∈ s
       · exact ⟨1, one_ne_zero, Submodule.smul_mem _ 1 (Submodule.subset_span ⟨u 0, hu_mem, rfl⟩)⟩
       · exact hs_max (u 0) hu_mem
-    obtain ⟨n, c, rfl⟩ : ∃ (n : ℕ) (c : Wˣ), b = c * π ^ n :=
-      IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hb_ne hπ
+    obtain ⟨n, c, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hb_ne hπ
     -- `π ^ n • u 0` is in the range of `τ`, and `u 0 = t n + π ^ n • (y n (t n) + π • u (n + 1))`
     have h_mem : π ^ n • (t n + π ^ n • (y n (t n) + π • u (n + 1))) ∈ τ.range := by
       simpa [u_succ, partial_sum, τ, mul_smul] using hb
@@ -175,9 +172,7 @@ lemma IsDerivedComplete.baseChange [IsDomain W] [IsDiscreteValuationRing W] (hπ
   -- Subtracting the claim for `0` from that for `y` gives
   -- `π ^ (2 * m) • X ⊆ range τ + π • π ^ (2 * m) • X`; approximate.
   have step (y : X) : ∃ (u : s → W) (z : X), π ^ (m + m) • y = τ u + π • π ^ (m + m) • z := by
-    have h_bound' : ∀ y : X, ∃ (z : X) (u : s → W), τ u = π ^ m • (r + π ^ m • (y + π • z)) :=
-      h_bound
-    choose z u hu using h_bound'
+    choose z u hu using h_bound
     exact ⟨u y - u 0, z 0 - z y,
       by linear_combination (norm := module) hu 0 - hu y - τ.map_sub (u y) (u 0)⟩
   have mem_range (y : X) : (π ^ (m + m) • 1 : X →ₗ[W] X) y ∈ τ.range :=
@@ -381,7 +376,7 @@ private lemma exists_dvd_sub_algebraMap (y : PrincipalCompletion B p) :
 `p`-adic completions. -/
 lemma isCompletionBijective_completion :
     IsCompletionBijective p (toAlgHom S B (PrincipalCompletion B p)).toLinearMap :=
-  .of_dvd_sub_of_pow_dvd _ (fun y ↦ exists_dvd_sub_algebraMap y) fun _ _ ↦ pow_dvd_iff.mp
+  .of_dvd_sub_of_pow_dvd _ exists_dvd_sub_algebraMap fun _ _ ↦ pow_dvd_iff.mp
 
 /-- If `j : X → E` is bijective on the `p`-adic completions, every linear map from `X` to a
 `p`-adically complete module extends uniquely along `j`. -/
@@ -408,9 +403,7 @@ lemma IsReductionMod.comp_algebraMap {q : PrincipalCompletion B p →+ X}
   obtain ⟨h_surj, h_exact⟩ : Surjective q ∧ Exact (fun x ↦ p • x) q := h_red
   refine ⟨h_surj.forall.mpr fun y ↦ ?_, fun x ↦ ?_⟩
   · -- `y` is an element of `B` plus a multiple of `p`, which `q` kills
-    obtain ⟨x, z, hz⟩ : ∃ (x : B) (z : PrincipalCompletion B p),
-        y - algebraMap B (PrincipalCompletion B p) x = p * z :=
-      exists_dvd_sub_algebraMap y
+    obtain ⟨x, z, hz⟩ := exists_dvd_sub_algebraMap y
     have hq : q (p * z) = 0 := (h_exact _).mpr ⟨z, nsmul_eq_mul p z⟩
     exact ⟨x, by simp [eq_add_of_sub_eq hz, hq]⟩
   · -- `p` divides `x` in the completion exactly when it does in `B`
