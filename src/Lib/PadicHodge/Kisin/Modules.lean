@@ -364,9 +364,8 @@ variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
 /-- The map `W(C^♭) ⊗ L → W(C^♭) ⊗ L'` induced by an equivariant `F` commutes with the action of
 `m` in ℤ × Γ. -/
 @[simp] lemma Hom.wittMap_smul (x : L.Ambient) : F.wittMap (m • x) = m • F.wittMap x := by
-  induction x using DiagTensor.induction with
-  | h_mk a t => simp [F.isIntertwining]
-  | h_add x y hx hy => simp [hx, hy]
+  revert x
+  exact diagTensor_induction (by simp [F.isIntertwining])
 
 /-- The map induced by an O-linear `F : L → L'` sends the A_inf-span of the `1 ⊗ y`, y in L, into
 the corresponding span for L'. -/
@@ -430,19 +429,17 @@ lemma smul_eq_val_smul (s : k.S) : s • x = s.val • x := rfl
 /-- The map induced by an equivariant `F : L → L'` commutes with the projectors to the letter i. -/
 @[simp] lemma Hom.wittMap_letterProj (x : L.Ambient) :
     F.wittMap (L.letterProj i x) = L'.letterProj i (F.wittMap x) := by
-  induction x using DiagTensor.induction with
-  | h_mk a t => simp [letterProj]
-  | h_add x y hx hy => simp [hx, hy]
+  revert x
+  exact diagTensor_induction (by simp [letterProj])
 
 /-- If `m` in ℤ × Γ sends ω(i)⁻¹ to ω(i')⁻¹, it carries the projector to the letter i into the
 projector to the letter i'. -/
 lemma smul_letterProj {m : FrobGroup Γ}
     (h_teich : m • (k.letterTeich i⁻¹).val = k.letterTeich i'⁻¹) (x : L.Ambient) :
     m • L.letterProj i x = L.letterProj i' (m • x) := by
-  induction x using DiagTensor.induction with
-  | h_mk a t => simp [letterProj, smul_comm m, smul_sum, smul_eq_val_smul, h_teich,
-    frobGroup_smul_smul]
-  | h_add x y hx hy => simp [hx, hy]
+  revert x
+  exact diagTensor_induction (by
+    simp [letterProj, smul_comm m, smul_sum, smul_eq_val_smul, h_teich, frobGroup_smul_smul])
 
 /-- An element `g` of the Galois monoid of the chart commutes with the projector to each letter. -/
 lemma gal_smul_letterProj (x : L.Ambient) :
@@ -475,10 +472,8 @@ lemma letterProj_mem_letterPart : L.letterProj i x ∈ letterPart i := by
   -- `(letterOp i - 1) * ∑ n < q, letterOp i ^ n = letterOp i ^ q - 1`, and `letterOp i ^ q = 1`
   -- because `ζ ^ q = 1` and `i⁻¹ ^ q = 1`.
   have hζ : O.ζ.val ^ Fintype.card k.Letter = 1 := by simpa using O.ζ.property
-  have h_order (y : L.Ambient) : (L.letterOp i ^ Fintype.card k.Letter) y = y := by
-    induction y using DiagTensor.induction with
-    | h_mk a t => simp [← map_pow, hζ, map_one]
-    | h_add y z hy hz => rw [map_add, hy, hz]
+  have h_order : ∀ y : L.Ambient, (L.letterOp i ^ Fintype.card k.Letter) y = y :=
+    diagTensor_induction (by simp [← map_pow, hζ, map_one])
   change ((L.letterOp i - 1) * L.letterProj i) x = 0
   simp [letterProj, mul_geom_sum, h_order]
 
