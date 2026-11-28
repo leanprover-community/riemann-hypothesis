@@ -303,18 +303,14 @@ lemma _root_.New.AreMatched.translate
     (h_matched : AreMatched (⊤ : Subring R) e χ Φ Ψ) (c : ℂ) (g : GL n R) :
     AreMatched (⊤ : Subring R) e χ (fun x : Matrix a n R ↦ c * χ g.val.det * Φ (x * g.val))
       fun y : Matrix n b R ↦ c * Ψ (g⁻¹.val * y) := by
-  have h_rows (k γ : GL n R) : invLastRows e γ * k.val = invLastRows e (k⁻¹ * γ) := by
-    simp [← ext_iff, Matrix.mul_apply]
-  have h_cols (k γ : GL n R) : k.val * firstCols e γ = firstCols e (k * γ) := by
-    simp [← ext_iff, Matrix.mul_apply]
   have h_mem_top (γ : GL n R) : γ ∈ intGL n (⊤ : Subring R) := by simp [mem_intGL]
   refine ⟨fun x h_ne ↦ ?_, fun y h_ne ↦ ?_, fun γ _ ↦ ?_⟩
   · obtain ⟨γ, -, hγ⟩ := h_matched.supp_left (x * g.val) (right_ne_zero_of_mul h_ne)
-    exact ⟨g * γ, h_mem_top _, by simpa [← hγ] using h_rows g⁻¹ γ⟩
+    exact ⟨g * γ, h_mem_top _, by simpa [← hγ] using invLastRows_mul e g⁻¹ γ⟩
   · obtain ⟨γ, -, hγ⟩ := h_matched.supp_right (g⁻¹.val * y) (right_ne_zero_of_mul h_ne)
-    exact ⟨g * γ, h_mem_top _, by simp [← h_cols, ← hγ]⟩
+    exact ⟨g * γ, h_mem_top _, by simp [← mul_firstCols, ← hγ]⟩
   · have h_det : γ.val.det = g.val.det * (g⁻¹ * γ).val.det := by simp [← det_mul]
-    rw [h_rows, h_cols, h_matched.apply_eq _ (h_mem_top _), h_det, map_mul]
+    rw [invLastRows_mul, mul_firstCols, h_matched.apply_eq _ (h_mem_top _), h_det, map_mul]
     ring
 
 omit [Fintype N] [DecidableEq a] in
