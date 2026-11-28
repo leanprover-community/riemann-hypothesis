@@ -360,21 +360,23 @@ lemma det_eq_prod_principalMinor {u : USign s}
     fun i j h_lt ↦ mem_blockDiagAlg.mp hu i j h_lt.ne'
   exact h_tri.det_fintype
 
+/-- A right factor preserving the sign blocks multiplies the principal minor on each block. -/
+private lemma principalMinor_mul_blockDiag {ι : Type} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ}
+    {B : Matrix ι ι ℂ} (hB : B ∈ blockDiagAlg ε) (M : Matrix ι ι ℂ) (σ : ℤˣ) :
+    principalMinor (M * B) (ε · = σ) = principalMinor M (ε · = σ) * principalMinor B (ε · = σ) :=
+  principalMinor_mul fun _ j k _ hj hk ↦
+    .inr (mem_blockDiagAlg.1 hB j k fun h ↦ hj (h.trans hk))
+
 /-- For a block diagonal isometry `u = diag(γ, z)` of the form with signs `ε` (`z` is the block on
 the negative coordinates), the multiplier of the real Weil representation is `det z⁻¹`. -/
 lemma Fock.realMultiplier_of_mem_blockDiagAlg {ι : Type} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ}
     {u : USign ε} (hu : (u : Matrix ι ι ℂ) ∈ blockDiagAlg ε) :
     realMultiplier u = (principalMinor (u : Matrix ι ι ℂ) fun i : ι ↦ ε i = -1)⁻¹ := by
   -- The multiplier is the negative minor of `u⁻¹`, and minors of block diagonal matrices multiply.
-  have h_mul : principalMinor ((↑u⁻¹ : Matrix ι ι ℂ) * (u : Matrix ι ι ℂ)) (fun i : ι ↦ ε i = -1) =
-      principalMinor (↑u⁻¹ : Matrix ι ι ℂ) (fun i : ι ↦ ε i = -1) *
-        principalMinor (u : Matrix ι ι ℂ) fun i : ι ↦ ε i = -1 :=
-    principalMinor_mul fun i j k _ hj hk ↦
-      .inr (mem_blockDiagAlg.1 hu j k fun h_sign ↦ hj (h_sign.trans hk))
-  rw [show (↑u⁻¹ : Matrix ι ι ℂ) * (u : Matrix ι ι ℂ) = 1 from u.val.inv_mul,
-    principalMinor_one] at h_mul
   rw [realMultiplier, ← U.principalMinor_coe_inv]
-  exact eq_inv_of_mul_eq_one_left h_mul.symm
+  apply eq_inv_of_mul_eq_one_left
+  rw [← principalMinor_mul_blockDiag hu, show (↑u⁻¹ : Matrix ι ι ℂ) * ↑u = 1 from u.val.inv_mul,
+    principalMinor_one]
 
 /-- A block diagonal isometry is a unitary matrix, so it preserves the Gaussian `realVac`, which
 depends on `y` only through `star y ⬝ᵥ y`. -/
@@ -484,13 +486,8 @@ lemma realPairWeil_polyVector {x : GInf E s} {y : GInf E s'}
       kronecker_mem_blockDiagAlg (hy w) (one_mem _)
     have hy_ne : principalMinor ((y w : Matrix n' n' ℂ) ⊗ₖ 1) (homSigns s s' · = -1) ≠ 0 := by
       simpa [pairHom] using U.principalMinor_sign_ne_zero (-1) (pairHom s' s (1, y w))
-    have h_split (M : Matrix (n' × n) (n' × n) ℂ) :
-        principalMinor (M * (y w : Matrix n' n' ℂ) ⊗ₖ 1) (homSigns s s' · = -1) =
-          principalMinor M (homSigns s s' · = -1) *
-            principalMinor ((y w : Matrix n' n' ℂ) ⊗ₖ 1) (homSigns s s' · = -1) :=
-      principalMinor_mul fun _ j k _ hj hk ↦
-        .inr (mem_blockDiagAlg.1 hy_mem j k fun h_sign ↦ hj (h_sign.trans hk))
-    rw [realMultiplier, ← U.principalMinor_coe_inv, eq_div_of_mul_eq hy_ne (h_split _).symm]
+    rw [realMultiplier, ← U.principalMinor_coe_inv,
+      eq_div_of_mul_eq hy_ne (principalMinor_mul_blockDiag hy_mem _ (-1)).symm]
     -- Group the rows and the columns by their sign.
     simp [← map_inv, ← mul_kronecker_mul, principalMinor_kronecker_one, one_kronecker,
       principalMinor_blockDiagonal, pairHom, pairSign,
@@ -500,10 +497,7 @@ lemma realPairWeil_polyVector {x : GInf E s} {y : GInf E s'}
   have h_multiplier : realMultiplier (pairHomInf (x, y)) =
       ∏ w : NumberField.InfinitePlace E, realMultiplier (pairHom s' s (x w, y w)) :=
     realMultiplier_blockU _
-  have h_twist (v : PairFock E s s') : realPairWeil γ γ' (x, y) v =
-      (∏ w : NumberField.InfinitePlace E, (y w : Matrix n' n' ℂ).det ^ γ w *
-        (x w : Matrix n n ℂ).det ^ (-γ' w)) • realWeil (pairHomInf (x, y)) v := rfl
-  rw [h_twist, realWeil_polyVector_of_mem_blockDiagAlg h_mem,
+  rw [realPairWeil_apply_apply, realWeil_polyVector_of_mem_blockDiagAlg h_mem,
     ← realMultiplier_of_mem_blockDiagAlg h_mem, h_multiplier, smul_smul, ← prod_mul_distrib]
   congrm (∏ w, ?_) • polyVector _ (aeval (fun c ↦ ?_) P)
   · -- The determinants of `x w` and `y w` are products of their two principal minors.
