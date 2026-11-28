@@ -50,9 +50,9 @@ namespace New.Rows
 open Matrix MvPolynomial Real Fintype Finset Space Parameters RingHom NeZero
 open NumberField (InfinitePlace)
 
-variable {E L N : Type} [Field E] [CMType E] [WeilData E] [Fintype L] [DecidableEq L] [Fintype N]
-  [DecidableEq N]
+variable {E L N : Type} [Field E] [CMType E] [Fintype L] [DecidableEq L] [Fintype N] [DecidableEq N]
 
+variable [WeilData E] in
 /-- Let `a`, `b` be automorphic characters of `U(1)` (`AutChar`) with exponents `e`, `e'` at the
 infinite places and residue characters `ψ`, `ψ'`. Translating the finite adelic points `g`, `h` by
 the finite parts (`embFin`) of rational points `γ`, `γ'` substitutes
@@ -99,7 +99,6 @@ lemma modKernelStdSpace_embFin_mul {a b : AutChar E} {e e' : InfinitePlace E →
   rw [modKernelStdSpace, modKernel, ← h_inv, pairTheta, modDatum, pairWeil_integrated_all, h_real]
   simp [modKernel, pairTheta, modDatum, pairWeil_integrated_fin, S, T]
 
-omit [WeilData E]
 /-- If the finite adelic points `g`, `g'` have integral invertible components at all primes above
 `p`, so does their block sum `diag(g, g')`. -/
 lemma blockSumOne_mem_integralAbove {p : ℕ} {g : Gf E L} {g' : Gf E N}
