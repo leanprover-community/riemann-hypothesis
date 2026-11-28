@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Std.Tactic.BVDecide.Normalize.Bool
+public import TauCeti.Analysis.InnerProductSpace.ArrowTriangle
 public import New.Determinant.Chain.Moduli
 public import New.Determinant.Chain.TriangleLifts
 public import New.Determinant.Chain.TriangleNorms
@@ -14,10 +15,10 @@ import New.Determinant.Exchange.OneSquare
 
 This file proves the two commutation relations in the squares of the triangle of lifts and
 computes the adjoints of descents. With these, the lifts satisfy the conditions
-`New.Exchange.IsTriangle`. This file then compares the chain ι_ϑ (`New.Data.lowerChainAtLevel`)
+`TauCeti.IsArrowTriangle`. This file then compares the chain ι_ϑ (`New.Data.lowerChainAtLevel`)
 with the weighted chain of the triangle `z = false`. Here J_M is the principal level at the chosen
 places `New.Data.chosenPlace`, and Q is the product of the places of the twist ϑ. The weighted
-chain `New.Exchange.weightedChain` is the composite of the lifts `New.Data.triangleLift`, the n-th
+chain `TauCeti.ArrowTriangle.weightedChain` composes the lifts `New.Data.triangleLift`, each
 multiplied by N_n = `New.Data.triangleGLCard` false ϑ n, an order of GL over a residue ring.
 
 The node `(i, n)` of a triangle is the space of the interval `[i + 1, i + n]`: it has the stem and
@@ -35,8 +36,8 @@ the chain Y₀, …, Y_m, and `z = true` the second chain, which is untwisted, h
   `New.Data.exists_triangleTransposedLift_adjoint_comm`: the two commutation relations, with the
   moduli of their constants.
 * `New.Data.exists_isTriangle`: with suitable descents these data satisfy the conditions
-  `New.Exchange.IsTriangle`; for `z = false` also `New.Exchange.HasSquareModuli`, with the ratios of
-  Hecke values `New.Data.quotientRatio` as moduli.
+  `TauCeti.IsArrowTriangle`; for `z = false` also `TauCeti.ArrowTriangle.HasSquareModuli`, with
+  the ratios of Hecke values `New.Data.quotientRatio` as moduli.
 * `New.Data.inner_lowerChainAtLevel`: inner products of lifts are a multiple of those along the
   chain.
 * `New.Data.lowerChainAtLevel_injective`: ι_ϑ is injective, because the chain is.
@@ -76,6 +77,8 @@ section TriangleArrows
 open MeasureTheory Matrix Complex ComplexConjugate Fintype LinearMap
 
 namespace New
+
+open TauCeti.ArrowTriangle
 
 open Rows Exchange WeilData Space Modulus SiegelWeil ComplexInnerProductSpace
 
@@ -569,7 +572,7 @@ theorem exists_triangleTransposedLift_adjoint_comm {P : Parameters} (D : Data P)
 /-- There are linear maps `d`, the descents, from `(i, n + 1)` to `(i + 1, n)` with the following
 properties. With the theta lifts `triangleLift` from `(i, n)` to `(i, n + 1)`, the group orders
 `triangleGLCard` as weights and the embeddings `triangleEmbedding` at `(i, 0)` of the forms at
-`(0, 0)` fixed by the base level, they form a triangle `IsTriangle` of size `D.m`: each square
+`(0, 0)` fixed by the base level, they form a `TauCeti.IsArrowTriangle` of size `D.m`: each square
 commutes up to a constant, on the copies of the base forms the first lift is adjoint to the first
 descent, and their composite maps the copy in row `i` injectively to that in row `i + 1`. For
 `z = false` the squares satisfy `HasSquareModuli`: their constants have the moduli `quotientRatio`
@@ -578,10 +581,11 @@ upper lift is a multiple of the adjoint image of its descent under the lower lif
 modulus `1` in the sense of `HasAbsUpToNormPower`. -/
 theorem exists_isTriangle {P : Parameters} (D : Data P) (z : Bool) :
     ∃ d : D.MFoldTwist → ∀ i n : ℕ, D.TriangleForm z i (n + 1) →ₗ[ℂ] D.TriangleForm z (i + 1) n,
-      IsTriangle D.m (D.triangleGLCard z) (D.triangleLift z) d (D.triangleEmbedding z) ∧
+      TauCeti.IsArrowTriangle D.m (fun ϑ n ↦ (D.triangleGLCard z ϑ n : ℝ))
+        (D.triangleLift z) d (D.triangleEmbedding z) ∧
       (z = false →
-        HasSquareModuli D.m (D.triangleGLCard z) D.HasAbsUpToNormPower D.quotientRatio
-          (D.triangleLift z) d) := by
+        HasSquareModuli D.m (fun ϑ n ↦ (D.triangleGLCard z ϑ n : ℝ))
+          D.HasAbsUpToNormPower D.quotientRatio (D.triangleLift z) d) := by
   -- The datum at `n = 0` makes the descent the adjoint of the lift; `nextDatum` gives the others.
   choose! Φ h_left_pair using fun (i n : ℕ) (h : i + n < D.m) ↦ D.exists_isLeftPair z h
   have h_adjoint_datum (i : ℕ) (h : i + 0 < D.m) (ϑ : D.MFoldTwist) :
@@ -601,15 +605,15 @@ theorem exists_isTriangle {P : Parameters} (D : Data P) (z : Bool) :
     D.triangleTransposedLift z ϑ i n (Φ i n) (e ϑ i n)
   -- the first commutation relation
   have h_square (i n : ℕ) (h : i + (n + 1) < D.m) : ∃ β : D.MFoldTwist → ℂ,
-      SquareCommutes (D.triangleGLCard z) (D.triangleLift z) d i n β ∧
+      SquareCommutes (fun ϑ n ↦ (D.triangleGLCard z ϑ n : ℝ)) (D.triangleLift z) d i n β ∧
       (z = false → D.HasAbsUpToNormPower β (D.quotientRatio (i + 1) (i + 1 + n + 1))) := by
     obtain ⟨β, h_comm, hβ⟩ :=
       D.exists_triangleLift_triangleTransposedLift_comm z h (h_left_pair i n h.le)
         (h_left_pair i (n + 1) h)
-    refine ⟨β, fun ϑ y ↦ ext_inner_left ℂ fun x ↦ ?_, hβ⟩
+    refine ⟨β, squareCommutes_iff.2 (fun ϑ y ↦ ext_inner_left ℂ fun x ↦ ?_), hβ⟩
     rw [inner_smul_right, inner_smul_right, div_eq_inv_mul, ← map_inv₀]
     -- the datum `e ϑ i (n + 1)` is by definition `nextDatum (e ϑ i n)`
-    exact h_comm ϑ (e ϑ i n) y x
+    simpa only [RCLike.ofReal_natCast] using! h_comm ϑ (e ϑ i n) y x
   -- With a = `triangleFirstLift`, let v be the form whose copy is d (a y). Then
   -- ⟪v, x⟫ = ⟪a y, a x⟫, which gives the level of v and the injectivity.
   have h_base (i : ℕ) (h : i < D.m) (ϑ : D.MFoldTwist) (y : D.triangleBase z)
@@ -624,8 +628,9 @@ theorem exists_isTriangle {P : Parameters} (D : Data P) (z : Bool) :
     obtain ⟨C, h_lift⟩ := D.exists_hasSum_inner_triangleFirstLift z i h
     obtain ⟨h_level, -⟩ := h_lift ϑ y
     exact h_level v h_pair
-  -- the fields of `IsTriangle` in order: squares, adjointness, return to the base, injectivity
-  refine ⟨d, ⟨fun i n h ↦ ?_, fun i h ϑ y ↦ ?_, fun i h ϑ y ↦ ?_, fun i h ϑ y hy ↦ ?_⟩, ?_⟩
+  -- Nonzero weights, commuting squares, adjointness, return to the base and injectivity.
+  refine ⟨d, ⟨fun ϑ n ↦ by exact_mod_cast (NeZero.ne (D.triangleGLCard z ϑ n)),
+    fun i n h ↦ ?_, fun i h ϑ y ↦ ?_, fun i h ϑ y ↦ ?_, fun i h ϑ y hy ↦ ?_⟩, ?_⟩
   · obtain ⟨β, h_comm, -⟩ := h_square i n h
     exact ⟨β, h_comm⟩
   · -- the adjointness holds by the choice of the datum at `n = 0`
@@ -644,7 +649,7 @@ theorem exists_isTriangle {P : Parameters} (D : Data P) (z : Bool) :
       obtain ⟨κ, hκ, h_adj⟩ :=
         D.exists_triangleTransposedLift_adjoint_comm h (h_left_pair i n h.le)
           (h_left_pair i (n + 1) h)
-      refine ⟨κ, hκ, fun ϑ x ↦ ?_⟩
+      refine ⟨κ, hκ, squareAdjoint_iff.2 fun ϑ x ↦ ?_⟩
       obtain ⟨x', hx'⟩ := D.exists_inner_triangleLift_eq false ϑ h x
       exact ⟨x', hx', h_adj ϑ (e ϑ i n) x x' hx'⟩
 
@@ -656,7 +661,7 @@ end TriangleArrows
 
 namespace New.Data
 
-open Finset Fintype Exchange Subgroup LevelPlaces
+open Finset Fintype Exchange Subgroup LevelPlaces TauCeti.ArrowTriangle
 
 /-- The index set `D.Y 1` has two blocks: `blockNumber 1` is `0` on `RowIndex` and `1` on `Fin D.t`.
 In `GL (D.Y 1)` over a commutative ring, the group of block upper triangular matrices (`parabolic`)
@@ -758,7 +763,7 @@ of m lifts Y₀ → Y_m of the triangle, each multiplied by its weight `triangle
 lemma inner_lowerChainAtLevel {P : Parameters} (D : Data P) (ϑ : D.MFoldTwist)
     (x y : D.principalForms (D.spaceY 0)) :
     let u : D.TriangleForm false 0 0 →ₗ[ℂ] D.TriangleForm false 0 D.m :=
-      weightedChain (D.triangleGLCard false) (D.triangleLift false) ϑ 0 D.m
+      weightedChain (fun ϑ n ↦ (D.triangleGLCard false ϑ n : ℝ)) (D.triangleLift false) ϑ 0 D.m
     inner ℂ (D.lowerChainAtLevel ϑ x) (D.lowerChainAtLevel ϑ y) =
       stdLevelIndex (D.lastLevel ϑ) * Fintype.card (WeylIndex (D.Y D.m) D.columnsY) *
         inner ℂ (u x.val) (u y.val) := by
@@ -769,7 +774,8 @@ lemma inner_lowerChainAtLevel {P : Parameters} (D : Data P) (ϑ : D.MFoldTwist)
   -- weights of the lifts, indices of principal levels, are the orders `D.triangleGLCard false ϑ`.
   have h_chain (v : D.principalForms (D.spaceY 0)) :
       ofAlgForm (D.paramY D.m) (D.signsY D.m) (D.lowerChainAtLevel ϑ v).val = (u v.val).val := by
-    simpa [u, weightedChain, triangleGLCard, triangleModulus, LevelPlaces.card_GL_levelModulus]
+    simpa [u, weightedChain_eq_compUpTo, triangleGLCard, triangleModulus,
+      LevelPlaces.card_GL_levelModulus]
       using! Space.ofAlgForm_toAlgForm D.isHCParam_paramY _
   simp_rw [h_chain, Space.inner_eq_petersson]
   -- `stdLevelIndex` is by definition the relative index of the level in K₀
@@ -784,8 +790,8 @@ lemma lowerChainAtLevel_injective {P : Parameters} (D : Data P) (ϑ : D.MFoldTwi
   -- (`inner_lowerChainAtLevel`); chains are injective.
   obtain ⟨d, h_triangle, -⟩ := D.exists_isTriangle false
   refine (injective_iff_map_eq_zero (D.lowerChainAtLevel ϑ)).2 fun y hy ↦ ?_
-  have h_chain : weightedChain (D.triangleGLCard false) (D.triangleLift false) ϑ 0 D.m y.val =
-    0 := by
+  have h_chain : weightedChain (fun ϑ n ↦ (D.triangleGLCard false ϑ n : ℝ)) (D.triangleLift false)
+      ϑ 0 D.m y.val = 0 := by
     simpa [hy, relIndex_ne_zero_of_isLevel, -Fintype.card_pi] using D.inner_lowerChainAtLevel ϑ y y
   exact h_triangle.eq_zero_of_weightedChain_eq_zero D.m 0 (by simp) y h_chain
 

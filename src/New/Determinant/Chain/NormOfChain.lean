@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Analysis.InnerProductSpace.NormDet
 import Mathlib.Algebra.Order.Star.Real
+public import TauCeti.Analysis.InnerProductSpace.ArrowTriangle
 public import New.Spanning.Multiplicities.EqualMultiplicities
 public import New.Determinant.Chain.Moduli
 public import New.Determinant.Chain.TriangleLifts
@@ -55,6 +56,8 @@ See `New.Determinant.Chain.ChainNorms` for related work.
 noncomputable section
 
 namespace New.Data
+
+open TauCeti.ArrowTriangle
 
 open Finset LinearMap Module
 
@@ -154,10 +157,10 @@ def rallisProduct (ϑ : D.MFoldTwist) : End ℂ D.targetForms :=
 spaces of forms, with theta lifts `triangleLift` from position `(i, n)` to position `(i, n + 1)`;
 the flag `false` picks one of the two triangles, the one whose characters are twisted by powers of
 `ϑ`. The chain of its first `m` lifts from `Y₀`, each times its weight `triangleGLCard`
-(`Exchange.weightedChain`), is taken on the target forms. Its Gram form is `κ ϑ` times a ratio of
-group orders, divided by the `m`-th power of the number of matrices modulo `D.twistModulus ϑ 1`
-indexed by `D.Y 1 × D.RowIndex`, times the form of `New.Data.rallisProduct`. Here
-`triangleGLCard false ϑ n` is the order of the general linear group in the `n`-th place of the
+(`TauCeti.ArrowTriangle.weightedChain`), is taken on the target forms. Its Gram form is `κ ϑ`
+times a ratio of group orders, divided by the `m`-th power of the number of matrices modulo
+`D.twistModulus ϑ 1` indexed by `D.Y 1 × D.RowIndex`, times the form of `New.Data.rallisProduct`.
+Here `triangleGLCard false ϑ n` is the order of the general linear group in the `n`-th place of the
 triangle over the residue ring of its modulus, and `D.twistModulus ϑ 1` is the product of the chosen
 places and the places of the twist. The statement `HasAbsUpToNormPower κ f` says
 `‖κ ϑ‖² = C (normQ ϑ)^k (f ϑ)²` with `C` and `k` independent of `ϑ`; here `f` is the product over
@@ -167,7 +170,8 @@ lemma exists_inner_weightedChain_eq :
     ∃ κ : D.MFoldTwist → ℂ,
       D.HasAbsUpToNormPower κ (∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j) ∧
       ∀ (ϑ : D.MFoldTwist) (x y : D.targetForms),
-        let u := Exchange.weightedChain (D.triangleGLCard false) (D.triangleLift false) ϑ 0 D.m
+        let u := weightedChain (fun ϑ n ↦ (D.triangleGLCard false ϑ n : ℝ))
+          (D.triangleLift false) ϑ 0 D.m
         inner ℂ (u x.val.val) (u y.val.val) =
           κ ϑ * (triangleGLCard false ϑ 0 * triangleGLCard false ϑ 1 ^ D.m /
             triangleGLCard false ϑ D.m) /
@@ -193,9 +197,10 @@ lemma exists_inner_weightedChain_eq :
       div_eq_inv_mul, ← inner_smul_right]
     rfl
   obtain ⟨d, h_triangle, h_moduli⟩ := D.exists_isTriangle false
-  obtain ⟨κ, hκ, h_inner⟩ := h_triangle.exists_inner_weightedChain_eq (h_moduli rfl)
+  obtain ⟨κ, hκ, h_inner⟩ := h_triangle.exists_inner_weightedChain_eq
+    (s := fun y : D.targetForms ↦ y.val) (h_moduli rfl)
     (fun ϑ i ↦ (matrixCard ϑ)⁻¹ • rallisFactor ϑ i) (fun i ↦ HasAbsUpToNormPower.const (C i))
-      h_first D.m 0 (zero_add D.m)
+      (by simpa only [RCLike.ofReal_natCast] using! h_first) D.m 0 (zero_add D.m)
   refine ⟨κ, hκ, fun ϑ x y ↦ ?_⟩
   have h_prod : ((List.range' 0 D.m).map fun i ↦ (matrixCard ϑ)⁻¹ • rallisFactor ϑ i).prod =
       (matrixCard ϑ)⁻¹ ^ D.m • D.rallisProduct ϑ := by
@@ -203,7 +208,7 @@ lemma exists_inner_weightedChain_eq :
       (List.smul_prod ((List.range D.m).map (rallisFactor ϑ)) (matrixCard ϑ)⁻¹).symm
   rw [div_eq_mul_inv _ (matrixCard ϑ ^ D.m), mul_assoc _ (matrixCard ϑ ^ D.m)⁻¹, ← inv_pow,
     ← inner_smul_right, ← LinearMap.smul_apply, ← h_prod]
-  exact h_inner ϑ x.val y
+  simpa using! h_inner ϑ x.val y
 
 /-- The Gram form of the chain. For an `m`-fold twist `ϑ` let `Θ = D.Θ ϑ` be the chain of lifts from
 forms on `Y₀` to forms on `Y_m`, restricted to the target forms. There are numbers `c ϑ`, a real `C`

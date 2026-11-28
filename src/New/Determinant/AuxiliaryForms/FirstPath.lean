@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.Analysis.InnerProductSpace.ArrowTriangle
 public import New.Determinant.AuxiliaryForms.GridFirstColumns
 public import New.Determinant.Chain.TriangleLifts
 public import New.Determinant.Chain.TriangleNorms
@@ -14,7 +15,7 @@ The first path consists of the spaces `Ỹ^m_0, …, Ỹ^0_0` and `Y₀, …, Y_
 over the CM field `D.E`. These are the nodes `(z, 0, i)`, the first columns of the two grids:
 `(false, 0, i)` is `Y_i` and `(true, 0, i)` is `Ỹ^i_0`. The iterated transposed lifts
 `New.Data.transposedChain` along such a column are the transposes of the chain of theta lifts
-`New.Exchange.weightedChain`. In the grid of the `Ỹ` the composite of all `m` of them is
+`TauCeti.ArrowTriangle.weightedChain`. In the grid of the `Ỹ` the composite of all `m` of them is
 `Θ^♭ = D.transposedChain 1 true 0`. The letter `ϑ` stands for an `m`-fold twist (`D.MFoldTwist`): a
 tame character whose powers up to the `m`-th are non-trivial at each place of its modulus `Q`.
 
@@ -48,6 +49,8 @@ See `New.Determinant.AuxiliaryForms.DeepLevelVanishing` for related work.
 @[expose] public section
 
 namespace New.Data
+
+open TauCeti.ArrowTriangle
 
 /-! ## Transposes of the chains of lifts, and surjectivity of `Θ^♭` -/
 
@@ -144,9 +147,9 @@ every finite integral point `u` of the unitary group at the node `i` that is tri
 lemma triangleRep_weightedChain_eq_self (z : Bool) (ϑ : D.MFoldTwist) {i : ℕ} (hi_ne : i ≠ 0)
     (hi_le : i ≤ D.m) (y : D.TriangleForm z 0 0) (u : stdLevel D.E (D.GridIndex z 0 i))
     (hu : (triangleModulus z ϑ).reductionGL u = 1) :
-    D.triangleRep z 0 i u.val (Exchange.weightedChain (D.triangleGLCard z) (D.triangleLift z) ϑ 0 i
-      y) =
-      Exchange.weightedChain (D.triangleGLCard z) (D.triangleLift z) ϑ 0 i y := by
+    D.triangleRep z 0 i u.val (weightedChain (fun ϑ n ↦ (D.triangleGLCard z ϑ n : ℝ))
+      (D.triangleLift z) ϑ 0 i y) =
+      weightedChain (fun ϑ n ↦ (D.triangleGLCard z ϑ n : ℝ)) (D.triangleLift z) ϑ 0 i y := by
   -- The last lift has a datum that `(1, u)` fixes.
   obtain ⟨i, rfl⟩ : ∃ j : ℕ, i = j + 1 := Nat.exists_eq_succ_of_ne_zero hi_ne
   have h_lift (x : D.TriangleForm z 0 i) :
@@ -158,7 +161,7 @@ lemma triangleRep_weightedChain_eq_self (z : Bool) (ϑ : D.MFoldTwist) {i : ℕ}
     have h_datum := D.pairWeil_gridChar_modDatum_eq_self z ϑ i (u := 1) (map_one _) hu
     simpa using! h_arrow.formRep_formLift_of_eq_smul (c := 1)
       ((h_datum _ _).trans (one_smul ℂ _).symm) x
-  rw [Exchange.weightedChain_succ_apply, map_smul, h_lift]
+  rw [weightedChain_succ_apply, map_smul, h_lift]
 
 /-- For a node `i ≤ m`, let `U` be the image of `y` under the weighted chain of the `i` theta lifts
 `triangleLift`, the one from the node `b` multiplied by `triangleGLCard z ϑ b`, the index at `b` of
@@ -170,13 +173,13 @@ lemma integral_transposedChain_mul_weightedChain (z : Bool) (ϑ : D.MFoldTwist) 
     (hi_le : i ≤ D.m) (y : D.TriangleForm z 0 0) (φ : D.GridForm z 0 D.m) :
     ∫ g : New.G D.E (D.gridSigns z 0 0 i),
         transposedChain ϑ z i φ g *
-          Exchange.weightedChain (D.triangleGLCard z) (D.triangleLift z) ϑ 0 i y g
+          weightedChain (fun ϑ n ↦ (D.triangleGLCard z ϑ n : ℝ)) (D.triangleLift z) ϑ 0 i y g
         ∂(D.gridSpace 0 z 0 i).quotMeasure =
       ∫ g : New.G D.E (D.gridSigns z 0 0 0), transposedChain ϑ z 0 φ g * y g
         ∂(D.gridSpace 0 z 0 0).quotMeasure := by
   -- Induction on `i`; the step uses the edge from node `i` to node `i + 1`.
   induction i with
-  | zero => rfl
+  | zero => simp only [weightedChain_zero_apply]
   | succ i ih => ?_
   obtain ⟨h_lift, h_transposed⟩ :=
     (isEdgeFamily_grid_succ_right (z := z) id zero_le hi_le).isArrow_modDatum
@@ -193,7 +196,7 @@ lemma integral_transposedChain_mul_weightedChain (z : Bool) (ϑ : D.MFoldTwist) 
       ((triangleGLCard z ϑ i : ℂ) • w) x).trans ?_
     congr 1 with g
     exact mul_right_comm (triangleGLCard z ϑ i : ℂ) (w g) _
-  rw [Exchange.weightedChain_succ_apply, h_transpose, ← ih (Nat.le_of_succ_le hi_le),
+  rw [weightedChain_succ_apply, RCLike.ofReal_natCast, h_transpose, ← ih (Nat.le_of_succ_le hi_le),
     transposedChain_of_lt ϑ hi_le, LinearMap.comp_apply]
 
 /-- The grid of the `Ỹ` (the Boolean `true`) has the weight of the `Y` with the opposite sign, so
@@ -201,7 +204,8 @@ its `TriangleForm`s are conjugate forms; `D.triangleBase true` consists of those
 `𝔟 = D.piM ^ D.natB`. The weighted chain of all `D.m` theta lifts `New.Data.triangleLift` from
 `Ỹ^0_0` to `Ỹ^m_0`, for the trivial twist `1`, is injective on this space. -/
 lemma eq_zero_of_weightedChain_triangleLift_eq_zero {y : D.triangleBase true}
-    (hy : Exchange.weightedChain (D.triangleGLCard true) (D.triangleLift true) 1 0 D.m y = 0) :
+    (hy : weightedChain (fun ϑ n ↦ (D.triangleGLCard true ϑ n : ℝ))
+      (D.triangleLift true) 1 0 D.m y = 0) :
     y = 0 := by
   obtain ⟨d, h_triangle, -⟩ := D.exists_isTriangle true
   exact h_triangle.eq_zero_of_weightedChain_eq_zero D.m 0 (by simp) y hy
@@ -239,7 +243,7 @@ lemma gridLevelForms_eq_map_transposedChain :
   let y : D.triangleBase true := ⟨conjForm (isConjKernelPair_gridKernel (by simp) true).2 z,
     mem_levelSpace_formRep_iff.2 fun k hk g ↦
       congrArg star (mem_levelSpace_formRep_iff.1 hz_level k hk g)⟩
-  let U := Exchange.weightedChain (D.triangleGLCard true) (D.triangleLift true) 1 0 D.m y
+  let U := weightedChain (fun ϑ n ↦ (D.triangleGLCard true ϑ n : ℝ)) (D.triangleLift true) 1 0 D.m y
   let φ := conjForm (isConjKernelPair_gridKernel (by simp) false).2 U
   have φ_mem : φ ∈ D.gridLevelForms D.m := mem_levelSpace_formRep_iff.2 fun k hk g ↦
     congrArg star <| congrFun (congrArg Subtype.val <|
@@ -385,8 +389,10 @@ lemma IsFlatRestriction.integral_lowerChainUpTo {g : GInf D.E (D.gridSigns true 
     simpa [y'Lift_conj, petersson, periodPairing] using! hr φ ϑ y'Lift_conj h_level
   -- The chain of lifts is `weightedChain` with the weight written as the order of a group.
   have h_chain : D.lowerChainUpTo ϑ D.m (r φ) =
-      weightedChain (D.triangleGLCard false) (D.triangleLift false) ϑ 0 D.m (r φ).val := by
-    simp +unfoldPartialApp [liftY, lowerChainUpTo, ← LevelPlaces.card_GL_levelModulus]
+      weightedChain (fun ϑ n ↦ (D.triangleGLCard false ϑ n : ℝ))
+        (D.triangleLift false) ϑ 0 D.m (r φ).val := by
+    simp +unfoldPartialApp [liftY, lowerChainUpTo, Exchange.weightedChain_eq_compUpTo,
+      ← LevelPlaces.card_GL_levelModulus]
     rfl
   -- By transposition the left side is `∫ y'Lift x * r φ x`.
   refine Eq.trans ?_ h_restrict

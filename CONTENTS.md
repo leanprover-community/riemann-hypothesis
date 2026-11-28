@@ -295,7 +295,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 **The norm of a chain of lifts**
 
 - `New/Determinant/Chain/SquareLaw` (310): The finite square law for theta lifts: special data, matched functions and Fourier form
-- `New/Determinant/Chain/TriangleNorms` (301): Orders of block triangular groups and Gram forms of chains in triangles
+- `New/Determinant/Chain/TriangleNorms` (301): Orders of block triangular groups and commutation along chains
 - `New/Determinant/Chain/Moduli` (266): Ratios of Hecke values and heights of functions of the twist
 - `New/Determinant/Chain/TriangleLifts` (387): Theta lifts as a triangle of arrows: spaces, lifts, descents and the first lift
 - `New/Determinant/Chain/ChainNorms` (523): Norms along the chain of theta lifts and injectivity of ι_ϑ
