@@ -1,12 +1,9 @@
 module
 
-import Mathlib.Algebra.Order.Star.Rat
 public import Lib.LocalGL.Iwahori.ParahoricStructure
 public import Lib.Shimura.HeckeTower.HeckeData
 import Lib.LocalGL.Iwahori.QuadraticRelation
-import Lib.PadicComparison.Descent.TestCategory
 import Lib.Shimura.HeckeTower.Model
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Test vectors, and the regular Hecke element that does not kill them
@@ -217,14 +214,12 @@ lemma isRegularHecke_of_strictlyDominantAt {w : SplitFinPlace E} (hw : 𝔑 ∉ 
   have h_double : k.val * diagGL s * (l.val * dualComponent w (g⁻¹ * (x⁻¹ * toFinGL y⁻¹ * x))) ∈
       iwahoriDoubleCoset s :=
     mul_mem_mul (mul_mem_mul k.prop rfl) (mul_mem l.prop (h_lev h_loc))
-  have h_map_one (c : GL (Fin a) (LocField w.val)) :
-      GeneralLinearGroup.map (1 : LocField w.val →+* LocField w.val) c = c := rfl
-  obtain ⟨c, -, d, hd, h_conj⟩ := exists_inv_mul_mul_map_eq_diagGL_mul hs 1 (by simp) continuous_id
-    (fun g ↦ ⟨g, h_map_one g⟩) h_double
+  obtain ⟨c, -, d, hd, h_conj⟩ := exists_inv_mul_mul_map_eq_diagGL_mul hs (.id _) (by simp)
+    continuous_id (by simp [Function.surjective_id]) h_double
   have h_diag :
       (dualComponent w x * c)⁻¹ * dualComponent w (toFinGL y⁻¹) * (dualComponent w x * c) =
         diagGL (s * d) := by
-    simpa [← mul_assoc, ← hg, h_map_one] using h_conj
+    simpa [← mul_assoc, ← hg] using h_conj
   -- `dualComponent w (toFinGL y⁻¹)` is by definition the transpose of `y` over `LocField w`.
   have h_charpoly : y.val.charpoly.map (algebraMap E (LocField w.val)) =
       ∏ i : Fin a, (X - C ((s * d) i).val) := by
