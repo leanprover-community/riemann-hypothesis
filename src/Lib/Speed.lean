@@ -60,17 +60,19 @@ public import Std.Tactic.BVDecide.Normalize.Prop
 /-!
 # Speed settings
 
-The three settings of this file make instance search and `simp` faster in all files of the
-development. They add no axiom, and no proof relies on them: with this file emptied, the other files
-still compile, more slowly.
+The three speed settings of this file make instance search and `simp` faster in all files of the
+development. They add no axiom, but a few proofs rely on them: without them, six files fail to
+compile, two of them by timeouts. The file also makes `Representation.isTrivial_def` a `simp` lemma,
+which one proof uses as such.
 -/
 
 @[expose] public section
 
 -- Instance search tries these instances late (the default priority is 1000). They give the
 -- grade-zero part `A 0` of a graded ring its algebraic structure, and unifying `A 0` with an
--- arbitrary subtype is expensive. Without them `New.Derivatives.Divisibility.NormalForm` times out
--- and `Lib.GaloisRep.Hilbert90.UnitaryGroups` fails.
+-- arbitrary subtype is expensive. Without them `New.Derivatives.Divisibility.NormalForm` times out,
+-- and `Lib.GaloisRep.Hilbert90.UnitaryGroups`, `Lib.Shimura.HeckeTower.Model` and
+-- `New.Spanning.Frames.RealPlaceGauge` fail.
 attribute [instance 20] SetLike.GradeZero.instMonoid SetLike.GradeZero.instCommMonoid
   SetLike.GradeZero.instSemiring SetLike.GradeZero.instCommSemiring SetLike.GradeZero.instRing
   SetLike.GradeZero.instCommRing
