@@ -1,5 +1,7 @@
 module
 
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import TauCeti.NumberTheory.NumberField.Global.Ideles.FiniteOpenSubgroup
 public import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.Topology.Algebra.Group.Units
@@ -399,19 +401,14 @@ lemma exists_superset_sup_idelesUnitOff_eq_top (hR : R.Finite) :
 positive elements of `Kˣ` has finite index. -/
 lemma finiteIndex_idele_subgroup_of_isOpen (H : Subgroup (𝔸f K)ˣ) (h_open : H.IsOpen)
     (h_pos : ∀ x : Kˣ, IsTotallyPositive x.val → principalIdele x ∈ H) : H.FiniteIndex := by
-  -- Climb `H ≤ H ⊔ P ≤ H ⊔ P ⊔ idelesUnitOff ∅ ≤ ⊤`: each step has finite (nonzero) index.
-  set P : Subgroup (𝔸f K)ˣ := principalIdele.range
-  let sgn : Kˣ →* ((K →+* ℝ) → SignType)ˣ :=
-    Units.map (.pi fun φ : K →+* ℝ ↦ signHom.toMonoidHom.comp φ.toMonoidHom)
-  have h_ker_le : sgn.ker ≤ H.comap principalIdele := fun x hx ↦
-    h_pos x fun φ ↦ sign_eq_one_iff.mp (congrFun (congrArg Units.val hx) φ)
-  obtain ⟨c, hc⟩ := exists_idele_classGroup_hom (K := K)
-  rw [finiteIndex_iff, ← relIndex_mul_index (le_sup_left (b := P)),
-    ← relIndex_mul_index (le_sup_left (a := H ⊔ P) (b := idelesUnitOff ∅))]
-  refine mul_ne_zero ?_ (mul_ne_zero ?_
-    (finiteIndex_of_le (hc.trans_le (sup_le_sup_right le_sup_right _))).index_ne_zero)
-  · simpa [P, ← index_comap] using (sgn.ker.finiteIndex_of_le h_ker_le).index_ne_zero
-  · simpa using isCompact_idelesUnitOff_empty.relIndex_ne_zero (isOpen_mono le_sup_left h_open)
+  refine NumberField.finiteIndex_of_isOpen_of_totallyPositiveUnits_le h_open fun x hx ↦ ?_
+  apply h_pos x
+  intro φ
+  -- The image under the real embedding is positive at the standard real place of `ℝ`.
+  have hw : (InfinitePlace.mk Complex.ofRealHom).IsReal :=
+    InfinitePlace.isReal_mk_iff.mpr (by ext t; simp)
+  have h_positive := (NumberField.mem_totallyPositiveUnits.mp hx).map φ
+  simpa only [Real.ringHom_apply] using NumberField.isTotallyPositive_iff.mp h_positive _ hw
 
 /-- The finite ideles form a nonarchimedean group: they have the compact open subgroup
 `idelesUnitOff ∅`. -/
