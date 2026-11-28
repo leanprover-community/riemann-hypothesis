@@ -12,6 +12,7 @@ import Mathlib.Topology.Algebra.Group.SubmonoidClosure
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.RingTheory.DiscreteValuationRing.Basic
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 import Lib.ClassField.Places.DecompositionCyclotomic
 import Lib.ClassField.Places.ProfiniteGalois
@@ -301,13 +302,8 @@ lemma IsUniformizer.card_quotient_span_eq_pow (L : IsLocalGalois Γ k A) {π : k
       simp [hx, valuationVia]
     · rw [span_singleton_le_span_singleton, dvd_iff_valuationVia_le]
       simp [hx, valuationVia]
-  have h_card : Submodule.cardQuot (IsLocalRing.maximalIdeal (valRingBelow k A) ^ a) =
-      Submodule.cardQuot (IsLocalRing.maximalIdeal (valRingBelow k A)) ^ a :=
-    cardQuot_pow_of_prime h_dvr.not_a_field'
-  -- the residue field is the quotient by the maximal ideal
-  change Nat.card (valRingBelow k A ⧸ span {x}) =
-    Nat.card (valRingBelow k A ⧸ IsLocalRing.maximalIdeal (valRingBelow k A)) ^ a
-  rw [h_span, ← Submodule.cardQuot_apply, h_card, Submodule.cardQuot_apply]
+  rw [h_span]
+  exact TauCeti.IsDiscreteValuationRing.natCard_quotient_maximalIdeal_pow a
 
 /-- A non-zero element of the local field k has the valuation of an integral power of the
 uniformiser π. -/
