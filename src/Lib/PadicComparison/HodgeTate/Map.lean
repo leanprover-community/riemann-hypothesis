@@ -684,17 +684,18 @@ lemma hodgeTateMap_cup {n a b : ℕ} [HasFlatValues N] (x : HodgeH N a) (y : Hod
           (hodgeTateMap h x) := by
   -- The restriction to `HodgeTatePair` respects products (`Comparison.pull_cup`), so this is
   -- `contractionPow_cup`.
-  -- `erw`: the product is a Hodge class of `abTensor N N'` only after unfolding `HodgeH`
-  erw [← contractionPow_cup, comp_assoc_of_eq (cup_of _ _ _ e)]
+  let x' := (Comparison.restrict toHodgeTest hodgeCoeff).pull
+    (Functor.whiskerRight toSqZero N) a x
+  let y' := (Comparison.restrict toHodgeTest hodgeCoeff).pull
+    (Functor.whiskerRight toSqZero N') b y
   have h_pull :
       (Comparison.restrict toHodgeTest hodgeCoeff).pull
           (Functor.whiskerRight toSqZero (abTensor N N')) n (cup exteriorAlg.mulPairing x y e) =
-        cup wedgePairing
-          ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N) a x)
-          ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N') b y)
-          e :=
+        cup wedgePairing x' y' e :=
     Comparison.pull_cup (by simp) x y e
-  exact congrArg (fun z ↦ comp (Ext.toTotalH z) (contractionPow l)) h_pull
+  exact (congrArg (fun z ↦ comp (Ext.toTotalH z) (contractionPow l)) h_pull).trans <|
+    (comp_assoc_of_eq (cup_of wedgePairing x' y' e) (contractionPow l)).symm.trans
+      (contractionPow_cup l x' y'.toTotalH)
 
 end HodgeTateMap
 
@@ -873,10 +874,20 @@ lemma IsChartCovered.pairRestrictBijective {n : ℕ} {X : CommAlg k ⥤ Type 1}
     rintro rfl
     refine (forall_congr' fun i ↦ ?_).trans ⟨a.lift_unique D.isSquareZero_toGeneric hψ, by tauto⟩
     -- compare components; `mulMu` is injective, and `g` acts on `b + e` by `f b + mulMu (g e).1`
-    erw [Prod.ext_iff, ← h_mulMu_inj.eq_iff, ht, eq_sub_iff_add_eq', Subtype.ext_iff,
-      Prod.ext_iff, Prod.ext_iff, and_iff_right (ConcreteCategory.congr_hom hψ _),
-      AlgHom.comp_apply, hs]
-    rfl
+    let si : ({ test := c, rank := n } : HodgeTatePair).PairRing := s (a.coordinate i)
+    let ψi : D.PairRing := ψ (a.coordinate i)
+    have hs_snd : si.val.snd.snd = single i 1 := congrArg (fun x ↦ x.val.snd.snd) (hs i)
+    have hti : mulMu D.test (t (a.coordinate i)) =
+        ψi.val.fst - thickeningOver.map g.fst si.val.fst := ht (a.coordinate i)
+    refine Iff.trans ?_ <| (Subtype.ext_iff.trans <| Prod.ext_iff.trans <|
+      and_congr_right fun _ ↦ TrivSqZeroExt.ext_iff.trans <|
+        and_iff_right (ConcreteCategory.congr_hom hψ _)).symm
+    change moduleMap g (single i 1) = (t (a.coordinate i), ψi.val.snd.snd) ↔
+      thickeningOver.map g.fst si.val.fst + mulMu D.test (moduleMap g si.val.snd.snd).fst =
+          ψi.val.fst ∧ (moduleMap g si.val.snd.snd).snd = ψi.val.snd.snd
+    rw [Prod.ext_iff, hs_snd]
+    dsimp only
+    rw [← h_mulMu_inj.eq_iff, hti, eq_sub_iff_add_eq']
   have h_map_comp_point {A A' : CommAlg k} (φ : a.coordRing ⟶ A) (φ' : A ⟶ A') :
       X.map (φ ≫ φ') a.point = X.map φ' (X.map φ a.point) := X.map_comp_apply ..
   -- `using!`: the first and last goals hold only up to unfolding `toTest` and the subfunctor maps.
