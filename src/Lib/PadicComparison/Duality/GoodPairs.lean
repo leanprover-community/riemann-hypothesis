@@ -514,6 +514,207 @@ private lemma isZariskiLocallyTop_range_rootPairsToProdLine_sup :
 
 /-! ### Principal open sets of affine space and standard étale charts -/
 
+/-- Leray–Hirsch bases only see the special fibre. Let `F` be cohomologically dense at the special
+fibre along `p`, and let `θ` be classes from the locally constant functions on the special fibre of
+`Spec A` to `F`. If `u : E ⟶ Y` is bijective at the tests on which the maximal ideal of `A`
+vanishes, then `θ` is a Leray–Hirsch basis at `ℤ[E]` iff it is one at `ℤ[Y]`. -/
+lemma isLerayHirschBasis_freeAb_iff_of_bijective {C : Type 1} [Category.{0} C]
+    {p : C ⥤ TestOver A} {F : AbFunctor C}
+    (dense_fibre : IsCohomDense F ((IdealFamily.ofMaximalIdeal (A := A)).botLocus.whisker p))
+    {J : Type*} {deg : J → ℕ} {θ : (i : J) → H ((restrictAlong p).obj
+      ((IdealFamily.ofMaximalIdeal (A := A)).zerosCoeff (locConstAlong (𝟭 (TestOver A)))))
+        F (deg i)}
+    (u : E ⟶ Y)
+    (hu : ∀ c, (IdealFamily.ofMaximalIdeal (A := A)).ideal c = ⊥ → Function.Bijective (u.app c)) :
+    IsLerayHirschBasis θ (freeAb E) ↔ IsLerayHirschBasis θ (freeAb Y) := by
+  let Q := IdealFamily.ofMaximalIdeal (A := A)
+  let G := Q.zerosCoeff (locConstAlong (𝟭 (TestOver A)))
+  have hZ (c : TestOver A) (hc : Q.ideal c = ⊥) : Function.Bijective ((freeAb.map u).app c) :=
+    (FreeAddCommGroup.equivOfEquiv (.ofBijective _ (hu c hc))).bijective
+  have h_source : IsCohomEquiv G (freeAb.map u) :=
+    (Theory.locallyConstant.isCohomDense_botLocus Q).isCohomEquiv_of_bijective_on hZ
+  have h_target : IsCohomEquiv F ((restrictAlong p).map (freeAb.map u)) :=
+    dense_fibre.isCohomEquiv_of_bijective_on fun _ ↦ hZ _
+  exact (Comparison.bijective_iff_of_comm_sq (lerayHirsch_mapRange_comp θ map_homClass)
+    (mapRange_bijective _ _ h_source.bijective_pullbackAlong) h_target.bijective_pullbackAlong).symm
+
+/-- Leray–Hirsch bases at a test `c` lift along the quotient onto the special fibre: let `θ` be
+classes from the locally constant functions on the special fibre of `Spec A` to `F`, whose
+pull-backs `θ'` along `toZerosCoeff` to the locally constant functions form a Leray–Hirsch basis at
+`ℤ[c]`. Then `θ` is a Leray–Hirsch basis at `ℤ[c]`. -/
+lemma isLerayHirschBasis_reprBy_of_map_toZerosCoeff {C : Type 1} [Category.{0} C]
+    {p : C ⥤ TestOver A} {F : AbFunctor C} {J : Type*} {deg : J → ℕ}
+    {θ : (i : J) → H ((restrictAlong p).obj
+      ((IdealFamily.ofMaximalIdeal (A := A)).zerosCoeff (locConstAlong (𝟭 (TestOver A)))))
+        F (deg i)}
+    {θ' : (i : J) → H ((restrictAlong p).obj (locConstAlong (𝟭 (TestOver A)))) F (deg i)}
+    (hθ : ∀ i, H.map F ((restrictAlong p).map
+      ((IdealFamily.ofMaximalIdeal (A := A)).toZerosCoeff (locConstAlong (𝟭 (TestOver A))))) (deg i)
+        (θ i) = θ' i)
+    (c : TestOver A) (h : IsLerayHirschBasis θ' (freeAb (reprBy c))) :
+    IsLerayHirschBasis θ (freeAb (reprBy c)) := by
+  let Q := IdealFamily.ofMaximalIdeal (A := A)
+  let G := Q.zerosCoeff (locConstAlong (𝟭 (TestOver A)))
+  -- The bijective map `lerayHirsch θ'` factors as `lerayHirsch θ` after a surjection `r`.
+  let r : TotalH (freeAb (reprBy c)) (locConstAlong (𝟭 _)) →+ TotalH (freeAb (reprBy c)) G :=
+    comp.flip (.homClass (Q.toZerosCoeff _))
+  have hr : Function.Surjective r := by
+    refine (sectionEquiv ..).surjective.forall.2 (Quot.ind fun s ↦ ⟨sectionEquiv _ _ s, ?_⟩)
+    exact (of_comp_homClass ..).trans (congrArg _ (push_homReprEquiv_symm ..))
+  have factor : lerayHirsch θ _ ∘ mapRange r r.map_zero = lerayHirsch θ' _ := by
+    refine _root_.funext (lerayHirsch_naturality _ r (r' := .id _) fun i x ↦ ?_)
+    let Φ : AbFunctor (TestOver A) ⥤ AbFunctor C := restrictAlong p
+    let π := Q.toZerosCoeff (locConstAlong (𝟭 (TestOver A)))
+    change comp (TotalH.map Φ (comp x (homClass π))) (θ i).toTotalH =
+      comp (TotalH.map Φ x) (θ' i).toTotalH
+    refine (map_comp_assoc Φ (θ i).toTotalH).trans (congrArg (comp (TotalH.map Φ x)) ?_)
+    refine (congrArg (fun y ↦ comp y (θ i).toTotalH) (map_homClass (f := π) (Φ := Φ))).trans ?_
+    exact (pullbackAlong_of (f := Φ.map π) (θ i)).trans
+      (congrArg (DirectSum.of _ _) (hθ i))
+  have h_comp : (lerayHirsch θ _ ∘ mapRange r r.map_zero).Bijective := by
+    rw [factor]
+    exact h
+  exact ⟨h_comp.1.of_comp_right (mapRange_surjective _ _ hr), h_comp.2.of_comp⟩
+
+/-- The open set `Spec T[1/a] ∪ offClosedFiber` of `(ℙ¹)^d` lies in `W.topPoints`, the complement
+of the zeros in the special fibre of the generator of `multihomogeneousIdeal` (`multihomFamily`). -/
+lemma range_sup_offClosedFiber_le_topPoints (a : T) :
+    Subfunctor.range ((testUnitLocus a).ι ≫ affineToLines e) ⊔
+        offClosedFiber (ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)) ≤
+      (multihomFamily (e.symm a) (maximalIdeal A)).pullToTests.topPoints := by
+  rintro c q (hq | hq)
+  · exact eq_top_mono (sup_le_sup_left (map_mono bot_le) _)
+      ((multihomogeneousIdeal_eq_top_iff ..).2 hq)
+  · exact eq_top_mono le_sup_right hq
+
+/-- From representables to `W.topPoints`: let `θ` be classes from the locally constant functions on
+the special fibre of `Spec A` to a functor `F` on the points of `(ℙ¹)^d` that is cohomologically
+dense at the special fibre. If `θ` is a Leray–Hirsch basis at `ℤ[c]` for every test `c`, then it is
+one at `ℤ[(ℙ¹)^d] / ℤ[W.topPoints]`, where `W.topPoints` is the complement of the zeros in the
+special fibre of the generator of `multihomogeneousIdeal` (`multihomFamily`). -/
+lemma isLerayHirschBasis_relFreeAb_topPoints (a : T)
+    {F : AbFunctor (ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)).Elements}
+    (dense_fibre : IsCohomDense F ((IdealFamily.ofMaximalIdeal (A := A)).botLocus.whisker
+      (testOfPoint A (projLinePow (Fin d)))))
+    {J : Type*} {deg : J → ℕ}
+    {θ : (i : J) → H ((restrictAlong (testOfPoint A (projLinePow (Fin d)))).obj
+      ((IdealFamily.ofMaximalIdeal (A := A)).zerosCoeff (locConstAlong (𝟭 (TestOver A)))))
+        F (deg i)}
+    (lh_rep : ∀ c : TestOver A, IsLerayHirschBasis θ (freeAb (reprBy c))) :
+    IsLerayHirschBasis θ
+      (relFreeAb (multihomFamily (e.symm a) (maximalIdeal A)).pullToTests.topPoints) := by
+  classical
+  let X := ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)
+  let W := (multihomFamily (e.symm a) (maximalIdeal A)).pullToTests
+  -- By dévissage `lerayHirsch θ` is then bijective on every functor covered by affine schemes.
+  have lh_qc {Y} (hY : IsAffinelyCovered (ObjectProperty.ι _ : TestOver A ⥤ _) Y) :
+      IsLerayHirschBasis θ (freeAb (ObjectProperty.ι _ ⋙ Y)) :=
+    isLerayHirschBasis_iff_allBijective_truncMap.2
+      (IsAffinelyCovered.devissage_bijective lerayHirsch.devissage
+      (fun c ↦ isLerayHirschBasis_iff_allBijective_truncMap.1 (lh_rep c)) hY)
+  have h_le := range_sup_offClosedFiber_le_topPoints e a
+  -- `lerayHirsch θ` is bijective at `Spec T[1/a]`, hence at `W.topPoints`: they agree on the
+  -- special fibre.
+  have lh_open : IsLerayHirschBasis θ (freeAb W.topPoints.toFunctor) := by
+    refine (isLerayHirschBasis_freeAb_iff_of_bijective dense_fibre
+      (homOfLe (le_sup_left.trans h_le))
+      (fun c hc ↦ ⟨injective_of_mono _, fun q ↦
+        ⟨⟨_, (multihomogeneousIdeal_eq_top_iff ..).1 ?_⟩, rfl⟩⟩)).1 ?_
+    · exact eq_top_mono (sup_le le_sup_left (hc.trans_le bot_le)) q.property
+    · obtain ⟨iso⟩ := testUnitLocus.nonempty_iso_away (A := A) a
+      exact (isClosedClass_isLerayHirschBasis.iff_of_isIso (freeAb.map (iso.hom ≫ toRange _))).1
+        (lh_qc (isAffinelyCovered_reprBy _))
+  have lh_lines : IsLerayHirschBasis θ (freeAb X) := (lh_qc isAffinelyCovered_projLinePow :)
+  exact (isClosedClass_isLerayHirschBasis.2 _ (relFreeAb.shortExact _).2 lh_open).1 lh_lines
+
+/-- Alexander duality at `W.topPoints`, the complement in `(ℙ¹)^d` of the zeros in the special fibre
+of the generator of `multihomogeneousIdeal` for `e.symm a` (`multihomFamily`). If the locally
+constant functions on the special fibre of `Spec A` are good for `D` (`hG`), then so is the pair
+`ℤ[(ℙ¹)^d] / ℤ[W.topPoints]`. -/
+lemma isFiniteLerayHirsch_topPoints_multihomFamily (a : T)
+    (hG : D.IsFiniteLerayHirsch
+      ((IdealFamily.ofMaximalIdeal (A := A)).zerosCoeff (locConstAlong (𝟭 (TestOver A))))) :
+    D.IsFiniteLerayHirsch
+      (relFreeAb (multihomFamily (e.symm a) (maximalIdeal A)).pullToTests.topPoints) := by
+  -- By duality (`isFiniteLerayHirsch_topPoints_of_surjective`) it suffices to find classes `θ` from
+  -- the locally constant functions on the special fibre to `F` below whose Leray–Hirsch map is onto
+  -- at `relFreeAb W.topPoints`; proper base change provides them.
+  let I (J : Ideal A) := multihomFamily (e.symm a) J
+  let Q := IdealFamily.ofMaximalIdeal (A := A)
+  let X := ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)
+  let p := testOfPoint A (projLinePow (Fin d))
+  let W := (I (maximalIdeal A)).pullToTests
+  -- `F`: locally constant functions restricted to that zero set.
+  let F := W.zerosCoeff (Theory.locallyConstant.onElements (X := X)).functor
+  have dense_zeros : IsCohomDense F W.botLocus :=
+    Theory.locallyConstant.onElements.isCohomDense_botLocus W
+  have dense_fibre : IsCohomDense F (Q.botLocus.whisker p) :=
+    dense_zeros.mono fun _ _ ↦ eq_bot_mono le_sup_right
+  -- Proper base change gives classes whose Leray–Hirsch map is bijective at tests killing `𝔪_A`.
+  obtain ⟨ι, -, h_basis⟩ := exists_isLerayHirschBasis_of_isCohomDense
+    (Theory.locallyConstant.onElements.onZeros W)
+    ((I _).isDetectedAtPoints_of_proper (isProperOver_projLinePow _) _
+      (IdealFamily.bijective_toZerosCoeff _ _) dense_zeros) dense_fibre ⟨0, 0⟩
+  -- They come from classes `θ` with source the locally constant functions on the special fibre,
+  -- since `Q.toZerosCoeff` is bijective on the special fibre.
+  have h_quot : IsCohomEquiv F ((restrictAlong p).map (Q.toZerosCoeff (locConstAlong (𝟭 _)))) :=
+    dense_fibre.isCohomEquiv_of_bijective_on fun _ ↦ Q.bijective_toZerosCoeff _ _
+  choose θ hθ using fun i : ι ↦ (h_quot _).2 i.val.2
+  have lh_fibre (c : TestOver A) (hc : Q.ideal c = ⊥) : IsLerayHirschBasis θ (freeAb (reprBy c)) :=
+    isLerayHirschBasis_reprBy_of_map_toZerosCoeff hθ c (h_basis c hc)
+  have lh_rep (c : TestOver A) : IsLerayHirschBasis θ (freeAb (reprBy c)) := by
+    -- Pass to the reduced quotient `q : c ⟶ c'` by `𝔪_A`, which has the same points in the fibre.
+    obtain ⟨c', q, -, -, h_univ, hq⟩ := TestOver.exists_quotient c (Q.ideal c)
+    have hc' : Q.ideal c' = ⊥ := (Q.map_eq q).symm.trans hq
+    refine (isLerayHirschBasis_freeAb_iff_of_bijective dense_fibre (reprFunctor.map q.op)
+      fun _ h ↦ ULift.map_bijective.2 ?_).1 (lh_fibre c' hc')
+    exact (Function.bijective_iff_existsUnique _).2 fun f ↦ h_univ _ f ((Q.map_eq f).trans h)
+  exact D.isFiniteLerayHirsch_topPoints_of_surjective W
+    (isLerayHirschBasis_relFreeAb_topPoints e a dense_fibre lh_rep).2 hG
+
+/-- Zariski descent from the open set `Spec T[1/a] ∪ offClosedFiber` of `(ℙ¹)^d` to the larger
+`W.topPoints`, the complement of the zeros in the special fibre of the generator of
+`multihomogeneousIdeal` (`multihomFamily`): near every maximal ideal, either the maximal ideal of
+`A` generates the unit ideal, or the generator becomes a unit. -/
+lemma isFiniteLerayHirsch_range_sup_offClosedFiber_iff (a : T) :
+    D.IsFiniteLerayHirsch (relFreeAb (Subfunctor.range ((testUnitLocus a).ι ≫ affineToLines e) ⊔
+      offClosedFiber (ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)))) ↔
+    D.IsFiniteLerayHirsch
+      (relFreeAb (multihomFamily (e.symm a) (maximalIdeal A)).pullToTests.topPoints) := by
+  let I (J : Ideal A) := multihomFamily (e.symm a) J
+  let Q := IdealFamily.ofMaximalIdeal (A := A)
+  let X := ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)
+  let W := (I (maximalIdeal A)).pullToTests
+  let U : Subfunctor X := .range ((testUnitLocus a).ι ≫ affineToLines e) ⊔ offClosedFiber X
+  have h_le : U ≤ W.topPoints := range_sup_offClosedFiber_le_topPoints e a
+  -- Zariski-locally the reverse inclusion holds: near `m` either `𝔪_A` generates the unit ideal,
+  -- or the generator of `multihomogeneousIdeal` becomes a unit.
+  refine D.isFiniteLerayHirsch_iff_of_isCohomEquiv (relFreeAb.map (𝟙 _) h_le) fun g h_zar ↦
+    relFreeAb.isCohomEquiv_of_le (U := W.topPoints.whisker g) (U' := U.whisker g)
+      (fun _ ↦ h_le _) (h_zar fun c q m hm ↦ ?_)
+  by_cases h_fibre : (Q.whisker g).ideal c ≤ m
+  · have h_form : ¬(I ⊥).pullToTests.ideal (.mk (obj := g.obj c) q.val) ≤ m :=
+      fun h ↦ hm.ne_top (eq_top_mono (sup_le (le_sup_left.trans h) h_fibre) q.property)
+    obtain ⟨b, hb, h_unit⟩ := (I ⊥).pullToTests.exists_notMem_eq_top h_form
+    exact ⟨b, hb, fun c' f hf ↦
+      .inl ((multihomogeneousIdeal_eq_top_iff ..).1
+        (h_unit (.mk (obj := g.obj c') _) ⟨g.map f, rfl⟩ hf))⟩
+  · obtain ⟨b, hb, h_top⟩ := (Q.whisker g).exists_notMem_eq_top h_fibre
+    exact ⟨b, hb, fun c' f hf ↦ .inr (h_top c' f hf)⟩
+
+/-- If the pair of the point and its part away from the special fibre is good for `D` (`L`), then
+so are the locally constant functions on the special fibre of `Spec A`. -/
+lemma isFiniteLerayHirsch_zerosCoeff_ofMaximalIdeal
+    (L : D.IsFiniteLerayHirsch (relFreeAb (IdealFamily.ofMaximalIdeal (A := A)).topLocus)) :
+    D.IsFiniteLerayHirsch
+      ((IdealFamily.ofMaximalIdeal (A := A)).zerosCoeff (locConstAlong (𝟭 (TestOver A)))) := by
+  let Q := IdealFamily.ofMaximalIdeal (A := A)
+  -- They are equivalent to `(ℤ[pt] / ℤ[Q.topLocus]) / ℓ`, which is good by `L`.
+  exact (D.isFiniteLerayHirsch_iff_of_isCohomEquiv Q.constToZeros fun g ↦
+      Q.isCohomEquiv_constToZeros g .locallyConstant rfl).1
+    ((D.isClosedClass_isFiniteLerayHirsch.2 _
+      (shortExact_nsmul_abCoker (N := relFreeAb _)).2 L).1 L)
+
 /-- Alexander duality for a principal open set of `Spec T ⊆ (ℙ¹)^d`, embedded by the presentation
 `e` of `T` as a polynomial ring. `D.IsFiniteLerayHirsch N` requires, among other things, that
 `w ↦ ∑ i, (w i restricted along g) · D.comparison i` be a bijection from families in total
@@ -524,123 +725,13 @@ lemma isFiniteLerayHirsch_principal_open
     (L : D.IsFiniteLerayHirsch (relFreeAb (IdealFamily.ofMaximalIdeal (A := A)).topLocus)) (a : T) :
     D.IsFiniteLerayHirsch (relFreeAb (Subfunctor.range ((testUnitLocus a).ι ≫ affineToLines e) ⊔
       offClosedFiber (ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)))) := by
-  classical
   -- Up to Zariski descent the open set `U` of the statement is `W.topPoints`, the complement in
   -- `(ℙ¹)^d` of the zeros of the generator of `multihomogeneousIdeal` that lie in the special
-  -- fibre. By duality (`isFiniteLerayHirsch_topPoints_of_surjective`) it suffices to find classes
-  -- `θ` from `G` to `F` whose Leray–Hirsch map is onto at `relFreeAb W.topPoints` (proper base
-  -- change provides them), and to show `D.IsFiniteLerayHirsch G` (it follows from `L`).
-  let I (J : Ideal A) := multihomFamily (e.symm a) J
-  let Q := IdealFamily.ofMaximalIdeal (A := A)
-  let X := ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)
-  let p := testOfPoint A (projLinePow (Fin d))
-  let W := (I (maximalIdeal A)).pullToTests
-  -- `F`: locally constant functions restricted to that zero set; `G`: the same for the special
-  -- fibre of `Spec A`.
-  let F := W.zerosCoeff (Theory.locallyConstant.onElements (X := X)).functor
-  let G := Q.zerosCoeff (locConstAlong (𝟭 (TestOver A)))
-  have dense_zeros : IsCohomDense F W.botLocus :=
-    Theory.locallyConstant.onElements.isCohomDense_botLocus W
-  have dense_fibre : IsCohomDense F (Q.botLocus.whisker p) :=
-    dense_zeros.mono fun _ _ ↦ eq_bot_mono le_sup_right
-  -- Proper base change gives classes whose Leray–Hirsch map is bijective at tests killing `𝔪_A`.
-  obtain ⟨ι, -, h_basis⟩ := exists_isLerayHirschBasis_of_isCohomDense
-    (Theory.locallyConstant.onElements.onZeros W)
-    ((I _).isDetectedAtPoints_of_proper (isProperOver_projLinePow _) _
-      (IdealFamily.bijective_toZerosCoeff _ _) dense_zeros) dense_fibre ⟨0, 0⟩
-  -- They come from classes `θ` with source `G`, since `Q.toZerosCoeff` is bijective on the special
-  -- fibre.
-  have h_quot : IsCohomEquiv F ((restrictAlong p).map (Q.toZerosCoeff (locConstAlong (𝟭 _)))) :=
-    dense_fibre.isCohomEquiv_of_bijective_on fun _ ↦ Q.bijective_toZerosCoeff _ _
-  choose θ hθ using fun i : ι ↦ (h_quot _).2 i.val.2
-  -- Source and target of `lerayHirsch θ` only see the special fibre.
-  have transfer {E Y : TestOver A ⥤ Type 1} (u : E ⟶ Y)
-      (hu : ∀ c, Q.ideal c = ⊥ → Function.Bijective (u.app c)) :
-      IsLerayHirschBasis θ (freeAb E) → IsLerayHirschBasis θ (freeAb Y) := by
-    have hZ (c : TestOver A) (hc : Q.ideal c = ⊥) : Function.Bijective ((freeAb.map u).app c) :=
-      (FreeAddCommGroup.equivOfEquiv (.ofBijective _ (hu c hc))).bijective
-    have h_source : IsCohomEquiv G (freeAb.map u) :=
-      (Theory.locallyConstant.isCohomDense_botLocus Q).isCohomEquiv_of_bijective_on hZ
-    have h_target : IsCohomEquiv F ((restrictAlong p).map (freeAb.map u)) :=
-      dense_fibre.isCohomEquiv_of_bijective_on fun _ ↦ hZ _
-    exact (Comparison.bijective_iff_of_comm_sq (lerayHirsch_mapRange_comp θ map_homClass)
-      (mapRange_bijective _ _ h_source.bijective_pullbackAlong) h_target.bijective_pullbackAlong).2
-  have lh_fibre (c : TestOver A) (hc : Q.ideal c = ⊥) :
-      IsLerayHirschBasis θ (freeAb (reprBy c)) := by
-    -- The bijective map of `h_basis` factors as `lerayHirsch θ` after a surjection `r`.
-    let r : TotalH (freeAb (reprBy c)) (locConstAlong (𝟭 _)) →+ TotalH (freeAb (reprBy c)) G :=
-      comp.flip (.homClass (Q.toZerosCoeff _))
-    have hr : Function.Surjective r := by
-      refine (sectionEquiv ..).surjective.forall.2 (Quot.ind fun s ↦ ⟨sectionEquiv _ _ s, ?_⟩)
-      exact (of_comp_homClass ..).trans (congrArg _ (push_homReprEquiv_symm ..))
-    have factor : lerayHirsch θ _ ∘ mapRange r r.map_zero = lerayHirsch (fun i : ι ↦ i.1.2) _ := by
-      refine _root_.funext (lerayHirsch_naturality _ r (r' := .id _) fun i x ↦ ?_)
-      let Φ : AbFunctor (TestOver A) ⥤ AbFunctor X.Elements := restrictAlong p
-      let π := Q.toZerosCoeff (locConstAlong (𝟭 (TestOver A)))
-      change comp (TotalH.map Φ (comp x (homClass π))) (θ i).toTotalH =
-        comp (TotalH.map Φ x) i.val.2.toTotalH
-      refine (map_comp_assoc Φ (θ i).toTotalH).trans (congrArg (comp (TotalH.map Φ x)) ?_)
-      refine (congrArg (fun y ↦ comp y (θ i).toTotalH) (map_homClass (f := π) (Φ := Φ))).trans ?_
-      exact (pullbackAlong_of (f := Φ.map π) (θ i)).trans
-        (congrArg (DirectSum.of _ _) (hθ i))
-    have h_comp : (lerayHirsch θ _ ∘ mapRange r r.map_zero).Bijective := by
-      rw [factor]
-      exact h_basis c hc
-    exact ⟨h_comp.1.of_comp_right (mapRange_surjective _ _ hr), h_comp.2.of_comp⟩
-  have lh_rep (c : TestOver A) : IsLerayHirschBasis θ (freeAb (reprBy c)) := by
-    -- Pass to the reduced quotient `q : c ⟶ c'` by `𝔪_A`, which has the same points in the fibre.
-    obtain ⟨c', q, -, -, h_univ, hq⟩ := TestOver.exists_quotient c (Q.ideal c)
-    have hc' : Q.ideal c' = ⊥ := (Q.map_eq q).symm.trans hq
-    refine transfer (reprFunctor.map q.op) (fun _ h ↦ ULift.map_bijective.2 ?_) (lh_fibre c' hc')
-    exact (Function.bijective_iff_existsUnique _).2 fun f ↦ h_univ _ f ((Q.map_eq f).trans h)
-  -- By dévissage `lerayHirsch θ` is then bijective on every functor covered by affine schemes.
-  have lh_qc {Y} (hY : IsAffinelyCovered (ObjectProperty.ι _ : TestOver A ⥤ _) Y) :
-      IsLerayHirschBasis θ (freeAb (ObjectProperty.ι _ ⋙ Y)) :=
-    isLerayHirschBasis_iff_allBijective_truncMap.2
-      (IsAffinelyCovered.devissage_bijective lerayHirsch.devissage
-      (fun c ↦ isLerayHirschBasis_iff_allBijective_truncMap.1 (lh_rep c)) hY)
-  let U : Subfunctor X := .range ((testUnitLocus a).ι ≫ affineToLines e) ⊔ offClosedFiber X
-  have h_le : U ≤ W.topPoints := by
-    rintro c q (hq | hq)
-    · exact eq_top_mono (sup_le_sup_left (map_mono bot_le) _)
-        ((multihomogeneousIdeal_eq_top_iff ..).2 hq)
-    · exact eq_top_mono le_sup_right hq
-  -- Zariski-locally the reverse inclusion holds: near `m` either `𝔪_A` generates the unit ideal,
-  -- or the generator of `multihomogeneousIdeal` becomes a unit.
-  have h_descent : D.IsFiniteLerayHirsch (relFreeAb U) ↔
-      D.IsFiniteLerayHirsch (relFreeAb W.topPoints) := by
-    refine D.isFiniteLerayHirsch_iff_of_isCohomEquiv (relFreeAb.map (𝟙 _) h_le) fun g h_zar ↦
-      relFreeAb.isCohomEquiv_of_le (U := W.topPoints.whisker g) (U' := U.whisker g)
-        (fun _ ↦ h_le _) (h_zar fun c q m hm ↦ ?_)
-    by_cases h_fibre : (Q.whisker g).ideal c ≤ m
-    · have h_form : ¬(I ⊥).pullToTests.ideal (.mk (obj := g.obj c) q.val) ≤ m :=
-        fun h ↦ hm.ne_top (eq_top_mono (sup_le (le_sup_left.trans h) h_fibre) q.property)
-      obtain ⟨b, hb, h_unit⟩ := (I ⊥).pullToTests.exists_notMem_eq_top h_form
-      exact ⟨b, hb, fun c' f hf ↦
-        .inl ((multihomogeneousIdeal_eq_top_iff ..).1
-          (h_unit (.mk (obj := g.obj c') _) ⟨g.map f, rfl⟩ hf))⟩
-    · obtain ⟨b, hb, h_top⟩ := (Q.whisker g).exists_notMem_eq_top h_fibre
-      exact ⟨b, hb, fun c' f hf ↦ .inr (h_top c' f hf)⟩
-  -- `lerayHirsch θ` is bijective at `Spec T[1/a]`, hence at `W.topPoints`: they agree on the
-  -- special fibre.
-  have lh_open : IsLerayHirschBasis θ (freeAb W.topPoints.toFunctor) := by
-    refine transfer (homOfLe (le_sup_left.trans h_le))
-      (fun c hc ↦ ⟨injective_of_mono _, fun q ↦
-        ⟨⟨_, (multihomogeneousIdeal_eq_top_iff ..).1 ?_⟩, rfl⟩⟩) ?_
-    · exact eq_top_mono (sup_le le_sup_left (hc.trans_le bot_le)) q.property
-    · obtain ⟨iso⟩ := testUnitLocus.nonempty_iso_away (A := A) a
-      exact (isClosedClass_isLerayHirschBasis.iff_of_isIso (freeAb.map (iso.hom ≫ toRange _))).1
-        (lh_qc (isAffinelyCovered_reprBy _))
-  have lh_lines : IsLerayHirschBasis θ (freeAb X) := (lh_qc isAffinelyCovered_projLinePow :)
-  have lh_rel : IsLerayHirschBasis θ (relFreeAb W.topPoints) :=
-    (isClosedClass_isLerayHirschBasis.2 _ (relFreeAb.shortExact _).2 lh_open).1 lh_lines
-  -- `G` is equivalent to `(ℤ[pt] / ℤ[Q.topLocus]) / ℓ`, which is good by `L`.
-  have hG : D.IsFiniteLerayHirsch G :=
-    (D.isFiniteLerayHirsch_iff_of_isCohomEquiv Q.constToZeros fun g ↦
-      Q.isCohomEquiv_constToZeros g .locallyConstant rfl).1
-      ((D.isClosedClass_isFiniteLerayHirsch.2 _
-        (shortExact_nsmul_abCoker (N := relFreeAb _)).2 L).1 L)
-  exact h_descent.2 (D.isFiniteLerayHirsch_topPoints_of_surjective W lh_rel.2 hG)
+  -- fibre. By duality that pair is good once the locally constant functions on the special fibre
+  -- of `Spec A` are good, and they are good by `L`.
+  exact (D.isFiniteLerayHirsch_range_sup_offClosedFiber_iff e a).2
+    (D.isFiniteLerayHirsch_topPoints_multihomFamily e a
+      (D.isFiniteLerayHirsch_zerosCoeff_ofMaximalIdeal L))
 
 -- Keeps definitional checks from unfolding the Ext groups.
 seal CategoryTheory.Abelian.Ext in
