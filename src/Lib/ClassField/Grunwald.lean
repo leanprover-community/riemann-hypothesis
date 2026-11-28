@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.RingTheory.DedekindDomain.Different.Basic
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 public import Lib.GaloisRep.Main.SelmerModules
 public import Lib.Weil.Construction.WeilData
@@ -422,29 +423,15 @@ private lemma range_intTrace_stepField_eq_top {p : ℕ} (h_rank : Module.finrank
     ext (by simp [algebraMap_intTrace (L := stepField χ), trace_apply, map_one, h_rank])
   have hp_mem : (p : 𝓞 E) ∈ u.asIdeal := hu ⟨1, h_trace_one⟩
   obtain ⟨P, rfl⟩ := FinPlace.comap_surjective (algebraMap E (stepField χ)) u
-  refine not_dvd_differentIdeal_stepField χ (fun h_place ↦ h_unram h_place hp_mem)
-    (dvd_iff_le.mpr ?_)
-  -- `P` contains the different if the traces of `P⁻¹` are integers
-  rw [differentialIdeal_le_iff (K := E) (L := stepField χ) P.ne_bot]
-  rintro _ ⟨x, hx, rfl⟩
-  -- `tr x` is integral: as `u / u = 1`, it suffices that `tr x * u ⊆ u`
-  let u : FractionalIdeal (nonZeroDivisors (𝓞 E)) E := (P.below E).asIdeal
-  have hu_ne : u ≠ 0 := coeIdeal_ne_zero.mpr (P.below E).ne_bot
-  suffices h_div : trace E (stepField χ) x ∈ u / u by
-    rw [div_self hu_ne] at h_div
-    exact coeToSubmodule_one.le h_div
-  -- for `a ∈ u ⊆ P`, `x * a` is an integer `z`, and `tr z = tr x * a` lies in `u`
-  refine (mem_div_iff_of_ne_zero hu_ne).mpr ?_
-  rintro _ ⟨a, ha, rfl⟩
-  obtain ⟨z, -, hz : algebraMap (𝓞 (stepField χ)) (stepField χ) z =
-      x * algebraMap (𝓞 (stepField χ)) (stepField χ) (algebraMap (𝓞 E) (𝓞 (stepField χ)) a)⟩ :=
-    (mem_inv_iff (coeIdeal_ne_zero.mpr P.ne_bot)).mp hx _ ⟨_, ha, rfl⟩
-  refine ⟨_, hu ⟨z, rfl⟩, ?_⟩
-  -- `z = x * a`, so `tr z = tr x * a`
-  change algebraMap (𝓞 E) E (intTrace (𝓞 E) (𝓞 (stepField χ)) z) =
-    trace E (stepField χ) x * algebraMap (𝓞 E) E a
-  rw [algebraMap_intTrace (L := stepField χ), hz]
-  simp [algebraMap_eq_smul_one]
+  -- Since all traces lie in the prime downstairs, its extension divides the different.
+  let extendedIdeal := (P.below E).asIdeal.map (algebraMap (𝓞 E) (𝓞 (stepField χ)))
+  have h_map_dvd : extendedIdeal ∣ differentIdeal (𝓞 E) (𝓞 (stepField χ)) :=
+    (TauCeti.dvd_differentIdeal_iff_forall_intTrace_mem _ (P.below E).ne_bot
+      extendedIdeal 1 (mul_one _)).2 fun x _ ↦ hu ⟨x, rfl⟩
+  have h_prime_dvd : P.asIdeal ∣ extendedIdeal :=
+    (liesOver_iff_dvd_map P.isPrime.ne_top).1 inferInstance
+  exact not_dvd_differentIdeal_stepField χ (fun h_place ↦ h_unram h_place hp_mem)
+    (h_prime_dvd.trans h_map_dvd)
 
 /-- Let `E` be a CM field containing a primitive 5040th root of unity (`New.HasPrimitiveRoot5040`),
 and let `p` be prime. Write `New.QZChar.symmetrize χ` for the character `g ↦ χ g + χ gᶜ`, where `gᶜ`

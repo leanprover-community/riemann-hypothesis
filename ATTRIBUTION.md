@@ -29,7 +29,6 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/ClassField/Global/ArtinReciprocity.lean` | `New.exists_prime_dvd_orderOf` | `Nat.exists_prime_gt_modEq_one` | `Mathlib/NumberTheory/PrimesCongruentOne.lean` |
 | `src/Lib/ClassField/GreenbergWiles/SplitPrimeReciprocity.lean` | `out_inv_mul_mul_out_mem` | `QuotientGroup.out_conj_pow_minimalPeriod_mem` | `Mathlib/GroupTheory/GroupAction/Quotient.lean` |
 | `src/Lib/ClassField/Grunwald.lean` | `New.exists_mem_ker_cyclotomicCharMod_smul_ne_of_forall_pow_ne` | `X_pow_sub_C_irreducible_of_prime` | `Mathlib/FieldTheory/KummerPolynomial.lean` |
-| `src/Lib/ClassField/Grunwald.lean` | `New.range_intTrace_stepField_eq_top` | `pow_sub_one_dvd_differentIdeal_aux`, `dvd_differentIdeal_of_not_isSeparable` | `Mathlib/RingTheory/DedekindDomain/Different.lean` |
 | `src/Lib/ClassField/Places/DecompositionCyclotomic.lean` | `New.cyclotomicCharMod_eq_of_isPrimitiveRoot` | `IsPrimitiveRoot.autToPow_eq_modularCyclotomicCharacter` | `Mathlib/NumberTheory/Cyclotomic/CyclotomicCharacter.lean` |
 | `src/Lib/ClassField/Places/ValuationSubrings.lean` | `New.FinPlace.ncard_mul_ramificationIdx_mul_inertiaDeg` | `Ideal.ncard_primesOver_mul_ramificationIdxIn_mul_inertiaDegIn` | `Mathlib/NumberTheory/RamificationInertia/Galois.lean` |
 | `src/Lib/Cohomology/Etale/Basic.lean` | `New.Variety.H.dimension_shift_induction` | `CategoryTheory.hasExt_of_enoughInjectives` | `Mathlib/Algebra/Homology/DerivedCategory/Ext/EnoughInjectives.lean` |
