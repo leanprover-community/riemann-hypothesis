@@ -98,6 +98,7 @@ lemma charOnPlaces_evalPlaces {x : 𝔸f E} (hx : x ∈ integralOff T) :
   rw [charOnPlaces, AddChar.compAddMonoidHom_apply, ← S.selfDualChar.map_sub_eq_div]
   exact S.selfDualChar_eq_one_of_mem _ ((sub_adeleOfLocal_mem_iff T).2 hx)
 
+/-- The sieve character evaluated over the designated places is continuous. -/
 lemma continuous_charOnPlaces : Continuous (S.charOnPlaces T) :=
   continuous_ψf.subtypeVal.comp ((continuous_adeleOfLocal T).const_mul _)
 
@@ -106,6 +107,8 @@ the characters `wave c = exp (c - conj c)` at the infinite places and of `S.char
 noncomputable def globalChar (x : (InfinitePlace E → ℂ) × LocProd T) : ℂ :=
   (∏ v : InfinitePlace E, wave (x.1 v)) * S.charOnPlaces T x.2
 
+/-- The character `S.globalChar T` of the product of the infinite places
+and the completions at `T` is continuous. -/
 lemma continuous_globalChar : Continuous (S.globalChar T) :=
   .mul (by fun_prop [wave]) ((S.continuous_charOnPlaces T).comp continuous_snd)
 
@@ -312,6 +315,8 @@ section
 
 omit [WeilData E] [T.StarStable]
 
+/-- On an adele `z` whose finite part is integral off `T`,
+`extendToAdeles T r F` is `F` at `(r · z_∞, evalPlaces T z_f)`. -/
 lemma extendToAdeles_of_mem {z : 𝔸 E} (hz : z.2 ∈ integralOff T) :
     extendToAdeles T r F z = F (fun v : InfinitePlace E ↦ r v * z.1 v, evalPlaces T z.2) := by
   simp [extendToAdeles, hz]
