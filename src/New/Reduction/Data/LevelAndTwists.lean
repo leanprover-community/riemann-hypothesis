@@ -66,6 +66,16 @@ lemma weight_mem_Icc : (D.weight σ : ℝ) ∈ Icc (D.a / D.x₁) (D.a / D.x) :=
   split_ifs
   exacts [⟨h_le, le_rfl⟩, ⟨le_rfl, h_le⟩]
 
+/-- For `y ≤ a` and `x₁ ≤ t` we have `(y / t - κ(τ))₊ = 0`, since the weight `κ(τ)` of every
+infinite place `τ` is at least `a / x₁`. -/
+lemma posPart_div_sub_weight_eq_zero {y t : ℝ} (hy : y ≤ D.a) (ht : D.x₁ ≤ t) (τ : D.Φ) :
+    (y / t - D.weight τ)⁺ = 0 := by
+  have ht_pos : 0 < t := (exp_pos _).trans_le ht
+  refine posPart_eq_zero.2 (sub_nonpos.2 ?_)
+  calc y / t ≤ D.a / t := by gcongr
+    _ ≤ D.a / D.x₁ := by gcongr
+    _ ≤ D.weight τ := (D.weight_mem_Icc τ).1
+
 /-- The size of the weight: `b / x₁ ≤ κ ≤ b` (upper bound for `u` true, lower for `u` false). -/
 instance {u : Bool} : D.HasLogBound u (D.weight σ) (D.logB + if u then 0 else -D.logX₁) :=
   .of_mem_Icc (D.a / D.x₁) (D.a / D.x) (D.weight_mem_Icc σ)

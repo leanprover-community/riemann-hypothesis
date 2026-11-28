@@ -486,12 +486,11 @@ lemma localPrimeSum_add_le_mul_tsum_partnerTerm_add (hj : j < D.m) (hp : D.IsSma
   · -- Here `p ^ e ≥ x₁`, so the terms of the gain vanish, as every weight is at least `a / x₁`.
     have h_pow : D.x₁ ≤ p ^ e := (Nat.le_ceil D.x₁).trans <| mod_cast
       (le_pow_clog q.out.one_lt _).trans (Nat.pow_le_pow_right q.out.pos (by simpa using h_small))
-    have h_zero {y : ℝ} (hy : y ≤ D.a) (σ : D.Φ) : (y / p ^ e - D.weight σ)⁺ = 0 :=
-      posPart_eq_zero.2 <| sub_nonpos.2 <|
-        (div_le_div₀ (Nat.cast_nonneg _) hy (HasLogBound.pos D) h_pow).trans (D.weight_mem_Icc σ).1
     have h_ne : e ≠ 1 := fun h_one ↦ hp.1.not_ge (by simpa [h_one] using h_pow)
-    simp only [h_zero le_rfl, h_zero (D.le_of_hasLogBound : (D.weight τ : ℝ) ≤ D.a), h_ne, h_small,
-      false_and, ite_false, ite_self, mul_zero, add_zero, ← add_assoc, sub_add_cancel]
+    have h_weight : (D.weight τ : ℝ) ≤ D.a := D.le_of_hasLogBound
+    simp only [D.posPart_div_sub_weight_eq_zero le_rfl h_pow,
+      D.posPart_div_sub_weight_eq_zero h_weight h_pow, h_ne, h_small, false_and, ite_false,
+      ite_self, mul_zero, add_zero, ← add_assoc, sub_add_cancel]
     positivity
 
 /-- **Only collisions lose.** Let the prime `p` be below the cut-off `x₁` and non-split in
