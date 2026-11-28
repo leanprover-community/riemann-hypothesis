@@ -165,6 +165,9 @@ lemma CoeffRing.dvd_iff_norm_le (x y : ↑O) : x ∣ y ↔ ‖y.val‖ ≤ ‖x.
     have h_zero (hx : x.val = 0) : y.val = 0 := by simpa [hx] using h_le
     exact ⟨⟨y.val / x.val, h_quot⟩, Subtype.ext (mul_div_cancel_of_imp' h_zero).symm⟩
 
+lemma CoeffRing.isUnit_iff_norm_eq_one (x : ↑O) : IsUnit x ↔ ‖x.val‖ = 1 := by
+  simp [isUnit_iff_dvd_one, dvd_iff_norm_le, le_antisymm_iff]
+
 /-- A coefficient ring O is a discrete valuation ring (`New.DVR O`: a domain and a DVR): it is a
 Noetherian valuation ring, and it is not a field. -/
 instance : DVR O :=

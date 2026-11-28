@@ -9,7 +9,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.TotallySplit
 public import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
 import Lib.General.LinearAlgebra.Eigenvalues
-import Lib.General.NumberTheory.PadicLimitsValuation
 import Lib.PadicComparison.Descent.TestCategory
 
 /-!

@@ -297,9 +297,6 @@ namespace CoeffRing
 
 /-! ### Coefficient rings: units, lengths, roots of unity and finite quotients -/
 
-lemma isUnit_iff_norm_eq_one (x : ↑O) : IsUnit x ↔ ‖x.val‖ = 1 := by
-  simp [isUnit_iff_dvd_one, dvd_iff_norm_le, le_antisymm_iff]
-
 variable (O) in
 /-- A chosen uniformiser of the discrete valuation ring `O`. -/
 protected noncomputable def uniformizer : ↑O := (exists_irreducible O).choose
