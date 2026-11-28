@@ -82,10 +82,7 @@ lemma map_mem_proIwahori_iff_of_isometry (hv : ∀ x : F, v (σ x) = v x) {g : G
 
 lemma v_ringHom_pow_apply (hv : ∀ x : F, v (σ x) = v x) (i : ℕ) (x : F) :
     v ((σ ^ i) x) = v x := by
-  rw [RingHom.coe_pow]
-  induction i with
-  | zero => rfl
-  | succ i ih => rw [iterate_succ_apply', hv, ih]
+  simpa [RingHom.coe_pow] using Semiconj.iterate_right (f := v) (gb := id) hv i x
 
 /-- Hilbert 90 for the pro-`p` Iwahori subgroup `New.proIwahori` of `GL N F`. Let `σ` be an
 endomorphism of `F` that keeps the valuation, with `σ ^ p = 1`, and let `c` be an integer of `F`
