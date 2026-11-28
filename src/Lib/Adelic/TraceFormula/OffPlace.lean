@@ -139,14 +139,11 @@ lemma exists_atPlace_eq_of_convIndicator_ne_zero
     obtain ⟨x, hx, rfl⟩ := hu
     have h_notMem : x⁻¹ * g.atPlace v ∉ J := fun h_mem ↦
       hg x hx _ h_mem (mul_inv_cancel_left x _).symm
+    simp only [of_apply, mapDomain_single, convIndicator_single_mul, one_mul]
     induction b using induction_linear with
     | zero => simp
-    | add b b' hb hb' => simp_all [mapDomain_add, mul_add]
-    | single y c =>
-      have h_coset : (ofSplitPlace hv x * offPlace hv y)⁻¹ * g ∉ K ⊓ J.comap (Gf.atPlace v) := by
-        simp [mul_assoc, h_notMem]
-      -- `mul_inv_rev` would rewrite the element in the goal that `h_coset` is about.
-      simp [convIndicator_single, h_coset, -mul_inv_rev]
+    | add b b' hb hb' => simp [mapDomain_add, hb, hb']
+    | single y c => simp [convIndicator_single, h_notMem]
   | zero => simp
   | add u u' _ _ hu hu' => simp [mapDomain_add, add_mul, hu, hu']
   | smul c u _ hu => simp [mapDomain_smul, hu]
