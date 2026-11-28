@@ -3,6 +3,7 @@ module
 import Mathlib.Analysis.Convex.Integral
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.RingTheory.PicardGroup
+import TauCeti.MeasureTheory.Group.ModularCharacter
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Periods.DescentVanishing
@@ -17,8 +18,7 @@ import Lib.General.Analysis.MeanValueAndTaylor
 This file finds a unit vector, supported on the negative signs, that kills the columns of a
 frame. The rotations of its line lie in the maximal compact subgroup of `U (signMatrix s)`. It
 shows that a polynomial whose Fock vector is fixed by the compact stabiliser of the frame is zero.
-It proves that right translation by an element of a compact subgroup preserves the left Haar
-measure. Here `New.Exchange.negCount s` is the number of signs `-1`.
+Here `New.Exchange.negCount s` is the number of signs `-1`.
 
 ## Main definitions and results
 
@@ -353,22 +353,6 @@ end Rotation
 
 open NumberField (InfinitePlace)
 
-/-- Right translation by an element of a compact subgroup preserves the left Haar measure of a
-locally compact group: the modular function is `1` on compact subgroups. -/
-lemma New.Exchange.haar_map_mul_right_of_isCompact {H : Type*} [Group H] [TopologicalSpace H]
-    [IsTopologicalGroup H] [LocallyCompactSpace H] [SecondCountableTopology H]
-    [MeasurableSpace H] [BorelSpace H] {C : Subgroup H} (hC : IsCompact (C : Set H)) (k : C) :
-    (haar : Measure H).map (· * (k : H)) = haar := by
-  -- both sides are Haar measures, and they agree on the compact neighbourhood `A * C`, which is
-  -- stable under right translation by `k`
-  obtain ⟨A, hA, hCA⟩ := exists_compact_superset hC
-  let K : TopologicalSpace.PositiveCompacts H := ⟨⟨A * C, hA.mul hC⟩,
-    (k : H) * k, subset_interior_mul_left (Set.mul_mem_mul (hCA k.prop) k.prop)⟩
-  have h_eq : (haar : Measure H).map (· * (k : H)) K = haar (K : Set H) := by
-    simp [K, Set.preimage, (measurableEmbedding_mulRight _).map_apply,
-      ← QuotientGroup.preimage_image_mk_eq_mul]
-  rw [haarMeasure_unique (map _ _) K, h_eq, ← haarMeasure_unique]
-
 variable {E : Type} [Field E] [CMType E] [H : WeilData E] {a b m n : Type} [Fintype a]
   [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m] [Fintype n]
   [DecidableEq n]
@@ -511,7 +495,8 @@ lemma New.Exchange.centreCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {�
       integral_theta_pairWeil_stabilizer_eq_zero ν δ hu κ k
         (pairWeil Z Y ν δ (1, w⁻¹) (D.homSlice Y x' (pairWeil X Y δ δ (g, h) f)))
   have h_scale (k : C) : (haar : Measure S).map (· * (k : S)) = (1 : NNReal) • haar := by
-    simp [haar_map_mul_right_of_isCompact hC]
+    rw [map_right_mul_eq_modularCharacter_smul_of_regular,
+      TauCeti.modularCharacter_eq_one_of_mem_of_isCompact hC k.prop]
   -- unfolding: the coefficient is the integral of the term modulo the rational stabiliser
   have h_unfold : D.centerCoeff (H.j • (xᴴ * Y.J * x))
         (fun k ↦ ∫ h, pairTheta X Y δ δ f (k, h) * 1 ∂Y.quotMeasure) g =
