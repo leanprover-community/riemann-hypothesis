@@ -299,24 +299,11 @@ lemma integral_eq_classIntegral_of_isLevel [hV : V.IsStd] {F : G E s → ℂ}
         classIntegral stdRatPoints K fun g : Gf E n ↦ ∫ x : GInf E s, F (x, g) := by
   obtain ⟨h_cont, h_left, K', h_right⟩ := hF
   induction hV -- now `s = 1` and `V` is the standard space
-  -- For the level `S = Stab f ∩ K`, the integral is `[stdLevel : S]⁻¹` times the class sum of `f`
-  -- at `S`, and `[stdLevel : S] = [K : S] [stdLevel : K]`; the factor `[K : S]⁻¹` is the one in
-  -- `classIntegral`.
-  set f : Gf E n → ℂ := fun g ↦ ∫ x, F (x, g)
-  set S : Subgroup (Gf E n) := rightStabilizer f ⊓ K
+  let f : Gf E n → ℂ := fun g ↦ ∫ x, F (x, g)
   have hK' : (K' : Subgroup (Gf E n)) ≤ rightStabilizer f := fun k hk g ↦ by
     simp [f, ← h_right k hk ⟨_, g⟩]
-  have : IsLevel S :=
-    ⟨inf_le_of_right_le hK.le, (isOpen_mono hK' K'.isOpen).inter hK.isOpen⟩
-  have h_index : (stdLevelIndex S : ℂ) = (rightStabilizer f).relIndex K * stdLevelIndex K := by
-    rw [← inf_relIndex_right, ← Nat.cast_mul, relIndex_mul_relIndex _ _ _ inf_le_right hK.le]
-  calc ∫ g, F g ∂(stdSpace E n).quotMeasure
-    _ = (stdLevelIndex S : ℂ)⁻¹ * classSum stdRatPoints S f :=
-      integral_quotMeasure_eq_classSum h_left (fun _ ↦ rfl) S inf_le_left h_cont
-    _ = (stdLevelIndex K : ℂ)⁻¹ *
-        (((rightStabilizer f).relIndex K : ℂ)⁻¹ * classSum stdRatPoints S f) := by
-      rw [h_index, mul_inv_rev, mul_assoc]
-    _ = _ := by rw [classIntegral, inv_natCast_smul_eq ℚ ℂ, smul_eq_mul]
+  exact integral_quotMeasure_eq_classIntegral h_left (fun _ ↦ rfl) K
+    (isOpen_mono hK' K'.isOpen) h_cont
 
 /-- Let `K` be a level. Let `y`, `y'` be automorphic functions on the group `G` of the standard
 space: continuous, left `Γ`-invariant, and right invariant under an open subgroup of `G_f`. Suppose

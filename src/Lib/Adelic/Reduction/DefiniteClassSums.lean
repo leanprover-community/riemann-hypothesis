@@ -385,6 +385,23 @@ lemma integral_quotMeasure_eq_classSum {V : Space E n 1} {F : G E (1 : n → ℤ
         rw [classSum, finsum_eq_sum_of_fintype, Finset.mul_sum]
         exact Finset.sum_congr rfl fun c _ ↦ by rw [mul_smul_comm, inv_natCast_smul_eq ℝ ℚ]
 
+/-- If averaging `F` over the infinite factor gives `f`, its quotient integral equals the class
+integral of `f` at any level `K`, divided by the index of `K` in the standard level. -/
+lemma integral_quotMeasure_eq_classIntegral {V : Space E n 1} {F : G E (1 : n → ℤˣ) → W}
+    {f : Gf E n → W} (h_left : V.Γ.FixesLeft F)
+    (h_avg : ∀ g : Gf E n, ∫ x : GInf E (1 : n → ℤˣ), F (x, g) = f g)
+    (K : Subgroup (Gf E n)) [hK : IsLevel K] (hf : IsOpen (rightStabilizer f : Set (Gf E n)))
+    (h_cont : Continuous F) :
+    ∫ g, F g ∂V.quotMeasure = (stdLevelIndex K : W)⁻¹ * classIntegral V.Γf K f := by
+  -- At the level fixing `f` inside `K`, the class-sum formula applies.
+  -- Indices multiply in the tower: [stdLevel : S] = [K : S] * [stdLevel : K].
+  let S := rightStabilizer f ⊓ K
+  have : IsLevel S := ⟨inf_le_of_right_le hK.le, hf.inter hK.isOpen⟩
+  have h_index : (stdLevelIndex S : W) = (rightStabilizer f).relIndex K * stdLevelIndex K := by
+    rw [← inf_relIndex_right, ← Nat.cast_mul, relIndex_mul_relIndex _ _ _ inf_le_right hK.le]
+  rw [integral_quotMeasure_eq_classSum h_left h_avg S inf_le_left h_cont, h_index, mul_inv_rev,
+    mul_assoc, classIntegral, inv_natCast_smul_eq ℚ W, smul_eq_mul]
+
 /-- Let `V` be a space with all signs `1`. Write `V.Γ` for its rational points `x⁻¹γx`
 (`γ ∈ U(J)(E)`) in `G = G_∞ × G_f` and `V.Γf` for their finite parts, and let `K` be a level, an
 open subgroup of `K₀ = stdLevel E n = G_f ∩ GL_n(Ô)`. Let `y` on `G_f` be left `V.Γf`-invariant with
@@ -396,21 +413,12 @@ theorem classIntegral_eq_integral {V : Space E n 1} {y : Gf E n → W}
     (hy : y ∈ smoothInvariants V.Γf) (K : Subgroup (Gf E n)) [hK : IsLevel K] :
     classIntegral V.Γf K y =
       (stdLevelIndex K : W) * ∫ g : G E (1 : n → ℤˣ), y g.2 ∂V.quotMeasure := by
-  -- The integral is `[stdLevel : S]⁻¹` times the class sum at the level `S = Stab y ∩ K`.
-  obtain ⟨(hy_left : V.Γf.FixesLeft y), (hy_open : IsOpen (rightStabilizer y : Set (Gf E n)))⟩ := hy
-  have hS : IsLevel (rightStabilizer y ⊓ K) := ⟨inf_le_of_right_le hK.le, hy_open.inter hK.isOpen⟩
+  obtain ⟨hy_left, hy_open⟩ := hy
   have h_left : V.Γ.FixesLeft fun g ↦ y g.2 :=
     forall_mem_range.2 fun γ g ↦ hy_left _ ⟨γ, rfl⟩ g.2
-  have h_index : (stdLevelIndex (rightStabilizer y ⊓ K) : W) =
-      (rightStabilizer y).relIndex K * stdLevelIndex K := by
-    rw [← inf_relIndex_right, ← Nat.cast_mul, relIndex_mul_relIndex _ _ _ inf_le_right hK.le]
-  have h_integral : ∫ g : G E (1 : n → ℤˣ), y g.2 ∂V.quotMeasure =
-      (stdLevelIndex (rightStabilizer y ⊓ K) : W)⁻¹ * classSum V.Γf (rightStabilizer y ⊓ K) y :=
-    integral_quotMeasure_eq_classSum h_left (fun g ↦ by simp) _ inf_le_left
-      (isLocallyConstant_of_eventually_mul <| hy_open.mem_nhds (one_mem _)).continuous.snd'
-  rw [h_integral, h_index, mul_inv_rev, mul_assoc,
-    mul_inv_cancel_left₀ (Nat.cast_ne_zero.2 (isCompact_stdLevel.relIndex_ne_zero hK.isOpen)),
-    classIntegral, inv_natCast_smul_eq ℚ W, smul_eq_mul]
+  rw [integral_quotMeasure_eq_classIntegral h_left (f := y) (fun g ↦ by simp) K hy_open
+    (isLocallyConstant_of_eventually_mul <| hy_open.mem_nhds (one_mem _)).continuous.snd',
+    mul_inv_cancel_left₀ (Nat.cast_ne_zero.2 (isCompact_stdLevel.relIndex_ne_zero hK.isOpen))]
 
 end Space
 
