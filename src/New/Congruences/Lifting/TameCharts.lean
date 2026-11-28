@@ -104,15 +104,10 @@ restriction to `Γ'` is crystalline. Let `μ : W(C^♭) ⊗ L → B_dR` be a cry
 lemma conjForm_mem_crysForms {p : ℕ} [ThePrime p] [Γ : GroupOverGp p] {d : TameChart Γ}
     {O : d.Coeffs} {L : d.JumpLattice O}
     {μ : L.Functional} (hμ : μ ∈ L.crysForms) (g : Γ) : conjForm μ g ∈ L.crysForms := by
-  obtain ⟨h_equiv, l, hl⟩ : μ ∈ L.forms ∧ ∃ l : L.Carrier →ₗ[ℤ_[p]] Bmax,
-      ∀ t : L.Carrier, μ (DiagTensor.mk 1 t) = algebraMap Bmax BdR (l t) := hμ
-  have h_normal : ∀ h ∈ d.subgroup, g * h * g⁻¹ ∈ d.subgroup := fun h hh ↦ d.normal.conj_mem h hh g
+  obtain ⟨h_equiv, l, hl⟩ := hμ
   -- The values of the conjugate form on `1 ⊗ L` come from the conjugate `t ↦ g⁻¹ l(g t)` of `l`.
-  let l' : L.Carrier →ₗ[ℤ_[p]] Bmax :=
-    DistribSMul.toLinearMap ℤ_[p] Bmax (toGp g)⁻¹ ∘ₗ l ∘ₗ overZp L.ρ g
-  have hl' (t : L.Carrier) : conjForm μ g (DiagTensor.mk 1 t) = algebraMap Bmax BdR (l' t) := by
-    simp [l', hl]
-  exact ⟨conjForm_mem_forms h_normal h_equiv, l', hl'⟩
+  exact ⟨conjForm_mem_forms (fun h hh ↦ d.normal.conj_mem h hh g) h_equiv,
+    DistribSMul.toLinearMap ℤ_[p] Bmax (toGp g)⁻¹ ∘ₗ l ∘ₗ overZp L.ρ g, fun t ↦ by simp [hl]⟩
 
 /-- Let `d` be a tame chart for a group `Γ → G_p`, with subgroup `Γ'` and inertia element
 `s = d.tameGen`. Let `O` be a finite free `ℤ_p`-algebra and `L` a finite free `O`-module with an
@@ -135,8 +130,7 @@ lemma sum_coeff_smul_conjForm_apply_eq_zero {p : ℕ} [ThePrime p] [Γ : GroupOv
     ∑ k ∈ range (q.natDegree + 1), q.coeff k • conjForm μ (d.tameGen ^ k) x = 0 := by
   -- The conjugates of `μ` define linear forms `ℓ g` on `Bmax ⊗ L` with `ℓ 1 ∘ β ^ k = ℓ (s ^ k)`,
   -- so `q(β) = 0` gives a relation among the `ℓ (s ^ k)`, which is carried back to the `μ_k`.
-  obtain ⟨hμ_equiv, l, hl⟩ : μ ∈ L.forms ∧ ∃ l : L.Carrier →ₗ[ℤ_[p]] Bmax,
-      ∀ t : L.Carrier, μ (DiagTensor.mk 1 t) = algebraMap Bmax BdR (l t) := hμ_crys
+  obtain ⟨hμ_equiv, l, hl⟩ := hμ_crys
   have h_crys : IsPotentiallyCrystalline L.ρ := L.inClass.isPotentiallyCrystalline
   let ℓ (g : Γ) : Bmax ⊗[ℤ_[p]] L.Carrier →ₗ[Bmax] Bmax :=
     (DistribSMul.toLinearMap ℤ_[p] Bmax (toGp g)⁻¹ ∘ₗ l ∘ₗ overZp L.ρ g).liftBaseChange Bmax
@@ -179,10 +173,8 @@ lemma sum_coeff_smul_conjForm_apply_eq_zero {p : ℕ} [ThePrime p] [Γ : GroupOv
       basisValues (∑ k ∈ range (q.natDegree + 1), q.coeff k • conjForm μ (d.tameGen ^ k)) =
         basisValues 0 := by
     ext i
-    have h_rel (t : L.Carrier) : algebraMap Bmax BdR
-        ((∑ k ∈ range (q.natDegree + 1), q.coeff k • ℓ (d.tameGen ^ k)) (1 ⊗ₜ t)) = 0 := by
-      simp [hℓ_rel]
-    simpa [basisValues, algebraMap.smul, hℓ_tmul] using h_rel _
+    simpa [basisValues, algebraMap.smul, hℓ_tmul] using
+      congrArg (algebraMap Bmax BdR) (LinearMap.congr_fun hℓ_rel (1 ⊗ₜ _))
   simpa using apply_eq_of_mem_fracSpan _ 0 h_values (kisinAinf_le_fracSpan hx_mem)
 
 /-- Let `Γ` be a group over `G_p = Gal(ℚ̄_p/ℚ_p)` with a tame chart `d`: this gives an element
@@ -315,10 +307,7 @@ lemma aeval_tameMultiplier_pow_mul_mem_liftIdeal {p : ℕ} [ThePrime p] [Γ : Gr
     algebraMap (WittFq d.f) Ainf (aeval (d.tameMultiplier ^ (k + 1)) Q) * (p ^ t * d.z.val ^ k) ∈
       S.liftIdeal r 0 i := by
   -- Lift `(p ^ t * z ^ (k + 1) - r * u) * c` to the extension, apply `Q(s)` and divide by `z`.
-  obtain ⟨u, hu⟩ : ∃ u : d.S, ∀ y ∈ S.trivialLattice.stdOrdersPart 0 i,
-      ∃ x ∈ S.extensionLattice.stdOrdersPart 0 i,
-        S.projTrivial.wittMap x = (p ^ t * d.z ^ (k + 1) - r • u).val • y :=
-    S.exists_lift_of_mem_liftIdeal h_mem
+  obtain ⟨u, hu⟩ := S.exists_lift_of_mem_liftIdeal (f := p ^ t * d.z ^ (k + 1)) h_mem
   -- Write `u = w + z * v` with `w ∈ Λ`; then `s ^ j` sends `u` to `w + ξ ^ j * z * s ^ j v`.
   obtain ⟨w, v, rfl⟩ := d.exists_eq_const_add_z_mul u
   let ξ : Ainf := algebraMap (WittFq d.f) Ainf d.tameMultiplier
@@ -401,9 +390,7 @@ lemma killsCokernel_of_isKilledBy {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
   -- one step at a time. With `Q = q * (X - 1)`, the step from `k` is free if
   -- `Q(tameMultiplier ^ k)` is a unit and costs a factor `p ^ m` if not; at most `deg Q` steps are
   -- costly.
-  obtain ⟨ν, hzν, hν_le⟩ : ∃ ν : ℕ, (∀ i : Letter, d.z.val ^ ν ∈ S.liftIdeal (p ^ (κ + 1)) 0 i) ∧
-      (p - 1) * ν ≤ d.e * (n + κ) :=
-    exists_z_pow_mem_liftIdeal h_jumps κ
+  obtain ⟨ν, hzν, hν_le⟩ := exists_z_pow_mem_liftIdeal h_jumps κ
   have hν : ν < d.e := by nlinarith [NeZero.pos d.e, (by omega : n + κ < p - 1)]
   let Q : ℤ_[p][X] := q * (X - Polynomial.C 1)
   have hQ_kills : aeval (linearFrob S.extensionLattice.ρ d.tameGen 0) Q = 0 := by
@@ -439,12 +426,8 @@ lemma killsCokernel_of_isKilledBy {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
     · -- Free step: `Q(tameMultiplier ^ (k + 1))` is a unit.
       have h_unit : IsUnit (algebraMap (WittFq d.f) Ainf (aeval (d.tameMultiplier ^ (k + 1)) Q)) :=
         (isUnit_of_coeff_zero_ne_zero _ h_bad).map _
-      have h_mul : algebraMap (WittFq d.f) Ainf (aeval (d.tameMultiplier ^ (k + 1)) Q) *
-          (p ^ t * d.z.val ^ k) ∈ S.liftIdeal (p ^ (κ + 1)) 0 i :=
+      exact ih hk.le t ht <| (Ideal.unit_mul_mem_iff_mem _ h_unit).1 <|
         aeval_tameMultiplier_pow_mul_mem_liftIdeal hQ_kills (eval_mul_X_sub_C 1) h_ideal
-      have h_lower : p ^ t * d.z.val ^ k ∈ S.liftIdeal (p ^ (κ + 1)) 0 i :=
-        (Ideal.unit_mul_mem_iff_mem _ h_unit).1 h_mul
-      exact ih hk.le t ht h_lower
 
 end TameChart
 
