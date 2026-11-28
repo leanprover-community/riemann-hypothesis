@@ -91,70 +91,6 @@ private lemma splitGram_mul_apply_inr_inl (M : Matrix 𝔰.BesselIndex 𝔰.Bess
     fromBlocks_apply₁₁, fromBlocks_apply₁₂, fromRows_apply_inl, Matrix.zero_apply, zero_mul,
     Finset.sum_const_zero, zero_add, add_zero]
 
-private lemma weylElem_mul_apply_inl (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) (a : Fin 𝔰.ϱ)
-    (j : 𝔰.BesselIndex) :
-    ((weylElem 𝔰.ϱ p : T.G).val.val * M) (inl a) j = star ((p a)⁻¹ : Aˣ).val * M (eStar a) j := by
-  have h_lvl (b : Fin 𝔰.ϱ) : ¬2 * 𝔰.ϱ - b.val < 𝔰.ϱ := by omega
-  rw [Matrix.mul_apply, Fintype.sum_sum_type, Fintype.sum_sum_type]
-  have h1 : ∀ b : Fin 𝔰.ϱ, (weylElem 𝔰.ϱ p : T.G).val (inl a) (inl b) * M (inl b) j = 0 :=
-    fun b ↦ by
-      simp only [weylElem, weylOn, of_apply, floorOf.eq_1, b.is_lt, Units.isUnit, and_self,
-        ↓reduceIte, oppositeIndex.eq_1, eStar, reduceCtorEq, zero_mul]
-  have h2 : ∀ m : 𝔰.MiddleIndex,
-      (weylElem 𝔰.ϱ p : T.G).val (inl a) (inr (inl m)) * M (inr (inl m)) j = 0 := fun m ↦ by
-    have hm : ¬floorOf (inr (inl m) : 𝔰.BesselIndex) < 𝔰.ϱ := by
-      cases m <;> simp only [floorOf.eq_3, floorOf.eq_4, Shape.n, lt_self_iff_false,
-        not_false_eq_true, Nat.not_lt, Nat.le_succ]
-    simp only [weylElem, weylOn, of_apply, hm, false_and, and_false, ↓reduceIte, reduceCtorEq,
-      zero_mul]
-  rw [Finset.sum_eq_zero fun b _ ↦ h1 b, Finset.sum_eq_zero fun m _ ↦ h2 m, zero_add, zero_add]
-  simp only [weylElem, weylOn, of_apply, floorOf.eq_2, Fin.is_lt, Units.isUnit, and_self,
-    ↓reduceIte, oppositeIndex.eq_2, Sum.inl.injEq, BesselIndex.level, Sum.elim_inr, h_lvl,
-    inverse_star_unit, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, eStar]
-
-private lemma weylElem_mul_apply_inr_inl (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)
-    (m : 𝔰.MiddleIndex) (j : 𝔰.BesselIndex) :
-    ((weylElem 𝔰.ϱ p : T.G).val.val * M) (inr (inl m)) j = M (inr (inl m)) j := by
-  rw [Matrix.mul_apply, Fintype.sum_sum_type, Fintype.sum_sum_type]
-  have h1 : ∀ b : Fin 𝔰.ϱ,
-      (weylElem 𝔰.ϱ p : T.G).val (inr (inl m)) (inl b) * M (inl b) j = 0 := fun b ↦ by
-    simp only [weylElem, weylOn, of_apply, floorOf.eq_1, b.is_lt, Units.isUnit, and_self,
-      ↓reduceIte, oppositeIndex.eq_1, eStar, Sum.inr.injEq, reduceCtorEq, zero_mul]
-  have h3 : ∀ b : Fin 𝔰.ϱ,
-      (weylElem 𝔰.ϱ p : T.G).val (inr (inl m)) (eStar b) * M (eStar b) j = 0 := fun b ↦ by
-    simp only [weylElem, weylOn, of_apply, floorOf.eq_2, b.is_lt, Units.isUnit, and_self,
-      ↓reduceIte, oppositeIndex.eq_2, reduceCtorEq, zero_mul]
-  have h2 (m' : 𝔰.MiddleIndex) :
-      (weylElem 𝔰.ϱ p : T.G).val (inr (inl m)) (inr (inl m')) * M (inr (inl m')) j =
-        if m = m' then M (inr (inl m')) j else 0 := by
-    have hm : ¬floorOf (inr (inl m') : 𝔰.BesselIndex) < 𝔰.ϱ := by
-      cases m' <;> simp only [floorOf.eq_3, floorOf.eq_4, Shape.n, lt_self_iff_false,
-        not_false_eq_true, Nat.not_lt, Nat.le_succ]
-    simp only [weylElem, weylOn, of_apply, hm, false_and, and_false, ↓reduceIte, Sum.inr.injEq,
-      Sum.inl.injEq, ite_mul, one_mul, zero_mul]
-  rw [Finset.sum_eq_zero fun b _ ↦ h1 b, Finset.sum_eq_zero fun b _ ↦ h3 b, zero_add, add_zero]
-  simp only [h2, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
-
-private lemma weylElem_mul_apply_eStar (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) (a : Fin 𝔰.ϱ)
-    (j : 𝔰.BesselIndex) :
-    ((weylElem 𝔰.ϱ p : T.G).val.val * M) (eStar a) j = (p a).val * M (inl a) j := by
-  rw [Matrix.mul_apply, Fintype.sum_sum_type, Fintype.sum_sum_type]
-  have h2 : ∀ m : 𝔰.MiddleIndex,
-      (weylElem 𝔰.ϱ p : T.G).val (eStar a) (inr (inl m)) * M (inr (inl m)) j = 0 := fun m ↦ by
-    have hm : ¬floorOf (inr (inl m) : 𝔰.BesselIndex) < 𝔰.ϱ := by
-      cases m <;> simp only [floorOf.eq_3, floorOf.eq_4, Shape.n, lt_self_iff_false,
-        not_false_eq_true, Nat.not_lt, Nat.le_succ]
-    simp only [weylElem, weylOn, of_apply, hm, false_and, and_false, ↓reduceIte, eStar,
-      Sum.inr.injEq, reduceCtorEq, zero_mul]
-  have h3 : ∀ b : Fin 𝔰.ϱ,
-      (weylElem 𝔰.ϱ p : T.G).val (eStar a) (eStar b) * M (eStar b) j = 0 := fun b ↦ by
-    simp only [weylElem, weylOn, of_apply, floorOf.eq_2, b.is_lt, Units.isUnit, and_self,
-      ↓reduceIte, oppositeIndex.eq_2, eStar, reduceCtorEq, zero_mul]
-  rw [Finset.sum_eq_zero fun m _ ↦ h2 m, Finset.sum_eq_zero fun b _ ↦ h3 b, zero_add, add_zero]
-  simp only [weylElem, weylOn, of_apply, floorOf.eq_1, Fin.is_lt, Units.isUnit, and_self,
-    ↓reduceIte, oppositeIndex.eq_1, eStar, Sum.inr.injEq, BesselIndex.level, Sum.elim_inl,
-    ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ]
-
 /-- Let `σ` fix all hyperbolic pairs (`σ ∈ floorGroup ϱ`), and let `w_p` send `e_a` to `p a • e*_a`
 and `e*_a` to `(star (p a))⁻¹ • e_a`. In the blocks `(e, (middle, e*))` the matrix of `w_p σ`
 consists of the diagonal matrices of `w_p` in the places `(e, e*)` and `(e*, e)` and of the middle
@@ -164,42 +100,23 @@ theorem coe_weylElem_mul (hσ : σ ∈ floorGroup 𝔰.ϱ) :
       fromBlocks 0 (fromCols 0 (diagonal fun a : Fin 𝔰.ϱ ↦ star ((p a)⁻¹ : Aˣ).val))
         (fromRows 0 (diagonal fun a : Fin 𝔰.ϱ ↦ (p a).val))
         (fromBlocks (σ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A).toBlocks₂₂.toBlocks₁₁ 0 0 0) := by
-  refine Matrix.ext fun i j ↦ ?_
+  ext i j
   rw [Subgroup.coe_mul, Units.val_mul]
+  change ((weylOn (· < 𝔰.ϱ) (fun k ↦ (p k : A)) : T.G).val.val *ᵥ (fun k ↦ σ.val.val k j)) i = _
+  rw [weylOn_mulVec_apply]
   rcases i with a | m | a
-  · rw [weylElem_mul_apply_inl]
-    rcases j with b | n | b
-    · rw [apply_eq_one_apply_of_mem_floorGroup hσ (eStar a) (inl b) (.inr b.is_lt)]
-      simp only [fromBlocks_apply₁₁, Matrix.zero_apply, Matrix.one_apply, eStar, reduceCtorEq,
-        ↓reduceIte, mul_zero]
-    · rw [apply_eq_one_apply_of_mem_floorGroup hσ (eStar a) (inr (inl n))
-        (.inl ⟨a.is_lt, a.is_lt⟩)]
-      simp only [fromBlocks_apply₁₂, fromCols_apply_inl, Matrix.zero_apply, Matrix.one_apply,
-        eStar, Sum.inr.injEq, reduceCtorEq, ↓reduceIte, mul_zero]
-    · rw [apply_eq_one_apply_of_mem_floorGroup hσ (eStar a) (eStar b) (.inr b.is_lt)]
-      simp only [fromBlocks_apply₁₂, fromCols_apply_inr, diagonal_apply, Matrix.one_apply,
-        eStar, Sum.inr.injEq, mul_ite, mul_one, mul_zero]
-  · rw [weylElem_mul_apply_inr_inl]
-    rcases j with b | n | b
-    · rw [apply_eq_one_apply_of_mem_floorGroup hσ (inr (inl m)) (inl b) (.inr b.is_lt)]
-      simp only [fromBlocks_apply₂₁, fromRows_apply_inl, Matrix.zero_apply, Matrix.one_apply,
-        reduceCtorEq, ↓reduceIte]
-    · rfl
-    · rw [apply_eq_one_apply_of_mem_floorGroup hσ (inr (inl m)) (eStar b) (.inr b.is_lt)]
-      simp only [fromBlocks_apply₂₂, fromBlocks_apply₁₂, Matrix.zero_apply, Matrix.one_apply,
-        Sum.inr.injEq, reduceCtorEq, ↓reduceIte]
-  · rw [weylElem_mul_apply_eStar]
-    rcases j with b | n | b
-    · rw [apply_eq_one_apply_of_mem_floorGroup hσ (inl a) (inl b) (.inr b.is_lt)]
-      simp only [fromBlocks_apply₂₁, fromRows_apply_inr, diagonal_apply, Matrix.one_apply,
-        Sum.inl.injEq, mul_ite, mul_one, mul_zero]
-    · rw [apply_eq_one_apply_of_mem_floorGroup hσ (inl a) (inr (inl n))
-        (.inl ⟨a.is_lt, a.is_lt⟩)]
-      simp only [fromBlocks_apply₂₂, fromBlocks_apply₂₁, Matrix.zero_apply, Matrix.one_apply,
-        reduceCtorEq, ↓reduceIte, mul_zero]
-    · rw [apply_eq_one_apply_of_mem_floorGroup hσ (inl a) (eStar b) (.inr b.is_lt)]
-      simp only [fromBlocks_apply₂₂, fromBlocks_apply₂₂, Matrix.zero_apply, Matrix.one_apply,
-        reduceCtorEq, ↓reduceIte, mul_zero]
+  · have ha : ¬2 * 𝔰.ϱ - (a : ℕ) < 𝔰.ϱ := by omega
+    rcases j with b | n | b <;>
+      simp [BesselIndex.level, ha, eStar, apply_eq_one_apply_of_mem_floorGroup hσ, Matrix.one_apply,
+        diagonal_apply, mul_ite]
+  · have hm : ¬floorOf (inr (inl m) : 𝔰.BesselIndex) < 𝔰.ϱ := by
+      cases m <;> simp [Shape.n]
+    rcases j with b | n | b <;>
+      simp [hm, apply_eq_one_apply_of_mem_floorGroup hσ]
+    rfl
+  · rcases j with b | n | b <;>
+      simp [BesselIndex.level, apply_eq_one_apply_of_mem_floorGroup hσ, Matrix.one_apply,
+        diagonal_apply, mul_ite]
 
 /-- Let `w_p` be the Weyl element sending `e_a ↦ p a · e*_a` and `e*_a ↦ e_a / star (p a)` for
 `a < ϱ` and fixing the other basis vectors, and let `σ` fix all hyperbolic pairs. Then `Z(w_p σ)`,

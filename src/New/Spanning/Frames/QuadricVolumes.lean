@@ -394,20 +394,8 @@ p_a e*_a, so the coordinate of w_p v at e*_a (index `eStar a`) is p_a times the 
 e_a (index `inl a`). -/
 lemma weylElem_mulVec_eStar {l : ℕ} (ha : a < l) (v : 𝔰.BesselIndex → A) :
     ((weylElem l p : T.G).val.val *ᵥ v) (eStar a) = p a * v (inl a) := by
-  -- The row of `w_p` at `e*_a` has its only nonzero entry in the column of `e_a`.
-  have h_zero (k : 𝔰.BesselIndex) (hk : k ≠ inl a) :
-      (weylElem l p : T.G).val.val (eStar a) k = 0 := by
-    have h_ne : eStar a ≠ if floorOf k < l ∧ floorOf k < 𝔰.ϱ then oppositeIndex k else k := by
-      split_ifs with h_swap
-      · intro h
-        have h_opp : oppositeIndex (oppositeIndex k) = oppositeIndex (eStar a) := by rw [← h]
-        exact hk (by simpa [oppositeIndex_involutive_and_floorOf_level] using h_opp)
-      · exact fun h ↦ h_swap (by simp [← h, ha])
-    simp [weylElem, weylOn, h_ne]
-  have h_entry : (weylElem l p : T.G).val.val (eStar a) (inl a) = p a := by
-    simp [weylElem, weylOn, level, ha]
-  rw [mulVec_apply_eq_sum, Fintype.sum_eq_single (inl a) fun k hk ↦ by rw [h_zero k hk, zero_mul],
-    h_entry]
+  simpa [weylElem, ha, level, a.isLt] using
+    weylOn_mulVec_apply (T := T) (· < l) (fun k ↦ (p k : A)) v (eStar a)
 
 open BesselIndex in
 /-- For the Weyl element w_p = `weylElem (a + 1) p` of the first a + 1 hyperbolic pairs and an

@@ -174,6 +174,32 @@ def weylOn (P : ℕ → Prop) (p : ℕ → A) : T.G :=
       grind [splitGram_eq_ite_oppositeIndex, oppositeIndex_involutive_and_floorOf_level,
         inverse_mul_cancel] }
 
+open scoped Classical in
+/-- On a vector, the Weyl element exchanges the two coordinates of each selected hyperbolic pair
+and scales them by the corresponding unit and its inverse conjugate. Every other row is fixed. -/
+lemma weylOn_mulVec_apply (P : ℕ → Prop) (p : ℕ → A) (v : 𝔰.BesselIndex → A)
+    (i : 𝔰.BesselIndex) :
+    ((weylOn P p : T.G).val.val *ᵥ v) i =
+      if P (floorOf i) ∧ floorOf i < 𝔰.ϱ ∧ IsUnit (p (floorOf i)) then
+        (if level (oppositeIndex i) < 𝔰.ϱ then p (floorOf i) else (star (p (floorOf i)))⁻¹ʳ) *
+          v (oppositeIndex i)
+      else v i := by
+  let swap (j : 𝔰.BesselIndex) := P (floorOf j) ∧ floorOf j < 𝔰.ϱ ∧ IsUnit (p (floorOf j))
+  let row (j : 𝔰.BesselIndex) := if swap j then oppositeIndex j else j
+  have swap_opp (j : 𝔰.BesselIndex) : swap (oppositeIndex j) ↔ swap j := by
+    simp only [swap, floorOf_oppositeIndex]
+  have invol (j : 𝔰.BesselIndex) : row (row j) = j := by
+    by_cases h : swap j <;> simp [row, h, swap_opp, oppositeIndex_oppositeIndex]
+  have support (j : 𝔰.BesselIndex) : i = row j ↔ row i = j :=
+    ⟨fun h ↦ h ▸ invol j, fun h ↦ h ▸ (invol i).symm⟩
+  rw [mulVec_apply_eq_sum]
+  change (∑ j, (if i = row j then (if swap j then
+      (if level j < 𝔰.ϱ then p (floorOf j) else (star (p (floorOf j)))⁻¹ʳ) else 1)
+        else 0) * v j) = _
+  simp only [support, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+  change _ = if swap i then _ else _
+  by_cases h : swap i <;> simp [row, h, swap_opp, floorOf_oppositeIndex]
+
 /-- The Weyl element `w_p` of the first `l` hyperbolic pairs: `e_a ↦ p_a e*_a` and
 `e*_a ↦ e_a / p̄_a` on the pairs `a < l`, fixing the other basis vectors. -/
 def weylElem (p : ℕ → Aˣ) : T.G := weylOn (· < l) (p ·)
@@ -668,75 +694,30 @@ lemma floorWeyl_mem_floorGroup {c : A} : floorWeyl l c ∈ T.floorGroup l :=
 lemma commute_weylOn {p : ℕ → A} (hP : ∀ a : ℕ, P a → a < l) (hs : s ∈ floorGroup l) :
     Commute (weylOn P p) s := by
   classical
-  ext i k
-  let sw (x : 𝔰.BesselIndex) : Prop := P (floorOf x) ∧ floorOf x < 𝔰.ϱ ∧ IsUnit (p (floorOf x))
-  have h_entry (x y : 𝔰.BesselIndex) (hxy : floorOf x < l ∧ floorOf x < 𝔰.ϱ ∨ floorOf y < l) :
-      s.val x y = if x = y then 1 else 0 := apply_eq_one_apply_of_mem_floorGroup hs x y hxy
-  have h_weyl (x y : 𝔰.BesselIndex) : (weylOn P p : T.G).val x y =
-      if sw y then if x = oppositeIndex y then
-        if level y < 𝔰.ϱ then p (floorOf y) else (star (p (floorOf y)))⁻¹ʳ else 0
-      else if x = y then 1 else 0 := by
-    by_cases hy : sw y
-    · rw [ite_eq_left hy, weylOn_apply_of_swapped x hy]
-    · rw [ite_eq_right hy, weylOn_apply_of_not_swapped x hy, Matrix.one_apply]
-  let i' : 𝔰.BesselIndex := if sw i then oppositeIndex i else i
-  let k' : 𝔰.BesselIndex := if sw k then oppositeIndex k else k
-  have h_left : (weylOn P p * s).val i k = (weylOn P p : T.G).val i i' * s.val i' k :=
-    sum_eq_single i' fun j hj_ne ↦ by
-      dsimp only
-      rw [h_weyl i j]
-      by_cases hj : sw j
-      · rw [ite_eq_left hj, ite_eq_right (fun h_opp ↦ hj_ne ?_), zero_mul]
-        have h_swi : sw i := by rw [h_opp]; simp only [sw, floorOf_oppositeIndex]; exact hj
-        simp only [i', ite_eq_left h_swi, h_opp, oppositeIndex_oppositeIndex]
-      · rw [ite_eq_right hj, ite_eq_right (fun h_eq ↦ hj_ne ?_), zero_mul]
-        subst h_eq; exact (ite_eq_right hj).symm
-  have h_right : (s * weylOn P p).val i k = s.val i k' * (weylOn P p : T.G).val k' k :=
-    sum_eq_single k' fun j hj_ne ↦ by
-      dsimp only
-      rw [h_weyl j k]
-      by_cases hk : sw k
-      · rw [ite_eq_left hk, ite_eq_right (fun h_opp ↦ hj_ne ?_), mul_zero]
-        simp only [k', ite_eq_left hk, h_opp]
-      · rw [ite_eq_right hk, ite_eq_right (fun h_eq ↦ hj_ne ?_), mul_zero]
-        simp only [k', ite_eq_right hk, h_eq]
-  rw [h_left, h_right]
-  by_cases hi : sw i <;> by_cases hk : sw k
-  · have hsi : floorOf i' < l ∧ floorOf i' < 𝔰.ϱ := by
-      simp only [i', ite_eq_left hi, floorOf_oppositeIndex]
-      exact ⟨hP _ hi.1, hi.2.1⟩
-    have hsk : floorOf k < l := hP _ hk.1
-    have hi' : i' = oppositeIndex i := ite_eq_left hi
-    have hk' : k' = oppositeIndex k := ite_eq_left hk
-    rw [h_entry i' k (.inl hsi), h_entry i k' (.inl ⟨hP _ hi.1, hi.2.1⟩)]
-    simp only [hi', hk']
-    by_cases heq : oppositeIndex i = k
-    · subst heq; simp only [oppositeIndex_oppositeIndex, ↓reduceIte, mul_one, one_mul]
-    · have heq' : i ≠ oppositeIndex k := fun h ↦ heq (by rw [h, oppositeIndex_oppositeIndex])
-      simp only [ite_eq_right heq, ite_eq_right heq', mul_zero, zero_mul]
-  · have hsi : floorOf i' < l ∧ floorOf i' < 𝔰.ϱ := by
-      simp only [i', ite_eq_left hi, floorOf_oppositeIndex]
-      exact ⟨hP _ hi.1, hi.2.1⟩
-    have hswi' : sw i' := by
-      simp only [sw, i', ite_eq_left hi, floorOf_oppositeIndex]; exact hi
-    have hne1 : i' ≠ k := fun h ↦ hk (h ▸ hswi')
-    have hne2 : i ≠ k' := fun h ↦ hk (by simp only [k', ite_eq_right hk] at h; exact h ▸ hi)
-    rw [h_entry i' k (.inl hsi), h_entry i k' (.inl ⟨hP _ hi.1, hi.2.1⟩),
-      ite_eq_right hne1, ite_eq_right hne2, mul_zero, zero_mul]
-  · have hsk : floorOf k < l := hP _ hk.1
-    have hsi : floorOf k' < l ∧ floorOf k' < 𝔰.ϱ := by
-      simp only [k', ite_eq_left hk, floorOf_oppositeIndex]
-      exact ⟨hsk, hk.2.1⟩
-    have hne1 : i' ≠ k := fun h ↦ hi
-      (by simp only [i', ite_eq_right hi] at h; exact h.symm ▸ hk)
-    have hswk' : sw k' := by
-      simp only [sw, k', ite_eq_left hk, floorOf_oppositeIndex]; exact hk
-    have hne2 : i ≠ k' := fun h ↦ hi (h.symm ▸ hswk')
-    rw [h_entry i' k (.inr hsk), h_entry i k' (.inr hsi.1),
-      ite_eq_right hne1, ite_eq_right hne2, mul_zero, zero_mul]
-  · rw [show i' = i from ite_eq_right hi, show k' = k from ite_eq_right hk,
-      h_weyl i i, h_weyl k k, ite_eq_right hi, ite_eq_right hk,
-      ite_eq_left rfl, ite_eq_left rfl, one_mul, mul_one]
+  let W := (weylOn P p : T.G).val.val
+  let S := s.val.val
+  let active (k : 𝔰.BesselIndex) := P (floorOf k) ∧ floorOf k < 𝔰.ϱ ∧ IsUnit (p (floorOf k))
+  have col (i k : 𝔰.BesselIndex) (hk : ¬active k) : W i k = (1 : Matrix _ _ A) i k :=
+    weylOn_apply_of_not_swapped i hk
+  have row (k j : 𝔰.BesselIndex) (hk : ¬active k) : W k j = (1 : Matrix _ _ A) k j := by
+    have h := weylOn_mulVec_apply (T := T) P p (Pi.single j 1) k
+    rw [ite_eq_right hk] at h
+    simpa [W, mulVec_single, Matrix.one_apply, Pi.single_apply, eq_comm] using h
+  -- The differences from the identity act on complementary coordinates.
+  have h : (W - 1) * (S - 1) = (S - 1) * (W - 1) := by
+    ext i j
+    refine Finset.sum_congr rfl fun k _ ↦ ?_
+    change (W i k - (1 : Matrix _ _ A) i k) * (s.val k j - (1 : Matrix _ _ A) k j) =
+      (s.val i k - (1 : Matrix _ _ A) i k) * (W k j - (1 : Matrix _ _ A) k j)
+    by_cases hk : active k
+    · simp [floorGroup_apply_row hs k j (hP _ hk.1) hk.2.1,
+        mem_floorGroup.1 hs i k (hP _ hk.1)]
+    · simp [row k j hk, col i k hk]
+  have comm : W * S = S * W := by
+    simp only [sub_mul, mul_sub, one_mul, mul_one] at h
+    linear_combination (norm := abel) h
+  ext i j
+  exact congrFun₂ comm i j
 
 @[simp]
 lemma weylElem_zero : (weylElem 0 p : T.G) = 1 := by
@@ -747,36 +728,13 @@ lemma weylElem_zero : (weylElem 0 p : T.G) = 1 := by
 /-- The Weyl element of length `l + 1` is the Weyl element of floor `l` with parameter `p l` times
 the Weyl element of length `l`. -/
 lemma weylElem_succ : (weylElem (l + 1) p : T.G) = floorWeyl l (p l).val * weylElem l p := by
-  ext i k
-  by_cases hk : floorOf k < l ∧ floorOf k < 𝔰.ϱ
-  · -- The right factor moves `k` to the opposite index, which the left factor fixes.
-    have h_floor : floorOf (oppositeIndex k) ≠ l := by
-      rw [floorOf_oppositeIndex]; exact hk.left.ne
-    by_cases hi : i = oppositeIndex k
-    · simp only [weylElem, weylOn, Order.lt_add_one_iff, Units.isUnit, and_true,
-        ↓inverse_star_unit, Pi.star_apply, isUnit_star, star_star, inverse_invertible,
-        invOf_units, hi, of_apply, hk.left.le, hk, and_self, ↓reduceIte, floorWeyl,
-        MulMemClass.mk_mul_mk, Units.val_mul, Matrix.mul_apply, mul_ite, ite_mul, one_mul,
-        zero_mul, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, h_floor, false_and]
-    · simp only [weylElem, weylOn, Order.lt_add_one_iff, Units.isUnit, and_true,
-        ↓inverse_star_unit, Pi.star_apply, isUnit_star, star_star, inverse_invertible,
-        invOf_units, of_apply, hk.left.le, hk, and_self, ↓reduceIte, hi, floorWeyl,
-        MulMemClass.mk_mul_mk, Units.val_mul, Matrix.mul_apply, mul_ite, ite_mul, one_mul,
-        zero_mul, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, h_floor, false_and,
-        ite_self]
-  · -- The right factor fixes `k`; both sides move it exactly when its floor is `l < ϱ`.
-    have h_iff : floorOf k ≤ l ∧ floorOf k < 𝔰.ϱ ↔ floorOf k = l ∧ floorOf k < 𝔰.ϱ := by lia
-    by_cases hl : floorOf k = l ∧ floorOf k < 𝔰.ϱ
-    · simp only [weylElem, weylOn, ← hl.left, Order.lt_add_one_iff, Units.isUnit, and_true,
-        ↓inverse_star_unit, Pi.star_apply, isUnit_star, star_star, inverse_invertible,
-        invOf_units, of_apply, Std.le_refl, hl.right, and_self, ↓reduceIte, floorWeyl,
-        MulMemClass.mk_mul_mk, Units.val_mul, Matrix.mul_apply, lt_self_iff_false, mul_ite,
-        mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ]
-    · simp only [weylElem, weylOn, Order.lt_add_one_iff, Units.isUnit, and_true,
-        ↓inverse_star_unit, Pi.star_apply, isUnit_star, star_star, inverse_invertible,
-        invOf_units, of_apply, h_iff, hl, ↓reduceIte, floorWeyl, MulMemClass.mk_mul_mk,
-        Units.val_mul, Matrix.mul_apply, hk, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-        Finset.mem_univ]
+  refine Subtype.ext (Units.ext (ext_iff_mulVec.2 fun v ↦ funext fun i ↦ ?_))
+  simp only [Subgroup.coe_mul, Units.val_mul, ← mulVec_mulVec, weylElem, floorWeyl,
+    weylOn_mulVec_apply, floorOf_oppositeIndex, Units.isUnit, and_true, Nat.lt_succ_iff]
+  rcases lt_trichotomy (floorOf i) l with h | h | h
+  · simp [h, h.le, h.ne]
+  · simp [h]
+  · simp [h.not_gt, h.not_ge, h.ne']
 
 /-- The Weyl element of length `l` does not depend on the parameter `p l`. -/
 @[simp]
