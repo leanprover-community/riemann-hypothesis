@@ -190,25 +190,17 @@ lemma New.exists_eigenvector_of_functional (hS : ∀ m : ι, ∀ x ∈ S, φ m x
     ∃ x ∈ S, x ≠ 0 ∧ ∀ m : ι, φ m x = η m • x := by
   -- Take a joint generalised eigenspace, of a character `χ`, on which `l` does not vanish.
   have ker_ne : l.ker.comap S.subtype ≠ ⊤ := by simpa using hl_ne
-  obtain ⟨χ, not_le, eigenvector⟩ :
-      ∃ χ : ι → k,
-        ¬⨅ m, End.maxGenEigenspace (restrict (φ m) (hS m)) (χ m) ≤ l.ker.comap S.subtype ∧
-        ∃ x ∈ S, x ≠ 0 ∧ ∀ m, φ m x = χ m • x :=
-    exists_eigenvector_of_commute φ hS h_comm ker_ne
+  obtain ⟨χ, not_le, eigenvector⟩ := exists_eigenvector_of_commute φ hS h_comm ker_ne
   suffices η_eq : η = χ by rwa [η_eq]
   refine funext fun m ↦ by_contra fun h_ne ↦ ?_
-  -- As `l (ψ x) = (η m - χ m) * l x` for `ψ = φ m - χ m`, the form `l` kills every `ker (ψ ^ n)`.
-  let ψ : End k S := restrict (φ m) (hS m) - χ m • 1
-  have kills (n : ℕ) : ∀ x : S, (ψ ^ n) x = 0 → l x = 0 := by
-    induction n with
-    | zero => simp +contextual
-    | succ n ih =>
-      intro x hx
-      have h_zero : l (ψ x) = 0 := ih (ψ x) (by simpa [pow_succ] using hx)
-      simpa [ψ, sub_eq_zero, hl, h_ne] using h_zero
+  -- The functional intertwines the restriction with the scalar operator of eigenvalue `η m`.
+  let L := l.comp S.subtype
+  let T : End k k := η m • 1
+  have hL : T.comp L = L.comp ((φ m).restrict (hS m)) :=
+    LinearMap.ext fun x ↦ (hl m x).symm
   refine not_le (iInf_le_of_le m fun x hx ↦ ?_)
-  obtain ⟨n, hn⟩ := (End.mem_maxGenEigenspace _ _ _).1 hx
-  exact kills n x hn
+  exact Submodule.disjoint_def.mp (T.disjoint_genEigenspace h_ne 1 ⊤) (L x)
+    (End.mem_eigenspace_iff.mpr rfl) (End.mapsTo_genEigenspace_of_comp L hL _ ⊤ hx)
 
 /-- Let Φ map words (lists of letters s) to endomorphisms of a finite-dimensional space over an
 algebraically closed field, with Φ[s]Φ(L) = Φ(Ls). Suppose that the Φ[s] commute and have no
