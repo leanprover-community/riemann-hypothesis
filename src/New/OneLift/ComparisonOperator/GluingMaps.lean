@@ -216,7 +216,7 @@ lemma classAut_gluingLevel_eq_bot
   exact D.classAut_eq_bot_of_le_chosenLevel h_le (card_firstFactorIndex_le_two_mul_n j) g
 
 -- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
 /-- The lattice `L_Λ` of a choice `i` with matrix `Λ = i.1`, given by the matrix `𝗀` (the field
 `point`) of a basis. It is chosen once, for the trivial twist, and read as a lattice for the twist
 `ϑ`. -/
@@ -232,6 +232,7 @@ lemma isGlued_splittingV_of_isGlued {ϑ' : D.Twist}
   -- the conditions on a lattice do not involve the twist, up to unfolding
   { hL with }
 
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
 /-- The lattice `glueLattice j ϑ i` is glued for the matrix `Λ = i.1` (`IsGlued`): the congruence
 modulo `ϖ` that defines it is, after a translation by a unique element of `congruenceGroup`, a
 pair of conditions on the blocks `V″` and `V°`, and its inverse is integral on most of `V″`. -/
@@ -254,6 +255,7 @@ def firstFactor (i : ChoiceIndex j) (h : Gf D.E (FirstFactorIndex j)) :
     WeylIndex (FirstFactorIndex j) (untwistedDescentPair j).colsPlus → ℂ :=
   star (firstFactorScale j • leftSideSeries ϑ j i h)
 
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
 /-- The theta series `Ξ_{ϑ,i} (g) = ⟨φ″_{ϑ,i}, θ″_{ϑ,Λ} (g, ·)⟩` on `U(W_j)`. It is the sum
 (`kernelClassSum`) over the classes `h` of level `J_Λ` of the theta kernel `θ″_{ϑ,Λ}` of
 `(W_j, V″)` at `(g, h)`, with datum given by the rows of `Λ` stacked over those of `ϖ • 1`
@@ -262,6 +264,7 @@ def firstFactorPairing (i : ChoiceIndex j) (g : G D.E (D.signsW j)) : ℂ :=
   kernelClassSum (D.descentPair ϑ j) (firstFactorChar ϑ j) ((splittingV j ϑ).stackOverGenScalar i.1)
     (splittingV j ϑ).fixedEmb (fun h ↦ star (firstFactor j ϑ i h)) g
 
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
 /-- The series `Ξ_{ϑ,i}` is `c″` times the left side `thirdExchangeLeftSide` of the third exchange,
 the class sum over `U(V″)` whose multiple by a number is the twist-free function `choiceFn`. -/
 lemma firstFactorPairing_eq_mul_thirdExchangeLeftSide (i : ChoiceIndex j) (g : G D.E (D.signsW j)) :
@@ -351,6 +354,7 @@ lemma weylNormSq_firstFactor_le (i : ChoiceIndex j) (h : Gf D.E (FirstFactorInde
 
 /-! ### The gluing map and the slices of lifts -/
 
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
 /-- The gluing map `glue_ϑ`. For `ζ` in the copy `i` of the forms on `V°` it is `M ^ l₁` times the
 sum, over the classes `h` of level `J_Λ` and `h°` of level `J (ϖ²)`, of the forms supported on the
 class of `(h, h°) 𝗀` formed from the product vector `φ″ (h) · ζ (h°)` (`productForm`). Here `𝗀`
@@ -394,6 +398,8 @@ is the matrix of `glueLattice j ϑ i`, `M = D.M`, and `l₁` is
       map_smul _ a (x b : WeylIndex _ (D.descentPair ϑ j).colsMinus → ℂ)
     exact (congrArg (stdClassSum _) (funext h_pt)).trans (h_sum_smul _)
 
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
+seal gramForm in
 /-- The period is a sum of slices. Let `φ` be a form on `V_j = V″ ⊕ V°` and `ζ` a tuple of forms on
 `V°`. The inner product of `ζ` with the adjoint of the gluing map `glue j ϑ` at `φ` is `M ^ l₁`
 (`M = D.M`, `l₁ = denominatorExponent`) times the sum, over the choices `i` with matrix `Λ = i.1`,
@@ -448,6 +454,7 @@ lemma goodForm_mul_liftMod_congruenceGroup (y : D.goodForms (D.spaceW j))
   exact Space.mem_levelSpace_formRep_iff.1 (y : D.principalForms (D.spaceW j)).prop _ h_level g
 
 open scoped Classical in
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
 /-- The descent to `U(W_j)` of the form `glue j ϑ ζ` on `V_j` glued from a tuple `ζ` of forms on
 `V°` at the twist `ϑ`. Its conjugate at `g` is the sum, over the choices `i` and the matrices `u`
 modulo `ϖ²` that are `1` modulo `ϖ` (`congruenceGroup`), of `M ^ l₁ c Ξ_i (g u) ⟨ζ_i, θ° (g u, ·)⟩`.
@@ -585,6 +592,7 @@ lemma inner_adjoint_glue_goodLift_eq_sum_integral (y : D.goodForms (D.spaceW j))
 
 /-! ### Integrality and size of the gluing map -/
 
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
 /-- The gluing map `glue j ϑ`, from tuples of forms on `V°` to forms on `V_j`, keeps integrality.
 Let `l` be a prime coprime to `ϑ.1.normQ`, the product of the norms of the places in the set Q of
 the twist `ϑ`. Let `φ` be an embedding of `ℂ` in `ℂ_l` (`PadicPlace l`). If all values of the tuple
@@ -893,7 +901,7 @@ lemma tamePart_twistPlace_ne_one (i : (D.descentPair ϑ j).TwistIndex) :
   (liftTamePart_eq_of_mem_Q ..).trans_ne (ϑ.tamePart_ne_one _ i.property)
 
 -- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
 /-- Slices of false lifts vanish. Let `w` be a split place (`star w ≠ w`) off the level of the pair
 `descentPair ϑ j`, and let `Ξ` be a false lift at `w`: a form on `V_j = V″ ⊕ V°` in the image of the
 projection `e₀` that is killed by the Hecke polynomial operator at `w` and is orthogonal to the
@@ -919,7 +927,7 @@ lemma sum_slice_eq_zero_of_mem_falseLiftsAt {w : FinPlace D.E} {hw : star w ≠ 
   have h_gap : 2 * card D.RowIndex + 2 * card (FirstFactorIndex j) + 3 < card
     (D.RowIndex ⊕ Fin D.t) := by
     rw [D.card_rowIndex_sum_fin, D.card_rowIndex, card_firstFactorIndex]
-    grind [D.hundred_mul_m_add_nine_lt_k, D.r_add_one, D.t_eq_five_mul_r]
+    linarith only [D.hundred_mul_m_add_nine_lt_k, D.r_add_one, D.t_eq_five_mul_r]
   -- Periods of false lifts vanish, here for the point `(h, h°) 𝗀`, the map `ζ ↦ y · ζ` and the
   -- level `J (ϖ²)`, which fixes the pairing, as its conjugate by `𝗀` fixes `Ξ`.
   have h_period : stdClassSum (principalLevel D.SecondFactorIndex (D.piM ^ 2))
@@ -939,6 +947,8 @@ lemma sum_slice_eq_zero_of_mem_falseLiftsAt {w : FinPlace D.E} {hw : star w ≠ 
   simpa [↓h_small, classSum, ↓ finsum_eq_sum_of_fintype, DividedSplitting.productForm,
     inner_classForm] using! h_period
 
+seal Submodule.mul Submodule.instPowNat Finset.prod Finset.univ in
+seal Finset.sum gramForm cartanProduct in
 /-- Let `Ξ` be a false lift on `V_j` at a split place `w` off the level of `descentPair ϑ j`: a form
 in the image of `D.e₀` that is killed by the Hecke polynomial operator at `w` and is orthogonal to
 the lifts of good forms. The adjoint of the gluing map `glue j ϑ` takes `Ξ` to a tuple of forms on
