@@ -149,7 +149,8 @@ lemma IsFrob.valuation_sub_pow_lt_one (h : IsFrob A q σ) {x : Ω} (hx : A.valua
 lemma mem_decompGroup_iff : σ ∈ decompGroup Γ A ↔ ∀ x : Ω, σ • x ∈ A ↔ x ∈ A :=
   ext'_iff.trans mem_stabilizer_set
 
-/-- Conjugation of a decomposition group element preserves stability under scalar action. -/
+/-- If `σ` is in the decomposition group of `A`,
+then `g * σ * g⁻¹` is in the decomposition group of `g • A`. -/
 lemma conj_mem_decompGroup_smul (hσ : σ ∈ decompGroup Γ A) :
     g * σ * g⁻¹ ∈ decompGroup Γ (g • A) := by
   simp [mem_stabilizer_iff, mul_smul, mem_stabilizer_iff.mp hσ]
