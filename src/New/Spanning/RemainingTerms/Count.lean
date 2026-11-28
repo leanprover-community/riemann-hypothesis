@@ -4,7 +4,7 @@ import Mathlib.Algebra.Order.Star.Int
 public import New.Spanning.RemainingTerms.Data
 import New.Spanning.RemainingTerms.FramesOverLattice
 import New.Spanning.RemainingTerms.Gain
-import New.Spanning.RemainingTerms.LatticesOfCorank
+public import New.Spanning.RemainingTerms.LatticesOfCorank
 
 /-!
 # The sum over pairs of near terms
@@ -107,8 +107,7 @@ lemma exists_isLabelledPair_of_isNearPairOverAgreeingBlock {c c' : S.Classes}
 variable (S) in
 /-- The lattices `L ⊆ Λ ∩ X₀` of rank `r` with discriminant at most `S.discriminantBound`. -/
 abbrev ClassBoundedDiscLattice (c : S.Classes) (r : ℕ) : Type :=
-  {L : Submodule (Ô E) (𝔰.κ → 𝔸f E) // IsLatticeOfRank r L ∧
-    L ≤ S.classLatticeX₀ c ∧ discriminant r L ≤ S.discriminantBound}
+  S.BoundedDiscSublattice r (S.classLatticeX₀ c)
 
 variable (S) in
 /-- The near pairs over a block `(c, s, c')` with agreeing `s`
