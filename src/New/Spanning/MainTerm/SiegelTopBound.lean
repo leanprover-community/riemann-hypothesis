@@ -836,6 +836,88 @@ lemma x₀Part_mem_integralOff (hT_basis : S.latticeBasis ∈ intGL 𝔰.BesselI
   rw [orbitPoint_top_translateByClassReps_inv hγ] at column
   exact (mulVec_mem_intVectors_iff (inv_mem hT_basis)).1 column (𝔰.indexX₀ i)
 
+open scoped Classical in
+/-- The terms over one point of Siegel's sum. Let the terms `(c i, c' i, S.reduction (n i), γ i)`
+be as in `IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity`, let `R` be positive
+semidefinite and let `ρ p` times the head density be `r * √G`. Let `Ψ` be, on the points of
+`lastVectorQuadric`, the real part of `∑ p q, R p q * F.fiberPairing Z (ω p) (ω q)`, and let
+`Z.massRatio ≤ μ_H K(M) * (μ K(M) ^ 2 * card Z.Cosets) * D`, as in
+`IsFillingData.exists_scaledSiegelConst_eq_and_massRatio_le`. A term `i` gives the point of Siegel's
+sum made of the class `c i` and the `X₀`-part of `γ i z`. Then `G * (Z.massRatio / D)` times the
+sum, over the terms with the same point as `i₀`, of the squared norms of the sums over `p` of
+`S.cosetAmplitude` at `w_p γ i`, times `r ^ 2`, is at most the value of `Ψ` at
+`vectorOfLastEntry S.piN t x`. Here `x` is the `X₀`-part of `γ i₀ z`, moved by the inverse of the
+representative of `c i₀`. -/
+lemma IsFillingData.mul_sum_norm_sum_cosetAmplitude_sq_le_step [P : IntegralPlace (LocProd T)]
+    {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
+      5)}
+    (hF : S.IsFillingData T F) {side : FullOrCut} {Z : F.IntermediateGroup}
+    {j J : Type} [Fintype j] [Fintype J] {c c' : j → S.Classes} {γ : j → S.G E}
+    {n : j → S.latticeStabilizer} {t : Eˣ}
+    (h_inj : (fun i : j ↦ (c i, c' i, S.reduction (n i), γ i)).Injective)
+    (hγ : ∀ i : j, γ i ∈ floorGroup 𝔰.ϱ) (h_tail : ∀ i : j, S.frameProducts (γ i) 𝔰.top 𝔰.top = t)
+    (hn : ∀ i : j, S.toPlaces T (n i) ∈ Z.val)
+    (h_off : ∀ i : j, S.IsIntegralOff T (S.translateByClassReps (c i) (c' i) (γ i)))
+    {a : J → ℕ → Eˣ}
+    (h_head : ∀ p : J, ∀ l < 𝔰.ϱ,
+      (a p l : E) ∈ ratIntegralOff T ∧ ((a p l)⁻¹ : Eˣ).val ∈ ratIntegralOff T)
+    {R : Matrix J J ℂ} (R_psd : R.PosSemidef) {ρ : J → ℝ} {r G : ℝ} (hG : 0 ≤ G)
+    (hR : ∀ i : j, R = .gram ℂ fun p : J ↦ ρ p • besselOrbitalIntegral volume
+      (fun g : InfinitePlace E → 𝔰.G₁ ↦ .toLp 2 (S.besselFn side g))
+      (S.ratToInf (weylElem 𝔰.ϱ (a p) * γ i)))
+    (h_weight : ∀ p : J,
+      ρ p * (F.headDensity 𝔰.ϱ (Units.map (ratToPlaces T) ∘ a p) 1).toReal = r * √G)
+    {Ψ : (𝔰.BesselIndex → LocProd T) → ℝ≥0}
+    (Ψ_eq : ∀ e ∈ lastVectorQuadric (S.latticeMiddle (LocProd T)), Ψ e = ENNReal.ofReal
+      (∑ p, ∑ q, R p q * F.fiberPairing Z (Units.map (ratToPlaces T) ∘ a p)
+        (Units.map (ratToPlaces T) ∘ a q) e).re)
+    {D : ℝ} (h_unit : Z.massRatio ≤ F.measureH F.congruenceSubgroup *
+      (F.groupMeasure F.congruenceSubgroup ^ 2 * card Z.Cosets) * .ofReal D) (i₀ : j) :
+    .ofReal G * (Z.massRatio / .ofReal D) *
+        ∑ i with (c i, fun l ↦ (γ i).val.val (𝔰.indexX₀ l) 𝔰.z) =
+          (c i₀, fun l ↦ (γ i₀).val.val (𝔰.indexX₀ l) 𝔰.z),
+          .ofReal (r ^ 2 * ‖∑ p : J, S.cosetAmplitude side (c i) (S.reduction (n i)) (c' i)
+            (weylElem 𝔰.ϱ (a p) * γ i)‖ ^ 2) ≤
+      (Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val
+        ((c i₀).out⁻¹.val.val *ᵥ algebraMap E (𝔸f E) ∘ fun l ↦ (γ i₀).val.val (𝔰.indexX₀ l) 𝔰.z)) :
+          ℝ≥0∞) := by
+  let g (i : j) : S.Classes × (𝔰.κ → E) := (c i, fun l ↦ (γ i).val.val (𝔰.indexX₀ l) 𝔰.z)
+  let x (z : S.Classes × (𝔰.κ → E)) : 𝔰.κ → 𝔸f E := z.1.out⁻¹.val.val *ᵥ algebraMap E (𝔸f E) ∘ z.2
+  let y (i : j) : ℝ := r ^ 2 * ‖∑ p : J, S.cosetAmplitude side (c i) (S.reduction (n i)) (c' i)
+    (weylElem 𝔰.ϱ (a p) * γ i)‖ ^ 2
+  change .ofReal G * (Z.massRatio / .ofReal D) * ∑ k with g k = g i₀, .ofReal (y k) ≤
+    (Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g i₀))) : ℝ≥0∞)
+  -- The translate of a term by the class representatives moves `z` to the vector with last entry
+  -- `t` over `g i`.
+  have point_eq (i : j) : orbitPoint 𝔰.top
+    (S.toPlaces T (S.translateByClassReps (c i) (c' i) (γ i)))⁻¹ =
+      evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g i)) :=
+    orbitPoint_toPlaces_translateByClassReps (hγ i) (h_tail i)
+  have same (k k' : {k // g k = g i₀}) :
+      c k = c k' ∧ (g k).2 = (g k').2 := Prod.mk.inj (k.property.trans k'.property.symm)
+  have point_mem : evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g i₀)) ∈
+      lastVectorQuadric (S.latticeMiddle (LocProd T)) := by
+    rw [← point_eq]
+    exact orbitPoint_mem_lastVectorQuadric (inv_mem (.map_mem_agreeWithOneOn _
+      (translateByClassReps_mem_floorGroup (hγ i₀) (c i₀) (c' i₀))))
+  have h_scale (k : j) : ENNReal.ofReal G * .ofReal (y k) =
+      .ofReal ((r * √G) ^ 2 * ‖∑ p, S.cosetAmplitude side (c k) (S.reduction (n k)) (c' k)
+        (weylElem 𝔰.ϱ (a p) * γ k)‖ ^ 2) := by
+    rw [← ENNReal.ofReal_mul hG, mul_pow, Real.sq_sqrt hG, mul_left_comm, mul_assoc]
+  suffices h_over : F.measureH F.congruenceSubgroup *
+    (F.groupMeasure F.congruenceSubgroup ^ 2 * card Z.Cosets) *
+      ∑ k : {k // g k = g i₀}, ENNReal.ofReal G * .ofReal (y k) ≤
+        Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g i₀))) by
+    grw [div_le_of_le_mul h_unit, mul_comm (ENNReal.ofReal G), mul_assoc _ (ENNReal.ofReal G),
+      mul_sum, sum_subtype (F := inferInstance) (p := fun k ↦ g k = g i₀) _ mem_filter_univ,
+      h_over]
+  simp only [h_scale, Ψ_eq _ point_mem]
+  exact hF.mul_sum_norm_sum_cosetAmplitude_sq_le_fiberPairing (ι := {k // g k = g i₀})
+    (fun k k' h ↦ Subtype.ext (h_inj (Prod.ext (same k k').1 h))) (fun k k' ↦ (same k k').1)
+    (fun k ↦ hγ k) (fun k k' ↦ by simp only [h_tail])
+    (fun k k' ↦ congrFun (same k k').2) (fun k ↦ hn k) (fun k ↦ h_off k)
+    (fun k ↦ by rw [point_eq, k.property]) R_psd (fun k ↦ hR k) h_weight h_head
+
 /-- Siegel's step, for one last entry `t`. Let `S` be admissible, with the inverse of the level
 `M = S.ideleM` integral off `T`, let `N⁻¹` and the lattice basis be integral off `T`, and let `F` be
 a filling datum at `T`. Let `Z` be a group between the congruence group `F.congruenceSubgroup` and
@@ -902,10 +984,6 @@ theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
     exact mul_star_dotProduct_eq_last_frameProducts (hγ i)
   have x_int (i : j) : ∀ l : 𝔰.κ, x (g i) l ∈ integralOff T :=
     x₀Part_mem_integralOff hT_basis (hγ i) (h_off i)
-  have point_eq (i : j) : orbitPoint 𝔰.top
-    (S.toPlaces T (S.translateByClassReps (c i) (c' i) (γ i)))⁻¹ =
-      evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g i)) :=
-    orbitPoint_toPlaces_translateByClassReps (hγ i) (h_tail i)
   -- Extend the real part of the sum of the fiber pairings against `R` to a step function `Ψ`; its
   -- value at a point bounds the classes there.
   obtain ⟨Ψ, Ψ_supp, Ψ_unif, Ψ_inv, Ψ_eq : ∀ e ∈ lastVectorQuadric (S.latticeMiddle (LocProd T)),
@@ -915,33 +993,12 @@ theorem IsFillingData.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity
       h_unit : Z.massRatio ≤ F.measureH F.congruenceSubgroup *
         (F.groupMeasure F.congruenceSubgroup ^ 2 * card Z.Cosets) * .ofReal D⟩ :=
     hF.exists_scaledSiegelConst_eq_and_massRatio_le Z
+  -- Over one point, the classes are bounded by the value of `Ψ` there.
   have le_Ψ (k₀ : j) :
       .ofReal G * (Z.massRatio / .ofReal D) * ∑ k with g k = g k₀, .ofReal (y k) ≤
-        (Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g k₀))) : ℝ≥0∞) := by
-    have same (k k' : {k // g k = g k₀}) :
-        c k = c k' ∧ (g k).2 = (g k').2 := Prod.mk.inj (k.property.trans k'.property.symm)
-    have point_mem : evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g k₀)) ∈
-        lastVectorQuadric (S.latticeMiddle (LocProd T)) := by
-      rw [← point_eq]
-      exact orbitPoint_mem_lastVectorQuadric (inv_mem (.map_mem_agreeWithOneOn _
-        (translateByClassReps_mem_floorGroup (hγ k₀) (c k₀) (c' k₀))))
-    have h_scale (k : j) : ENNReal.ofReal G * .ofReal (y k) =
-        .ofReal ((r * √G) ^ 2 * ‖∑ p, S.cosetAmplitude side (c k) (S.reduction (n k)) (c' k)
-          (weylElem 𝔰.ϱ (a p) * γ k)‖ ^ 2) := by
-      rw [← ENNReal.ofReal_mul G_pos.le, mul_pow, Real.sq_sqrt G_pos.le, mul_left_comm, mul_assoc]
-    suffices h_over : F.measureH F.congruenceSubgroup *
-      (F.groupMeasure F.congruenceSubgroup ^ 2 * card Z.Cosets) *
-        ∑ k : {k // g k = g k₀}, ENNReal.ofReal G * .ofReal (y k) ≤
-          Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g k₀))) by
-      grw [div_le_of_le_mul h_unit, mul_comm (ENNReal.ofReal G), mul_assoc _ (ENNReal.ofReal G),
-        mul_sum, sum_subtype (F := inferInstance) (p := fun k ↦ g k = g k₀) _ mem_filter_univ,
-        h_over]
-    simp only [h_scale, Ψ_eq _ point_mem]
-    exact hF.mul_sum_norm_sum_cosetAmplitude_sq_le_fiberPairing (ι := {k // g k = g k₀})
-      (fun k k' h ↦ Subtype.ext (h_inj (Prod.ext (same k k').1 h))) (fun k k' ↦ (same k k').1)
-      (fun k ↦ hγ k) (fun k k' ↦ by simp only [h_tail])
-      (fun k k' ↦ congrFun (same k k').2) (fun k ↦ hn k) (fun k ↦ h_off k)
-      (fun k ↦ by rw [point_eq, k.property]) R_psd (fun k ↦ hR k) h_weight h_head
+        (Ψ (evalPlaces T ∘ vectorOfLastEntry S.piN t.val (x (g k₀))) : ℝ≥0∞) :=
+    hF.mul_sum_norm_sum_cosetAmplitude_sq_le_step h_inj hγ h_tail hn h_off h_head R_psd G_pos.le
+      hR h_weight Ψ_eq h_unit k₀
   -- Siegel's formula sums over the points; the normalized integral over the sphere is `Q.re`.
   obtain ⟨⟨re_nonneg : 0 ≤ Q.re, -⟩, h_sphere⟩ :=
     sum_lastEntryDensity_nonneg_and_eq_inv_mul_lintegral Z piNAt_mul_star
