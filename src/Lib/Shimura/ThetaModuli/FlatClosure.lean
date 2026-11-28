@@ -757,11 +757,9 @@ lemma flat_stalkMap_of_flat_snd {A S : Scheme} {z : A ⟶ S} {p : S}
   -- `a` comes from a point `y` of the base change, and `fst z s` is bijective on stalks.
   obtain ⟨y, rfl⟩ : a ∈ Set.range (fst z s) :=
     (Pullback.range_fst z s).ge (range_fromSpecStalk.ge ha)
-  have h_bij : Function.Bijective ((fst z s).stalkMap y) :=
-    ⟨stalkMap_injective_of_flat _ y, Hom.stalkMap_surjective _ y⟩
   have h_stalk : ((fst z s ≫ z).stalkMap y).hom.Flat := stalkMap _ y
   rw [Hom.stalkMap_comp] at h_stalk
-  exact (comp_iff_of_bijective_left h_bij).1 h_stalk
+  exact (comp_iff_of_bijective_left (stalkMap_bijective_of_flat (fst z s) y)).1 h_stalk
 
 /-- Complex points `ξ w` of `S` and nonzero vectors `θ w` give points of `ℙ^J × S`. Their reduced
 closure `A` is projective over `S`, with dense points `x w` over `ξ w` with coordinates `θ w`. -/

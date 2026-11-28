@@ -329,13 +329,19 @@ namespace New
 
 open CategoryTheory AlgebraicGeometry Limits pullback Set Scheme Spec Pullback Over PointFn Filter
 
+/-- A flat morphism that is surjective on stalks induces bijections on stalks. -/
+lemma stalkMap_bijective_of_flat {X Y : Scheme} (q : X ⟶ Y) [Flat q] [SurjectiveOnStalks q]
+    (x : X) : Function.Bijective (q.stalkMap x) :=
+  ⟨stalkMap_injective_of_flat q x, q.stalkMap_surjective x⟩
+
 /-- The base change of a reduced scheme along a flat preimmersion is reduced: its stalks are those
 of the scheme. -/
 lemma Variety.isReduced_pullback_of_flat {X Y T : Scheme} (f : X ⟶ T) (g : Y ⟶ T)
     [IsReduced X] [Flat g] [IsPreimmersion g] : IsReduced (pullback f g) := by
-  have (x : ↥(pullback f g)) : IsReduced ((pullback f g).presheaf.stalk x) := ⟨fun a ha ↦ by
-    obtain ⟨b, rfl⟩ := (fst f g).stalkMap_surjective x a
-    simp [((IsNilpotent.map_iff (stalkMap_injective_of_flat _ _)).1 ha).eq_zero]⟩
+  have (x : ↥(pullback f g)) : IsReduced ((pullback f g).presheaf.stalk x) := by
+    let e := RingEquiv.ofBijective ((fst f g).stalkMap x).hom
+      (stalkMap_bijective_of_flat (fst f g) x)
+    exact isReduced_of_injective e.symm e.symm.injective
   exact isReduced_of_isReduced_stalk _
 
 /-- The points of a finite set `C` that lie near `s` specialise to `s`. -/
