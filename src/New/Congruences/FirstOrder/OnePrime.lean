@@ -642,6 +642,13 @@ lemma map_eq_of_weights_modEq {m : ℕ} {σ : R →+* S} (hm : (m : S) = 0) {ι 
 
 variable {m : ℕ} (ρ : Γ →* R) {σ : R →+* S}
 
+/-- Modulo `m`, translating the logarithm weight by an integer `a` subtracts `a` copies of the
+constant weight. -/
+private lemma map_valMinAbs_difference (hm : (m : S) = 0) (B : (ZMod m → ℤ) →+ R) (a : ℤ) :
+    σ (B (fun x ↦ valMinAbs (x - (a : ZMod m))) - B valMinAbs) = σ (-(a • B 1)) := by
+  rw [← map_sub B, ← map_zsmul B, ← map_neg B]
+  exact map_eq_of_weights_modEq hm B _ _ (by simp)
+
 /-- The weighted norm `∑ f (c g) ρ g` for a homomorphism `c : Γ → ℤ/m`, as an additive function of
 the weight `f : ℤ/m → ℤ`. The weight `1` gives the norm; the weight `valMinAbs`, which lifts
 `ℤ/m` to `ℤ`, gives the logarithm of `c`. -/
@@ -761,11 +768,8 @@ in `S`. Let `L = ∑ valMinAbs (c g) ρ g` be the logarithm of a homomorphism `c
 lemma map_sub_one_mul_weightedSum_valMinAbs (hm : (m : S) = 0) (c : Γ →* Multiplicative (ZMod m))
     {γ : Γ} (hγ : c γ = .ofAdd 1) :
     σ ((ρ γ - 1) * weightedSum ρ c valMinAbs) = -σ (∑ g : Γ, ρ g) := by
-  calc σ ((ρ γ - 1) * weightedSum ρ c valMinAbs)
-      = σ (weightedSum ρ c ((fun x : ZMod m ↦ valMinAbs (x - 1)) - valMinAbs)) := by
-        rw [sub_one_mul, mul_weightedSum, ← map_sub, hγ, toAdd_ofAdd]
-    _ = σ (weightedSum ρ c (-1)) := map_eq_of_weights_modEq hm _ _ _ (by simp)
-    _ = -σ (∑ g : Γ, ρ g) := by rw [map_neg, map_neg, weightedSum_one]
+  rw [sub_one_mul, mul_weightedSum, hγ, toAdd_ofAdd]
+  simpa [weightedSum_one] using map_valMinAbs_difference hm (weightedSum ρ c) 1
 
 omit [Fintype H] in
 /-- Let `ρ` map the finite group `Γ` to the ring `R`, and let `σ : R → S` be a ring map with `m = 0`
@@ -790,18 +794,14 @@ lemma exists_map_valMinAbs_mul_sub_one (hm : (m : S) = 0) (a : H →* Multiplica
       simp [cosetComponent, mul_assoc, ← map_mul]
     rw [cosetNormInv, sum_mul]
     exact (Fintype.sum_equiv (toPerm g) _ _ term_eq).symm
-  have shift (y : ZMod m) :
-      σ (B fun x ↦ valMinAbs (x - y)) = σ (B valMinAbs - valMinAbs y • B 1) := by
-    rw [← map_zsmul, ← map_sub]
-    exact map_eq_of_weights_modEq hm B _ _ (by simp)
   have term_congr (η : Γ ⧸ H) :
       σ (B valMinAbs * (ρ (cosetComponent H g η.out) * ρ η.out⁻¹ - ρ η.out⁻¹)) =
         σ (B 1 * -(valMinAbs (k η) • ρ η.out⁻¹)) :=
     calc σ (B valMinAbs * (ρ (cosetComponent H g η.out) * ρ η.out⁻¹ - ρ η.out⁻¹))
-        = (σ (B fun x ↦ valMinAbs (x - k η)) - σ (B valMinAbs)) * σ (ρ η.out⁻¹) := by
-          rw [mul_sub, ← mul_assoc, hB, ← sub_mul, map_mul, map_sub]
+        = σ (B (fun x ↦ valMinAbs (x - k η)) - B valMinAbs) * σ (ρ η.out⁻¹) := by
+          rw [mul_sub, ← mul_assoc, hB, ← sub_mul, map_mul]
       _ = σ (-(valMinAbs (k η) • B 1) * ρ η.out⁻¹) := by
-          rw [shift, ← map_sub, sub_sub_cancel_left, map_mul]
+          rw [map_mul, ← map_valMinAbs_difference hm B, coe_valMinAbs]
       _ = σ (B 1 * -(valMinAbs (k η) • ρ η.out⁻¹)) := by
           rw [neg_mul, mul_neg, smul_mul_assoc, mul_smul_comm]
   refine ⟨∑ η : Γ ⧸ H, -(valMinAbs (k η) • ρ η.out⁻¹), ?_⟩
