@@ -262,8 +262,7 @@ lemma _root_.New.IsValuationPair.isBezout (hR : IsValuationPair R) : IsBezout R 
 
 end Columns
 
-variable {E κ P : Type} [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E] [Fintype κ]
-  [Fintype P] {r : ℕ}
+variable {E κ P : Type} [Field E] [NumberField E] [Fintype κ] [Fintype P] {r : ℕ}
 
 /-- Let `𝔸f E` be the finite adeles of the number field `E` and `Ô E` the integral ones. An
 `Ô E`-submodule `L` of `(𝔸f E) ^ κ` is a lattice of rank `r` if it is spanned over `Ô E` by the
@@ -278,13 +277,12 @@ open scoped Classical in
 some chosen basis `B = x a`. Here `ᴴ` is the conjugate transpose and `genIndex u` is the inverse of
 the factor by which a unit `u` scales Haar measure on the finite adeles (`0` for a non-unit). The
 value is `0` if `L` is not a lattice of rank `r`. -/
-def discriminant (r : ℕ) (L : Submodule (Ô E) (κ → 𝔸f E)) : ℝ :=
+def discriminant [IsCMField E] (r : ℕ) (L : Submodule (Ô E) (κ → 𝔸f E)) : ℝ :=
   if h : IsLatticeOfRank r L then
     √(genIndex ((finAdeleMatrix h.choose * h.choose_spec.choose.val)ᴴ *
       (finAdeleMatrix h.choose * h.choose_spec.choose.val)).det)
   else 0
 
-omit [IsCMField E] [HasPrimitiveRoot5040 E] in
 /-- If `x` has a left inverse over `E` and `a` is an invertible matrix over the finite adeles
 `𝔸f E`, then `finAdeleMatrix x * a` (with `x` read over `𝔸f E`) has a left inverse over `𝔸f E`. -/
 lemma hasLeftInv_finAdeleMatrix_mul {x : Matrix κ (Fin r) E} (hx : HasLeftInv x)
@@ -292,6 +290,10 @@ lemma hasLeftInv_finAdeleMatrix_mul {x : Matrix κ (Fin r) E} (hx : HasLeftInv x
   obtain ⟨l, hl⟩ := hx.map (algebraMap E (𝔸f E))
   refine ⟨a⁻¹.val * l, ?_⟩
   rw [Matrix.mul_assoc, ← Matrix.mul_assoc l, hl, Matrix.one_mul, a.inv_mul]
+
+section
+
+variable [IsCMField E] [HasPrimitiveRoot5040 E]
 
 /-- Let `E` be a CM field with a primitive 5040th root of unity, `𝔸f E` its finite adeles and `Ô E`
 the integral ones. Let `B`, `C` be matrices over `𝔸f E` whose columns have the same `Ô E`-span, and
@@ -367,7 +369,8 @@ lemma IsLatticeOfRank.discriminant_pos {L : Submodule (Ô E) (κ → 𝔸f E)}
   rw [discriminant_colLattice hx, h_gram, genIndex_det_conj]
   exact Real.sqrt_pos.2 (mul_pos (genIndex_pos h_unit.unit) (pow_pos (genIndex_pos a.det) 2))
 
-omit [IsCMField E] [HasPrimitiveRoot5040 E] in
+end
+
 /-- Let `E` be a number field, `𝔸f E` its finite adeles and `Ô E` the integral ones. If an
 `Ô E`-submodule `M` of `(𝔸f E) ^ n` contains the `Ô E`-span `colLattice (Ô E) C` of the columns of
 `C` with finite index (`submoduleIndex` is not `0`), then `M` is spanned by the columns of `C` and
@@ -395,6 +398,10 @@ lemma exists_colLattice_fromCols_eq {n : Type} [Fintype n] {M : Submodule (Ô E)
       rw [← h_col]
       exact col_mem_colLattice _
     exact (add_mem_cancel_right (hC_le k.property)).1 h_rep
+
+section
+
+variable [IsCMField E] [HasPrimitiveRoot5040 E]
 
 /-- Let `E` be a CM field with a primitive 5040th root of unity, `𝔸f E` its finite adeles and `Ô E`
 the integral ones. If an `Ô E`-submodule `M` of the module `intVectors (Ô E) n` of vectors in
@@ -507,7 +514,8 @@ lemma IsLatticeOfRank.of_le_and_discriminant_eq_mul_index {L M : Submodule (Ô E
     IsLatticeOfRank r M ∧ discriminant r M = discriminant r L * submoduleIndex M L :=
   ⟨hL.of_submoduleIndex_ne_zero h_le h_index, hL.discriminant_eq_mul_submoduleIndex h_le h_index⟩
 
-omit [IsCMField E] [HasPrimitiveRoot5040 E] in
+end
+
 /-- The `Ô`-span `colLattice` of the columns of `B` lies in `preimageLattice (Ô E) H`, the vectors
 that `H` maps to integral ones, if and only if `H * B` has all entries in `Ô`. -/
 lemma colLattice_le_preimageLattice_iff {σ τ : Type} [Fintype τ] {H : Matrix σ κ (𝔸f E)}
@@ -517,9 +525,6 @@ lemma colLattice_le_preimageLattice_iff {σ τ : Type} [Fintype τ] {H : Matrix 
   exact ⟨fun h_le i j ↦ h_le (col_mem_colLattice j) i,
     fun h_int ↦ colLattice_le fun j i ↦ h_int i j⟩
 
-variable [DecidableEq κ]
-
-omit [IsCMField E] [HasPrimitiveRoot5040 E] [DecidableEq κ] in
 /-- The image under a rational matrix `η` of the lattice spanned by the columns of `x a` is the
 lattice spanned by the columns of `(η x) a`. -/
 lemma map_colLattice_finAdeleMatrix_mul (η : Matrix κ κ E) (x : Matrix κ (Fin r) E)
@@ -530,11 +535,10 @@ lemma map_colLattice_finAdeleMatrix_mul (η : Matrix κ κ E) (x : Matrix κ (Fi
   have h_map : finAdeleMatrix (η * x) = finAdeleMatrix η * finAdeleMatrix x := Matrix.map_mul
   rw [h_map, Matrix.mul_assoc, colLattice_mul (finAdeleMatrix η)]
 
-omit [IsCMField E] [HasPrimitiveRoot5040 E] in
 /-- A matrix `η` over `E` with a left inverse maps a lattice of rank `r` in `(𝔸f E) ^ κ` (the
 `Ô E`-span of the adelic basis `x a` of an `r`-dimensional subspace of `E ^ κ`) to a lattice of
 rank `r`. -/
-lemma IsLatticeOfRank.map_of_hasLeftInv {L : Submodule (Ô E) (κ → 𝔸f E)}
+lemma IsLatticeOfRank.map_of_hasLeftInv [DecidableEq κ] {L : Submodule (Ô E) (κ → 𝔸f E)}
     (hL : IsLatticeOfRank r L) {η : Matrix κ κ E} (hη : HasLeftInv η) :
     IsLatticeOfRank r (L.map ((finAdeleMatrix η).mulVecLin.restrictScalars (Ô E))) := by
   obtain ⟨x, a, ⟨xInv, hxInv⟩, rfl⟩ := hL
@@ -542,10 +546,12 @@ lemma IsLatticeOfRank.map_of_hasLeftInv {L : Submodule (Ô E) (κ → 𝔸f E)}
   refine ⟨η * x, a, ⟨xInv * ηInv, ?_⟩, (map_colLattice_finAdeleMatrix_mul η x a.val).symm⟩
   rw [Matrix.mul_assoc, ← Matrix.mul_assoc ηInv, hηInv, Matrix.one_mul, hxInv]
 
+variable [IsCMField E] [HasPrimitiveRoot5040 E]
+
 /-- An isometry `η` of the standard hermitian form over `E` (`ηᴴ * η = 1`) keeps the discriminant
 of a lattice of rank `r`, that is, the square root of the generalised index of the Gram determinant
 of a basis of the lattice. -/
-lemma IsLatticeOfRank.discriminant_map_of_unitary {L : Submodule (Ô E) (κ → 𝔸f E)}
+lemma IsLatticeOfRank.discriminant_map_of_unitary [DecidableEq κ] {L : Submodule (Ô E) (κ → 𝔸f E)}
     (hL : IsLatticeOfRank r L) {η : Matrix κ κ E} (hη : ηᴴ * η = 1) :
     discriminant r (L.map ((finAdeleMatrix η).mulVecLin.restrictScalars (Ô E))) =
       discriminant r L := by
@@ -563,7 +569,7 @@ lemma IsLatticeOfRank.discriminant_map_of_unitary {L : Submodule (Ô E) (κ → 
 
 /-- An isometry `η` of the standard hermitian form over `E` (`ηᴴ * η = 1`) maps a lattice of rank
 `r` to a lattice of rank `r` with the same discriminant. -/
-lemma IsLatticeOfRank.map_of_unitary {L : Submodule (Ô E) (κ → 𝔸f E)}
+lemma IsLatticeOfRank.map_of_unitary [DecidableEq κ] {L : Submodule (Ô E) (κ → 𝔸f E)}
     (hL : IsLatticeOfRank r L) {η : Matrix κ κ E} (hη : ηᴴ * η = 1) :
     IsLatticeOfRank r (L.map ((finAdeleMatrix η).mulVecLin.restrictScalars (Ô E))) ∧
     discriminant r (L.map ((finAdeleMatrix η).mulVecLin.restrictScalars (Ô E))) =
@@ -572,7 +578,7 @@ lemma IsLatticeOfRank.map_of_unitary {L : Submodule (Ô E) (κ → 𝔸f E)}
 
 section Saturated
 
-variable {H' : Matrix κ P (𝔸f E)} {H : Matrix P κ (𝔸f E)}
+variable [DecidableEq κ] {H' : Matrix κ P (𝔸f E)} {H : Matrix P κ (𝔸f E)}
 
 /-- The saturated lattice of a subspace `V` of `E ^ κ` for a matrix `H` with left inverse `H'`: the
 `Ô`-span of the chosen basis `sublatticeBasis u V`, where `u` is the identity `H' * H = 1`. Its
@@ -677,7 +683,7 @@ lemma isPrincipal_of_cardQuot_ne_zero (I : Ideal (Ô E)) (hI : I.cardQuot ≠ 0)
     exact Ideal.FG.map (IsNoetherian.noetherian _) _
   exact (IsAdelic.isValuationPair.isBezout (R := Ô E)).isPrincipal_of_FG I h_fg
 
-omit [Fintype κ] [DecidableEq κ] in
+omit [Fintype κ] in
 /-- For an adelic matrix `B` with `r` columns, the sum of `[L : M] ^ (-(r + μ))` over the submodules
 `M` of finite index in the span `L = colLattice (Ô E) B` of its columns is at most `ζ(μ) ^ r`, where
 `ζ(μ) = idealZeta (Ô E) μ` is the sum of `[Ô : I] ^ (-μ)` over the ideals `I` of finite index. -/
@@ -690,7 +696,6 @@ lemma tsum_submoduleIndex_colLattice_inv_pow_le (B : Matrix κ (Fin r) (𝔸f E)
   exact (tsum_relIndex_range_le_submoduleZeta f (r + μ)).trans
     (submoduleZeta_pi_le isPrincipal_of_cardQuot_ne_zero r μ)
 
-omit [DecidableEq κ] in
 /-- For a lattice `L` of rank `r`, the sum of `[L : M] ^ (-(r + μ))` over the sublattices `M` of
 finite index is at most `ζ(μ) ^ r`, where `ζ(μ) = idealZeta (Ô E) μ` is the sum of
 `[Ô : I] ^ (-μ)` over the ideals `I` of finite index in `Ô`. (Hey's formula would give the sum

@@ -38,7 +38,7 @@ open MeasureTheory Fintype Subgroup
 
 namespace New.Filling
 
-variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape}
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape}
 
 /-- The cutoff of the class `c` at the infinite places, restricted to the boxed points: the reduced
 points with every component in the cut. -/
@@ -70,7 +70,6 @@ def schurIntegral (S : Filling E 𝔰) (c c' : S.Classes) (γ : S.G E) (i : ℕ)
 
 variable {S : Filling E 𝔰}
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `S` be data of the filling theorem over the CM field `E`, let `γ` be a rational element of
 the unitary group and `y` a point at the infinite places. If the cut Bessel kernel of `γ`, the
 tensor of the cut Bessel functions at `y` and at `γ⁻¹ y`, is nonzero, then at every infinite place
@@ -91,18 +90,18 @@ lemma inCut_of_besselKernel_ne_zero {γ : S.G E} {y : NumberField.InfinitePlace 
     ((S.besselSystem v).isCutPair.inCut_of_ne_zero _)
 
 @[fun_prop]
-lemma measurable_boxCutoff {c : S.Classes} [S.IsAdmissible] : Measurable (S.boxCutoff c) :=
+lemma measurable_boxCutoff [HasPrimitiveRoot5040 E] {c : S.Classes} [S.IsAdmissible] :
+    Measurable (S.boxCutoff c) :=
   (measurable_classCutoff c).indicator measurableSet_boxedPoints
 
-omit [HasPrimitiveRoot5040 E] in
 @[fun_prop]
 lemma measurable_besselCutNormSq : Measurable S.besselCutNormSq := by
   fun_prop [besselCutNormSq]
 
 /-- The weight of Schur's test is measurable. -/
 @[fun_prop]
-lemma measurable_schurWeight {c : S.Classes} {γ : S.G E} [S.IsAdmissible] (shift : ℕ) :
-    Measurable (S.schurWeight c γ shift) := by
+lemma measurable_schurWeight [HasPrimitiveRoot5040 E] {c : S.Classes} {γ : S.G E} [S.IsAdmissible]
+    (shift : ℕ) : Measurable (S.schurWeight c γ shift) := by
   fun_prop [schurWeight]
 
 /-- **Cauchy–Schwarz.** Let `S` be data of the filling theorem over the CM field `E`, which contains
@@ -111,7 +110,8 @@ the principal congruence subgroup, reduction is onto, and the size inequalities 
 be classes and `γ` a rational element of the unitary group. The square of the amplitude majorant
 (the integral of the cutoffs of `c` at `y` and of `c'` at `γ⁻¹ y` against the norm of the cut Bessel
 kernel) is at most the product of the Schur integrals for `(c, c', γ)` and `(c', c, γ⁻¹)`. -/
-lemma amplitudeMajorant_sq_le {c c' : S.Classes} {γ : S.G E} [S.IsAdmissible] (shift : ℕ) :
+lemma amplitudeMajorant_sq_le [HasPrimitiveRoot5040 E] {c c' : S.Classes} {γ : S.G E}
+    [S.IsAdmissible] (shift : ℕ) :
     S.amplitudeMajorant .cut c c' γ ^ 2 ≤
       S.schurIntegral c c' γ shift * S.schurIntegral c' c γ⁻¹ shift := by
   -- Cauchy–Schwarz, after the substitution `y ↦ γ⁻¹y` in `S.schurIntegral c' c γ⁻¹`.
@@ -198,7 +198,6 @@ lemma lintegral_cutoff_mul_le_of_average {G Γ Y : Type*} [Group G] [MeasurableS
     _ ≤ ∫⁻ u, m B * C * p u ∂ν := lintegral_mono fun u ↦ mul_le_mul_left (h_bound u) (p u)
     _ = _ := by simp only [mul_assoc, lintegral_const_mul' _ _ h_finite]
 
-omit [HasPrimitiveRoot5040 E] in
 /-- The norm of the cut Bessel function is left invariant under the unipotent group `besselU`,
 which acts on the function by a unitary character. -/
 lemma enorm_besselSystem_cut_mul (v : NumberField.InfinitePlace E) {u : 𝔰.G₁} (hu : u ∈ besselU)
@@ -212,7 +211,7 @@ unity of order `5040`, and let `S` be admissible. For every class `c`, the integ
 archimedean points `y` of `S.classCutoff c y` times `S.besselCutNormSq y` is at most
 `S.unipotentCovolume`, the common covolume of the unipotent groups of the classes, times the number
 `card S.BesselCoord` of Bessel coordinates. -/
-lemma lintegral_classCutoff_mul_sq_le [S.IsAdmissible] (c : S.Classes) :
+lemma lintegral_classCutoff_mul_sq_le [HasPrimitiveRoot5040 E] [S.IsAdmissible] (c : S.Classes) :
     ∫⁻ y : NumberField.InfinitePlace E → 𝔰.G₁, S.classCutoff c y * S.besselCutNormSq y ≤
       ENNReal.ofReal S.unipotentCovolume * card S.BesselCoord := by
   have h_invariant (v : NumberField.InfinitePlace E) (u : 𝔰.G₁) (hu : u ∈ besselU) (y : 𝔰.G₁) :
@@ -229,7 +228,6 @@ lemma lintegral_classCutoff_mul_sq_le [S.IsAdmissible] (c : S.Classes) :
       exact (S.besselSystem v).isCutPair.lintegral_sq_cut_le
     _ = _ := by rw [card_pi, Nat.cast_prod]
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `𝔰.G₁` be the complex unitary group of the shape `𝔰`. Let `f` be measurable on the product
 of its copies at the infinite places of the CM field `E`. The integral of `f` is an iterated
 integral. The inner one runs over the orbit of `a` under `besselU0`, the unipotent elements that fix
@@ -256,8 +254,8 @@ with components in `besselU0` and all boxed points `y` the integral of `F (u * s
 `x ∈ B` is at most `m B * C`, then the integral of `F` against the boxed cutoff and
 `S.besselCutNormSq`, the product of the squared norms of the local cut Bessel functions, is at most
 `C` times `S.unipotentCovolume` times the cardinality of `S.BesselCoord`. -/
-lemma lintegral_boxCutoff_le_of_average {X : Type*} [MeasurableSpace X] [S.IsAdmissible]
-    (c : S.Classes) (m : Measure X) [SFinite m]
+lemma lintegral_boxCutoff_le_of_average [HasPrimitiveRoot5040 E] {X : Type*} [MeasurableSpace X]
+    [S.IsAdmissible] (c : S.Classes) (m : Measure X) [SFinite m]
     {s : X → NumberField.InfinitePlace E → 𝔰.G₁} (s_meas : Measurable s)
     (hs : ∀ (x : X) (v : NumberField.InfinitePlace E), s x v ∈ besselU0)
     {F : (NumberField.InfinitePlace E → 𝔰.G₁) → ENNReal} (F_meas : Measurable F)

@@ -135,7 +135,7 @@ section CrudeLattices
 
 open NumberField Matrix Module Fintype ENNReal Pointwise
 
-variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape}
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape}
 
 section Forms
 
@@ -176,7 +176,6 @@ abbrev LatticeStabilizerCoset : Type :=
 
 /-! ### Unimodular lattices -/
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let the chosen representative of the class `c` be `η u y` with `η` rational and `y` integral,
 and let `L` lie in the lattice `Λ ∩ X₀` of `c`, which consists of the vectors `v` for which
 `(η u y)⁻¹ v` is integral with entry `k₀` divisible by `π̄ = S.piN`. Then `η⁻¹ L` lies in `u Ô ^ κ`,
@@ -217,8 +216,9 @@ chosen representative of the class `c` be `η u y` with `η` rational and `y` in
 `(disc L) ^ (-k)`, `k = #κ`, over the lattices `L` of rank `r` and discriminant at most
 `S.discriminantBound` in `Λ ∩ X₀` is at most the same sum over those in `u Ô ^ κ` on which the form
 "row `𝔰.k₀` of `y⁻¹ u⁻¹`" vanishes modulo `S.piN`. -/
-lemma tsum_discriminant_inv_le_of_out_eq {c : S.Classes} {η : U (stdSpace E 𝔰.κ).J} {u : Gf E 𝔰.κ}
-    {y : stdLevel E 𝔰.κ} (hc : c.out = (stdSpace E 𝔰.κ).embFin η * u * y) (r : ℕ) :
+lemma tsum_discriminant_inv_le_of_out_eq [HasPrimitiveRoot5040 E] {c : S.Classes}
+    {η : U (stdSpace E 𝔰.κ).J} {u : Gf E 𝔰.κ} {y : stdLevel E 𝔰.κ}
+    (hc : c.out = (stdSpace E 𝔰.κ).embFin η * u * y) (r : ℕ) :
     ∑' L : S.BoundedDiscSublattice r (S.classLatticeX₀ c),
       ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹ ≤
       ∑' L : S.BoundedDiscSublattice r (unimodularLattice u),
@@ -251,7 +251,6 @@ lemma tsum_discriminant_inv_le_of_out_eq {c : S.Classes} {η : U (stdSpace E �
         rw [discWeightIfRowVanishes, Set.indicator_of_mem h_kills, h_disc]
     _ ≤ _ := tsum_comp_le_tsum_of_injective h_move fun L ↦ S.discWeightIfRowVanishes u y r L.val
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `u` be in `Gf E 𝔰.κ`, and let `φ` be a coset in `stdLevel E 𝔰.κ` of the preimage under
 `inclHFin` of `latticeStabilizer`, with chosen element `φ.out`. Then the chosen representative of
 the class of `u * φ.out` in the double cosets `S.Classes` equals `embFin η * u * y`. Here `η` is
@@ -274,15 +273,14 @@ lemma exists_mk_out_eq_embFin_mul [S.IsAdmissible] (u : Gf E 𝔰.κ) (φ : S.La
 
 /-! ### Forms and sublattices -/
 
-variable (S) in
 /-- The generalised index of `S.piN` is `N ^ f`, where `N = π π̄` and `f` is the number of
 infinite places of `E`. -/
-lemma genIndex_piN_eq_pow : genIndex S.piN.val = S.N ^ numInfPlaces E := by
+lemma genIndex_piN_eq_pow [HasPrimitiveRoot5040 E] (S : Filling E 𝔰) :
+    genIndex S.piN.val = S.N ^ numInfPlaces E := by
   have h_sq : genIndex S.piN.val ^ 2 = (S.N ^ numInfPlaces E) ^ 2 := by
     rw [← genIndex_natCast, ← S.piN_mul_star, map_mul, genIndex_star, sq]
   exact (pow_left_inj₀ (genIndex_pos _).le (by positivity) two_ne_zero).1 h_sq
 
-omit [HasPrimitiveRoot5040 E] in
 /-- A vector lies in `d Ô ^ ι` if and only if its multiple by `d⁻¹` is integral. -/
 lemma mem_smul_intVectors_iff {ι : Type} {d : (𝔸f E)ˣ} {v : ι → 𝔸f E} :
     v ∈ d • intVectors (Ô E) ι ↔ d⁻¹ • v ∈ intVectors (Ô E) ι := by
@@ -290,7 +288,6 @@ lemma mem_smul_intVectors_iff {ι : Type} {d : (𝔸f E)ˣ} {v : ι → 𝔸f E}
   rintro ⟨w, hw : w ∈ intVectors (Ô E) ι, rfl⟩
   simpa [inv_smul_smul, ← Units.smul_def] using hw
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `U` be invertible with `U` and `U⁻¹` integral, and let `m` be its first `r` columns
 `firstCols e U`. Two forms `v`, `w` are congruent modulo `d` if their values on the other columns
 of `U` are, and if their values on `m A`, divided by `d`, differ by a combination of the rows of
@@ -320,6 +317,10 @@ lemma sub_mem_smul_intVectors_of_values {π : Type} [Fintype π] [DecidableEq π
   refine mem_smul_intVectors_iff.2 ?_
   simpa only [mulVec_transpose, vecMul_vecMul, U.mul_inv, vecMul_one] using
     hU.isIntMatrix_inv.transpose.mulVec h_values
+
+section
+
+variable [HasPrimitiveRoot5040 E]
 
 /-- **Few forms vanish on a sublattice.** Let the CM field `E` contain a primitive 5040th root of
 unity. Let `m` be a basis of a primitive sublattice of rank `r` and corank `l` in `Ô ^ π`, and let
@@ -494,7 +495,8 @@ abbrev subspaceDiscWeight (u : Gf E 𝔰.κ) (l : ℕ) (V : Submodule E (𝔰.κ
   if finrank E V + l = 𝔰.k then ENNReal.ofReal (sublatticeDiscriminant u.1.val_inv V ^ (𝔰.k + 1))⁻¹
     else 0
 
-omit [HasPrimitiveRoot5040 E] in
+end
+
 /-- Let `u` be in `Gf E 𝔰.κ`, let `y` assign an element `y φ` of `stdLevel E 𝔰.κ` to each coset `φ`
 in `S.LatticeStabilizerCoset`, and let `L` be an `Ô`-submodule of `𝔸f E ^ 𝔰.κ`. The sum over these
 cosets `φ` of the weights `S.discWeightIfRowVanishes u (y φ) r L` equals the number of cosets `φ`
@@ -522,7 +524,8 @@ subspace `V`. Moreover, the sum of `(disc L) ^ (-k)` over the `φ` whose form va
 natural number `μ`. Here `subspaceDiscWeight u l V` is `d ^ (-k-1)` if `V` has codimension `l`, with
 `d` the discriminant of that lattice of `V`, and `0` otherwise. `N` is the prime of `S`, `H` is
 `discriminantBound` and `f` is the number of infinite places. -/
-lemma exists_sum_discWeightIfRowVanishes_le [Fintype S.LatticeStabilizerCoset] (u : Gf E 𝔰.κ)
+lemma exists_sum_discWeightIfRowVanishes_le [HasPrimitiveRoot5040 E]
+    [Fintype S.LatticeStabilizerCoset] (u : Gf E 𝔰.κ)
     {y : S.LatticeStabilizerCoset → stdLevel E 𝔰.κ}
     (hy : ∀ φ : S.LatticeStabilizerCoset, (y φ : S.LatticeStabilizerCoset) = φ)
     {r l : ℕ} (h_rank : r + l = 𝔰.k) (μ : ℕ) (L : S.BoundedDiscSublattice r (unimodularLattice u)) :
@@ -576,7 +579,8 @@ Here `𝔰.k = #𝔰.κ` is the size of the index set of the shape `𝔰`, and `
 hyperbolic planes. The sum of `[Λ : M] ^ (-dim V - 2 𝔰.ϱ - 4)` over the sublattices `M` of finite
 index in `Λ` is at most `2 ^ 𝔰.k`. The filling data `S : Filling E 𝔰` are used only for a bound on
 the degree of `E` in terms of `𝔰.ϱ`. -/
-lemma tsum_index_saturatedLattice_le (S : Filling E 𝔰) (u : Gf E 𝔰.κ) (V : Submodule E (𝔰.κ → E)) :
+lemma tsum_index_saturatedLattice_le [HasPrimitiveRoot5040 E] (S : Filling E 𝔰) (u : Gf E 𝔰.κ)
+    (V : Submodule E (𝔰.κ → E)) :
     ∑' M : {M : Submodule (Ô E) (𝔰.κ → 𝔸f E) // M ≤ saturatedLattice u.val.val_inv V ∧
         submoduleIndex M (saturatedLattice u.val.val_inv V) ≠ 0},
       (submoduleIndex M.val (saturatedLattice u.val.val_inv V) : ℝ≥0∞)⁻¹ ^
@@ -603,7 +607,8 @@ over the pairs of a coset `φ` and a lattice `L` of rank `r` in `u Ô ^ κ` with
 (200 f k rd) ^ (f (k + 1) l) 2 ^ k`. Here `N` is the prime of `S`, `H` is `discriminantBound`, `ϱ`
 is the number of hyperbolic planes of `𝔰`, `f` is the number of infinite places and `rd` is the root
 discriminant of `E`. -/
-lemma sum_tsum_discWeightIfRowVanishes_le [Fintype S.LatticeStabilizerCoset] (u : Gf E 𝔰.κ)
+lemma sum_tsum_discWeightIfRowVanishes_le [HasPrimitiveRoot5040 E]
+    [Fintype S.LatticeStabilizerCoset] (u : Gf E 𝔰.κ)
     {y : S.LatticeStabilizerCoset → stdLevel E 𝔰.κ}
     (hy : ∀ φ : S.LatticeStabilizerCoset, (y φ : S.LatticeStabilizerCoset) = φ)
     {r l : ℕ} (h_rank : r + l = 𝔰.k) :
@@ -665,7 +670,6 @@ end Forms
 
 /-! ### The constants and the sum over all classes -/
 
-omit [HasPrimitiveRoot5040 E] in
 /-- The number `S.tailScale = b ^ (k f / 4)` is nonnegative, as the size parameter `b` is. Here
 `k = |κ|` and `f` is the number of infinite places of `E`. -/
 lemma tailScale_nonneg (S : Filling E 𝔰) : 0 ≤ S.tailScale := by
@@ -685,10 +689,6 @@ lemma add_mul_succ_pow_three_le (ϱ : ℕ) :
     _ ≤ (ϱ + 1) ^ 9 + (ϱ + 1) ^ 8 * (6 * (ϱ + 1)) + (ϱ + 1) ^ 9 := by gcongr
     _ = 8 * (ϱ + 1) ^ 9 := by ring
     _ ≤ 10 ^ 5 * (ϱ + 1) ^ 9 := Nat.mul_le_mul_right _ (by norm_num)
-
-section
-
-omit [HasPrimitiveRoot5040 E]
 
 /-- Let `S` be filling data that satisfy the standing hypotheses `IsAdmissible`. The product
 `b ^ f H ^ (2 ϱ + 6) 2 ^ k` is at most `tailScale = b ^ (k f / 4)`. Here `b` is the size parameter
@@ -765,8 +765,6 @@ lemma mul_rootDiscr_pow_le_tailScale_pow_div (S : Filling E 𝔰) [S.IsAdmissibl
       · exact S.pow_mul_mul_rootDiscr_pow_le_tailScale
     _ = S.tailScale ^ (l + 1) := by ring
 
-end
-
 /-- **Lattices of given corank.** Let `S` be filling data, with prime `N = π π̄` and size parameter
 `b`, that satisfy the standing hypotheses `IsAdmissible`; those used are the form of the level,
 `N ≤ b ^ (60 (ϱ + 1))`, the lower bounds `1000 ≤ b` and `5 ≤ N`, and a lower bound for an index. Let
@@ -776,8 +774,8 @@ lattice `classLatticeX₀ c` consists of the adelic vectors `v` such that `g⁻�
 entry `k₀` divisible by `π̄`. Take the sum of `(disc L) ^ (-k)` over all `c` and all lattices `L` of
 rank `r` in that lattice with `disc L ≤ discriminantBound = b ^ ((ϱ + 1) ^ 3 f)`. This sum is at
 most `tailScale ^ (l + 1)` times the number of classes divided by `N ^ (k f)`. -/
-theorem sum_discriminant_inv_le {S : Filling E 𝔰} [S.IsAdmissible] {r l : ℕ}
-    (h_rank : r + l = 𝔰.k) :
+theorem sum_discriminant_inv_le [HasPrimitiveRoot5040 E] {S : Filling E 𝔰} [S.IsAdmissible]
+    {r l : ℕ} (h_rank : r + l = 𝔰.k) :
     ∑ c : S.Classes, ∑' L : {L : Submodule (Ô E) (𝔰.κ → 𝔸f E) // IsLatticeOfRank r L ∧
         L ≤ S.classLatticeX₀ c ∧ discriminant r L ≤ S.discriminantBound},
       ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹ ≤

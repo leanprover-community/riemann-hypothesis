@@ -60,8 +60,7 @@ section GramLiouville
 
 open NumberField Matrix Module
 
-variable {E P σ τ m n k : Type} [Field E] [NumberField E] [IsCMField E] [Fintype P] [Fintype σ]
-  [DecidableEq σ] [Field k]
+variable {E P σ τ m n k : Type} [Field E] [NumberField E] [IsCMField E] [Fintype P]
 
 /-- For a matrix over `E`, the matrix over the finite adeles of `E` obtained by embedding each
 entry. -/
@@ -81,11 +80,12 @@ lemma finAdeleMatrix_smul (M : Matrix m n E) (a : E) :
 
 /-! ### Splitting along a kernel -/
 
-omit [Fintype σ] [DecidableEq σ] in
 /-- If the column span of `y` lies in the kernel of `A`, then `A * y = 0`. -/
-lemma mul_eq_zero_of_colSpan_le_ker [Fintype τ] {y : Matrix P τ k} {A : Matrix σ P k}
+lemma mul_eq_zero_of_colSpan_le_ker [Field k] [Fintype τ] {y : Matrix P τ k} {A : Matrix σ P k}
     (h_le : colSpan y ≤ A.mulVecLin.ker) : A * y = 0 := by
   simpa [IsConcreteLE.le_iff, ext_iff_mulVec] using h_le
+
+variable [Fintype σ] [DecidableEq σ] [Field k]
 
 /-- The columns of `y` lie in `L` and in the kernel of `A`, and together with the columns of `x`
 they form a basis of `L`. `colSpan` is the span of the columns, and `HasLeftInv` says that there is
@@ -321,9 +321,8 @@ open NumberField Matrix Module Finset Fintype ENNReal Space AddSubgroup RingHom 
 
 section Steps
 
-variable {E κ : Type} [Field E] [CMType E] [Fintype κ] [DecidableEq κ]
+variable {E κ : Type} [Field E] [CMType E] [Fintype κ]
 
-omit [DecidableEq κ] in
 /-- Let `E` be a CM field with a chosen CM type (`CMType E`), and let `ᴴ` be the conjugate
 transpose for its complex conjugation. If `x` is a left invertible `κ × t` matrix over `E` and
 `t + s = #κ`, the hermitian orthogonal `ker xᴴ` of its columns has dimension `s`. -/
@@ -335,6 +334,8 @@ lemma finrank_ker_conjTranspose {t s : ℕ} (hts : t + s = Fintype.card κ) {x :
   have h_rank := xᴴ.mulVecLin.finrank_range_add_finrank_ker
   rw [h_range, finrank_top, Module.finrank_pi, Module.finrank_pi, Fintype.card_fin] at h_rank
   omega
+
+variable [DecidableEq κ]
 
 /-- Let `E` be a CM field with a chosen CM type (`CMType E`), and let `x`, `y`, `B` be matrices over
 `E`. If the columns of `y` span the hermitian orthogonal `ker xᴴ` of the columns of `x` and `B` is

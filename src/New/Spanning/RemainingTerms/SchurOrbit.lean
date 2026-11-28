@@ -59,9 +59,8 @@ open MeasureTheory Matrix Fintype RealPlace ENNReal Real Pointwise Fin
 open NumberField (InfinitePlace)
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
-  [S.IsAdmissible] {j : Fin (𝔰.ϱ + 2)} {c c' : S.Classes} {s : S.ResidueGL} {γ : S.G E}
+  {j : Fin (𝔰.ϱ + 2)} {c c' : S.Classes} {s : S.ResidueGL} {γ : S.G E}
 
-omit [S.IsAdmissible] in
 /-- The terms of an orbit have the same cell rank: if `δ` lies in the double coset of `γ` under the
 unipotent groups `classUnipotent₀` of `c` and `c'`, and `γ` has cell rank `j`, then so has `δ`. -/
 lemma HasCellRank.of_mem_doubleCoset {δ : S.G E}
@@ -73,7 +72,6 @@ lemma HasCellRank.of_mem_doubleCoset {δ : S.G E}
   rw [inv_inv] at h_stable
   exact h_stable.2 h_rank
 
-omit [S.IsAdmissible] in
 /-- If `δ` lies in the orbit of `γ`, the double coset under the groups `classUnipotent₀` of the
 classes `c` and `c'`, then `δ` and `γ` have the same matrix of products of the frame with its
 image. -/
@@ -88,7 +86,6 @@ lemma frameProducts_eq_of_mem_doubleCoset {δ : S.G E}
     frameGram_inv_mul_mul hu_bessel hx_bessel
   simpa [hu_matrix, hx_matrix] using h_gram
 
-omit [S.IsAdmissible] in
 /-- The terms of an orbit lie over the same block `(c, s, c')`: if `γ ∈ S.termsOver c s c'` (its
 translate by the class representatives is integral with residue `s`), then so is every `δ` in the
 double coset of `γ` under `classUnipotent₀ c` and `classUnipotent₀ c'`. -/
@@ -98,7 +95,6 @@ lemma termsOver.of_mem_doubleCoset {δ : S.G E}
   obtain ⟨u, ⟨⟨-, hu_over⟩, -⟩, x, ⟨⟨-, hx_over⟩, -⟩, rfl⟩ := mem_doubleCoset.1 hδ
   simpa using termsOver.mul (termsOver.mul hu_over h_over) hx_over
 
-omit [S.IsAdmissible] in
 /-- For `δ` in the orbit of `γ`, the conjugate of each row `i` of middle coordinates of the frame
 moved by `translateByClassReps c c' δ` differs from that for `γ` by `M` times an `Ô`-combination of
 the conjugates of the isotropic rows of the products (`frameGram`) of the frame with its image under
@@ -141,11 +137,6 @@ lemma col_frameMiddle_sub_mem {δ : S.G E}
   rw [h_diff]
   simp [row, g, mulVec_eq_sum, h_star, ← Units.smul_def, mul_comm]
 
-variable [HasPrimitiveRoot5040 E]
-
-section
-
-omit [HasPrimitiveRoot5040 E] [S.IsAdmissible]
 /-- Two elements `δ`, `γ` of `S.G E` with the same matrix `frameProducts` have, at every infinite
 place `v`, images `S.ratToInf δ v` and `S.ratToInf γ v` in `G₁` with the same matrix
 `realFrameGram`. -/
@@ -188,7 +179,6 @@ lemma HasCellRank.norm_det_subframeBlock (h_rank : S.HasCellRank j γ) (v : Infi
   exact RealPlace.norm_det_subframeBlock (min_le_left 𝔰.ϱ j) (hZ := rfl) h_pair j.is_le
     (hij := rfl)
 
-omit [HasPrimitiveRoot5040 E] in
 /-- A matrix product `P * M` with `P` integral has the conjugates of its rows in every `Ô`-module
 that contains the conjugates of the rows of `M`. -/
 lemma col_conjTranspose_mul_mem {m m' n : Type} [Fintype m]
@@ -336,12 +326,10 @@ lemma frameMiddle_translateByClassReps_sub {p p' : S.G E}
   ext r b
   simp [frameMiddle_translateByClassReps, hz_eq, Matrix.mul_apply, mul_sub]
 
-end
-
-omit [HasPrimitiveRoot5040 E] in
 /-- If `γ` has cell rank `j`, the products of `e₁, …, e_i, z` (`i = min ϱ j`) with their images
 form an invertible matrix at every infinite place. -/
-lemma HasCellRank.det_subframeBlock_ne_zero (h_rank : S.HasCellRank j γ) (v : InfinitePlace E) :
+lemma HasCellRank.det_subframeBlock_ne_zero [S.IsAdmissible] (h_rank : S.HasCellRank j γ)
+    (v : InfinitePlace E) :
     (subframeBlock (min_le_left 𝔰.ϱ j) (realFrameGram (S.ratToInf γ v))).det ≠ 0 := by
   have hδ : 0 < ‖Φ v (leadingMinor (S.frameProducts γ) j)‖ := by
     simpa using h_rank.leadingMinor_ne_zero
@@ -350,7 +338,6 @@ lemma HasCellRank.det_subframeBlock_ne_zero (h_rank : S.HasCellRank j γ) (v : I
   rw [← norm_pos_iff, h_rank.norm_det_subframeBlock]
   positivity
 
-omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- Let `γ` have cell rank `j` (`HasCellRank`), let `ξ` be the first `min ϱ j` isotropic rows of
 `frameProducts γ`, and let `p₀`, `p` have the same matrix of products as `γ`. Suppose the middle
 parts (`frameMiddle`) of the frames moved by `translateByClassReps c c' p` and
@@ -407,7 +394,6 @@ lemma HasCellRank.exists_isLatticeTranslate (h_rank : S.HasCellRank j γ) {p₀ 
       congrFun₂ h_eq 𝔰.top b
   · simpa [frameGram, Matrix.mul_apply, Matrix.one_apply] using congrFun₂ h_eq i.castSucc b
 
-omit [S.IsAdmissible] in
 /-- Let `γ` have cell rank `j` and lie over the block `(c, s, c')`, let `Λ` be the lattice of the
 class `c` and `A` the span of the isotropic vectors `e_a` of the frame. A term `p` is a lattice
 translate of `p₀` by `l` if `l` has columns in `Λ ∩ X₀` and, modulo `A`, the frame of `p` is that of
@@ -415,7 +401,7 @@ translate of `p₀` by `l` if `l` has columns in `Λ ∩ X₀` and, modulo `A`, 
 at most `bound` over every subset `B` of the orbit of `γ` that consists of translates of one of its
 points, then the sum over the orbit is at most `isotropicRowsIndex ^ k * bound`, as the orbit falls
 into at most `isotropicRowsIndex ^ k` such sets. -/
-lemma tsum_orbit_le_of_isLatticeTranslate (h_over : γ ∈ S.termsOver c s c')
+lemma tsum_orbit_le_of_isLatticeTranslate [HasPrimitiveRoot5040 E] (h_over : γ ∈ S.termsOver c s c')
     (h_rank : S.HasCellRank j γ) (w : S.G E → ℝ≥0∞) (bound : ℝ≥0∞)
     (h_coset : ∀ B : Set (S.G E), B ⊆ doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c') →
       ∀ p₀ ∈ B, ∀ l : S.G E → Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E,
@@ -482,7 +468,7 @@ by packing, for `γ` over the block `(c, s, c')` and any exponent `i`, the sum o
 places of the powers `-(k + i)` of the ratios of the volumes (`volumeRatio`). -/
 lemma tsum_schurWeight_fibre_le {B : Set (S.G E)}
     (hB : B ⊆ doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c')) {p₀ : S.G E}
-    {l : S.G E → Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E}
+    [S.IsAdmissible] [HasPrimitiveRoot5040 E] {l : S.G E → Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E}
     (hl : ∀ p ∈ B, IsLatticeTranslate c γ p₀ p (l p))
     {y : NumberField.InfinitePlace E → 𝔰.G₁} (h_over : γ ∈ S.termsOver c s c')
     (q : Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E) {i : ℕ} {C : ℝ≥0∞}
@@ -529,14 +515,14 @@ lemma tsum_schurWeight_fibre_le {B : Set (S.G E)}
     h_differ).trans ?_
   grw [one_pow, mul_one, ← pow_mul, pow_le_tailScale h_dim]
 
-omit [HasPrimitiveRoot5040 E] in
 /-- **The kernel at one place.** Let `γ` have cell rank `j`, let `i = min ϱ j`, let `y` be boxed,
 and let `Z` be the matrix of products of `γ` in the unit frame at `v`. Let `g₀` have the products
 `Z`, with a norm-one pair from `j`. There is a measurable `φ` on `X₀ ^ i` with integral at most
 `kernelBound j γ v` such that `volumeRatio g (y v) ^ (-(k + i)) ≤ φ A` for every `g` with the same
 two properties whose frame differs in `X₀` from that of `g₀` by the rescaled point `A` times the
 first `i` rows of `Z`. -/
-lemma HasCellRank.exists_majorant_lintegral_le_kernelBound (h_rank : S.HasCellRank j γ)
+lemma HasCellRank.exists_majorant_lintegral_le_kernelBound [S.IsAdmissible]
+    (h_rank : S.HasCellRank j γ)
     {y : InfinitePlace E → 𝔰.G₁} (hy : y ∈ S.boxedPoints) (v : InfinitePlace E) {g₀ : 𝔰.G₁}
     (hg₀_gram : realFrameGram g₀ = realFrameGram (S.ratToInf γ v))
     (hg₀_pair : NormOnePairOccursFrom j g₀) :
@@ -580,7 +566,7 @@ boxed. There is a measurable `φ` whose integral is at most the product of the e
 `kernelBound j γ v`, which bound the integrals of its local factors, such that for every `x` the sum
 over `B` of the weights `schurWeight` at `u * eichlerShift j x * y` is at most `S.tailScale` times
 the sum of `φ` over the translate by `x` of the lattice `(Λ ∩ X₀) ^ i` (`columnLattice`). -/
-lemma exists_tsum_schurWeight_le {B : Set (S.G E)}
+lemma exists_tsum_schurWeight_le [S.IsAdmissible] [HasPrimitiveRoot5040 E] {B : Set (S.G E)}
     (hB : B ⊆ doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c')) {p₀ : S.G E}
     (hp₀ : p₀ ∈ B) {l : S.G E → Matrix 𝔰.κ (Fin (min 𝔰.ϱ j)) E}
     (hl : ∀ p ∈ B, IsLatticeTranslate c γ p₀ p (l p)) {u y : NumberField.InfinitePlace E → 𝔰.G₁}
@@ -630,7 +616,6 @@ lemma exists_tsum_schurWeight_le {B : Set (S.G E)}
   subst hq
   exact Finset.prod_le_prod fun v _ ↦ h_ratio hp v
 
-omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- The matrix `shiftScaling j v` is diagonal with entries `M / basisScale v (e_l)` for `l < i`. The
 absolute value of its determinant is `(M √N) ^ i / |realM v| ^ ∑_{a < j} (ϱ - a)`, where
 `i = min ϱ j`, `M = S.M` is the level, `N = S.N` is the number with `h(z, z) = -N`, and `S.realM v`
@@ -653,14 +638,14 @@ lemma norm_det_shiftScaling (v : NumberField.InfinitePlace E) :
   simp only [h_entry]
   simp [prod_pow_eq_pow_sum, -Nat.cast_mul]
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `γ` have cell rank `j ≥ 1`, let `i = min ϱ j`, and let `δ` be the image of the leading minor
 of order `j` of `S.frameProducts γ` under the chosen embedding `Φ v` at the place `v`. The number
 `kernelBound j γ v`, which bounds the integral over `X₀ ^ i` of the kernel of Schur's test at `v`,
 is at most `((2 ρ²) ^ (i + 1) N ^ j / |δ|) ^ i` times the main factor
 `((b ^ 13 / M²) ^ i N ^ (j - ϱ) / |δ|) ^ k`. Here `ρ = frameBoxRadius = b ^ (37 n)`, and the
 truncated difference `j - ϱ` is `1` at the top rank `j = ϱ + 1` and `0` below. -/
-lemma kernelBound_le (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) (v : NumberField.InfinitePlace E) :
+lemma kernelBound_le [S.IsAdmissible] (h_rank : S.HasCellRank j γ) (hj : j ≠ 0)
+    (v : NumberField.InfinitePlace E) :
     S.kernelBound j γ v ≤
       ((2 * S.frameBoxRadius ^ 2) ^ (min 𝔰.ϱ j + 1) * S.N ^ j.val /
           ‖Φ v (leadingMinor (S.frameProducts γ) j)‖) ^ min 𝔰.ϱ j *
@@ -713,20 +698,18 @@ lemma kernelBound_le (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) (v : NumberFie
         ((S.b ^ 13) ^ i * S.N ^ (j - 𝔰.ϱ) / ((S.M ^ 2) ^ i * δ)) ^ 𝔰.k := by gcongr
     _ = _ := by ring
 
-omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 lemma kernelBound_nonneg (hb : 0 ≤ S.b) (v : NumberField.InfinitePlace E) :
     0 ≤ S.kernelBound j γ v := by
   unfold kernelBound
   positivity
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `γ` be a term of cell rank `j ≥ 1` over the block `(c, s, c')` and let `i = min ϱ j`. The
 number `kernelBound j γ v` bounds the integral over `X₀ ^ i` of the kernel of Schur's test at the
 place `v`. Its product over the `f` infinite places is at most
 `tailScale * (b ^ 13 / M²) ^ (i k f) * minorNorm ^ (-k / 2)`, where `minorNorm` is the absolute norm
 of the leading minor of order `j` of `S.frameProducts γ`, divided by `N ^ (2 f)` if `j = ϱ + 1`. -/
-lemma prod_kernelBound_le (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCellRank j γ)
-    (hj : j ≠ 0) :
+lemma prod_kernelBound_le [S.IsAdmissible] (h_over : γ ∈ S.termsOver c s c')
+    (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) :
     ∏ v : NumberField.InfinitePlace E, S.kernelBound j γ v ≤
       S.tailScale * (S.b ^ 13 / S.M ^ 2) ^ (min 𝔰.ϱ j * 𝔰.k * numInfPlaces E) *
         (√(S.minorNorm j γ))⁻¹ ^ 𝔰.k := by
@@ -776,7 +759,6 @@ lemma prod_kernelBound_le (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCe
         rw [h_sqrt, inv_div]
         ring
 
-omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- The sum of the weights `schurWeight` over the orbit of `γ` is left invariant under the
 subgroup `classUnipotent₀ c`, which permutes the orbit and fixes the frame. -/
 lemma tsum_schurWeight_ratToInf_mul {i : ℕ} {u : S.G E} (hu : u ∈ S.classUnipotent₀ c)
@@ -802,8 +784,8 @@ infinite places. Let `Λ` be the lattice of `c` and `A` the span of the isotropi
 `isotropicRowsIndex` is the index, in the lattice of the rows of products of `Λ ∩ A` with the frame
 of `translateByClassReps c c' γ = h_c⁻¹ γ h_c'`, of the part that comes from the `e_a` with
 `a < j`. -/
-lemma tsum_schurIntegral_le (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCellRank j γ)
-    (hj : j ≠ 0) :
+lemma tsum_schurIntegral_le [S.IsAdmissible] [HasPrimitiveRoot5040 E]
+    (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) :
     ∑' δ : doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c'),
         S.schurIntegral c c' δ (min 𝔰.ϱ j) ≤
       .ofReal (S.unipotentCovolume * (card S.BesselCoord * S.tailScale ^ 2 *
@@ -872,8 +854,8 @@ Here `i = min ϱ j`, `V` is `unipotentCovolume`, the common covolume of the
 unipotent groups of the classes, `d` is the number of Bessel coordinates, `τ = tailScale`, `f` is
 the number of infinite places, and the gauge `minorGauge` is `N ^ f * minorNorm` divided by the two
 indices `isotropicRowsIndex` of the term. -/
-theorem sq_tsum_amplitudeMajorant_doubleCoset_le (h_over : γ ∈ S.termsOver c s c')
-    (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) :
+theorem sq_tsum_amplitudeMajorant_doubleCoset_le [S.IsAdmissible] [HasPrimitiveRoot5040 E]
+    (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCellRank j γ) (hj : j ≠ 0) :
     (∑' δ : doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c'),
       S.amplitudeMajorant .cut c c' δ) ^ 2 ≤
       .ofReal ((S.unipotentCovolume * card S.BesselCoord * S.tailScale ^ 2 *
@@ -911,13 +893,13 @@ theorem sq_tsum_amplitudeMajorant_doubleCoset_le (h_over : γ ∈ S.termsOver c 
     ← ofReal_mul (by positivity), h_ratio, mul_pow _ _ 𝔰.k]
   exact ofReal_le_ofReal (le_of_eq (by ring))
 
-omit [HasPrimitiveRoot5040 E] in
 /-- At cell rank `j ≥ 1`, the second moment `cellRankSecondMoment j` is at least `α ^ (8 - 32 i)`
 times `identitySecondMoment`. Here `identitySecondMoment` is the order of the reduced image of the
 Bessel subgroup `besselS` times the dimension `sourceDim` of the space of source forms, and
 `cellRankSecondMoment j` is `mainSecondMoment` for `j = ϱ + 1` and `α ^ (-16)` times
 `identitySecondMoment` for `j ≤ ϱ`. -/
-lemma div_tailScale_pow_mul_identitySecondMoment_le_cellRankSecondMoment (hj : j ≠ 0) :
+lemma div_tailScale_pow_mul_identitySecondMoment_le_cellRankSecondMoment [S.IsAdmissible]
+    (hj : j ≠ 0) :
     S.tailScale ^ 8 / (S.tailScale ^ 32) ^ min 𝔰.ϱ j * S.identitySecondMoment ≤
       S.cellRankSecondMoment j := by
   have hτ : 1 ≤ S.tailScale := one_le_two.trans two_le_tailScale
@@ -935,7 +917,6 @@ lemma div_tailScale_pow_mul_identitySecondMoment_le_cellRankSecondMoment (hj : j
     gcongr
     lia
 
-omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
 /-- The field `le_M` of `S` gives `S.b ^ 19 ≤ S.M`, so the factor `S.b ^ 13 / S.M²` is at most
 `1 / (S.b ^ 4 S.M)`. -/
 lemma b_pow_div_M_sq_le : S.b ^ 13 / (S.M : ℝ) ^ 2 ≤ (S.b ^ 4 * S.M)⁻¹ := by
@@ -952,8 +933,8 @@ add up to at most `unipotentCovolume` times `orbitBound`, which is
 `α² √(D_j / (n_p (M ^ (2 i f) x) ^ k))` at the gauge `x = maxGauge`. Here `i = min ϱ j`,
 `k = dim X₀`, `D_j` is the second moment `cellRankSecondMoment j`, `n_p = pairCountScale` and
 `α = tailScale`. -/
-lemma tsum_amplitudeMajorant_orbit_le (h_over : γ ∈ S.termsOver c s c')
-    (h_rank : S.HasCellRank j γ) (hj : j ≠ 0)
+lemma tsum_amplitudeMajorant_orbit_le [S.IsAdmissible] [HasPrimitiveRoot5040 E]
+    (h_over : γ ∈ S.termsOver c s c') (h_rank : S.HasCellRank j γ) (hj : j ≠ 0)
     (h_disc_le : S.termDiscNorm γ ≤ S.N ^ numInfPlaces E * S.minorNorm j γ) :
     ∑' δ : doubleCoset γ (S.classUnipotent₀ c) (S.classUnipotent₀ c'),
       S.amplitudeMajorant .cut c c' δ ≤

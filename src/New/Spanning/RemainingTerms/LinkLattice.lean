@@ -330,8 +330,6 @@ lemma IsOrthogonalLift.linkDiscSq_mul_sq_eq [HasPrimitiveRoot5040 E] [Fintype τ
 
 end Classes
 
-variable [Fintype τ]
-
 /-- Let `γ` be a rational element of cell rank `j` whose adelic form
 `k = S.translateByClassReps c c' γ` keeps the standard lattice `Λ₀` and has the image `t` under the
 reduction map `S.reduction` to the finite group `S.ResidueGL`. Let the columns of `v` be a basis of
@@ -342,7 +340,7 @@ discriminant `linkDiscSq` of their lattice, times `w ^ 2`, is at most the square
 `S.minorNorm j γ`, which is `Nm (S.subframeMinor j γ) / N ^ (2 f)` for `-N` the norm of the last
 frame vector and `f` the number of infinite places. Moreover `w ≠ 0`, that is, the three indices are
 finite. -/
-lemma exists_lifts_linkDiscSq_le [HasPrimitiveRoot5040 E] [DecidableEq τ]
+lemma exists_lifts_linkDiscSq_le [Fintype τ] [HasPrimitiveRoot5040 E] [DecidableEq τ]
     {t : S.ResidueGL} (hγ : γ ∈ S.termsOver c t c')
     (hj : S.HasCellRank j γ) {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E}
     (hv : HasLeftInv v) (hL : colSpan v = link γ) :
@@ -511,7 +509,6 @@ section LevelLifts
 
 variable {σ : Type} {m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ (𝔸f E)}
 
-omit [Fintype τ] in
 /-- Columns in the lattice `L⁺_γ` (`HasLevelLifts`) have integral lifts. -/
 lemma HasLevelLifts.hasIntegralLifts (h_lift : HasLevelLifts c γ m) : HasIntegralLifts c γ m := by
   obtain ⟨ρ, _, t, w, h_orth, h_int, -, h_eq⟩ := h_lift
@@ -519,7 +516,7 @@ lemma HasLevelLifts.hasIntegralLifts (h_lift : HasLevelLifts c γ m) : HasIntegr
 
 /-- If the columns of `m` lie in the lattice `L⁺_γ` (`HasLevelLifts`), so do those of `m V` for
 every integral `V`. -/
-lemma HasLevelLifts.mul (h_lift : HasLevelLifts c γ m) {V : Matrix τ σ (𝔸f E)}
+lemma HasLevelLifts.mul [Fintype τ] (h_lift : HasLevelLifts c γ m) {V : Matrix τ σ (𝔸f E)}
     (hV : IsIntMatrix (Ô E) V) : HasLevelLifts c γ (m * V) := by
   obtain ⟨ρ, _, t, w, h_orth, h_int, h_level, rfl⟩ := h_lift
   refine ⟨ρ, inferInstance, t, w * V, h_orth, ?_, ?_, (Matrix.mul_assoc ..).symm⟩
@@ -532,7 +529,6 @@ lemma HasLevelLifts.mul (h_lift : HasLevelLifts c γ m) {V : Matrix τ σ (𝔸f
     rw [h_assoc]
     exact h_level.mul hV
 
-omit [Fintype τ] in
 /-- If the columns of `m` lie in the lattice `L⁺_γ` (`HasLevelLifts`), then so do the columns of
 `m.submatrix id e`, the columns of `m` chosen by `e`. -/
 lemma HasLevelLifts.submatrix (h_lift : HasLevelLifts c γ m) (e : σ → τ) :
@@ -543,8 +539,6 @@ lemma HasLevelLifts.submatrix (h_lift : HasLevelLifts c γ m) (e : σ → τ) :
   · exact fun a b ↦ h_level a (e b)
 
 end LevelLifts
-
-variable [DecidableEq τ]
 
 section Index
 
@@ -631,7 +625,6 @@ lemma submoduleIndex_ideleM_smul_isotropicRows_dvd [HasPrimitiveRoot5040 E]
         (intVectors (Ô E) (IndexBelow j)) := submoduleIndex_dvd_of_le _ h_image le_sup_left
     _ = S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := h_level
 
-omit [DecidableEq τ] [Fintype τ] in
 /-- Let `A` be the span of `e₁, …, e_ϱ` and let `γ` have cell rank `j` (`S.HasCellRank j γ`). Let
 `u` be an orthogonal lift of `v`. An adelic vector of `A` is a combination of the rational basis of
 `I = A ∩ γ A` formed by the columns of `u.toCols₁` if its products with the rows `isotropicRows` of
@@ -681,7 +674,6 @@ lemma IsOrthogonalLift.eq_mul_of_isotropicRows_mul_eq_zero {σ : Type}
   rw [← sub_eq_zero, ← hd, ← Matrix.one_mul d, ← h_left, Matrix.mul_assoc, h_padded,
     Matrix.mul_zero]
 
-omit [Fintype τ] [DecidableEq τ] in
 /-- Let `γ` have cell rank `j`, and let the columns of `t w`, adelic combinations of rational
 vectors orthogonal to `A` and `γ A`, be integral in the lattice `Λ` of `c`. Suppose that the part in
 `A` of each has the same products with the frame of `γ` as some vector of `M (Λ ∩ A)`. Then their
@@ -737,7 +729,7 @@ lemma hasLevelLifts_of_col_mem (hj : S.HasCellRank j γ) {ρ : Type} [Fintype ρ
     fromCols_mul_fromRows]
     simp
 
-variable [HasPrimitiveRoot5040 E]
+variable [Fintype τ] [DecidableEq τ] [HasPrimitiveRoot5040 E]
 
 /-- Let `γ` be a term of cell rank `j` from `c'` to `c`, put `k = S.translateByClassReps c c' γ`,
 and let `m` have integral entries. Column `a` of `P` holds the products of `e_a` with the frame

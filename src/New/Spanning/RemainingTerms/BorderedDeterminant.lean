@@ -356,11 +356,11 @@ open NumberField Matrix Fin Pointwise
 
 namespace New.Filling
 
-variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape}
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape}
 
 section
 
-variable (S : Filling E 𝔰) {R : Type*} (j : Fin (𝔰.ϱ + 2)) (c : S.Classes)
+variable [HasPrimitiveRoot5040 E] (S : Filling E 𝔰) {R : Type*} (j : Fin (𝔰.ϱ + 2)) (c : S.Classes)
   (Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) R) (k : S.GFin)
 
 /-! ### Rows of the matrix of products -/
@@ -475,10 +475,6 @@ lemma isotropicRowsIndex_top : S.isotropicRowsIndex ⊤ k = 1 :=
 end
 
 /-! ### Terms of cell rank `j` -/
-
-section
-
-omit [HasPrimitiveRoot5040 E]
 
 /-- If `γ` has cell rank `j` (`S.HasCellRank j γ`), then `S.minorNorm j γ`, the absolute norm of the
 leading minor of order `j` of `S.frameProducts γ` (divided by a power of `N` when `j = ϱ + 1`), is
@@ -605,8 +601,6 @@ lemma HasCellRank.unique {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ : S.G 
   · have hj := h.lt_iff_termDisc_ne_zero.2 h_disc
     have hj' := h'.lt_iff_termDisc_ne_zero.2 h_disc
     omega
-
-end
 
 end New.Filling
 

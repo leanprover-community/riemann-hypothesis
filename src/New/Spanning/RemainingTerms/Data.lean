@@ -36,8 +36,12 @@ namespace New.Filling
 
 open NumberField Matrix Module Pointwise
 
-variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape} (S : Filling E 𝔰)
-  (j : Fin (𝔰.ϱ + 2)) (c c' : S.Classes) (γ γ' : S.G E)
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape}
+
+section
+
+variable [HasPrimitiveRoot5040 E] (S : Filling E 𝔰) (j : Fin (𝔰.ϱ + 2)) (c c' : S.Classes)
+  (γ γ' : S.G E)
 
 /-- The lattice `Λ ∩ X₀` of the class `c`, in rational coordinates: the vectors that
 `S.classCoordX₀ c` sends to integral vectors. -/
@@ -107,9 +111,10 @@ def nearRepresentativesOver (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) 
     Set (S.G E) :=
   {γ : S.G E | γ ∈ T ∩ S.termsOver c s c' ∧ S.Agrees s ∧ S.IsNearRepresentativeAtCellRank c c' γ}
 
-variable {S c}
+end
 
-omit [HasPrimitiveRoot5040 E] in
+variable {S : Filling E 𝔰} {c : S.Classes}
+
 /-- If the rational element `γ` lies in some cell `j` (`S.HasCellRank j γ`:
 `New.NormOnePairOccursFrom` `j` holds, the leading minor `D_j` of `S.frameProducts γ` is nonzero,
 and `S.termDisc γ ≠ 0` exactly for `j = ϱ + 1`), then it lies in the cell of the index
@@ -118,7 +123,6 @@ lemma HasCellRank.hasCellRank_cellRank {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
     (h : S.HasCellRank j γ) : S.HasCellRank (S.cellRank γ) γ :=
   Classical.epsilon_spec (p := fun i : Fin (𝔰.ϱ + 2) ↦ S.HasCellRank i γ) ⟨j, h⟩
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Vectors of `Λ ∩ X₀`, for the lattice `Λ` of the class `c` in the definite space `X₀`, have
 integral products. Here `S.classCoordX₀ c` changes from an orthonormal basis of `X₀` to the
 coordinates of `Λ`, and integral means with entries in the ring `Ô E` of integral elements of the
@@ -135,6 +139,8 @@ lemma isIntMatrix_conjTranspose_mul_of_classCoordX₀ {σ τ : Type} {m : Matrix
       _ = _ := by simp only [conjTranspose_mul, Matrix.mul_assoc]
   rw [h_gram]
   exact (hm.conjTranspose.mul S.isUnimodular_latticeMiddle.isIntMatrix).mul hm'
+
+variable [HasPrimitiveRoot5040 E]
 
 /-- For a subspace `V` of the definite space `X₀` and the lattice `Λ` of the class `c`, the real
 number `S.latticeDisc c V` is at least `1`. It is the square root of the generalised index

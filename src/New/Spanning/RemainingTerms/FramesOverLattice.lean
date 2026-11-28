@@ -127,9 +127,8 @@ lemma IsFrameSet.mono {c : S.Classes} {B : Set (S.Classes × S.G E)} (hB : S.IsF
   mem_termsOver p hp := hB.mem_termsOver p (hD hp)
   separated p hp q hq := hB.separated p (hD hp) q (hD hq)
 
-variable [S.IsAdmissible] {c : S.Classes} {B : Set (S.Classes × S.G E)}
+variable {c : S.Classes} {B : Set (S.Classes × S.G E)}
 
-omit [S.IsAdmissible] in
 /-- The matrix of products of the standard frame with the frame of a term of a frame set has
 integral entries. -/
 lemma IsFrameSet.isIntegral_frameProducts (hB : S.IsFrameSet c B) {p : S.Classes × S.G E}
@@ -142,7 +141,7 @@ set for `c`: near terms over blocks with the first class `c`, whose frames diffe
 unipotent elements of level `M` that fix the standard frame. The terms of `B` have at most
 `b ^ (270 n³ f)` matrices of products of the standard frame with their frame. Here `b = S.b` is the
 size parameter of `S`, `n` is the length of the frame and `f` the number of infinite places. -/
-lemma IsFrameSet.encard_range_frameProducts_le (hB : S.IsFrameSet c B) :
+lemma IsFrameSet.encard_range_frameProducts_le [S.IsAdmissible] (hB : S.IsFrameSet c B) :
     (Set.range fun p : B ↦ S.frameProducts p.val.2).encard ≤
       ENNReal.ofReal (S.b ^ (270 * 𝔰.n ^ 3 * numInfPlaces E)) := by
   -- The entries are integral and bounded at every infinite place.
@@ -159,7 +158,6 @@ lemma IsFrameSet.encard_range_frameProducts_le (hB : S.IsFrameSet c B) :
   grw [h_packing, h_radius, ← pow_mul, card_prod, Fintype.card_fin]
   exact le_of_eq (by ring_nf)
 
-omit [S.IsAdmissible] in
 /-- There are `ϱ + 2` cell ranks, and `ϱ + 2 ≤ b ^ (2 f)` with `f` the number of infinite places. -/
 private lemma varrho_add_two_le_b_pow : ((𝔰.ϱ + 2 : ℕ) : ℝ) ≤ S.b ^ (2 * numInfPlaces E) :=
   calc ((𝔰.ϱ + 2 : ℕ) : ℝ) ≤ S.b ^ 2 := by
@@ -171,15 +169,13 @@ private lemma varrho_add_two_le_b_pow : ((𝔰.ϱ + 2 : ℕ) : ℝ) ≤ S.b ^ (2
 
 end FrameSets
 
-variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape} {S : Filling E 𝔰}
-  [S.IsAdmissible]
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
 
 section Rounds
 
 variable {j : Fin (𝔰.ϱ + 2)} {c : S.Classes} {B : Set (S.Classes × S.G E)}
   {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E} {r l : ℕ} {y : Matrix 𝔰.κ (Fin r) E}
 
-omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
 /-- Let `γ` be a term over the block `(c, s, c')`: a rational element such that `h_c⁻¹ γ h_c'`, for
 the representatives of the classes `c` and `c'`, is integral with reduction `s`. The entries of its
 matrix of shared vectors for the index `j` are algebraic integers. -/
@@ -201,13 +197,12 @@ lemma isIntegral_sharedVectors {γ : S.G E} {s : S.ResidueGL} {c' : S.Classes}
   · exact algebraMap_mem_Ô.1 (h_frame.mul hY.adjugate a k)
   · exact isIntegral_zero
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `B` be a frame set whose terms all have cell rank `j`: from the index `j` on, the flags of
 the standard frame `f` and of the frame `γ f` share vectors, and the leading minor of order `j` of
 their matrix of products is nonzero. Then there are at most `b ^ (366 n⁴ f')` matrices
 `S.sharedVectors j γ`. Here `b = S.b` is the size parameter of `S`, `n = ϱ + 1` the length of the
 frame and `f'` the number of infinite places. -/
-lemma IsFrameSet.encard_range_sharedVectors_le (hB : S.IsFrameSet c B)
+lemma IsFrameSet.encard_range_sharedVectors_le [S.IsAdmissible] (hB : S.IsFrameSet c B)
     (h_cellRank : ∀ p ∈ B, S.HasCellRank j p.2) :
     (Set.range fun p : B ↦ S.sharedVectors j p.val.2).encard ≤
       ENNReal.ofReal (S.b ^ (366 * 𝔰.n ^ 4 * numInfPlaces E)) := by
@@ -224,14 +219,14 @@ lemma IsFrameSet.encard_range_sharedVectors_le (hB : S.IsFrameSet c B)
       card_prod, Fintype.card_fin, Fintype.card_fin]
     exact pow_le_pow_right₀ (by linarith) (by lia)
 
-omit [S.IsAdmissible] in
 /-- Let `γ` and `γ'` have the same integral matrix of products `Z` with nonzero leading minor of
 order `j`, the same shared vectors and the same part in the anisotropic space `X₀`. Let `c`, `c'`,
 `c''` be any three classes, with representatives `h_c`, `h_c'`, `h_c''`. If the first `ϱ` rows of
 the frames of `h_c⁻¹ γ h_c'` and `h_c⁻¹ γ' h_c''` are congruent modulo `d = S.frameModulus j Z`,
 then some `u ∈ S.classUnipotent₀ c`, a move for `c`, carries the frame of `γ` to the frame of
 `γ'`. -/
-private lemma exists_frameImage_mul_eq_of_sub_mem {γ γ' : S.G E} {c' c'' : S.Classes}
+private lemma exists_frameImage_mul_eq_of_sub_mem [HasPrimitiveRoot5040 E] {γ γ' : S.G E}
+    {c' c'' : S.Classes}
     (hγ : S.frameProducts γ = Z) (hγ' : S.frameProducts γ' = Z)
     (hZ_int : ∀ a b : Fin (𝔰.ϱ + 1), IsIntegral ℤ (Z a b)) (h_minor : leadingMinor Z j ≠ 0)
     (h_shared : S.sharedVectors j γ' = S.sharedVectors j γ)
@@ -266,7 +261,6 @@ private lemma exists_frameImage_mul_eq_of_sub_mem {γ γ' : S.G E} {c' c'' : S.C
   exact exists_mem_classUnipotent₀_frameImage_mul_eq c hγ' hZ_int h_minor h_shared
     (apply_inr_besselFrame_eq hγ' h_part) hξ (smul_inv_smul₀ hd_ne ξ).symm
 
-omit [S.IsAdmissible] in
 /-- Let `E` be a CM field with a primitive 5040-th root of unity and `S` admissible filling data
 over `E`. Take near terms of cell rank `j` (from the index `j` on, the flags of the standard frame
 and of the frame of the term share vectors, and the leading minor of order `j` of their matrix of
@@ -277,7 +271,7 @@ which lie in the spans of both frames) and that their frames have one part in th
 `X₀` after the moves `u`, unipotent elements of level `M` that fix the standard frame. Let
 `d = M det (Y Yᴴ)`. Then there are at most `[d] ^ (n ϱ)` terms, where `[d]` is the generalised
 index and `n = ϱ + 1`. -/
-lemma IsFrameSet.encard_le_of_sharedVectors_eq (hB : S.IsFrameSet c B)
+lemma IsFrameSet.encard_le_of_sharedVectors_eq [HasPrimitiveRoot5040 E] (hB : S.IsFrameSet c B)
     (h_cellRank : ∀ p ∈ B, S.HasCellRank j p.2) (hZ : ∀ p ∈ B, S.frameProducts p.2 = Z)
     (h_shared : ∀ p ∈ B, ∀ q ∈ B, S.sharedVectors j p.2 = S.sharedVectors j q.2)
     {u : S.Classes × S.G E → S.G E} (hu : ∀ p ∈ B, u p ∈ S.classUnipotent₀ c)
@@ -325,6 +319,8 @@ lemma IsFrameSet.encard_le_of_sharedVectors_eq (hB : S.IsFrameSet c B)
           h_unique p (hC hp) q (hC hq) (h_congr q hq p hp)
     _ = ENNReal.ofReal ((genIndex d.val ^ 𝔰.n) ^ 𝔰.ϱ) := by
         rw [submoduleIndex_smul_intVectors hd_int, Fintype.card_fin, Fintype.card_fin, mul_one]
+
+variable [HasPrimitiveRoot5040 E] [S.IsAdmissible]
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in
@@ -587,7 +583,8 @@ on, the flags of the standard frame and of `γ`'s frame share vectors, and the l
 `j` of their matrix of products is nonzero. Third, `γ` has label `t`, the position of its reduction
 in its coset of `S.reducedImage besselS`, the image in `S.ResidueGL` of the integral points of the
 Bessel group. -/
-theorem encard_setOf_isNearTermAt_and_le_termLattice_le {c : S.Classes} {r l : ℕ}
+theorem encard_setOf_isNearTermAt_and_le_termLattice_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+    {c : S.Classes} {r l : ℕ}
     (t : S.reducedImage besselS)
     (h_rank : r + l = 𝔰.k) {L : Submodule (Ô E) (𝔰.κ → 𝔸f E)} (hL : IsLatticeOfRank r L)
     (h_le_classLattice : L ≤ S.classLatticeX₀ c)
