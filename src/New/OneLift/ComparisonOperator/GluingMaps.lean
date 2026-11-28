@@ -356,43 +356,24 @@ sum, over the classes `h` of level `J_Λ` and `h°` of level `J (ϖ²)`, of the 
 class of `(h, h°) 𝗀` formed from the product vector `φ″ (h) · ζ (h°)` (`productForm`). Here `𝗀`
 is the matrix of `glueLattice j ϑ i`, `M = D.M`, and `l₁` is
 `DividedSplitting.denominatorExponent`, the exponent that repays the denominators of `𝗀`. -/
-@[simps -isSimp] def glue : FormTuples j →ₗ[ℂ] (D.descentPair ϑ j).FormV where
-  toFun ζ := (D.M ^ (splittingV j ϑ).denominatorExponent : ℂ) • ∑ b :
-    ChoiceIndex j × D.SecondFactorClasses,
+def glue : FormTuples j →ₗ[ℂ] (D.descentPair ϑ j).FormV :=
+  (D.M ^ (splittingV j ϑ).denominatorExponent : ℂ) • ∑ b : ChoiceIndex j × D.SecondFactorClasses,
     stdClassSum (gluingLevel j ϑ b.1.1) fun h : Gf D.E (FirstFactorIndex j) ↦
-      (splittingV j ϑ).productForm (glueLattice j ϑ b.1) (h, b.2.out) (firstFactor j ϑ b.1 h) (ζ b)
-  map_add' x y := by
-    have h_sum_add {K : Subgroup (Gf D.E (FirstFactorIndex j))} [IsLevel K]
-        (f g : Gf D.E (FirstFactorIndex j) → (D.descentPair ϑ j).FormV) :
-        stdClassSum K (fun h ↦ f h + g h) = stdClassSum K f + stdClassSum K g := by
-      simp only [classSum, finsum_eq_sum_of_fintype, smul_add, sum_add_distrib]
-    rw [← smul_add, ← sum_add_distrib]
-    refine congrArg _ (sum_congr rfl fun b _ ↦ ?_)
-    have h_pt (h : Gf D.E (FirstFactorIndex j)) :
-        (splittingV j ϑ).productForm (glueLattice j ϑ b.1) (h, b.2.out) (firstFactor j ϑ b.1 h)
-            ((x + y) b) =
+      (splittingV j ϑ).productForm (glueLattice j ϑ b.1) (h, b.2.out) (firstFactor j ϑ b.1 h) ∘ₗ
+        PiLp.projₗ 2 _ b
+
+/-- Evaluate the gluing map by evaluating each product form in its class sum. -/
+lemma glue_apply (ζ : FormTuples j) :
+    glue j ϑ ζ = (D.M ^ (splittingV j ϑ).denominatorExponent : ℂ) •
+      ∑ b : ChoiceIndex j × D.SecondFactorClasses,
+        stdClassSum (gluingLevel j ϑ b.1.1) fun h : Gf D.E (FirstFactorIndex j) ↦
           (splittingV j ϑ).productForm (glueLattice j ϑ b.1) (h, b.2.out) (firstFactor j ϑ b.1 h)
-            (x b) +
-          (splittingV j ϑ).productForm (glueLattice j ϑ b.1) (h, b.2.out) (firstFactor j ϑ b.1 h)
-            (y b) :=
-      map_add _ (x b : WeylIndex _ (D.descentPair ϑ j).colsMinus → ℂ) (y b)
-    exact (congrArg (stdClassSum _) (funext h_pt)).trans (h_sum_add _ _)
-  map_smul' a x := by
-    have h_sum_smul {K : Subgroup (Gf D.E (FirstFactorIndex j))} [IsLevel K]
-        (f : Gf D.E (FirstFactorIndex j) → (D.descentPair ϑ j).FormV) :
-        stdClassSum K (fun h ↦ a • f h) = a • stdClassSum K f := by
-      simp only [classSum, finsum_eq_sum_of_fintype, smul_comm a, smul_sum]
-    rw [RingHom.id_apply, smul_comm a]
-    congr 1
-    rw [smul_sum]
-    refine sum_congr rfl fun b _ ↦ ?_
-    have h_pt (h : Gf D.E (FirstFactorIndex j)) :
-        (splittingV j ϑ).productForm (glueLattice j ϑ b.1) (h, b.2.out) (firstFactor j ϑ b.1 h)
-            ((a • x) b) =
-          a • (splittingV j ϑ).productForm (glueLattice j ϑ b.1) (h, b.2.out)
-            (firstFactor j ϑ b.1 h) (x b) :=
-      map_smul _ a (x b : WeylIndex _ (D.descentPair ϑ j).colsMinus → ℂ)
-    exact (congrArg (stdClassSum _) (funext h_pt)).trans (h_sum_smul _)
+            (ζ b) := by
+  let eval : (FormTuples j →ₗ[ℂ] (D.descentPair ϑ j).FormV) →ₗ[ℂ] _ := LinearMap.applyₗ ζ
+  change eval (glue j ϑ) = _
+  unfold glue
+  refine (map_smul eval _ _).trans (congrArg _ ((map_sum eval _ _).trans ?_))
+  exact sum_congr rfl fun b _ ↦ map_classSum eval _
 
 /-- The period is a sum of slices. Let `φ` be a form on `V_j = V″ ⊕ V°` and `ζ` a tuple of forms on
 `V°`. The inner product of `ζ` with the adjoint of the gluing map `glue j ϑ` at `φ` is `M ^ l₁`
