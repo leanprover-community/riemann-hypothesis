@@ -3,9 +3,9 @@ module
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Combinatorics.Additive.AP.Three.Behrend
 import Mathlib.NumberTheory.SumTwoSquares
 import Mathlib.RingTheory.ZMod.UnitsCyclic
+import TauCeti.Combinatorics.Additive.NoRelation
 public import New.Reduction.Data.AdmissibleData
 import Lib.Analytic.Primes
 
@@ -33,22 +33,12 @@ Notions from other files:
 * `P.IsSparse s L T`: no places `σ, τ, ρ` in `T` have `τ / σ ≡ ± ℓ ^ i` and `ρ / σ ≡ ± ℓ ^ j` modulo
   the part of `q₁` prime to `ℓ`, for a prime `ℓ ≤ L` and `0 < i < j < l₀`.
 * `P.q₂ s = (q₀ d) ^ (s + 6)`; its square, written `q₂²`, is the modulus of the primes to be found.
+* `TauCeti.exists_eq_and_eq_of_add_mul_modEq` gives the sets of Behrend's type: if `(L H) ^ n ≤ o`,
+  at least `H ^ n / (n H ^ 2)` numbers below `o` such that a congruence
+  `(α + α') e₂ ≡ α e₁ + α' e₃` modulo `o` between three of them, with `α, α' > 0` and
+  `α + α' ≤ L`, forces `e₁ = e₂ = e₃`.
 * `P.logLevelMin s m κ M L` is `log N₋`, where `N₋ = κ̄ ^ m (M rd_E / 2π) ^ (m - 1) b ^ (-15 / 2)`,
   `κ̄` being the geometric mean of the weights `κ`, `rd_E` the root discriminant and `L = log b`.
-
-## Relation to the literature
-
-Alon–Shapira, *A characterization of easily testable induced subgraphs* (2006),
-[Lemma 4.1, pp. 6–7 of the authors' version](https://web.math.princeton.edu/~nalon/PDFS/testindfull2.pdf#page=6),
-construct one set of integers on which every equation `a x + b y = (a + b) z` with
-`1 ≤ a, b ≤ h` has only the solutions `x = y = z`. Their proof uses Behrend's digit sphere
-(PNAS 32, 1946). Shapira, *Behrend-type constructions for sets of linear equations*
-(Acta Arith. 2006), also treats individual equations and systems of equations.
-
-`exists_three_term_free` bounds the sum of the positive weights by `L` and states the result
-modulo `o`, with a prescribed digit count `n` and digit bound `H`. Both weighted sums have
-base-`L * H` digits less than `L * H`, so their values are below `(L * H) ^ n ≤ o` and a
-congruence gives an equality. The sphere count gives the bound `H ^ n / (n * H ^ 2)`.
 -/
 
 @[expose] public section
@@ -67,66 +57,7 @@ bound for `log N₋` is used as well.
 
 namespace New
 
-open Finset Behrend Real Filter NumberField ClassGroup NeZero QuadField
-
-/-- A sphere is strictly convex: if three integer vectors of equal squared length satisfy
-`(α + α') v = α u + α' w` with `α, α' > 0`, they are equal. -/
-lemma eq_of_add_mul_eq_of_sum_sq_eq {ι : Type*} [Fintype ι] {α α' : ℕ} {u v w : ι → ℕ}
-    (hα : 0 < α) (hα' : 0 < α') (h_coord : ∀ l : ι, ((α : ℤ) + α') * v l = α * u l + α' * w l)
-    (huv_sq : ∑ l : ι, u l ^ 2 = ∑ l : ι, v l ^ 2)
-    (hvw_sq : ∑ l : ι, v l ^ 2 = ∑ l : ι, w l ^ 2) : u = v ∧ v = w := by
-  -- the three squared lengths agree, so `α α' ∑ (u l - w l) ^ 2 = 0`
-  have h_sq : ∑ l, (α * α' : ℤ) * (u l - w l : ℤ) ^ 2 = 0 := by
-    zify at huv_sq hvw_sq
-    calc _ = ∑ l, ((α + α') * (α * (u l : ℤ) ^ 2 + α' * (w l : ℤ) ^ 2) -
-            ((α + α') * v l) ^ 2) := sum_congr rfl fun l _ ↦ by grind [h_coord l]
-      _ = 0 := by
-          simp only [mul_pow, sum_sub_distrib, sum_add_distrib, ← mul_sum, huv_sq, ← hvw_sq]
-          ring
-  obtain rfl : u = w := funext fun l ↦ by
-    simpa [hα.ne', hα'.ne', sub_eq_zero] using
-      (sum_eq_zero_iff_of_nonneg fun l _ ↦ by positivity).1 h_sq l (mem_univ l)
-  have h_eq : u = v := funext fun l ↦ by nlinarith [h_coord l]
-  exact ⟨h_eq, h_eq.symm⟩
-
-/-- **Behrend's sets.** If `0 < L` and `(L H) ^ n ≤ o`, there is a set `S` of at least
-`H ^ n / (n H ^ 2)` integers in `[0, o)` such that a congruence `(α + α') e₂ ≡ α e₁ + α' e₃`
-modulo `o`, with `e₁, e₂, e₃ ∈ S`, `α, α' > 0` and `α + α' ≤ L`, forces `e₁ = e₂ = e₃`. -/
-lemma exists_three_term_free {n H L o : ℕ} (hL : 0 < L) (ho : (L * H) ^ n ≤ o) :
-    ∃ S : Finset ℕ,
-      (∀ e ∈ S, e < o) ∧
-      (H ^ n / (n * H ^ 2) : ℝ) ≤ #S ∧
-      ∀ e₁ ∈ S, ∀ e₂ ∈ S, ∀ e₃ ∈ S, ∀ α α' : ℕ, 0 < α → 0 < α' → α + α' ≤ L →
-        (α + α') * e₂ ≡ α * e₁ + α' * e₃ [MOD o] → e₁ = e₂ ∧ e₂ = e₃ := by
-  -- Take the integers whose digits in base `L * H` form a vector on a large sphere in
-  -- `{0, …, H - 1} ^ n`. A congruence between three of them is an equation between digit vectors,
-  -- which makes one a mean of the other two; on a sphere this forces equality.
-  obtain ⟨k, hk⟩ := exists_large_sphere n H
-  -- `map (L * H) v` is the number with digits `v` in base `L * H`
-  have h_lt (v : Fin n → ℕ) (hv : ∀ l : Fin n, v l < L * H) : map (L * H) v < o :=
-    calc ∑ l : Fin n, v l * (L * H) ^ (l : ℕ) < (L * H) ^ n :=
-          (finFunctionFinEquiv fun l : Fin n ↦ ⟨v l, hv l⟩).isLt
-      _ ≤ o := ho
-  have h_sphere {v : Fin n → ℕ} :
-      v ∈ sphere n H k ↔ (∀ l : Fin n, v l < H) ∧ ∑ l : Fin n, v l ^ 2 = k := by
-    simp [sphere, Behrend.mem_box]
-  have h_digit (v : Fin n → ℕ) (hv : v ∈ sphere n H k) (l : Fin n) : v l < L * H :=
-    ((h_sphere.1 hv).1 l).trans_le (Nat.le_mul_of_pos_left H hL)
-  refine ⟨(sphere n H k).image (map (L * H)), forall_mem_image.2 fun v hv ↦ h_lt v (h_digit v hv),
-    by simpa [card_image_of_injOn (map_injOn.mono (s₁ := (sphere n H k : Set (Fin n → ℕ)))
-      fun v hv ↦ h_digit v (Finset.mem_coe.1 hv))] using hk, ?_⟩
-  simp only [forall_mem_image, h_sphere]
-  rintro u ⟨hu, hu_sq⟩ v ⟨hv, hv_sq⟩ w ⟨hw, hw_sq⟩ α α' hα hα' h_sum h_cong
-  -- both sides of the congruence have digits below `L * H`, so they are equal digit by digit
-  have h_left (l : Fin n) : ((α + α') • v) l < L * H :=
-    show (α + α') * v l < L * H by nlinarith [hv l]
-  have h_right (l : Fin n) : (α • u + α' • w) l < L * H :=
-    show α * u l + α' * w l < L * H by nlinarith [hu l, hw l]
-  have h_mean : (α + α') • v = α • u + α' • w := by
-    refine map_injOn h_left h_right (Nat.ModEq.eq_of_lt_of_lt ?_ (h_lt _ h_left) (h_lt _ h_right))
-    simpa only [map_add, map_nsmul, smul_eq_mul] using h_cong
-  exact (eq_of_add_mul_eq_of_sum_sq_eq hα hα' (fun l ↦ mod_cast congrFun h_mean l)
-    (hu_sq.trans hv_sq.symm) (hv_sq.trans hw_sq.symm)).imp (congrArg _) (congrArg _)
+open Finset Real Filter NumberField ClassGroup NeZero QuadField
 
 /-- The infinite places `P.Φ s` of `E = P.E s` form the group `(ℤ/q₁)ˣ`, `q₁ = P.q₁ s`;
 `P.placeOfInt s ν` is the place of the residue of an integer `ν` prime to `q₁`, and `P.placeClass`
@@ -194,8 +125,9 @@ lemma Parameters.exists_large_isSparse (P : Parameters) {s n H L : ℕ}
   obtain ⟨v, hv, h_order_g⟩ := P.exists_orderOf_placeClass_eq s
   let ψ : P.Φ s →* (ZMod (2 ^ (s + v)))ˣ := P.placeClass hv
   -- Behrend's set `S` of exponents below the order of `ψ g`, for the weights up to `2 l₀`
-  obtain ⟨S, h_lt, h_card, h_free⟩ := exists_three_term_free (o := orderOf (ψ g))
-    (by linarith [mul_lt_l₀ s]) (h_room.trans h_order_g.ge)
+  obtain ⟨S, h_lt, h_card, h_free⟩ := TauCeti.exists_eq_and_eq_of_add_mul_modEq
+    (o := orderOf (ψ g)) (by linarith [mul_lt_l₀ s]) (h_room.trans h_order_g.ge)
+  push_cast at h_card
   -- the places `-g ^ e` are distinct modulo `2 ^ (s + v)`, and `≡ -1` modulo `3 l₀ q₀`
   let place (e : ℕ) : P.Φ s := P.placeOfInt s (-1) * g ^ e
   have h_inj : Set.InjOn place S := fun e he e' he' h ↦
