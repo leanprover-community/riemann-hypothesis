@@ -606,8 +606,6 @@ variable {ℓ : ℕ}
   {g : C ⥤ TestOver A} (M : TorsionCoeff g) (Θ : Theory g)
   {S : AbFunctor C} [HasFlatValues S]
 
--- Keeps definitional checks from unfolding the Ext groups and their group structure.
-seal CategoryTheory.Abelian.Ext addCommGroupH in
 /-- Let `S` have flat values, let `M` be a torsion coefficient and let `v` lie in total Ext(S, M).
 Take the product `v η` in total Ext(S ⊗ ℤ[ℙ¹], M), with η = `etaClass g`, and move it by
 `sliceEquiv` to the category of points (c, x) of ℙ¹. The result is the restriction of `v` there
@@ -681,8 +679,6 @@ lemma etaAt_swap (x : TotalH (abTensor S (freeAb (projLineAlong g))) Θ.functor)
     simpa [h_eta_base, h_x_base] using h_sum q (basePt g)
   simpa [h_diag] using h_sum q r
 
--- Keeps definitional checks from unfolding the group structure of the Ext groups.
-seal addCommGroupH in
 /-- For a theory `Θ` along `g` and `S` with flat values, the projective line formula
 (`New.Variety.IsLerayHirschBasis` of `Θ.lineBasis`, the two classes η and 1 indexed by `Bool`) holds
 at `S` under two conditions. First, `h_inj`: the product y ↦ y · η is injective, where `η`

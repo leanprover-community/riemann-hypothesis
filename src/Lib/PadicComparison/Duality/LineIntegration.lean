@@ -137,7 +137,6 @@ lemma zerosEquiv_extendToZeros (x : TotalH (abCoker (ℓ • 𝟙 (g ⋙ relFree
     I.zerosEquiv Θ q (I.extendToZeros Θ q x) = pullbackAlong (I.atSectionMod q) x :=
   (I.zerosEquiv Θ q).apply_symm_apply _
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Let `I` be a family of ideals on the points of a functor `X` on tests, `q` a section of `X`
 along `g`, `Θ` a theory along `g`, `φ : C' ⥤ C` a functor, `K` a theory along `φ ⋙ g`, and `b` a
 class in the total Ext group from `φ ⋙ Θ.functor` to `K.functor`. Write `R` for the map
@@ -383,7 +382,6 @@ lemma map_restrictAlong_restrictAlong :
       TotalH.map (restrictAlong (ψ ⋙ φ)) x :=
   TotalH.map_map (restrictAlong φ) (restrictAlong ψ) x
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Restriction to the points of `X` passes through a product of classes `M.etaAt (b j)` factor by
 factor. -/
 lemma map_foldr_etaAt {X : C ⥤ Type 1} {J : Type*}
@@ -447,7 +445,6 @@ lemma lineBasis_naturality (T : TotalH ((restrictAlong φ).obj M.functor) M'.fun
 
 namespace TorsionCoeff.HasLineFormula
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- If the comparison `(φ, β)` has universal points along `u : Y' ⟶ φ ⋙ Y`, the projective line
 formula holds for `M` at `ℤ[Y]` (each class from ℤ[Y] over the points of ℙ¹ is a·1 + b·η for unique
 a, b from the base) if and only if it holds for `M'` at `ℤ[Y']`. -/
@@ -504,7 +501,6 @@ lemma integrate_naturality (hM' : M'.HasLineFormula) {T : AbFunctor C'}
   rw [← h_fam w]
   simp [integrate]
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- The integral over the line of `y · (η + ξ)`, with η here the class `M.cupClass` placed in degree
 2 (η in `M.lineBasis`), is `y`, for `y` and `ξ` pulled back from the base. -/
 lemma integrate_mul_cupClass (y : TotalH S M.functor) (ξ : TotalH M.functor M.functor) :
@@ -606,7 +602,6 @@ def LineStage.consTautologicalPoint (t : LineStage A d) : LineStage A (d + 1) wh
       funext (cases f.map_val (congrFun (t.points.property
         ((elementsProj (projLineAlong t.toTestOver)).map f))))⟩
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Integrating out the first parameter of r: pull back to the points of P¹, apply r with the
 tautological point as first parameter, and integrate over the line. -/
 def NaturalOp.integrate (r : NaturalOp (d + 1) N N') : NaturalOp d N N' where
@@ -647,7 +642,6 @@ finite. -/
 def IsFiniteLerayHirsch (N : AbFunctor (TestOver A)) : Prop :=
   IsLerayHirschBasis D.comparison N ∧ Finite (TotalH N (locConstAlong (𝟭 (TestOver A))))
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- `D.IsFiniteLerayHirsch` is a closed class (`IsClosedClass`): it holds for zero functors, and in
 a short exact sequence `0 → X₁ → X₂ → X₃ → 0` with `D.IsFiniteLerayHirsch X₁` it holds for `X₂` if
 and only if for `X₃`. -/
@@ -677,7 +671,6 @@ lemma isClosedClass_isFiniteLerayHirsch : IsClosedClass D.IsFiniteLerayHirsch :=
       exact finite_of_exact h_exact_mid
   exact h_bij_iff.and h_fin_iff
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- In a short exact sequence `0 → X₁ → X₂ → X₃ → 0` of functors on tests over `A`, if
 `D.IsFiniteLerayHirsch` holds for `X₂` and `X₃`, it holds for `X₁`. -/
 lemma isFiniteLerayHirsch_of_shortExact {X : ShortComplex (AbFunctor (TestOver A))}
@@ -700,7 +693,6 @@ lemma isFiniteLerayHirsch_of_shortExact {X : ShortComplex (AbFunctor (TestOver A
         (isLerayHirschBasis_iff_allBijective_truncMap.mp h_bij₃) (n + 1)
   exact ⟨isLerayHirschBasis_iff_allBijective_truncMap.mpr h_trunc₁, h_fin₁⟩
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Let `α : N ⟶ N'` be a map of functors on tests over `A` such that, for every functor `g` from a
 category `C` to tests over `A` and every functor `F` on `C` with Zariski descent along `g`,
 pull-back along `α` (restricted along `g`) is a bijection of total Ext groups into `F`
@@ -722,7 +714,6 @@ lemma isFiniteLerayHirsch_iff_of_isCohomEquiv (α : N ⟶ N')
       (mapRange_bijective _ _ h_const) h_D
   exact (h_bij_iff.and h_const.finite_iff).symm
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- `D.IsFiniteLerayHirsch` passes to retracts by natural operations. Let `N` have flat values,
 write `N / ℓ` for `abCoker (ℓ • 𝟙 N)`, and let `r i : N / ℓ → N'` and `ρ i : N' → N` be operations
 without parameters (`NaturalOp 0`). If `∑ i, ρ i (r i x)` is always the pull-back of `x` along
@@ -912,7 +903,6 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
     refine congrArg _ ?_
     apply h_sum_eq_foldr t.consTautologicalPoint ((elementsProj _).sectionsPrecomp q')
 
-seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Let I be a compatible family of ideals on points of (P¹)^m, U the locus where I is the unit
 ideal, and Q = ℤ[(P¹)^m]/ℤ[U]. Let `θ i` be classes of degree `d i`, over the points of (P¹)^m, from
 N to the locally constant ℤ/ℓ-valued functions modulo those dying where I = 0 (`I.zerosCoeff`).

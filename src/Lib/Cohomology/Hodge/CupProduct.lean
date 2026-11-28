@@ -113,15 +113,43 @@ instance [HasFlatValues F] : IsExactFunctor (abTensor.flip F) := by
 
 /-! ### Total cohomology and the Yoneda product -/
 
+/-- The zero class of `Ext^a(N, F)`, as a named constant for `New.Variety.addCommGroupH`. -/
+@[reducible]
+def H.zero : H N F a := 0
+
 /-- The sum `x + y` of two classes in `Ext^a(N, F)`, as a named constant for
 `New.Variety.addCommGroupH`. -/
 @[reducible]
 def H.add (x y : H N F a) : H N F a := x + y
 
-/-- The abelian group structure of `Ext^a(N, F)`, equal to Mathlib's by definition. The addition is
-written through `New.Variety.H.add` for elaboration only: without the named constant,
-definitional equality checks on sums of classes time out in later files. -/
-instance addCommGroupH : AddCommGroup (H N F a) := { Ext.instAddCommGroup with add := .add }
+/-- The negative `-x` of a class in `Ext^a(N, F)`, as a named constant for
+`New.Variety.addCommGroupH`. -/
+@[reducible]
+def H.neg (x : H N F a) : H N F a := -x
+
+/-- The difference `x - y` of two classes in `Ext^a(N, F)`, as a named constant for
+`New.Variety.addCommGroupH`. -/
+@[reducible]
+def H.sub (x y : H N F a) : H N F a := x - y
+
+/-- The multiple `k • x` of a class in `Ext^a(N, F)` by a natural number, as a named constant for
+`New.Variety.addCommGroupH`. -/
+@[reducible]
+def H.nsmul (k : ℕ) (x : H N F a) : H N F a := k • x
+
+/-- The multiple `k • x` of a class in `Ext^a(N, F)` by an integer, as a named constant for
+`New.Variety.addCommGroupH`. -/
+@[reducible]
+def H.zsmul (k : ℤ) (x : H N F a) : H N F a := k • x
+
+/-- The abelian group structure of `Ext^a(N, F)`, equal to Mathlib's by definition. Its operations
+are written through the named constants `New.Variety.H.zero`, `New.Variety.H.add`, … for
+elaboration only. Mathlib's operations are transported along `Ext.homEquiv`, so a definitional
+equality check between two of them at different but equal arguments unfolds both into the derived
+category; between two applications of a named constant it compares the arguments first. -/
+instance addCommGroupH : AddCommGroup (H N F a) :=
+  { Ext.instAddCommGroup with
+    zero := .zero, add := .add, neg := .neg, sub := .sub, nsmul := .nsmul, zsmul := .zsmul }
 
 /-- The total Ext group, the direct sum of the Ext^n(N,F) over all n ≥ 0. -/
 abbrev TotalH (N F : AbFunctor C) : Type 2 := DirectSum ℕ (H (C := C) N F)
