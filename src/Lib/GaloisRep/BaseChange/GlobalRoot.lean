@@ -728,6 +728,11 @@ lemma New.smul_mem_primeFactors_of_smul_eq {E E' : Type} [Field E] [Field E'] [A
   · simpa [smul_eq_map] using h_monic
   · exact (_root_.map_dvd (toMulEquiv _ σ) h_dvd).trans hP_fix.dvd
 
+/-- A Bézout identity for `P` and `X` gives an inverse of `X` in every image killing `P`. -/
+private lemma New.map_mul_X_of_bezout {R A : Type*} [CommRing R] [Ring A] (φ : R[X] →+* A)
+    {P v v' : R[X]} (hv : v' * P + v * X = 1) (hP : φ P = 0) : φ v * φ X = 1 := by
+  simpa only [map_add, map_mul, hP, mul_zero, zero_add, map_one] using congrArg φ hv
+
 /-- Let `z` be a norm root for `P` over `R` with `u = 1` (`New.IsNormRoot`), let `γ` be a unitary
 matrix with characteristic polynomial `P`, and let `v' * P + v * X = 1`. Then `P` divides a power
 of `X * N̄(v) - N`, where `N` is the twisted norm of `z` under `σ` and `N̄` has conjugated
@@ -739,16 +744,10 @@ lemma New.IsNormRoot.dvd_pow_of_charpoly_eq {R n : Type} [CommRing R] [StarRing 
     {v v' : R[X]} (hv : v' * P + v * X = 1) :
     P ∣ (X * ((twistedNorm (.map σ) p z).map conj).comp v - twistedNorm (.map σ) p z) ^
       Fintype.card n := by
-  obtain ⟨-, hz_roots⟩ := hz
-  obtain ⟨-, h_quot⟩ := hz_roots γ hγ
-  have cayley : aeval (γ : Matrix n n R) P = 0 := by rw [← hγ, aeval_self_charpoly]
-  have v_inv : aeval (γ : Matrix n n R) v * (γ : Matrix n n R) = 1 := by
-    have h_bezout : aeval (γ : Matrix n n R) (v' * P + v * X) = 1 := by rw [hv, map_one]
-    simpa [cayley] using h_bezout
-  have h_quot_γ : IsRootQuotient γ (twistedNorm (.map σ) p z) (γ : Matrix n n R) := by
-    simpa using h_quot
-  rw [← hγ]
-  exact IsRootQuotient.charpoly_dvd_pow v_inv h_quot_γ
+  subst P
+  obtain ⟨-, h_quot⟩ := hz.2 γ rfl
+  refine IsRootQuotient.charpoly_dvd_pow ?_ (by simpa using h_quot)
+  simpa using map_mul_X_of_bezout (aeval (γ : Matrix n n R)).toRingHom hv (aeval_self_charpoly _)
 
 /-- Let `A` be a finite free algebra over `R` and `D` a subgroup of `Rˣ`. If `det z(M)` lies in `D`
 for every square matrix `M` over `R` with `P(M) = 0`, then the norm of `z(a)` from `A` to `R` lies
@@ -969,9 +968,8 @@ private lemma New.exists_isUnit_aeval_and_isRootQuotient_of_isSelfAdjoint {E E' 
     aeval_eq_zero_of_dvd_aeval_eq_zero (Polynomial.map_dvd _ (radical_dvd_self (a := P))) hγ
   -- `v` inverts `X` modulo `P`, so `f ↦ f̄(v)` represents the adjoint at `γ`
   have v_inv : aeval γ.val.val (v.map (algebraMap E' (𝔸f E'))) * γ.val.val = 1 := by
-    have h_bezout : aeval γ.val.val ((v' * P + v * X).map (algebraMap E' (𝔸f E'))) = 1 := by
-      rw [hv, Polynomial.map_one, map_one]
-    simpa [hγP] using h_bezout
+    simpa using map_mul_X_of_bezout
+      ((aeval γ.val.val).toRingHom.comp (mapRingHom (algebraMap E' (𝔸f E')))) hv hγP
   have h_inv (q : primeFactors P) : θ q x * θ q x' = 1 := by
     rw [hx'_eq, mul_inverse_cancel _ (x_unit q)]
   exact isUnit_and_isRootQuotient_of_isSelfAdjoint θ glue (U.conjTranspose_aeval v_inv) hθ_star
@@ -1049,10 +1047,7 @@ lemma New.exists_global_root {E E' n : Type} [Field E] [CMType E] [Field E'] [Nu
     (θ_presents q).apply_map f
   have θ_comp_v_eq_star (q : primeFactors P) (f : (𝔸f E')[X]) :
       θ q ((f.map conj).comp (v.map k)) = star (θ q f) := by
-    have h_bezout : mk q.val (v' * P + v * X) = 1 := by rw [hv, map_one]
-    have h_inv : mk q.val v * root q.val = 1 := by
-      rw [map_add, map_mul, map_mul, mk_eq_zero.mpr (dvd_P q), mul_zero, zero_add, mk_X] at h_bezout
-      exact h_bezout
+    have h_inv := map_mul_X_of_bezout (mk q.val) hv (mk_eq_zero.mpr (dvd_P q))
     have h_star : root q.val * star (root q.val) = 1 := by
       simpa only [Rat.cast_one] using root_star q
     exact (θ_presents q).apply_map_conj_comp (left_inv_eq_right_inv h_inv h_star) f
