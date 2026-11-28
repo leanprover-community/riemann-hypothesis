@@ -293,10 +293,20 @@ lemma letterPoly_highestVector_mem_holomorphicData (hO : IsPosFirstOrder s O) {E
       (h_cols τ)
       (by fin_cases c <;> simp) fun _ ↦ rfl) ?_
   -- Unfold the highest vector: it is the product of these minors.
-  fin_cases c <;>
-    simp [letterPoly, highestVector, weylKernel, highestPoly, tableauPoly, minor, permArray,
-      fockLetters, ite_and, sum_filter, rowSubst, apply_ite, decreasingPosition, AlgHom.map_det,
-      Matrix.map, staircaseBlock]
+  have hc : (c.val • fun x : n' ↦ (c * equivFin n' x : ℤ)) = fun x : n' ↦ (equivFin n' x : ℤ) :=
+    funext fun x ↦ by fin_cases c <;> simp
+  rw [letterPoly, LinearMap.comp_apply, AlgHom.toLinearMap_apply, highestVector, toPoly_weylEval,
+    weylKernel, highestPoly, map_prod, map_prod]
+  refine prod_congr rfl fun τ _ ↦ ?_
+  rw [Fintype.prod_eq_single c fun η hη ↦ prod_eq_one fun p _ ↦ by
+    rw [Pi.single_eq_of_ne hη, Pi.zero_apply, pow_zero]]
+  rw [tableauPoly, map_prod, map_prod, map_prod]
+  refine prod_congr rfl fun p _ ↦ ?_
+  rw [Pi.single_eq_same, prod_const, Finset.card_fin, map_pow, map_pow, map_pow, minor,
+    AlgHom.map_det, AlgHom.map_det, AlgHom.map_det]
+  congr 2
+  ext i j
+  simp [fockLetters, rowSubst, permArray, staircaseBlock, hc, ite_and, sum_filter, apply_ite]
 
 /-! ### The reproducing formula -/
 
