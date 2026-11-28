@@ -6,6 +6,7 @@ import Mathlib.CategoryTheory.Shift.Basic
 public import Lib.ClassField.GaloisCohomology.ShapiroCorestriction
 public import Lib.ClassField.Places.DecompositionCyclotomic
 public import Lib.General.Groups.ProfiniteCharacters
+import TauCeti.FieldTheory.Normal.Embeddings
 import Lib.Adelic.Hecke.ClassSums
 import Lib.ClassField.Places.LocalFields
 import Lib.ClassField.Places.ProfiniteGalois
@@ -720,26 +721,27 @@ separable and `Ω` algebraically closed. Then the norm from `U` to `Γ`
 lemma corestrictH0_ofBase_eq_norm (U : OpenSubgroup Γ) [IsProGalois U.toSubgroup L Ω] (y : Lˣ) :
     (unitsModule Γ).corestrictH0 U (DiscreteUnits.ofBase U.toSubgroup Ω (Additive.ofMul y)) =
       DiscreteUnits.ofBase Γ Ω (Additive.ofMul (y.map (Algebra.norm K))) := by
-  -- Both sides are products of conjugates of `y`: over the cosets `gU` on the left, over the
-  -- `K`-embeddings of `L` on the right. Restriction to `L` matches the two index sets.
-  obtain ⟨h_fix : U.toSubgroup = fixingSubgroup Γ (Set.range (algebraMap L Ω)),
-    h_index : U.toSubgroup.index = Module.finrank K L⟩ :=
-    eq_fixingSubgroup_of_isProGalois (L := L) (V := U.toSubgroup)
-  let res (x : Γ ⧸ U.toSubgroup) : L →ₐ[K] Ω := (toAlgHom K Ω x.out).domRestrict L
-  -- Two elements with the same restriction differ by an element fixing `L`, that is, of `U`.
-  have res_inj : Injective res := fun x x' h_res ↦ by
-    refine out_equiv_out.mp (leftRel_apply.mpr (h_fix.ge ?_))
-    -- `res x l` is `x.out • l`, with `l` viewed in `Ω`.
-    have h_smul_eq (l : L) : x'.out • algebraMap L Ω l = x.out • algebraMap L Ω l :=
-      (DFunLike.congr_fun h_res l).symm
-    simpa [mem_fixingSubgroup_iff, mul_smul, inv_smul_eq_iff] using h_smul_eq
-  -- There are at most `[L : K] = [Γ : U]` embeddings.
-  have res_bij : Bijective res :=
-    res_inj.bijective_of_nat_card_le ((card_algHom_le_finrank K L Ω).trans h_index.ge)
+  let φ : L →ₐ[K] Ω := IsScalarTower.toAlgHom K L Ω
+  let : MulAction Γ (L →ₐ[K] Ω) :=
+    MulAction.compHom _ (MulSemiringAction.toAlgAut Γ K Ω)
+  have : MulAction.IsPretransitive Γ (L →ₐ[K] Ω) :=
+    MulAction.isPretransitive_compHom (G := L →ₐ[K] Ω) (toAlgAut_surjective Γ)
+  have h_stab : U.toSubgroup = MulAction.stabilizer Γ φ := by
+    rw [(eq_fixingSubgroup_of_isProGalois (L := L) (V := U.toSubgroup)).1]
+    ext g
+    rw [mem_fixingSubgroup_iff, MulAction.mem_stabilizer_iff]
+    exact ⟨fun h ↦ AlgHom.ext fun x ↦ h _ ⟨x, rfl⟩, fun h _ ⟨x, hx⟩ ↦
+      hx ▸ DFunLike.congr_fun h x⟩
+  -- Cosets of the stabilizer of `φ` are the embeddings of `L` into `Ω`.
+  let e := (Subgroup.quotientEquivOfEq h_stab).trans (TauCeti.quotientStabilizerEquiv Γ φ)
+  have he (q : Γ ⧸ U.toSubgroup) : e q = q.out • φ := by
+    conv_lhs => rw [← QuotientGroup.out_eq' q]
+    dsimp only [e, Equiv.trans_apply]
+    rw [Subgroup.quotientEquivOfEq_mk, TauCeti.quotientStabilizerEquiv_mk]
   refine DiscreteUnits.ext ?_
   suffices h_prod : ∏ x : Γ ⧸ U.toSubgroup, x.out • algebraMap L Ω y = ∏ σ : L →ₐ[K] Ω, σ y by
     simpa [corestrictH0, norm_eq_prod_embeddings, sum] using h_prod
-  exact Finset.prod_bijective res res_bij (by simp) fun x _ ↦ rfl
+  exact Fintype.prod_equiv e _ _ fun x ↦ by rw [he]; rfl
 
 /-- If the kernel of the character `χ : Γ → ℚ/ℤ` is the Galois group of `Ω / L` (`J`), with `L / K`
 finite separable and `Ω` algebraically closed, then the symbol `(χ, x)` (`New.cyclicClass`) of `x`
