@@ -356,12 +356,8 @@ lemma apply_eq_zero_of_mul_gramForm_highestVector [DecidableEq n]
     f u = 0 := by
   -- The highest vector is a unit vector, so by Schur orthogonality the mean of the product is
   -- `(dim ρ)⁻¹ f u`.
-  have h_schur : ∫ x : Φ → USign 1, f (conjWeylRep κ e (s := 1) x (highestVector κ l)) *
-      gramForm (highestVector κ l) (conjWeylRep κ e (s := 1) x⁻¹ u) =
-        (card (WeylIndex n κ) : ℂ)⁻¹ * f u := by
-    rw [schur_orthogonality, gramForm_highestVector_self hl, mul_one]
-  simp only [h_zero, integral_zero] at h_schur
-  exact (mul_eq_zero_iff_left (inv_ne_zero (Nat.cast_ne_zero.2 card_ne_zero))).1 h_schur.symm
+  simpa [h_zero, gramForm_highestVector_self hl, -Fintype.card_pi] using
+    (schur_orthogonality e f (highestVector κ l) u (highestVector κ l)).symm
 
 /-- Let each `l w` be injective, so that it orders the indices and gives the vector
 `v⁺ = New.highestVector κ l`. A vector `u` is zero if all its translates ρ(x)u are orthogonal to
@@ -553,13 +549,10 @@ lemma IsHCParam.prod_formalDegree (h : IsHCParam κ e l) :
       conj_conj]
   have h_mean : ∫ x : Φ → USign (1 : n → ℤˣ), ∏ w : Φ, (‖(l w).dsCoeff (x w).val‖ : ℂ) ^ 2 =
       (card (WeylIndex n κ) : ℂ)⁻¹ := by
-    have h_schur : ∫ x : Φ → USign (1 : n → ℤˣ),
-        gramForm (highestVector κ l) (conjWeylRep κ e x (highestVector κ l)) *
-          gramForm (highestVector κ l) (conjWeylRep κ e x⁻¹ (highestVector κ l)) =
-          (card (WeylIndex n κ) : ℂ)⁻¹ := by
-      simp [schur_orthogonality, gramForm_highestVector_self h.injective]
-    simpa [h_coeff_inv, h.gramForm_conjWeylRep_eq_dsCoeff, ← prod_mul_distrib, conj_mul'] using
-      h_schur
+    simpa [h_coeff_inv, h.gramForm_conjWeylRep_eq_dsCoeff, ← prod_mul_distrib, conj_mul',
+      gramForm_highestVector_self h.injective, -Fintype.card_pi] using
+      schur_orthogonality e (gramForm (highestVector κ l)) (highestVector κ l)
+        (highestVector κ l) (highestVector κ l)
   -- The integral splits over the places, and each factor is the reciprocal of `formalDegree`.
   have h_split : ((∏ w : Φ, (l w).formalDegree⁻¹ : ℝ) : ℂ) =
       ∫ x : Φ → USign (1 : n → ℤˣ), ∏ w : Φ, (‖(l w).dsCoeff (x w).val‖ : ℂ) ^ 2 := by
