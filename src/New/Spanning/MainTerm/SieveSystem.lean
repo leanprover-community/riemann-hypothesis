@@ -1,7 +1,7 @@
 module
 
-import Mathlib.Analysis.Matrix.Order
 import Mathlib.MeasureTheory.Integral.Pi
+import TauCeti.LinearAlgebra.Matrix.PosSemidef
 public import Lib.General.Groups.BesselGroups
 public import Lib.General.Measure.IntegralOperators
 
@@ -103,13 +103,8 @@ lemma norm_prod_mul_le_prod_mul {f : τ → ℂ} {g : τ → ℝ} {a : ℂ} {b :
 semidefinite kernels `A v` over `v ∈ s` and `B` is positive semidefinite. -/
 lemma posSemidef_prod_mul {σ κ : Type} {A : σ → κ → κ → ℂ} {B : κ → κ → ℂ}
     (hA : ∀ v : σ, (Matrix.of (A v)).PosSemidef) (hB : (Matrix.of B).PosSemidef) (s : Finset σ) :
-    (Matrix.of fun i j : κ ↦ (∏ v ∈ s, A v i j) * B i j).PosSemidef := by
-  classical
-  induction s using Finset.induction with
-  | empty => simpa only [prod_empty, one_mul] using hB
-  | insert v s hv ih =>
-    simp only [prod_insert hv, mul_assoc]
-    exact (hA v).hadamard ih
+    (Matrix.of fun i j : κ ↦ (∏ v ∈ s, A v i j) * B i j).PosSemidef :=
+  (TauCeti.posSemidef_schur_finset_prod (s := s) fun v _ ↦ hA v).hadamard hB
 
 /-- The component at the complex factor `v` of a head `p` with entries in `(τ → ℂˣ) × U`: the
 sequence `k ↦ (p k).1 v`. -/
