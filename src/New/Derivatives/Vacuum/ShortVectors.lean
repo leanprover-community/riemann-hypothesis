@@ -286,6 +286,416 @@ def HasUnitLinearForm (P : Parameters) (s p : ℕ) [Fact p.Prime] [PadicPlace p]
     Prop :=
   ∀ τ : InfinitePlace (P.E s), ‖(ιₚ (P.periodFactor s * conj (Φ τ y)) : ℂ_[p])‖ = 1
 
+/-- Let `n = (d + 1) / 4` and `n z² + z + 1 = q₁ e`, and let `t = 1 - β + n z`, where
+`β = betaKInE`. Then `q₁` divides `β ^ q₁ t`: indeed `(β + n z) t = n q₁ e` and `q₁ ∣ n ^ q₁`. -/
+private lemma q₁_dvd_betaKInE_pow_mul {z e : ℕ}
+    (he_eq : (P.d + 1) / 4 * z ^ 2 + z + 1 = P.q₁ s * e) :
+    (P.q₁ s : 𝓞 (P.E s)) ∣ P.betaKInE s ^ P.q₁ s *
+      (1 - P.betaKInE s + (((P.d + 1) / 4 : ℕ) : 𝓞 (P.E s)) * (z : 𝓞 (P.E s))) := by
+  set N : ℕ := P.q₁ s
+  set n : ℕ := (P.d + 1) / 4
+  set t : 𝓞 (P.E s) := 1 - P.betaKInE s + (n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s))
+  have hβ_mul : P.betaKInE s * (1 - P.betaKInE s) = (n : 𝓞 (P.E s)) := P.betaKInE_mul_one_sub s
+  obtain ⟨f, hf_eq⟩ : N ∣ n ^ N := q₁_dvd_pow_q₁
+  obtain ⟨w, hw⟩ :=
+    sub_dvd_pow_sub_pow (P.betaKInE s) (-(n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s))) N
+  have h_prod : (P.betaKInE s - (-(n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)))) * t =
+      (n : 𝓞 (P.E s)) * ((N : 𝓞 (P.E s)) * (e : 𝓞 (P.E s))) := by
+    have he_O : (n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)) ^ 2 + (z : 𝓞 (P.E s)) + 1 =
+        (N : 𝓞 (P.E s)) * (e : 𝓞 (P.E s)) := by exact_mod_cast he_eq
+    linear_combination hβ_mul + (n : 𝓞 (P.E s)) * he_O
+  have hf_O : (n : 𝓞 (P.E s)) ^ N = (N : 𝓞 (P.E s)) * (f : 𝓞 (P.E s)) := by
+    exact_mod_cast hf_eq
+  refine ⟨(n : 𝓞 (P.E s)) * (e : 𝓞 (P.E s)) * w +
+    (f : 𝓞 (P.E s)) * (-(z : 𝓞 (P.E s))) ^ N * t, ?_⟩
+  have h_pow_neg : (-(n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s))) ^ N =
+      (n : 𝓞 (P.E s)) ^ N * (-(z : 𝓞 (P.E s))) ^ N := by
+    rw [show -(n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)) =
+      (n : 𝓞 (P.E s)) * (-(z : 𝓞 (P.E s))) by ring, mul_pow]
+  linear_combination t * hw + w * h_prod + (-(z : 𝓞 (P.E s))) ^ N * t * hf_O +
+    t * h_pow_neg
+
+/-- Let `a, t, V ∈ 𝓞 E` and `M ∈ ℕ` satisfy `P'(ζ) (a - 1) M = q₁ V`, where
+`P'(ζ) = relDifferentGen`, and let `q₁` divide `β ^ q₁ t`, where `β = betaKInE`. Then the vector
+`ζ ^ j (0 ^ k a ^ i + (t M / q₁) (a ^ i - a ^ k))` lies in the lattice `𝔞₀ = E ∩ α Ô`. -/
+private lemma finiteImage_zetaInt_pow_mul_mem {a t V : 𝓞 (P.E s)} {M : ℕ}
+    (hV : P.relDifferentGen s * (a - 1) * M = P.q₁ s * V)
+    (ht : (P.q₁ s : 𝓞 (P.E s)) ∣ P.betaKInE s ^ P.q₁ s * t) (j k i : ℕ) :
+    finiteImage id ((P.zetaInt s : P.E s) ^ j *
+      ((0 : P.E s) ^ k * (a : P.E s) ^ i +
+        ((t : P.E s) * (M : P.E s) / (P.q₁ s : P.E s)) * ((a : P.E s) ^ i - (a : P.E s) ^ k))) ∈
+      Ô (P.E s) := by
+  set N : ℕ := P.q₁ s
+  have hN_ne : N ≠ 0 := NeZero.ne N
+  set u : P.E s := (P.zetaInt s : P.E s) ^ j *
+    ((0 : P.E s) ^ k * (a : P.E s) ^ i +
+      ((t : P.E s) * (M : P.E s) / (N : P.E s)) * ((a : P.E s) ^ i - (a : P.E s) ^ k))
+  refine finiteImage_mem_iff.2 fun v ↦ ?_
+  obtain ⟨g, hg⟩ : a - 1 ∣ a ^ i - a ^ k := by
+    simpa using dvd_sub (sub_one_dvd_pow_sub_one a i) (sub_one_dvd_pow_sub_one a k)
+  have h_int_of_dvd (y : 𝓞 (P.E s)) (hdvd : (N : 𝓞 (P.E s)) ∣ y * t * (M * (a - 1))) :
+      v.valuation (P.E s) ((y : P.E s) * u) ≤ 1 := by
+    obtain ⟨q, hq⟩ := hdvd
+    have h_eq : (y : P.E s) * u =
+        ((P.zetaInt s ^ j * (y * (0 : 𝓞 (P.E s)) ^ k * a ^ i + q * g) : 𝓞 (P.E s)) :
+          P.E s) := by
+      have hN_E : (N : P.E s) ≠ 0 := Nat.cast_ne_zero.2 hN_ne
+      have hg_E : (a : P.E s) ^ i - (a : P.E s) ^ k =
+          ((a : P.E s) - 1) * (g : P.E s) := by
+        exact_mod_cast hg
+      have hq_E : (y : P.E s) * (t : P.E s) * ((M : P.E s) * ((a : P.E s) - 1)) =
+          (N : P.E s) * (q : P.E s) := by
+        exact_mod_cast hq
+      simp only [u]
+      rw [hg_E]
+      field_simp [hN_E]
+      push_cast
+      linear_combination (P.zetaInt s : P.E s) ^ j * (g : P.E s) * hq_E
+    rw [h_eq]
+    exact v.valuation_le_one _
+  by_cases hv : P.betaKInE s ∈ v.asIdeal
+  · rw [ite_eq_left hv]
+    refine h_int_of_dvd (P.relDifferentGen s) ⟨t * V, ?_⟩
+    linear_combination t * hV
+  · rw [ite_eq_right hv, one_mul]
+    have h_unit : v.valuation (P.E s) (P.betaKInE s : P.E s) = 1 :=
+      v.valuation_eq_one_iff_notMem.2 hv
+    have h_le := h_int_of_dvd (P.betaKInE s ^ N) (dvd_mul_of_dvd_left ht _)
+    simpa [map_mul, h_unit] using h_le
+
+/-- Orthogonality of the powers of `ζ`, split along a factorization `q₁ = ℓ r`: for
+`γ = Φ σ ζ * conj (Φ τ ζ)`, the product `(∑ j < r, γ ^ j) (∑ i < ℓ, (γ ^ r) ^ i)` is `q₁` if
+`σ = τ` and `0` otherwise. -/
+private lemma sum_pow_mul_sum_pow_eq_ite {ℓ r : ℕ} (hr : P.q₁ s = ℓ * r) (σ τ : P.Φ s) :
+    (∑ j : Fin r, (Φ σ (P.zetaInt s : P.E s) * conj (Φ τ (P.zetaInt s : P.E s))) ^ j.val) *
+      (∑ i : Fin ℓ,
+        ((Φ σ (P.zetaInt s : P.E s) * conj (Φ τ (P.zetaInt s : P.E s))) ^ r) ^ i.val) =
+      if σ = τ then (P.q₁ s : ℂ) else 0 := by
+  set N : ℕ := P.q₁ s
+  set γ : ℂ := Φ σ (P.zetaInt s : P.E s) * conj (Φ τ (P.zetaInt s : P.E s))
+  have h_zeta_frame :
+      ∑ m : Fin N, Φ σ ((P.zetaInt s : P.E s) ^ m.val) *
+        conj (Φ τ ((P.zetaInt s : P.E s) ^ m.val)) = if σ = τ then (N : ℂ) else 0 := by
+    have h1 := (P.isTightFrame_zeta_pow s 1).sum_mul_conj σ τ
+    have hN_C : ((P.q₀ : ℂ) * (towerDeg s : ℂ)) = (N : ℂ) := by exact_mod_cast rfl
+    simpa [hN_C] using h1
+  have h_bij :
+      ∑ m : Fin N, γ ^ m.val = (∑ j : Fin r, γ ^ j.val) * (∑ i : Fin ℓ, (γ ^ r) ^ i.val) := by
+    let eN : Fin ℓ × Fin r ≃ Fin N := finProdFinEquiv.trans (finCongr hr.symm)
+    rw [← eN.sum_comp, Fintype.sum_prod_type, Finset.sum_mul, Finset.sum_comm]
+    refine Finset.sum_congr rfl fun j _ ↦ ?_
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    have hval : (eN (i, j)).val = r * i.val + j.val := by
+      simp [eN, finProdFinEquiv, add_comm]
+    rw [hval, pow_add, pow_mul, mul_comm]
+  rw [← h_bij]
+  simpa [γ, mul_pow, map_pow] using h_zeta_frame
+
+/-- Let `n = (d + 1) / 4` and `n z² + z + 1 = q₁ e`, and let `W = (1 - ω + n z) M / q₁`, where
+`ω = quadGen d`. Then `(1 + W + W̄ + 2 ℓ W W̄) q₁ = q₁ + M (1 + 2 n (z + ℓ M e))`, because
+`1 - ω + n z` has trace `1 + 2 n z` and norm `n q₁ e`. -/
+private lemma one_add_add_conj_mul_q₁_eq {z e M ℓ : ℕ}
+    (he_eq : (P.d + 1) / 4 * z ^ 2 + z + 1 = P.q₁ s * e) {W : ℂ}
+    (hW : W = (1 - quadGen P.d + (((P.d + 1) / 4 : ℕ) : ℂ) * (z : ℂ)) * (M : ℂ) / (P.q₁ s : ℂ)) :
+    (1 + W + conj W + 2 * (ℓ : ℂ) * (W * conj W)) * (P.q₁ s : ℂ) =
+      ((P.q₁ s + M * (1 + 2 * ((P.d + 1) / 4) * (z + ℓ * (M * e))) : ℕ) : ℂ) := by
+  set N : ℕ := P.q₁ s
+  set n : ℕ := (P.d + 1) / 4
+  have hβ_mul : P.betaKInE s * (1 - P.betaKInE s) = (n : 𝓞 (P.E s)) := P.betaKInE_mul_one_sub s
+  -- Compute the trace and the norm of `1 - ω + n z` through an embedding of `E`.
+  have hβ_sum : quadGen P.d + conj (quadGen P.d) = 1 := by
+    have := congrArg (fun x : 𝓞 (P.E s) ↦ Φ (1 : P.Φ s) (x : P.E s)) (P.star_betaKInE s)
+    simp only [coe_star_ringOfIntegers, map_star_complex, Complex.star_def, map_sub, map_one,
+      phi_betaKInE] at this
+    linear_combination this
+  have h_t_add : (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) +
+      conj (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) = 1 + 2 * (n : ℂ) * (z : ℂ) := by
+    simp only [map_add, map_sub, map_one, map_mul, map_natCast]
+    linear_combination -hβ_sum
+  have h_t_mul : (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) *
+      conj (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) = (n : ℂ) * ((N : ℂ) * (e : ℂ)) := by
+    have hβ_prod : quadGen P.d * (1 - quadGen P.d) = (n : ℂ) := by
+      have := congrArg (fun x : 𝓞 (P.E s) ↦ Φ (1 : P.Φ s) (x : P.E s)) hβ_mul
+      simpa [phi_betaKInE] using this
+    have he_C : (n : ℂ) * (z : ℂ) ^ 2 + (z : ℂ) + 1 = (N : ℂ) * (e : ℂ) := by
+      exact_mod_cast he_eq
+    simp only [map_add, map_sub, map_one, map_mul, map_natCast]
+    linear_combination (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) * (-hβ_sum) + hβ_prod +
+      (n : ℂ) * he_C
+  have hN_C : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (NeZero.ne N)
+  have hW_conj : conj W =
+      conj (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) * (M : ℂ) / (N : ℂ) := by simp [hW]
+  rw [hW_conj, hW]
+  field_simp [hN_C]
+  push_cast
+  linear_combination (M : ℂ) * (N : ℂ) * h_t_add + 2 * (ℓ : ℂ) * (M : ℂ) ^ 2 * h_t_mul
+
+/-- The contribution of a prime factor `ℓ` of `q₁` to the Gram matrix of the frame. Let `q₁ = ℓ r`
+with `ℓ` prime, let `a = ζ ^ r` and `t = 1 - β + n z`, where `n = (d + 1) / 4` and
+`n z² + z + 1 = q₁ e`, and let `v (j, k, i) = ζ ^ j (0 ^ k a ^ i + (t M / q₁) (a ^ i - a ^ k))` on
+`Fin r × Fin ℓ × Fin ℓ`. Then `∑ x, Φ σ (v x) * conj (Φ τ (v x))` is
+`q₁ + M (1 + 2 n (z + ℓ M e))` if `σ = τ` and `0` otherwise. -/
+private lemma sum_phi_mul_conj_phi_eq_ite {ℓ r M z e : ℕ} (hℓ : ℓ.Prime) (hr : P.q₁ s = ℓ * r)
+    (he_eq : (P.d + 1) / 4 * z ^ 2 + z + 1 = P.q₁ s * e) {a t : 𝓞 (P.E s)}
+    (ha : a = P.zetaInt s ^ r)
+    (ht : t = 1 - P.betaKInE s + (((P.d + 1) / 4 : ℕ) : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)))
+    {v : Fin r × Fin ℓ × Fin ℓ → P.E s}
+    (hv : ∀ j k i, v (j, k, i) = (P.zetaInt s : P.E s) ^ j.val *
+      ((0 : P.E s) ^ k.val * (a : P.E s) ^ i.val +
+        ((t : P.E s) * (M : P.E s) / (P.q₁ s : P.E s)) *
+          ((a : P.E s) ^ i.val - (a : P.E s) ^ k.val)))
+    (σ τ : P.Φ s) :
+    ∑ x, Φ σ (v x) * conj (Φ τ (v x)) =
+      if σ = τ then ((P.q₁ s + M * (1 + 2 * ((P.d + 1) / 4) * (z + ℓ * (M * e))) : ℕ) : ℂ)
+      else 0 := by
+  set N : ℕ := P.q₁ s
+  set n : ℕ := (P.d + 1) / 4
+  have hN_pos : 0 < N := NeZero.pos N
+  have hζ : IsPrimitiveRoot (P.zetaInt s) N := isPrimitiveRoot_zetaInt
+  have h_phi_t (ρ : P.Φ s) : Φ ρ (t : P.E s) = 1 - quadGen P.d + (n : ℂ) * (z : ℂ) := by
+    simp [ht, phi_betaKInE]
+  have hN_comm : N = r * ℓ := hr.trans (mul_comm _ _)
+  have h_prim_a : IsPrimitiveRoot a ℓ := ha ▸ hζ.pow hN_pos hN_comm
+  have h_sum_a : ∑ i : Fin ℓ, (a : P.E s) ^ i.val = 0 := by
+    have h0 : ∑ i ∈ range ℓ, a ^ i = 0 := h_prim_a.geom_sum_eq_zero hℓ.one_lt
+    rw [← Fin.sum_univ_eq_sum_range] at h0
+    exact_mod_cast h0
+  let α : ℂ := Φ σ (a : P.E s)
+  let β' : ℂ := conj (Φ τ (a : P.E s))
+  have h_sum_ασ : ∑ i : Fin ℓ, α ^ i.val = 0 := by
+    simpa [α, map_sum, map_pow] using congrArg (Φ σ) h_sum_a
+  have h_sum_ατ : ∑ i : Fin ℓ, β' ^ i.val = 0 := by
+    simpa [β', map_sum, map_pow] using congrArg (conj ∘ Φ τ) h_sum_a
+  let γ : ℂ := Φ σ (P.zetaInt s : P.E s) * conj (Φ τ (P.zetaInt s : P.E s))
+  have h_prod_sum :
+      (∑ j : Fin r, γ ^ j.val) * (∑ i : Fin ℓ, (γ ^ r) ^ i.val) =
+        if σ = τ then (N : ℂ) else 0 :=
+    sum_pow_mul_sum_pow_eq_ite hr σ τ
+  set W : ℂ := (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) * (M : ℂ) / (N : ℂ) with hW
+  have h_αβ : α * β' = γ ^ r := by simp [α, β', γ, ha, mul_pow, map_pow]
+  have h_inner :
+      ∑ k : Fin ℓ, ∑ i : Fin ℓ,
+        ((0 : ℂ) ^ k.val * α ^ i.val + W * (α ^ i.val - α ^ k.val)) *
+          ((0 : ℂ) ^ k.val * β' ^ i.val + conj W * (β' ^ i.val - β' ^ k.val)) =
+        (1 + W + conj W + 2 * (ℓ : ℂ) * (W * conj W)) * ∑ i : Fin ℓ, (γ ^ r) ^ i.val := by
+    simpa [h_αβ] using sum_inner_frame hℓ.pos h_sum_ασ h_sum_ατ
+  have h_factor_val :
+      (1 + W + conj W + 2 * (ℓ : ℂ) * (W * conj W)) * (N : ℂ) =
+        ((N + M * (1 + 2 * n * (z + ℓ * (M * e))) : ℕ) : ℂ) :=
+    one_add_add_conj_mul_q₁_eq he_eq hW
+  have h_u_apply (j : Fin r) (k i : Fin ℓ) :
+      Φ σ (v (j, k, i)) * conj (Φ τ (v (j, k, i))) =
+        γ ^ j.val *
+          (((0 : ℂ) ^ k.val * α ^ i.val + W * (α ^ i.val - α ^ k.val)) *
+            ((0 : ℂ) ^ k.val * β' ^ i.val + conj W * (β' ^ i.val - β' ^ k.val))) := by
+    simp only [hv, map_mul, map_add, map_sub, map_div₀, map_pow, map_zero, map_natCast,
+      h_phi_t, W, α, β', γ, mul_pow]
+    ring
+  calc ∑ x, Φ σ (v x) * conj (Φ τ (v x))
+      = ∑ j : Fin r, ∑ k : Fin ℓ, ∑ i : Fin ℓ,
+          Φ σ (v (j, k, i)) * conj (Φ τ (v (j, k, i))) := by
+        simp [Fintype.sum_prod_type]
+    _ = (∑ j : Fin r, γ ^ j.val) *
+          ((1 + W + conj W + 2 * (ℓ : ℂ) * (W * conj W)) * ∑ i : Fin ℓ, (γ ^ r) ^ i.val) := by
+        simp_rw [h_u_apply, ← Finset.mul_sum, h_inner, ← Finset.sum_mul]
+    _ = (1 + W + conj W + 2 * (ℓ : ℂ) * (W * conj W)) *
+          ((∑ j : Fin r, γ ^ j.val) * (∑ i : Fin ℓ, (γ ^ r) ^ i.val)) := by ring
+    _ = if σ = τ then ((N + M * (1 + 2 * n * (z + ℓ * (M * e))) : ℕ) : ℂ) else 0 := by
+        rw [h_prod_sum]
+        split_ifs
+        · exact h_factor_val
+        · ring
+
+/-- Let `N ≠ 0` be a number whose prime factors all divide `n`, and for each prime factor `ℓ` of `N`
+let `M ℓ` be divisible by exactly the prime factors of `N` other than `ℓ`. Then
+`∑ ℓ, (N + M ℓ (1 + 2 n (z + ℓ M ℓ e)))` is prime to `N`: modulo a prime factor `p` of `N`, it is
+congruent to `M p`. -/
+private lemma coprime_sum_add_mul {N n : ℕ} (hN_ne : N ≠ 0)
+    (hN_n : ∀ p, p.Prime → p ∣ N → p ∣ n) {M : N.primeFactors → ℕ}
+    (hM_primes : ∀ ℓ, ∀ p ∈ N.primeFactors, p ∣ M ℓ ↔ p ≠ ℓ.val) (z e : ℕ) :
+    (∑ ℓ : N.primeFactors, (N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))))).Coprime N := by
+  set c : ℕ := ∑ ℓ : N.primeFactors, (N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))))
+  refine Nat.coprime_of_dvd fun p hp hpc hpN ↦ ?_
+  have hp_mem : p ∈ N.primeFactors := Nat.mem_primeFactors.2 ⟨hp, hpN, hN_ne⟩
+  have hp_n : p ∣ n := hN_n p hp hpN
+  have h_zero : (c : ZMod p) = 0 := (ZMod.natCast_eq_zero_iff c p).2 hpc
+  have h_eval : (c : ZMod p) = (M ⟨p, hp_mem⟩ : ZMod p) := by
+    simp only [c, Nat.cast_sum]
+    rw [Finset.sum_eq_single ⟨p, hp_mem⟩]
+    · have hN0 : (N : ZMod p) = 0 := (ZMod.natCast_eq_zero_iff N p).2 hpN
+      have hn0 : (n : ZMod p) = 0 := (ZMod.natCast_eq_zero_iff n p).2 hp_n
+      simp [hN0, hn0]
+    · intro ℓ _ hℓ_ne
+      have hN0 : (N : ZMod p) = 0 := (ZMod.natCast_eq_zero_iff N p).2 hpN
+      have hM0 : (M ℓ : ZMod p) = 0 :=
+        (ZMod.natCast_eq_zero_iff (M ℓ) p).2
+          ((hM_primes ℓ p hp_mem).2 fun h ↦ hℓ_ne (Subtype.ext h.symm))
+      simp [hN0, hM0]
+    · simp
+  have hp_M : p ∣ M ⟨p, hp_mem⟩ := (ZMod.natCast_eq_zero_iff _ p).1 (h_eval.symm.trans h_zero)
+  exact (hM_primes ⟨p, hp_mem⟩ p hp_mem).1 hp_M rfl
+
+/-- Let `n = (d + 1) / 4`. If `0 < N`, `M ≤ N`, `ℓ ≤ N`, `z < N` and `n z² + z + 1 = N e`, then
+`N + M (1 + 2 n (z + ℓ M e)) ≤ d ^ 6 N ^ 5`. -/
+private lemma add_mul_le_pow_six_mul_pow_five {N M ℓ z e : ℕ} (hN_pos : 0 < N) (hM : M ≤ N)
+    (hℓ_le : ℓ ≤ N) (hz_lt : z < N) (he_eq : (P.d + 1) / 4 * z ^ 2 + z + 1 = N * e) :
+    N + M * (1 + 2 * ((P.d + 1) / 4) * (z + ℓ * (M * e))) ≤ P.d ^ 6 * N ^ 5 := by
+  set n : ℕ := (P.d + 1) / 4
+  have hd_ge : 7 ≤ P.d := by
+    have hmod : P.d % 8 = 7 := PrimeSevenModEight.mod_eight
+    omega
+  have hn_le : n ≤ P.d := by omega
+  have hz_le : z ≤ N := hz_lt.le
+  have h_e_le : e ≤ n * N + 2 := by
+    have h1 : N * e ≤ n * N ^ 2 + N + 1 := by
+      have he' : n * z ^ 2 + z + 1 = N * e := he_eq
+      have hmul : n * z ^ 2 ≤ n * N ^ 2 := Nat.mul_le_mul_left n (Nat.pow_le_pow_left hz_le 2)
+      omega
+    have h2 : N * e ≤ N * (n * N + 2) := by
+      calc N * e ≤ n * N ^ 2 + N + 1 := h1
+        _ ≤ n * N ^ 2 + N + N := by omega
+        _ = N * (n * N + 2) := by ring
+    exact Nat.le_of_mul_le_mul_left h2 hN_pos
+  have h_inner1 : M * e ≤ (P.d + 2) * N ^ 2 := by
+    calc M * e ≤ N * (n * N + 2) := Nat.mul_le_mul hM h_e_le
+      _ ≤ N * (P.d * N + 2 * N) := by gcongr; omega
+      _ = (P.d + 2) * N ^ 2 := by ring
+  have h_inner2 : z + ℓ * (M * e) ≤ (P.d + 3) * N ^ 4 := by
+    calc z + ℓ * (M * e)
+        ≤ N + N * ((P.d + 2) * N ^ 2) :=
+          Nat.add_le_add hz_le (Nat.mul_le_mul hℓ_le h_inner1)
+      _ ≤ N ^ 4 + (P.d + 2) * N ^ 4 := by
+          have hN4 : N ≤ N ^ 4 := Nat.le_self_pow (by norm_num) N
+          have hN34 : N ^ 3 ≤ N ^ 4 := Nat.pow_le_pow_right hN_pos (by norm_num)
+          have h_mul : N * ((P.d + 2) * N ^ 2) = (P.d + 2) * N ^ 3 := by ring
+          rw [h_mul]
+          exact Nat.add_le_add hN4 (Nat.mul_le_mul_left _ hN34)
+      _ = (P.d + 3) * N ^ 4 := by ring
+  have h_inner3 : 1 + 2 * n * (z + ℓ * (M * e)) ≤ (2 * P.d * (P.d + 3) + 1) * N ^ 4 := by
+    calc 1 + 2 * n * (z + ℓ * (M * e))
+        ≤ N ^ 4 + 2 * P.d * ((P.d + 3) * N ^ 4) :=
+          Nat.add_le_add (one_le_pow₀ hN_pos)
+            (Nat.mul_le_mul (Nat.mul_le_mul_left 2 hn_le) h_inner2)
+      _ = (2 * P.d * (P.d + 3) + 1) * N ^ 4 := by ring
+  have h_coeff : 1 + (2 * P.d * (P.d + 3) + 1) ≤ P.d ^ 6 := by
+    have hd_pos : 0 < P.d := lt_of_lt_of_le (by norm_num) hd_ge
+    have h7 : 7 * P.d ≤ P.d * P.d := Nat.mul_le_mul_right _ hd_ge
+    have h3 : P.d * P.d * 3 ≤ P.d ^ 6 :=
+      calc P.d * P.d * 3 ≤ P.d * P.d * P.d :=
+            Nat.mul_le_mul_left _ (le_trans (by norm_num) hd_ge)
+        _ = P.d ^ 3 := (pow_three' P.d).symm
+        _ ≤ P.d ^ 6 := Nat.pow_le_pow_right hd_pos (by norm_num)
+    have h_eq : 1 + (2 * P.d * (P.d + 3) + 1) = 2 * (P.d * P.d) + 6 * P.d + 2 := by ring
+    omega
+  calc N + M * (1 + 2 * n * (z + ℓ * (M * e)))
+      ≤ N ^ 5 + N * ((2 * P.d * (P.d + 3) + 1) * N ^ 4) :=
+        Nat.add_le_add (Nat.le_self_pow (by norm_num) N) (Nat.mul_le_mul hM h_inner3)
+    _ = (1 + (2 * P.d * (P.d + 3) + 1)) * N ^ 5 := by ring
+    _ ≤ P.d ^ 6 * N ^ 5 := Nat.mul_le_mul_right _ h_coeff
+
+/-- Let `n = (d + 1) / 4`. If `0 < N`, `M ℓ ≤ N` for every prime factor `ℓ` of `N`, `z < N` and
+`n z² + z + 1 = N e`, then `∑ ℓ, (N + M ℓ (1 + 2 n (z + ℓ M ℓ e))) ≤ (d N) ^ 6`. -/
+private lemma sum_add_mul_le_pow_six {N : ℕ} (hN_pos : 0 < N) {M : N.primeFactors → ℕ}
+    (hM_le : ∀ ℓ, M ℓ ≤ N) {z e : ℕ} (hz_lt : z < N)
+    (he_eq : (P.d + 1) / 4 * z ^ 2 + z + 1 = N * e) :
+    ∑ ℓ : N.primeFactors, (N + M ℓ * (1 + 2 * ((P.d + 1) / 4) * (z + ℓ.val * (M ℓ * e)))) ≤
+      (P.d * N) ^ 6 := by
+  set n : ℕ := (P.d + 1) / 4
+  set c : ℕ := ∑ ℓ : N.primeFactors, (N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))))
+  have h_card : Fintype.card N.primeFactors ≤ N := by
+    rw [Fintype.card_coe]
+    calc N.primeFactors.card ≤ (Finset.Icc 1 N).card :=
+          Finset.card_le_card fun p hp ↦
+            Finset.mem_Icc.2 ⟨(Nat.prime_of_mem_primeFactors hp).pos,
+              Nat.le_of_mem_primeFactors hp⟩
+      _ = N := by simp
+  have h_term_le (ℓ : N.primeFactors) :
+      N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))) ≤ P.d ^ 6 * N ^ 5 :=
+    add_mul_le_pow_six_mul_pow_five hN_pos (hM_le ℓ) (Nat.le_of_mem_primeFactors ℓ.property)
+      hz_lt he_eq
+  calc c ≤ ∑ _ℓ : N.primeFactors, P.d ^ 6 * N ^ 5 := Finset.sum_le_sum fun ℓ _ ↦ h_term_le ℓ
+    _ = Fintype.card N.primeFactors * (P.d ^ 6 * N ^ 5) := by simp
+    _ ≤ N * (P.d ^ 6 * N ^ 5) := Nat.mul_le_mul_right _ h_card
+    _ = (P.d * N) ^ 6 := by ring
+
+/-- If `1` does not have `HasUnitLinearForm` at `ιₚ : ℂ →+* ℂ_[p]`, then `β = betaKInE` lies in the
+prime of `E` induced by `weightEmbedding ιₚ τ`, for every `τ` in the CM type. -/
+lemma betaKInE_mem_of_not_hasUnitLinearForm_one {p : ℕ} [Fact p.Prime] [PadicPlace p]
+    (h1 : ¬P.HasUnitLinearForm s p 1) (τ : P.Φ s) :
+    P.betaKInE s ∈ (placeOfEmb (weightEmbedding ιₚ τ)).asIdeal := by
+  have h_emb (τ : P.Φ s) (y : P.E s) : weightEmbedding ιₚ τ y = ιₚ (conj (Φ τ y)) :=
+    congrArg ιₚ (map_star_complex _ y)
+  have h_const : ∀ τ₁ τ₂ : P.Φ s,
+      P.betaKInE s ∈ (placeOfEmb (weightEmbedding ιₚ τ₁)).asIdeal ↔
+        P.betaKInE s ∈ (placeOfEmb (weightEmbedding ιₚ τ₂)).asIdeal := fun τ₁ τ₂ ↦ by
+    simp [mem_placeOfEmb, h_emb, phi_betaKInE]
+  by_contra h_not
+  refine h1 fun τ' ↦ ?_
+  have h_not' : P.betaKInE s ∉ (placeOfEmb (weightEmbedding ιₚ τ')).asIdeal :=
+    mt (h_const τ' τ).1 h_not
+  simp [norm_iota_periodFactor τ', adeleExtension_alpha, h_not']
+
+/-- If `β = betaKInE` lies in a finite place `w` of `E`, then `t = 1 - β + n z` does not, where
+`n = (d + 1) / 4 = β (1 - β)`. -/
+private lemma one_sub_betaKInE_add_mul_notMem {w : FinPlace (P.E s)}
+    (hβ_mem : P.betaKInE s ∈ w.asIdeal) (z : ℕ) :
+    1 - P.betaKInE s + (((P.d + 1) / 4 : ℕ) : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)) ∉ w.asIdeal := by
+  set n : ℕ := (P.d + 1) / 4
+  set t : 𝓞 (P.E s) := 1 - P.betaKInE s + (n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s))
+  have hβ_mul : P.betaKInE s * (1 - P.betaKInE s) = (n : 𝓞 (P.E s)) := P.betaKInE_mul_one_sub s
+  intro ht_mem
+  have h1_mem : (1 : 𝓞 (P.E s)) ∈ w.asIdeal := by
+    have h_n_mem : (n : 𝓞 (P.E s)) ∈ w.asIdeal := by
+      rw [← hβ_mul]
+      exact Ideal.mul_mem_right _ _ hβ_mem
+    have h_eq : (1 : 𝓞 (P.E s)) = t + P.betaKInE s - (n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)) := by
+      dsimp only [t]; ring
+    rw [h_eq]
+    exact sub_mem (add_mem ht_mem hβ_mem) (Ideal.mul_mem_right _ _ h_n_mem)
+  exact w.isPrime.one_notMem h1_mem
+
+/-- Let `β = betaKInE` lie in the prime `𝔭_τ` of `E` induced by `weightEmbedding ιₚ τ` for every `τ`
+in the CM type, and let `t ∈ 𝓞 E` lie in none of the `𝔭_τ`. Let `a, V ∈ 𝓞 E` and `M ∈ ℕ` satisfy
+`P'(ζ) (a - 1) M = q₁ V`, where `P'(ζ) = relDifferentGen`, with `V ∣ M` and `p ∤ M`. Then
+`(t M / q₁) (1 - a)` has `HasUnitLinearForm` at `ιₚ`. -/
+private lemma hasUnitLinearForm_mul_one_sub {p : ℕ} [Fact p.Prime] [PadicPlace p]
+    (hβ_mem : ∀ τ : P.Φ s, P.betaKInE s ∈ (placeOfEmb (weightEmbedding ιₚ τ)).asIdeal)
+    {a t V : 𝓞 (P.E s)} {M : ℕ}
+    (h_t_notMem : ∀ τ : P.Φ s, t ∉ (placeOfEmb (weightEmbedding ιₚ τ)).asIdeal)
+    (hV : P.relDifferentGen s * (a - 1) * M = P.q₁ s * V) (hV_dvd : V ∣ (M : 𝓞 (P.E s)))
+    (hp_ndvd : ¬p ∣ M) :
+    P.HasUnitLinearForm s p
+      ((t : P.E s) * (M : P.E s) / (P.q₁ s : P.E s) * (1 - (a : P.E s))) := by
+  set N : ℕ := P.q₁ s
+  have hN_ne : N ≠ 0 := NeZero.ne N
+  have h_emb (τ : P.Φ s) (y : P.E s) : weightEmbedding ιₚ τ y = ιₚ (conj (Φ τ y)) :=
+    congrArg ιₚ (map_star_complex _ y)
+  intro τ
+  let φ : P.E s →+* ℂ_[p] := weightEmbedding ιₚ τ
+  have h_factor : ‖ιₚ (P.periodFactor s)‖ = ‖φ (P.relDifferentGen s)‖ := by
+    rw [norm_iota_periodFactor τ, adeleExtension_alpha, ite_eq_left (hβ_mem τ), norm_inv, inv_inv]
+  have h_u_eq : (P.relDifferentGen s : P.E s) *
+      ((t : P.E s) * (M : P.E s) / (N : P.E s) * (1 - (a : P.E s))) =
+      ((-t * V : 𝓞 (P.E s)) : P.E s) := by
+    have hN_E : (N : P.E s) ≠ 0 := Nat.cast_ne_zero.2 hN_ne
+    have hV_E : (P.relDifferentGen s : P.E s) * ((a : P.E s) - 1) * (M : P.E s) =
+        (N : P.E s) * (V : P.E s) := by exact_mod_cast hV
+    field_simp [hN_E]
+    push_cast
+    linear_combination -(t : P.E s) * hV_E
+  rw [map_mul, norm_mul, ← h_emb, h_factor, ← norm_mul, ← map_mul, h_u_eq]
+  refine (norm_ringOfIntegers_le φ (-t * V)).eq_of_not_lt fun h_lt ↦ ?_
+  have h_mem : -t * V ∈ (placeOfEmb φ).asIdeal := (mem_placeOfEmb φ _).2 h_lt
+  have hV_mem : V ∈ (placeOfEmb φ).asIdeal := by
+    rcases (placeOfEmb φ).isPrime.mem_or_mem h_mem with ht | hV
+    · exact absurd (neg_mem_iff.1 ht) (h_t_notMem τ)
+    · exact hV
+  have hM_mem : (M : 𝓞 (P.E s)) ∈ (placeOfEmb φ).asIdeal := Ideal.mem_of_dvd _ hV_dvd hV_mem
+  have hp_M : p ∣ M :=
+    (FinPlace.natCast_mem_iff_dvd (placeOfEmb φ) (natCast_mem_placeOfEmb φ)).1 hM_mem
+  exact hp_ndvd hp_M
+
 /-- There is a tight frame `v` in `𝔞₀` with multiplicities `1` of length `h ≤ (d q₁) ^ 6` prime to
 `q₁`, such that for every prime `p` and embedding `ιₚ : ℂ →+* ℂ_[p]`, either `1` or some member
 `v i` has `HasUnitLinearForm`. -/
@@ -300,14 +710,11 @@ theorem exists_isTightFrame_coprime (P : Parameters) (s : ℕ) :
   set N : ℕ := P.q₁ s
   set n : ℕ := (P.d + 1) / 4
   have hN_ne : N ≠ 0 := NeZero.ne N
-  have hN_pos : 0 < N := NeZero.pos N
   have hζ : IsPrimitiveRoot (P.zetaInt s) N := isPrimitiveRoot_zetaInt
-  have hβ_mul : P.betaKInE s * (1 - P.betaKInE s) = (n : 𝓞 (P.E s)) := P.betaKInE_mul_one_sub s
   -- Factor `Φ_N'(ζ)` at each prime `ℓ ∣ N`, and solve `n z² + z + 1 = N e`.
   choose r M hM_le hN_eq hM_primes V hV_dvd hV_eq using
     fun ℓ : N.primeFactors ↦ exists_cyclotomic_different_factor hζ ℓ
   obtain ⟨z, hz_lt, e, he_eq⟩ := exists_quad_congr_mod_q₁ (P := P) (s := s)
-  obtain ⟨f, hf_eq⟩ : N ∣ n ^ N := q₁_dvd_pow_q₁
   let t : 𝓞 (P.E s) := 1 - P.betaKInE s + (n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s))
   let a (ℓ : N.primeFactors) : 𝓞 (P.E s) := P.zetaInt s ^ r ℓ
   -- The frame vectors indexed by `(ℓ, j, k, i) ∈ Σ ℓ : N.primeFactors, Fin (r ℓ) × Fin ℓ × Fin ℓ`.
@@ -321,260 +728,26 @@ theorem exists_isTightFrame_coprime (P : Parameters) (s : ℕ) :
   -- Step 1: Every `u x` lies in the lattice `𝔞₀ = E ∩ α Ô`.
   have hu_mem (x : I) : finiteImage id (u x) ∈ Ô (P.E s) := by
     rcases x with ⟨ℓ, j, k, i⟩
-    refine finiteImage_mem_iff.2 fun v ↦ ?_
-    obtain ⟨g, hg⟩ : a ℓ - 1 ∣ a ℓ ^ i.val - a ℓ ^ k.val := by
-      simpa using dvd_sub (sub_one_dvd_pow_sub_one (a ℓ) i.1) (sub_one_dvd_pow_sub_one (a ℓ) k.1)
-    have h_int_of_dvd (y : 𝓞 (P.E s)) (hdvd : (N : 𝓞 (P.E s)) ∣ y * t * (M ℓ * (a ℓ - 1))) :
-        v.valuation (P.E s) ((y : P.E s) * u ⟨ℓ, j, k, i⟩) ≤ 1 := by
-      obtain ⟨q, hq⟩ := hdvd
-      have h_eq : (y : P.E s) * u ⟨ℓ, j, k, i⟩ =
-          ((P.zetaInt s ^ j.val * (y * (0 : 𝓞 (P.E s)) ^ k.val * a ℓ ^ i.val + q * g) : 𝓞 (P.E s)) :
-            P.E s) := by
-        have hN_E : (N : P.E s) ≠ 0 := Nat.cast_ne_zero.2 hN_ne
-        have hg_E : (a ℓ : P.E s) ^ i.val - (a ℓ : P.E s) ^ k.val =
-            ((a ℓ : P.E s) - 1) * (g : P.E s) := by
-          exact_mod_cast hg
-        have hq_E : (y : P.E s) * (t : P.E s) * ((M ℓ : P.E s) * ((a ℓ : P.E s) - 1)) =
-            (N : P.E s) * (q : P.E s) := by
-          exact_mod_cast hq
-        simp only [u]
-        rw [hg_E]
-        field_simp [hN_E]
-        push_cast
-        linear_combination (P.zetaInt s : P.E s) ^ j.val * (g : P.E s) * hq_E
-      rw [h_eq]
-      exact v.valuation_le_one _
-    by_cases hv : P.betaKInE s ∈ v.asIdeal
-    · rw [ite_eq_left hv]
-      refine h_int_of_dvd (P.relDifferentGen s) ⟨t * V ℓ, ?_⟩
-      have hV_mul : P.relDifferentGen s * (a ℓ - 1) * M ℓ = N * V ℓ := hV_eq ℓ
-      linear_combination t * hV_mul
-    · rw [ite_eq_right hv, one_mul]
-      have h_unit : v.valuation (P.E s) (P.betaKInE s : P.E s) = 1 :=
-        v.valuation_eq_one_iff_notMem.2 hv
-      have h_beta_dvd : (N : 𝓞 (P.E s)) ∣ P.betaKInE s ^ N * t := by
-        obtain ⟨w, hw⟩ :=
-          sub_dvd_pow_sub_pow (P.betaKInE s) (-(n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s))) N
-        have h_prod : (P.betaKInE s - (-(n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)))) * t =
-            (n : 𝓞 (P.E s)) * ((N : 𝓞 (P.E s)) * (e : 𝓞 (P.E s))) := by
-          have he_O : (n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)) ^ 2 + (z : 𝓞 (P.E s)) + 1 =
-              (N : 𝓞 (P.E s)) * (e : 𝓞 (P.E s)) := by exact_mod_cast he_eq
-          linear_combination hβ_mul + (n : 𝓞 (P.E s)) * he_O
-        have hf_O : (n : 𝓞 (P.E s)) ^ N = (N : 𝓞 (P.E s)) * (f : 𝓞 (P.E s)) := by
-          exact_mod_cast hf_eq
-        refine ⟨(n : 𝓞 (P.E s)) * (e : 𝓞 (P.E s)) * w +
-          (f : 𝓞 (P.E s)) * (-(z : 𝓞 (P.E s))) ^ N * t, ?_⟩
-        have h_pow_neg : (-(n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s))) ^ N =
-            (n : 𝓞 (P.E s)) ^ N * (-(z : 𝓞 (P.E s))) ^ N := by
-          rw [show -(n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)) =
-            (n : 𝓞 (P.E s)) * (-(z : 𝓞 (P.E s))) by ring, mul_pow]
-        linear_combination t * hw + w * h_prod + (-(z : 𝓞 (P.E s))) ^ N * t * hf_O +
-          t * h_pow_neg
-      have h_le := h_int_of_dvd (P.betaKInE s ^ N) (dvd_mul_of_dvd_left h_beta_dvd _)
-      simpa [map_mul, h_unit] using h_le
-  -- Step 2: Compute the frame Gram matrix `∑ x, Φ σ (u x) * conj (Φ τ (u x)) = δ(σ, τ) * c`.
+    exact finiteImage_zetaInt_pow_mul_mem (hV_eq ℓ) (q₁_dvd_betaKInE_pow_mul he_eq) j k i
+  -- Step 2: Compute the frame Gram matrix `∑ x, Φ σ (u x) * conj (Φ τ (u x)) = δ(σ, τ) * c`,
+  -- adding up the contributions of the prime factors `ℓ ∣ N`.
   have h_frame_sum (σ τ : P.Φ s) :
       ∑ x : I, Φ σ (u x) * conj (Φ τ (u x)) = if σ = τ then (c : ℂ) else 0 := by
-    have h_zeta_frame :
-        ∑ m : Fin N, Φ σ ((P.zetaInt s : P.E s) ^ m.val) *
-          conj (Φ τ ((P.zetaInt s : P.E s) ^ m.val)) = if σ = τ then (N : ℂ) else 0 := by
-      have h1 := (P.isTightFrame_zeta_pow s 1).sum_mul_conj σ τ
-      have hN_C : ((P.q₀ : ℂ) * (towerDeg s : ℂ)) = (N : ℂ) := by exact_mod_cast rfl
-      simpa [hN_C] using h1
-    have h_phi_t (ρ : P.Φ s) : Φ ρ (t : P.E s) = 1 - quadGen P.d + (n : ℂ) * (z : ℂ) := by
-      simp [t, phi_betaKInE]
-    have hβ_sum : quadGen P.d + conj (quadGen P.d) = 1 := by
-      have := congrArg (fun x : 𝓞 (P.E s) ↦ Φ σ (x : P.E s)) (P.star_betaKInE s)
-      simp only [coe_star_ringOfIntegers, map_star_complex, Complex.star_def, map_sub, map_one,
-        phi_betaKInE] at this
-      linear_combination this
-    have h_t_add : (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) +
-        conj (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) = 1 + 2 * (n : ℂ) * (z : ℂ) := by
-      simp only [map_add, map_sub, map_one, map_mul, map_natCast]
-      linear_combination -hβ_sum
-    have h_t_mul : (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) *
-        conj (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) = (n : ℂ) * ((N : ℂ) * (e : ℂ)) := by
-      have hβ_prod : quadGen P.d * (1 - quadGen P.d) = (n : ℂ) := by
-        have := congrArg (fun x : 𝓞 (P.E s) ↦ Φ σ (x : P.E s)) hβ_mul
-        simpa [phi_betaKInE] using this
-      have he_C : (n : ℂ) * (z : ℂ) ^ 2 + (z : ℂ) + 1 = (N : ℂ) * (e : ℂ) := by
-        exact_mod_cast he_eq
-      simp only [map_add, map_sub, map_one, map_mul, map_natCast]
-      linear_combination (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) * (-hβ_sum) + hβ_prod +
-        (n : ℂ) * he_C
-    -- Compute the contribution of each prime factor `ℓ ∣ N`.
     have h_block (ℓ : N.primeFactors) :
         ∑ p : Fin (r ℓ) × Fin ℓ.val × Fin ℓ.val,
           Φ σ (u ⟨ℓ, p⟩) * conj (Φ τ (u ⟨ℓ, p⟩)) =
-            if σ = τ then ((N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))) : ℕ) : ℂ) else 0 := by
-      have hℓ_prime : ℓ.val.Prime := Nat.prime_of_mem_primeFactors ℓ.property
-      have hN_comm : N = r ℓ * ℓ.val := (hN_eq ℓ).trans (mul_comm _ _)
-      have h_prim_a : IsPrimitiveRoot (a ℓ) ℓ.val := hζ.pow hN_pos hN_comm
-      have h_sum_a : ∑ i : Fin ℓ.val, (a ℓ : P.E s) ^ i.val = 0 := by
-        have h0 : ∑ i ∈ range ℓ.val, (a ℓ) ^ i = 0 := h_prim_a.geom_sum_eq_zero hℓ_prime.one_lt
-        rw [← Fin.sum_univ_eq_sum_range] at h0
-        exact_mod_cast h0
-      let α : ℂ := Φ σ (a ℓ : P.E s)
-      let β' : ℂ := conj (Φ τ (a ℓ : P.E s))
-      have h_sum_ασ : ∑ i : Fin ℓ.val, α ^ i.val = 0 := by
-        simpa [α, map_sum, map_pow] using congrArg (Φ σ) h_sum_a
-      have h_sum_ατ : ∑ i : Fin ℓ.val, β' ^ i.val = 0 := by
-        simpa [β', map_sum, map_pow] using congrArg (conj ∘ Φ τ) h_sum_a
-      let γ : ℂ := Φ σ (P.zetaInt s : P.E s) * conj (Φ τ (P.zetaInt s : P.E s))
-      have h_prod_sum :
-          (∑ j : Fin (r ℓ), γ ^ j.val) * (∑ i : Fin ℓ.val, (γ ^ r ℓ) ^ i.val) =
-            if σ = τ then (N : ℂ) else 0 := by
-        have h_bij :
-            ∑ m : Fin N, γ ^ m.val =
-              (∑ j : Fin (r ℓ), γ ^ j.val) * (∑ i : Fin ℓ.val, (γ ^ r ℓ) ^ i.val) := by
-          let eN : Fin ℓ.val × Fin (r ℓ) ≃ Fin N :=
-            finProdFinEquiv.trans (finCongr (hN_eq ℓ).symm)
-          rw [← eN.sum_comp, Fintype.sum_prod_type, Finset.sum_mul, Finset.sum_comm]
-          refine Finset.sum_congr rfl fun j _ ↦ ?_
-          rw [Finset.mul_sum]
-          refine Finset.sum_congr rfl fun i _ ↦ ?_
-          have hval : (eN (i, j)).val = r ℓ * i.val + j.val := by
-            simp [eN, finProdFinEquiv, add_comm, mul_comm]
-          rw [hval, pow_add, pow_mul, mul_comm]
-        rw [← h_bij]
-        simpa [γ, mul_pow, map_pow] using h_zeta_frame
-      set W : ℂ := (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) * (M ℓ : ℂ) / (N : ℂ)
-      have h_αβ : α * β' = γ ^ r ℓ := by simp [α, β', γ, a, mul_pow, map_pow]
-      have h_inner :
-          ∑ k : Fin ℓ.val, ∑ i : Fin ℓ.val,
-            ((0 : ℂ) ^ k.val * α ^ i.val + W * (α ^ i.val - α ^ k.val)) *
-              ((0 : ℂ) ^ k.val * β' ^ i.val + conj W * (β' ^ i.val - β' ^ k.val)) =
-            (1 + W + conj W + 2 * (ℓ.val : ℂ) * (W * conj W)) *
-              ∑ i : Fin ℓ.val, (γ ^ r ℓ) ^ i.val := by
-        simpa [h_αβ] using sum_inner_frame hℓ_prime.pos h_sum_ασ h_sum_ατ
-      have h_factor_val :
-          (1 + W + conj W + 2 * (ℓ.val : ℂ) * (W * conj W)) * (N : ℂ) =
-            ((N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))) : ℕ) : ℂ) := by
-        have hN_C : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hN_ne
-        have hW_conj : conj W =
-            conj (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) * (M ℓ : ℂ) / (N : ℂ) := by simp [W]
-        rw [hW_conj]
-        simp only [W]
-        field_simp [hN_C]
-        push_cast
-        linear_combination (M ℓ : ℂ) * (N : ℂ) * h_t_add +
-          2 * (ℓ.val : ℂ) * (M ℓ : ℂ) ^ 2 * h_t_mul
-      have h_u_apply (j : Fin (r ℓ)) (k i : Fin ℓ.val) :
-          Φ σ (u ⟨ℓ, j, k, i⟩) * conj (Φ τ (u ⟨ℓ, j, k, i⟩)) =
-            γ ^ j.val *
-              (((0 : ℂ) ^ k.val * α ^ i.val + W * (α ^ i.val - α ^ k.val)) *
-                ((0 : ℂ) ^ k.val * β' ^ i.val + conj W * (β' ^ i.val - β' ^ k.val))) := by
-        simp only [u, map_mul, map_add, map_sub, map_div₀, map_pow, map_zero, map_natCast,
-          h_phi_t, W, α, β', γ, mul_pow]
-        ring
-      calc ∑ p : Fin (r ℓ) × Fin ℓ.val × Fin ℓ.val, Φ σ (u ⟨ℓ, p⟩) * conj (Φ τ (u ⟨ℓ, p⟩))
-          = ∑ j : Fin (r ℓ), ∑ k : Fin ℓ.val, ∑ i : Fin ℓ.val,
-              Φ σ (u ⟨ℓ, j, k, i⟩) * conj (Φ τ (u ⟨ℓ, j, k, i⟩)) := by
-            simp [Fintype.sum_prod_type]
-        _ = (∑ j : Fin (r ℓ), γ ^ j.val) *
-              ((1 + W + conj W + 2 * (ℓ.val : ℂ) * (W * conj W)) *
-                ∑ i : Fin ℓ.val, (γ ^ r ℓ) ^ i.val) := by
-            simp_rw [h_u_apply, ← Finset.mul_sum, h_inner, ← Finset.sum_mul]
-        _ = (1 + W + conj W + 2 * (ℓ.val : ℂ) * (W * conj W)) *
-              ((∑ j : Fin (r ℓ), γ ^ j.val) * (∑ i : Fin ℓ.val, (γ ^ r ℓ) ^ i.val)) := by ring
-        _ = if σ = τ then ((N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))) : ℕ) : ℂ) else 0 := by
-            rw [h_prod_sum]
-            split_ifs
-            · exact h_factor_val
-            · ring
+            if σ = τ then ((N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))) : ℕ) : ℂ) else 0 :=
+      sum_phi_mul_conj_phi_eq_ite (Nat.prime_of_mem_primeFactors ℓ.property) (hN_eq ℓ) he_eq
+        rfl rfl (fun _ _ _ ↦ rfl) σ τ
     rw [Fintype.sum_sigma]
     simp_rw [h_block]
     split_ifs <;> simp [c]
   -- Step 3: `c` is coprime to `N`.
-  have hc_coprime : c.Coprime N := by
-    refine Nat.coprime_of_dvd fun p hp hpc hpN ↦ ?_
-    have hp_mem : p ∈ N.primeFactors := Nat.mem_primeFactors.2 ⟨hp, hpN, hN_ne⟩
-    have hp_n : p ∣ n := P.dvd_d_add_one_div_four_of_dvd_q₁ hp hpN
-    have h_zero : (c : ZMod p) = 0 := (ZMod.natCast_eq_zero_iff c p).2 hpc
-    have h_eval : (c : ZMod p) = (M ⟨p, hp_mem⟩ : ZMod p) := by
-      simp only [c, Nat.cast_sum]
-      rw [Finset.sum_eq_single ⟨p, hp_mem⟩]
-      · have hN0 : (N : ZMod p) = 0 := (ZMod.natCast_eq_zero_iff N p).2 hpN
-        have hn0 : (n : ZMod p) = 0 := (ZMod.natCast_eq_zero_iff n p).2 hp_n
-        simp [hN0, hn0]
-      · intro ℓ _ hℓ_ne
-        have hN0 : (N : ZMod p) = 0 := (ZMod.natCast_eq_zero_iff N p).2 hpN
-        have hM0 : (M ℓ : ZMod p) = 0 :=
-          (ZMod.natCast_eq_zero_iff (M ℓ) p).2
-            ((hM_primes ℓ p hp_mem).2 fun h ↦ hℓ_ne (Subtype.ext h.symm))
-        simp [hN0, hM0]
-      · simp
-    have hp_M : p ∣ M ⟨p, hp_mem⟩ := (ZMod.natCast_eq_zero_iff _ p).1 (h_eval.symm.trans h_zero)
-    exact (hM_primes ⟨p, hp_mem⟩ p hp_mem).1 hp_M rfl
+  have hc_coprime : c.Coprime N :=
+    coprime_sum_add_mul hN_ne (fun _ hp hpN ↦ P.dvd_d_add_one_div_four_of_dvd_q₁ hp hpN)
+      hM_primes z e
   -- Step 4: Elementary polynomial bound `c ≤ (d * N) ^ 6`.
-  have hc_le : c ≤ (P.d * N) ^ 6 := by
-    have hd_ge : 7 ≤ P.d := by
-      have hmod : P.d % 8 = 7 := PrimeSevenModEight.mod_eight
-      omega
-    have hn_le : n ≤ P.d := by omega
-    have h_card : Fintype.card N.primeFactors ≤ N := by
-      rw [Fintype.card_coe]
-      calc N.primeFactors.card ≤ (Finset.Icc 1 N).card :=
-            Finset.card_le_card fun p hp ↦
-              Finset.mem_Icc.2 ⟨(Nat.prime_of_mem_primeFactors hp).pos,
-                Nat.le_of_mem_primeFactors hp⟩
-        _ = N := by simp
-    have h_e_le : e ≤ n * N + 2 := by
-      have h1 : N * e ≤ n * N ^ 2 + N + 1 := by
-        have he' : n * z ^ 2 + z + 1 = N * e := he_eq
-        have hz_le : z ≤ N := hz_lt.le
-        have hmul : n * z ^ 2 ≤ n * N ^ 2 := Nat.mul_le_mul_left n (Nat.pow_le_pow_left hz_le 2)
-        omega
-      have h2 : N * e ≤ N * (n * N + 2) := by
-        calc N * e ≤ n * N ^ 2 + N + 1 := h1
-          _ ≤ n * N ^ 2 + N + N := by omega
-          _ = N * (n * N + 2) := by ring
-      exact Nat.le_of_mul_le_mul_left h2 hN_pos
-    have h_term_le (ℓ : N.primeFactors) :
-        N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e))) ≤ P.d ^ 6 * N ^ 5 := by
-      have hℓ_le : ℓ.val ≤ N := Nat.le_of_mem_primeFactors ℓ.property
-      have hM : M ℓ ≤ N := hM_le ℓ
-      have hz_le : z ≤ N := hz_lt.le
-      have h_inner1 : M ℓ * e ≤ (P.d + 2) * N ^ 2 := by
-        calc M ℓ * e ≤ N * (n * N + 2) := Nat.mul_le_mul hM h_e_le
-          _ ≤ N * (P.d * N + 2 * N) := by gcongr; omega
-          _ = (P.d + 2) * N ^ 2 := by ring
-      have h_inner2 : z + ℓ.val * (M ℓ * e) ≤ (P.d + 3) * N ^ 4 := by
-        calc z + ℓ.val * (M ℓ * e)
-            ≤ N + N * ((P.d + 2) * N ^ 2) :=
-              Nat.add_le_add hz_le (Nat.mul_le_mul hℓ_le h_inner1)
-          _ ≤ N ^ 4 + (P.d + 2) * N ^ 4 := by
-              have hN4 : N ≤ N ^ 4 := Nat.le_self_pow (by norm_num) N
-              have hN34 : N ^ 3 ≤ N ^ 4 := Nat.pow_le_pow_right hN_pos (by norm_num)
-              have h_mul : N * ((P.d + 2) * N ^ 2) = (P.d + 2) * N ^ 3 := by ring
-              rw [h_mul]
-              exact Nat.add_le_add hN4 (Nat.mul_le_mul_left _ hN34)
-          _ = (P.d + 3) * N ^ 4 := by ring
-      have h_inner3 : 1 + 2 * n * (z + ℓ.val * (M ℓ * e)) ≤ (2 * P.d * (P.d + 3) + 1) * N ^ 4 := by
-        calc 1 + 2 * n * (z + ℓ.val * (M ℓ * e))
-            ≤ N ^ 4 + 2 * P.d * ((P.d + 3) * N ^ 4) :=
-              Nat.add_le_add (one_le_pow₀ hN_pos)
-                (Nat.mul_le_mul (Nat.mul_le_mul_left 2 hn_le) h_inner2)
-          _ = (2 * P.d * (P.d + 3) + 1) * N ^ 4 := by ring
-      have h_coeff : 1 + (2 * P.d * (P.d + 3) + 1) ≤ P.d ^ 6 := by
-        have hd_pos : 0 < P.d := lt_of_lt_of_le (by norm_num) hd_ge
-        have h7 : 7 * P.d ≤ P.d * P.d := Nat.mul_le_mul_right _ hd_ge
-        have h3 : P.d * P.d * 3 ≤ P.d ^ 6 :=
-          calc P.d * P.d * 3 ≤ P.d * P.d * P.d :=
-                Nat.mul_le_mul_left _ (le_trans (by norm_num) hd_ge)
-            _ = P.d ^ 3 := (pow_three' P.d).symm
-            _ ≤ P.d ^ 6 := Nat.pow_le_pow_right hd_pos (by norm_num)
-        have h_eq : 1 + (2 * P.d * (P.d + 3) + 1) = 2 * (P.d * P.d) + 6 * P.d + 2 := by ring
-        omega
-      calc N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e)))
-          ≤ N ^ 5 + N * ((2 * P.d * (P.d + 3) + 1) * N ^ 4) :=
-            Nat.add_le_add (Nat.le_self_pow (by norm_num) N) (Nat.mul_le_mul hM h_inner3)
-        _ = (1 + (2 * P.d * (P.d + 3) + 1)) * N ^ 5 := by ring
-        _ ≤ P.d ^ 6 * N ^ 5 := Nat.mul_le_mul_right _ h_coeff
-    calc c ≤ ∑ _ℓ : N.primeFactors, P.d ^ 6 * N ^ 5 := Finset.sum_le_sum fun ℓ _ ↦ h_term_le ℓ
-      _ = Fintype.card N.primeFactors * (P.d ^ 6 * N ^ 5) := by simp
-      _ ≤ N * (P.d ^ 6 * N ^ 5) := Nat.mul_le_mul_right _ h_card
-      _ = (P.d * N) ^ 6 := by ring
+  have hc_le : c ≤ (P.d * N) ^ 6 := sum_add_mul_le_pow_six (NeZero.pos N) hM_le hz_lt he_eq
   -- Step 5: Unit linear form for every prime `p` and embedding `ιₚ : ℂ →+* ℂ_[p]`.
   have h_unit (p : ℕ) [Fact p.Prime] [PadicPlace p] :
       P.HasUnitLinearForm s p 1 ∨ ∃ x : I, P.HasUnitLinearForm s p (u x) := by
@@ -587,55 +760,12 @@ theorem exists_isTightFrame_coprime (P : Parameters) (s : ℕ) :
     have hp_prime : p.Prime := Fact.out
     let ℓ : N.primeFactors := ⟨p, Nat.mem_primeFactors.2 ⟨hp_prime, hp_dvd, hN_ne⟩⟩
     have hr_pos : 0 < r ℓ := Nat.pos_of_ne_zero fun hr0 ↦ hN_ne (by simp [hN_eq ℓ, hr0])
-    have h_emb (τ : P.Φ s) (y : P.E s) : weightEmbedding ιₚ τ y = ιₚ (conj (Φ τ y)) :=
-      congrArg ιₚ (map_star_complex _ y)
-    have hβ_mem (τ : P.Φ s) : P.betaKInE s ∈ (placeOfEmb (weightEmbedding ιₚ τ)).asIdeal := by
-      have h_const : ∀ τ₁ τ₂ : P.Φ s,
-          P.betaKInE s ∈ (placeOfEmb (weightEmbedding ιₚ τ₁)).asIdeal ↔
-            P.betaKInE s ∈ (placeOfEmb (weightEmbedding ιₚ τ₂)).asIdeal := fun τ₁ τ₂ ↦ by
-        simp [mem_placeOfEmb, h_emb, phi_betaKInE]
-      by_contra h_not
-      refine h1 fun τ' ↦ ?_
-      have h_not' : P.betaKInE s ∉ (placeOfEmb (weightEmbedding ιₚ τ')).asIdeal :=
-        mt (h_const τ' τ).1 h_not
-      simp [norm_iota_periodFactor τ', adeleExtension_alpha, h_not']
-    refine ⟨⟨ℓ, ⟨0, hr_pos⟩, ⟨1, hp_prime.one_lt⟩, ⟨0, hp_prime.pos⟩⟩, fun τ ↦ ?_⟩
-    let φ : P.E s →+* ℂ_[p] := weightEmbedding ιₚ τ
-    have h_factor : ‖ιₚ (P.periodFactor s)‖ = ‖φ (P.relDifferentGen s)‖ := by
-      rw [norm_iota_periodFactor τ, adeleExtension_alpha, ite_eq_left (hβ_mem τ), norm_inv, inv_inv]
-    have h_u_eq : (P.relDifferentGen s : P.E s) *
-        u ⟨ℓ, ⟨0, hr_pos⟩, ⟨1, hp_prime.one_lt⟩, ⟨0, hp_prime.pos⟩⟩ =
-        ((-t * V ℓ : 𝓞 (P.E s)) : P.E s) := by
-      have hN_E : (N : P.E s) ≠ 0 := Nat.cast_ne_zero.2 hN_ne
-      have hV_E : (P.relDifferentGen s : P.E s) * ((a ℓ : P.E s) - 1) * (M ℓ : P.E s) =
-          (N : P.E s) * (V ℓ : P.E s) := by exact_mod_cast hV_eq ℓ
-      simp only [u, pow_zero, pow_one, one_mul, zero_mul, zero_add]
-      field_simp [hN_E]
-      push_cast
-      linear_combination -(t : P.E s) * hV_E
-    rw [map_mul, norm_mul, ← h_emb, h_factor, ← norm_mul, ← map_mul, h_u_eq]
-    refine (norm_ringOfIntegers_le φ (-t * V ℓ)).eq_of_not_lt fun h_lt ↦ ?_
-    have h_mem : -t * V ℓ ∈ (placeOfEmb φ).asIdeal := (mem_placeOfEmb φ _).2 h_lt
-    have h_t_notMem : t ∉ (placeOfEmb φ).asIdeal := by
-      intro ht_mem
-      have h1_mem : (1 : 𝓞 (P.E s)) ∈ (placeOfEmb φ).asIdeal := by
-        have h_n_mem : (n : 𝓞 (P.E s)) ∈ (placeOfEmb φ).asIdeal := by
-          rw [← hβ_mul]
-          exact Ideal.mul_mem_right _ _ (hβ_mem τ)
-        have h_eq : (1 : 𝓞 (P.E s)) = t + P.betaKInE s - (n : 𝓞 (P.E s)) * (z : 𝓞 (P.E s)) := by
-          dsimp only [t]; ring
-        rw [h_eq]
-        exact sub_mem (add_mem ht_mem (hβ_mem τ)) (Ideal.mul_mem_right _ _ h_n_mem)
-      exact (placeOfEmb φ).isPrime.one_notMem h1_mem
-    have hV_mem : V ℓ ∈ (placeOfEmb φ).asIdeal := by
-      rcases (placeOfEmb φ).isPrime.mem_or_mem h_mem with ht | hV
-      · exact absurd (neg_mem_iff.1 ht) h_t_notMem
-      · exact hV
-    have hM_mem : (M ℓ : 𝓞 (P.E s)) ∈ (placeOfEmb φ).asIdeal :=
-      Ideal.mem_of_dvd _ (hV_dvd ℓ) hV_mem
-    have hp_M : p ∣ M ℓ :=
-      (FinPlace.natCast_mem_iff_dvd (placeOfEmb φ) (natCast_mem_placeOfEmb φ)).1 hM_mem
-    exact (hM_primes ℓ p ℓ.property).1 hp_M rfl
+    have hβ_mem := betaKInE_mem_of_not_hasUnitLinearForm_one h1
+    -- For the prime factor `ℓ = p`, the member `u (ℓ, 0, 1, 0) = (t M / N) (1 - a ℓ)` works.
+    refine ⟨⟨ℓ, ⟨0, hr_pos⟩, ⟨1, hp_prime.one_lt⟩, ⟨0, hp_prime.pos⟩⟩, ?_⟩
+    simpa only [u, pow_zero, pow_one, one_mul, zero_mul, zero_add] using
+      hasUnitLinearForm_mul_one_sub hβ_mem (fun τ ↦ one_sub_betaKInE_add_mul_notMem (hβ_mem τ) z)
+        (hV_eq ℓ) (hV_dvd ℓ) fun hp_M ↦ (hM_primes ℓ p ℓ.property).1 hp_M rfl
   refine ⟨c, I, inferInstance, u, ⟨hu_mem, ?_⟩, hc_le, hc_coprime, h_unit⟩
   simpa using h_frame_sum
 
