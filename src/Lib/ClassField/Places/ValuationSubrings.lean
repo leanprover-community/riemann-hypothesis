@@ -461,6 +461,19 @@ instance : FiniteDimensional ℚ_[p] (adjoin ℚ_[p] (Set.range σ)) := by
 
 /-! ### Extension to the completion and to finite adeles -/
 
+omit [CharZero F] in
+/-- On `E`, the norm pulled back by `σ` is a fixed positive power of the norm pulled back
+from the completion at `placeOfEmb σ`. -/
+private lemma exists_norm_eq_completion_norm_rpow :
+    ∃ c > (0 : ℝ), ∀ x : E, ‖σ x‖ =
+      ‖algebraMap E (LocField (placeOfEmb σ)) x‖ ^ c := by
+  have h_equiv : (place (algebraMap E (LocField (placeOfEmb σ)))).IsEquiv (place σ) := by
+    intro x y
+    simpa [Valued.toNormedField.norm_le_iff, v_algebraMap_eq_valuation, ← coe_le_coe]
+      using (isEquiv_placeOfEmb σ).symm x y
+  obtain ⟨c, hc, h_pow⟩ := AbsoluteValue.isEquiv_iff_exists_rpow_eq.mp h_equiv
+  exact ⟨c, hc, fun x ↦ (congrFun h_pow x).symm⟩
+
 /-- Let `F` be an ultrametric normed field of characteristic 0 that is a normed `ℚ_p`-algebra, not
 necessarily complete. Let `σ` be an embedding of the number field `E` into `F`, and let
 `New.placeOfEmb σ` be the prime of `E` made of the integers `x` with `‖σ x‖ < 1`. Then `σ` extends
@@ -478,21 +491,13 @@ lemma exists_placeOfEmb_extension :
   set L : IntermediateField ℚ_[p] F := adjoin ℚ_[p] (Set.range σ)
   have h_complete : CompleteSpace L := FiniteDimensional.completeSpace ℚ_[p] L
   let σL : E →+* L := σ.codRestrict L fun x ↦ subset_adjoin _ _ ⟨x, rfl⟩
-  -- The norm of the completion and `‖σ ·‖` order the elements of `E` alike.
-  have h_place_equiv : (place (algebraMap E (LocField (placeOfEmb σ)))).IsEquiv (place σ) := by
-    intro x y
-    simpa [Valued.toNormedField.norm_le_iff, v_algebraMap_eq_valuation, ← coe_le_coe]
-      using (isEquiv_placeOfEmb σ).symm x y
-  -- Equivalent absolute values are powers of each other.
-  obtain ⟨c, hc_pos, h_pow⟩ : ∃ c : ℝ, 0 < c ∧
-      (fun x : E ↦ ‖algebraMap E (LocField (placeOfEmb σ)) x‖ ^ c) = fun x : E ↦ ‖σ x‖ :=
-    AbsoluteValue.isEquiv_iff_exists_rpow_eq.mp h_place_equiv
+  obtain ⟨c, hc_pos, h_pow⟩ := exists_norm_eq_completion_norm_rpow σ
   -- Give `E` the norm of the completion. As `‖σ x‖ = ‖x‖ ^ c`, the map `σL` is uniformly
   -- continuous.
   let seminormed_E : SeminormedRing E :=
     SeminormedRing.induced E (LocField (placeOfEmb σ)) (FinitePlace.embedding (placeOfEmb σ))
   have h_unif : UniformContinuous σL := uniformContinuous_of_tendsto_zero
-    (squeeze_zero_norm (fun x ↦ (congrFun h_pow x).ge)
+    (squeeze_zero_norm (fun x ↦ (h_pow x).le)
       (tendsto_norm_zero.rpow_const_nhds_zero hc_pos))
   -- The uniform structure of `E` is induced from the completion.
   have h_inducing : IsUniformInducing (algebraMap E (LocField (placeOfEmb σ))) := ⟨rfl⟩
@@ -505,7 +510,7 @@ lemma exists_placeOfEmb_extension :
     simp [φ, σL, extendRingHom, extend_eq, h_unif.continuous]
   -- The relation `‖σ x‖ = ‖x‖ ^ c` passes to the completion by density.
   have hφ_norm : ∀ y : LocField (placeOfEmb σ), ‖(φ y : F)‖ = ‖y‖ ^ c :=
-    h_dense.eq (fun x ↦ (congrArg norm (hφ_ext x)).trans (congrFun h_pow x).symm) hφ_cont.norm
+    h_dense.eq (fun x ↦ (congrArg norm (hφ_ext x)).trans (h_pow x)) hφ_cont.norm
       (continuous_norm.rpow_const fun _ ↦ .inr hc_pos.le)
   refine ⟨(algebraMap L F).comp φ, continuous_subtypeVal.comp hφ_cont, hφ_ext,
     fun x ↦ (φ x).prop, fun x y ↦ ?_⟩
