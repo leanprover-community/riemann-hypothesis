@@ -131,6 +131,222 @@ lemma measurableSet_coordinateBox (κ : Type) [Finite κ] (u : Aˣ) :
   rw [h_eq]
   exact .iInter fun i ↦ isCompact_O.measurableSet.preimage (by fun_prop)
 
+/-- The linear shift on the first hyperbolic block `w₁` that moves a quadric of `hyperbolicGram`
+by a skew element `x`, along a vector `r` paired with a vector of content `c`. -/
+private def quadricShift (c : Aˣ) (r : σ → A) (x : skewAdjoint A) : σ → A :=
+  star (P.element * P.skewUnit⁻¹.val * x.val * c⁻¹.val) • star r
+
+omit [DecidableEq σ] in
+/-- Pairing `quadricShift c r x` with a vector `v` satisfying `r ⬝ᵥ v = c` produces the hermitian
+contribution `δ⁻¹ x` (`δ = P.skewUnit`). -/
+private lemma quadricShift_hermitian_pair (c : Aˣ) (v r : σ → A) (hrv : r ⬝ᵥ v = c.val)
+    (x : skewAdjoint A) :
+    star (quadricShift c r x) ⬝ᵥ v + star v ⬝ᵥ quadricShift c r x =
+      P.skewUnit⁻¹.val * x.val := by
+  let y : A := P.element * P.skewUnit⁻¹.val * x.val * c⁻¹.val
+  have hδ : star P.skewUnit⁻¹.val = -P.skewUnit⁻¹.val := by
+    have h1 : P.skewUnit.val * P.skewUnit⁻¹.val = 1 := Units.mul_inv _
+    have h2 := congrArg star h1
+    rw [star_mul, P.star_skewUnit, star_one] at h2
+    linear_combination (-P.skewUnit⁻¹.val) * h2 + (-star P.skewUnit⁻¹.val) * h1
+  have h_star : star (quadricShift c r x) = y • r := by
+    ext j
+    simp [quadricShift, y]
+  have hx : star x.val = -x.val := skewAdjoint.star_val_eq
+  have hy : y * c = P.element * P.skewUnit⁻¹.val * x.val := by
+    simp only [y]
+    linear_combination (P.element * P.skewUnit⁻¹.val * x.val) * c.inv_mul
+  have h_conj : star v ⬝ᵥ quadricShift c r x = star (y * c) := by
+    rw [quadricShift, dotProduct_smul, star_dotProduct_star, hrv, smul_eq_mul]
+    exact (star_mul' _ _).symm
+  rw [h_star, smul_dotProduct, hrv, smul_eq_mul, h_conj, hy, star_mul, star_mul, hδ, hx]
+  linear_combination (P.skewUnit⁻¹.val * x.val) * P.element_add_star
+
+omit [DecidableEq ν] in
+/-- Shifting the first hyperbolic block `w₁` by `quadricShift c r x` moves a point on the quadric
+of `b` to the quadric of `b + x` in `flatChart`, while preserving membership in the coordinate box
+`u z ∈ O` whenever `x` lies in the skew ideal `((c * star c)⁻¹ : Aˣ) * x ∈ O`. -/
+private lemma flatChart_quadricShift_indicator_eq {T : Matrix ν ν A} (b x : skewAdjoint A)
+    (u t c : Aˣ) (w' : ν ⊕ σ → A) {r : σ → A} (hr : ∀ j, r j ∈ P.integers)
+    (hrv : r ⬝ᵥ (fun j ↦ w' (inr j)) = c.val)
+    (hc : ∀ a : A, (∀ j, a * w' (inr j) ∈ P.integers) ↔ c.val * a ∈ P.integers)
+    (hx : ((c * star c)⁻¹ : Aˣ).val * x.val ∈ P.integers)
+    (w₁ : σ → A) (a : skewAdjoint A) :
+    let S : Set (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) := coordinateBox _ {z : A | u.val * z ∈ P.integers}
+    S.indicator (1 : (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) → ℝ≥0∞)
+        (flatChart (hyperbolicGram σ T) b ((↑t, w₁ ⊕ᵥ w'), a)) =
+      S.indicator 1 (flatChart (hyperbolicGram σ T) (b + x)
+        ((↑t, (w₁ + quadricShift c r x) ⊕ᵥ w'), a)) := by
+  classical
+  let S : Set (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) := coordinateBox _ {z : A | u.val * z ∈ P.integers}
+  have h_value : P.skewUnit⁻¹.val * (b + x : skewAdjoint A).val -
+        star ((w₁ + quadricShift c r x) ⊕ᵥ w') ⬝ᵥ
+          hyperbolicGram σ T *ᵥ ((w₁ + quadricShift c r x) ⊕ᵥ w') =
+      P.skewUnit⁻¹.val * b.val -
+        star (w₁ ⊕ᵥ w') ⬝ᵥ hyperbolicGram σ T *ᵥ (w₁ ⊕ᵥ w') := by
+    rw [star_dotProduct_hyperbolicGram_mulVec, star_dotProduct_hyperbolicGram_mulVec,
+      star_add, add_dotProduct, dotProduct_add, AddSubgroup.coe_add]
+    linear_combination -quadricShift_hermitian_pair c (fun j ↦ w' (inr j)) r hrv x
+  have h_mem (s : A) (w : σ → A) : (![s, ↑t] ⊕ᵥ (w ⊕ᵥ w')) ∈ S ↔
+      (u.val * s ∈ P.integers ∧ u.val * t ∈ P.integers) ∧ (∀ j, u.val * w j ∈ P.integers) ∧
+        ∀ k, u.val * w' k ∈ P.integers := by
+    simp [S, Fin.forall_fin_two]
+  simp only [flatChart, h_value]
+  change S.indicator 1 _ = S.indicator 1 _
+  rw [indicator_apply, indicator_apply]
+  refine if_congr ?_ rfl rfl
+  rw [h_mem, h_mem]
+  refine and_congr_right fun _ ↦ ⟨fun h ↦ ⟨?_, h.2⟩, fun h ↦ ⟨?_, h.2⟩⟩
+  all_goals
+    have hcu : c.val * u.val ∈ P.integers := (hc u.val).1 fun j ↦ h.2 (inr j)
+    have hu_e (j : σ) : u.val * quadricShift c r x j ∈ P.integers := by
+      let ρ : A := ((c * star c)⁻¹ : Aˣ).val * x.val
+      have hρ : ρ ∈ P.integers := hx
+      have hx_eq : x.val = ((c * star c : Aˣ) : A) * ρ :=
+        (Units.mul_inv_cancel_left (c * star c) x.val).symm
+      have hy : P.element * P.skewUnit⁻¹.val * x.val * c⁻¹.val =
+          P.element * P.skewUnit⁻¹.val * star c.val * ρ := by
+        simp only [hx_eq, Units.val_mul, Units.coe_star]
+        linear_combination (P.element * P.skewUnit⁻¹.val * star c.val * ρ) * c.mul_inv
+      have h_eq : u.val * quadricShift c r x j = c.val * u.val *
+          (star P.element * star P.skewUnit⁻¹.val * star ρ * star (r j)) := by
+        simp only [quadricShift, Pi.smul_apply, Pi.star_apply, smul_eq_mul, hy, star_mul,
+          star_star]
+        ring
+      rw [h_eq]
+      have h_star {z : A} (hz : z ∈ P.integers) : star z ∈ P.integers :=
+        P.isAdelic.toIsStarStable.star_mem hz
+      exact mul_mem hcu (mul_mem (mul_mem (mul_mem (h_star P.element_mem)
+        (h_star P.skewUnit_inv_mem)) (h_star hρ)) (h_star (hr j)))
+    intro j
+  · simpa [mul_add] using add_mem (h.1 j) (hu_e j)
+  · simpa [mul_add] using (add_mem_cancel_right (hu_e j)).1 (by simpa [mul_add] using h.1 j)
+
+omit [DecidableEq ν] in
+/-- The fibre mass of the coordinate box `u z ∈ O` in `flatChart` is jointly measurable in the
+quadric index and chart parameter. -/
+private lemma measurable_quadricFibre (T : Matrix ν ν A) (u : Aˣ) :
+    Measurable fun q : skewAdjoint A × A × (σ ⊕ ν ⊕ σ → A) ↦
+      ∫⁻ a, (coordinateBox (Fin 2 ⊕ σ ⊕ ν ⊕ σ) {x : A | u.val * x ∈ P.integers}).indicator 1
+        (flatChart (hyperbolicGram σ T) q.1 (q.2, a)) ∂P.skewMeasure := by
+  have h_ind : Measurable ((coordinateBox (Fin 2 ⊕ σ ⊕ ν ⊕ σ)
+      {x : A | u.val * x ∈ P.integers}).indicator (1 : (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) → ℝ≥0∞)) :=
+    measurable_one.indicator (measurableSet_coordinateBox _ u)
+  exact (h_ind.comp (measurable_flatChart.comp (by fun_prop :
+    Measurable fun z : (skewAdjoint A × A × (σ ⊕ ν ⊕ σ → A)) × skewAdjoint A ↦
+      (z.1.1, (z.1.2, z.2))))).lintegral_prod_right'
+
+omit [DecidableEq ν] in
+/-- For a fixed unit `t` and `w'` whose last block has a unit `i₀`-th entry (with content `c`),
+averaging over the skew ideal of measure `|c|` bounds the `w₁`-integral of the box's fibre mass
+on one quadric `b` by the content index `|c|⁻¹` times the mass on all quadrics, written as an
+integral over `s` via `lintegral_form_eq_lintegral_flatChart`. -/
+private lemma lintegral_quadricFibre_le_of_isUnit {T : Matrix ν ν A} (hT : Tᴴ = T)
+    (b : skewAdjoint A) (u t : Aˣ) (i₀ : σ) (w' : ν ⊕ σ → A) (hw' : IsUnit (w' (inr i₀))) :
+    let S : Set (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) := coordinateBox _ {x : A | u.val * x ∈ P.integers}
+    ∫⁻ w₁ : σ → A,
+        ∫⁻ a, S.indicator 1 (flatChart (hyperbolicGram σ T) b ((↑t, w₁ ⊕ᵥ w'), a))
+          ∂P.skewMeasure ≤
+      ∫⁻ w₁ : σ → A,
+        ∫⁻ s : A,
+          S.indicator 1 (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w')) * contentIndex i₀ (fun j : σ ↦ w' (inr j)) := by
+  classical
+  have hH : (hyperbolicGram σ T)ᴴ = hyperbolicGram σ T := by
+    simp [hyperbolicGram, fromBlocks_conjTranspose,
+      conjTranspose_fromCols_eq_fromRows_conjTranspose,
+      conjTranspose_fromRows_eq_fromCols_conjTranspose, hT]
+  let S : Set (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) := coordinateBox _ {x : A | u.val * x ∈ P.integers}
+  let ind : (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) → ℝ≥0∞ := S.indicator 1
+  have h_ind : Measurable ind := measurable_one.indicator (measurableSet_coordinateBox _ u)
+  let F (β : skewAdjoint A) (p : A × (σ ⊕ ν ⊕ σ → A)) : ℝ≥0∞ :=
+    ∫⁻ a, ind (flatChart (hyperbolicGram σ T) β (p, a)) ∂P.skewMeasure
+  have hF : Measurable fun q : skewAdjoint A × A × (σ ⊕ ν ⊕ σ → A) ↦ F q.1 q.2 :=
+    measurable_quadricFibre T u
+  -- The content `c` of the last block `v` of `w'`.
+  let v : σ → A := fun j ↦ w' (inr j)
+  obtain ⟨c, r, hr, hrv, hc⟩ := exists_content (p := v) hw'
+  have hW_eq : contentIndex i₀ v = (P.modulus c)⁻¹ := by
+    have h_set : {a : A | ∀ j : σ, a * w' (inr j) ∈ P.integers} = {a | c.val * a ∈ P.integers} :=
+      Set.ext hc
+    simp only [contentIndex, v, iInf_pos hw', h_set, volume_setOf_mul_mem]
+  have h_ne_zero : P.modulus c ≠ 0 := by simp
+  have h_ne_top : P.modulus c ≠ ∞ := by simp
+  -- The integral over `s` is the integral over all quadrics.
+  have hM_eq (w₁ : σ → A) :
+      (∫⁻ s : A, ind (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w')) * contentIndex i₀ v) =
+        (∫⁻ β, F β (↑t, w₁ ⊕ᵥ w') ∂P.skewMeasure) * (P.modulus c)⁻¹ := by
+    have h_form := lintegral_form_eq_lintegral_flatChart hH (f := fun q ↦ ind q.2)
+      (h_ind.comp measurable_snd) t (w₁ ⊕ᵥ w')
+    calc ∫⁻ s : A, ind (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w')) * contentIndex i₀ v
+        = (∫⁻ s : A, ind (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w'))) * (P.modulus c)⁻¹ := by
+          rw [hW_eq, lintegral_mul_const' _ _ (by simp)]
+      _ = _ := by rw [h_form]
+  change ∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w') ≤
+    ∫⁻ w₁ : σ → A, ∫⁻ s : A, ind (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w')) * contentIndex i₀ v
+  simp only [hM_eq]
+  -- The skew elements by which the quadric may be moved.
+  let K : Set (skewAdjoint A) := {x | ((c * star c)⁻¹ : Aˣ).val * x.val ∈ P.integers}
+  have hK_meas : MeasurableSet K := isCompact_O.measurableSet.preimage (by fun_prop)
+  have hK : P.skewMeasure K = P.modulus c := by
+    have h_star : star ((c * star c)⁻¹ : Aˣ).val = ((c * star c)⁻¹ : Aˣ) := by
+      rw [← Units.coe_star, star_inv, star_mul, star_star]
+    rw [skewMeasure_setOf_mul_mem _ h_star]
+    simp [modulus_inv, ← sq, ← rpow_natCast_mul]
+  have h_shift : ∀ x ∈ K, ∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w') =
+      ∫⁻ w₁ : σ → A, F (b + x) (↑t, w₁ ⊕ᵥ w') := fun x hx ↦
+    calc ∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w')
+        = ∫⁻ w₁ : σ → A, F (b + x) (↑t, (w₁ + quadricShift c r x) ⊕ᵥ w') :=
+          lintegral_congr fun w₁ ↦ lintegral_congr fun a ↦
+            flatChart_quadricShift_indicator_eq b x u t c w' hr hrv hc hx w₁ a
+      _ = _ := lintegral_add_right_eq_self
+          (fun w₁ : σ → A ↦ F (b + x) (↑t, w₁ ⊕ᵥ w')) (quadricShift c r x)
+  have h_elim : Measurable fun w₁ : σ → A ↦ (w₁ ⊕ᵥ w' : σ ⊕ ν ⊕ σ → A) :=
+    measurable_sumElim_pair.comp (measurable_id.prodMk measurable_const)
+  have h_swap : AEMeasurable (uncurry fun (x : skewAdjoint A) (w₁ : σ → A) ↦
+      F (b + x) (↑t, w₁ ⊕ᵥ w')) (P.skewMeasure.prod volume) :=
+    (hF.comp ((measurable_const.add measurable_fst).prodMk
+      (measurable_const.prodMk (h_elim.comp measurable_snd)))).aemeasurable
+  calc ∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w')
+      = (P.modulus c)⁻¹ * ((∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w')) * P.skewMeasure K) := by
+        rw [hK, mul_left_comm, ENNReal.inv_mul_cancel h_ne_zero h_ne_top, mul_one]
+    _ = (P.modulus c)⁻¹ * ∫⁻ x in K, (∫⁻ w₁ : σ → A, F (b + x) (↑t, w₁ ⊕ᵥ w')) ∂P.skewMeasure := by
+        rw [← setLIntegral_const, setLIntegral_congr_fun hK_meas h_shift]
+    _ ≤ (P.modulus c)⁻¹ * ∫⁻ x, (∫⁻ w₁ : σ → A, F (b + x) (↑t, w₁ ⊕ᵥ w')) ∂P.skewMeasure := by
+        gcongr
+        exact Measure.restrict_le_self
+    _ = (P.modulus c)⁻¹ * ∫⁻ w₁ : σ → A, ∫⁻ x, F (b + x) (↑t, w₁ ⊕ᵥ w') ∂P.skewMeasure := by
+        rw [lintegral_lintegral_swap h_swap]
+    _ = (P.modulus c)⁻¹ * ∫⁻ w₁ : σ → A, ∫⁻ β, F β (↑t, w₁ ⊕ᵥ w') ∂P.skewMeasure := by
+        congr 2 with w₁
+        exact lintegral_add_left_eq_self (fun β ↦ F β (↑t, w₁ ⊕ᵥ w')) b
+    _ = ∫⁻ w₁ : σ → A, (∫⁻ β, F β (↑t, w₁ ⊕ᵥ w') ∂P.skewMeasure) * (P.modulus c)⁻¹ := by
+        rw [← lintegral_const_mul' _ _ (by simp)]
+        simp only [mul_comm]
+
+/-- The integral of the content index of the last `σ`-block over the coordinate box `u z ∈ O` is
+at most `ζ_R(μ) |u|^(-(2 |σ| + |ν| + 1))`. -/
+private lemma lintegral_coordinateBox_contentIndex_le {μ : ℕ} (hμ : idealZeta P.integers μ ≤ 2)
+    (hσ : μ + 1 ≤ card σ) (i₀ : σ) (u : Aˣ) :
+    ∫⁻ x : Fin 2 ⊕ σ ⊕ ν ⊕ σ → A,
+        (coordinateBox (Fin 2 ⊕ σ ⊕ ν ⊕ σ) {z : A | u.val * z ∈ P.integers}).indicator 1 x *
+          contentIndex i₀ (fun j : σ ↦ x (inr (inr (inr j)))) ≤
+      idealZeta P.integers μ * (P.modulus u)⁻¹ ^ (2 * card σ + card ν + 1) := by
+  let S : Set (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) := coordinateBox _ {z : A | u.val * z ∈ P.integers}
+  have hS : MeasurableSet S := measurableSet_coordinateBox _ u
+  let eσ : (Fin 2 ⊕ σ ⊕ ν) ⊕ σ ≃ Fin 2 ⊕ σ ⊕ ν ⊕ σ :=
+    (Equiv.sumAssoc _ _ _).trans (Equiv.sumCongr (Equiv.refl _) (Equiv.sumAssoc _ _ _))
+  have h_card : card (Fin 2 ⊕ σ ⊕ ν) + (card σ - 1) = 2 * card σ + card ν + 1 := by
+    simp only [card_sum, card_fin]
+    lia
+  have h_le := lintegral_contentIndex_pow_le (P := P) (s := 1) hμ (k := card σ - 1) eσ i₀
+    (V := 1) u (one_mem _) ⟨h_card, by lia, by lia⟩
+  calc ∫⁻ x, S.indicator 1 x * contentIndex i₀ (fun j : σ ↦ x (inr (inr (inr j))))
+      = ∫⁻ x in S, contentIndex i₀ (fun j : σ ↦ x (inr (inr (inr j)))) := by
+        rw [← lintegral_indicator hS]
+        refine lintegral_congr fun x ↦ ?_
+        by_cases hx : x ∈ S <;> simp [hx]
+    _ ≤ _ := by simpa [eσ, S, coordinateBox, Fin.forall_fin_two] using h_le
+
 /-- Let `ζ_R(μ) ≤ 2` and let `σ` have at least `μ + 1` elements. On the quadric of any skew `b`
 for one hyperbolic plane, the hyperbolic planes indexed by `σ` and a hermitian form `T`, the points
 `y` with `u y` integral, `u` a unit, have mass at most `ζ_R(μ) |u|^(-d)`, where `d + 1` is the
@@ -150,22 +366,13 @@ theorem quadricMeasure_coordinateBox_le {μ : ℕ} (hμ : idealZeta P.integers �
       idealZeta P.integers μ * (P.modulus u)⁻¹ ^ (2 * card σ + card ν + 1) := by
   classical
   obtain ⟨i₀⟩ : Nonempty σ := card_pos_iff.1 (by lia)
-  have hH : (hyperbolicGram σ T)ᴴ = hyperbolicGram σ T := by
-    simp [hyperbolicGram, fromBlocks_conjTranspose,
-      conjTranspose_fromCols_eq_fromRows_conjTranspose,
-      conjTranspose_fromRows_eq_fromCols_conjTranspose, hT]
-  set H : Matrix (σ ⊕ ν ⊕ σ) (σ ⊕ ν ⊕ σ) A := hyperbolicGram σ T with hH_def
+  set H : Matrix (σ ⊕ ν ⊕ σ) (σ ⊕ ν ⊕ σ) A := hyperbolicGram σ T
   let S : Set (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) := coordinateBox _ {x : A | u.val * x ∈ P.integers}
   have hS : MeasurableSet S := measurableSet_coordinateBox _ u
   let ind : (Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) → ℝ≥0∞ := S.indicator 1
   have h_ind : Measurable ind := measurable_one.indicator hS
-  -- The mass of the box in the fibre of the chart over `p`, on the quadric of `β`.
   let F (β : skewAdjoint A) (p : A × (σ ⊕ ν ⊕ σ → A)) : ℝ≥0∞ :=
     ∫⁻ a, ind (flatChart H β (p, a)) ∂P.skewMeasure
-  have hF : Measurable fun q : skewAdjoint A × A × (σ ⊕ ν ⊕ σ → A) ↦ F q.1 q.2 :=
-    (h_ind.comp (measurable_flatChart.comp (by fun_prop :
-      Measurable fun z : (skewAdjoint A × A × (σ ⊕ ν ⊕ σ → A)) × skewAdjoint A ↦
-        (z.1.1, (z.1.2, z.2))))).lintegral_prod_right'
   let W (w' : ν ⊕ σ → A) : ℝ≥0∞ := contentIndex i₀ fun j : σ ↦ w' (inr j)
   have hW : Measurable W := by fun_prop
   let Φ (x : Fin 2 ⊕ σ ⊕ ν ⊕ σ → A) : ℝ≥0∞ := ind x * W fun k ↦ x (inr (inr k))
@@ -193,148 +400,16 @@ theorem quadricMeasure_coordinateBox_le {μ : ℕ} (hμ : idealZeta P.integers �
     calc ∫⁻ p, M p = ∫⁻ r : A × A × (σ ⊕ ν ⊕ σ → A), Φ (![r.1, r.2.1] ⊕ᵥ r.2.2) :=
           (lintegral_prod_symm' _ hΦ_pair).symm
       _ = ∫⁻ x, Φ x := measurePreserving_pair_sumElim.lintegral_comp hΦ
-  have h_final : ∫⁻ x, Φ x ≤
-      idealZeta P.integers μ * (P.modulus u)⁻¹ ^ (2 * card σ + card ν + 1) := by
-    let eσ : (Fin 2 ⊕ σ ⊕ ν) ⊕ σ ≃ Fin 2 ⊕ σ ⊕ ν ⊕ σ :=
-      (Equiv.sumAssoc _ _ _).trans (Equiv.sumCongr (Equiv.refl _) (Equiv.sumAssoc _ _ _))
-    have h_card : card (Fin 2 ⊕ σ ⊕ ν) + (card σ - 1) = 2 * card σ + card ν + 1 := by
-      simp only [card_sum, card_fin]
-      lia
-    have h_le := lintegral_contentIndex_pow_le (P := P) (s := 1) hμ (k := card σ - 1) eσ i₀
-      (V := 1) u (one_mem _) ⟨h_card, by lia, by lia⟩
-    calc ∫⁻ x, Φ x = ∫⁻ x in S, W fun k ↦ x (inr (inr k)) := by
-          rw [← lintegral_indicator hS]
-          refine lintegral_congr fun x ↦ ?_
-          by_cases hx : x ∈ S <;> simp [Φ, ind, hx]
-      _ ≤ _ := by simpa [eσ, W, S, coordinateBox, Fin.forall_fin_two] using h_le
   rw [h_left]
-  refine le_trans ?_ (h_mid.le.trans h_final)
+  refine le_trans ?_ (h_mid.le.trans (lintegral_coordinateBox_contentIndex_le hμ hσ i₀ u))
   have hFb : Measurable fun p : A × (σ ⊕ ν ⊕ σ → A) ↦ F b p :=
-    (hF.comp measurable_prodMk_left :)
+    ((measurable_quadricFibre (σ := σ) T u).comp measurable_prodMk_left :)
   rw [h_split hFb, h_split hM]
-  refine lintegral_le_of_ae_imp P.ae_isUnit fun t' ht ↦ ?_
-  obtain ⟨t, rfl⟩ := ht
+  refine lintegral_le_of_ae_imp P.ae_isUnit fun t' ⟨t, ht⟩ ↦ ?_
+  subst ht
   refine lintegral_le_of_ae_imp ((tendsto_eval_ae_ae (i := inr i₀)).eventually P.ae_isUnit)
-    fun w' (hw' : IsUnit (w' (inr i₀))) ↦ ?_
-  -- The content `c` of the last block `v` of `w'`.
-  let v : σ → A := fun j ↦ w' (inr j)
-  obtain ⟨c, r, hr, hrv, hc⟩ := exists_content (p := v) hw'
-  have hW_eq : W w' = (P.modulus c)⁻¹ := by
-    have h_set : {a : A | ∀ j : σ, a * w' (inr j) ∈ P.integers} = {a | c.val * a ∈ P.integers} :=
-      Set.ext hc
-    simp only [W, contentIndex, iInf_pos hw', h_set, volume_setOf_mul_mem]
-  have h_ne_zero : P.modulus c ≠ 0 := by simp
-  have h_ne_top : P.modulus c ≠ ∞ := by simp
-  -- The integral over `s` is the integral over all quadrics.
-  have hM_eq (w₁ : σ → A) : M (↑t, w₁ ⊕ᵥ w') =
-      (∫⁻ β, F β (↑t, w₁ ⊕ᵥ w') ∂P.skewMeasure) * (P.modulus c)⁻¹ := by
-    have h_form := lintegral_form_eq_lintegral_flatChart hH (f := fun q ↦ ind q.2)
-      (h_ind.comp measurable_snd) t (w₁ ⊕ᵥ w')
-    calc M (↑t, w₁ ⊕ᵥ w') = ∫⁻ s : A, ind (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w')) * (P.modulus c)⁻¹ := by
-          simp only [M, Φ, ← hW_eq, W, elim_inr]
-      _ = (∫⁻ s : A, ind (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w'))) * (P.modulus c)⁻¹ :=
-          lintegral_mul_const' _ _ (by simp)
-      _ = _ := by rw [h_form]
-  simp only [hM_eq]
-  -- The skew elements by which the quadric may be moved.
-  let K : Set (skewAdjoint A) := {x | ((c * star c)⁻¹ : Aˣ).val * x.val ∈ P.integers}
-  have hK_meas : MeasurableSet K := isCompact_O.measurableSet.preimage (by fun_prop)
-  have hK : P.skewMeasure K = P.modulus c := by
-    have h_star : star ((c * star c)⁻¹ : Aˣ).val = ((c * star c)⁻¹ : Aˣ) := by
-      rw [← Units.coe_star, star_inv, star_mul, star_star]
-    rw [skewMeasure_setOf_mul_mem _ h_star]
-    simp [modulus_inv, ← sq, ← rpow_natCast_mul]
-  -- Moving the first block along `star r` moves the value of the form by `δ⁻¹ x`.
-  let y (x : skewAdjoint A) : A := P.element * P.skewUnit⁻¹.val * x.val * c⁻¹.val
-  let e (x : skewAdjoint A) : σ → A := star (y x) • star r
-  have hδ : star P.skewUnit⁻¹.val = -P.skewUnit⁻¹.val := by
-    have h1 : P.skewUnit.val * P.skewUnit⁻¹.val = 1 := Units.mul_inv _
-    have h2 := congrArg star h1
-    rw [star_mul, P.star_skewUnit, star_one] at h2
-    linear_combination (-P.skewUnit⁻¹.val) * h2 + (-star P.skewUnit⁻¹.val) * h1
-  have h_e (x : skewAdjoint A) :
-      star (e x) ⬝ᵥ v + star v ⬝ᵥ e x = P.skewUnit⁻¹.val * x.val := by
-    have h_star : star (e x) = y x • r := by
-      ext j
-      simp [e]
-    have hx : star x.val = -x.val := skewAdjoint.star_val_eq
-    have hy : y x * c = P.element * P.skewUnit⁻¹.val * x.val := by
-      simp only [y]
-      linear_combination (P.element * P.skewUnit⁻¹.val * x.val) * c.inv_mul
-    have h_conj : star v ⬝ᵥ e x = star (y x * c) := by
-      rw [dotProduct_smul, star_dotProduct_star, hrv, smul_eq_mul]
-      exact (star_mul' _ _).symm
-    rw [h_star, smul_dotProduct, hrv, smul_eq_mul, h_conj, hy, star_mul, star_mul, hδ, hx]
-    linear_combination (P.skewUnit⁻¹.val * x.val) * P.element_add_star
-  have h_mem (s : A) (w₁ : σ → A) : (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w')) ∈ S ↔
-      (u.val * s ∈ P.integers ∧ u.val * t ∈ P.integers) ∧ (∀ j, u.val * w₁ j ∈ P.integers) ∧
-        ∀ k, u.val * w' k ∈ P.integers := by
-    simp [S, Fin.forall_fin_two]
-  have h_pt {x : skewAdjoint A} (hx : x ∈ K) (w₁ : σ → A) (a : skewAdjoint A) :
-      ind (flatChart H b ((↑t, w₁ ⊕ᵥ w'), a)) =
-        ind (flatChart H (b + x) ((↑t, (w₁ + e x) ⊕ᵥ w'), a)) := by
-    have h_value : P.skewUnit⁻¹.val * (b + x : skewAdjoint A).val -
-          star ((w₁ + e x) ⊕ᵥ w') ⬝ᵥ H *ᵥ ((w₁ + e x) ⊕ᵥ w') =
-        P.skewUnit⁻¹.val * b.val - star (w₁ ⊕ᵥ w') ⬝ᵥ H *ᵥ (w₁ ⊕ᵥ w') := by
-      rw [hH_def, star_dotProduct_hyperbolicGram_mulVec, star_dotProduct_hyperbolicGram_mulVec,
-        star_add, add_dotProduct, dotProduct_add, AddSubgroup.coe_add]
-      linear_combination -h_e x
-    simp only [flatChart, h_value]
-    change S.indicator 1 _ = S.indicator 1 _
-    rw [indicator_apply, indicator_apply]
-    refine if_congr ?_ rfl rfl
-    rw [h_mem, h_mem]
-    refine and_congr_right fun _ ↦ ⟨fun h ↦ ⟨?_, h.2⟩, fun h ↦ ⟨?_, h.2⟩⟩
-    all_goals
-      have hcu : c.val * u.val ∈ P.integers := (hc u).1 fun j ↦ h.2 (inr j)
-      have hu_e (j : σ) : u.val * e x j ∈ P.integers := by
-        let ρ : A := ((c * star c)⁻¹ : Aˣ).val * x.val
-        have hρ : ρ ∈ P.integers := hx
-        have hx_eq : x.val = ((c * star c : Aˣ) : A) * ρ :=
-          (Units.mul_inv_cancel_left (c * star c) x.val).symm
-        have hy : y x = P.element * P.skewUnit⁻¹.val * star c.val * ρ := by
-          simp only [y, hx_eq, Units.val_mul, Units.coe_star]
-          linear_combination (P.element * P.skewUnit⁻¹.val * star c.val * ρ) * c.mul_inv
-        have h_eq : u.val * e x j = c.val * u.val *
-            (star P.element * star P.skewUnit⁻¹.val * star ρ * star (r j)) := by
-          simp only [e, Pi.smul_apply, Pi.star_apply, smul_eq_mul, hy, star_mul, star_star]
-          ring
-        rw [h_eq]
-        have h_star {z : A} (hz : z ∈ P.integers) : star z ∈ P.integers :=
-          P.isAdelic.toIsStarStable.star_mem hz
-        exact mul_mem hcu (mul_mem (mul_mem (mul_mem (h_star P.element_mem)
-          (h_star P.skewUnit_inv_mem)) (h_star hρ)) (h_star (hr j)))
-      intro j
-    · simpa [mul_add] using add_mem (h.1 j) (hu_e j)
-    · simpa [mul_add] using (add_mem_cancel_right (hu_e j)).1 (by simpa [mul_add] using h.1 j)
-  have h_shift : ∀ x ∈ K, ∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w') =
-      ∫⁻ w₁ : σ → A, F (b + x) (↑t, w₁ ⊕ᵥ w') := fun x hx ↦
-    calc ∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w')
-        = ∫⁻ w₁ : σ → A, F (b + x) (↑t, (w₁ + e x) ⊕ᵥ w') :=
-          lintegral_congr fun w₁ ↦ lintegral_congr fun a ↦ h_pt hx w₁ a
-      _ = _ := lintegral_add_right_eq_self (fun w₁ : σ → A ↦ F (b + x) (↑t, w₁ ⊕ᵥ w')) (e x)
-  have h_elim : Measurable fun w₁ : σ → A ↦ (w₁ ⊕ᵥ w' : σ ⊕ ν ⊕ σ → A) :=
-    measurable_sumElim_pair.comp (measurable_id.prodMk measurable_const)
-  have h_swap : AEMeasurable (uncurry fun (x : skewAdjoint A) (w₁ : σ → A) ↦
-      F (b + x) (↑t, w₁ ⊕ᵥ w')) (P.skewMeasure.prod volume) :=
-    (hF.comp ((measurable_const.add measurable_fst).prodMk
-      (measurable_const.prodMk (h_elim.comp measurable_snd)))).aemeasurable
-  calc ∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w')
-      = (P.modulus c)⁻¹ * ((∫⁻ w₁ : σ → A, F b (↑t, w₁ ⊕ᵥ w')) * P.skewMeasure K) := by
-        rw [hK, mul_left_comm, ENNReal.inv_mul_cancel h_ne_zero h_ne_top, mul_one]
-    _ = (P.modulus c)⁻¹ * ∫⁻ x in K, (∫⁻ w₁ : σ → A, F (b + x) (↑t, w₁ ⊕ᵥ w')) ∂P.skewMeasure := by
-        rw [← setLIntegral_const, setLIntegral_congr_fun hK_meas h_shift]
-    _ ≤ (P.modulus c)⁻¹ * ∫⁻ x, (∫⁻ w₁ : σ → A, F (b + x) (↑t, w₁ ⊕ᵥ w')) ∂P.skewMeasure := by
-        gcongr
-        exact Measure.restrict_le_self
-    _ = (P.modulus c)⁻¹ * ∫⁻ w₁ : σ → A, ∫⁻ x, F (b + x) (↑t, w₁ ⊕ᵥ w') ∂P.skewMeasure := by
-        rw [lintegral_lintegral_swap h_swap]
-    _ = (P.modulus c)⁻¹ * ∫⁻ w₁ : σ → A, ∫⁻ β, F β (↑t, w₁ ⊕ᵥ w') ∂P.skewMeasure := by
-        congr 2 with w₁
-        exact lintegral_add_left_eq_self (fun β ↦ F β (↑t, w₁ ⊕ᵥ w')) b
-    _ = ∫⁻ w₁ : σ → A, (∫⁻ β, F β (↑t, w₁ ⊕ᵥ w') ∂P.skewMeasure) * (P.modulus c)⁻¹ := by
-        rw [← lintegral_const_mul' _ _ (by simp)]
-        simp only [mul_comm]
+    fun w' hw' ↦ ?_
+  simpa [F, M, Φ, W, ind, H] using lintegral_quadricFibre_le_of_isUnit hT b u t i₀ w' hw'
 
 end IntegralPlace
 
