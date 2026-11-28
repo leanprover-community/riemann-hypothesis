@@ -5,8 +5,10 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.NumberTheory.NumberField.Countable
-public import Lib.SiegelWeil.Mass
 public import Lib.Adelic.Adeles.LocalFactors
+public import Lib.Adelic.Adeles.StrongApproximation
+public import Lib.General.NumberTheory.EmbeddingsAndDifferent
+import Lib.Adelic.Adeles.IdeleModulus
 import Lib.Adelic.Reduction.FirstMinimumShortBases
 
 /-!

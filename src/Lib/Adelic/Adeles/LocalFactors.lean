@@ -36,6 +36,7 @@ fact gives the valuation of natural numbers prime to one of valuation less than 
 * `New.invOnUnits`, `New.TameLocalChar`: `χ⁻¹` cut off to the units of `O`, and the data showing
   that it comes from a primitive character (`New.Exchange.IsPrimitiveMulChar`) of the finite ring
   `O / ϖ`.
+* `New.idealZeta`: the sum ζ_R(s) of [R : I]^(−s) over the ideals I of finite index of a ring R.
 
 Notions from other files:
 * `New.IsAdelic`: The properties of the pair Ô ⊂ 𝔸_f abstracted to R ⊂ A: R is open, compact and
@@ -471,3 +472,14 @@ lemma mem_O_locProd {x : LocProd P} : x ∈ SemilocalField.O ↔ ∀ i : P, v (x
 end New
 
 end
+
+section IdealZeta
+
+open ENNReal
+
+/-- The ideal zeta sum ∑ [R : I]^(−s) over the ideals I of finite index in R, for a natural
+number s, with values in [0, ∞]. -/
+noncomputable def New.idealZeta {A : Type} [CommRing A] (R : Subring A) (s : ℕ) : ℝ≥0∞ :=
+  ∑' I : {I : Ideal R // I.cardQuot ≠ 0}, (I.val.cardQuot : ℝ≥0∞)⁻¹ ^ s
+
+end IdealZeta

@@ -2,6 +2,7 @@ module
 
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 public import Lib.Weil.Construction.FiniteMultiplier
+public import Lib.Adelic.Adeles.LocalFactors
 public import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Adelic.Unitary.CongruenceLevels
@@ -26,7 +27,6 @@ of a ring.
   `E` contains a primitive root of unity of order `5040`, so it is unramified over its maximal real
   subfield at all finite places). Then the class sum in rank `j + 1` of the number of lattice
   vectors of norm `1` is the mass in rank `j`.
-* `New.idealZeta`: the sum ζ_R(s) of [R : I]^(−s) over the ideals I of finite index of a ring R.
 * `New.lintegral_le_idealZeta_mul`: let ζ_R(μ) ≤ 2. An integral is at most ζ_R(μ)·V if almost every
   point x of the domain lies in some set S(I), for an ideal I of finite index, with
   [R : I]^μ · f(x) · (measure of S(I)) ≤ V, for the integrand f.
@@ -35,6 +35,7 @@ of a ring.
 
 Notions from other files:
 * `New.stdSpace`: the definite space `I_n`, the sum of `n` norms with its standard lattice.
+* `New.idealZeta`: the sum ζ_R(s) of [R : I]^(−s) over the ideals I of finite index of a ring R.
 
 ## Relation to the literature
 
@@ -234,11 +235,6 @@ namespace New
 open MeasureTheory Measure ENNReal Fintype AddSubgroup Set NumberField AddChar Circle stdLattice
 
 variable {A n : Type} [CommRing A] {R : Subring A} {μ e : ℕ} {E : Type _} [Field E] [NumberField E]
-
-/-- The ideal zeta sum ∑ [R : I]^(−s) over the ideals I of finite index in R, for a natural
-number s, with values in [0, ∞]. -/
-noncomputable def idealZeta (R : Subring A) (s : ℕ) : ℝ≥0∞ :=
-  ∑' I : {I : Ideal R // I.cardQuot ≠ 0}, (I.val.cardQuot : ℝ≥0∞)⁻¹ ^ s
 
 /-- A number whose positive power is at most `1 + 2⁻¹ ^ e` is at most `2`. -/
 lemma le_two_of_pow_le_ofReal {x : ℝ≥0∞}

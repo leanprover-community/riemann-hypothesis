@@ -7,6 +7,7 @@ public import New.OneLift.HeckeValues.AlgebraicPartSize
 public import Lib.DiscreteSeries.Bruhat.ComplexPlace
 public import New.OneLift.HeckeValues.TwistedRatio
 public import New.UpperBound.Size.ShortColumns
+import Lib.SiegelWeil.Mass
 import New.Congruences.GaloisRepresentations.SelmerHypotheses
 import New.Derivatives.Sharpness.BoundAttained
 import New.OneLift.FalseLifts.PeriodsOfFalseLifts
