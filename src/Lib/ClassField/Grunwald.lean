@@ -183,6 +183,27 @@ private lemma locIdele_mem_idelesUnitOff_of_mem_or_v_eq_one {T : Set (FinPlace E
     rw [locIdele_apply_of_ne (ne_of_mem_of_not_mem hu_T hw).symm x, map_one]
   · exact locIdele_mem_idelesUnitOff hx_unit
 
+/-- Let `S ⊆ T`, let each `w q` be a place outside `T` of prime norm, and let `u` be a place of `S`,
+or a place of non-prime norm at which `x` is a local unit. Then the idele `New.locIdele u x`, whose
+only component different from `1` is `x` at `u`, is a unit outside `T` and a `p`-th power at every
+place `w q`. -/
+private lemma locIdele_mem_inf_iInf_pow {p : ℕ} {ι : Type} {S T : Set (FinPlace E)} (hST : S ⊆ T)
+    (w : ι → FinPlace E) (hwT : ∀ q, w q ∉ T) (hw_prime : ∀ q, (w q).q.Prime)
+    (u : FinPlace E) (x : (LocField u)ˣ)
+    (hu : u ∈ S ∨ ¬ u.q.Prime ∧ v x.val = 1) :
+    locIdele u x ∈ idelesUnitOff T ⊓ ⨅ q, (powMonoidHom p).range.comap (ideleAt (w q)) := by
+  -- `u` is none of the `w q`, which lie outside `T` and have prime norm
+  have h_ne (q : ι) : w q ≠ u := by
+    rintro rfl
+    rcases hu with hu_S | ⟨hu_not_prime, -⟩
+    · exact hwT q (hST hu_S)
+    · exact hu_not_prime (hw_prime q)
+  refine ⟨locIdele_mem_idelesUnitOff_of_mem_or_v_eq_one (hu.imp (fun hu_S ↦ hST hu_S) And.right),
+    mem_iInf.mpr fun q ↦ ?_⟩
+  change ideleAt (w q) (locIdele u x) ∈ (powMonoidHom p).range
+  rw [ideleAt_locIdele_of_ne (h_ne q) x]
+  exact one_mem _
+
 /-- Grunwald's theorem in prime exponent. Let `E` be totally complex, `p` prime, `S` a finite set of
 finite places, and `ψ` a character of the finite ideles with values in `ℚ/ℤ` (written
 multiplicatively), with open kernel and killed by `p`; it need not be trivial on `Eˣ`. Then some
@@ -269,18 +290,7 @@ lemma grunwald [IsTotallyComplex E] {p : ℕ} {S : Set (FinPlace E)} (hp : p.Pri
     exists_nsmul_eq_zero_abelianLift_artinMap_eq_of_apply_principalIdele_eq_one ψ hψ_open hψ_pow
       h_sup hU_open h_pow_mem h_principal
   refine ⟨χ, hχ_pow, fun u x hu ↦ hχ_eq (locIdele u x) ?_⟩
-  -- `locIdele u x ∈ U`: it is a unit outside `T`, and `u` is none of the `w q`, which lie outside
-  -- `T` and have prime norm.
-  have h_ne (q : Q) : w q ≠ u := by
-    rintro rfl
-    rcases hu with hu_S | ⟨hu_not_prime, -⟩
-    · exact hwT q (hST hu_S)
-    · exact hu_not_prime (hw_prime q)
-  refine ⟨locIdele_mem_idelesUnitOff_of_mem_or_v_eq_one (hu.imp (fun hu_S ↦ hST hu_S) And.right),
-    mem_iInf.mpr fun q ↦ ?_⟩
-  change ideleAt (w q) (locIdele u x) ∈ (powMonoidHom p).range
-  rw [ideleAt_locIdele_of_ne (h_ne q) x]
-  exact one_mem _
+  exact locIdele_mem_inf_iInf_pow hST w hwT hw_prime u x hu
 
 variable [IsCMField E] (χ : QZChar Gal(Ω/E))
 
