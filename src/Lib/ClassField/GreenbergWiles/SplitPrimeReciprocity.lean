@@ -218,35 +218,37 @@ lemma corestrict_mem [IsTopologicalGroup G] (P : OpenSubgroup G) [Fintype (G ⧸
         (∀ (u : P.toSubgroup) (y : X), (V.restrictTo P).ρ u (f y) = f (u • y) + c u) ∧
         ∀ u ∈ Subtype.val ⁻¹' I, c u = 0 :=
     mem_trivializedCocycles.mp h_mem
-  have hI_le (g : G) (hg : g ∈ I) : g ∈ P := (hI g hg).left
-  have hI_conj (g : G) (hg : g ∈ I) (s : G) : s⁻¹ * g * s ∈ I := (hI g hg).right s
-  refine mem_trivializedCocycles.mpr ⟨?_, fun g y ↦ ?_, fun g hg ↦ ?_⟩
-  · fun_prop
-  · -- Match the term of the coset `g⁻¹ • x` on the left with the term of `x` on the right.
-    simp only [map_sum, ← Finset.sum_add_distrib]
-    refine (Fintype.sum_equiv (toPerm g⁻¹) _ _ fun x ↦ ?_).symm
-    -- The trivialisation of `c` for `u = (s x)⁻¹ * g * s (g⁻¹ • x)` in `P`, moved by `s x`.
-    have h_term : V.ρ (x.out⁻¹ * g * (g⁻¹ • x).out) (f ((g⁻¹ • x).out⁻¹ • y)) =
-        f (x.out⁻¹ • g • y) +
-          c ⟨x.out⁻¹ * g * (g⁻¹ • x).out, out_inv_mul_mul_out_mem P.toSubgroup g x⟩ := by
-      have h_point : (x.out⁻¹ * g * (g⁻¹ • x).out) • (g⁻¹ • x).out⁻¹ • y = x.out⁻¹ • g • y := by
-        simp [mul_smul]
-      rw [← h_point]
-      exact h_triv ⟨x.out⁻¹ * g * (g⁻¹ • x).out, out_inv_mul_mul_out_mem P.toSubgroup g x⟩
-        ((g⁻¹ • x).out⁻¹ • y)
-    rw [← map_add, ← h_term, ← mul_apply_eq_comp, ← map_mul, mul_assoc,
-      mul_inv_cancel_left, map_mul, mul_apply_eq_comp, toPerm_apply]
-  · -- All conjugates of `g` lie in `I`, hence in `P`: `g` fixes every coset and each term is `0`.
-    have h_fix (x : G ⧸ P.toSubgroup) : g⁻¹ • x = x := by
-      induction x using QuotientGroup.induction_on with
-      | H s => simpa [QuotientGroup.eq] using hI_le _ (hI_conj g hg s)
-    refine Finset.sum_eq_zero fun x _ ↦ ?_
-    have h_mem_I : x.out⁻¹ * g * (g⁻¹ • x).out ∈ I := by
-      simpa [h_fix] using hI_conj g hg x.out
-    have h_value :
-        c ⟨x.out⁻¹ * g * (g⁻¹ • x).out, out_inv_mul_mul_out_mem P.toSubgroup g x⟩ = 0 :=
-      h_zero _ h_mem_I
-    rw [h_value, map_zero]
+  let word (x : G ⧸ P.toSubgroup) (g : G) : P.toSubgroup :=
+    ⟨x.out⁻¹ * g * (g⁻¹ • x).out, out_inv_mul_mul_out_mem _ _ _⟩
+  let F (y : X) (x : G ⧸ P.toSubgroup) : V := V.ρ x.out (f (x.out⁻¹ • y))
+  let C (g : G) (x : G ⧸ P.toSubgroup) : V := V.ρ x.out (c (word x g))
+  -- Lift the pair to functions on the cosets, before applying the equivariant sum.
+  have h_lift : (F, C) ∈ (V.funModule P.toSubgroup).trivializedCocycles X I := by
+    refine mem_trivializedCocycles.mpr
+      ⟨?_, fun g y ↦ funext fun x ↦ ?_, fun g hg ↦ funext fun x ↦ ?_⟩
+    · dsimp [C, word]
+      fun_prop
+    · -- Match the term of the coset `g⁻¹ • x` on the left with the term of `x` on the right.
+      change V.ρ g (V.ρ (g⁻¹ • x).out (f ((g⁻¹ • x).out⁻¹ • y))) =
+          V.ρ x.out (f (x.out⁻¹ • g • y)) + V.ρ x.out (c (word x g))
+      -- The trivialisation of `c` for `u = (s x)⁻¹ * g * s (g⁻¹ • x)` in `P`, moved by `s x`.
+      have hw : V.ρ (word x g : G) (f ((g⁻¹ • x).out⁻¹ • y)) =
+          f ((word x g : G) • ((g⁻¹ • x).out⁻¹ • y)) + c (word x g) :=
+        h_triv (word x g) ((g⁻¹ • x).out⁻¹ • y)
+      simpa [word, ← mul_apply_eq_comp, ← map_mul, mul_assoc, mul_smul] using
+        congrArg (V.ρ x.out) hw
+    · -- All conjugates of `g` lie in `I`, hence in `P`: `g` fixes every coset and each term is `0`.
+      have h_fix : g⁻¹ • x = x := by
+        induction x using QuotientGroup.induction_on with
+        | H s => simpa [QuotientGroup.eq] using (hI _ ((hI g hg).2 s)).1
+      have hw : (word x g : G) ∈ I := by simpa [word, h_fix] using (hI g hg).2 x.out
+      change V.ρ x.out (c (word x g)) = 0
+      rw [h_zero _ hw, map_zero]
+  -- Use the coset enumeration chosen by the equivariant sum in the conclusion as well.
+  rename_i cosetFintype
+  rw [show cosetFintype = Fintype.ofFinite (G ⧸ P.toSubgroup) from Subsingleton.elim _ _]
+  simpa [map, DiscreteModule.sum, Function.comp_def, Finset.sum_apply] using
+    (map X I (V.sum P.toSubgroup) ⟨(F, C), h_lift⟩).property
 
 /-- Let `0 → A → B → C → 0` be a short exact sequence such that `A` and `C` have few trivialised
 cocycles. Then so has `B`. If the count for `B` reaches its bound `#B ^ k`, then every trivialised
