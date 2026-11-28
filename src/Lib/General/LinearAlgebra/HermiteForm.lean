@@ -8,8 +8,8 @@ public import Lib.General.LinearAlgebra.IntegralLattices
 We reduce the columns and rows of matrices over a ring `A` by invertible matrices over a subring
 `R`, under the hypothesis `New.IsValuationPair`. It says that any two elements `a, b` of `A` are
 `R`-multiples of `a - e * (a - b)` for some idempotent `e` of `R`. It holds for a valuation domain
-`A` with `R = ⊤`. For a field with a valuation into `ℤᵐ⁰`, we bound the entries of matrix products
-and give a determinant test for integral invertible matrices.
+`A` with `R = ⊤`. For a field with a valuation into an ordered group with zero, we bound the entries
+of matrix products and give a determinant test for integral invertible matrices.
 
 ## Main definitions and results
 
@@ -222,26 +222,29 @@ end Hermite
 /-!
 ## Integral invertible matrices
 
-A fact on matrices over a field `F` with a valuation `v` into `ℤᵐ⁰`, written multiplicatively
-(`v x ≤ 1` on the integers `𝒪[F]`): a determinant test for membership in `GL_n(𝒪[F])`.
+Facts on matrices over a field `F` with a valuation `v` into an ordered group with zero, written
+multiplicatively (`v x ≤ 1` on the integers `𝒪[F]`): a determinant test for membership in
+`GL_n(𝒪[F])`.
 -/
 
 section ValuedMatrix
 
 open Valued WithZero
 
-/-- Let `F` be a field with a valuation into `ℤᵐ⁰`. If every entry of `A` has valuation at most `c`
-and every entry of `B` has valuation at most `d`, then every entry of `A * B` has valuation at most
-`c * d`. -/
-lemma New.v_matrix_mul_le {n F : Type*} [Field F] [Valued F ℤᵐ⁰] [Fintype n] {m l : Type*}
-    {A : Matrix m n F} {B : Matrix n l F} {c d : ℤᵐ⁰} (hA : ∀ (a : m) (b : n), v (A a b) ≤ c)
+/-- Let `F` be a field with a valuation into an ordered group with zero. If every entry of `A`
+has valuation at most `c` and every entry of `B` has valuation at most `d`, then every entry of
+`A * B` has valuation at most `c * d`. -/
+lemma New.v_matrix_mul_le {Γ₀ n F : Type*} [LinearOrderedCommGroupWithZero Γ₀]
+    [Field F] [Valued F Γ₀] [Fintype n] {m l : Type*}
+    {A : Matrix m n F} {B : Matrix n l F} {c d : Γ₀} (hA : ∀ (a : m) (b : n), v (A a b) ≤ c)
     (hB : ∀ (a : n) (b : l), v (B a b) ≤ d) (a : m) (b : l) :
     v ((A * B) a b) ≤ c * d :=
   v.map_sum_le fun i _ ↦ (map_mul v _ _).trans_le (mul_le_mul' (hA a i) (hB i b))
 
-/-- Over a field F with a valuation v into ℤᵐ⁰, an invertible matrix g lies in GL_n(𝒪_F) if and
-only if all its entries have valuation at most 1 and v(det g) = 1. -/
-lemma New.mem_intGL_iff_det {n F : Type*} [Field F] [Valued F ℤᵐ⁰] [Fintype n] [DecidableEq n]
+/-- Over a valued field `F`, an invertible matrix `g` lies in `GL_n(𝒪[F])` if and only if all its
+entries have valuation at most `1` and `v(det g) = 1`. -/
+lemma New.mem_intGL_iff_det {Γ₀ n F : Type*} [LinearOrderedCommGroupWithZero Γ₀]
+    [Field F] [Valued F Γ₀] [Fintype n] [DecidableEq n]
     {g : GL n F} :
     g ∈ intGL n 𝒪[F] ↔ (∀ a b : n, v (g a b) ≤ 1) ∧ v g.val.det = 1 := by
   have unit_iff (A : Matrix n n 𝒪[F]) : IsUnit A.det ↔ v (𝒪[F].subtype.mapMatrix A).det = 1 := by

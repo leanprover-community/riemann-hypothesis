@@ -268,8 +268,9 @@ lemma mul_mul_mem_basicDoubleCoset (hg : g ∈ basicDoubleCoset n w j) {k k' : G
     (hk : k ∈ localIntGL n w) (hk' : k' ∈ localIntGL n w) :
     k * g * k' ∈ basicDoubleCoset n w j := by
   obtain ⟨hg_int, hg_inv, hg_det⟩ := hg
-  refine ⟨v_matrix_mul_le (v_matrix_mul_le hk.isIntMatrix hg_int) hk'.isIntMatrix,
-    v_matrix_mul_le hk'.isIntMatrix_inv (v_matrix_mul_le hg_inv hk.isIntMatrix_inv), ?_⟩
+  refine ⟨v_matrix_mul_le (v_matrix_mul_le (Γ₀ := ℤᵐ⁰) hk.isIntMatrix hg_int) hk'.isIntMatrix,
+    v_matrix_mul_le (Γ₀ := ℤᵐ⁰) hk'.isIntMatrix_inv
+      (v_matrix_mul_le hg_inv hk.isIntMatrix_inv), ?_⟩
   -- The determinants of `k` and `k'` have valuation `1`.
   simp [(mem_intGL_iff_det.mp hk).right, (mem_intGL_iff_det.mp hk').right, hg_det]
 
