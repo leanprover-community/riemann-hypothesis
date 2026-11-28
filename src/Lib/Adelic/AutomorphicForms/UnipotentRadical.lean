@@ -140,6 +140,18 @@ variable {n : Type} [Fintype n] [DecidableEq n] {s : n → ℤˣ} {A : Matrix n 
 theorem coe_uSign_mul_ne_zero (hA : A ≠ 0) (z : USign s) : (z : Matrix n n ℂ) * A ≠ 0 :=
   mt (z : GL n ℂ).mul_right_eq_zero.1 hA
 
+/-- If right translation by `y` increases a positive function by at most a factor `C y` and
+`C y⁻¹ = C y`, the logarithm of the function changes by at most `C y`. -/
+lemma abs_log_sub_le_of_mul_le {G : Type*} [Group G] {N C : G → ℝ}
+    (h_pos : ∀ x, 0 < N x) (h_mul : ∀ x y, N (x * y) ≤ N x * C y)
+    (h_inv : ∀ y, C y⁻¹ = C y) (a b : G) : |log (N (a * b)) - log (N a)| ≤ C b := by
+  have h_le (x y : G) : log (N (x * y)) - log (N x) ≤ C y :=
+    calc _ = log (N (x * y) / N x) := (log_div (h_pos _).ne' (h_pos _).ne').symm
+      _ ≤ N (x * y) / N x := log_le_self (div_nonneg (h_pos _).le (h_pos _).le)
+      _ ≤ C y := (div_le_iff₀' (h_pos x)).2 (h_mul x y)
+  refine abs_sub_le_iff.2 ⟨h_le a b, ?_⟩
+  simpa [h_inv] using h_le (a * b) b⁻¹
+
 /-- For a matrix `A ≠ 0`, the function `x ↦ log ‖x⁻¹ A‖` on the unitary group of signature `s`
 changes by at most `‖y‖` under right translation by `y` (operator norms). -/
 theorem abs_log_norm_inv_mul_sub_le (hA : A ≠ 0) (x y : USign s) :
@@ -147,16 +159,12 @@ theorem abs_log_norm_inv_mul_sub_le (hA : A ≠ 0) (x y : USign s) :
       log ‖((x⁻¹ : USign s) : Matrix n n ℂ) * A‖| ≤ ‖(y : Matrix n n ℂ)‖ := by
   let N (z : USign s) : ℝ := ‖((z⁻¹ : USign s) : Matrix n n ℂ) * A‖
   have N_pos (z : USign s) : 0 < N z := norm_pos_iff.2 (coe_uSign_mul_ne_zero hA z⁻¹)
-  have h_step (x y : USign s) :
-      log (N (x * y)) - log (N x) ≤ ‖((y⁻¹ : USign s) : Matrix n n ℂ)‖ :=
-    -- The logarithm of the ratio of the two norms is at most the ratio, which is at most ‖y⁻¹‖.
-    calc _ = log (N (x * y) / N x) := (log_div (N_pos _).ne' (N_pos _).ne').symm
-      _ ≤ N (x * y) / N x := log_le_self (by positivity)
-      _ ≤ ‖((y⁻¹ : USign s) : Matrix n n ℂ)‖ := by
-        rw [div_le_iff₀ (N_pos x)]
-        simp only [N, _root_.mul_inv_rev, Subgroup.coe_mul, Units.val_mul, mul_assoc, norm_mul_le]
-  refine abs_sub_le_iff.2 ⟨(h_step x y).trans_eq (U.norm_inv y), ?_⟩
-  simpa only [mul_inv_cancel_right, inv_inv] using h_step (x * y) y⁻¹
+  refine abs_log_sub_le_of_mul_le N_pos (C := fun z : USign s ↦ ‖(z : Matrix n n ℂ)‖) ?_
+    U.norm_inv x y
+  intro a b
+  rw [mul_comm (N a), ← U.norm_inv b]
+  simpa only [N, _root_.mul_inv_rev, Subgroup.coe_mul, Units.val_mul, mul_assoc] using
+    norm_mul_le (b⁻¹ : USign s).val.val ((a⁻¹ : USign s).val.val * A)
 
 /-- If `r ∈ U(diag s)` dilates the non-zero matrix `A` by the factor `c` (in particular
 `r A = c A`), left translation by `r` lowers `log ‖x⁻¹ A‖` by `log ‖c‖`. -/

@@ -473,19 +473,13 @@ lemma abs_log_norm_mul_sub_le {Q : Matrix n n ℂ} (hQ : Q ≠ 0) (w : InfiniteP
     (a b : GInf E s) :
     |‖Q * ((a * b) w : Matrix n n ℂ)‖.log - ‖Q * (a w : Matrix n n ℂ)‖.log| ≤
       ‖(b w : Matrix n n ℂ)‖ := by
-  -- One side follows from `log r ≤ r`; the other too, as `b⁻¹` has the same norm as `b`.
-  have h_le (a b : GInf E s) :
-      ‖Q * ((a * b) w).val.val‖.log - ‖Q * (a w).val.val‖.log ≤ ‖(b w).val.val‖ := by
-    have h_pos (c : GInf E s) : 0 < ‖Q * (c w).val.val‖ :=
-      norm_pos_iff.2 ((c w).val.isUnit.mul_left_eq_zero.ne.2 hQ)
-    calc _ = (‖Q * ((a * b) w).val.val‖ / ‖Q * (a w).val.val‖).log :=
-          (log_div (h_pos _).ne' (h_pos _).ne').symm
-      _ ≤ ‖Q * ((a * b) w).val.val‖ / ‖Q * (a w).val.val‖ := log_le_self (by positivity)
-      _ ≤ ‖(b w).val.val‖ := by
-          rw [div_le_iff₀' (h_pos a)]
-          simpa [mul_assoc] using norm_mul_le (Q * (a w).val.val) (b w).val.val
-  refine abs_sub_le_iff.2 ⟨h_le a b, .trans_eq ?_ (U.norm_inv (b w))⟩
-  simpa using h_le (a * b) b⁻¹
+  let N (z : GInf E s) : ℝ := ‖Q * (z w : Matrix n n ℂ)‖
+  have N_pos (z : GInf E s) : 0 < N z :=
+    norm_pos_iff.2 ((z w).val.isUnit.mul_left_eq_zero.ne.2 hQ)
+  refine abs_log_sub_le_of_mul_le N_pos (C := fun z : GInf E s ↦ ‖(z w : Matrix n n ℂ)‖) ?_
+    (fun z ↦ U.norm_inv (z w)) a b
+  intro x y
+  simpa [N, mul_assoc] using norm_mul_le (Q * (x w).val.val) (y w).val.val
 
 /-- The measure on triples `(x, y, u)`, with `x` in `G` modulo the rational centraliser of `γ` and
 `y`, `u` in the real group. -/
