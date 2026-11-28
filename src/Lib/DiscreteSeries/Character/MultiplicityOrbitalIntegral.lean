@@ -205,6 +205,89 @@ lemma exists_isKHighest_inner_eq_mean_coefficient [Nonempty n] [hg : l.HasLargeG
   rw [inner_sub_left, hz hy le_sup_right, sub_eq_zero] at h_zero
   exact h_zero
 
+/-- The mean `w ↦ ∫_K conj (weightMinors ν k) * ⟪hg.toL2 l.dsGenerator, rightRegularL2 x
+(rightRegularL2 k w)⟫` is a continuous linear functional on `L²(G)`, constructed as a strong
+integral over `K`. -/
+private lemma exists_mean_coefficient_clm [Nonempty n] (hg : l.HasLargeGap A)
+    (ν : HCParam (n := n) ε) (x : USign ε) :
+    ∃ φ : (USign ε →₂[volume] ℂ) →L[ℂ] ℂ, ∀ w : Lp ℂ 2 volume,
+      φ w = ∫ k : maxCompactU ε, conj (weightMinors ν k) *
+        ⟪hg.toL2 l.dsGenerator, rightRegularL2 x (rightRegularL2 k w)⟫_ℂ ∂haarK ε := by
+  have h_cont : ∀ w : Lp ℂ 2 volume, Continuous fun g : USign ε ↦ rightRegularL2 g w :=
+    (isUnitaryRep_rightRegularL2 (ε := ε)).continuous
+  let T : (USign ε →₂[volume] ℂ) →L[ℂ] ℂ := innerSL ℂ (hg.toL2 l.dsGenerator) ∘L rightRegularL2 x
+  refine ⟨strongIntegral (haarK ε) fun k ↦ conj (weightMinors ν k) • T ∘L rightRegularL2 k,
+    fun w ↦ strongIntegral_apply _ _ (fun _ ↦ by
+      simpa using integrable_of_compactSpace
+        (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))) w⟩
+
+/-- Analytic-vector extension: if a continuous linear functional `φ` on `L²(G)` agrees with
+`y ↦ ⟪v, y⟫` on every step of the filtration of `l.DsModule`, then it agrees with
+`⟪hg.toL2 v, ·⟫` at every group translate `rightRegularL2 g (hg.toL2 l.dsGenerator)`. -/
+private lemma apply_rightRegularL2_dsGenerator_eq_inner [Nonempty n] [hg : l.HasLargeGap A]
+    (φ : (USign ε →₂[volume] ℂ) →L[ℂ] ℂ) (v : l.DsModule)
+    (hv : ∀ t : ℕ, ∀ y ∈ l.dsAction.filtration ε l.dsGenerator t, φ (hg.toL2 y) = ⟪v, y⟫_ℂ)
+    (g : USign ε) :
+    φ (rightRegularL2 g (hg.toL2 l.dsGenerator)) =
+      ⟪hg.toL2 v, rightRegularL2 g (hg.toL2 l.dsGenerator)⟫_ℂ := by
+  obtain ⟨hd, -, -⟩ := hg.isDerivedAction_toL2_and_inner_toL2
+  have norm_eq (g' : USign ε) (y : l.DsModule) : ‖rightRegularL2 g' (hg.toL2 y)‖ = ‖y‖ :=
+    -- the norm of `y` is by definition that of `hg.toL2 y`
+    show _ = ‖hg.toL2 y‖ by
+      simp only [rightRegularL2, Function.comp_apply, MonoidHom.coe_mk, OneHom.coe_mk,
+        _root_.smul_apply, one_apply_eq_self, DomMulAct.norm_smul_Lp]
+  have h_zero : (φ - innerSL ℂ (hg.toL2 v)) (rightRegularL2 g (hg.toL2 l.dsGenerator)) = 0 :=
+    (isKHighest_dsGenerator hg).coeffMap_eq_zero hg.isUnitaryCasimirGe
+      (hd.isCoeffMap (φ - innerSL ℂ (hg.toL2 v)))
+      (fun g' y ↦ (φ - _).le_opNorm_of_le (norm_eq g' y).le)
+      (fun t y hy ↦ by
+        -- at `1` the coefficient map is `y ↦ φ (ι y) - ⟪ι v, ι y⟫`
+        change (φ - innerSL ℂ (hg.toL2 v)) (rightRegularL2 1 (hg.toL2 y)) = 0
+        rw [map_one]
+        exact sub_eq_zero.2 (hv t y hy)) g
+  exact sub_eq_zero.1 h_zero
+
+/-- If `v ∈ V` represents the mean functional `φ` on step `s` of the filtration and `b` is an
+orthonormal basis of `V`, then expanding `v` in `b` expresses
+`⟪hg.toL2 v, rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)⟫` as `ν.kTypeNormSq` times
+`∑ i, |b i x|²`. -/
+private lemma inner_toL2_rightRegularL2_dsGenerator_eq_sum [Nonempty n] [hg : l.HasLargeGap A]
+    (hν : IsKDominant ε (-l) ν) {s : ℕ} {V : Submodule ℂ l.DsModule}
+    (hV : ∀ v : DsModule (l := l),
+      v ∈ V ↔ l.IsKHighest l.dsAction ν v ∧ v ∈ l.dsAction.filtration ε l.dsGenerator s)
+    {I : Type*} [Fintype I] (b : OrthonormalBasis I ℂ V) {x : USign ε}
+    {φ : (USign ε →₂[volume] ℂ) →L[ℂ] ℂ}
+    (hφ : ∀ w : Lp ℂ 2 volume, φ w = ∫ k : maxCompactU ε, conj (weightMinors ν k) *
+      ⟪hg.toL2 l.dsGenerator, rightRegularL2 x (rightRegularL2 k w)⟫_ℂ ∂haarK ε)
+    {v : l.DsModule} (hv_mem : v ∈ V)
+    (hv_rep : ∀ y ∈ l.dsAction.filtration ε l.dsGenerator s, φ (hg.toL2 y) = ⟪v, y⟫_ℂ) :
+    ⟪hg.toL2 v, rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)⟫_ℂ =
+      ν.kTypeNormSq * ∑ i : I, (b i).val.val.val x * conj ((b i).val.val.val x) := by
+  obtain ⟨hd, h_coef, -⟩ := hg.isDerivedAction_toL2_and_inner_toL2
+  let T : (USign ε →₂[volume] ℂ) →L[ℂ] ℂ := innerSL ℂ (hg.toL2 l.dsGenerator) ∘L rightRegularL2 x
+  -- The mean against `conj (weightMinors ν)` multiplies a highest vector of weight `ν` by
+  -- `ν.kTypeNormSq`.
+  have v_b (i : I) : ⟪v, (b i).val⟫_ℂ = ν.kTypeNormSq * (b i).val.val.val x := by
+    obtain ⟨b_high, b_mem⟩ := (hV _).mp (b i).prop
+    rw [← hv_rep _ b_mem, (hφ (hg.toL2 (b i))).trans
+      (b_high.integral_conj_weightMinors_mul isUnitaryRep_rightRegularL2 hd hν T)]
+    simp [T, h_coef]
+  have b_u (i : I) : ⟪hg.toL2 (b i), rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)⟫_ℂ =
+      conj ((b i).val.val.val x) := by
+    simpa [← h_coef] using isUnitaryRep_rightRegularL2.form_apply_eq_form_inv_apply x⁻¹
+      (hg.toL2 (b i)) (hg.toL2 l.dsGenerator)
+  -- Apply `ι` to the expansion of `v` in the basis `b`; by `v_b` the coefficient `⟪b i, v⟫` is the
+  -- conjugate of `ν.kTypeNormSq * b i x`. (Direct terms: `simp` is slow on inner products of the
+  -- module.)
+  have v_sum : hg.toL2 v =
+      ∑ i : I, conj (ν.kTypeNormSq * (b i).val.val.val x) • hg.toL2 (b i) := by
+    have h := congrArg (hg.toL2 ∘ₗ V.subtype) (b.sum_repr' ⟨v, hv_mem⟩)
+    rw [map_sum] at h
+    refine h.symm.trans (sum_congr rfl fun i _ ↦ ?_)
+    exact (LinearMap.map_smul _ _ _).trans (congrArg (· • hg.toL2 (b i))
+      ((inner_conj_symm (b i).val v).symm.trans (congrArg conj (v_b i))))
+  simp [v_sum, sum_inner, inner_smul_left, b_u, ← mul_sum, mul_assoc]
+
 /-- Let `n` be nonempty, let `l = 2λ` have a large gap (`hg : l.HasLargeGap A`), and let `ν` be
 `K`-dominant in the order of `-l`. Let `s` bound the excess of the `K`-Casimir eigenvalue of `ν`
 over that of the lowest `K`-type. Let `b` be an orthonormal basis of the space `V` of `K`-highest
@@ -227,61 +310,19 @@ lemma mean_coefficient_eq_sum_norm_sq [Nonempty n] [hg : l.HasLargeGap A]
   -- With `u = l.dsGenerator` and `ι = hg.toL2`, put `φ w = ∫_K conj (weightMinors ν k) * ⟪ι u,
   -- rightRegularL2 x (rightRegularL2 k w)⟫`. A vector `v` of `V` represents `φ ∘ ι`; compare the
   -- two at the translate `rightRegularL2 x⁻¹ (ι u)`.
-  obtain ⟨hd, h_coef, -⟩ := hg.isDerivedAction_toL2_and_inner_toL2
-  have h_cont : ∀ w : Lp ℂ 2 volume, Continuous fun g : USign ε ↦ rightRegularL2 g w :=
-    (isUnitaryRep_rightRegularL2 (ε := ε)).continuous
-  let T : (USign ε →₂[volume] ℂ) →L[ℂ] ℂ := innerSL ℂ (hg.toL2 l.dsGenerator) ∘L rightRegularL2 x
-  let φ : (USign ε →₂[volume] ℂ) →L[ℂ] ℂ :=
-    strongIntegral (haarK ε) fun k ↦ conj (weightMinors ν k) • T ∘L rightRegularL2 k
-  have hφ (w : Lp ℂ 2 volume) : φ w = ∫ k : maxCompactU ε, conj (weightMinors ν k) *
-      ⟪hg.toL2 l.dsGenerator, rightRegularL2 x (rightRegularL2 k w)⟫_ℂ ∂haarK ε :=
-    strongIntegral_apply _ _ (fun _ ↦ by
-      simpa using integrable_of_compactSpace
-        (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))) w
+  obtain ⟨-, h_coef, -⟩ := hg.isDerivedAction_toL2_and_inner_toL2
+  obtain ⟨φ, hφ⟩ := exists_mean_coefficient_clm hg ν x
   obtain ⟨v, v_mem, v_high, v_rep⟩ := exists_isKHighest_inner_eq_mean_coefficient hν hs hφ
-  have norm_eq (g : USign ε) (y : l.DsModule) : ‖rightRegularL2 g (hg.toL2 y)‖ = ‖y‖ :=
-    -- the norm of `y` is by definition that of `hg.toL2 y`
-    show _ = ‖hg.toL2 y‖ by
-      simp only [rightRegularL2, Function.comp_apply, MonoidHom.coe_mk, OneHom.coe_mk,
-        _root_.smul_apply, one_apply_eq_self, DomMulAct.norm_smul_Lp]
-  -- `u` is an analytic vector: a bounded coefficient map that kills all steps of the filtration at
-  -- `1` kills `u` at every group element. So `v` also represents `φ` at the translate of `u`.
-  have h_rep : (φ - innerSL ℂ (hg.toL2 v)) (rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)) = 0 :=
-    (isKHighest_dsGenerator hg).coeffMap_eq_zero hg.isUnitaryCasimirGe
-      (hd.isCoeffMap (φ - innerSL ℂ (hg.toL2 v)))
-      (fun g y ↦ (φ - _).le_opNorm_of_le (norm_eq g y).le)
-      (fun t y hy ↦ by
-        -- at `1` the coefficient map is `y ↦ φ (ι y) - ⟪ι v, ι y⟫`
-        change (φ - innerSL ℂ (hg.toL2 v)) (rightRegularL2 1 (hg.toL2 y)) = 0
-        rw [map_one]
-        exact sub_eq_zero.2 (v_rep t y hy)) x⁻¹
-  -- Compute both terms; for the second expand `v` in the basis `b`.
+  have h_rep : φ (rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)) =
+      ⟪hg.toL2 v, rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)⟫_ℂ :=
+    apply_rightRegularL2_dsGenerator_eq_inner φ v v_rep x⁻¹
   have φ_u : φ (rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)) = ∫ k : maxCompactU ε,
       conj (weightMinors ν k) * l.dsCoeff (x * k.val * x⁻¹ :) ∂haarK ε := by
     simp [hφ, -map_mul, h_coef, rep_apply_apply, mul_assoc]
-  -- The mean against `conj (weightMinors ν)` multiplies a highest vector of weight `ν` by
-  -- `ν.kTypeNormSq`.
-  have v_b (i : I) : ⟪v, (b i).val⟫_ℂ = ν.kTypeNormSq * (b i).val.val.val x := by
-    obtain ⟨b_high, b_mem⟩ := (hV _).mp (b i).prop
-    rw [← v_rep s _ b_mem, (hφ (hg.toL2 (b i))).trans
-      (b_high.integral_conj_weightMinors_mul isUnitaryRep_rightRegularL2 hd hν T)]
-    simp [T, h_coef]
-  have b_u (i : I) : ⟪hg.toL2 (b i), rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)⟫_ℂ =
-      conj ((b i).val.val.val x) := by
-    simpa [← h_coef] using isUnitaryRep_rightRegularL2.form_apply_eq_form_inv_apply x⁻¹
-      (hg.toL2 (b i)) (hg.toL2 l.dsGenerator)
-  -- Apply `ι` to the expansion of `v` in the basis `b`; by `v_b` the coefficient `⟪b i, v⟫` is the
-  -- conjugate of `ν.kTypeNormSq * b i x`. (Direct terms: `simp` is slow on inner products of the
-  -- module.)
-  have v_sum : hg.toL2 v =
-      ∑ i : I, conj (ν.kTypeNormSq * (b i).val.val.val x) • hg.toL2 (b i) := by
-    have h := congrArg (hg.toL2 ∘ₗ V.subtype) (b.sum_repr' ⟨v, (hV v).2 ⟨v_high, v_mem⟩⟩)
-    rw [map_sum] at h
-    refine h.symm.trans (sum_congr rfl fun i _ ↦ ?_)
-    exact (LinearMap.map_smul _ _ _).trans (congrArg (· • hg.toL2 (b i))
-      ((inner_conj_symm (b i).val v).symm.trans (congrArg conj (v_b i))))
-  simpa [φ_u, v_sum, b_u, ← mul_sum, sub_eq_zero, ← inv_mul_eq_iff_eq_mul₀, mul_assoc,
-    ne_of_gt] using h_rep
+  have h_sum := inner_toL2_rightRegularL2_dsGenerator_eq_sum hν hV b hφ
+    ((hV v).2 ⟨v_high, v_mem⟩) (v_rep s)
+  rw [φ_u, h_sum] at h_rep
+  simpa [← inv_mul_eq_iff_eq_mul₀, ne_of_gt] using h_rep
 
 /-- Let `n` be nonempty, let `l = 2λ` have a large gap (`New.HCParam.HasLargeGap` with constant `A`)
 and let `ν` be `K`-dominant in the order of `-l`. Put `R g = ∫_K ψ(g⁻¹ k g) conj (kTypeChar ν k) dk`
