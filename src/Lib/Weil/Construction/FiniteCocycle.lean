@@ -148,7 +148,7 @@ lattice `Ô^ι`, as an `Ô E`-submodule. The integrand of the cocycle at `(g, s)
 def cocycleSubmodule {E : Type u_1} [Field E] [NumberField E] [IsCMField E]
     (g s : Gf E ι) : Submodule (Ô E) ((ι → 𝔸f E) × (ι → 𝔸f E)) :=
   (intVectors (Ô E) ι).comap (.coprod 1 1) ⊓
-    ((intVectors (Ô E) ι).comap (s.1.1 • .id)).prod ((intVectors (Ô E) ι).comap ((g * s).1 • .id))
+    ((intVectors (Ô E) ι).comap (s.1.1 • .id)).prod ((intVectors (Ô E) ι).comap ((g * s).val • .id))
 
 /-- For the square of the Haar measure `latticeMeasure E ι`, which gives Ô^ι mass one, the pairs
 `(x, y)` in `Ô^ι × Ô^ι` that lie in `cocycleSubmodule g s` (that is, `x + y`, `s x` and `g s y` are
@@ -208,7 +208,7 @@ lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
   let M : Submodule (Ô E) ((ι → 𝔸f E) × (ι → 𝔸f E)) := cocycleSubmodule g s
   let F (p : (ι → 𝔸f E) × (ι → 𝔸f E)) : 𝔸f E := star traceOneAdele * star p.2 ⬝ᵥ p.1
   have hM : IsCompact (SetLike.coe M.toAddSubgroup) :=
-    ((isCompact_stdLattice.preimage_smul s.1).prod (isCompact_stdLattice.preimage_smul (g * s).1))
+    ((isCompact_stdLattice.preimage_smul s.1).prod (isCompact_stdLattice.preimage_smul (g * s).val))
       |>.inter_left (isCompact_stdLattice.isClosed.preimage continuous_add)
   have hL : IsOpen (SetLike.coe (L.prod L).toAddSubgroup) :=
     isOpen_stdLattice.prod isOpen_stdLattice
