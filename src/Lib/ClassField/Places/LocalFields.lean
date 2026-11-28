@@ -639,6 +639,20 @@ lemma exists_openNormalSubgroup_apply_eq {Y X : Type*} [IsProGalois Γ k Ω] [To
   simpa [Set.subset_def] using ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one
     (isClosedMap_fst_of_compactSpace _ h_closed).isOpen_compl
 
+/-- Continuous characters into `ℚ/ℤ` that agree on arithmetic Frobenius and inertia agree on
+the whole local Galois group. -/
+private lemma qzChar_eq_of_agree_on_frobenius_and_inertia {φ : Γ}
+    (hφ : IsFrob A (residueCard k A) φ) {a b : QZChar Γ}
+    (h_frob : a.val φ = b.val φ)
+    (h_inertia : ∀ g ∈ inertiaGroup Γ A, a.val g = b.val g) : a = b := by
+  -- Powers of Frobenius times inertia elements form a dense set.
+  refine Subtype.ext ((L.denseRange_frob_pow_mul_inertia hφ).equalizer
+    (QZChar.continuous_val a) (QZChar.continuous_val b) ?_)
+  ext ⟨n, g⟩
+  apply Multiplicative.ofAdd.injective
+  change QZChar.toHom a (φ ^ n * (g : Γ)) = QZChar.toHom b (φ ^ n * (g : Γ))
+  simp only [map_mul, map_pow, QZChar.toHom_apply, h_frob, h_inertia _ g.property]
+
 /-- Let `Γ` be the absolute Galois group of a local field `k` and `φ` an arithmetic Frobenius
 (`New.IsFrob` for `q = residueCard k A`). For every `r` in `QZ = ℚ/ℤ` there is exactly one
 continuous character `χ : Γ → ℚ/ℤ` (an element of `New.QZChar Γ`, applied as `χ.val`) that is
@@ -672,19 +686,11 @@ lemma existsUnique_unramified_char {φ : Γ} (hφ : IsFrob A (residueCard k A) �
     QZ.exists_extend _ _ h_ker
   let χ : QZChar Γ :=
     ⟨(e ∘ .ofMul) ∘ cyclotomicCharMod Ω N, .comp (by fun_prop) (.of_isOpen_ker _ Fact.out), by simp⟩
-  refine existsUnique_of_exists_of_unique ⟨χ, fun g hg ↦ ?_, ?_⟩ fun a b ha hb ↦ ?_
+  refine existsUnique_of_exists_of_unique ⟨χ, fun g hg ↦ ?_, ?_⟩ fun a b ha hb ↦
+    qzChar_eq_of_agree_on_frobenius_and_inertia hφ (ha.2.trans hb.2.symm) fun g hg ↦
+      (ha.1 g hg).trans (hb.1 g hg).symm
   · simp [χ, cyclotomicCharMod_eq_one_of_mem_inertiaGroup hg hN]
   · simpa [χ] using he 1
-  · -- The elements `φ ^ n * g` with `g` in inertia are dense, and `a`, `b` agree on them.
-    have h_dense : DenseRange fun p : ℕ × inertiaGroup Γ A ↦ φ ^ p.1 * (p.2 : Γ) :=
-      L.denseRange_frob_pow_mul_inertia hφ
-    obtain ⟨ha_cont, ha_add⟩ : (a : Γ → QZ) ∈ QZChar Γ := a.property
-    obtain ⟨hb_cont, hb_add⟩ : (b : Γ → QZ) ∈ QZChar Γ := b.property
-    refine Subtype.ext (h_dense.equalizer ha_cont hb_cont ?_)
-    ext ⟨n, g⟩
-    induction n with
-    | zero => simp_all
-    | succ n ih => simp_all [pow_succ]
 
 end UnramifiedCharacters
 
