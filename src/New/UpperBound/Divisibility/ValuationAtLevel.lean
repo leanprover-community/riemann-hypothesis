@@ -340,18 +340,17 @@ lemma liftLaw_liftAtN (j : ℕ) (v : (D.homX j).finitePart) :
     LiftLaw (D.formRepAtN j) (D.formRepAtN (j + 1)) (D.liftAtN ϑ j v)
       (D.upCommutationFactor ϑ j) where
   integral_equivariant a b f φ := by
-    -- The characters are unramified above `N`, so trivial on integral matrices.
-    have h_unr {n : Type} [Fintype n] [DecidableEq n] (r : ℕ) (g : GL n O) :
-        D.liftCharAtN ϑ (j + 1) r (inclGL g) = 1 := by
-      rw [liftCharAtN, ← D.spaceChar_rankTwist ϑ 0]
-      exact detCharAt_inclGL _ (fun w hw ↦
-        D.charUnramifiedAt_rankTwist_of_N_mem _ _ _ w (natCast_level_mem _ hw)) _ r g
+    -- The characters are unramified above `N`, so trivial on integral matrices
+    -- (`detCharAt_inclGL`).
+    have h_unr (w : FinPlace D.E) (hw : w ∈ D.nonInducedPlaces) :
+        CharUnramifiedAt (rankTwist (D.chainChar ϑ (j + 1)) (D.X 0)).baseChange.finPart w :=
+      D.charUnramifiedAt_rankTwist_of_N_mem ϑ (j + 1) (D.X 0) w (natCast_level_mem _ hw)
     rw [liftAtN_apply, liftAtN_apply, liftFn_comp_mul, ← inv_inv (inclGL b),
       D.lift_schrodingerOpAt_comp]
     simp only [conjEmbedGL, MulEquiv.toMonoidHom_eq_coe, inv_inv, MonoidHom.coe_comp,
-      MonoidHom.coe_ofClass, Function.comp_apply, MulAut.conj_apply, map_mul, h_unr, map_inv,
-      inv_one, div_self', mul_apply_eq_comp, Representation.inv_self_apply, one_smul,
-      Representation.self_inv_apply]
+      MonoidHom.coe_ofClass, Function.comp_apply, MulAut.conj_apply, map_mul, liftCharAtN,
+      ← D.spaceChar_rankTwist ϑ 0, detCharAt_inclGL _ h_unr, map_inv, inv_one, div_self',
+      mul_apply_eq_comp, Representation.inv_self_apply, one_smul, Representation.self_inv_apply]
   diagNInv_lastRowDatum φ := by
     rw [liftAtN_apply, liftAtN_apply, ← funext lastRowDatum_conj_diagNInv]
     simp only [lastRowDatum, D.lift_schrodingerOpAt_comp]
