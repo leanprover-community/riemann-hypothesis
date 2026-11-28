@@ -684,17 +684,16 @@ lemma hodgeTateMap_cup {n a b : ℕ} [HasFlatValues N] (x : HodgeH N a) (y : Hod
           (hodgeTateMap h x) := by
   -- The restriction to `HodgeTatePair` respects products (`Comparison.pull_cup`), so this is
   -- `contractionPow_cup`.
-  -- `erw`: the product is a Hodge class of `abTensor N N'` only after unfolding `HodgeH`
-  erw [← contractionPow_cup, comp_assoc_of_eq (cup_of _ _ _ e)]
+  let x' := (Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N) a x
+  let y' := (Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N') b y
   have h_pull :
       (Comparison.restrict toHodgeTest hodgeCoeff).pull
           (Functor.whiskerRight toSqZero (abTensor N N')) n (cup exteriorAlg.mulPairing x y e) =
-        cup wedgePairing
-          ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N) a x)
-          ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N') b y)
-          e :=
+        cup wedgePairing x' y' e :=
     Comparison.pull_cup (by simp) x y e
-  exact congrArg (fun z ↦ comp (Ext.toTotalH z) (contractionPow l)) h_pull
+  exact (congrArg (fun z ↦ comp (Ext.toTotalH z) (contractionPow l)) h_pull).trans
+    ((comp_assoc_of_eq (cup_of wedgePairing x' y' e) (contractionPow l)).symm.trans
+      (contractionPow_cup l x' y'.toTotalH))
 
 end HodgeTateMap
 
