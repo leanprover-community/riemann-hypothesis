@@ -2,6 +2,7 @@ module
 
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.FieldTheory.Finite.Extension
+import TauCeti.Algebra.BigOperators.ZPow
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Adeles.Basic
 
@@ -49,10 +50,8 @@ Known: standard facts on finite fields and on residue fields of CM fields.
 /-- For a nonzero element `s` of a field, a power of `s` whose integer exponent is a finite sum is
 the product of the powers of `s`. -/
 theorem New.DiscreteSeries.zpow_sum_of_ne_zero {ι K : Type*} [Field K] {s : K} (hs : s ≠ 0)
-    (t : Finset ι) (f : ι → ℤ) : s ^ ∑ i ∈ t, f i = ∏ i ∈ t, s ^ f i := by
-  induction t using Finset.cons_induction with
-  | empty => simp
-  | cons a t ha ih => rw [Finset.sum_cons, Finset.prod_cons, zpow_add₀ hs, ih]
+    (t : Finset ι) (f : ι → ℤ) : s ^ ∑ i ∈ t, f i = ∏ i ∈ t, s ^ f i :=
+  (Finset.prod_zpow_eq_zpow_sum_of_isUnit t hs.isUnit f).symm
 
 /-!
 ## Residue fields at self-conjugate places of a CM field
