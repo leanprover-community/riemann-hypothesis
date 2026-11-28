@@ -158,10 +158,10 @@ theorem exists_datum_norm_modKernel_sub_polyMatrixCoeff_le {n n' : Type} [Fintyp
         congrArg (fun x : 𝓞 D.E ↦ (D.q₁ : ℝ) / ‖Φ w (x : D.E)‖) D.piM_mul_star
     have h_cond : D.cyclotomicConductor ≠ 0 := NeZero.ne _
     have ht_pos : 0 < D.t := D.t_odd.pos
-    have h_hom : (D.b ^ 13)⁻¹ / (6 * D.cyclotomicConductor * (D.f * D.t : ℝ) ^ 2 * D.t * D.t) ≤
+    have h_hom : (D.b ^ 13)⁻¹ / (6 * D.cyclotomicConductor * (D.f * D.t : ℝ) ^ 2) ≤
         ((V.move g).hom (V'.move g')).firstMinimum := by
       grw [← firstMinimum_mul_le_hom _ P.conductor_mem_differentIdeal, Space.shortBasisConst,
-        ← h_min, h_rank, h_rank', h_rank]
+        ← h_min, h_rank]
       simp [Data.f]
     grw [← h_hom, h_norm, P.phi_weilData_j]
     simpa using D.le_of_hasLogBound

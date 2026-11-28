@@ -7,6 +7,8 @@ import Mathlib.Analysis.CStarAlgebra.Spectrum
 import Mathlib.Data.Rat.Cast.OfScientific
 import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.RingTheory.Etale.Weakly
+import TauCeti.Analysis.Matrix.Eigenvalues.OperatorNorm
+import TauCeti.Analysis.Matrix.Frobenius
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Holomorphic.PeaksAwayFromCusp
@@ -210,24 +212,47 @@ variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n
   [Fintype n'] [DecidableEq n'] {s' : n' → ℤˣ}
   {S : Space E n s} (T : Space E n' s')
 
+open scoped ComplexOrder in
+/-- At an infinite place, the operator norm of a homomorphism is at most its total archimedean
+length. The operator norm is at most the Frobenius norm of that place's component. -/
+private lemma norm_hom_at_place_le_archCoords (z : n' × n → E) (w : InfinitePlace E) :
+    ‖(vecToMatrix ((S.hom T).vecAtPoint z)).map (·.1 w)‖ ≤ ‖(S.hom T).archCoords z‖ := by
+  let A := (vecToMatrix ((S.hom T).vecAtPoint z)).map (·.1 w)
+  refine le_of_sq_le_sq ?_ (norm_nonneg _)
+  calc ‖A‖ ^ 2 ≤ ∑ i, ∑ j, ‖A i j‖ ^ 2 := by
+        simpa only [pow_one, Matrix.l2_opNorm_conjTranspose_mul_self, sq,
+          Matrix.trace_mul_comm Aᴴ A, Matrix.re_trace_mul_conjTranspose_self] using
+          (Matrix.posSemidef_conjTranspose_mul_self A).l2_opNorm_pow_le_re_trace_pow 1 (by simp)
+    _ = ∑ q : n' × n, ‖(S.hom T).archCoords z (w, q)‖ ^ 2 := by
+      simp [A, vecToMatrix, Space.archCoords, Fintype.sum_prod_type]
+    _ ≤ ‖(S.hom T).archCoords z‖ ^ 2 := by
+      rw [EuclideanSpace.norm_sq_eq]
+      conv_rhs => rw [Fintype.sum_prod_type]
+      exact Finset.single_le_sum
+        (f := fun w' : InfinitePlace E ↦ ∑ q : n' × n, ‖(S.hom T).archCoords z (w', q)‖ ^ 2)
+        (fun _ _ ↦ by positivity) (Finset.mem_univ w)
+
 /-- For a space `V` let `λ(V) = V.firstMinimum` be the minimum of `1` and the length of a shortest
 nonzero vector of the lattice of `V`. If the natural number `N ≠ 0` lies in the different of `E`,
-then `λ(S) λ(T) / (C |n'| |n|) ≤ λ(Hom (S, T))`, where `C = shortBasisConst E n N = 6 N (f |n|)²`
+then `λ(S) λ(T) / C ≤ λ(Hom (S, T))`, where `C = shortBasisConst E n N = 6 N (f |n|)²`
 and `f` is the number of infinite places of `E`. -/
 theorem firstMinimum_mul_le_hom [Nonempty n] [Nonempty n']
     {S : Space E n s} (T : Space E n' s') {N : ℕ} [NeZero N]
     (hN_mem : ↑N ∈ differentIdeal ℤ (𝓞 E)) :
-    S.firstMinimum * T.firstMinimum / (shortBasisConst E n N * Fintype.card n' * Fintype.card n) ≤
+    S.firstMinimum * T.firstMinimum / shortBasisConst E n N ≤
       (S.hom T).firstMinimum := by
   -- Read a nonzero lattice vector `z` of `Hom (S, T)` as a matrix and apply it to a short basis `Y`
   -- of the lattice of `S`. Some image is a nonzero lattice vector of `T`, so it has length at least
-  -- `T.firstMinimum`; and its length is at most `card n' * card n * ‖z‖` times that of the basis
-  -- vector.
+  -- `T.firstMinimum`, and its length is at most `‖z‖` times that of the basis vector.
   refine le_firstMinimum_iff.2 ⟨?_, fun z hz z_ne ↦ ?_⟩
   · -- both minima are at most `1` and the denominator is a natural number
-    grw [firstMinimum_le_one, firstMinimum_le_one]
-    · simp [Nat.cast_inv_le_one, ← Nat.cast_mul]
-    simp [firstMinimum_pos, le_of_lt]
+    have h_product : S.firstMinimum * T.firstMinimum ≤ 1 := by
+      calc _ ≤ 1 * 1 :=
+            mul_le_mul firstMinimum_le_one firstMinimum_le_one firstMinimum_pos.le zero_le_one
+        _ = 1 := by simp
+    rw [div_eq_mul_inv]
+    simpa using mul_le_mul h_product (Nat.cast_inv_le_one (α := ℝ) (shortBasisConst E n N))
+      (by positivity) zero_le_one
   choose Y Y_mem Y_short using S.exists_short_basis hN_mem
   -- `k`, the matrix of `z` in adelic coordinates, takes the coordinates of `y` to those of `z y`
   let k : Matrix n' n (𝔸 E) := vecToMatrix ((S.hom T).vecAtPoint z)
@@ -235,9 +260,8 @@ theorem firstMinimum_mul_le_hom [Nonempty n] [Nonempty n']
     -- `z` is `matrixToVec (vecToMatrix z)` by definition.
     simp [k, show (S.hom T).vecAtPoint z = matrixToVec (T.ratMap S (vecToMatrix z)) from
       vecAtPoint_hom _ _ (vecToMatrix z), ratMap_mulVec_vecAtPoint]
-  have norm_k (w : InfinitePlace E) :
-      ‖k.map (·.1 w)‖ ≤ card n' * card n * ‖(S.hom T).archCoords z‖ :=
-    l2_opNorm_le_of_apply fun i j ↦ ((S.hom T).archCoords z).norm_apply_le (w, i, j)
+  have norm_k (w : InfinitePlace E) : ‖k.map (·.1 w)‖ ≤ ‖(S.hom T).archCoords z‖ :=
+    norm_hom_at_place_le_archCoords T z w
   have k_int (i : n') (j : n) : (k i j).2 ∈ Ô E := hz (i, j)
   -- As `Y` is invertible and `z ≠ 0`, some basis vector has a nonzero image.
   obtain ⟨j, hj⟩ : ∃ j : n, vecToMatrix z *ᵥ Y.val.col j ≠ 0 := by
