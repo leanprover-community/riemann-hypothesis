@@ -4,6 +4,7 @@ public import Mathlib.Analysis.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Topology.Sheaves.Presheaf
 import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Lift
+import TauCeti.RepresentationTheory.WeightSpace
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Unitary.Defs
 public import Lib.General.LinearAlgebra.IntegralLattices
@@ -553,6 +554,16 @@ lemma levelSpace_levelOf_apply {v : W}
   subst hk
   exact mem_levelSpace.1 hv ⟨k, mem_levelOf.2 ⟨k.property, hx⟩⟩
 
+private lemma mem_levelSpace_iff_mem_weightSpace {v : W} :
+    v ∈ levelSpace π (levelOf w H) (χ.comp (levelOf.reduction w H)) ↔
+      v ∈ Representation.weightSpace
+        ((π.comp (stdLevel E n).subtype).comp (H.comap (stdLevel.reduceFamily w)).subtype)
+        (χ.comp ((stdLevel.reduceFamily w).subgroupComap H)) := by
+  rw [Representation.mem_weightSpace_comp_subgroupComap_iff]
+  exact ⟨fun hv k x hk ↦ levelSpace_levelOf_apply hv k x hk,
+    fun hv ↦ mem_levelSpace.2 fun k ↦
+      hv ⟨k, levelOf_le_stdLevel k.property⟩ (levelOf.reduction w H k) rfl⟩
+
 variable [Finite ι] [IsConjApart w] (s : ∀ i : ι, GL n (ResField (w i)))
 
 /-- For finitely many distinct places w_i, none conjugate to another or itself, a chosen element
@@ -572,10 +583,10 @@ lemma reduceFamily_liftResidue : stdLevel.reduceFamily w (liftResidue s) = s :=
 lemma apply_liftResidue_eq (v : levelSpace π (levelOf w H) (χ.comp (levelOf.reduction w H)))
     (k : stdLevel E n) {s : ∀ i : ι, GL n (ResField (w i))} (hk : stdLevel.reduceFamily w k = s) :
     π (liftResidue s).val v = π k v := by
-  -- `k⁻¹ * liftResidue s` reduces to `1`, so it fixes `v`; now apply `π k`.
-  have h_fix : π (k⁻¹ * liftResidue s : stdLevel E n) v = v.val := by
-    simpa using levelSpace_levelOf_apply v.property (k⁻¹ * liftResidue s) 1 (by simp [hk])
-  simpa using congr_arg (π k.val) h_fix
+  -- The lift and `k` have the same reduction, so they act the same way on `v`.
+  exact Representation.apply_eq_apply_of_mem_weightSpace_of_map_eq
+    (π.comp (stdLevel E n).subtype) (stdLevel.reduceFamily w) χ
+    (mem_levelSpace_iff_mem_weightSpace.mp v.property) (by simp [hk])
 
 /-- If s normalises H and fixes χ, then π of the chosen lift of s maps vectors of level
 `New.levelOf` w H and character χ to vectors of the same kind. -/
@@ -583,21 +594,13 @@ lemma map_liftResidue_mem_levelSpace {s : ∀ i : ι, GL n (ResField (w i))}
     (h_norm : ∀ x : H, ∃ hx : s⁻¹ * x * s ∈ H, χ ⟨s⁻¹ * x * s, hx⟩ = χ x) {v : W}
     (hv : v ∈ levelSpace π (levelOf w H) (χ.comp (levelOf.reduction w H))) :
     π (liftResidue s).val v ∈ levelSpace π (levelOf w H) (χ.comp (levelOf.reduction w H)) := by
-  refine mem_levelSpace.2 fun g ↦ ?_
-  -- With `l` the lift of `s`, the conjugate `l⁻¹ * g * l` acts on `v` by the same scalar as `g`;
-  -- apply `π l` to this equation.
-  let l : stdLevel E n := liftResidue s
-  let x : H := levelOf.reduction w H g
-  obtain ⟨hx, hχ⟩ := h_norm x
-  let c : stdLevel E n := l⁻¹ * ⟨g, levelOf_le_stdLevel g.property⟩ * l
-  -- The reduction of `g` is `x` by definition.
-  have h_red : stdLevel.reduceFamily w c = s⁻¹ * x.val * s := by
-    simp [c, l]
-    rfl
-  have h_conj : π c v = χ ⟨s⁻¹ * x * s, hx⟩ • v := levelSpace_levelOf_apply hv c _ h_red
-  calc π g.val (π l.val v)
-    _ = π l.val (π c v) := by simp [c]
-    _ = χ x • π l.val v := by rw [h_conj, hχ, map_smul]
+    apply mem_levelSpace_iff_mem_weightSpace.mpr
+    refine Representation.apply_mem_weightSpace_comp_subgroupComap
+      (π.comp (stdLevel E n).subtype) (stdLevel.reduceFamily w) χ (g := liftResidue s) ?_
+      (mem_levelSpace_iff_mem_weightSpace.mp hv)
+    intro x
+    obtain ⟨hx, hχ⟩ := h_norm x
+    exact ⟨⟨_, hx⟩, by simp, hχ⟩
 
 variable (π χ) in
 /-- For finitely many distinct places w_i, none conjugate to a w_j, and φ : S → ∏ GL_n(k_{w_i})
