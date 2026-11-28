@@ -336,6 +336,11 @@ noncomputable def commutatorLog (m : ℕ) [NeZero m] (γ : Gal(Ω/ℚ)) (y : Dis
     (g : Gal(Ω/ℚ)) : ZMod m :=
   invFun (rootPowHom Ω m).val (galUnitsRep γ y - galUnitsRep (g * γ * g⁻¹) y)
 
+/-- Conjugation by `γ` fixes `γ`, so the quotient in the commutator log is one and its
+exponent is zero. -/
+lemma commutatorLog_self : commutatorLog m γ y γ = 0 := by
+  simpa [commutatorLog] using leftInverse_invFun (rootPowHom Ω m).property.left (0 : ZMod m)
+
 /-- `commutatorLog m γ y g` is locally constant in `g`, since the orbit map `g ↦ (g γ g⁻¹) y` is. -/
 lemma isLocallyConstant_commutatorLog : IsLocallyConstant (commutatorLog m γ y) := by
   -- The orbit map of `y` under the conjugates of `γ` is locally constant, read in `Ω`.
@@ -937,14 +942,9 @@ lemma exists_isKolyvaginSystem {O : Type} [CommRing O] {B : ClosurePlace} {N l n
     { mem_vanishingCocycles := fun S hS ↦
         derivativeSum_commutatorLog_mem_vanishingCocycles_of_isJacobiFamily (hJ_level hS) rfl
           (base_dvd S) (prime_dvd S) fun q hq ↦ hP_one q (hS hq)
-      apply_eq_zero := fun S hS ↦ by
-        dsimp only [κ]
-        rw [derivativeSum_congr (base_dvd S) (prime_dvd S) (fun _ _ ↦ rfl) (G' := 0), map_zero]
-        intro x hx
-        apply (rootPowHom Ω (l ^ n)).property.left
-        rw [rootPowHom_commutatorLog_of_isJacobiFamily (hJ_level hS) hx γ, mul_inv_cancel_right,
-          sub_self]
-        simp
+      apply_eq_zero := fun S _ ↦ by
+        simp only [κ, commutatorLog_self]
+        exact map_zero (derivativeSum e ψ L S 0)
       exists_mem_inertiaGroup_eq := fun S hS q hqP hqS A φ hφ hqA ↦
         exists_mem_inertiaGroup_derivativeSum_insert_eq_of_isJacobiFamily hJ rfl (base_dvd S)
           (prime_dvd S) (hp_level hS) (fun r hr ↦ hP_one r (hS hr)) (hP_one q hqP) hqS
