@@ -56,17 +56,13 @@ lemma comp_mem_selmerModule_iff {f : B →ₗ[O] B'} (hf : Function.Injective f)
     {z : Gal(Ω/E) → n → B} :
     (fun (g : Gal(Ω/E)) (i : n) ↦ f (z g i)) ∈ selmerModule ρ S L B' ↔
       z ∈ selmerModule ρ S L B := by
-  have h_obeying (R : Set (Gal(Ω/E) →₀ Matrix n n O)) :
-      (fun (g : Gal(Ω/E)) (i : n) ↦ f (z g i)) ∈ obeying R B' ↔ z ∈ obeying R B := by
-    simp only [comp_mem_obeying_iff, mem_obeying (c := z), map_eq_zero_iff f hf, funext_iff,
-      Pi.zero_apply]
   have h_locallyConstant :
       IsLocallyConstant (fun (g : Gal(Ω/E)) (i : n) ↦ f (z g i)) ↔ IsLocallyConstant z :=
     ⟨fun h ↦ IsLocallyConstant.desc z (fun v : n → B ↦ f ∘ v) h hf.comp_left,
       fun h ↦ h.comp fun v : n → B ↦ f ∘ v⟩
   -- The Selmer module is cut out by a set of relations and by local constancy.
   simp only [selmerModule, Submodule.mem_inf]
-  exact and_congr (h_obeying _) h_locallyConstant
+  exact and_congr (comp_mem_obeying_iff_of_injective f hf) h_locallyConstant
 
 /-- The map of Selmer modules `z ↦ f ∘ z` induced by an injective map `f` of coefficient
 modules. -/

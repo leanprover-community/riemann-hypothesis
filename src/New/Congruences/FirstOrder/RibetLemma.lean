@@ -417,13 +417,8 @@ lemma comp_mem_ribetCocyclesIn_iff (u : Y → G →* Matrix σ σ O) {r : Type} 
       fun i : r ↦ f (linearCombination O c θ i) := by
     ext i
     simp [Finsupp.linearCombination_apply, Finsupp.sum, map_sum, map_smul]
-  have h_obey : (fun (g : G) (i : r) ↦ f (c g i)) ∈ obeying (cocycleRelations ρ) B' ↔
-      c ∈ obeying (cocycleRelations ρ) B := by
-    rw [comp_mem_obeying_iff, mem_obeying]
-    refine forall₂_congr fun F _ ↦ ?_
-    simp only [map_eq_zero_iff f hf, funext_iff, Pi.zero_apply]
   rw [mem_ribetCocyclesIn_iff, mem_ribetCocyclesIn_iff]
-  refine and_congr h_obey (forall₂_congr fun θ _ ↦ ?_)
+  refine and_congr (comp_mem_obeying_iff_of_injective f hf) (forall₂_congr fun θ _ ↦ ?_)
   simp only [h_lc, map_eq_zero_iff f hf, funext_iff, Pi.zero_apply]
 
 /-- Let `u x` be a finite family of representations of `G` over a discrete valuation ring `O` with

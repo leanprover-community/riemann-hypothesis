@@ -172,6 +172,12 @@ lemma comp_mem_obeying_iff :
       ∀ f ∈ R, ∀ i : n, φ (relEval B f c i) = 0 := by
   simp [obeying, linearCombination, sum, funext_iff]
 
+/-- Injective coefficient maps preserve and reflect the linear relations satisfied by a function. -/
+lemma comp_mem_obeying_iff_of_injective (hφ : Function.Injective φ) :
+    (fun (g : Γ) (i : n) ↦ φ (c g i)) ∈ obeying R B' ↔ c ∈ obeying R B := by
+  simp only [comp_mem_obeying_iff, mem_obeying (c := c), map_eq_zero_iff φ hφ, funext_iff,
+    Pi.zero_apply]
+
 /-- The reduction modulo `a` of a function `z ∈ Z` is killed by all linear relations of `Z`. -/
 lemma mkQ_mem_obeying_relationsOn (z : Γ → n → O) (hz : z ∈ Z) :
     (fun (g : Γ) (i : n) ↦ (Ideal.span {a}).mkQ (z g i)) ∈
