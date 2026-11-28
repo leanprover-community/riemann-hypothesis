@@ -448,14 +448,10 @@ lemma baseChange_linearFrob (h' : IsPotentiallyCrystalline ρ') (f : T →ₗ[�
   -- Both sides are linear in `x`, and on `Dpcris ρ`, which spans, `linearFrob` is given by
   -- `linearFrob_apply`.
   obtain ⟨hf_near, hf_s⟩ := eventually_sup.mp hf
-  rw [eventually_pure] at hf_s
-  induction eq_top_iff'.mp h x using span_induction with
-  | mem d hd =>
-    simp_all [fixedPeriods.periodTensorMap_mem hf_near, tensorAction_periodTensorMap hf_s,
-      baseChange_eq_periodTensorMap]
-  | zero => simp
-  | add y z _ _ hy hz => simp [hy, hz]
-  | smul a y _ hy => simp [hy]
+  refine LinearMap.congr_fun (ext_on h (f := f.baseChange Bmax ∘ₗ linearFrob ρ s m)
+    (g := linearFrob ρ' s m ∘ₗ f.baseChange Bmax) fun d hd ↦ ?_) x
+  simp_all [fixedPeriods.periodTensorMap_mem hf_near, tensorAction_periodTensorMap hf_s,
+    baseChange_eq_periodTensorMap]
 
 include h hs in
 /-- For `ρ` potentially crystalline (`h`) and `(toGp s, m)` a Weil pair (`hs`), the action of `a` in
