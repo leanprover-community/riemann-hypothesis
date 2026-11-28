@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Algebra.Order.Star.Int
+import TauCeti.Algebra.MvPolynomial.PDeriv
 public import Lib.DiscreteSeries.Theta.FockDualPair
 
 /-!
@@ -420,20 +421,14 @@ inductive DiscreteSeries.IsEigenDirection (F : MvPolynomial ι ℂ) (x : ι → 
 theorem DiscreteSeries.bind₁_X_add_C_pderiv {τ : Type*} (x : τ → ℂ) (G : MvPolynomial τ ℂ) (i : τ) :
     aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) (pderiv i G) =
       pderiv i (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G) := by
-  induction G using induction_on with
-  | C a => simp
-  | add p q hp hq => simp only [map_add, hp, hq]
-  | mul_X p n hp =>
-    obtain rfl | h_ne := eq_or_ne n i <;> simp [*]
+  classical
+  rw [pderiv_aeval_of_vars_subset _ i (Finset.subset_insert i G.vars)]
+  simp [pderiv_X, Pi.single_apply, Finset.sum_ite_eq']
 
 /-- The constant coefficient of `G (X + x)` is the value of `G` at `x`. -/
 theorem DiscreteSeries.coeff_zero_bind₁_X_add_C {τ : Type*} (x : τ → ℂ) (G : MvPolynomial τ ℂ) :
     (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G).coeff 0 = eval x G := by
-  rw [← constantCoeff_eq]
-  induction G using induction_on with
-  | C a => simp
-  | add p q hp hq => simp only [map_add, hp, hq]
-  | mul_X p n hp => simp [hp]
+  simp [← constantCoeff_eq]
 
 /-- A nonzero polynomial `F` that vanishes at `x` depends on a variable `i` that is not an
 eigendirection at `x`: `F` is an eigenvector of no linear vector field `∑ k, X (a k) * ∂ (b k)`
