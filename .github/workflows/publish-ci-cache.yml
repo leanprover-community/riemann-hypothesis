@@ -59,7 +59,6 @@ jobs:
         with:
           ref: ${{ github.workflow_sha }}
           persist-credentials: false
-          fetch-depth: 0
 
       - name: Choose the commit
         id: target
@@ -67,7 +66,8 @@ jobs:
           SHA: ${{ inputs.sha || github.sha }}
         run: |
           [[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::sha must be a full commit hash"; exit 1; }
-          git cat-file -e "$SHA^{commit}" 2>/dev/null || git fetch --no-tags origin "$SHA"
+          # A manual run can target another commit. Verification reads only its tree.
+          git cat-file -e "$SHA^{commit}" 2>/dev/null || git fetch --no-tags --depth=1 origin "$SHA"
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"
 
       - name: Find the build of the commit
