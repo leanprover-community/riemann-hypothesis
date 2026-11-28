@@ -129,16 +129,12 @@ matrix of coordinates of `c` at `g` (`Space.coordMatrix`) and `w` is an adelic v
 lemma Space.mem_adelicPoints_span_col_iff (g : G E s) (u : n → 𝔸 E) :
     u ∈ S.adelicPoints (Submodule.span E (Set.range c.col)) ↔
       ∃ w : q → 𝔸 E, g.adeleMatrix *ᵥ S.coordMatrix g c *ᵥ w = u := by
-  have h_sum (w : q → 𝔸 E) :
-      ∑ j : q, w j • S.vecAtPoint (c.col j) = g.adeleMatrix *ᵥ S.coordMatrix g c *ᵥ w := by
-    have h_cancel : g.adeleMatrix * S.coordMatrix g c = S.x⁻¹.val * c.map toAdele := by
-      rw [coordMatrix, ← Matrix.mul_assoc, ← adeleMatrix_mul, mul_inv_cancel, adeleMatrix_one,
-        Matrix.one_mul]
-    have h_col (j : q) : S.vecAtPoint (c.col j) = (S.x⁻¹.val * c.map toAdele).col j := rfl
-    ext1 i
-    rw [mulVec_mulVec, h_cancel]
-    simp [h_col, mulVec, dotProduct, mul_comm]
-  simp only [mem_adelicPoints_span_range_iff, h_sum]
+  have h_cancel : g.adeleMatrix * S.coordMatrix g c = S.x⁻¹.val * c.map toAdele := by
+    rw [coordMatrix, ← Matrix.mul_assoc, ← adeleMatrix_mul, mul_inv_cancel, adeleMatrix_one,
+      Matrix.one_mul]
+  simp_rw [mem_adelicPoints_span_range_iff, mulVec_mulVec, h_cancel, mulVec_eq_sum,
+    op_smul_eq_smul]
+  rfl
 
 omit [WeilData E] [Fintype p] [Fintype q] in
 /-- At the point `(g, h)` the maps `dᵢ ⟨cⱼ, ·⟩` have the coordinates `d'ᵢ c'ⱼᴴ ε`, where `d'` and
@@ -146,15 +142,9 @@ omit [WeilData E] [Fintype p] [Fintype q] in
 lemma coordMatrix_rankOneMaps :
     (S.hom T).coordMatrix (onHom (g, h)) (S.rankOneMaps d c) =
       shiftMatrix s (T.coordMatrix h d) (S.coordMatrix g c) := by
-  have h_form : g⁻¹.adeleMatrixᴴ * stdForm E s = stdForm E s * g.adeleMatrix :=
-    calc g⁻¹.adeleMatrixᴴ * stdForm E s
-      _ = g⁻¹.adeleMatrixᴴ * stdForm E s * (g⁻¹.adeleMatrix * g.adeleMatrix) := by
-        rw [← adeleMatrix_mul, inv_mul_cancel, adeleMatrix_one, Matrix.mul_one]
-      _ = stdForm E s * g.adeleMatrix := by
-        rw [← Matrix.mul_assoc, conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix]
   have h_source : (cᴴ * S.J).map toAdele * S.x.val * g.adeleMatrix =
       (S.coordMatrix g c)ᴴ * stdForm E s := by
-    simp [coordMatrix, S.map_J, h_form, Matrix.mul_assoc]
+    simp [coordMatrix, S.map_J, G.adeleMatrix_inv, conjTranspose_stdForm, Matrix.mul_assoc]
   have h_point : (S.hom T).x⁻¹.val = T.x⁻¹.val ⊗ₖ S.x.valᵀ := rfl
   have h_map : (S.rankOneMaps d c).map toAdele = d.map toAdele ⊗ₖ ((cᴴ * S.J).map toAdele)ᵀ :=
     Matrix.ext fun _ _ ↦ map_mul toAdele _ _
@@ -283,9 +273,7 @@ lemma exists_norm_schrodingerOp_le_of_isShortPair {S : Space E n s} {T : Space E
     isotropic_span_rankOneMaps h_pair.isotropic
   have h_inv : ∀ γ ∈ Z, ∀ f : 𝒮 (S.hom T), Λ (ϱ (S.hom T) ((S.hom T).vecAtPoint γ) f) = Λ f :=
     fun γ hγ f ↦ by rw [_root_.smul_apply, _root_.smul_apply, h_pair.invariant_span γ hγ f]
-  obtain ⟨Λ₀, h_mean⟩ : ∃ Λ₀ : 𝒮 (S.hom T) →L[ℂ] ℂ, ∀ f : 𝒮 (S.hom T),
-      Λ₀ f = (S.hom T).subspaceMean Z fun u : n' × n → 𝔸 E ↦ Λ (ϱ (S.hom T) u f) :=
-    exists_eq_subspaceMean h_iso h_inv
+  obtain ⟨Λ₀, h_mean⟩ := exists_eq_subspaceMean h_iso h_inv
   have h_zero : Λ₀ ((S.hom T).ω k F) = 0 := by
     rcases h_pair.ne_zero_or_mean_eq_zero with h_ne | h_mean_zero
     · rw [hF, integrated_schrodingerOp]
@@ -387,14 +375,11 @@ lemma pairTheta_decay_of_onto (S : Space E n s) (T : Space E n' s') (a b : AutCh
   obtain ⟨Y, A, h_growth⟩ : ∃ (Y : ℝ) (A : ℕ), ∀ (g : G E s) (k : G E s') (f : 𝒮 (S.hom T)),
       ‖θ (S.hom T) (pairWeil S T a b (g, k) f)‖ ≤ Y * ‖f‖ * (S.height g * T.height k) ^ A :=
     (pairThetaKer S T a b).moderate_growth
-  obtain ⟨Z, h_basis⟩ : ∃ Z : ℕ, ∀ g : G E s, ∃ c : GL n E, ∀ j : n,
-      c.val.col j ∈ (S.move g).latticeBall (Z * S.height g) := S.exists_short_basis_matrix
+  obtain ⟨Z, h_basis⟩ := S.exists_short_basis_matrix
   have h_pair (g : G E s) (k : G E s') (hk : 2 < T.height k) :
       ∃ (d : Matrix n' Unit E) (c : Matrix n n E) (x y : ℝ),
         IsShortPair g k (θ (S.hom T)) Ψ d c x y (Z * S.height g * (2 / T.height k)) := by
-    obtain ⟨d, hd_ne, hd_iso, hd_short⟩ : ∃ d : Matrix n' Unit E, d ≠ 0 ∧ dᴴ * T.J * d = 0 ∧
-        ∀ j : Unit, d.col j ∈ (T.move k).latticeBall (2 / T.height k) :=
-      T.exists_short_isotropic hk
+    obtain ⟨d, hd_ne, hd_iso, hd_short⟩ := T.exists_short_isotropic hk
     obtain ⟨c, hc_short⟩ := h_basis g
     exact ⟨d, c, 2 / T.height k, Z * S.height g,
       { short_target := hd_short
@@ -405,8 +390,7 @@ lemma pairTheta_decay_of_onto (S : Space E n s) (T : Space E n' s') (a b : AutCh
         ne_zero_or_mean_eq_zero := .inl fun y hy ↦
           T.coordMatrix_mul_ne_zero hd_ne (basisCoordMatrix S g c) (h_onto y hy) }⟩
   obtain ⟨C, h_decay⟩ := exists_norm_pairWeil_schrodingerOp_mul_pow_le (p := Unit) (q := n) (S := S)
-    (T := T)
-    (Ψ := Ψ) a b hP vacElem_mem_finitePart N A Y Z
+    (T := T) (Ψ := Ψ) a b hP vacElem_mem_finitePart N A Y Z
   exact ⟨N + 2 * A, N + A, C, fun v g k hv ↦ h_decay v g k (θ (S.hom T)) (S.height g) (T.height k)
     hv (one_le_height g) (height_pos k) (h_growth g k) (h_pair g k)⟩
 
@@ -430,15 +414,12 @@ lemma pairTheta_decay_of_injective (S : Space E n s) (T : Space E n' s') (a b : 
   obtain ⟨Y, A, h_growth⟩ : ∃ (Y : ℝ) (A : ℕ), ∀ (k : G E s') (g : G E s) (f : 𝒮 (S.hom T)),
       ‖θ (S.hom T) (pairWeil S T a b (g, k) f)‖ ≤ Y * ‖f‖ * (T.height k * S.height g) ^ A :=
     (pairThetaKer S T a b).swap.moderate_growth
-  obtain ⟨Z, h_basis⟩ : ∃ Z : ℕ, ∀ k : G E s', ∃ d : GL n' E, ∀ j : n',
-      d.val.col j ∈ (T.move k).latticeBall (Z * T.height k) := T.exists_short_basis_matrix
+  obtain ⟨Z, h_basis⟩ := T.exists_short_basis_matrix
   have h_pair (g : G E s) (k : G E s') (hg : 2 < S.height g) :
       ∃ (d : Matrix n' n' E) (c : Matrix n Unit E) (x y : ℝ),
         IsShortPair g k (θ (S.hom T)) Ψ d c x y (Z * T.height k * (2 / S.height g)) := by
     obtain ⟨d, hd_short⟩ := h_basis k
-    obtain ⟨c, hc_ne, hc_iso, hc_short⟩ : ∃ c : Matrix n Unit E, c ≠ 0 ∧ cᴴ * S.J * c = 0 ∧
-        ∀ j : Unit, c.col j ∈ (S.move g).latticeBall (2 / S.height g) :=
-      S.exists_short_isotropic hg
+    obtain ⟨c, hc_ne, hc_iso, hc_short⟩ := S.exists_short_isotropic hg
     exact ⟨d, c, Z * T.height k, 2 / S.height g,
       { short_target := hd_short
         short_source := hc_short
@@ -448,8 +429,7 @@ lemma pairTheta_decay_of_injective (S : Space E n s) (T : Space E n' s') (a b : 
         ne_zero_or_mean_eq_zero := .inl fun y hy ↦
           S.mul_coordMatrix_ne_zero hc_ne (basisCoordMatrix T k d) (h_inj y hy) }⟩
   obtain ⟨C, h_decay⟩ := exists_norm_pairWeil_schrodingerOp_mul_pow_le (p := n') (q := Unit)
-    (S := S) (T := T)
-    (Ψ := Ψ) a b hP vacElem_mem_finitePart N A Y Z
+    (S := S) (T := T) (Ψ := Ψ) a b hP vacElem_mem_finitePart N A Y Z
   exact ⟨N + 2 * A, N + A, C, fun v g k hv ↦ h_decay v g k (θ (S.hom T)) (T.height k) (S.height g)
     hv (one_le_height k) (height_pos g) (h_growth k g) (h_pair g k)⟩
 
@@ -502,7 +482,7 @@ lemma Rows.isPrimitiveMatrix_of_liftFn_ne_zero {ι : Type*} {Ψ : (ι → 𝔪.R
   have h_unit : IsUnit (L' * Y) := isUnit_of_mapMatrix (residue _) <| by
     rw [RingHom.mapMatrix_apply, Matrix.map_mul, hL', hY, ← Matrix.map_mul, hL]
     simp
-  obtain ⟨U, hU⟩ : ∃ U : Matrix n n (LocInt w), U * (L' * Y) = 1 := h_unit.exists_left_inv
+  obtain ⟨U, hU⟩ := h_unit.exists_left_inv
   -- The idempotent `idem 𝔪.places` in the entries of `Y` is `1` at `w`.
   have hY_coe : Y.map (LocInt w).subtype = (e.map x).map (evalAt w) := by
     ext
