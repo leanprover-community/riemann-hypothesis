@@ -543,17 +543,17 @@ lemma exists_integral_lineStabilizer :
         ∫ h : G E t', F h ∂(lineStabilizer X).quotMeasure volume = c * integral ν Θ := by
   -- Check the hypotheses of `integral_quotMeasure_iwasawa` for the radical, the Levi factor and
   -- its rational points `δ d`.
-  let δ : principalAdeleUnits E × V.Γ → (𝔸 E)ˣ × G E t :=
-    Prod.map (principalAdeleUnits E).subtype V.Γ.subtype
   have h_iwasawa (g : G E t') :
       ∃ (n : radicalSubgroup X) (m : (𝔸 E)ˣ × G E t) (κ : maxCompact E t'),
-        g = n * lineLevi X m * κ := by
-    obtain ⟨c, z, h_eq⟩ := exists_eq_radicalElement_mul_lineLevi_mul X g
-    exact ⟨⟨_, radicalElement_mem_radicalSubgroup X c z⟩, h_eq⟩
+        g = n * lineLevi X m * κ :=
+    let ⟨c, z, h_eq⟩ := exists_eq_radicalElement_mul_lineLevi_mul X g
+    ⟨⟨_, radicalElement_mem_radicalSubgroup X c z⟩, h_eq⟩
   have h_decomp (g : G E t') (hg : g ∈ lineStabilizer X) :
-      ∃ d : principalAdeleUnits E × V.Γ, g * lineLevi X (δ d) ∈ radicalSubgroup X := by
-    obtain ⟨u, hu, g₀, hg₀, h_rad⟩ := exists_radicalElement_eq_mul_lineLevi X hg
-    exact ⟨(⟨u, hu⟩, ⟨g₀, hg₀⟩), (mem_radicalSubgroup_iff X _).2 h_rad⟩
+      ∃ d : principalAdeleUnits E × V.Γ,
+        g * lineLevi X (Prod.map (principalAdeleUnits E).subtype V.Γ.subtype d) ∈
+          radicalSubgroup X :=
+    let ⟨u, hu, g₀, hg₀, h_rad⟩ := exists_radicalElement_eq_mul_lineLevi X hg
+    ⟨(⟨u, hu⟩, ⟨g₀, hg₀⟩), (mem_radicalSubgroup_iff X _).2 h_rad⟩
   obtain ⟨c, hc, h_unfold⟩ := integral_quotMeasure_iwasawa
     (fun m : (𝔸 E)ˣ × G E t ↦ ideleAbs m.1 ^ (Fintype.card r + 1)) (μ := volume)
     (ν := haar.prod volume) (κ := haar) (i := lineLevi X) (α := _) (hi := continuous_lineLevi X)
@@ -717,8 +717,7 @@ lemma exists_unfold_constant_term :
     exact h_iwasawa Φ (measurable_lineSum A a b f g _) h_radical
       (fixesLeft_map_stabilizer (lineSum_smul A a b f g) rfl) h_int
   obtain ⟨-, h_unfold, -⟩ := integral_tsum_orbit_of_lt_top_or_integrable (Γ := V'.Γ) (μ := volume)
-    (D := lines)
-    (S := lineStabilizer X) V'.ratEmbed_injective rfl (measurable_lineSum A a b f g)
+    (D := lines) (S := lineStabilizer X) V'.ratEmbed_injective rfl (measurable_lineSum A a b f g)
     (lineSum_smul A a b f g) rfl (fun _ ↦ .rfl) (.inr hΦ_int)
   calc ∫ h, ∑' x : r' → E, constTermAt A (replicateCol Unit x) (F h) ∂V'.quotMeasure
       = ∫ h, ∑' y : lines, lineSum A a b f g y h ∂V'.quotMeasure := by

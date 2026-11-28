@@ -875,30 +875,25 @@ lemma exists_hasSum_vacuumCoeff_at_place {l : InfinitePlace E → ℤ}
   by_cases hw : star w = w
   · refine ⟨Unit, 1, fun g ↦ ?_, ?_⟩
     · -- Unitarity makes the valuation equal to its negative.
-      have h_log : (v (g.atPlace w).val.det).log = 0 := by
-        simpa [self_eq_neg] using congrArg (fun A ↦ (v A.det).log) (g.atPlace_star hw)
-      simpa [mem_localIntGL_unit_iff, localLevel] using h_log
+      simpa [mem_localIntGL_unit_iff, localLevel, self_eq_neg] using
+        congrArg (fun A ↦ (v A.det).log) (g.atPlace_star hw)
     · -- Both sides are `1`: the coefficient at `g = 1`, and the factor, as `placeSign w` and
       -- `ν.baseChange.atUniformizer w` are both `1`.
-      have h_value : ν.baseChange.atUniformizer w = 1 := by
-        rw [HeckeChar.atUniformizer, hν.baseChange_finPart_locIdele_eq_one hw hψ, Units.val_one]
-      simp [vacuumCoeff, finMultiplier_eq_one_of_mem, placeSign, irrefl, hw, h_value,
+      simp [vacuumCoeff, finMultiplier_eq_one_of_mem, placeSign, irrefl, hw,
+        HeckeChar.atUniformizer, hν.baseChange_finPart_locIdele_eq_one hw hψ,
         hk.ne_zero, w.one_lt_q.ne', Prod.mk_one_one, sub_eq_zero]
   -- Split case: `r z` has the component `uniformizer w ^ z` at `w`.
   let r (z : ℤ) : supportedOn Unit {w} :=
     ⟨_, ofSplitPlace_mem_supportedOn hw (diagGL fun _ ↦ uniformizer w ^ z)⟩
-  have h_coset (g : Gf E Unit) (z : ℤ) :
-      (r z).val⁻¹ * g ∈ localLevel Unit {w} ↔ z = -(v (g.atPlace w).val.det).log := by
+  refine ⟨ℤ, r, fun g ↦ by
     simp [r, mem_localIntGL_unit_iff, localLevel, add_eq_zero_iff_eq_neg, -det_unique,
-      GeneralLinearGroup.det_ne_zero]
-  refine ⟨ℤ, r, fun g ↦ by simp only [h_coset, existsUnique_eq], ?_⟩
+      GeneralLinearGroup.det_ne_zero], ?_⟩
   -- The ratios of the two geometric series.
   let ξ (u : FinPlace E) : ℂ := ν.baseChange.atUniformizer u / u.q ^ k
   have norm_lt (u : FinPlace E) : ‖ξ u‖ < 1 := by simp [ξ, field, one_lt_pow₀, hk.ne_zero]
   have geometric (u : FinPlace E) : HasSum (fun i : ℕ ↦ ξ u ^ i) (1 - ξ u)⁻¹ :=
     hasSum_geometric_of_norm_lt_one (norm_lt u)
-  have at_star : ν.baseChange.atUniformizer (star w) = (ν.baseChange.atUniformizer w)⁻¹ :=
-    hν.atUniformizer_star hψ hψ_star
+  have at_star := hν.atUniformizer_star hψ hψ_star
   have h_coeff (z : ℤ) : vacuumCoeff (2 * k) (ν * upsilonU1 ^ k) (r z).val =
       ξ (star w) ^ z.toNat * ξ w ^ (-z).toNat :=
     vacuumCoeff_ofSplitPlace_uniformizer_zpow hν hw hψ hψ_star k z
@@ -910,13 +905,11 @@ lemma exists_hasSum_vacuumCoeff_at_place {l : InfinitePlace E → ℤ}
     rw [mul_comm, q_star, div_eq_mul_inv, div_eq_mul_inv, placeSign_factor_mul hw]
     simp [ξ, at_star, q_star, field]
   have denominator : (1 - (ν.baseChange.atUniformizer w)⁻¹ / w.q ^ k) *
-      (1 - (ν.baseChange.atUniformizer (star w))⁻¹ / (star w).q ^ k) = (1 - ξ (star w)) *
-        (1 - ξ w) := by
-    simp [ξ, at_star, q_star]
-  have ne_zero (u : FinPlace E) : 1 - ξ u ≠ 0 := (isUnit_one_sub_of_norm_lt_one (norm_lt u)).ne_zero
+      (1 - (ν.baseChange.atUniformizer (star w))⁻¹ / (star w).q ^ k) =
+      (1 - ξ (star w)) * (1 - ξ w) := by simp [ξ, at_star, q_star]
   have sum_eq : (1 - ξ (star w) * ξ w) / ((1 - ξ (star w)) * (1 - ξ w)) =
       (1 - ξ (star w))⁻¹ + (1 - ξ w)⁻¹ * ξ w := by
-    field_simp [ne_zero]
+    field_simp [fun u ↦ (isUnit_one_sub_of_norm_lt_one (norm_lt u)).ne_zero]
     ring
   rw [prod_pair (Ne.symm hw), div_mul_div_comm, numerator, denominator, sum_eq, funext h_coeff]
   -- The terms with `z ≥ 0` and those with `z < 0` form one geometric series each.

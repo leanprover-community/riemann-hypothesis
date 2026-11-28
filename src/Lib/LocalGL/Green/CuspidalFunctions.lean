@@ -482,10 +482,8 @@ lemma moebius_and_greenCuspidal_lsmul (η : K → ℂ) :
     rw [coeff_sub, ← (isMonicOfDegree_monomial_one _).coeff_eq hN_monic hn, finsetSum_coeff,
       Fintype.sum_eq_single W_top, hS_top, finrank_top]
     · simp [coeff_monomial, finrank_zero_iff, W_top]
-    · intro W hW
-      have h_lt : finrank F (S W) < finrank F V :=
-        (S W).finrank_lt fun h ↦ hW (Subtype.ext (top_unique h.ge))
-      exact coeff_monomial_of_ne _ (h_lt.trans_le hn).ne'
+    · exact fun W hW ↦ coeff_monomial_of_ne _
+        (((S W).finrank_lt fun h ↦ hW (Subtype.ext (top_unique h.ge))).trans_le hn).ne'
   -- `|W| ^ j` counts the `j`-tuples `v` in `W`; for `j < m` no `v` spans `V`.
   have h_root (j : ℕ) (hj : j < finrank F V) : M.eval ((Nat.card F ^ j : ℕ) : ℂ) = 0 := by
     have h_count (W : StableSubspace g) : ((Nat.card F ^ j : ℕ) : ℂ) ^ finrank F (S W) =
@@ -500,21 +498,17 @@ lemma moebius_and_greenCuspidal_lsmul (η : K → ℂ) :
     -- The span `U` of `v` is a stable subspace other than `V`, as `j < m`.
     let U : StableSubspace g := ⟨(span F (.range v)).restrictScalars k, by aesop⟩
     have hU_ne : (U : Submodule k V) ≠ ⊤ := by simp [U, mt finrank_le_of_span_eq_top, hj]
-    have h_le_iff (W : StableSubspace g) :
-        span F (.range v) ≤ S W ↔ (U : Submodule k V) ≤ W := Iff.rfl
+    have h_le_iff (W) : span F (.range v) ≤ S W ↔ (U : Submodule k V) ≤ W := Iff.rfl
     simpa [sum_filter, h_le_iff] using sum_moebius_endOnQuot_eq_zero_of_ne_top U hU_ne
   -- `N - M` has degree `< m` and vanishes at the `m` distinct points `Q ^ j`.
-  have h_deg : (N - M).degree < #(range (finrank F V)) := by
-    simpa [Finset.card_range, degree_lt_iff_coeff_zero] using h_coeff
-  have hN : N = M :=
-    eq_of_degree_sub_lt_of_eval_index_eq _
-      (Nat.cast_injective.comp (Nat.pow_right_injective Finite.one_lt_card)).injOn h_deg
-      fun j hj ↦ (eval_nodal_at_node hj).trans (h_root j (mem_range.mp hj)).symm
+  have hN : N = M := eq_of_degree_sub_lt_of_eval_index_eq _
+    (Nat.cast_injective.comp (Nat.pow_right_injective Finite.one_lt_card)).injOn
+    (by simpa [Finset.card_range, degree_lt_iff_coeff_zero] using h_coeff)
+    fun j hj ↦ (eval_nodal_at_node hj).trans (h_root j (mem_range.mp hj)).symm
   rw [hN]
   constructor
   · -- In `moebius = 1 * moebius` and in `M(0)` only `W = ⊥` contributes.
-    have hS_subsingleton (W : StableSubspace g) :
-        Subsingleton (S W) ↔ Subsingleton (W : Submodule k V) := Iff.rfl
+    have hS_subsingleton (W) : Subsingleton (S W) ↔ Subsingleton (W : Submodule k V) := Iff.rfl
     rw [← one_mul moebius]
     simp [M, zero_pow_eq, finrank_zero_iff, mul_simClassOf, finsum_eq_sum_of_fintype,
       eval_finsetSum, hS_subsingleton]
