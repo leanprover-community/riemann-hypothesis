@@ -67,10 +67,7 @@ contains a primitive root of unity of order `7! = 5040` (`New.HasPrimitiveRoot50
 class CMFieldWithRoot5040 (E : Type*) [Field E] extends EmbeddedNumberField E,
   NumberField.IsCMField E, HasPrimitiveRoot5040 E
 
-/-! ### Valuation, places and complex conjugation -/
-
-/-- The valuation −log_ℓ|x| in [0, ∞], normalised by v(ℓ) = 1; it is ∞ at 0, and 0 for |x| ≥ 1. -/
-def ellVal (x : PadicAlgCl ℓ) : ENNReal := if ‖x‖ = 0 then ⊤ else ENNReal.ofReal (-Real.logb ℓ ‖x‖)
+/-! ### Places and complex conjugation -/
 
 /-- A chosen complex conjugation `c` in Gal(Ω/ℚ). -/
 def cmConj : Gal(Ω/ℚ) := (exists_isComplexConj Gal(Ω/ℚ) Rat.isReal_infinitePlace).choose

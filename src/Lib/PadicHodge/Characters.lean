@@ -15,6 +15,7 @@ public import Lib.GaloisRep.Main.Defs
 public import Lib.GaloisRep.Main.LocalConditions
 public import Lib.General.NumberTheory.PadicLimitsValuation
 public import Lib.ClassField.HeckeL.EulerProduct
+public import Lib.ClassField.Local.ArtinMap
 import Lib.ClassField.Global.ArtinMap
 import Lib.ClassField.Global.ExistenceTheorem
 import Lib.ClassField.Global.NormTheorems
