@@ -148,8 +148,6 @@ theorem isIdempotentKernel_typeKernel [Nonempty n] {l : NumberField.InfinitePlac
       convolution_eq := by simp [typeKernel, mul_assoc, ← prod_mul_distrib, ← prod_div_distrib,
         ← integral_fintype_prod_volume_eq_prod, ← (h_loc _).convolution_eq] }
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let E be a CM field, n nonempty and s a family of signs. Suppose every l_w = 2λ_w is a
 Harish-Chandra parameter whose entries λ_i, λ_j of different signs s are at least 500|n|³ + B apart.
 Then `New.typeKernel` l s, the product over the infinite places of the discrete series kernels

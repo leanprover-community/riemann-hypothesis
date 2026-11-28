@@ -371,8 +371,6 @@ private lemma exp_mul_sub_eq_of_sub_mem {c κ : R} (hκ : κ = c - star c) (x : 
 
 variable [IsFullRankLattice L] [IsDomain R] [Module.Finite ℤ R]
 
--- `seal Finset.sum` keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- For hermitian data `h` and `κ = c - star c ≠ 0`, with `α = star β * κ - c`: the Poincaré
 kernel `K(c̄ x, c x)` is the sum over `l ∈ L` of the Gauss sums
 `∑ z, exp (B z (F (κ α) z)) * exp (B w (F (κ c) w))`, `w = l + x + z`, over representatives `z` of

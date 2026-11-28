@@ -324,8 +324,6 @@ def fractionClass (hf : U ≤ unimodularLocus f) :
     (.mk' (fun x ↦ detCocycle (pointMap ⟨f⟩) (formOfExteriorPower x)) fun x y ↦
       (cancel_epi (abCoker.π _)).1 (hom_ext (by simp [formOfExteriorPower])))
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- For a test c = (A, A^ι), let `f` and `g` be d-tuples in A ⊕ A^ι with first components
 f̄ = `fst ∘ f` and ḡ, and write g = (ḡ, η). Let `U` be a subfunctor of Hom(c, −) on which both `f`
 and `g` are unimodular, and suppose f̄ = M ḡ for a d × d matrix `M` over A. Then for every a ∈ k,
