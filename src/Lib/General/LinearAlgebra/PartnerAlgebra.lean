@@ -111,6 +111,7 @@ lemma transpose_invLastRows :
     (invLastRows e k)ᵀ = firstCols ((Equiv.sumComm a b).trans e) (invTransposeGL k) :=
   rfl
 
+/-- The transpose of `invLastRows e k` has a left inverse. -/
 lemma hasLeftInv_invLastRows_transpose [DecidableEq a] : HasLeftInv (invLastRows e k)ᵀ := by
   rw [transpose_invLastRows]
   exact ⟨_, invFirstRows_mul_firstCols _ _⟩
