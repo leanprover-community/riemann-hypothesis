@@ -8,6 +8,7 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Algebra.ProperConstSMul
 import Mathlib.Topology.Separation.Connected
+import TauCeti.Algebra.Module.ZLattice.Covolume
 public import Lib.Adelic.Unitary.ComponentsAndBlockSums
 public import Lib.General.NumberTheory.EmbeddingsAndDifferent
 import Lib.Adelic.Adeles.StrongApproximation
@@ -86,36 +87,48 @@ namespace New
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
-/-- Minkowski's bound. If the nonzero vectors of the lattice spanned by a basis `b` of a Euclidean
-space of dimension `m ≥ 1` have length at least `ρ > 0`, then its covolume `|det b|`, in the
-coordinates of an orthonormal basis `o`, is at least `(ρ / √m) ^ m`. -/
-lemma minkowski_pow_le_abs_det {ρ : ℝ} (hρ : 0 < ρ) {m : ℕ} (hm : 0 < m)
-    {o : OrthonormalBasis (Fin m) ℝ E} {b : Basis (Fin m) ℝ E}
-    (h_long : ∀ y ∈ span ℤ (Set.range b), y ≠ 0 → ρ ≤ ‖y‖) :
-    (ρ / √m) ^ m ≤ |det (of fun i : Fin m ↦ o.repr (b i))| := by
-  -- In the coordinates of `o`, the open cube of half-side `ρ / √m` (a ball for the sup norm) has no
-  -- nonzero lattice point.
-  let c : Basis (Fin m) ℝ (Fin m → ℝ) := b.map o.toBasis.equivFun
-  have sup_norm_ge (x : E) (hx : x ∈ span ℤ (Set.range b)) (hx_ne : x ≠ 0) :
-      ρ / √m ≤ ‖(o.repr x).ofLp‖ := by
-    grw [h_long x hx hx_ne, ← o.repr.norm_map, PiLp.norm_eq_of_L2, norm_le_pi_norm]
-    simp [field]
-  have no_point : ¬∃ x : (span ℤ (Set.range c)).toAddSubgroup,
-      x ≠ 0 ∧ (x : Fin m → ℝ) ∈ Metric.ball 0 (ρ / √m) := by
-    simpa [c, ← ZSpan.map] using fun x hx_ne hx ↦ sup_norm_ge x hx hx_ne
-  -- So by Minkowski's theorem its volume `(2 * ρ / √m) ^ m` is at most `2 ^ m` times the covolume.
-  have : Countable (span ℤ (Set.range c)).toAddSubgroup := countable_of_Lindelof_of_discrete
-  have vol_le : volume (Metric.ball (0 : Fin m → ℝ) (ρ / √m)) ≤
-      volume (ZSpan.fundamentalDomain c) * 2 ^ finrank ℝ (Fin m → ℝ) :=
-    not_lt.1 fun h_lt ↦ no_point <| exists_ne_zero_mem_lattice_of_measure_mul_two_pow_lt_measure
-      (ZSpan.isAddFundamentalDomain' c volume) (by simp) (convex_ball 0 _) h_lt
-  have vol_cube : volume (Metric.ball (0 : Fin m → ℝ) (ρ / √m)) =
-      ENNReal.ofReal ((ρ / √m) ^ m) * 2 ^ m := by
-    simp [Real.volume_pi_ball, hρ, hm, mul_pow, mul_comm]
-  have covolume : volume (ZSpan.fundamentalDomain c) =
-      ENNReal.ofReal |det (of fun i : Fin m ↦ o.repr (b i))| :=
-    ZSpan.volume_fundamentalDomain c
-  simpa [vol_cube, covolume, ENNReal.mul_le_mul_iff_left] using vol_le
+/-- Minkowski's bound. If the nonzero vectors of a lattice in a Euclidean space of
+dimension `m ≥ 1` have length at least `ρ > 0`, its covolume is at least `(ρ / √m) ^ m`. -/
+lemma minkowski_pow_le_covolume [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
+    (Λ : Submodule ℤ E) [DiscreteTopology Λ] [IsZLattice ℝ Λ]
+    {ρ : ℝ} (hρ : 0 < ρ) (hm : 0 < finrank ℝ E)
+    (h_long : ∀ y ∈ Λ, y ≠ 0 → ρ ≤ ‖y‖) :
+    (ρ / √(finrank ℝ E)) ^ finrank ℝ E ≤ ZLattice.covolume Λ := by
+  -- In orthonormal coordinates the open cube of half-side `ρ / √m` contains no nonzero point.
+  let m := finrank ℝ E
+  let o := stdOrthonormalBasis ℝ E
+  let B : Set (Fin m → ℝ) := Metric.ball 0 (ρ / √m)
+  let C : Set E := o.toBasis.equivFun ⁻¹' B
+  have h_symm (x : E) (hx : x ∈ C) : -x ∈ C := by
+    simpa [C, B] using hx
+  have h_conv : Convex ℝ C := (convex_ball 0 _).linear_preimage o.toBasis.equivFun.toLinearMap
+  have h_no_point (x : Λ) (hx : x ≠ 0) : (x : E) ∉ C := by
+    have h_bound : ρ / √m ≤ ‖(o.repr x).ofLp‖ := by
+      grw [h_long x x.property (by simpa using hx), ← o.repr.norm_map, PiLp.norm_eq_of_L2,
+        norm_le_pi_norm]
+      simp [m, field]
+    simpa [C, B, Metric.mem_ball, dist_zero_right] using not_lt.2 h_bound
+  let b := Free.chooseBasis ℤ Λ
+  let D := ZSpan.fundamentalDomain (b.ofZLatticeBasis ℝ Λ)
+  have hD : IsAddFundamentalDomain Λ.toAddSubgroup D volume :=
+    ZLattice.isAddFundamentalDomain b (volume : Measure E)
+  have : Countable Λ.toAddSubgroup := inferInstanceAs (Countable Λ)
+  -- Compare the volume of the cube to that of the fundamental domain.
+  have h_vol : volume C ≤ volume D * 2 ^ m := not_lt.1 fun h ↦ by
+    obtain ⟨x, hx, hxC⟩ := exists_ne_zero_mem_lattice_of_measure_mul_two_pow_lt_measure
+      (L := Λ.toAddSubgroup) hD h_symm h_conv h
+    exact h_no_point x hx hxC
+  have hC : volume C = ENNReal.ofReal ((ρ / √m) ^ m) * 2 ^ m := by
+    let h_pres := (PiLp.volume_preserving_ofLp (Fin m)).comp o.measurePreserving_repr
+    change volume ((WithLp.ofLp ∘ o.repr) ⁻¹' B) = _
+    rw [h_pres.measure_preimage (Metric.isOpen_ball.measurableSet.nullMeasurableSet)]
+    change volume (Metric.ball (0 : Fin m → ℝ) (ρ / √m)) = _
+    simp [Real.volume_pi_ball, m, hρ, hm, mul_pow, mul_comm]
+  have h_covol : ENNReal.ofReal (ZLattice.covolume Λ) = volume D := by
+    rw [ZLattice.covolume_eq_measure_fundamentalDomain Λ volume hD, measureReal_def,
+      ENNReal.ofReal_toReal (ZSpan.fundamentalDomain_isBounded _).measure_lt_top.ne]
+  rw [hC, ← h_covol, ENNReal.mul_le_mul_iff_left (by positivity) (by finiteness)] at h_vol
+  exact (ENNReal.ofReal_le_ofReal_iff (ZLattice.covolume_nonneg Λ)).1 h_vol
 
 /-- A subgroup `Λ` of a Euclidean space spans the space if the nonzero vectors of its dual (the `y`
 with `⟪y, x⟫ ∈ ℤ` for all `x ∈ Λ`) have length at least `ρ > 0`. -/
@@ -142,30 +155,18 @@ lemma weak_transference (Λ : Submodule ℤ E) [Module.Finite ℝ E] {ρ : ℝ} 
   have h_pos : 0 < 2 * finrank ℝ E / ρ := by positivity
   have : DiscreteTopology Λ := .of_forall_le_norm h_pos fun u hu ↦ h_long u u.2 (by simpa using hu)
   have : IsZLattice ℝ Λ := ⟨span_eq_top_of_le_norm_dual Λ hρ h_dual⟩
-  obtain ⟨b, rfl⟩ : ∃ b : Basis (Fin (finrank ℝ E)) ℝ E, span ℤ (Set.range b) = Λ :=
-    ⟨_, (finBasisOfFinrankEq ℤ Λ (ZLattice.rank ℝ Λ)).ofZLatticeBasis_span ℝ⟩
-  have h_nondeg : LinearMap.BilinForm.Nondegenerate (innerₗ E) := by
-    simp +contextual [nondegenerate_iff', isSymm_inner]
-  -- The dual basis `b'` spans the dual lattice.
-  let b' : Basis (Fin (finrank ℝ E)) ℝ E := dualBasis (innerₗ E) h_nondeg b
-  rw [dualSubmodule_span_of_basis _ h_nondeg] at h_dual
-  -- The covolumes of the lattice and of its dual have product 1, while the product of the two
-  -- lower bounds `minkowski_pow_le_abs_det` is `2 ^ m`, `m` the dimension.
-  let o : OrthonormalBasis (Fin (finrank ℝ E)) ℝ E := stdOrthonormalBasis ℝ E
-  let A : Matrix _ _ ℝ := of fun i j ↦ o.repr (b i) j
-  let A' : Matrix _ _ ℝ := of fun i j ↦ o.repr (b' i) j
-  have h_inverse : A * A'ᵀ = 1 := by
-    ext i j
-    calc (A * A'ᵀ) i j = innerₗ E (b' j) (b i) := by
-          simp [A, A', Matrix.mul_apply, ← o.repr.inner_map_map (b' j), PiLp.inner_apply,
-            -LinearIsometryEquiv.inner_map_map]
-      _ = (1 : Matrix _ _ ℝ) i j := by rw [apply_dualBasis_left h_nondeg b j i, Matrix.one_apply]
-  have det_mul_det : |det A'| * |det A| = 1 := by
-    rw [← det_transpose, ← abs_mul, mul_comm, ← det_mul, h_inverse, det_one, abs_one]
+  borelize E
+  -- The covolumes of the lattice and its dual are reciprocal.
+  have h_dual' : ∀ y ∈ ZLattice.dual Λ, y ≠ 0 → ρ ≤ ‖y‖ := by
+    simpa only [ZLattice.dual_def] using h_dual
+  have h_mul : ZLattice.covolume (ZLattice.dual Λ) * ZLattice.covolume Λ = 1 := by
+    rw [ZLattice.covolume_dual, inv_mul_cancel₀ (ZLattice.covolume_ne_zero Λ volume)]
   have two_pow_le : (ρ / √(finrank ℝ E) * (2 * finrank ℝ E / ρ / √(finrank ℝ E))) ^ finrank ℝ E
       ≤ 1 := by
-    grw [mul_pow, minkowski_pow_le_abs_det hρ hm (o := o) (b := b') h_dual,
-      minkowski_pow_le_abs_det h_pos hm (o := o) h_long, det_mul_det]
+    rw [mul_pow, ← h_mul]
+    exact mul_le_mul (minkowski_pow_le_covolume (ZLattice.dual Λ) hρ hm h_dual')
+      (minkowski_pow_le_covolume Λ h_pos hm h_long)
+      (by positivity) (ZLattice.covolume_nonneg (ZLattice.dual Λ) volume)
   have h_two : ρ / √(finrank ℝ E) * (2 * finrank ℝ E / ρ / √(finrank ℝ E)) = 2 := by simp [field]
   rw [h_two] at two_pow_le
   exact two_pow_le.not_gt (one_lt_pow₀ one_lt_two hm.ne')
