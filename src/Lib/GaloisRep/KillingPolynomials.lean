@@ -71,6 +71,7 @@ is the entry of `y ^ j` at the place `a i`. -/
 noncomputable abbrev powMinor (m : ℕ) (a : Fin m → N × N) : R :=
   (of (flip (fun j : Fin m ↦ uncurry (y ^ j.val)) ∘ a)).det
 
+/-- An algebra map `φ` takes `powMinor y m a` to `powMinor (φ.mapMatrix y) m a`. -/
 @[simp]
 lemma map_powMinor (a : Fin m → N × N) (φ : R →ₐ[A] S) :
     φ (powMinor y m a) = powMinor (φ.mapMatrix y) m a := by
