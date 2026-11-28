@@ -20,11 +20,15 @@ Mathlib's cache and before the project's, does four things:
    unpacks exactly the oleans needed, without compiling.
 
 It only reads from Tau Ceti's cache; it never uploads. It verifies nothing about proofs.
+
+With `--sparse-checkout` it does none of that: it checks out Tau Ceti itself, before Lake does.
+See `sparse_checkout`.
 """
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 
@@ -80,6 +84,23 @@ def tauceti_imports(path):
     return imports
 
 
+def check_out_files(repo, files):
+    """Check out these files of Tau Ceti, which `sparse_checkout` left out. One request fetches
+    them all; left to itself, `git checkout` asks for them one by one."""
+    git = ["git", "-C", str(repo)]
+    listed = subprocess.run([*git, "ls-files", "-s", *files], capture_output=True, text=True).stdout
+    entries = [line.split() for line in listed.splitlines()]  # mode, object id, stage, path
+    if not entries:
+        return
+    # No negotiation, as when Git fetches a missing file itself: the server would take the files
+    # to be here already, because the commit they belong to is.
+    subprocess.run([*git, "-c", "fetch.negotiationAlgorithm=noop", "fetch", "-q", "--no-tags",
+                    "--no-write-fetch-head", "--stdin", "origin"],
+                   input="".join(f"{entry[1]}\n" for entry in entries), text=True, check=True)
+    subprocess.run([*git, "checkout", "-q", "--ignore-skip-worktree-bits", "--",
+                    *(entry[3] for entry in entries)], check=True)
+
+
 def imported_modules():
     """The Tau Ceti modules imported under `src`, closed under Tau Ceti's own imports (public,
     private and `meta` alike)."""
@@ -90,16 +111,48 @@ def imported_modules():
     source = ROOT / ".lake" / "packages" / "TauCeti"
     modules = set()
     while pending:
-        module = pending.pop()
-        if module in modules:
-            continue
-        modules.add(module)
-        path = source.joinpath(*module.split(".")).with_suffix(".lean")
-        if not path.is_file():
-            raise ValueError(f"{module} is imported but {path} is missing")
-        pending |= tauceti_imports(path) - modules
+        modules |= pending
+        paths = {module: source.joinpath(*module.split(".")).with_suffix(".lean")
+                 for module in pending}
+        missing = [module.replace(".", "/") + ".lean"
+                   for module, path in paths.items() if not path.is_file()]
+        if missing:
+            check_out_files(source, missing)
+        pending = set()
+        for module, path in paths.items():
+            if not path.is_file():
+                raise ValueError(f"{module} is imported but {path} is missing")
+            pending |= tauceti_imports(path) - modules
     say(f"{direct} Tau Ceti module(s) imported under src, {len(modules)} with their imports")
     return sorted(modules)
+
+
+def sparse_checkout():
+    """Check out the pinned revision of Tau Ceti in a fresh clone, before the first `lake`
+    command would. Lake checks out every file, about 45,000; this checks out the files outside
+    the folder `TauCeti/` and the modules that `src` needs, under 2,000. Lake leaves a package at
+    the pinned revision as it is. If this fails, it leaves nothing and Lake checks out all of it."""
+    repo = ROOT / ".lake" / "packages" / "TauCeti"
+    if repo.exists():
+        say(f"{repo} exists; leaving it as it is")
+        return 0
+    tauceti = package(json.loads((ROOT / "lake-manifest.json").read_text()), "TauCeti")
+    try:
+        subprocess.run(["git", "init", "-q", str(repo)], check=True)
+        (repo / ".git" / "info").mkdir(exist_ok=True)
+        (repo / ".git" / "info" / "sparse-checkout").write_text("/*\n!/TauCeti/\n")
+        url, rev = tauceti["url"], tauceti["rev"]
+        for command in (["config", "core.sparseCheckout", "true"],
+                        ["remote", "add", "origin", url],
+                        # The commit and its directory listings, without any file's contents.
+                        ["fetch", "-q", "--depth=1", "--filter=blob:none", "origin", rev],
+                        ["checkout", "-q", "--detach", rev]):
+            subprocess.run(["git", "-C", str(repo), *command], check=True)
+        imported_modules()
+    except BaseException:
+        shutil.rmtree(repo, ignore_errors=True)
+        raise
+    return 0
 
 
 def run_lake(args, env):
@@ -107,6 +160,8 @@ def run_lake(args, env):
 
 
 def main():
+    if sys.argv[1:] == ["--sparse-checkout"]:
+        return sparse_checkout()
     check_trusted_files()
     check_mathlib_pin()
     env = os.environ.copy()
@@ -137,5 +192,5 @@ def main():
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except (ValueError, OSError, KeyError) as error:
+    except (ValueError, OSError, KeyError, subprocess.CalledProcessError) as error:
         sys.exit(f"[Tau Ceti cache] stopped: {error}")
