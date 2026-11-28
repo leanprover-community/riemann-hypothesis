@@ -2,6 +2,7 @@ module
 
 public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 import Mathlib.CategoryTheory.Sites.LocalSite
+import TauCeti.Algebra.Homology.Ext.Basic
 public import Lib.Cohomology.Etale.EllAdicCohomology
 public import Lib.Cohomology.Etale.RelativeChains
 public import Lib.Cohomology.ProperBaseChange.PlaceSpace
@@ -125,12 +126,13 @@ private lemma TestCohomology.prod_map_homOfLe_eq_comp (hUW : U ≤ W) (hVW : V �
 functors `ℤ[−]` restricted to test rings (`testIncl`), with coefficients `locConstCoeff Λ`
 (A ↦ locally constant functions Spec A → Λ). Assume `U ⊔ V` is dense in `W` for these coefficients
 (`IsCohomDense`: for every point h_A → W on test rings, the inclusion of the preimage of `U ⊔ V`
-into h_A induces bijections on all `Ext^n(−, locConstCoeff Λ)`). If in each degree `m < n` every
-class on `U ⊓ V` is a difference of restrictions of classes on `U` and on `V`, then the restriction
-`Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` is injective. -/
+into h_A induces bijections on all `Ext^n(−, locConstCoeff Λ)`). The restriction
+`Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` is injective in degree zero. In degree `n = m + 1`, it is injective if
+every degree-`m` class on `U ⊓ V` is a difference of restrictions from `U` and `V`. -/
 lemma TestCohomology.mayer_vietoris_injective_of_sub_surjective (hUW : U ≤ W) (hVW : V ≤ W)
     (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl)) (n : ℕ)
-    (h_surj : ∀ m < n, ∀ z : H (freeAb.obj (testIncl ⋙ (U ⊓ V).toFunctor)) (locConstCoeff Λ) m,
+    (h_surj : ∀ m, m + 1 = n →
+      ∀ z : H (freeAb.obj (testIncl ⋙ (U ⊓ V).toFunctor)) (locConstCoeff Λ) m,
       ∃ (x : H (freeAb.obj (testIncl ⋙ U.toFunctor)) (locConstCoeff Λ) m)
         (y : H (freeAb.obj (testIncl ⋙ V.toFunctor)) (locConstCoeff Λ) m),
         map Λ (homOfLe inf_le_left) m x - map Λ (homOfLe inf_le_right) m y = z) :
@@ -141,9 +143,9 @@ lemma TestCohomology.mayer_vietoris_injective_of_sub_surjective (hUW : U ≤ W) 
     sup_le (fun A ↦ hUW (testIncl.obj A)) fun A ↦ hVW (testIncl.obj A)
   obtain ⟨w, h_exact⟩ :=
     mayer_vietoris_shortExact (U := U.whisker testIncl) (V := V.whisker testIncl)
-  -- `Hⁿ(U ⊔ V) → Hⁿ(U) × Hⁿ(V)` is injective, as the next map is onto in lower degrees
+  -- Surjectivity in the preceding degree makes the connecting map into degree `n` vanish.
   have h_inj : Injective ((contravariant h_exact (locConstCoeff Λ)).f n) := by
-    refine (contravariant h_exact _).f_injective_of_g_surjective fun m hm z ↦ ?_
+    refine h_exact.precomp_mk₀_g_injective (locConstCoeff Λ) fun m hm z ↦ ?_
     obtain ⟨x, y, hxy⟩ := h_surj m hm z
     exact ⟨biprodAddEquiv.symm (x, y), (map_biprod_lift_neg_biprodAddEquiv_symm ..).trans hxy⟩
   rw [prod_map_homOfLe_eq_comp hUW hVW h_le]
@@ -172,14 +174,12 @@ lemma TestCohomology.mayer_vietoris_bijective (hUW : U ≤ W) (hVW : V ≤ W)
     (isCohomEquiv_sup_of_isCohomDense h_dense h_le n))
 
 /-- Mayer–Vietoris for `U, V ≤ W` with `U ⊔ V` dense in `W`, on test rings with coefficients `Λ`,
-with `U ⊓ V` given as `T` and `hT`: `Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` is injective if in each degree `m < n`
-every class on `T` is a difference of restrictions from `U` and `V`, and bijective if `T` has
-points only over the zero ring. The two halves are `mayer_vietoris_injective_of_sub_surjective`
-and `mayer_vietoris_bijective`. -/
+with `T = U ⊓ V`. Restriction is injective in degree zero. For `n = m + 1`, it is injective
+if every degree-`m` class on `T` is a difference of restrictions from `U` and `V`. -/
 lemma TestCohomology.mayer_vietoris_injective (hUW : U ≤ W) (hVW : V ≤ W)
     (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl)) (n : ℕ)
     {T : Subfunctor Y} (hT : T = U ⊓ V) :
-    (∀ m < n, ∀ z : H (freeAb.obj (testIncl ⋙ T.toFunctor)) (locConstCoeff Λ) m,
+    (∀ m, m + 1 = n → ∀ z : H (freeAb.obj (testIncl ⋙ T.toFunctor)) (locConstCoeff Λ) m,
         ∃ (x : H (freeAb.obj (testIncl ⋙ U.toFunctor)) (locConstCoeff Λ) m)
           (y : H (freeAb.obj (testIncl ⋙ V.toFunctor)) (locConstCoeff Λ) m),
           map Λ (homOfLe (hT.le.trans inf_le_left)) m x -

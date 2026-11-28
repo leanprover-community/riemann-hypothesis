@@ -361,9 +361,9 @@ ring `B` that splits into `B₁` and `B₂` (`IsSplitting`: both strictly contai
 valuation ring containing `B` contains one of them), which generate `B₃`, such that the locally
 constant functions on the spectra modulo `J` form an exact Mayer–Vietoris sequence. Let `v` be value
 maps as in `ResiduePlace.antitoneFamily_map_locConstClass_eq_of_baseRingMap_eq`, and suppose that
-over `B₃` the comparison map `locConstClass` is injective in degree `0` and surjective in every
-degree below `n`. Then a class `y` of degree `n` (coefficients `Λ`) over `B` whose restrictions to
-`B₁` and `B₂` come from locally constant functions comes from a locally constant function itself. -/
+over `B₃` the comparison map `locConstClass` is injective in degree `0` and surjective in degree
+`m` whenever `n = m + 1`. Then a class `y` of degree `n` (coefficients `Λ`) over `B` whose restrictions
+to `B₁` and `B₂` come from locally constant functions comes from a locally constant function itself. -/
 private lemma New.Variety.ResiduePlace.exists_locConstClass_eq_of_isSplitting
     {v : ∀ B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
       (baseRingMap s ξ).hom),
@@ -382,7 +382,7 @@ private lemma New.Variety.ResiduePlace.exists_locConstClass_eq_of_isSplitting
     (h_exact : IsMayerVietorisExact (quotientFunctor J _ ⋙ locConstSpec Λ)
       h_split.lt_left.le h_split.lt_right.le h_split.left_le h_split.right_le)
     (n : ℕ) (h_inj₃ : Function.Injective (locConstClass (Λ := Λ) (mapOnTests (v B₃)) 0))
-    (h_surj₃ : ∀ m < n, Function.Surjective (locConstClass (Λ := Λ) (mapOnTests (v B₃)) m))
+    (h_surj₃ : ∀ m, m + 1 = n → Function.Surjective (locConstClass (Λ := Λ) (mapOnTests (v B₃)) m))
     (y : (TestCohomology.antitoneFamily h_anti Λ n).obj B)
     (h_above₁ : ∃ f₁ : (quotientFunctor J _ ⋙ locConstSpec Λ).obj B₁,
       locConstClass (mapOnTests (v B₁)) n f₁ =
@@ -433,7 +433,7 @@ private lemma New.Variety.ResiduePlace.exists_locConstClass_eq_of_isSplitting
     (T := placesFiniteOn z J B₃.val) ?_ ?_ (Prod.ext h_res₁ h_res₂)⟩
   · exact isCohomDense_placesFiniteOn_sup_of_isSplitting h_split
   · exact placesFiniteOn_eq_inf_of_isSplitting h_split
-  · -- In lower degrees a class over `B₃` comes from a function, which is a difference.
+  · -- In the preceding degree a class over `B₃` comes from a function, which is a difference.
     refine fun m hm ↦ (h_surj₃ m hm).forall.mpr fun g ↦ ?_
     obtain ⟨g₁, g₂, hg⟩ : ∃ (g₁ : LC.obj B₁) (g₂ : LC.obj B₂),
         g = LC.map h₁.hom g₁ - LC.map h₂.hom g₂ := h_exact.exists_eq_sub g
@@ -527,7 +527,7 @@ lemma New.Variety.ResiduePlace.exists_isAcyclicOver_placesFiniteOn {ℓ : ℕ} [
     exact h_surj_B n y
   · obtain ⟨B₁, B₂, B₃, h_split, h_exact⟩ := exists_isSplitting_isMayerVietorisExact J γ hℓ B hB
     exact exists_locConstClass_eq_of_isSplitting hv h_anti h_split h_exact n (h_inj B₃)
-      (fun m hm ↦ ih m hm B₃) y (h_above B₁ h_split.lt_left) (h_above B₂ h_split.lt_right)
+      (fun m hm ↦ ih m (by omega) B₃) y (h_above B₁ h_split.lt_left) (h_above B₂ h_split.lt_right)
 
 /-- Proper base change for the places `killingPlaces z q` that vanish on a maximal ideal `q` of `P`.
 Let `A` be an absolutely integrally closed local domain in which of any two elements one divides the
