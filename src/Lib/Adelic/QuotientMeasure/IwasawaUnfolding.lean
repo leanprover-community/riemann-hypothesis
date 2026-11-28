@@ -3,6 +3,7 @@ module
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Topology.Algebra.ProperAction.Torsor
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.MeasureTheory.Group.OrbitCutoff.OrbitSum
 public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
@@ -50,46 +51,6 @@ section OrbitUnfolding
 
 open MeasureTheory Measure MulAction ProbabilityTheory ENNReal Set
 
-open scoped Classical in
-/-- Let `i` be injective, and let `γ` carry a point of `C` into `C` exactly when `i γ` lies in the
-subgroup `S` of the range of `i`. If `β` has sum `1` over each `S`-orbit in `G`, then the sum of
-`β (i γ * x)` over the `γ` that carry `y` into `C` is `1`, provided that there is such a `γ`. -/
-lemma New.tsum_cutoff_smul_mem_eq_one {Λ G Y : Type*} [Group Λ] [Group G] [MulAction Λ Y]
-    {i : Λ →* G} (hi : Function.Injective i) {S : Subgroup G} (hS : S ≤ i.range) {C : Set Y}
-    (hC : ∀ γ : Λ, ∀ y ∈ C, γ • y ∈ C ↔ i γ ∈ S) {β : G → ℝ≥0∞}
-    (hβ_one : ∀ x : G, ∑' s : S, β (s * x) = 1) {y : Y} {γ₀ : Λ} (hγ₀ : γ₀ • y ∈ C) (x : G) :
-    ∑' γ : Λ, (if γ • y ∈ C then β (i γ * x) else 0) = 1 := by
-  -- The point `(γ * γ₀) • y` lies in `C` exactly when `i γ ∈ S`.
-  let b : G → ℝ≥0∞ := (S : Set G).indicator fun g ↦ β (g * (i γ₀ * x))
-  calc ∑' γ : Λ, (if γ • y ∈ C then β (i γ * x) else 0)
-    _ = ∑' γ : Λ, (if (γ * γ₀) • y ∈ C then β (i (γ * γ₀) * x) else 0) :=
-        ((Equiv.mulRight γ₀).tsum_eq _).symm
-    _ = ∑' γ : Λ, b (i γ) := by simp [b, indicator, mul_smul, mul_assoc, hC _ _ hγ₀]
-    _ = ∑' g : G, b g := hi.tsum_eq fun g hg ↦ hS (support_indicator_subset hg)
-    _ = ∑' s : S, β (s * (i γ₀ * x)) := (tsum_subtype (S : Set G) _).symm
-    _ = 1 := hβ_one (i γ₀ * x)
-
-/-- If the `k y` are measurable and `∑ ‖k y‖` has finite integral for `ν`, then `(x, y) ↦ k y x` is
-integrable for the product of `ν` with the counting measure. -/
-lemma New.integrable_prod_count_of_lintegral_lt_top {X Y : Type*} [MeasurableSpace X]
-    [MeasurableSpace Y] [MeasurableSingletonClass Y] [Countable Y] {ν : Measure X} {k : Y → X → ℂ}
-    (hk_meas : ∀ y : Y, Measurable (k y)) (h_fin : ∫⁻ x : X, ∑' y : Y, ‖k y x‖ₑ ∂ν < ∞) :
-    Integrable (fun p : X × Y ↦ k p.2 p.1) (ν.prod count) := by
-  have h_meas : Measurable fun p : X × Y ↦ k p.2 p.1 := measurable_from_prod_countable_left hk_meas
-  refine ⟨h_meas.aestronglyMeasurable, ?_⟩
-  rw [HasFiniteIntegral, lintegral_prod _ h_meas.eNorm.aemeasurable]
-  simpa only [lintegral_count] using h_fin
-
-/-- If the `k y` are measurable and `∑ ‖k y‖` has finite integral, then `∑ k y` is integrable. -/
-lemma New.integrable_tsum_of_lintegral_lt_top {X Y : Type*} [MeasurableSpace X] [Countable Y]
-    {ν : Measure X} {k : Y → X → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
-    (h_fin : ∫⁻ x : X, ∑' y : Y, ‖k y x‖ₑ ∂ν < ∞) :
-    Integrable (fun x : X ↦ ∑' y : Y, k y x) ν := by
-  let : MeasurableSpace Y := ⊤
-  have h_prod : Integrable (fun p : X × Y ↦ k p.2 p.1) (ν.prod count) :=
-    integrable_prod_count_of_lintegral_lt_top hk_meas h_fin
-  simpa only [integral_count_eq_tsum] using h_prod.integral_prod_left
-
 variable {Λ G Y : Type*} [Group Λ] [Group G] [TopologicalSpace G] [MeasurableSpace G]
   [MulAction Λ Y] [Countable Y] {i : Λ →* G}
 
@@ -106,25 +67,80 @@ lemma New.hasSum_integral_of_lintegral_tsum_lt_top {k : Y → G → ℂ} {ν : M
     tsum_le_tsum fun y ↦ eNorm_integral_le_lintegral_eNorm (k y)
   exact (Summable.of_eNorm (h_le.trans_lt h_fin).ne).hasSum
 
-open scoped Classical in
-omit [MeasurableSpace G] [Countable Y] in
-/-- Let `i` map `Λ` isomorphically onto `Γ`, let `γ` carry a point of `C` into `C` exactly when
-`i γ` lies in the subgroup `S` of `Γ`, and let `D` be the union of the translates of `C`. If `β` has
-sum `1` over each `S`-orbit in `G`, then the sum of `β (i γ * x)` over the `γ` that carry `y` into
-`C` is `1` if `y ∈ D` and `0` otherwise. -/
-lemma New.tsum_cutoff_smul_mem_block (hi : Function.Injective i) {Γ S : Subgroup G}
-    [DiscreteTopology Γ] (hΓ : i.range = Γ) {C D : Set Y} (hS : S ≤ Γ)
-    (hC : ∀ γ : Λ, ∀ y ∈ C, γ • y ∈ C ↔ i γ ∈ S) (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Λ, γ • y ∈ C)
-    {β : G → ℝ≥0∞} (hβ_one : ∀ x : G, ∑' s : S, β (s * x) = 1) (y : Y) (x : G) :
-    ∑' γ : Λ, (if γ • y ∈ C then β (i γ * x) else 0) = if y ∈ D then 1 else 0 := by
-  subst hΓ
-  split_ifs with hy
-  · obtain ⟨γ₀, hγ₀⟩ := (hD y).1 hy
-    exact tsum_cutoff_smul_mem_eq_one hi hS hC hβ_one hγ₀ x
-  · simp [not_exists.1 (mt (hD y).2 hy)]
+/-- Transport the action, the description of the block and the equivariance of the summands
+along the isomorphism from `Λ` to its image. -/
+private lemma New.exists_range_action_on_block {G Λ Y V : Type*} [Group G] [Group Λ]
+    [MulAction Λ Y] {i : Λ →* G} (hi : Function.Injective i) {S : Subgroup G} {C D : Set Y}
+    (hC : ∀ γ : Λ, ∀ y ∈ C, γ • y ∈ C ↔ i γ ∈ S)
+    (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Λ, γ • y ∈ C) {k : Y → G → V}
+    (hk : ∀ (γ : Λ) (y : Y) (x : G), k (γ • y) (i γ * x) = k y x) :
+    ∃ action : MulAction i.range Y, letI := action
+      (∀ γ : i.range, ∀ y ∈ C, γ • y ∈ C ↔ (γ : G) ∈ S) ∧
+      (∀ y : Y, y ∈ D ↔ ∃ γ : i.range, γ • y ∈ C) ∧
+      (∀ (γ : i.range) (y : Y) (x : G), k (γ • y) ((γ : G) * x) = k y x) := by
+  let e := MonoidHom.ofInjective hi
+  refine ⟨MulAction.compHom Y e.symm.toMonoidHom, ?_, ?_, ?_⟩
+  · intro γ y hy
+    change e.symm γ • y ∈ C ↔ (γ : G) ∈ S
+    simpa only [e, MonoidHom.apply_ofInjective_symm] using hC (e.symm γ) y hy
+  · intro y
+    rw [hD]
+    exact ⟨fun ⟨γ, hγ⟩ ↦ ⟨e γ, (show e.symm (e γ) • y ∈ C by simpa using hγ)⟩,
+      fun ⟨γ, hγ⟩ ↦ ⟨e.symm γ, hγ⟩⟩
+  · intro γ y x
+    change k (e.symm γ • y) ((γ : G) * x) = k y x
+    simpa only [e, MonoidHom.apply_ofInjective_symm] using hk (e.symm γ) y x
 
 variable [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
   [BorelSpace G]
+
+omit [Countable Y] in
+/-- The sum over a stable subset has the same distribution for either choice of cutoff. -/
+private lemma New.identDistrib_tsum_cutoff {Γ S : Subgroup G} [DiscreteTopology S]
+    [MulAction Γ Y] {μ : Measure G} [IsHaarMeasure μ] {T : Set Y} {E : Type*}
+    [AddCommMonoid E] [TopologicalSpace E] [T2Space E] [MeasurableSpace E]
+    (hS : S ≤ Γ) (hT : ∀ (s : S) (y : Y), (Subgroup.inclusion hS s) • y ∈ T ↔ y ∈ T)
+    {k : Y → G → E} (hm : Measurable fun x ↦ ∑' y : T, k y x)
+    (hk : ∀ (γ : Γ) (y : Y) (x : G), k (γ • y) ((γ : G) * x) = k y x) :
+    IdentDistrib (fun x ↦ ∑' y : T, k y x) (fun x ↦ ∑' y : T, k y x)
+      (S.cutoffMeasure μ) (S.quotMeasure μ) := by
+  classical
+  have : Countable S := countable_of_Lindelof_of_discrete
+  have hβ := isCutoff_chosenCutoff (count : Measure S) (X := G)
+  refine IsOrbitCutoff.identDistrib_cutoffMeasure ⟨hβ.1, hβ.2⟩ hm fun s x ↦ ?_
+  let γ := Subgroup.inclusion hS s
+  change ∑' y : T, k y ((γ : G) * x) = ∑' y : T, k y x
+  rw [tsum_subtype T fun y ↦ k y ((γ : G) * x), ← (MulAction.toPerm γ).tsum_eq,
+    tsum_subtype T fun y ↦ k y x]
+  refine tsum_congr fun y ↦ ?_
+  have h_mem : γ • y ∈ T ↔ y ∈ T := hT s y
+  simp only [toPerm_apply, indicator, h_mem, hk γ y x]
+
+omit [Countable Y] in
+/-- The block sum is invariant under its stabilizer, and the sum over all its translates is
+invariant under the entire group. Both sums therefore have the same law for either cutoff. -/
+private lemma New.identDistrib_tsum_block {Γ S : Subgroup G} [DiscreteTopology Γ]
+    [MulAction Γ Y] {μ : Measure G} [IsHaarMeasure μ] {C D : Set Y}
+    (hS : S ≤ Γ) (hC : ∀ γ : Γ, ∀ y ∈ C, γ • y ∈ C ↔ (γ : G) ∈ S)
+    (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Γ, γ • y ∈ C) {E : Type*} [AddCommMonoid E]
+    [TopologicalSpace E] [T2Space E] [MeasurableSpace E] {k : Y → G → E}
+    (hm : ∀ T : Set Y, Measurable fun x ↦ ∑' y : T, k y x)
+    (hk : ∀ (γ : Γ) (y : Y) (x : G), k (γ • y) ((γ : G) * x) = k y x) :
+    IdentDistrib (fun x ↦ ∑' y : D, k y x) (fun x ↦ ∑' y : D, k y x)
+      (Γ.cutoffMeasure μ) (Γ.quotMeasure μ) ∧
+    IdentDistrib (fun x ↦ ∑' y : C, k y x) (fun x ↦ ∑' y : C, k y x)
+      (S.cutoffMeasure μ) (S.quotMeasure μ) := by
+  have : DiscreteTopology S := .of_subset (s := (Γ : Set G)) inferInstance hS
+  constructor
+  · refine identDistrib_tsum_cutoff (le_refl Γ) (fun γ y ↦ ?_) (hm D) hk
+    change γ • y ∈ D ↔ y ∈ D
+    rw [hD, hD]
+    exact ⟨fun ⟨δ, h⟩ ↦ ⟨δ * γ, by simpa [mul_smul] using h⟩,
+      fun ⟨δ, h⟩ ↦ ⟨δ * γ⁻¹, by simpa [mul_smul] using h⟩⟩
+  · refine identDistrib_tsum_cutoff hS (fun s y ↦ ?_) (hm C) hk
+    let γ := Subgroup.inclusion hS s
+    refine ⟨fun hy ↦ ?_, fun hy ↦ (hC γ y hy).2 s.property⟩
+    simpa [γ] using (hC γ⁻¹ _ hy).2 (S.inv_mem s.property)
 
 /-- Unfolding of a sum of nonnegative terms over the translates of a block. Let `i` map `Λ`
 isomorphically onto the discrete subgroup `Γ`, let `γ` carry a point of `C` into `C` exactly when
@@ -138,101 +154,13 @@ lemma New.lintegral_tsum_block (hi : Function.Injective i) {Γ S : Subgroup G}
     {g : Y → G → ℝ≥0∞} (hg_meas : ∀ y : Y, Measurable (g y))
     (hg_inv : ∀ (γ : Λ) (y : Y) (x : G), g (γ • y) (i γ * x) = g y x) :
     ∫⁻ x : G, ∑' y : D, g y x ∂Γ.quotMeasure μ = ∫⁻ x : G, ∑' y : C, g y x ∂S.quotMeasure μ := by
-  classical
-  -- With `β` the cutoff of `S`, unfold the integral of `β x * ∑_C g y x` over `G` along `Γ` and
-  -- substitute `y ↦ γ • y` in the term of `i γ`.
-  have : DiscreteTopology S := .of_subset (s := Γ) inferInstance hS
-  let β : G → ℝ≥0∞ := chosenCutoff (count : Measure S)
-  obtain ⟨hβ_meas, hβ_int⟩ : IsCutoff (count : Measure S) β := isCutoff_chosenCutoff count
-  have hβ_one (x : G) : ∑' s : S, β (s * x) = 1 := by
-    simpa [lintegral_count, Subgroup.smul_def] using hβ_int x
-  have h_term (γ : Λ) (x : G) : β (i γ * x) * ∑' y : C, g y (i γ * x) =
-      ∑' y : Y, (if γ • y ∈ C then β (i γ * x) else 0) * g y x := by
-    rw [tsum_subtype C fun y ↦ g y (i γ * x), ← (MulAction.toPerm γ).tsum_eq,
-      ← ENNReal.tsum_mul_left]
-    simp [indicator, hg_inv]
-  have h_sum (x : G) : ∑' δ : Γ, β (δ * x) * ∑' y : C, g y (δ * x) = ∑' y : D, g y x := by
-    subst hΓ
-    calc ∑' δ : i.range, β (δ * x) * ∑' y : C, g y (δ * x)
-      _ = ∑' γ : Λ, β (i γ * x) * ∑' y : C, g y (i γ * x) := ((i.ofInjective hi).tsum_eq _).symm
-      _ = ∑' y : Y, (∑' γ : Λ, if γ • y ∈ C then β (i γ * x) else 0) * g y x := by
-          simp only [h_term, ← ENNReal.tsum_mul_right]
-          exact tsum_comm
-      _ = ∑' y : D, g y x := by
-          simp [tsum_cutoff_smul_mem_block hi rfl hS hC hD hβ_one, tsum_subtype D fun y ↦ g y x,
-            indicator]
-  have hS_meas : S.quotMeasure μ = μ.withDensity β := rfl
-  calc ∫⁻ x, ∑' y : D, g y x ∂Γ.quotMeasure μ
-    _ = ∫⁻ x, ∫⁻ δ : Γ, β (δ • x) * ∑' y : C, g y (δ • x) ∂count ∂Γ.quotMeasure μ := by
-        simp only [lintegral_count, ← h_sum, Subgroup.smul_def, smul_eq_mul]
-    _ = ∫⁻ x, β x * ∑' y : C, g y x ∂μ :=
-        lintegral_orbitMeasure_lintegral (f := fun x ↦ β x * ∑' y : C, g y x) (by fun_prop)
-    _ = ∫⁻ x, ∑' y : C, g y x ∂S.quotMeasure μ := by
-        simp (disch := fun_prop) [hS_meas, lintegral_withDensity_eq_lintegral_mul]
-
-/-- Let `i` map `Λ` isomorphically onto the discrete subgroup `Γ`, let `γ` carry a point of `C` into
-`C` exactly when `i γ` lies in `S ≤ Γ`, and let `D` be the union of the translates of `C`. For
-measurable `k y` with `k (γ • y) (i γ * x) = k y x`, the integral of `∑_D ‖k y‖` over `Γ \ G` is
-the integral of `∑_C ‖k y‖` over `S \ G`. -/
-lemma New.lintegral_tsum_enorm_block (hi : Function.Injective i) {Γ S : Subgroup G}
-    [DiscreteTopology Γ] (hΓ : i.range = Γ) {μ : Measure G} [IsHaarMeasure μ] {C D : Set Y}
-    (hS : S ≤ Γ) (hC : ∀ γ : Λ, ∀ y ∈ C, γ • y ∈ C ↔ i γ ∈ S)
-    (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Λ, γ • y ∈ C) {k : Y → G → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
-    (hk : ∀ (γ : Λ) (y : Y) (x : G), k (γ • y) (i γ * x) = k y x) :
-    ∫⁻ x : G, ∑' y : D, ‖k y x‖ₑ ∂Γ.quotMeasure μ = ∫⁻ x : G, ∑' y : C, ‖k y x‖ₑ ∂S.quotMeasure μ :=
-  lintegral_tsum_block hi hΓ hS hC hD (g := fun y x ↦ ‖k y x‖ₑ) (fun y ↦ (hk_meas y).eNorm)
-    fun γ y x ↦ congrArg eNorm (hk γ y x)
-
-/-- Unfolding of the integral of a sum over the translates of a block. Let `i` map `Λ`
-isomorphically onto the discrete subgroup `Γ`, let `γ` carry a point of `C` into `C` exactly when
-`i γ` lies in `S ≤ Γ`, and let `D` be the union of the translates of `C`. Let the `k y` be
-measurable with `k (γ • y) (i γ * x) = k y x`. If `∑_C ‖k y‖` has finite integral over `S \ G`,
-then the integral of `∑_D k y` over `Γ \ G` is the integral of `∑_C k y` over `S \ G`. -/
-lemma New.integral_tsum_eq_integral_tsum_block (hi : Function.Injective i) {Γ S : Subgroup G}
-    [DiscreteTopology Γ] (hΓ : i.range = Γ) {μ : Measure G} [IsHaarMeasure μ] {C D : Set Y}
-    (hS : S ≤ Γ) (hC : ∀ γ : Λ, ∀ y ∈ C, γ • y ∈ C ↔ i γ ∈ S)
-    (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Λ, γ • y ∈ C) {k : Y → G → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
-    (hk : ∀ (γ : Λ) (y : Y) (x : G), k (γ • y) (i γ * x) = k y x)
-    (h_fin : ∫⁻ x : G, ∑' y : C, ‖k y x‖ₑ ∂S.quotMeasure μ < ∞) :
-    ∫ x : G, ∑' y : D, k y x ∂Γ.quotMeasure μ = ∫ x : G, ∑' y : C, k y x ∂S.quotMeasure μ := by
-  -- The functions `(x, y) ↦ k y x` on `(Γ \ G) × D` and on `(S \ G) × C` have the same
-  -- distribution; the claim follows by Fubini.
-  let : MeasurableSpace Y := ⊤
-  have h_meas : Measurable fun p : Y × G ↦ k p.1 p.2 := measurable_from_prod_countable_right hk_meas
-  have h_unfold (f : ℂ → ℝ≥0∞) (hf : Measurable f) :
-      ∫⁻ x, ∑' y : D, f (k y x) ∂Γ.quotMeasure μ = ∫⁻ x, ∑' y : C, f (k y x) ∂S.quotMeasure μ :=
-    lintegral_tsum_block hi hΓ hS hC hD (g := fun y x ↦ f (k y x)) (by fun_prop) (by simp [hk])
-  have h_dist : IdentDistrib (fun p : G × D ↦ k p.2 p.1) (fun p : G × C ↦ k p.2 p.1)
-      ((Γ.quotMeasure μ).prod count) ((S.quotMeasure μ).prod count) := by
-    refine ⟨by fun_prop, by fun_prop, ext_of_lintegral _ fun f hf ↦ ?_⟩
-    simpa (disch := fun_prop) only [lintegral_map, lintegral_prod, lintegral_count]
-      using h_unfold f hf
-  have hC_int : Integrable (fun p : G × C ↦ k p.2 p.1) ((S.quotMeasure μ).prod count) :=
-    integrable_prod_count_of_lintegral_lt_top (fun y : C ↦ hk_meas y) h_fin
-  have hD_int := h_dist.integrable_iff.2 hC_int
-  calc ∫ x, ∑' y : D, k y x ∂Γ.quotMeasure μ
-    _ = ∫ p : G × D, k p.2 p.1 ∂(Γ.quotMeasure μ).prod count := by
-        simp only [integral_prod _ hD_int, integral_count_eq_tsum]
-    _ = ∫ p : G × C, k p.2 p.1 ∂(S.quotMeasure μ).prod count := h_dist.integral_eq
-    _ = ∫ x, ∑' y : C, k y x ∂S.quotMeasure μ := by
-        simp only [integral_prod _ hC_int, integral_count_eq_tsum]
-
-/-- Unfolding of a sum of integrals over the translates of a block. Let `i` map `Λ` isomorphically
-onto the discrete subgroup `Γ`, let `γ` carry a point of `C` into `C` exactly when `i γ` lies in
-`S ≤ Γ`, and let `D` be the union of the translates of `C`. Let the `k y` be measurable with
-`k (γ • y) (i γ * x) = k y x`. If `∑_C ‖k y‖` has finite integral over `S \ G`, then the sum over
-`D` of the integrals of `k y` against the measure of `Γ \ G` is the integral of `∑_C k y` over
-`S \ G`. -/
-lemma New.tsum_integral_eq_integral_tsum_block (hi : Function.Injective i) {Γ S : Subgroup G}
-    [DiscreteTopology Γ] (hΓ : i.range = Γ) {μ : Measure G} [IsHaarMeasure μ] {C D : Set Y}
-    (hS : S ≤ Γ) (hC : ∀ γ : Λ, ∀ y ∈ C, γ • y ∈ C ↔ i γ ∈ S)
-    (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Λ, γ • y ∈ C) {k : Y → G → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
-    (hk : ∀ (γ : Λ) (y : Y) (x : G), k (γ • y) (i γ * x) = k y x)
-    (h_fin : ∫⁻ x : G, ∑' y : C, ‖k y x‖ₑ ∂S.quotMeasure μ < ∞) :
-    ∑' y : D, ∫ x : G, k y x ∂Γ.quotMeasure μ = ∫ x : G, ∑' y : C, k y x ∂S.quotMeasure μ := by
-  rw [← integral_tsum_eq_integral_tsum_block hi hΓ hS hC hD hk_meas hk h_fin]
-  rw [← lintegral_tsum_enorm_block hi hΓ hS hC hD hk_meas hk] at h_fin
-  exact (hasSum_integral_of_lintegral_tsum_lt_top h_fin).tsum_eq
+  subst Γ
+  obtain ⟨action, hC, hD, hg⟩ := exists_range_action_on_block hi hC hD hg_inv
+  let := action
+  obtain ⟨h_left, h_right⟩ := identDistrib_tsum_block (μ := μ) (k := g) hS hC hD
+    (fun T ↦ Measurable.tsum fun y : T ↦ hg_meas y) hg
+  exact h_left.lintegral_eq.symm.trans ((Subgroup.lintegral_tsum_block hS hC hD hg_meas hg).trans
+    h_right.lintegral_eq)
 
 /-- Unfolding of a sum over the translates of a block. The group `Λ` acts on `Y` and `i` maps it
 isomorphically onto the discrete subgroup `Γ` of `G`; the terms are measurable and satisfy
@@ -252,11 +180,50 @@ lemma New.integral_tsum_block (hi : Function.Injective i) {Γ S : Subgroup G}
     Integrable (fun x : G ↦ ∑' y : C, k y x) (S.quotMeasure μ) ∧
     ∫ x : G, ∑' y : D, k y x ∂Γ.quotMeasure μ = ∫ x : G, ∑' y : C, k y x ∂S.quotMeasure μ ∧
     ∑' y : D, ∫ x : G, k y x ∂Γ.quotMeasure μ = ∫ x : G, ∑' y : C, k y x ∂S.quotMeasure μ := by
-  -- The two finiteness hypotheses are equivalent.
-  rw [lintegral_tsum_enorm_block hi hΓ hS hC hD hk_meas hk, or_self] at h_fin
-  exact ⟨integrable_tsum_of_lintegral_lt_top (fun y : C ↦ hk_meas y) h_fin,
-    integral_tsum_eq_integral_tsum_block hi hΓ hS hC hD hk_meas hk h_fin,
-    tsum_integral_eq_integral_tsum_block hi hΓ hS hC hD hk_meas hk h_fin⟩
+  subst Γ
+  obtain ⟨action, hC, hD, hk⟩ := exists_range_action_on_block hi hC hD hk
+  let := action
+  obtain ⟨hD_norm, hC_norm⟩ := identDistrib_tsum_block (μ := μ) (k := fun y x ↦ ‖k y x‖ₑ)
+    hS hC hD (fun T ↦ Measurable.tsum fun y : T ↦ (hk_meas y).eNorm)
+    (fun γ y x ↦ congrArg eNorm (hk γ y x))
+  obtain ⟨h_left, h_right⟩ := identDistrib_tsum_block (μ := μ) (k := k) hS hC hD
+    (fun T ↦ Measurable.tsum fun y : T ↦ hk_meas y) hk
+  rw [← hD_norm.lintegral_eq, ← hC_norm.lintegral_eq] at h_fin
+  obtain ⟨hD_fin, _, _, hC_int, h_eq⟩ := Subgroup.integral_tsum_block hS hC hD hk_meas hk h_fin
+  rw [hD_norm.lintegral_eq] at hD_fin
+  have h_integral := h_left.integral_eq.symm.trans (h_eq.trans h_right.integral_eq)
+  exact ⟨h_right.integrable_iff.mp hC_int, h_integral,
+    (hasSum_integral_of_lintegral_tsum_lt_top hD_fin
+      (fun y : D ↦ (hk_meas y).aestronglyMeasurable)).tsum_eq.trans h_integral⟩
+
+/-- Unfolding of the integral of a sum over the translates of a block. Let `i` map `Λ`
+isomorphically onto the discrete subgroup `Γ`, let `γ` carry a point of `C` into `C` exactly when
+`i γ` lies in `S ≤ Γ`, and let `D` be the union of the translates of `C`. Let the `k y` be
+measurable with `k (γ • y) (i γ * x) = k y x`. If `∑_C ‖k y‖` has finite integral over `S \ G`,
+then the integral of `∑_D k y` over `Γ \ G` is the integral of `∑_C k y` over `S \ G`. -/
+lemma New.integral_tsum_eq_integral_tsum_block (hi : Function.Injective i) {Γ S : Subgroup G}
+    [DiscreteTopology Γ] (hΓ : i.range = Γ) {μ : Measure G} [IsHaarMeasure μ] {C D : Set Y}
+    (hS : S ≤ Γ) (hC : ∀ γ : Λ, ∀ y ∈ C, γ • y ∈ C ↔ i γ ∈ S)
+    (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Λ, γ • y ∈ C) {k : Y → G → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
+    (hk : ∀ (γ : Λ) (y : Y) (x : G), k (γ • y) (i γ * x) = k y x)
+    (h_fin : ∫⁻ x : G, ∑' y : C, ‖k y x‖ₑ ∂S.quotMeasure μ < ∞) :
+    ∫ x : G, ∑' y : D, k y x ∂Γ.quotMeasure μ = ∫ x : G, ∑' y : C, k y x ∂S.quotMeasure μ :=
+  (integral_tsum_block hi hΓ hS hC hD hk_meas hk (Or.inr h_fin)).2.1
+
+/-- Unfolding of a sum of integrals over the translates of a block. Let `i` map `Λ` isomorphically
+onto the discrete subgroup `Γ`, let `γ` carry a point of `C` into `C` exactly when `i γ` lies in
+`S ≤ Γ`, and let `D` be the union of the translates of `C`. Let the `k y` be measurable with
+`k (γ • y) (i γ * x) = k y x`. If `∑_C ‖k y‖` has finite integral over `S \ G`, then the sum over
+`D` of the integrals of `k y` against the measure of `Γ \ G` is the integral of `∑_C k y` over
+`S \ G`. -/
+lemma New.tsum_integral_eq_integral_tsum_block (hi : Function.Injective i) {Γ S : Subgroup G}
+    [DiscreteTopology Γ] (hΓ : i.range = Γ) {μ : Measure G} [IsHaarMeasure μ] {C D : Set Y}
+    (hS : S ≤ Γ) (hC : ∀ γ : Λ, ∀ y ∈ C, γ • y ∈ C ↔ i γ ∈ S)
+    (hD : ∀ y : Y, y ∈ D ↔ ∃ γ : Λ, γ • y ∈ C) {k : Y → G → ℂ} (hk_meas : ∀ y : Y, Measurable (k y))
+    (hk : ∀ (γ : Λ) (y : Y) (x : G), k (γ • y) (i γ * x) = k y x)
+    (h_fin : ∫⁻ x : G, ∑' y : C, ‖k y x‖ₑ ∂S.quotMeasure μ < ∞) :
+    ∑' y : D, ∫ x : G, k y x ∂Γ.quotMeasure μ = ∫ x : G, ∑' y : C, k y x ∂S.quotMeasure μ :=
+  (integral_tsum_block hi hΓ hS hC hD hk_meas hk (Or.inr h_fin)).2.2
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G]
   [T2Space G] [MeasurableSpace G] [BorelSpace G] [Countable Y] in
