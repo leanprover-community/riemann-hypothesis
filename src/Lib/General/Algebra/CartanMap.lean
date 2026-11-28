@@ -421,7 +421,7 @@ private lemma homModule_finiteKilledFixedInj (hA : A.FiniteKilledFixedInj l U z 
   exact (hA.diagonalPermModule hz M).of_injective ev DFunLike.coe_injective
 
 -- An additive map out of a permutation module is determined by its values on the basis.
-private def homModule_permEquiv (hA : A.FiniteKilledFixedInj l U z 1)
+private def homModulePermEquiv (hA : A.FiniteKilledFixedInj l U z 1)
     (Y : Type) [Finite Y] [MulAction Δ Y] :
     (homModule hA.trivialOn (FDRep.of (ofMulAction (ZMod l) Δ Y))).ρ.Equiv
       (A.diagonalPermModule U S Y).ρ := by
@@ -507,7 +507,7 @@ lemma IsMultiplicative.eq_one_of_eq_one_on_isHigmanProjective (l : ℕ) [Fact l.
       (congrArg F (permK0_def (ZMod l) (G := Γ₀) Y)).trans
         (liftFDRepK0_of f hf (FDRep.of (ofMulAction (ZMod l) Γ₀ Y)))
     rw [h_eval]
-    exact apply_eq_of_equiv h_mul h_higman (homModule_permEquiv hA Y)
+    exact apply_eq_of_equiv h_mul h_higman (homModulePermEquiv hA Y)
   have h_van (D : Subgroup Γ₀) (hD : ¬ l ∣ Nat.card D) :
       F (permK0 (ZMod l) Γ₀ (Γ₀ ⧸ D)) = 0 := by
     apply Additive.toMul.injective
