@@ -18,6 +18,7 @@ public import Lib.General.Groups.BesselGroups
 public import Lib.General.Topology
 import Lib.Adelic.Unitary.Defs
 import Lib.General.LinearAlgebra.HermiteForm
+import TauCeti.RepresentationTheory.Subrepresentation
 
 /-!
 # Parahoric and pro-p Iwahori subgroups of GL_n over a local field and U_t operators
@@ -562,11 +563,8 @@ variable {ρ} {y : V} {K : Subgroup G}
 
 lemma self_mem_cyclicSpan : y ∈ cyclicSpan ρ y := subset_span ⟨1, by simp⟩
 
-lemma apply_mem_cyclicSpan (g : G) : ∀ x ∈ cyclicSpan ρ y, ρ g x ∈ cyclicSpan ρ y := by
-  -- `ρ g` sends the generator `ρ a y` to the generator `ρ (g * a) y`
-  refine mapsTo_span ?_
-  rintro _ ⟨a, rfl⟩
-  exact ⟨g * a, by simp⟩
+lemma apply_mem_cyclicSpan (g : G) : ∀ x ∈ cyclicSpan ρ y, ρ g x ∈ cyclicSpan ρ y :=
+  fun _ hx ↦ Representation.apply_mem_span_range_apply y g hx
 
 variable [TopologicalSpace G] [IsTopologicalGroup G]
 
