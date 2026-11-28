@@ -3,6 +3,7 @@ module
 public import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Topology.Maps.Proper.CompactlyGenerated
 public import Lib.Adelic.Adeles.Basic
 public import Lib.General.Groups.CongruenceSubgroups
 import Lib.Adelic.Adeles.AdditiveCharacter
@@ -53,35 +54,51 @@ instance : DiscreteTopology (principalAdeleUnits E) := by
 @[simp]
 lemma piUnits_val_apply_ne_zero (a : (ι → ℂ)ˣ) (x : ι) : a.val x ≠ 0 := (a.isUnit.apply x).ne_zero
 
-/-- For a finite index type `ι`, the function `a ↦ ∏ x, (1 + (log |a x|) ^ 2)⁻¹` on the group
-`(ι → ℂ)ˣ` is integrable for Haar measure. -/
-lemma integrable_prod_inv_one_add_log_sq [Fintype ι] :
-    Integrable (fun a : (ι → ℂ)ˣ ↦ ∏ x : ι, (1 + Real.log ‖a.val x‖ ^ 2)⁻¹) haar := by
-  -- Push Haar measure forward along `L : a ↦ (x ↦ log |a x|)`. The image is translation invariant
-  -- and finite on compact sets, hence a multiple of Lebesgue measure on `ι → ℝ`.
-  let L (a : (ι → ℂ)ˣ) (x : ι) : ℝ := Real.log ‖a.val x‖
-  -- polar coordinates: the unit with moduli `exp (p.1 x)` and phases `p.2 x`
+/-- The coordinatewise logarithmic moduli send Haar measure on the complex torus to
+an additive Haar measure. -/
+lemma isAddHaarMeasure_map_log_norm [Fintype ι] (μ : Measure (ι → ℂ)ˣ) [IsHaarMeasure μ] :
+    IsAddHaarMeasure (μ.map fun a : (ι → ℂ)ˣ ↦ fun x ↦ Real.log ‖a.val x‖) := by
+  let L : Additive (ι → ℂ)ˣ →+ (ι → ℝ) :=
+    { toFun := fun a x ↦ Real.log ‖a.toMul.val x‖
+      map_zero' := by ext x; simp
+      map_add' := fun a b ↦ by ext x; simp [Real.log_mul] }
+  have h_apply (a : (ι → ℂ)ˣ) (x : ι) : L a x = Real.log ‖a.val x‖ := rfl
+  -- The polar coordinates allow all phases, a compact space at fixed moduli.
   let polar (p : (ι → ℝ) × (ι → Circle)) : (ι → ℂ)ˣ :=
     (by simp [Pi.isUnit_iff] : IsUnit fun x : ι ↦ exp (p.1 x : ℝ) * (p.2 x : Circle)).unit
-  have hL : Measurable L := measurable_pi_iff.2 fun _ ↦ .log (.norm (.eval (by fun_prop)))
   have h_polar : Continuous polar := by
     rw [Units.isOpenEmbedding_val.isInducing.continuous_iff]
     simp only [polar, Function.comp_def, IsUnit.unit_spec]
     fun_prop
-  -- `L` turns multiplication by `polar (t, 1)` into translation by `t`
-  have h_inv : (haar.map L).IsAddLeftInvariant := ⟨fun t ↦
-    ((hL.measurePreserving haar).of_semiconj (measurePreserving_mul_left haar (polar (t, 1)))
-      (by simp [Function.Semiconj, funext_iff, L, polar, Real.log_mul])
-      (by fun_prop)).map_eq⟩
-  -- the preimage of a compact `K` lies in the image under `polar` of `K × (ι → Circle)`
-  have h_fin : IsFiniteMeasureOnCompacts (haar.map L) := ⟨fun K hK ↦ by
-    rw [map_apply hL hK.measurableSet]
-    refine (measure_mono fun a ha ↦ ?_).trans_lt
-      ((hK.prod isCompact_univ).image h_polar).measure_lt_top
+  have hL : Continuous L := continuous_pi fun x ↦
+    (continuous_apply x |>.comp Units.continuous_val).norm.log fun a ↦ by simp
+  have h_section (p : (ι → ℝ) × (ι → Circle)) : L (polar p) = p.1 := by
+    ext x
+    change Real.log ‖(polar p).val x‖ = p.1 x
+    simp [polar]
+  have h_proper : IsProperMap L := by
+    refine isProperMap_iff_isCompact_preimage.2 ⟨hL, fun K hK ↦ ?_⟩
+    refine ((hK.prod (isCompact_univ (X := ι → Circle))).image h_polar).of_isClosed_subset
+      (hK.isClosed.preimage hL) fun a ha ↦ ?_
     refine ⟨(L a, fun x ↦ Circle.exp (arg (a.val x))), ⟨ha, trivial⟩, ?_⟩
     ext x
-    simp [polar, L, exp_log, ofReal_log]⟩
-  refine (?_ : Integrable (fun t : ι → ℝ ↦ ∏ x : ι, (1 + t x ^ 2)⁻¹)
+    simp [polar, h_apply, exp_log, ofReal_log]
+  let μAdd : Measure (Additive (ι → ℂ)ˣ) := μ
+  let _ : IsAddHaarMeasure μAdd :=
+    { map_add_left_eq_self := fun a ↦ map_mul_left_eq_self μ a.toMul
+      lt_top_of_isCompact := fun _ hK ↦ hK.measure_lt_top (μ := μ)
+      open_pos := fun _ hU hne ↦ (hU.measure_pos μ hne).ne' }
+  exact isAddHaarMeasure_map μAdd L hL (fun t ↦ ⟨polar (t, 1), h_section _⟩)
+    (isProperMap_iff_tendsto_cocompact.1 h_proper).2
+
+/-- For a finite index type `ι`, the function `a ↦ ∏ x, (1 + (log |a x|) ^ 2)⁻¹` on the group
+`(ι → ℂ)ˣ` is integrable for Haar measure. -/
+lemma integrable_prod_inv_one_add_log_sq [Fintype ι] :
+    Integrable (fun a : (ι → ℂ)ˣ ↦ ∏ x : ι, (1 + Real.log ‖a.val x‖ ^ 2)⁻¹) haar := by
+  let L (a : (ι → ℂ)ˣ) (x : ι) : ℝ := Real.log ‖a.val x‖
+  have hL : Measurable L := measurable_pi_iff.2 fun _ ↦ .log (.norm (.eval (by fun_prop)))
+  let _ : IsAddHaarMeasure (haar.map L) := isAddHaarMeasure_map_log_norm haar
+  refine (?_ : Integrable (fun t : ι → ℝ ↦ ∏ x, (1 + t x ^ 2)⁻¹)
     (haar.map L)).comp_measurable hL
   rw [(haar.map L).isAddLeftInvariant_eq_smul volume]
   exact (Integrable.fintype_prod fun _ ↦ integrable_inv_one_add_sq).smul_measure_nnreal
