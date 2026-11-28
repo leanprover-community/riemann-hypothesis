@@ -322,25 +322,61 @@ lemma columnFourier_tupleAction (hc : c.IsTurn ϑ w)
   obtain ⟨g', hg', h_low, h_ext, h_other⟩ := hc.exists_eq_low g hg k
   obtain ⟨h_fst, h_snd⟩ : g' c.fst = g c.fst ∧ g' c.snd = g c.snd := by
     simp [h_other, hc.ne_low_and_ne_lowExt]
-  have h_w : ∀ e ∈ w, g' e.1 = g e.1 ∧ g' e.2 = g e.2 := by grind [→ hc.endpoints_notMem]
+  have h_w : ∀ e ∈ w, g' e.1 = g e.1 ∧ g' e.2 = g e.2 := fun e he ↦ by
+    have ⟨h1, h2⟩ := hc.endpoints_notMem e he
+    simp only [List.mem_cons, List.not_mem_nil, or_false, not_or] at h1 h2
+    exact ⟨h_other _ h1.1 h1.2, h_other _ h2.1 h2.2.1⟩
+  have h_not1 : (c.lowExt, c.snd) ∉ insert (c.low, c.fst) w :=
+    fun h ↦ (mem_insert.1 h).elim (fun h_eq ↦ hc.fst_ne_snd (Prod.ext_iff.1 h_eq).2.symm)
+      hc.lowExt_notMem
+  have h_det_ext : (blockInlGL c.lowEquiv k).det = k.det :=
+    Units.ext (by simp [blockInlGL, blockGL])
   have h_char : edgeCharProd g' (c.oldEdges w) =
       c.char ϑ k.val.det * edgeChar ϑ (c.low, c.fst) (g c.fst).val.det *
         edgeChar ϑ (c.lowExt, c.snd) (g c.snd).val.det * edgeCharProd g w := by
-    simp +contextual [edgeCharProd, char, hc.low_notMem, hc.lowExt_notMem, hc.fst_ne_snd.symm,
-      h_low, h_ext, h_fst, h_snd, h_w, MulChar.inv_apply_eq_inv', field]
+    have h_ep : edgeCharProd g' w = edgeCharProd g w :=
+      prod_congr rfl fun e he ↦ by simp only [(h_w e he).1, (h_w e he).2]
+    rw [edgeCharProd, oldEdges, prod_insert h_not1, prod_insert hc.low_notMem, ← edgeCharProd,
+      h_ep, h_ext, h_snd, h_low, h_fst, h_det_ext]
+    simp_rw [map_div, div_eq_mul_inv, Units.val_mul, Units.val_inv_eq_inv_val]
+    simp only [MulChar.coe_toUnitHom, GeneralLinearGroup.val_det_apply, char,
+      MulChar.inv_apply_eq_inv', MulChar.mul_apply, mul_inv]
+    ring
   -- Moving the tuple of `S, y, v` by `g'` moves `S`, `y` and `v` separately.
+  have h_y : (c.sumGL g)⁻¹.val * y * k.val =
+      fromRows ((g c.fst)⁻¹.val * y.toRows₁ * k.val) ((c.sndGL g)⁻¹.val * y.toRows₂ * k.val) := by
+    have h_inv : (c.sumGL g)⁻¹.val = fromBlocks (g c.fst)⁻¹.val 0 0 (c.sndGL g)⁻¹.val := by
+      simp [sumGL, ← map_inv, blockGL]
+    conv_lhs => rw [h_inv, ← y.fromRows_toRows]
+    simp only [fromBlocks_mul_fromRows, Matrix.zero_mul, add_zero, zero_add, fromRows_mul]
   have h_tuple (v : Matrix B T (gridModulus ϑ).ResidueRing) :
       Ψ' (tupleAction g' (c.oldTuple S y v)) = Ψ' (c.oldTuple (tupleAction g S)
         ((c.sumGL g)⁻¹.val * y * k.val) ((c.sndGL g)⁻¹.val * v)) := by
     refine hΨ'.dependsOn fun e he ↦ ?_
-    obtain rfl | rfl | he : e = (c.lowExt, c.snd) ∨ e = (c.low, c.fst) ∨ e ∈ w := by simpa using he
-    · -- On `Ṽ' → W₂` the equation holds entry by entry in the two blocks of columns.
-      simp [tupleAction, oldTuple, h_ext, h_snd, ← Matrix.ext_iff, ← map_inv, Matrix.mul_apply,
-        reindex_equiv c.sndEquiv, reindex_equiv c.lowEquiv, toRows₂, Matrix.one_apply]
+    obtain rfl | rfl | he : e = (c.lowExt, c.snd) ∨ e = (c.low, c.fst) ∨ e ∈ w := by
+      simpa only [Finset.mem_coe, oldEdges, mem_insert] using he
+    · -- On `Ṽ' → W₂`, conjugate by `sndEquiv` and `lowEquiv` to multiply in blocks.
+      have h_eq := congrArg (·.submatrix c.sndEquiv.symm c.lowEquiv.symm) <| calc
+        (c.sndGL g)⁻¹.val * fromCols y.toRows₂ v * fromBlocks k.val 0 0 1
+            = fromCols ((c.sndGL g)⁻¹.val * y.toRows₂ * k.val) ((c.sndGL g)⁻¹.val * v) := by
+              rw [Matrix.mul_fromCols, fromCols_mul_fromBlocks]
+              simp only [Matrix.mul_zero, Matrix.mul_one, add_zero, zero_add]
+        _ = fromCols ((c.sumGL g)⁻¹.val * y * k.val).toRows₂ ((c.sndGL g)⁻¹.val * v) := by
+              rw [h_y, toRows₂_fromRows]
+      have h_snd_inv : (g c.snd)⁻¹.val =
+          ((c.sndGL g)⁻¹.val).submatrix c.sndEquiv.symm c.sndEquiv.symm := by
+        simp [sndGL, ← map_inv, val_reindexGL_apply]
+      have h_low_inl : (blockInlGL c.lowEquiv k).val =
+          (fromBlocks k.val 0 0 (1 : Matrix T T _)).submatrix
+            c.lowEquiv.symm c.lowEquiv.symm := by
+        simp [blockInlGL, blockGL, val_reindexGL_apply]
+      rw [tupleAction, h_snd, h_ext, h_snd_inv, h_low_inl, oldTuple, update_self,
+        submatrix_mul_equiv, submatrix_mul_equiv, h_eq, oldTuple, update_self]
     · -- On `V' → W₁` it is the block `y₁` that moves.
-      simp [tupleAction, hc.oldTuple_low, h_low, h_fst, ← Matrix.ext_iff, ← map_inv,
-        Matrix.mul_apply, toRows₁]
-    · simp [tupleAction, hc.oldTuple_apply_of_mem _ _ he, h_w e he]
+      rw [tupleAction, hc.oldTuple_low, hc.oldTuple_low, h_low, h_fst, h_y, toRows₁_fromRows]
+    · rw [tupleAction, hc.oldTuple_apply_of_mem _ _ he, hc.oldTuple_apply_of_mem _ _ he,
+        (h_w e he).1, (h_w e he).2]
+      rfl
   rw [← h_char, columnFourier, columnFourier,
     ← (mul_right_injective_of_invertible (c.sndGL g)⁻¹.val).bijective_of_finite.sum_comp, mul_sum]
   refine sum_congr rfl fun v _ ↦ ?_
@@ -374,10 +410,23 @@ lemma hasLeftInv_of_columnFourier_ne_zero {S : EdgeTuple ϑ} (hc : c.IsTurn ϑ w
 element at `W₂`. -/
 lemma newRow_tupleAction (hc : c.IsTurn ϑ w) {g : NodeFamily ϑ} (hg : IsAdmissibleFamily g)
     (S : EdgeTuple ϑ) : c.newRow (tupleAction g S) = c.newRow S * (c.sndGL g).val := by
-  -- Entry by entry, as `g` fixes the line at `Ṽ`.
-  ext i j
-  simp [newRow, tupleAction, hc.apply_highExt g hg, ← map_inv, Matrix.mul_apply,
-    reindex_equiv c.sndEquiv, reindex_equiv c.highEquiv, toRows₂, Matrix.one_apply]
+  -- Conjugate by `highEquiv` and `sndEquiv` to multiply `(x₂; v')` in blocks.
+  have h_hi : (g c.highExt)⁻¹.val = (fromBlocks (g c.high)⁻¹.val 0 0 (1 : Matrix T T _)).submatrix
+      c.highEquiv.symm c.highEquiv.symm := by
+    simp [hc.apply_highExt g hg, ← map_inv, blockInlGL, blockGL, val_reindexGL_apply]
+  have h_snd : (g c.snd).val = ((c.sndGL g).val).submatrix c.sndEquiv.symm c.sndEquiv.symm := by
+    simp [sndGL, val_reindexGL_apply]
+  let M := (S (c.snd, c.highExt)).submatrix c.highEquiv c.sndEquiv
+  have h_mid : S (c.snd, c.highExt) = M.submatrix c.highEquiv.symm c.sndEquiv.symm := by
+    simp only [M, submatrix_submatrix, Equiv.self_comp_symm, submatrix_id_id]
+  have h_ext : (tupleAction g S (c.snd, c.highExt)).submatrix c.highEquiv c.sndEquiv =
+      fromBlocks (g c.high)⁻¹.val 0 0 1 * M * (c.sndGL g).val := by
+    rw [tupleAction, h_hi, h_snd, h_mid, submatrix_mul_equiv, submatrix_mul_equiv]
+    simp only [submatrix_submatrix, Equiv.symm_comp_self, submatrix_id_id]
+  rw [newRow, newRow, h_ext]
+  conv_lhs => rw [← M.fromRows_toRows]
+  simp only [M, fromBlocks_mul_fromRows, Matrix.zero_mul, Matrix.one_mul, zero_add, fromRows_mul,
+    toRows₂_fromRows]
 
 /-- Let the corner `c` be a turn (`hc`). An admissible family `g` acts on tuples by `tupleAction`.
 This moves the matrix `c.newMatrix S` read on the new edges on the left by `(g c.high)⁻¹`, the
@@ -386,10 +435,25 @@ element on `W₁ ⊕ W₂`. -/
 lemma newMatrix_tupleAction (hc : c.IsTurn ϑ w) {g : NodeFamily ϑ} (hg : IsAdmissibleFamily g)
     (S : EdgeTuple ϑ) :
     c.newMatrix (tupleAction g S) = (g c.high)⁻¹.val * (c.newMatrix S * (c.sumGL g).val) := by
-  -- Entry by entry, in the columns of `W₁` and in those of `W₂`.
-  rw [← Matrix.mul_assoc]
-  ext i (j | j) <;> simp [newMatrix, tupleAction, hc.apply_highExt g hg, ← map_inv, toRows₁,
-    Matrix.mul_apply, reindex_equiv c.sndEquiv, reindex_equiv c.highEquiv]
+  -- Conjugate `(c.snd, c.highExt)` by `highEquiv` and `sndEquiv` to multiply in blocks.
+  have h_hi : (g c.highExt)⁻¹.val = (fromBlocks (g c.high)⁻¹.val 0 0 (1 : Matrix T T _)).submatrix
+      c.highEquiv.symm c.highEquiv.symm := by
+    simp [hc.apply_highExt g hg, ← map_inv, blockInlGL, blockGL, val_reindexGL_apply]
+  have h_snd : (g c.snd).val = ((c.sndGL g).val).submatrix c.sndEquiv.symm c.sndEquiv.symm := by
+    simp [sndGL, val_reindexGL_apply]
+  let M := (S (c.snd, c.highExt)).submatrix c.highEquiv c.sndEquiv
+  have h_mid : S (c.snd, c.highExt) = M.submatrix c.highEquiv.symm c.sndEquiv.symm := by
+    simp only [M, submatrix_submatrix, Equiv.self_comp_symm, submatrix_id_id]
+  have h_ext : ((tupleAction g S (c.snd, c.highExt)).submatrix c.highEquiv c.sndEquiv).toRows₁ =
+      (g c.high)⁻¹.val * M.toRows₁ * (c.sndGL g).val := by
+    rw [tupleAction, h_hi, h_snd, h_mid, submatrix_mul_equiv, submatrix_mul_equiv]
+    simp only [submatrix_submatrix, Equiv.symm_comp_self, submatrix_id_id]
+    conv_lhs => rw [← M.fromRows_toRows]
+    simp only [fromBlocks_mul_fromRows, Matrix.zero_mul, add_zero, fromRows_mul, toRows₁_fromRows]
+  have h_sum : (c.sumGL g).val = fromBlocks (g c.fst).val 0 0 (c.sndGL g).val := by
+    simp [sumGL, blockGL]
+  rw [newMatrix, newMatrix, h_sum, fromCols_mul_fromBlocks, Matrix.mul_fromCols, h_ext]
+  simp only [Matrix.mul_zero, add_zero, zero_add, tupleAction, M, Matrix.mul_assoc]
 
 /-- Let the corner `c` be a turn (`hc`), `Ψ'` a path datum on the old edges (`hΨ'`) and `v'` a
 matrix. Then the function `matchOf` of the column Fourier transform `c.columnFourier ψ Ψ' S v'` is
@@ -402,11 +466,18 @@ lemma areMatched_columnFourier (hc : c.IsTurn ϑ w) (v' : Matrix T B (gridModulu
   refine areMatched_matchOf (fun y hy ↦ ?_) fun y k ↦ ?_
   · -- The support condition: one of the blocks of `y` lies on a vertical edge.
     obtain ⟨h_fst, h_snd, -⟩ := hc.hasLeftInv_of_columnFourier_ne_zero y v' hΨ' hy
-    exact exists_eq_firstCols (Modulus.isValuationPair_residueRing _) ε (by grind [hc.vertical])
+    exact exists_eq_firstCols (Modulus.isValuationPair_residueRing _) ε
+      (hc.vertical.imp (fun h ↦ h_fst h.1) (fun h ↦ h_snd h.1))
   · -- The character condition: invariance under the identity family, with `k` at `V'`.
-    simpa [tupleAction_one, edgeCharProd, ← Prod.one_eq_mk] using
-      hc.columnFourier_tupleAction y v' hΨ' (g := 1)
-        (by simp [IsAdmissibleFamily, ← Prod.one_eq_mk]) k S
+    have h1 : IsAdmissibleFamily (1 : NodeFamily ϑ) :=
+      ⟨fun _ ↦ one_mem _, fun _ ↦ (map_one _).symm⟩
+    have h_ep : edgeCharProd (1 : NodeFamily ϑ) w = 1 := by
+      rw [edgeCharProd]
+      exact prod_eq_one fun e _ ↦ by simp only [Pi.one_apply, Units.val_one, map_one, div_one]
+    have h := hc.columnFourier_tupleAction (ψ := ψ) y v' hΨ' h1 k S
+    dsimp only [sndGL, sumGL] at h
+    simpa only [tupleAction_one, h_ep, Pi.one_apply, ← Prod.one_eq_mk, map_one, inv_one,
+      Units.val_one, Matrix.det_one, Matrix.one_mul, Matrix.mul_one, mul_one] using h
 
 /-- Let the corner `c` be a turn and `Ψ'` a path datum on the old path. The turned datum
 `c.turned ε ψ Ψ'` is the match of the Fourier transform of `Ψ'` in the column of the line, read on
@@ -435,10 +506,23 @@ lemma turned_tupleAction (hc : c.IsTurn ϑ w) (hΨ' : IsPathDatum N (c.oldEdges 
       (by simpa only [h_fourier] using h_moved.translate a (c.sumGL g)),
     ← mul_assoc]
   -- Opposite edges have the same character.
+  have h_not1 : (c.snd, c.highExt) ∉ insert (c.fst, c.high) w :=
+    fun h ↦ (mem_insert.1 h).elim (fun h_eq ↦ hc.fst_ne_snd (Prod.ext_iff.1 h_eq).1.symm)
+      hc.highExt_notMem
+  have h_det_hi : (blockInlGL c.highEquiv (g c.high)).det = (g c.high).det :=
+    Units.ext (by simp [blockInlGL, blockGL])
+  have h_det_sum : (c.sumGL g).val.det = (g c.fst).val.det * (g c.snd).val.det := by
+    simp [sumGL, sndGL, blockGL]
+  have hne (e : GridNode × GridNode) (q : GridNode) : edgeChar ϑ e (g q).val.det ≠ 0 := by
+    rw [← GeneralLinearGroup.val_det_apply, ← MulChar.coe_toUnitHom]
+    exact Units.ne_zero _
   congr 1
-  simp [a, edgeCharProd, char, hc.high_notMem, hc.highExt_notMem, hc.fst_ne_snd.symm,
-    hc.edgeChar_fst, hc.edgeChar_snd, hc.apply_highExt g hg, MulChar.inv_apply_eq_inv']
-  field [MulChar.apply_eq_zero_iff]
+  rw [edgeCharProd, newEdges, prod_insert h_not1, prod_insert hc.high_notMem, ← edgeCharProd,
+    hc.apply_highExt g hg, h_det_hi, hc.edgeChar_fst, hc.edgeChar_snd, h_det_sum]
+  simp_rw [map_div, div_eq_mul_inv, Units.val_mul, Units.val_inv_eq_inv_val]
+  simp only [a, MulChar.coe_toUnitHom, GeneralLinearGroup.val_det_apply, char,
+    MulChar.inv_apply_eq_inv', MulChar.mul_apply, map_mul, mul_inv]
+  field [hne]
 
 /-! ### The turned datum and the sum over a square -/
 
@@ -476,10 +560,10 @@ lemma hasLeftInv_of_turned_ne_zero {S : EdgeTuple ϑ} (hc : c.IsTurn ϑ w)
       (HasLeftInv (firstCols ε γ).toRows₂ → HasLeftInv (c.newMatrix S).toCols₁) := by
     simpa only [hx] using hasLeftInv_toCols_of_hasLeftInv_toRows ε γ
   -- A vertical new edge is opposite to a vertical old edge.
-  have h_opp₁ : IsVerticalEdge c.fst c.high → IsVerticalEdge c.lowExt c.snd := by
-    grind [hc.vertical]
-  have h_opp₂ : IsVerticalEdge c.snd c.highExt → IsVerticalEdge c.low c.fst := by
-    grind [hc.vertical]
+  have h_opp₁ : IsVerticalEdge c.fst c.high → IsVerticalEdge c.lowExt c.snd :=
+    fun h ↦ hc.vertical.elim (fun h1 ↦ (h1.2 h).elim) (·.1)
+  have h_opp₂ : IsVerticalEdge c.snd c.highExt → IsVerticalEdge c.low c.fst :=
+    fun h ↦ hc.vertical.elim (·.1) (fun h2 ↦ (h2.2 h).elim)
   simp only [mem_insert, forall_eq_or_imp]
   refine ⟨fun h_vert ↦ ?_, fun h_vert ↦ ?_, h_w⟩
   · -- The matrix `(x₂; v')` is split injective where `x₂` is.
