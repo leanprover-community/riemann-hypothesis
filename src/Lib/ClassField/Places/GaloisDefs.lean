@@ -137,6 +137,7 @@ variable (O : Type*) {Γ : Type*} {K Ω : outParam Type*} [Group Γ] [Field K] [
   {Γ' Ω' : Type*} [Group Γ'] [Field Ω'] [MulSemiringAction Γ' Ω']
   {φ : Γ' → Γ} {j : Ω →+* Ω'} {A' : ValuationSubring Ω'} {q' : ℕ}
 
+/-- Any Frobenius element `σ` at `A` belongs to the decomposition group `decompGroup Γ A`. -/
 lemma IsFrob.mem_decompGroup (h : IsFrob A q σ) : σ ∈ decompGroup Γ A := h.left
 
 /-- A Frobenius element for `q` sends each `x` of `A` to `x ^ q` modulo the maximal ideal of `A`. -/
@@ -144,9 +145,12 @@ lemma IsFrob.valuation_sub_pow_lt_one (h : IsFrob A q σ) {x : Ω} (hx : A.valua
     A.valuation (σ • x - x ^ q) < 1 :=
   h.right x hx
 
+/-- An automorphism `σ` lies in `decompGroup Γ A` iff it stabilizes membership in `A`. -/
 lemma mem_decompGroup_iff : σ ∈ decompGroup Γ A ↔ ∀ x : Ω, σ • x ∈ A ↔ x ∈ A :=
   ext'_iff.trans mem_stabilizer_set
 
+/-- If `σ` is in the decomposition group of `A`,
+then `g * σ * g⁻¹` is in the decomposition group of `g • A`. -/
 lemma conj_mem_decompGroup_smul (hσ : σ ∈ decompGroup Γ A) :
     g * σ * g⁻¹ ∈ decompGroup Γ (g • A) := by
   simp [mem_stabilizer_iff, mul_smul, mem_stabilizer_iff.mp hσ]
