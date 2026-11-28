@@ -107,13 +107,13 @@ f : S ⟶ S' and a map φ = (φ₀, φ₁) : M → T' × M' that is semilinear o
 induced by f. The identity is (𝟙, m ↦ (0, m)), and (f, φ) followed by (g, ψ) is
 (f ≫ g, m ↦ (g(φ₀ m), 0) + ψ(φ₁ m)). -/
 @[simps] instance : Category HodgeTatePair := by
-  refine' @Category.mk _ {
+  refine @Category.mk _ {
     Hom X Y := Σ f : X.test ⟶ Y.test, (Fin X.rank → X.GenericRing)
       →ₛₗ[((genericOver.map f).hom : X.GenericRing →+* Y.GenericRing)] Y.GenericRing ×
       (Fin Y.rank → Y.GenericRing),
     id _ := ⟨𝟙 _, ⟨(0, ·), by simp⟩, by simp⟩
     comp f g := ⟨f.1 ≫ g.1, ⟨fun m ↦ (genericOver.map g.1 (f.2 m).1, 0) + g.2 (f.2 m).2, by
-      simp [add_add_add_comm]⟩, by simp⟩} ..
+      simp [add_add_add_comm]⟩, by simp⟩} ?_ ?_ ?_
   all_goals
     intros
     exact congr(⟨_, $(by
