@@ -265,6 +265,16 @@ lemma exists_modEq_one_coprime_dvd_of_prime {l : ℕ} (hl : l.Prime) (Y : ℕ) :
   · have h_cop : l.Coprime (1 + N + N) := .of_dvd_left hl_dvd (by simp)
     exact ⟨1 + N + N, by simp, h_cop, .mul_left (dvd_mul_right _ _) _⟩
 
+/-- Tau Ceti's bound on the Bernoulli group determinant, phrased as a bound on its absolute value
+as a natural number: `(TauCeti.bernoulliGroupDet N (e + 1)).natAbs ≤ (2 ^ 5 * N ^ (e + 2) *
+(e + 1)!) ^ φ N`. -/
+private lemma natAbs_bernoulliGroupDet_le (N : ℕ) [NeZero N] (e : ℕ) (he : e ≠ 0) :
+    (TauCeti.bernoulliGroupDet N (e + 1)).natAbs ≤ (2 ^ 5 * N ^ (e + 2) * (e + 1)!) ^ φ N := by
+  -- `TauCeti.abs_bernoulliGroupDet_le` bounds the norm, which on `ℤ` is the absolute value.
+  have h := TauCeti.abs_bernoulliGroupDet_le (M := N) (k := e + 1) (by omega)
+  exact_mod_cast (show (TauCeti.bernoulliGroupDet N (e + 1)).natAbs =
+    |TauCeti.bernoulliGroupDet N (e + 1)| from Int.natCast_natAbs _).symm ▸ h
+
 /-- For `N, e ≥ 1` there is an integer `1 ≤ X ≤ 2^{(N+e+3)^6}` with the Stickelberger property
 `New.OddPart.IsStickelbergerBound N e X`, namely a divisibility condition for each prime together
 with a congruence for the Stickelberger sums. It comes from Tau Ceti's Bernoulli group determinant
@@ -295,11 +305,7 @@ lemma exists_isStickelbergerBound (he : e ≠ 0) :
   · simpa [X, Y, tsub_eq_zero_iff_le, add_assoc, hN, he, hq_ne] using hdet_ne
   · -- Bound `q ≤ (e + 2)!` and the determinant via `TauCeti.abs_bernoulliGroupDet_le`.
     have hq_le : q ≤ (e + 2)! := Nat.le_of_dvd (factorial_pos _) ⟨primorial (e + 2), by linarith⟩
-    have hdet_le : (TauCeti.bernoulliGroupDet N (e + 1)).natAbs ≤
-        (2 ^ 5 * N ^ (e + 2) * (e + 1)!) ^ φ N := by
-      have h := TauCeti.abs_bernoulliGroupDet_le (M := N) (k := e + 1) (by omega)
-      exact_mod_cast (show (TauCeti.bernoulliGroupDet N (e + 1)).natAbs =
-        |TauCeti.bernoulliGroupDet N (e + 1)| from Int.natCast_natAbs _).symm ▸ h
+    have hdet_le := natAbs_bernoulliGroupDet_le N e he
     have hY : Y ≤ 2 * (e + 2)! * (2 ^ 5 * N ^ (e + 2) * (e + 1)!) ^ φ N := by
       dsimp only [Y]; gcongr
     dsimp only [X]
