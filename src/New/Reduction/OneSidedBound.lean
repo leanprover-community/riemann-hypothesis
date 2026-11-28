@@ -199,13 +199,10 @@ lemma dvd_two_mul_succ_and_not_dvd_succ {q₀ d : ℕ} (hq₀_pos : 0 < q₀) (h
     (hd : d ≡ q₀ / 2 - 1 [MOD q₀]) : q₀ ∣ 2 * (d + 1) ∧ ¬q₀ ∣ d + 1 := by
   obtain ⟨q, rfl⟩ := hq₀_even
   have h_half : 2 * q / 2 - 1 + 1 = q := by omega
-  have hd_succ : ((d + 1 : ℕ) : ZMod (2 * q)) = q := by
-    rw [natCast_eq_natCast_iff]
+  have hd_succ : d + 1 ≡ q [MOD 2 * q] := by
     simpa only [h_half] using hd.add_right 1
-  constructor
-  · rw [← natCast_eq_zero_iff, Nat.cast_mul, hd_succ, ← Nat.cast_mul, natCast_self]
-  · rw [← natCast_eq_zero_iff, hd_succ, natCast_eq_zero_iff]
-    exact Nat.not_dvd_of_pos_of_lt (by omega) (by omega)
+  rw [(hd_succ.mul_left 2).dvd_iff (dvd_refl _), hd_succ.dvd_iff (dvd_refl _)]
+  exact ⟨dvd_refl _, Nat.not_dvd_of_pos_of_lt (by omega) (by omega)⟩
 
 /-- **One-sided bound.** Let `q₀ > 0` be a multiple of `18480`, let `d ≡ q₀ / 2 - 1` modulo `q₀` be
 a prime, and let `ε > 0`. Then `R = primeRemainder d q₀` satisfies
