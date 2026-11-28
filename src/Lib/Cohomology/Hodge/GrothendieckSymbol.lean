@@ -362,7 +362,7 @@ lemma smul_grothendieckSymbol_eq_fractionClass (hf : U ≤ unimodularLocus f)
     (exists_jouanolouRel_of_le_unimodularLocus hf) _ (pointMap ⟨g⟩) w hw
     (fun C t ↦ ?_) fun _ _ ↦ rfl
   -- The cocycles agree since `det (l * σ M) = det l * σ (det M)`.
-  simp [volumeForm, formOfExteriorPower, w]
+  simp [volumeForm, formOfExteriorPower, w, -map_smul]
   let rows : Matrix (Fin d) (Fin d) C.baseAlg := fun i ↦ (t.val.2 i).down
   conv in (det (fun i ↦ _)) =>
     change det (rows * M.map t.val.1.down.fst)
@@ -395,7 +395,8 @@ lemma fractionClass_smul_eq_zero (hf : U ≤ unimodularLocus f) {r : c.baseAlg}
       relFreeAb.hom_ext fun C σ ↦ relFreeAb.mk_eq_zero (h_top C σ)
     have h_frac := smul_grothendieckSymbol_eq_fractionClass hf hg hM 1
     simp only [grothendieckSymbol, h_map, H.map] at h_frac
-    simpa [g, ← cramer_apply, smul_smul, Function.comp_def, mul_comm, eq_comm] using h_frac
+    simpa [g, ← cramer_apply, smul_smul, Function.comp_def, mul_comm, eq_comm, -map_smul] using
+      h_frac
   obtain ⟨t, rfl⟩ := mem_span_range_iff_exists_fun.1 hr
   simp [sum_smul, h_gen]
 
@@ -437,7 +438,8 @@ lemma grothendieckSymbol_transformation (hf : U ≤ unimodularLocus f) (hg : U �
   rw [← ((Pi.basisFun c.baseAlg c.Index).exteriorPower d).sum_repr
     (ιMulti c.baseAlg d (snd ∘ f) -
       (algebraMap k c.baseAlg a * M.det) • ιMulti c.baseAlg d (snd ∘ g))]
-  simpa [basis_repr_apply, ιMulti_family] using
+  rw [map_sum]
+  simpa [basis_repr_apply, ιMulti_family, -map_smul] using
     sum_eq_zero fun s _ ↦ fractionClass_smul_eq_zero hf (h_minor _) _
 
 /-- A map of relative chains induced by the tuple f = (f̄, ω) pulls [dT/T] back to [ω/f̄]. -/
@@ -741,7 +743,8 @@ lemma symbolClass_succ :
   -- `(-1) ^ d • (symbolClass ⊗ relFreeAb G)` pulls back to the class of a cocycle `y`.
   obtain ⟨y, hy, h_coc⟩ := map_cocycleClass exists_jouanolouRel_of_unimodular exists_snocRel
     (abTensor.flip.obj (relFreeAb G)) ((-1) ^ d • 𝟙 _)
-    (α := sqZeroExt.whiskerLeft (relFreeAb.prod unimodular unimodular)) (snocRel.split k d)
+    (α := sqZeroExt.whiskerLeft (relFreeAb.prod (unimodular (d := d)) (unimodular (d := 1))))
+    (snocRel.split k d)
     (fun c x ↦ relFreeAb.tmul_mk_congr fun hx ↦
       .symm (congrArg _ ((dite_eq_right hx).trans congr(.of ⟨⟨_, $(funext nofun)⟩, _⟩))))
     (snocRel.reindexWitness_comp_split k d) (detCocycle _ volumeForm)
@@ -772,14 +775,14 @@ lemma symbolClass_succ :
           (H.map F α d x).comp ε rfl = H.map F' α (d + 1) (x.comp ε rfl) := by
             simp [H.map, Ext.comp_assoc (h₂₃ := rfl)]
       rw [← h_coc, map_comp]
-      refine congrArg _ (.symm ?_)
+      refine congrArg (H.map hodgeCoeff _ (d + 1)) (.symm ?_)
       apply DirectSum.of_injective (β := H _ hodgeCoeff)
       rw [← comp_of, ← of_comp_homClass]
       refine .trans ?_ (cup_of exteriorAlg.mulPairing symbolClass _ (add_comm 1 d))
       rw [← comp_of _ (mk₀ ω), cup_comp_homClass_right, TotalH.cup]
       rcases neg_one_pow_eq_or ℤ d with h_parity | h_parity <;>
         simpa [h_parity, β, TotalH.comp_assoc, -Functor.flip_obj_obj, ← comp_of, TotalH.homClass,
-          ← homClass_comp, mapExactFunctor_extClass] using!
+          ← homClass_comp, mapExactFunctor_extClass, -map_smul] using!
           congrArg ((-1 : ℤ) ^ d • ·) (comp_assoc_of_eq h_sign _)
     _ = cocycleClass exists_snocRel z := h_lift
     _ = (Comparison.id _).pull (sqZeroExt.whiskerLeft (relFreeAb.map (affineSpace.snoc k d)
@@ -1024,7 +1027,9 @@ lemma IsPointSum.map_eq_sum_pointClass {s : Finset (X (CommAlgCat.of k k))}
     simp [h_zero]
   | insert z s hz ih => ?_
   obtain rfl : U = offPoints {z} ⊓ offPoints s := by
-    aesop (add simp [offPoints, fieldLocus]) (add simp ComesFromPoints)
+    subst hU
+    refine Subfunctor.ext (funext fun K ↦ Set.ext fun x ↦ ?_)
+    simp [offPoints, fieldLocus, ComesFromPoints, forall_and]
   -- Mayer–Vietoris: `ξ` is the sum of classes `x` with support `z` and `y` with support `s`.
   -- Excision gives `x` that agrees with `ξ` on `V = offPoints s`.
   let V : Subfunctor X := offPoints s
@@ -1061,7 +1066,7 @@ lemma IsPointSum.map_eq_sum_pointClass {s : Finset (X (CommAlgCat.of k k))}
       rw [← X.map_comp_apply]
       by_contra h_notMem
       have hw_mem : w ∈ (offPoints t').obj (CommAlgCat.of k k) := by
-        aesop (add simp [mem_offPoints_iff, ComesFromPoints, toIsField])
+        simpa [toIsField, mem_offPoints_iff, ComesFromPoints] using hw'
       obtain ⟨O, -, h_mem_O, hO_le⟩ := exists_isOpenSubfunctor_le_offPoints hw_mem hK h_notMem
       tauto
     exact ⟨a, g, ha, cut, _, by simpa [h_sum, h_vanish] using local_eq⟩
