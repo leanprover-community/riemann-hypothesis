@@ -920,7 +920,7 @@ lemma IsLargeDegree.exists_basis_det_dvd {r : ℕ} {θ : ℝ} (h_large : T.IsLar
     Nat.le_floor <| by
       simpa only [Nat.cast_sum, Fintype.card_fun, ZMod.card, Nat.cast_pow, divisorConstant_map]
         using
-        (T.map (residue O)).sum_finrank_deepForms_le n h_large.block_pos h_large.two_mul_block_le x
+        (T.map (residue O)).sum_finrank_deepForms_le n h_large.two_mul_block_le x
   have h_range : Q.mulVecLin.range = T.originFunctions n r src g :=
     le_antisymm (Set.range_subset_iff.2 hQ)
       fun ψ hψ ↦ ⟨R *ᵥ ψ, T.mulVec_mulVec_eq_self_of_mem_originFunctions hR hQd hψ⟩

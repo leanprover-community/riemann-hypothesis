@@ -786,7 +786,7 @@ open Finset Module Finsupp Nat
 /-- The number `N n (P ^ (-2 r) + r ^ 2 / (k P))`, for `N` letters, `k` variables and degree `n` in
 each letter, the prime power `P = T.P`, and the index `r` at which deep and shallow variables change
 places. In `New.FrobeniusCycle.sum_finrank_deepForms_le`, over a field of characteristic `p` and for
-`0 < 2 r ≤ k`, it bounds, up to the factor of the number of exponents, the sum of the dimensions of
+`2 r ≤ k`, it bounds, up to the factor of the number of exponents, the sum of the dimensions of
 the spaces of forms all of whose translates are deep. -/
 def New.FrobeniusCycle.divisorConstant {N : ℕ} {W R : Type} [CommRing W] [IsLocalRing W]
     [CommRing R] (T : FrobeniusCycle N W R) (k n r : ℕ) : ℝ :=
@@ -869,17 +869,16 @@ lemma New.FrobeniusCycle.sum_deepIndicator_div_le (T : FrobeniusCycle N W K) {r 
             (div_le_div_of_nonneg_right hr_sq hP_nonneg))
           (Nat.cast_nonneg _)
 
-/-- Let `K` have characteristic `p` and `0 < 2 r ≤ k`. For every `M` the dimensions of the spaces
+/-- Let `K` have characteristic `p` and `2 r ≤ k`. For every `M` the dimensions of the spaces
 `T.deepForms k n r δ` for `1 ≤ δ ≤ M` add up to at most `T.divisorConstant k n r = N n (P ^ (-2
 r) + r ^ 2 / (k P))` times the number of `N`-tuples of monomials of degree `n` in `k` variables. -/
 lemma New.FrobeniusCycle.sum_finrank_deepForms_le (T : FrobeniusCycle N W K) [CharP K T.p] (n : ℕ)
-    {r : ℕ} (hr : 0 < r) (hk : 2 * r ≤ k) (M : ℕ) :
+    {r : ℕ} (hk : 2 * r ≤ k) (M : ℕ) :
     (∑ d ∈ range M, finrank K (T.deepForms k n r (d + 1)) : ℝ) ≤
       T.divisorConstant k n r * Fintype.card (Monomials (Fin k) n) ^ N := by
   -- Give a deep variable `x` (`T.deepIndicator r x = 1`) the cost `1 / P ^ (2 r)` or `1 / P`. A
   -- monomial of cost `t` is counted for at most `t` depths, and the mean cost is at most
   -- `T.divisorConstant k n r`.
-  have hk_pos : (0 : ℝ) < k := cast_pos.2 (by lia)
   let c (x : Fin k × ZMod N) : ℝ :=
     T.deepIndicator r x / T.P ^ (if 2 * r ≤ x.1 then 2 * r else 1)
   let cost (β : Exponents N k n) : ℝ := (exponentOf β).weight c
@@ -890,6 +889,16 @@ lemma New.FrobeniusCycle.sum_finrank_deepForms_le (T : FrobeniusCycle N W K) [Ch
     obtain ⟨β, hβ, h_cost⟩ : ∃ β : Exponents N k n, F β ≠ 0 ∧ (d + 1 : ℕ) ≤ cost β :=
       T.exists_le_weight_of_mem_deepForms hk hF hF_ne
     exact ⟨β, mem_filter.2 ⟨mem_univ β, le_floor h_cost⟩, hβ⟩
+  by_cases hk_zero : k = 0
+  · subst k
+    let : IsEmpty (Fin 0 × ZMod N) := ⟨fun x ↦ Fin.elim0 x.1⟩
+    have h_zero (d : ℕ) : finrank K (T.deepForms 0 n r (d + 1)) = 0 :=
+      Nat.eq_zero_of_le_zero ((h_rank d).trans_eq
+        (by simp [cost, weight_eq_sum, Finset.sum_of_isEmpty]))
+    simp only [h_zero, sum_const_zero, Nat.cast_zero]
+    unfold divisorConstant
+    positivity
+  have hk_pos : (0 : ℝ) < k := cast_pos.2 (Nat.pos_of_ne_zero hk_zero)
   have h_mean (x : Fin k × ZMod N) :
       ∑ β : Exponents N k n, (exponentOf β x : ℝ) = total * n / k := by
     rw [eq_div_iff hk_pos.ne', mul_comm, mul_sum_exponentOf]
