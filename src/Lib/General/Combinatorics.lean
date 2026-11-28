@@ -298,6 +298,65 @@ lemma algebraicIndependent_embedding_two_mul {E : Type*} [Field E] [NumberField 
     simp [coord, two_mul, h_repr]
   simpa [comp_aeval_apply, h_coord] using congrArg (MvPolynomial.aeval y) h_zero
 
+/-- If a linear form kills the products of `1 - c (i, σ) α * t` for every `α`, algebraic
+independence of the functions `c (i, σ)` forces it to kill each product of signed elementary
+symmetric functions. These products are the coefficients of the expanded family. -/
+lemma map_prod_esymm_eq_zero [Fintype ι] {A : Type*} {c : ι × S → A → K}
+    (hc : AlgebraicIndependent K c) {J : Type*} {x : J → S → Multiset R}
+    (hx : ∀ (j : J) (σ : S), (x j σ).card = a) (L : (J → R) →ₗ[K] K)
+    (hL : ∀ α : A, L (fun j : J ↦
+      ∏ i : ι, ∏ σ : S, ((x j σ).map fun t : R ↦ 1 - algebraMap K R (c (i, σ) α) * t).prod) = 0)
+    (y : ι × S → Fin a.succ) :
+    L (∏ p : ι × S, fun j : J ↦ (-1) ^ (y p).val * (x j p.2).esymm (y p)) = 0 := by
+  classical
+  let e (σ : S) (k : Fin a.succ) (j : J) : R := (-1) ^ k.val * (x j σ).esymm k
+  -- Vieta's formula at `X = 1` for the multiset `b • x j σ`.
+  have vieta (j : J) (σ : S) (b : K) :
+      ((x j σ).map fun t ↦ 1 - b • t).prod = ∑ k : Fin a.succ, b ^ k.val • e σ k j := by
+    simpa [eval_multiset_prod, sum_range, eval_finsetSum, hx, ← pow_smul_esymm] using
+      congrArg (Polynomial.eval 1) ((x j σ).map fun t ↦ b • t).prod_X_sub_X_eq_sum_esymm
+  have expand (α : A) :
+      L (∑ y : ι × S → Fin a.succ, (∏ p, c p α ^ (y p).val) • ∏ p, e p.2 (y p)) = 0 := by
+    rw [← hL α]
+    refine congrArg L (_root_.funext fun j ↦ ?_)
+    simp_rw [← Algebra.smul_def, vieta, ← prod_prod_type']
+    simp [prod_univ_sum, prod_smul]
+  -- The expanded relation is a linear combination of distinct monomials in the `c (i, σ)`.
+  let expo (y : ι × S → Fin a.succ) : ι × S →₀ ℕ := equivFunOnFinite.symm (Fin.val ∘ y)
+  have indep : LinearIndependent K fun y : ι × S → Fin a.succ ↦
+      MvPolynomial.aeval c (monomial (expo y) (1 : K)) :=
+    ((basisMonomials (ι × S) K).linearIndependent.map_injOn (MvPolynomial.aeval c).toLinearMap
+      hc.injOn).comp expo (equivFunOnFinite.symm.injective.comp Fin.val_injective.comp_left)
+  refine Fintype.linearIndependent_iff.1 indep (fun y ↦ L (∏ p, e p.2 (y p))) ?_ y
+  ext α
+  simpa [expo, MvPolynomial.aeval_monomial, mul_comm] using expand α
+
+/-- Evaluating a polynomial of total degree at most `n` at the root coefficients gives an
+element of the `n`th power of the span of the signed elementary symmetric functions. The
+zeroth elementary symmetric function supplies `1`, so monomials of smaller degree can be padded. -/
+lemma rootCoeffEval_mem_pow_span_esymm {J : Type*} {x : J → Multiset R}
+    (hx : ∀ j : J, (x j).card = a) {q : MvPolynomial (Fin a) ℤ} {n : ℕ}
+    (h_deg : q.totalDegree ≤ n) :
+    (fun j ↦ rootCoeffEval (x j) q) ∈
+      (span K (.range fun k : Fin a.succ ↦ fun j : J ↦ (-1) ^ k.val * (x j).esymm k)) ^ n := by
+  classical
+  let e (k : Fin a.succ) (j : J) : R := (-1) ^ k.val * (x j).esymm k
+  let M : Submodule K (J → R) := span K (.range e)
+  have one_le_M : 1 ≤ M :=
+    one_le.2 (subset_span ⟨0, _root_.funext fun j ↦ by simp [e, Multiset.esymm]⟩)
+  have eval_eq : (fun j ↦ rootCoeffEval (x j) q) =
+      ∑ d ∈ q.support, q.coeff d • ∏ k : Fin a, e k.castSucc.rev ^ d k := by
+    ext j
+    simp [rootCoeffEval, aeval_eq_eval₂Hom, eval₂_eq', prod_X_sub_C_coeff, hx, e]
+  change (fun j ↦ rootCoeffEval (x j) q) ∈ M ^ n
+  rw [eval_eq]
+  refine sum_mem fun d hd ↦ zsmul_mem ?_ _
+  have monomial_mem : ∏ k : Fin a, e k.castSucc.rev ^ d k ∈ M ^ ∑ k, d k := by
+    simpa using prod_pow_mem_graded (fun m : ℕ ↦ M ^ m) 1 (fun k : Fin a ↦ e k.castSucc.rev) d
+      (by simp [M, mem_span_of_mem])
+  exact pow_le_pow_right' one_le_M
+    (by simpa [sum_fintype] using (le_totalDegree hd).trans h_deg) monomial_mem
+
 /-- Let the functions `c (i, σ) : A → K` be algebraically independent over `K`, let each polynomial
 `q σ` have total degree at most `card ι`, and let each multiset `x j σ` have `a` elements. If a
 linear form `L` kills the family `j ↦ ∏_{i, σ} ∏_{t ∈ x j σ} (1 - c (i, σ) α * t)` for every `α`,
@@ -311,55 +370,17 @@ lemma map_prod_rootCoeffEval_eq_zero [Fintype ι] {A : Type*} {q : S → MvPolyn
       ∏ i : ι, ∏ σ : S, ((x j σ).map fun t : R ↦ 1 - algebraMap K R (c (i, σ) α) * t).prod) = 0) :
     L (fun j : J ↦ ∏ σ : S, rootCoeffEval (x j σ) (q σ)) = 0 := by
   classical
-  -- Let `e σ k` be the signed elementary symmetric functions of `x · σ`, and `M σ` their span.
-  -- Comparing coefficients shows that `L` kills `∏ σ, M σ ^ card ι`, and
-  -- `rootCoeffEval (x · σ) (q σ)` lies in `M σ ^ card ι`.
   let e (σ : S) (k : Fin a.succ) (j : J) : R := (-1) ^ k.val * (x j σ).esymm k
   let M (σ : S) : Submodule K (J → R) := span K (.range (e σ))
-  -- Vieta's formula at `X = 1` for the multiset `b • x j σ`.
-  have vieta (j : J) (σ : S) (b : K) :
-      ((x j σ).map fun t ↦ 1 - b • t).prod = ∑ k : Fin a.succ, b ^ k.val • e σ k j := by
-    simpa [eval_multiset_prod, sum_range, eval_finsetSum, hx, ← pow_smul_esymm] using
-      congrArg (Polynomial.eval 1) ((x j σ).map fun t ↦ b • t).prod_X_sub_X_eq_sum_esymm
-  -- Expand the product in `hL`.
-  have expand (α : A) :
-      L (∑ y : ι × S → Fin a.succ, (∏ p, c p α ^ (y p).val) • ∏ p, e p.2 (y p)) = 0 := by
-    rw [← hL α]
-    refine congrArg L (_root_.funext fun j ↦ ?_)
-    simp_rw [← Algebra.smul_def, vieta, ← prod_prod_type']
-    simp [prod_univ_sum, prod_smul]
-  -- This is a linear relation between monomials in the `c (i, σ)`, which are linearly
-  -- independent; so each coefficient `L (∏ p, e p.2 (y p))` is zero.
-  have coeff_zero (y : ι × S → Fin a.succ) : L (∏ p, e p.2 (y p)) = 0 := by
-    let expo (y : ι × S → Fin a.succ) : ι × S →₀ ℕ := equivFunOnFinite.symm (Fin.val ∘ y)
-    have indep : LinearIndependent K fun y : ι × S → Fin a.succ ↦
-        MvPolynomial.aeval c (monomial (expo y) (1 : K)) :=
-      ((basisMonomials (ι × S) K).linearIndependent.map_injOn (MvPolynomial.aeval c).toLinearMap
-        hc.injOn).comp expo (equivFunOnFinite.symm.injective.comp Fin.val_injective.comp_left)
-    refine Fintype.linearIndependent_iff.1 indep (fun y ↦ L (∏ p, e p.2 (y p))) ?_ y
-    ext α
-    simpa [expo, MvPolynomial.aeval_monomial, mul_comm] using expand α
-  -- The products `∏ p, e p.2 (y p)` span `∏ σ, M σ ^ card ι`.
+  -- Coefficient extraction puts the product of the spans in the kernel of `L`.
   have le_ker : ∏ σ : S, ∏ _ : ι, M σ ≤ L.ker := by
     rw [← prod_prod_type_right' fun (_ : ι) (σ : S) ↦ M σ]
-    simpa [M, prod_span, span_le, ← image_fintype_prod_pi, ← range_piMap,
-      range_subset_iff] using coeff_zero
-  -- A monomial of `q σ` is evaluated to a product of at most `card ι` coefficients of
-  -- `∏ (X - t)`, which are the `e σ k`; pad with `e σ 0 = 1`.
+    simpa [M, e, prod_span, span_le, ← image_fintype_prod_pi, ← range_piMap,
+      range_subset_iff] using map_prod_esymm_eq_zero hc hx L hL
+  -- The degree bound puts each evaluated polynomial in the corresponding power of its span.
   have eval_mem (σ : S) : (fun j ↦ rootCoeffEval (x j σ) (q σ)) ∈ ∏ _ : ι, M σ := by
-    have one_le_M : 1 ≤ M σ :=
-      one_le.2 (subset_span ⟨0, _root_.funext fun j ↦ by simp [e, Multiset.esymm]⟩)
-    have eval_eq : (fun j ↦ rootCoeffEval (x j σ) (q σ)) =
-        ∑ d ∈ (q σ).support, (q σ).coeff d • ∏ k : Fin a, e σ k.castSucc.rev ^ d k := by
-      ext j
-      simp [rootCoeffEval, aeval_eq_eval₂Hom, eval₂_eq', prod_X_sub_C_coeff, hx, e]
-    rw [eval_eq, Finset.prod_const, Finset.card_univ]
-    refine sum_mem fun d hd ↦ zsmul_mem ?_ _
-    have monomial_mem : ∏ k : Fin a, e σ k.castSucc.rev ^ d k ∈ M σ ^ ∑ k, d k := by
-      simpa using prod_pow_mem_graded (fun m : ℕ ↦ M σ ^ m) 1 (fun k : Fin a ↦ e σ k.castSucc.rev) d
-        (by simp [M, mem_span_of_mem])
-    exact pow_le_pow_right' one_le_M
-      (by simpa [sum_fintype] using (le_totalDegree hd).trans (h_deg σ)) monomial_mem
+    simpa only [M, e, Finset.prod_const, Finset.card_univ] using
+      rootCoeffEval_mem_pow_span_esymm (K := K) (fun j ↦ hx j σ) (h_deg σ)
   simpa [prod_fn] using le_ker
     (Finset.prod_hom_rel (r := fun f N ↦ f ∈ N) ⟨1, by simp⟩ fun σ _ _ ↦ mul_mem_mul (eval_mem σ))
 
