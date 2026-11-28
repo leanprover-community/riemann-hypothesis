@@ -219,6 +219,75 @@ lemma eq_zero_of_evalCup_eq_zero_of_trivialOn [Finite M] (h_kill : ∀ m : M, l 
   exact neg_eq_zero.mp
     ((mk_eq_neg_cyclicClass_ofZModCocycle ha ξ _ (by simp [z, ξ, h_triv])).symm.trans (hy z))
 
+/-- Precomposition with an equivariant homomorphism `f : M₁ → M₂` of finite discrete `Γ`-modules
+induces the dual equivariant homomorphism `M₂* → M₁*` on Cartier duals. -/
+private def DiscreteModule.Hom.cartierDual {M₁ M₂ : DiscreteModule R Γ} [Finite M₁] [Finite M₂]
+    (f : M₁.Hom M₂) : (M₂.cartierDual (Ω := Ω)).Hom (M₁.cartierDual (Ω := Ω)) :=
+  ⟨(AddMonoidHom.compHom' ↑f).toIntLinearMap, by simp [f.isIntertwining, ext_iff]⟩
+
+/-- An equivariant homomorphism `f : M₁ → M₂` and its Cartier dual `f.cartierDual : M₂* → M₁*` are
+adjoint with respect to the evaluation cup product `evalCup` on 1-cocycles. -/
+private lemma evalCup_cartierDual_mapZ1 {M₁ M₂ : DiscreteModule R Γ} [Finite M₁] [Finite M₂]
+    (f : M₁.Hom M₂) (x : Z1 (M₂.cartierDual (Ω := Ω)).ρ) (w : Z1 M₁.ρ) :
+    M₁.evalCup ((f.cartierDual (Ω := Ω)).mapZ1 x) w = M₂.evalCup x (f.mapZ1 w) :=
+  congrArg (Quotient.mk _) (by simp [Hom.cartierDual, f.isIntertwining])
+
+/-- The Cartier dual of a short exact sequence `M' → M → M''` of finite discrete `Γ`-modules is
+left exact: `π.cartierDual` is injective and `Exact π.cartierDual ι.cartierDual`. -/
+private lemma cartierDual_injective_and_exact {M' M M'' : DiscreteModule R Γ}
+    [Finite M'] [Finite M] [Finite M''] {ι : M'.Hom M} {π : M.Hom M''} (s : IsShortExact ι π) :
+    Injective (π.cartierDual (Ω := Ω)) ∧
+      Exact (π.cartierDual (Ω := Ω)) (ι.cartierDual (Ω := Ω)) := by
+  refine ⟨fun f f' h_eq ↦ ext f f' (s.2.2.forall.mpr (DFunLike.congr_fun h_eq)),
+    fun f ↦ ⟨fun hf ↦ ?_, ?_⟩⟩
+  · -- A map on `M` that kills `M'` extends from `M''`.
+    have h_kills (m : M') : f (ι m) = 0 := DFunLike.congr_fun hf m
+    obtain ⟨f', hf'⟩ : ∃ f' : M'' →+ DiscreteUnits Ω, ∀ m : M, f' (π m) = f m :=
+      exists_extend π.toAddMonoidHom f fun m hm ↦ by
+        obtain ⟨m', rfl⟩ := (s.2.1 m).mp hm
+        exact h_kills m'
+    exact ⟨f', ext _ _ hf'⟩
+  · rintro ⟨f', rfl⟩
+    -- `π ∘ ι = 0`.
+    exact ext _ _ fun m ↦ by simp [Hom.cartierDual, s.2.1.apply_apply_eq_zero]
+
+/-- Multiplicativity of the cocycle-duality bound in extensions: for a short exact sequence
+`M' → M → M''` of finite discrete `Γ`-modules, if `#X · #W ≤ #M' ^ e` on `M'` and
+`#X · #W ≤ #M'' ^ e` on `M''` for all orthogonal cocycle subgroups, then the same bound holds on
+`M`. -/
+private lemma card_mul_card_le_of_isShortExact {M' M M'' : DiscreteModule R Γ}
+    [Finite M'] [Finite M] [Finite M''] {ι : M'.Hom M} {π : M.Hom M''} (s : IsShortExact ι π)
+    {e : ℕ}
+    (ih' : ∀ (X' : AddSubgroup ↥(Z1 (M'.cartierDual (Ω := Ω)).ρ)) (W' : AddSubgroup ↥(Z1 M'.ρ)),
+      X' ≤ pairingAnnihilator M'.evalCup.flip W' → Nat.card X' * Nat.card W' ≤ Nat.card M' ^ e)
+    (ih'' : ∀ (X'' : AddSubgroup ↥(Z1 (M''.cartierDual (Ω := Ω)).ρ))
+        (W'' : AddSubgroup ↥(Z1 M''.ρ)),
+      X'' ≤ pairingAnnihilator M''.evalCup.flip W'' →
+        Nat.card X'' * Nat.card W'' ≤ Nat.card M'' ^ e)
+    {X : AddSubgroup ↥(Z1 (M.cartierDual (Ω := Ω)).ρ)} {W : AddSubgroup ↥(Z1 M.ρ)}
+    (h : X ≤ pairingAnnihilator M.evalCup.flip W) :
+    Nat.card X * Nat.card W ≤ Nat.card M ^ e := by
+  let ι' := ι.cartierDual (Ω := Ω)
+  let π' := π.cartierDual (Ω := Ω)
+  obtain ⟨π'_inj, dual_exact⟩ := cartierDual_injective_and_exact (Ω := Ω) s
+  -- The part of `X` from `M''` is orthogonal to the image of `W`, and symmetrically, by
+  -- adjointness of `π`, `ι` and their Cartier duals for `evalCup`.
+  have orth'' : comap π'.mapZ1 X ≤ pairingAnnihilator M''.evalCup.flip (map π.mapZ1 W) := by
+    rintro x hx _ ⟨w, hw, rfl⟩
+    exact (evalCup_cartierDual_mapZ1 π x w).symm.trans (h hx w hw)
+  have orth' : map ι'.mapZ1 X ≤ pairingAnnihilator M'.evalCup.flip (comap ι.mapZ1 W) := by
+    rintro _ ⟨x, hx, rfl⟩ w hw
+    exact (evalCup_cartierDual_mapZ1 ι x w).trans (h hx (ι.mapZ1 w) hw)
+  -- Count `X` and `W` by their two parts, pair the parts crosswise, and multiply the bounds.
+  calc Nat.card X * Nat.card W
+      = (Nat.card (comap π'.mapZ1 X) * Nat.card (map π.mapZ1 W)) *
+          (Nat.card (map ι'.mapZ1 X) * Nat.card (comap ι.mapZ1 W)) := by
+        rw [π'.card_eq_card_comap_mul_card_map π'_inj dual_exact X,
+          ι.card_eq_card_comap_mul_card_map s.1 s.2.1 W]
+        ring
+    _ ≤ Nat.card M'' ^ e * Nat.card M' ^ e := Nat.mul_le_mul (ih'' _ _ orth'') (ih' _ _ orth')
+    _ = Nat.card M ^ e := by rw [s.card_eq_card_mul_card, mul_pow, mul_comm]
+
 /-- Let `k` be local with valuation ring `O` and `#(O / l) = l ^ d`. Let `M` be a finite module
 killed by `l ^ r` and fixed by `Q`, where every `g : Γ` has a power `g ^ l ^ i` in `Q`. This is
 `hM : FiniteKilledFixedInj (l ^ r) Q 1 0 M`, the predicate for which dévissage is stated; its last
@@ -242,64 +311,22 @@ lemma card_mul_card_le_of_le_pairingAnnihilator [Finite M] {d : ℕ} (Q : Subgro
   -- Dévissage: reduce to trivial modules killed by `l` and to extensions.
   have := J.finite_Z1
   refine M.devissage_induction rfl ⊤ Q (by simpa)
-    (fun M _ ⟨h_finite, h_kill, h_triv, h_inj⟩ X W h ↦ ?_)
-    (fun {M' M M'' ι π} s hM ih' ih'' X W h ↦ ?_) hM
-  · -- Trivial modules killed by `l`: the pairing has no kernel in `Z1 M.ρ`.
-    have h_ker_bot : M.evalCup.flip.ker ⊓ W = ⊥ := bot_unique fun y hy ↦
-      eq_zero_of_evalCup_eq_zero_of_trivialOn h_kill h_triv (ext_iff.mp hy.1)
-    calc
-      Nat.card X * Nat.card W ≤ Nat.card (pairingAnnihilator M.evalCup.flip W) * Nat.card W := by
-        grw [card_le_of_le h]
-      _ = Nat.card (Z1 M.cartierDual.ρ) := by
-        rw [card_pairingAnnihilator_mul_card _ (.ofBijective _ classOfInvariant_bijective),
-          h_ker_bot, card_bot, mul_one]
-      _ ≤ Nat.card M ^ (2 + d) := card_dual_cocycles_le_of_trivial hd h_kill h_triv
-  -- Extensions `M' → M → M''` of finite modules. A map on `M` that kills `M'` comes from `M''`.
-  have ⟨ι_inj, h_exact, π_surj⟩ : Injective ι ∧ Exact ι π ∧ Surjective π := s
-  have := hM.finite
-  have := (hM.left_of_isShortExact s).finite
-  have := (hM.right_of_isShortExact s).finite
-  -- The dual maps `f ↦ f ∘ ι` and `f ↦ f ∘ π`, again equivariant.
-  let ι' : M.cartierDual.Hom M'.cartierDual :=
-    ⟨(AddMonoidHom.compHom' ↑ι).toIntLinearMap, by simp [ι.isIntertwining, ext_iff]⟩
-  let π' : M''.cartierDual.Hom M.cartierDual :=
-    ⟨(AddMonoidHom.compHom' ↑π).toIntLinearMap, by simp [π.isIntertwining, ext_iff]⟩
-  have π'_inj : Injective π' := fun f f' h_eq ↦
-    ext f f' (π_surj.forall.mpr (DFunLike.congr_fun h_eq))
-  have dual_exact : Exact π' ι' := by
-    refine fun f ↦ ⟨fun hf ↦ ?_, ?_⟩
-    · -- A map on `M` that kills `M'` extends from `M''`.
-      have h_kills (m : M') : f (ι m) = 0 := DFunLike.congr_fun hf m
-      obtain ⟨f', hf'⟩ : ∃ f' : M'' →+ DiscreteUnits Ω, ∀ m : M, f' (π m) = f m :=
-        exists_extend π.toAddMonoidHom f fun m hm ↦ by
-          obtain ⟨m', rfl⟩ := (h_exact m).mp hm
-          exact h_kills m'
-      exact ⟨f', ext _ _ hf'⟩
-    · rintro ⟨f', rfl⟩
-      -- `π ∘ ι = 0`.
-      exact ext _ _ fun m ↦ by simp [ι', π', h_exact.apply_apply_eq_zero]
-  -- The part of `X` from `M''` is orthogonal to the image of `W`, and symmetrically: a map and its
-  -- dual are adjoint for the cup products, already on the level of cocycles.
-  have orth'' : comap π'.mapZ1 X ≤ pairingAnnihilator M''.evalCup.flip (map π.mapZ1 W) := by
-    rintro x hx _ ⟨w, hw, rfl⟩
-    have h_cup : M''.evalCup x (π.mapZ1 w) = M.evalCup (π'.mapZ1 x) w :=
-      congrArg (Quotient.mk _) (by simp [π', π.isIntertwining])
-    exact h_cup.trans (h hx w hw)
-  have orth' : map ι'.mapZ1 X ≤ pairingAnnihilator M'.evalCup.flip (comap ι.mapZ1 W) := by
-    rintro _ ⟨x, hx, rfl⟩ w hw
-    have h_cup : M'.evalCup (ι'.mapZ1 x) w = M.evalCup x (ι.mapZ1 w) :=
-      congrArg (Quotient.mk _) (by simp [ι', ι.isIntertwining])
-    exact h_cup.trans (h hx (ι.mapZ1 w) hw)
-  -- Count `X` and `W` by their two parts, pair the parts crosswise, and multiply the bounds.
-  calc Nat.card X * Nat.card W
-      = (Nat.card (comap π'.mapZ1 X) * Nat.card (map π.mapZ1 W)) *
-          (Nat.card (map ι'.mapZ1 X) * Nat.card (comap ι.mapZ1 W)) := by
-        rw [π'.card_eq_card_comap_mul_card_map π'_inj dual_exact X,
-          ι.card_eq_card_comap_mul_card_map ι_inj h_exact W]
-        ring
-    _ ≤ Nat.card M'' ^ (2 + d) * Nat.card M' ^ (2 + d) :=
-        Nat.mul_le_mul (ih'' _ _ orth'') (ih' _ _ orth')
-    _ = Nat.card M ^ (2 + d) := by rw [s.card_eq_card_mul_card, mul_pow, mul_comm]
+    (fun M _ ⟨h_finite, h_kill, h_triv, _⟩ X W h ↦ ?_)
+    (fun {M' M M'' ι π} s hM ih' ih'' X W h ↦
+      have := hM.finite
+      have := (hM.left_of_isShortExact s).finite
+      have := (hM.right_of_isShortExact s).finite
+      card_mul_card_le_of_isShortExact s ih' ih'' h) hM
+  -- Trivial modules killed by `l`: the pairing has no kernel in `Z1 M.ρ`.
+  have h_ker_bot : M.evalCup.flip.ker ⊓ W = ⊥ := bot_unique fun y hy ↦
+    eq_zero_of_evalCup_eq_zero_of_trivialOn h_kill h_triv (ext_iff.mp hy.1)
+  calc
+    Nat.card X * Nat.card W ≤ Nat.card (pairingAnnihilator M.evalCup.flip W) * Nat.card W := by
+      grw [card_le_of_le h]
+    _ = Nat.card (Z1 M.cartierDual.ρ) := by
+      rw [card_pairingAnnihilator_mul_card _ (.ofBijective _ classOfInvariant_bijective),
+        h_ker_bot, card_bot, mul_one]
+    _ ≤ Nat.card M ^ (2 + d) := card_dual_cocycles_le_of_trivial hd h_kill h_triv
 
 /-- Let `M` be a finite module killed by `l ^ r` and fixed by `Q` (`hM`), where every `g : Γ` has a
 power `g ^ l ^ i` in `Q`, and let `#(O / l) = l ^ d` for the valuation ring `O = A ∩ k` of the local
