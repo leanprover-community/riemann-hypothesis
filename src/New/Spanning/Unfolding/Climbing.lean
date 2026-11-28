@@ -502,7 +502,9 @@ lemma integral_besselKernel_eq_zero_of_not_charsAgree {γ : S.G E} (side : FullO
   -- `u` twists the kernel by a scalar `≠ 1`.
   obtain ⟨u, hu, u', hu', h_comm, h_ne⟩ : ∃ u ∈ besselU, ∃ u' ∈ besselU, u * γ = γ * u' ∧
       S.unipotentChar (S.ratToFin u) ≠ S.unipotentChar (S.ratToFin u') := by
-    simpa [CharsAgree] using hγ
+    simp only [CharsAgree] at hγ
+    push Not at hγ
+    exact hγ
   have h_inv (g : Γ) (y : InfinitePlace E → 𝔰.G₁) :
       S.besselKernel side γ (g • y) = S.besselKernel side γ y := by
     subst hΓ
@@ -510,12 +512,15 @@ lemma integral_besselKernel_eq_zero_of_not_charsAgree {γ : S.G E} (side : FullO
     have h_conj : γ⁻¹ * (k * γ) ∈ S.classUnipotent c' := QuotientGroup.eq.1 hk.symm
     have h_shift : S.besselFn side ((S.ratToInf γ)⁻¹ * (S.ratToInf k * y)) =
         S.besselFn side ((S.ratToInf γ)⁻¹ * y) := by
-      simpa [mul_assoc] using besselFn_mul_of_mem_classUnipotent ⟨_, h_conj⟩ ((S.ratToInf γ)⁻¹ * y)
+      simpa only [S.ratToInf.map_inv, S.ratToInf.map_mul, mul_assoc, mul_inv_cancel_left] using
+        besselFn_mul_of_mem_classUnipotent ⟨_, h_conj⟩ ((S.ratToInf γ)⁻¹ * y)
     simp [besselKernel, besselFn_mul_of_mem_classUnipotent k, h_shift]
   have h_twist (y : InfinitePlace E → 𝔰.G₁) : S.besselKernel side γ (S.ratToInf u * y) =
       ((S.unipotentChar (S.ratToFin u))⁻¹ * S.unipotentChar (S.ratToFin u')) •
         S.besselKernel side γ y := by
     rw [← besselKernel_besselU_mul hu hu', mul_inv_eq_of_eq_mul h_comm]
+  let : SMulInvariantMeasure Γ (InfinitePlace E → 𝔰.G₁) volume :=
+    ⟨fun γ s _ ↦ measure_preimage_mul _ γ.val s⟩
   rw [← hβ.integral_orbitMeasure h_inv]
   exact integral_quotMeasure_eq_zero_of_twist volume (fun g hg ↦ h_inv ⟨g, hg⟩)
     continuous_besselKernel (by simp [unipotentChar]) (mt eq_of_inv_mul_eq_one h_ne) h_twist
@@ -535,6 +540,13 @@ lemma amplitudeSum_eq_zero_of_not_charsAgree [HasPrimitiveRoot5040 E]
   -- `S.classUnipotent c × S.classUnipotent c'`. Take one adapted to the stabilizers of the cosets
   -- `γ · S.classUnipotent c'`; then the term of each `γ` is a multiple of an integral that
   -- vanishes. `φ x` is a cutoff for the stabilizer of the coset `x` acting at the infinite places.
+  let : MulAction (S.G E) (S.G E ⧸ S.classUnipotent c') :=
+    @MulAction.quotient _ (S.G E) _ _ (Monoid.toMulAction _) (S.classUnipotent c') _
+  let instMA : MulAction (S.classUnipotent c) (S.G E ⧸ S.classUnipotent c') :=
+    Subgroup.instMulActionSubtypeMem
+  let : SMul (S.classUnipotent c) (S.G E ⧸ S.classUnipotent c') := instMA.toSMul
+  let : HSMul (S.classUnipotent c) (S.G E ⧸ S.classUnipotent c')
+      (S.G E ⧸ S.classUnipotent c') := instHSMul
   let Γ (x : S.G E ⧸ S.classUnipotent c') : Subgroup (InfinitePlace E → 𝔰.G₁) :=
     (stabilizer (S.classUnipotent c) x).map (S.ratToInf.domRestrict (S.classUnipotent c))
   have h_cutoff (x : S.G E ⧸ S.classUnipotent c') : ∃ β : (InfinitePlace E → 𝔰.G₁) → ENNReal,
@@ -557,12 +569,13 @@ lemma amplitudeSum_eq_zero_of_not_charsAgree [HasPrimitiveRoot5040 E]
     have coe_mul (u : S.classUnipotent c) : (↑(u * γ) : S.G E ⧸ S.classUnipotent c') = u • x := rfl
     calc _ = ∑' u : S.classUnipotent c, reps.indicator 1 (u • x) * φ (u • x)
            (S.ratToInf u * y) := by
-          simp [wt, tsum_classCutoff_eq_one, coe_mul, tsum_prod', ENNReal.tsum_mul_right]
+          simp [wt, S.ratToInf.map_mul, S.ratToInf.map_inv, tsum_classCutoff_eq_one, coe_mul,
+            tsum_prod', ENNReal.tsum_mul_right]
       _ = ∑' u : stabilizer (S.classUnipotent c) (a x • x),
             φ (a x • x) (S.ratToInf (u * a x : S.classUnipotent c) * y) :=
           tsum_indicator_smul_eq_tsum_stabilizer ha (fun z u ↦ φ z (S.ratToInf u * y)) x
       _ = 1 := by
-          simpa only [Subgroup.coe_mul, map_mul, mul_assoc]
+          simpa only [Subgroup.coe_mul, S.ratToInf.map_mul, mul_assoc]
             using hφ_sum (a x • x) (S.ratToInf (a x) * y)
   have h_wt_meas (γ : S.G E) : Measurable (wt γ) := (hφ_meas γ).const_smul _
   obtain ⟨h_hasSum, -⟩ :=
@@ -832,8 +845,27 @@ lemma exists_eichler_mem_latticeStabilizer (a : Fin (𝔰.ϱ + 1)) (r : Ô E) (x
     fun w hw ↦ ?_⟩
   change u.val.val.map (S.reduceAboveM w) = _
   -- The last term of `eichlerMap` carries the factor `star x`, so it vanishes modulo `w`.
-  simp [hu_eq, eichlerMap, hv, hw, vecMulVec_apply, apply_ite, ← ext_iff, dotProduct, mulVec,
-    vecMul, Matrix.one_apply]
+  have h_x (k) : S.reduceAboveM w (star (r • frameImage 1 *ᵥ x) k) = 0 := by
+    simp only [Pi.star_apply, Pi.smul_apply, smul_eq_mul, frameImage_one_mulVec]
+    rcases k with k | ((k | k) | k) <;> simp [Fin.init, hw]
+  have h_mul : S.reduceAboveM w ∘
+      (star (r • frameImage 1 *ᵥ x) ᵥ* (S.latticeMiddle (Ô E)).splitGram) = 0 := by
+    ext j
+    simp only [Function.comp_apply, Pi.zero_apply, vecMul, dotProduct, map_sum,
+      (S.reduceAboveM w).map_mul, h_x, zero_mul, Finset.sum_const_zero]
+  have h_frame : S.reduceAboveM w ∘ (r • frameImage 1 *ᵥ x) =
+      S.reduceAboveM w r • (frameImage 1 *ᵥ S.reduceAboveM w ∘ x) := by
+    ext i
+    simp only [Function.comp_apply, Pi.smul_apply, smul_eq_mul, frameImage_one_mulVec]
+    rcases i with i | ((i | i) | i) <;> simp [Fin.init]
+  have map_vmv (a b : 𝔰.BesselIndex → Ô E) :
+      (vecMulVec a b).map (S.reduceAboveM w) =
+        vecMulVec (S.reduceAboveM w ∘ a) (S.reduceAboveM w ∘ b) := by
+    ext i j; exact (S.reduceAboveM w).map_mul _ _
+  rw [hu_eq, eichlerMap, hv, Matrix.map_sub _ (S.reduceAboveM w).map_sub,
+    Matrix.map_add _ (S.reduceAboveM w).map_add,
+    Matrix.map_one _ (S.reduceAboveM w).map_zero (S.reduceAboveM w).map_one,
+    map_vmv, map_vmv, h_mul, Matrix.vecMulVec_zero, sub_zero, h_frame, Matrix.smul_vecMulVec]
 
 /-- Work modulo a place `w` above `M`. Let `k` stabilize the lattice, let its reduction agree, and
 write `γ` for `S.actionAt (S.reduction k) w`, the matrix of `k` modulo `w`. Suppose that
