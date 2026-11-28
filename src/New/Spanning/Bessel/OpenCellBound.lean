@@ -82,6 +82,12 @@ lemma l2_opNorm_le_pow_four {l : ℕ} {M : ℝ} (hl : l ≤ M) {A : Matrix (Fin 
     _ ≤ M * M * M ^ 2 := mul_le_mul_of_nonneg_right (mul_le_mul hl hl hl0 hM0) (sq_nonneg M)
     _ = M ^ 4 := by rw [← sq, ← pow_add]
 
+private lemma norm_det_le_of_entry_bound {l : ℕ} {M : ℝ} (hl : l ≤ M) {A : Matrix (Fin l) (Fin l) ℂ}
+    (hA : ∀ a b, ‖A a b‖ ≤ M ^ 2) : ‖A.det‖ ≤ (M ^ 4) ^ l := by
+  refine norm_det_le_norm_pow.trans ?_
+  rw [card_fin]
+  exact pow_le_pow_left₀ (norm_nonneg A) (l2_opNorm_le_pow_four hl hA) l
+
 lemma oneSubNormSqInvCorner_le_one {𝔰 : Shape} (Z : 𝔰.FrameMatrix) : oneSubNormSqInvCorner Z ≤ 1 :=
   sub_le_self 1 (sq_nonneg _)
 
@@ -95,12 +101,6 @@ lemma isBoundedInCell_of_inv_le_gramDiscReal {𝔰 : Shape} {M T : ℝ} {Z : �
   have hM_one : 1 ≤ M := (Nat.one_le_cast.2 𝔰.ϱ.succ_pos).trans hM
   have hM_pos : 0 < M := one_pos.trans_le hM_one
   have h_pow (k : ℕ) (hk : k ≤ 8 * 𝔰.n) : M ^ k ≤ T := (pow_le_pow_right₀ hM_one hk).trans hT
-  have h_det_le {l : ℕ} (hl : l ≤ 𝔰.n) {A : Matrix (Fin l) (Fin l) ℂ}
-      (hA : ∀ a b : Fin l, ‖A a b‖ ≤ M ^ 2) : ‖A.det‖ ≤ (M ^ 4) ^ l := by
-    refine norm_det_le_norm_pow.trans ?_
-    rw [card_fin]
-    exact pow_le_pow_left₀ (norm_nonneg A)
-      (l2_opNorm_le_pow_four ((Nat.cast_le.2 hl).trans hM) hA) l
   have h_mem : Z ∈ 𝔰.openCell := mem_openCell_iff.2 (h_disc.trans_lt' (inv_pos.2 hM_pos))
   have h_det_pos : 0 < ‖Z.det‖ := norm_pos_iff.2 h_mem.1
   have h_defect_pos : 0 < oneSubNormSqInvCorner Z := oneSubNormSqInvCorner_pos h_mem
@@ -123,7 +123,8 @@ lemma isBoundedInCell_of_inv_le_gramDiscReal {𝔰 : Shape} {M T : ℝ} {Z : �
     have h_adj (a b : Fin (𝔰.ϱ + 1)) : ‖Z.adjugate a b‖ ≤ (M ^ 4) ^ 𝔰.ϱ := by
       rw [adjugate_fin_succ_eq_det_submatrix, norm_mul, norm_pow, norm_neg, norm_one, one_pow,
         one_mul]
-      exact h_det_le (A := Z.submatrix b.succAbove a.succAbove) 𝔰.ϱ.le_succ fun i j ↦ hZ _ _
+      exact norm_det_le_of_entry_bound (A := Z.submatrix b.succAbove a.succAbove)
+        ((Nat.cast_le.2 𝔰.ϱ.le_succ).trans hM) fun i j ↦ hZ _ _
     have h_adj_norm : ‖Z.adjugate‖ ≤ M ^ 2 * (M ^ 4) ^ 𝔰.ϱ := by
       calc ‖Z.adjugate‖ ≤ (card (Fin (𝔰.ϱ + 1)) : ℝ) * card (Fin (𝔰.ϱ + 1)) * (M ^ 4) ^ 𝔰.ϱ :=
             l2_opNorm_le_of_apply h_adj
@@ -143,7 +144,7 @@ lemma isBoundedInCell_of_inv_le_gramDiscReal {𝔰 : Shape} {M T : ℝ} {Z : �
           rwa [mul_inv, inv_mul_le_iff₀ h_det_pos] at h_inv
       _ ≤ M ^ (4 * 𝔰.n + 1) := by
           rw [pow_succ, pow_mul]
-          exact mul_le_mul_of_nonneg_right (h_det_le le_rfl hZ) hM_pos.le
+          exact mul_le_mul_of_nonneg_right (norm_det_le_of_entry_bound hM hZ) hM_pos.le
       _ ≤ T := h_pow _ (by dsimp only [Shape.n]; omega)
 
 /-- Sizes near a point of Ω. Let `Z` be a complex matrix of size `n = ϱ + 1` and `M ≥ 8 n`, with
@@ -445,14 +446,11 @@ the size of `Z`, then `𝗀(Z) ≤ ρ ^ (8 n)`. -/
 lemma New.gramDiscReal_le_pow {𝔰 : Shape} {ρ : ℝ} {Z : 𝔰.FrameMatrix} (hZ : 0 < gramDiscReal Z)
     (hρ_n : 𝔰.n ≤ ρ) (hZρ : ∀ a c : Fin (𝔰.ϱ + 1), ‖Z a c‖ ≤ ρ ^ 2) :
     gramDiscReal Z ≤ ρ ^ (8 * 𝔰.n) := by
-  have h_det : ‖Z.det‖ ≤ (ρ ^ 4) ^ 𝔰.n := by
-    refine norm_det_le_norm_pow.trans ?_
-    rw [Fintype.card_fin]
-    exact pow_le_pow_left₀ (norm_nonneg Z) (l2_opNorm_le_pow_four hρ_n hZρ) 𝔰.n
   calc gramDiscReal Z = ‖Z.det‖ ^ 2 * oneSubNormSqInvCorner Z :=
          gramDiscReal_eq_norm_det_sq_mul (mem_openCell_iff.2 hZ).1
     _ ≤ ((ρ ^ 4) ^ 𝔰.n) ^ 2 * 1 :=
-        mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) h_det 2) (oneSubNormSqInvCorner_le_one Z)
+        mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) (norm_det_le_of_entry_bound hρ_n hZρ) 2)
+          (oneSubNormSqInvCorner_le_one Z)
           (oneSubNormSqInvCorner_pos (mem_openCell_iff.2 hZ)).le (sq_nonneg _)
     _ = ρ ^ (8 * 𝔰.n) := by
         rw [mul_one, ← pow_mul, ← pow_mul, show 4 * (𝔰.n * 2) = 8 * 𝔰.n by omega]
