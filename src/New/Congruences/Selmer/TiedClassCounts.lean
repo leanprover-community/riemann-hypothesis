@@ -15,7 +15,6 @@ ties, without the normalisation at `γ_*`. This file states the descent bounds f
 * `New.Selmer.exists_isTiedPrimes_length_classes_le`,
   `New.Selmer.exists_isTiedPrimes_card_le_and_length_classes_le`: sets of tied primes for which the
   tied Selmer classes of every datum are short.
-* `New.Selmer.SelmerDatum.length_classes_erase_le`: releasing the ties at the first prime.
 * `New.Selmer.SelmerDatum.exists_boundsSelmer_ellVal_eval_le_of_length_classes_le`: the polynomial
   bound from a bound on the classes tied at the later primes.
 
@@ -93,24 +92,6 @@ namespace SelmerDatum
 
 variable {ι n : Type} [Fintype n] [DecidableEq n] {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)}
   {J : Finset (FinPlace E)} {M N s₀ : ℕ} {P₀ : FinPlace E} {r : ℚ≥0}
-
-open scoped Classical in
-/-- `New.Selmer.SelmerDatum.length_tiedSelmer_erase_le` for classes: if the tied Selmer classes
-modulo `ℓ ^ M` with the ties at all primes of `J` have length at most `globalTerm + placesTerm`,
-then those with the ties only at the primes other than `P₀` have length at most `β_T`. -/
-lemma length_classes_erase_le (T : SelmerDatum ℓ S₀ g₀ O n)
-    {d : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
-    (h_primes : IsTiedPrimes ℓ S₀ V W N P₀ J d) (hMN : M < N) (i : ι)
-    (hV : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M T.ρ g = 1)
-    (h_first : ∀ b : Bool, reduceModPow ℓ M T.ρ (idOrConjInv b (d P₀).1.frob) =
-      reduceModPow ℓ M T.ρ (idOrConjInv b g₀))
-    (h_tied : length O ((T.tiedCocyclesZ1 (dvd_refl ((ℓ : O) ^ M)) J J d i).map
-      (T.reductionModule (dvd_refl ((ℓ : O) ^ M))).π₁) ≤ T.globalTerm + T.placesTerm) :
-    length O ((T.tiedCocyclesZ1 (dvd_refl ((ℓ : O) ^ M)) J (J.erase P₀) d i).map
-      (T.reductionModule (dvd_refl ((ℓ : O) ^ M))).π₁) ≤ T.β := by
-  rw [← T.length_tiedSelmer_eq_length_map_π₁ dvd_rfl h_primes hV subset_rfl] at h_tied
-  rw [← T.length_tiedSelmer_eq_length_map_π₁ dvd_rfl h_primes hV (erase_subset P₀ J)]
-  exact T.length_tiedSelmer_erase_le h_primes hMN i hV h_first h_tied
 
 open scoped Classical in
 /-- `New.Selmer.SelmerDatum.exists_boundsSelmer_ellVal_eval_le` with its hypothesis on classes: if
