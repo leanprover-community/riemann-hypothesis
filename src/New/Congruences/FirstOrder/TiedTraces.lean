@@ -4,6 +4,7 @@ import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 public import Lib.GaloisRep.TaylorWiles
 public import Lib.LocalGL.SphericalChainLemma
 public import New.Congruences.FirstOrder.OnePrime
+public import TauCeti.RepresentationTheory.NormDeformation.Logarithm
 public import Lib.LocalGL.Iwahori.SphericalExponents
 import Lib.GaloisRep.LocalGlobal.IwahoriCompatibility
 import Lib.General.LinearAlgebra.Eigenvalues
@@ -49,7 +50,8 @@ Notions from other files:
 * `New.Patching.BaseLevel.heckeAlgebra`, `New.Patching.BaseLevel.heckeAction`: the `ℓ`-adic
   functions `t` on systems such that scaling each system `x` by `ιℓ.symm (t x)` preserves the
   integral forms, and the operator that such a function defines.
-* `New.Patching.weightedSum`: `weightedSum ρ ind g = ∑ γ, g (ind γ) • ρ γ` for `g : ZMod m → ℤ`.
+* `TauCeti.weightedNorm` (Tau Ceti): `weightedNorm ρ ind g = ∑ γ, g (ind γ) • ρ γ` for
+  `g : ZMod m → ℤ`.
 
 ## Relation to the literature
 
@@ -59,6 +61,8 @@ See `New.Congruences.FirstOrder.AuxiliaryPrimeTie` for related work.
 @[expose] public section
 
 open Pi Fintype Polynomial Nat Group Submodule ComplexOrder
+open TauCeti (IsReductionMod weightedNorm weightedNorm_apply weightedNorm_one mul_weightedNorm
+  mul_sum_monoidHom map_valMinAbs_eq_zero_of_shift)
 
 attribute [local instance low] Fintype.ofFinite
 
@@ -438,20 +442,20 @@ omit [Nonempty n] [DecidableEq J] [V.IsStd] [WeilData E] in
 that the weight is `f (· - shift) - root f`, and that `r x • z = s x • B z` for every form `z` of a
 system `x` on which `Γ` acts by `ψ ∘ χ` for a character `ψ` with `ψ shift ≠ root`. Then
 `W r = BW s`. -/
-lemma weightedSum_mul_heckeAction_eq_of_eigen {j : J} {r s : D.heckeAlgebra Q.place} {Γ : Type*}
+lemma weightedNorm_mul_heckeAction_eq_of_eigen {j : J} {r s : D.heckeAlgebra Q.place} {Γ : Type*}
     [Group Γ] [Fintype Γ] {ρ : Γ →* D.integralEnd Q.place} {χ : Γ →* Multiplicative (ZMod (ℓ ^ ν))}
     {weight : ZMod (ℓ ^ ν) → ℤ} {BW : D.integralEnd Q.place}
     (shift : ZMod (ℓ ^ ν)) (root : ℂ) (B : D.formsOfLevel Q.place →ₗ[ℂ] V.forms κ)
     (hρ : ∀ γ : Γ, ρ γ ∈ D.localOperators Q j)
     (h_BW : ∀ y : D.formsOfLevel Q.place,
-      (BW.val y : V.forms κ) = B ((weightedSum ρ χ weight).val y))
+      (BW.val y : V.forms κ) = B ((weightedNorm ρ χ weight).val y))
     (f : ZMod (ℓ ^ ν) → ℂ)
     (h_eigen : ∀ (x : D.Eigensystem Q.place) (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ)
       (z : D.formsOfLevel Q.place), (z : V.forms κ) ∈ (x : Isotypic V κ).val →
       (∀ γ : Γ, (ρ γ).val z = ψ (χ γ).toAdd • z) → ψ shift ≠ root →
       ιℓ.symm (r.val x) • (z : V.forms κ) = ιℓ.symm (s.val x) • B z)
     (h_weight : ∀ x : ZMod (ℓ ^ ν), f (x - shift) - root * f x = weight x) :
-    weightedSum ρ χ weight * heckeAction r = BW * heckeAction s := by
+    weightedNorm ρ χ weight * heckeAction r = BW * heckeAction s := by
   -- Test on a form `y` of one system `x`. For F : Z/ℓ^ν → ℂ let T F be the sum of the terms
   -- (F (χ γ - shift) - root F (χ γ)) • ρ γ y; T f is the weighted sum applied to `y`. The claim is
   -- linear in F, so it may be checked on characters ψ, where T ψ is an eigenvector or zero.
@@ -481,8 +485,8 @@ lemma weightedSum_mul_heckeAction_eq_of_eigen {j : J} {r s : D.heckeAlgebra Q.pl
     by_cases h₀ : T ψ = 0
     · simp [h₀]
     · simpa using h_eigen x ψ⁻¹ _ (hT_mem ψ) (hT_eigen ψ) (mt (hT_zero ψ) h₀)
-  have hT_f : T f = (weightedSum ρ χ weight).val y := by
-    simp [hT, weightedSum, h_weight, Int.cast_smul_eq_zsmul]
+  have hT_f : T f = (weightedNorm ρ χ weight).val y := by
+    simp [hT, weightedNorm_apply, h_weight, Int.cast_smul_eq_zsmul]
   -- Both Hecke operators act on `y` by scalars.
   have h_scalar (t : D.heckeAlgebra Q.place) : (heckeAction t).val y = ιℓ.symm (t.val x) • y :=
     Subtype.ext (diagOp_apply t.val x hy)
@@ -602,11 +606,11 @@ logarithm `P.ind` on `𝔽_wˣ` gives `P.indDet = P.ind ∘ det` with values mod
 the norm over `GL_n(𝔽_w)` with weight `f ∘ P.indDet`, then
 `L tr[(γ - 1) g p(φ)] = (⟨γ⟩ - 1) L tr[g p(φ)]`, where `φ` is the Frobenius element at `w`,
 `⟨γ⟩ = P.diamond`, and the traces are `tameTrace` and `traceElement`. -/
-lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
+lemma weightedNorm_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E)) (f : ZMod (ℓ ^ ν) → ℤ) :
-    weightedSum (D.placeRep Q j) P.indDet f * heckeAction (tameTrace Q hN j p g) =
-      (D.placeRep Q j P.diamond - 1) * weightedSum (D.placeRep Q j) P.indDet f *
+    weightedNorm (D.placeRep Q j) P.indDet f * heckeAction (tameTrace Q hN j p g) =
+      (D.placeRep Q j P.diamond - 1) * weightedNorm (D.placeRep Q j) P.indDet f *
         heckeAction (traceElement hN p (Q.frobData j).frob g) := by
   have placeRep_mem (k : GL (Fin (card n)) (ResField (Q.place j))) :
       D.placeRep Q j k ∈ D.localOperators Q j :=
@@ -621,7 +625,7 @@ lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ
       ιℓ.symm ((tameTrace Q hN j p g).val x) • (z : V.forms κ) =
         ιℓ.symm ((traceElement hN p (Q.frobData j).frob g : D.heckeAlgebra Q.place).val x) • B z :=
     tameTrace_smul_eq_diamond_sub_one hQ hN ha P p g ψ hz hz_eigen
-  exact weightedSum_mul_heckeAction_eq_of_eigen Q (shift := 0) (root := 0) (B := B) placeRep_mem
+  exact weightedNorm_mul_heckeAction_eq_of_eigen Q (shift := 0) (root := 0) (B := B) placeRep_mem
     (fun _ ↦ rfl) (f := fun s ↦ (f s : ℂ))
     (fun x ψ z hz hz_eigen _ ↦ dict x ψ z hz hz_eigen) (by simp)
 
@@ -637,20 +641,20 @@ lemma norm_mul_traceElement_tameGenerator_eq_zero
       heckeAction (traceElement hN (X - 1) (Q.frobData i).isPlaceOver.tameGenerator g) = 0 := by
   obtain ⟨P⟩ := Q.nonempty_localChoice i
   -- The dictionary for `p = 1` and the weight `1`; the diamond element fixes the norm.
-  have dict := weightedSum_indDet_mul_tameTrace hQ hN ha P 1 g 1
-  rwa [weightedSum_one, sub_one_mul, mul_sum_monoidHom, sub_self, zero_mul, tameTrace_one] at dict
+  have dict := weightedNorm_indDet_mul_tameTrace hQ hN ha P 1 g 1
+  rwa [weightedNorm_one, sub_one_mul, mul_sum_monoidHom, sub_self, zero_mul, tameTrace_one] at dict
 
 omit [V.IsStd] [WeilData E] in
 /-- Let the auxiliary places be off the base level and `w = Q.place j`. The norm over the stabiliser
 of a line in `GL_n(𝔽_w)` (acting by `lineRep`) with weight `f ∘ P.indLine` has values fixed by the
 pro-unipotent Iwahori subgroup of `GL_n(E_w)`. -/
-lemma weightedSum_indLine_mem_levelSpace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
+lemma weightedNorm_indLine_mem_levelSpace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (P : Q.LocalChoice j) (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place) :
-    ((weightedSum (D.lineRep Q j) P.indLine f).val y : V.forms κ) ∈
+    ((weightedNorm (D.lineRep Q j) P.indLine f).val y : V.forms κ) ∈
       levelSpace (localFormRep V κ (Q.apart.star_ne j j)).ρ proIwahori :=
   mem_levelSpace_proIwahori hQ fun k hk _ ↦ by
-    change (D.lineRep Q j k * weightedSum (D.lineRep Q j) P.indLine f).val y = _
-    rw [mul_weightedSum]
+    change (D.lineRep Q j k * weightedNorm (D.lineRep Q j) P.indLine f).val y = _
+    rw [mul_weightedNorm]
     simp [hk]
 
 omit [V.IsStd] [WeilData E] in
@@ -661,18 +665,19 @@ entry as `P.indLine`. Let `L f` be the norm over the stabiliser of a line in `GL
 There is an additive map `B` from weights to integral operators made of translates at `w`
 (`localOperators`) with `B f = p(Ũ) L f`. Here `p(Ũ)` is `aevalHecke`, with `Ũ = a(φ) U` for the
 Frobenius element `φ` and the Hecke operator `U` of `diag (P.ϖ, 1, …, 1)`. -/
-lemma exists_aevalHecke_weightedSum (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
+lemma exists_aevalHecke_weightedNorm (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) :
     ∃ B : (ZMod (ℓ ^ ν) → ℤ) →+ D.integralEnd Q.place,
       (∀ f : ZMod (ℓ ^ ν) → ℤ, B f ∈ D.localOperators Q j) ∧
       ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
-        aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).val y) := by
+        aevalHecke V κ P a p ((weightedNorm (D.lineRep Q j) P.indLine f).val y) := by
   have exists_op (f : ZMod (ℓ ^ ν) → ℤ) : ∃ b ∈ D.localOperators Q j, ∀ y : D.formsOfLevel Q.place,
-      (b.1 y).1 = aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).1 y).1 := by
-    have norm_mem : weightedSum (D.lineRep Q j) P.indLine f ∈ D.localOperators Q j :=
-      sum_mem fun k _ ↦ zsmul_mem (residueRep_mem_localOperators hQ k.val) _
+      (b.1 y).1 = aevalHecke V κ P a p ((weightedNorm (D.lineRep Q j) P.indLine f).1 y).1 := by
+    have norm_mem : weightedNorm (D.lineRep Q j) P.indLine f ∈ D.localOperators Q j := by
+      rw [weightedNorm_apply]
+      exact sum_mem fun k _ ↦ zsmul_mem (residueRep_mem_localOperators hQ k.val) _
     exact exists_localOperators_aeval_hecke hQ norm_mem (diagGL (mulSingle 0 P.ϖ))
-      (p.comp (C (a (Q.frobData j).frob) * X)) (weightedSum_indLine_mem_levelSpace hQ P f)
+      (p.comp (C (a (Q.frobData j).frob) * X)) (weightedNorm_indLine_mem_levelSpace hQ P f)
   choose B B_mem B_apply using exists_op
   have B_add (f f' : ZMod (ℓ ^ ν) → ℤ) : B (f + f') = B f + B f' := by
     ext
@@ -694,11 +699,11 @@ The traces are `tameTrace`, and `L` is the norm whose weight is the logarithm `P
 lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (hB : ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
-      aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).val y))
+      aevalHecke V κ P a p ((weightedNorm (D.lineRep Q j) P.indLine f).val y))
     {R : Type*} [Ring R] {σ : D.integralEnd Q.place →+* R}
     (hσ : IsReductionMod σ (ℓ ^ ν) (2 * (card n)!)) (g : Gal(Ω/E)) :
     σ (B ZMod.valMinAbs * heckeAction (tameTrace Q hN j 1 g)) =
-      σ (weightedSum (D.lineRep Q j) P.indLine ZMod.valMinAbs *
+      σ (weightedNorm (D.lineRep Q j) P.indLine ZMod.valMinAbs *
         heckeAction (tameTrace Q hN j p g)) := by
   -- `ℰ f` is the difference of the two operators, taken at the weight `f`. The operator
   -- `p(Ũ) tr[(γ - 1) g] - tr[(γ - 1) g p(φ)]` vanishes on the eigenforms of the stabiliser for the
@@ -707,7 +712,7 @@ lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ 
   let ℰ : (ZMod (ℓ ^ ν) → ℤ) →+ D.integralEnd Q.place :=
     (AddMonoidHom.mulRight (heckeAction (tameTrace Q hN j 1 g))).comp B -
       (AddMonoidHom.mulRight (heckeAction (tameTrace Q hN j p g))).comp
-        (weightedSum (D.lineRep Q j) P.indLine)
+        (weightedNorm (D.lineRep Q j) P.indLine)
   rw [← sub_eq_zero, ← σ.map_sub]
   refine map_valMinAbs_eq_zero_of_shift hσ ℰ fun f ↦ sub_eq_zero.2 (Eq.symm ?_)
   -- The eigenvectors to be tested are those with `ψ (n!) ≠ 1`, where the dictionary applies.
@@ -724,7 +729,7 @@ lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ 
       ιℓ.symm ((tameTrace Q hN j p g).val x) • (z : V.forms κ) =
         ιℓ.symm ((tameTrace Q hN j 1 g).val x) • U z :=
     tameTrace_smul_eq_aevalHecke hQ hN ha P p g hψ hz hz_eigen
-  exact weightedSum_mul_heckeAction_eq_of_eigen Q (shift := ((card n)! : ZMod (ℓ ^ ν))) (root := 1)
+  exact weightedNorm_mul_heckeAction_eq_of_eigen Q (shift := ((card n)! : ZMod (ℓ ^ ν))) (root := 1)
     (B := U) lineRep_mem (hB _) (f := fun s ↦ (f s : ℂ)) dict (by simp)
 
 omit [V.IsStd] [WeilData E] in
@@ -734,17 +739,17 @@ omit [V.IsStd] [WeilData E] in
 weight `f ∘ P.indLine` (`hB`). Then the stabiliser fixes the values of `B 1`. -/
 lemma lineRep_mul_eq_self (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hB : ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
-      aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).val y))
+      aevalHecke V κ P a p ((weightedNorm (D.lineRep Q j) P.indLine f).val y))
     (k : residueLineStabilizer (ResField (Q.place j)) (card n)) : D.lineRep Q j k * B 1 = B 1 := by
   obtain ⟨k₀, hk⟩ := k
   obtain ⟨g₀, rfl⟩ := reduceGL_surjective k₀
   have hg₀ : g₀.val ∈ blockParahoric (min 1) := reduceGL_mem_residueLineStabilizer_iff.1 hk
   ext y : 3
-  have norm_fixed : ((weightedSum (D.lineRep Q j) P.indLine 1).val y).val ∈
+  have norm_fixed : ((weightedNorm (D.lineRep Q j) P.indLine 1).val y).val ∈
       parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) (min 1) 1 := by
-    refine ⟨weightedSum_indLine_mem_levelSpace hQ P 1 y, fun g hg ↦ ?_⟩
+    refine ⟨weightedNorm_indLine_mem_levelSpace hQ P 1 y, fun g hg ↦ ?_⟩
     rw [localFormRep_apply_eq_lineRep hQ hg, ← FormEnd.mul_apply, ← Subalgebra.coe_mul,
-      mul_weightedSum]
+      mul_weightedNorm]
     simp [Pi.one_def]
   -- `U` preserves the forms fixed by the parahoric subgroup, hence so does `p(Ũ)`.
   obtain ⟨-, B_fixed⟩ : ((B 1).val y).val ∈
@@ -767,7 +772,7 @@ vanish is, after scaling by `1 / a(φ)`, a chain of `t + 1` roots `1, q, …, q 
 `H` (`HasRootChain`). Then `δ Nm U' = 0`, where `Nm` is the sum over `∏ GL_n(𝔽_{w i})`. -/
 lemma heckeAction_mul_norm_mul_eq_zero (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hB : ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
-      aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).val y))
+      aevalHecke V κ P a p ((weightedNorm (D.lineRep Q j) P.indLine f).val y))
     (hB_mem : B 1 ∈ D.localOperators Q j) {H : EllAdicIntegers[X]} {t : ℕ}
     (hp : p = (X - C ((Q.place j).q ^ t : EllAdicIntegers)) * H) (δ : D.heckeAlgebra Q.place)
     (h_chain : ∀ x : D.Eigensystem Q.place, x.val ∈ D.Eigensystem ![] → δ.val x ≠ 0 →
@@ -798,7 +803,7 @@ lemma heckeAction_mul_norm_mul_eq_zero (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ
       rw [hB, aevalHecke, ← aeval_map_algebraMap ℂ]
       simpa [hp, H.map_comp] using pairing_aeval_heckeCoset_eq_zero unitary w_sph w_ne poly_eq
         w_eigen P.v_ϖ (((isUnit _).map a).map _).ne_zero (h_chain x hx hδ)
-        (weightedSum_indLine_mem_levelSpace hQ P 1 y)
+        (weightedNorm_indLine_mem_levelSpace hQ P 1 y)
     have term (g : ∀ j, GL (Fin (card n)) (ResField (Q.place j))) :
         F w ((D.residueRep Q g).val ((B 1).val y)).val = 0 := by
       have w_fixed : ((D.residueRep Q g).val ⟨w, formsOfLevel_base_le _ hw.2⟩).val = w :=
