@@ -57,13 +57,17 @@ lemma mem_colSpan_submatrix {F m n n' : Type} [Field F] [Fintype n] [Fintype n']
     {P : Matrix m n F} {e : n' → n} (he : Injective e) {v : m → F} :
     v ∈ colSpan (P.submatrix id e) ↔
       ∃ x : n → F, (∀ a : n, a ∉ Set.range e → x a = 0) ∧ P *ᵥ x = v := by
-  have h_sum (x : n → F) (hx : ∀ a ∉ Set.range e, x a = 0) :
-      P.submatrix id e *ᵥ (x ∘ e) = P *ᵥ x :=
-    funext fun i ↦ Fintype.sum_of_injective e he _ _ (fun a ha ↦ by simp [hx a ha]) fun _ ↦ rfl
-  refine ⟨?_, fun ⟨x, hx, hv⟩ ↦ ⟨x ∘ e, (h_sum x hx).trans hv⟩⟩
-  rintro ⟨c, rfl⟩
-  have h_zero (a : n) (ha : a ∉ Set.range e) : extend e c 0 a = 0 := extend_apply' c _ a ha
-  exact ⟨extend e c 0, h_zero, by rw [← h_sum _ h_zero, extend_comp he, mulVecLin_apply]⟩
+  constructor
+  · rintro ⟨c, rfl⟩
+    exact ⟨extend e c 0, fun a ha ↦ extend_apply' c _ a ha, mulVec_extend_zero he P c⟩
+  · rintro ⟨x, hx, rfl⟩
+    have h_ext : extend e (x ∘ e) 0 = x := by
+      funext a
+      by_cases ha : a ∈ Set.range e
+      · obtain ⟨i, rfl⟩ := ha
+        simp [he]
+      · simp only [extend_apply' _ _ _ ha, hx a ha, Pi.zero_apply]
+    exact ⟨x ∘ e, (mulVec_extend_zero he P (x ∘ e)).symm.trans (congrArg (P *ᵥ ·) h_ext)⟩
 
 namespace Filling
 
