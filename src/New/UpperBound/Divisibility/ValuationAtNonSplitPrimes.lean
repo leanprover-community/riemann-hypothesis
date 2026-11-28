@@ -924,7 +924,10 @@ lemma IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator (H : IsWeakChain
   -- `T_{l,i}` from `exists_hecke_transfer`, acting on the datum through the group of the target.
   induction L with
   | nil =>
-    refine ⟨1, fun x hx ↦ ⟨by simp, fun y ↦ by simp [chain, compUpTo], fun g _ hg ↦ ?_⟩⟩
+    refine ⟨1, fun x hx ↦ ⟨by simp, ?_, fun g _ hg ↦ ?_⟩⟩
+    · intro y
+      simp only [List.map_nil, List.prod_nil, one_apply_eq_self]
+      rfl
     obtain ⟨hp_M, hp_N, -⟩ := hΛ.not_dvd_M_mul_N
     have h_standard : (D.translateDatum x j).val ∈ standardData (D.homX j) 1 :=
       H.translateDatum_mem_standardData hQ hp_N hx j (.inr hp_M)
@@ -941,7 +944,11 @@ lemma IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator (H : IsWeakChain
     refine ⟨(∑ i ≤ D.ceilLogLifts p, (c i * s) • heckeSplit ρ hl_split i) * t, fun x hx ↦ ?_⟩
     let newDatum : (D.homX j).finitePart := t (D.translateDatum x j)
     have h_sph : newDatum ∈ levelSpace ρ (maxCompactAt (D.X (j + 1)) l.val) := by
-      simp +contextual [ρ, newDatum, t_comm x hx, h_fix x hx]
+      rw [mem_levelSpace]
+      rintro ⟨b, hb⟩
+      rw [MonoidHom.one_apply, one_smul]
+      change k.ω (1, b) newDatum = newDatum
+      rw [t_comm x hx 1 b hb.1, h_fix x hx b hb]
     refine ⟨fun a b hb ↦ ?_, fun y ↦ ?_, fun g hj hg ↦ ?_⟩
     · -- `T_{l,i}` commutes with the source group, and with `b` as `newDatum` is spherical at `l`.
       have h_comm (i : ℕ) : k.ω (a, b) (heckeSplit ρ hl_split i newDatum) =
@@ -1010,10 +1017,13 @@ theorem IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow (H : IsWeakChainDatum �
     | zero => rfl
     | succ j ih =>
       rw [pow_succ', mul_apply_eq_comp, ← (ht j x hx).2.1, ← ih]
-      simp [chain, compUpTo]
+      rfl
   have h_comb : restrictedChain ϑ Ψ ((Y ^ D.m) v) =
       D.restrictToY (chainCombination ϑ Ψ (fun x j ↦ t j (D.translateDatum x j)) D.m v) := by
-    simp +contextual [restrictedChain, Finsupp.sum, h_chain]
+    refine congrArg D.restrictToY ?_
+    simp only [Finsupp.sum, LinearMap.comp_apply, D.SourceForm.coe_subtype, LinearMap.sum_apply,
+      LinearMap.smul_apply]
+    exact sum_congr rfl fun x hx ↦ congrArg (Ψ x • ·) (h_chain x hx D.m).symm
   obtain ⟨-, hp_N, -⟩ := hΛ.not_dvd_M_mul_N
   have hv_gauge : GaugeLe 1 1 v.val := hv.2
   rw [h_comb]
