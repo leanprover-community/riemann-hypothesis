@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Dynamics.PeriodicPts.Defs
 import Mathlib.FieldTheory.Finite.Extension
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Adeles.Basic
@@ -205,19 +206,31 @@ lemma root_pow_card_pow_eq_self_iff {P : k[X]} (hP : Irreducible P) {x : K} (hx 
     {n : ℕ} : x ^ Nat.card k ^ n = x ↔ P.natDegree ∣ n := by
   simp [hP.natDegree_dvd_iff_dvd_X_pow_card_pow_sub_X, ← hP.dvd_iff_aeval_eq_zero hx, sub_eq_zero]
 
+/-- The Frobenius orbit of a root of an irreducible polynomial has minimal period equal to
+the degree of the polynomial. -/
+private lemma minimalPeriod_frobenius_of_root {P : k[X]} (hP : Irreducible P) {x : K}
+    (hx : aeval x P = 0) :
+    Function.minimalPeriod (fun y : K ↦ y ^ Nat.card k) x = P.natDegree := by
+  rw [← Nat.dvd_right_iff_eq]
+  intro n
+  simpa only [← Function.isPeriodicPt_iff_minimalPeriod_dvd, Function.IsPeriodicPt,
+    Function.IsFixedPt, pow_iterate] using root_pow_card_pow_eq_self_iff hP hx (n := n)
+
 /-- Let `P` be irreducible over a finite field with `q` elements and `x` a root of `P` in `K`. Then
 `x^(q^a) = x^(q^b)` iff `a ≡ b` modulo the degree of `P`. -/
 lemma root_pow_card_pow_eq_iff_modEq {P : k[X]} (hP : Irreducible P) {x : K} (hx : aeval x P = 0)
     {a b : ℕ} : x ^ Nat.card k ^ a = x ^ Nat.card k ^ b ↔ a ≡ b [MOD P.natDegree] := by
-  -- Frobenius is injective, so cancel it on both sides until one exponent is `0`; then this is
-  -- `root_pow_card_pow_eq_self_iff`.
-  have h_inj {u v : K} : u ^ Nat.card k = v ^ Nat.card k ↔ u = v := by
-    simpa [coe_frobeniusAlgHom] using (frobeniusAlgHom k K).injective.eq_iff (a := u) (b := v)
-  induction a, b using Nat.recDiagAux with
-  | zero_left n =>
-    simpa [eq_comm, modEq_iff_dvd' n.zero_le] using root_pow_card_pow_eq_self_iff hP hx
-  | zero_right m => simpa [modEq_zero_iff_dvd] using root_pow_card_pow_eq_self_iff hP hx
-  | succ_succ m n ih => simp only [pow_succ, pow_mul, h_inj, ih, ModEq.add_iff_right (.refl 1)]
+  let frobenius : K → K := fun y ↦ y ^ Nat.card k
+  have h_period : Function.minimalPeriod frobenius x = P.natDegree :=
+    minimalPeriod_frobenius_of_root hP hx
+  have h_pos : 0 < Function.minimalPeriod frobenius x := h_period.symm ▸ hP.natDegree_pos
+  have h_eq : frobenius^[a] x = frobenius^[b] x ↔ a ≡ b [MOD P.natDegree] := by
+    change frobenius^[a] x = frobenius^[b] x ↔ a % P.natDegree = b % P.natDegree
+    rw [← h_period, ← Function.iterate_mod_minimalPeriod_eq (n := a),
+      ← Function.iterate_mod_minimalPeriod_eq (n := b)]
+    exact Function.iterate_eq_iterate_iff_of_lt_minimalPeriod
+      (Nat.mod_lt _ h_pos) (Nat.mod_lt _ h_pos)
+  simpa only [frobenius, pow_iterate] using h_eq
 
 /-- Let `P` be irreducible of degree `d` over a finite field with `q` elements and `x` a root of `P`
 in `K`. The roots of `P` in `K`, with multiplicity, are `x, x^q, …, x^(q^(d-1))`. -/
