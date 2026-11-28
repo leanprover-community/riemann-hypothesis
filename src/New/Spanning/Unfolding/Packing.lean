@@ -402,7 +402,7 @@ theorem encard_image_frameImage_le {c : S.Classes} {y : NumberField.InfinitePlac
   have h_norm (γ : S.G E) (hγ : γ ∈ A) : ‖F γ‖ ≤ ρ :=
     (pi_norm_le_iff_of_nonneg hρ.le).2 fun v ↦ (pi_norm_le_iff_of_nonneg hρ.le).2 (h_box γ hγ v)
   have h_ball (p : A) (_ : p ∈ u) : ‖f p‖ ≤ ρ + ρ :=
-    norm_sub_le_of_le (h_norm γ₀ hγ₀) (h_norm p p.property)
+    (norm_sub_le_of_le (h_norm γ₀ hγ₀) (h_norm p p.property) : ‖F γ₀ - F p‖ ≤ ρ + ρ)
   have h_one : 1 ≤ S.b ^ (60 * 𝔰.n) * ρ ^ 2 := by
     have hb_one : 1 ≤ S.b := S.one_le_b
     rw [hρ_eq, frameBoxRadius]
