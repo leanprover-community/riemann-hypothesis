@@ -15,8 +15,7 @@ infinite coefficient modules. This file relates the two. Let `π` be a map from 
 * `New.card_eq_card_map_mul_card_inf_B1`, `New.length_eq_length_map_add_length_inf_B1`: a group `W`
   of cocycles has `|W| = |π(W)| · |W ∩ B¹|`, and the same for lengths.
 * `New.card_B1_mul_card_invariants`: `|B¹| · |H⁰| = |M|` for a finite module `M`.
-* `New.card_inf_vanishingAt_eq_card_map`,
-  `New.length_inf_vanishingAt_eq_length_map`, `New.infVanishingAtEquivMap`: let `γ` act by a
+* `New.length_inf_vanishingAt_eq_length_map`, `New.infVanishingAtEquivMap`: let `γ` act by a
   scalar `ζ` with `ζ - 1` a unit. Then cocycles that vanish at `γ` (`New.vanishingAt`) meet `B¹`
   trivially. In a group `W ⊇ B¹` of cocycles, those that vanish at `γ` are isomorphic to the
   classes of `W`, so have as many elements and the same length.
@@ -185,14 +184,6 @@ def infVanishingAtEquivMap {W : AddSubgroup (Z1 ρ)} (hBW : (B1 ρ).toAddSubgrou
       rw [← map_inf_vanishingAt_eq_map hγ hζ hρ π hπ hBW] at hy
       obtain ⟨z, hz, rfl⟩ := AddSubgroup.mem_map.1 hy
       exact ⟨⟨z, hz⟩, rfl⟩⟩
-
-/-- Let `γ` act by a scalar `ζ` with `ζ - 1` a unit, and let `π` be an additive map on the cocycles
-with kernel `B¹`. For a group `W` of cocycles containing `B¹`, the members of `W` that vanish at
-`γ` are as many as the classes `π(W)`. -/
-theorem card_inf_vanishingAt_eq_card_map {W : AddSubgroup (Z1 ρ)}
-    (hBW : (B1 ρ).toAddSubgroup ≤ W) :
-    Nat.card ↥(W ⊓ (vanishingAt ρ γ).toAddSubgroup) = Nat.card (W.map π) :=
-  Nat.card_congr (infVanishingAtEquivMap hγ hζ hρ π hπ hBW).toEquiv
 
 end Normalised
 
