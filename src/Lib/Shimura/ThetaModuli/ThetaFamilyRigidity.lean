@@ -188,51 +188,41 @@ lemma pairing_pow_smul_adjoint (b : ℤ) (k : ℕ) {T : Over S} :
       x.lineBundle.picClass.pairing ((D.β - b) ^ k • y) z =
         x.lineBundle.picClass.pairing y ((Star.star D.β - b) ^ k • z) := by
   -- The tool is `⟨u + w, z⟩ + ⟨u - w, z⟩ = 2 ⟨u, z⟩`
-  -- (`Pic.ParallelogramLaw.pairing_add_add_pairing_sub`). The case `k = 1` follows for all `b` from
-  -- the cases `b = 0` and `b = 1`, and the general case by induction on `k`.
+  -- (`Pic.ParallelogramLaw.pairing_add_add_pairing_sub`). The case `k = 1` is proved for all `b`
+  -- by induction from `b = 0` and `b = 1`, and the general case is by induction on `k`.
   set c : Pic x.groupScheme.left := x.lineBundle.picClass
-  have h_par (u w z : T ⟶ x.groupScheme) :
-      c.pairing (u + w) z + c.pairing (u - w) z = 2 • c.pairing u z :=
-    x.hasClassLaws.left.pairing_add_add_pairing_sub u w z
-  -- With `u = 0` the parallelogram law says that the pairing is odd.
-  have h_odd (u z : T ⟶ x.groupScheme) : c.pairing (-u) z = -c.pairing u z :=
-    eq_neg_of_add_eq_zero_right (by simpa [pairing.eq_1 _ 0] using h_par 0 u z)
-  -- The case `k = 1`.
-  have h_adjoint (b : ℤ) (y z : T ⟶ x.groupScheme) :
-      c.pairing ((D.β - b) • y) z = c.pairing y ((star D.β - b) • z) := by
-    -- The defect `F b` satisfies `F (b - 1) + F (b + 1) = 2 F b` by the parallelogram law in each
-    -- argument, and vanishes at `b = 0` and `b = 1`; so it vanishes for all `b`.
-    let F (b : ℤ) : Pic T.left := c.pairing ((D.β - b) • y) z - c.pairing y ((star D.β - b) • z)
-    have h_rec (b : ℤ) : F (b - 1) + F (b + 1) = 2 • F b := by
-      have h_step (a : 𝓞 E) (u w : T ⟶ x.groupScheme) :
-          c.pairing ((a - (b - 1 : ℤ)) • u) w + c.pairing ((a - (b + 1 : ℤ)) • u) w =
-            2 • c.pairing ((a - b) • u) w := by
-        rw [← h_par _ u w, Int.cast_sub, Int.cast_add, Int.cast_one]
-        congr 2 <;> module
-      simp only [F, pairing_comm y, smul_sub, ← h_step]
-      abel
-    -- at `b = 0` this is the adjointness of `β` and `β̄ = 1 - β`
-    have h_law (u v : T ⟶ x.groupScheme) : c.pairing (D.β • u) v = c.pairing u ((1 - D.β) • v) :=
-      (x.hasClassLaws.right u v).left
-    have h_F0 : F 0 = 0 := by simp [F, D.star_beta, h_law]
-    -- at `b = 1` it is the same law with the points exchanged, as the pairing is symmetric and odd
-    have h_F1 : F 1 = 0 := by
-      simp only [F, Int.cast_one, D.star_beta, sub_sub_cancel_left, ← neg_sub 1 D.β, neg_smul]
-      rw [pairing_comm y, h_odd, h_odd, h_law, pairing_comm z, sub_self]
-    have h_all (b : ℤ) : F b = 0 := by
-      induction b using Polynomial.Chebyshev.induct with
-      | zero => exact h_F0
-      | one => exact h_F1
-      | add_two n h_succ h_n =>
-        have h := h_rec (n + 1)
-        rw [add_sub_cancel_right, add_assoc, one_add_one_eq_two, h_n, h_succ, zero_add, smul_zero]
-          at h
-        exact h
-      | neg_add_one n h_n h_succ =>
-        have h := h_rec (-n)
-        rw [h_n, h_succ, add_zero, smul_zero] at h
-        exact h
-    exact sub_eq_zero.mp (h_all b)
+  have h_adjoint (b : ℤ) (y w : T ⟶ x.groupScheme) :
+      c.pairing ((D.β - b) • y) w = c.pairing y ((star D.β - b) • w) := by
+    rw [pairing_comm y]
+    -- Both sides obey the same parallelogram recurrence as the integer shift varies.
+    have neighbors (a : 𝓞 E) (n : ℤ) (u v : T ⟶ x.groupScheme) :
+        c.pairing ((a - (n - 1 : ℤ)) • u) v + c.pairing ((a - (n + 1 : ℤ)) • u) v =
+          2 • c.pairing ((a - n) • u) v := by
+      rw [← x.hasClassLaws.left.pairing_add_add_pairing_sub _ u v,
+        Int.cast_sub, Int.cast_add, Int.cast_one]
+      congr 2 <;> module
+    induction b using Polynomial.Chebyshev.induct with
+    | zero =>
+      -- At `b = 0` this is the adjointness of `β` and `β̄ = 1 - β`.
+      simpa [D.star_beta, pairing_comm y] using (x.hasClassLaws.right y w).left
+    | one =>
+      -- At `b = 1` it is the same law with exchanged points, as the pairing is symmetric and odd.
+      have odd (u v : T ⟶ x.groupScheme) : c.pairing (-u) v = -c.pairing u v :=
+        eq_neg_of_add_eq_zero_right (by simpa [pairing.eq_1 _ 0] using
+          x.hasClassLaws.left.pairing_add_add_pairing_sub 0 u v)
+      simp only [Int.cast_one, D.star_beta, sub_sub_cancel_left, ← neg_sub 1 D.β, neg_smul, odd]
+      rw [pairing_comm ((1 - D.β) • y), ← (x.hasClassLaws.right w y).left]
+    | add_two n h₁ h₀ =>
+      have left := neighbors D.β (n + 1) y w
+      have right := neighbors (star D.β) (n + 1) w y
+      simp only [add_sub_cancel_right, add_assoc, one_add_one_eq_two] at left right
+      rw [h₀, h₁] at left
+      exact add_left_cancel (left.trans right.symm)
+    | neg_add_one n h₀ h₁ =>
+      have left := neighbors D.β (-n) y w
+      have right := neighbors (star D.β) (-n) w y
+      rw [h₁, h₀] at left
+      exact add_right_cancel (left.trans right.symm)
   intro y z
   induction k generalizing y z with
   | zero => simp
