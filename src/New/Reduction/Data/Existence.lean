@@ -252,17 +252,15 @@ lemma Parameters.exists_large_isSparse (P : Parameters) {s n H L : ℕ}
     have h_small : (ℓ + 1) * (2 * i) ≤ (L + 1) * (2 * l₀ s) := Nat.mul_le_mul (by omega) (by omega)
     linarith only [h_order, h_small, hL]
 
-/-- **A large sparse set of places.** The infinite places `P.Φ s` of `E = P.E s` form the group
-`(ℤ/q₁)ˣ`. Let `0 < n`, `1 ≤ W ≤ 2 ^ s ≤ W ^ n`, `(2 l₀) ^ n ≤ W`, `3 l₀ n 2 ^ n ≤ W ^ 3` and
-`2 l₀ (L + 1) < 2 ^ s`. There is a set of at least `towerDeg s / W ^ 6` places of class `-1` modulo
-`q₀` that is sparse for the primes `ℓ ≤ L`: it has no places `σ, τ, ρ` with `τ / σ ≡ ± ℓ ^ i` and
-`ρ / σ ≡ ± ℓ ^ j`, `0 < i < j < l₀`, modulo the part of `q₁` prime to `ℓ`. -/
-lemma Parameters.exists_isSparse (P : Parameters) {s n L : ℕ} {W : ℝ} (hn : 0 < n) (hW : 1 ≤ W)
+/-- There is a sparse set `T` of places of class `-1` modulo `q₀` satisfying
+`towerDeg s ≤ #T * (3 * l₀ s * n * 2 ^ n * W ^ 3)`. -/
+lemma Parameters.exists_isSparse_card_factor (P : Parameters) {s n L : ℕ} {W : ℝ}
+    (hn : 0 < n) (hW : 1 ≤ W)
     (h_lower : W ≤ 2 ^ s) (h_upper : 2 ^ s ≤ W ^ n) (h_room : (2 * l₀ s) ^ n ≤ W)
-    (h_count : 3 * l₀ s * n * 2 ^ n ≤ W ^ 3) (hL : 2 * l₀ s * (L + 1) < 2 ^ s) :
+    (hL : 2 * l₀ s * (L + 1) < 2 ^ s) :
     ∃ T : Finset (P.Φ s),
       (∀ σ ∈ T, P.placeClass (P.q₀.dvd_mul_right (towerDeg s)) σ = -1) ∧
-      towerDeg s ≤ #T * W ^ 6 ∧
+      towerDeg s ≤ #T * (3 * l₀ s * n * 2 ^ n * W ^ 3) ∧
       P.IsSparse s L T := by
   have hW_pos : 0 < W := one_pos.trans_le hW
   -- the side `H = 2 ^ k` of Behrend's cube has `H ^ n ≤ 2 ^ s / W < (2 H) ^ n`, so `H ≤ W`
@@ -282,8 +280,26 @@ lemma Parameters.exists_isSparse (P : Parameters) {s n L : ℕ} {W : ℝ} (hn : 
   calc (towerDeg s : ℝ) = 3 * l₀ s * 2 ^ s := by simp [towerDeg_eq]
     _ ≤ 3 * l₀ s * (2 ^ n * (2 ^ k) ^ n * W) := by grw [hk_upper]
     _ = (2 ^ k) ^ n / (n * (2 ^ k) ^ 2) * (3 * l₀ s * n * 2 ^ n * W * (2 ^ k) ^ 2) := by field
-    _ ≤ #T * (W ^ 3 * W * W ^ 2) := by gcongr
-    _ = #T * W ^ 6 := by ring
+    _ ≤ #T * (3 * l₀ s * n * 2 ^ n * W * W ^ 2) := by gcongr
+    _ = _ := by ring
+
+/-- **A large sparse set of places.** The infinite places `P.Φ s` of `E = P.E s` form the group
+`(ℤ/q₁)ˣ`. Let `0 < n`, `1 ≤ W ≤ 2 ^ s ≤ W ^ n`, `(2 l₀) ^ n ≤ W`, `3 l₀ n 2 ^ n ≤ W ^ 3` and
+`2 l₀ (L + 1) < 2 ^ s`. There is a set of at least `towerDeg s / W ^ 6` places of class `-1` modulo
+`q₀` that is sparse for the primes `ℓ ≤ L`: it has no places `σ, τ, ρ` with `τ / σ ≡ ± ℓ ^ i` and
+`ρ / σ ≡ ± ℓ ^ j`, `0 < i < j < l₀`, modulo the part of `q₁` prime to `ℓ`. -/
+lemma Parameters.exists_isSparse (P : Parameters) {s n L : ℕ} {W : ℝ} (hn : 0 < n) (hW : 1 ≤ W)
+    (h_lower : W ≤ 2 ^ s) (h_upper : 2 ^ s ≤ W ^ n) (h_room : (2 * l₀ s) ^ n ≤ W)
+    (h_count : 3 * l₀ s * n * 2 ^ n ≤ W ^ 3) (hL : 2 * l₀ s * (L + 1) < 2 ^ s) :
+    ∃ T : Finset (P.Φ s),
+      (∀ σ ∈ T, P.placeClass (P.q₀.dvd_mul_right (towerDeg s)) σ = -1) ∧
+      towerDeg s ≤ #T * W ^ 6 ∧
+      P.IsSparse s L T := by
+  obtain ⟨T, hclass, hcard, hsparse⟩ := P.exists_isSparse_card_factor hn hW h_lower h_upper
+    h_room hL
+  refine ⟨T, hclass, hcard.trans ?_, hsparse⟩
+  calc (#T : ℝ) * (3 * l₀ s * n * 2 ^ n * W ^ 3) ≤ #T * (W ^ 3 * W ^ 3) := by gcongr
+    _ = _ := by ring
 
 /-- Pigeonhole in the class group: given `h + 1` pairs `(I i, J i)` of finite places with
 `I i * J i` principal, `h` the class number, there are `i ≠ j` with `I i * J j` principal. -/
@@ -497,7 +513,7 @@ lemma exists_isLeast_dvd_log_log_mem_Icc {q n : ℕ} {W : ℝ} (hq : 0 < q) (hW 
 
 /-- Let `2 ≤ y`, `0 < n`, `10⁶ y ≤ W ≤ exp (y / 2) ≤ m`, `r ≤ 3 exp (5 y)`,
 `2 ^ s = m ^ 22 ≤ W ^ n`, `s ≤ 32 y`, `(5184 y) ^ n ≤ W` and `7776 y n 2 ^ n ≤ W`. At least
-`towerDeg s / W ^ 6` places of class `-1` modulo `q₀` form a set that is sparse for the primes
+`towerDeg s / W ^ 4` places of class `-1` modulo `q₀` form a set that is sparse for the primes
 `ℓ ≤ k t`, where `k = r + 1 - m` and `t = 5 r`: it has no places `σ, τ, ρ` with `τ / σ ≡ ± ℓ ^ i`
 and `ρ / σ ≡ ± ℓ ^ j`, `0 < i < j < l₀`, modulo the part of `q₁` prime to `ℓ`
 (`Parameters.IsSparse`). -/
@@ -506,7 +522,7 @@ lemma Parameters.exists_isSparse_of_ranks (P : Parameters) {m r s n : ℕ} {y W 
     (hs : s ≤ 32 * y) (hW : W ≤ exp (y / 2)) (h_upper : 2 ^ s ≤ W ^ n) (h_large : 1e6 * y ≤ W)
     (h_room : (5184 * y) ^ n ≤ W) (h_count : 7776 * y * n * 2 ^ n ≤ W) :
     ∃ T : Finset (P.Φ s), (∀ σ ∈ T, P.placeClass (P.q₀.dvd_mul_right (towerDeg s)) σ = -1) ∧
-      towerDeg s ≤ #T * W ^ 6 ∧
+      towerDeg s ≤ #T * W ^ 4 ∧
       P.IsSparse s ((r + 1 - m) * (5 * r)) T := by
   have hW_one : 1 < W := by linarith
   have h_lower : W ≤ 2 ^ s :=
@@ -515,11 +531,16 @@ lemma Parameters.exists_isSparse_of_ranks (P : Parameters) {m r s n : ℕ} {y W 
   have hs_ne : s ≠ 0 := fun h ↦ by simp [h, hW_one.not_ge] at h_lower
   have hl : l₀ s ≤ 2592 * y := by linarith [show (l₀ s : ℝ) ≤ 81 * s from mod_cast l₀_le_mul hs_ne]
   have h_exp : 1e6 * y ≤ exp y := (h_large.trans hW).trans (exp_le_exp.2 (by linarith))
-  refine P.exists_isSparse hn hW_one.le h_lower h_upper ?_ ?_
-    (mul_rank_lt_two_pow (by linarith) h_exp hm hr h_pow hl)
-  · grw [← h_room, hl, ← mul_assoc, show (2 * 2592 : ℝ) = 5184 by norm_num]
-  · grw [hl, ← le_self_pow₀ hW_one.le three_ne_zero]
+  have room : (2 * l₀ s : ℝ) ^ n ≤ W := by
+    grw [← h_room, hl, ← mul_assoc, show (2 * 2592 : ℝ) = 5184 by norm_num]
+  have count : (3 : ℝ) * l₀ s * n * 2 ^ n ≤ W := by
+    grw [hl]
     linarith
+  obtain ⟨T, hclass, hcard, hsparse⟩ := P.exists_isSparse_card_factor hn hW_one.le h_lower
+    h_upper room (mul_rank_lt_two_pow (by linarith) h_exp hm hr h_pow hl)
+  refine ⟨T, hclass, hcard.trans ?_, hsparse⟩
+  calc (#T : ℝ) * (3 * l₀ s * n * 2 ^ n * W ^ 3) ≤ #T * (W * W ^ 3) := by gcongr
+    _ = _ := by ring
 
 /-- The level `N`. Let `E = P.E s = K(ζ_{q₁})` with `K = ℚ(√-d)`, `d = P.d` and `q₁ = P.q₁ s`. Let
 `b = exp L` with `7 ≤ L` and `W ^ 2 ≤ L`, let `2 ≤ m`, let the weights `κ τ` at the infinite places
@@ -883,7 +904,9 @@ lemma Parameters.IsLargeScale.exists_isAdmissibleData {P : Parameters} {x n : �
     { isLeast_m := by simpa [exp_half, exp_log hx_pos] using hm
       isLeast_r := by simpa [exp_five_mul_log hx_pos] using hr
       two_pow_eq := h_pow, isLeast_b := hb
-      placeClass_eq_neg_one := h_class_T, towerDeg_le := by grw [h_card, hL.1]
+      placeClass_eq_neg_one := h_class_T
+      towerDeg_le := h_card.trans (mul_le_mul_of_nonneg_left
+        ((pow_le_pow_right₀ hW_one (by decide : 4 ≤ 6)).trans hL.1) (Nat.cast_nonneg _))
       sparse := h_sparse
       levelPrime_prime i := (hg i).prime, levelPrime_modEq_one i := (hg i).modEq_one
       levelPrime_injective := Matrix.injective_pair_iff_ne.2 h_ne
