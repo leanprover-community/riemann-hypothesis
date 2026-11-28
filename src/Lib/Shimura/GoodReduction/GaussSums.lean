@@ -107,7 +107,7 @@ lemma action_injective : (⇑(F a)).Injective := by
 omit [StarRing R] in
 /-- A nonzero element of `R` acts invertibly on the finite-dimensional space `V`. -/
 @[simp]
-lemma action_isInvertible : (F a).IsInvertible :=
+lemma isInvertible_action : (F a).IsInvertible :=
   ⟨(ofInjectiveEndo _ (action_injective a)).toContinuousLinearEquiv, rfl⟩
 
 namespace IsHermitianAction

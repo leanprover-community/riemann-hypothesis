@@ -79,7 +79,7 @@ lemma finrank_principalForms_spaceW :
   obtain ⟨κ, e, h_wt⟩ := Exchange.exists_isHCParam_of_hasGap D.hasGap_signsY_paramW
   -- both degrees are given by Weyl's dimension formula
   have h_deg : ∏ v, (toHCParam 1 (D.paramW v)).formalDegree = D.filling.besselDegree := by
-    simp [Filling.besselDegree, (D.filling_fits.isDiscreteSeriesBessel _).deg_eq,
+    simp [Filling.besselDegree, (D.fits_filling.isDiscreteSeriesBessel _).deg_eq,
       Orbital.harish_chandra_degree_and_orbital, h_wt.hasGap]
   have h_free (g : Gf D.E D.RowIndex) :
       classAut (stdSpace D.E D.RowIndex).embFin.range D.chosenLevel g = ⊥ :=
@@ -172,13 +172,13 @@ group. -/
 theorem hasAmplitudeBlocks_scaledPoincare :
     D.filling.HasAmplitudeBlocks D.levelRepresentation D.scaledPoincare := by
   have h_series :
-      D.poincare ∘ₗ D.sourceFormCoords.symm.toLinearMap = D.filling_fits.poincareMap := by
+      D.poincare ∘ₗ D.sourceFormCoords.symm.toLinearMap = D.fits_filling.poincareMap := by
     rw [D.poincare_eq_poincareMap_comp]
     exact LinearMap.ext fun φ ↦
-      congrArg D.filling_fits.poincareMap (D.sourceFormCoords.apply_symm_apply φ)
+      congrArg D.fits_filling.poincareMap (D.sourceFormCoords.apply_symm_apply φ)
   rw [scaledPoincare, h_series]
   exact hasAmplitudeBlocks_smul_of_inner_eq (measureReal_pos_of_isLevel (K := D.chosenLevel))
-    fun _ ⟨c, i⟩ ⟨c', i'⟩ ↦ D.filling_fits.petersson_poincare c c' i i'
+    fun _ ⟨c, i⟩ ⟨c', i'⟩ ↦ D.fits_filling.petersson_poincare c c' i i'
       (reduceFamily_liftResidue (w := D.chosenPlace) _)
 
 open scoped Classical in

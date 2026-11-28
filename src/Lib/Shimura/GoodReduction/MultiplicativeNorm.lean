@@ -186,7 +186,7 @@ private lemma averagedPullback_mem_thetaSpace (hd : star c = d) {t : V → ℂ}
   constructor
   · simp [averagedPullback, normalizedShift, funLeft]
     fun_prop
-  · refine (action_isInvertible (F := F) d).surjective.forall.mpr fun x hx ↦ ?_
+  · refine (isInvertible_action (F := F) d).surjective.forall.mpr fun x hx ↦ ?_
     simpa [averagedPullback, funLeft] using
       h.normShift_sum_eq_char_smul d pullback_fixed 1 ⟨x, hx⟩ rfl
 
@@ -302,7 +302,7 @@ lemma exists_sum_normShift_eq_smul (hd : star c = d)
   have diag_pullback : quotMean L.toAddSubgroup (fun x ↦ K (F (star c) x) (F (star c) x)) =
       quotMean L.toAddSubgroup (fun x ↦ K x x) := by
     simpa using quotMean_comp L.toAddSubgroup (F (star c)) (h.isContPeriodic_poincareSeries 1 0)
-      (h.map_mem _) (action_isInvertible _).surjective
+      (h.map_mem _) (isInvertible_action _).surjective
   -- and `h.multiplier 0 = 1`
   have diag_mean : quotMean L.toAddSubgroup (fun x ↦ K x x) = 1 := by
     simpa [canonicalMultiplier] using kern_mean

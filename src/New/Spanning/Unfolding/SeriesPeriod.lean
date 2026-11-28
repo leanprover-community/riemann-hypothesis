@@ -704,9 +704,9 @@ representatives of the translate of `φ` by the central element `D.latticeScale 
 coordinates of the Bessel function. -/
 theorem exists_poincareAt_eq_poincareMap_comp :
     ∃ (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ),
-      D.poincareAt g t = D.filling_fits.poincareMap ∘ₗ D.sourceFormCoords.toLinearMap := by
+      D.poincareAt g t = D.fits_filling.poincareMap ∘ₗ D.sourceFormCoords.toLinearMap := by
   -- Both forms have the same inner product, the Bessel period, with every form `y`.
-  obtain ⟨g, t, h_period⟩ := D.filling_fits.exists_integral_poincareSeries_eq_period
+  obtain ⟨g, t, h_period⟩ := D.fits_filling.exists_integral_poincareSeries_eq_period
     (by
       simp [gradingY, filling, M, field]
       rw [mul_assoc, mul_assoc, ← div_div, div_self WeilData.j_ne_zero, one_div]
@@ -722,8 +722,8 @@ theorem exists_poincareAt_eq_poincareMap_comp :
   refine (D.inner_poincareAt g t φ y).trans ?_
   rw [← h_back]
   refine (h_period (D.centralRep (D.latticeScale 0) φ) y.val.property.conj hf_level).symm.trans ?_
-  change _ = inner ℂ y (D.filling_fits.poincareMap (D.sourceFormCoords φ))
-  rw [← D.filling_fits.coe_poincareMap]
+  change _ = inner ℂ y (D.fits_filling.poincareMap (D.sourceFormCoords φ))
+  rw [← D.fits_filling.coe_poincareMap]
   rfl
 
 /-- A chosen real point `g` at which, for a suitable linear form `t`, the form `D.poincareAt g t φ`
@@ -746,7 +746,7 @@ def poincare : D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) :=
 coefficients `D.sourceFormCoords φ`, the values at the class representatives of the central
 translate of `φ` by `D.latticeScale 0`. -/
 theorem poincare_eq_poincareMap_comp :
-    D.poincare = D.filling_fits.poincareMap ∘ₗ D.sourceFormCoords.toLinearMap :=
+    D.poincare = D.fits_filling.poincareMap ∘ₗ D.sourceFormCoords.toLinearMap :=
   D.exists_poincareAt_eq_poincareMap_comp.choose_spec.choose_spec
 
 end New.Data

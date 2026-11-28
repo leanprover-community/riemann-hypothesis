@@ -257,7 +257,7 @@ Then the absolute norm `q = P₀.q` of the prime `P₀` can be avoided in the se
 it is prime to `ℓ ^ N`, no prime of `T.places ∪ I ∪ Ī` with `I = J \ {P₀}` divides it, and the
 inertia groups above the primes of `E` that divide it lie in the kernel `T.reductionKer M N` of the
 action on `T / ℓ ^ M` and on the `ℓ ^ N`-th roots of unity. -/
-lemma tiedSetting_avoids (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
+lemma avoids_tiedSetting (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
     (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) (hN : M < N) (ha : a ∣ ℓ ^ M)
     (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v}) :
     (T.tiedSetting hp hV hN ha A).Avoids P₀.q := by
@@ -390,7 +390,7 @@ lemma exists_length_cocycles_le (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
         Nat.card (D.relations R) * Nat.card (n → QuotSpan a) *
           ∏ v ∈ D.localPrimes, Nat.card (D.localCocycles v)⟩ :=
     D.exists_card_cocycles_le hN.ne_bot T.cyclotomicChar_γ h_comm h_fix
-      (T.tiedSetting_avoids hp hV hN ha A)
+      (T.avoids_tiedSetting hp hV hN ha A)
   have hP₀ : P₀ ∈ placesDividing E P₀.q := P₀.asIdeal.absNorm_mem
   have hR : R \ {P₀, star P₀} = R := by
     simpa using And.intro (mt (h_avoid _) (not_not.2 hP₀))

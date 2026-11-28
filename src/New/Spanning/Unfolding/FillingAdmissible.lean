@@ -19,7 +19,7 @@ general filling theorem applies.
 
 ## Main definitions and results
 
-* `New.Data.filling_fits`: the filling data `New.Data.filling` fit the space `Y₀`
+* `New.Data.fits_filling`: the filling data `New.Data.filling` fit the space `Y₀`
   (`New.Filling.Fits`).
 * `New.Data.sourceFormCoords`: source forms in coordinates, indexed by pairs (class, Bessel
   coordinate).
@@ -61,7 +61,7 @@ variable {P : Parameters} (D : Data P)
 
 /-- The filling data of D fit the hermitian space Y₀ = `D.spaceY 0` in the sense of
 `New.Filling.Fits`. -/
-lemma filling_fits :
+lemma fits_filling :
     D.filling.Fits (D.spaceY 0) D.paramW D.columnCount (D.gradingY 0)
       (scalarFin D.shape.κ (D.latticeScale 0))⁻¹ := by
   -- The finite frame of `Y₀` is `gradedLatticeBasis` times an integral `γ` that is `≡ 1` at the
@@ -101,7 +101,7 @@ X₀ and takes its values at the class representatives, in the coordinates of th
 def sourceFormCoords :
     ↥D.SourceForm ≃ₗ[ℂ] EuclideanSpace ℂ (D.filling.Classes × D.filling.BesselCoord) :=
   LinearEquiv.ofBijective (D.centralRep (D.latticeScale 0))
-    (D.centralRep.apply_bijective (D.latticeScale 0)) ≪≫ₗ D.filling_fits.sourceFormCoords
+    (D.centralRep.apply_bijective (D.latticeScale 0)) ≪≫ₗ D.fits_filling.sourceFormCoords
 
 /-- For s in 𝖦, the linear map from forms of parameter ς and level M on Y₀ to the image of the good
 idempotent e₀. It is the translation by s, followed by |𝖦| times the action of e₀. -/
@@ -135,7 +135,7 @@ lemma card_besselSystem_le_add_pow (v : D.Φ) :
   -- The coordinates correspond to a basis of the Schur module of weight `D.columnCount v` (`A`,
   -- `A'` are inverse matrices); this weight has no columns of height `2, …, k - 1`, so the basis is
   -- in bijection `e` with the monomials of degree `D.columnCount v 1` in the variables `D.X 0`.
-  obtain ⟨A, A', hAA', hA'A, -⟩ := (D.filling_fits.isDiscreteSeriesBessel
+  obtain ⟨A, A', hAA', hA'A, -⟩ := (D.fits_filling.isDiscreteSeriesBessel
     v).exists_conj_rep_eq_schur
   have h_degree : D.columnCount v 1 ≤ D.a := by by_cases hv : v ∈ D.aPlaces <;>
                                                   simp [columnCount, hv]
@@ -216,7 +216,7 @@ parameters at `v` are read off, and `k = D.k`. -/
 lemma filling_besselDegree_eq_exp_sum :
     D.filling.besselDegree = exp (∑ v : D.Φ, ∑ l ∈ Ico (D.k - 1) D.r,
       (∑ i ∈ range l, log (D.targetParameter v i - D.targetParameter v l) - Real.log l !)) := by
-  push_cast [Filling.besselDegree, (D.filling_fits.isDiscreteSeriesBessel _).deg_eq, ↓card_rowIndex,
+  push_cast [Filling.besselDegree, (D.fits_filling.isDiscreteSeriesBessel _).deg_eq, ↓card_rowIndex,
     exp_sum, exp_sub, weylDimensionPoly, ↓paramW_lt_iff, paramW]
   congr! with v
   -- Index the pairs by their numbers under `basisNumber`.
@@ -531,9 +531,9 @@ lemma filling_reduction_surjective : Function.Surjective D.filling.reduction := 
   intro x
   -- A preimage is the lift of the residues of `x`, written in the lattice basis of the filling.
   let lift : stdLevel D.E D.shape.BesselIndex := liftResidue (w := D.chosenPlace) (Sigma.uncurry x)
-  obtain ⟨h_mem, h_reduction⟩ := (D.filling_fits.reduction_finiteEquiv_iff lift.val x).mpr
+  obtain ⟨h_mem, h_reduction⟩ := (D.fits_filling.reduction_finiteEquiv_iff lift.val x).mpr
     ⟨lift.property, reduceFamily_liftResidue (w := D.chosenPlace) (Sigma.uncurry x)⟩
-  exact ⟨⟨D.filling_fits.finiteEquiv lift.val, h_mem⟩, h_reduction⟩
+  exact ⟨⟨D.fits_filling.finiteEquiv lift.val, h_mem⟩, h_reduction⟩
 
 /-- The main second moment of the filling data, divided by their identity second moment, is
 `d (N ^ k - 1) ^ f mass_k / (deg mass_r |Ū|)`. Here `d` and `deg` are the number of coordinates and
