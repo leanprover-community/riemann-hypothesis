@@ -452,11 +452,17 @@ lemma New.exists_character_components {N : ℕ} [NeZero N] {E : Type} [Field E] 
     · have h_coset {v : Gal(Ω/ℚ)} (w : Gal(Ω/ℚ))
           (hw : w / v ∈ cycloGalGroup N) : T ψ w k = T ψ v k := by
         obtain ⟨u, rfl⟩ : ∃ a : Gal(Ω/E), ι a * v = w := (h_lift _ hw).imp fun _ ↦ mul_eq_of_eq_div
+        have hu : cyclotomicCharMod Ω N (ι u) = 1 := by simpa using hw
         -- With `T` unfolded; `h_add` relates `x (b (ι u * v) k)` to `x (b v k)`.
+        have hb_eq := h_add v k u⁻¹ (u⁻¹ * b (ι u * v) k)
+        rw [h_cocycle, add_sub_cancel_left] at hb_eq
         change (cyclotomicPowDirichlet l e ψ (ι u * v)).val • x (b (ι u * v) k) () =
           (cyclotomicPowDirichlet l e ψ v).val • x (b v k) ()
-        simp_all [cyclotomicPowDirichlet, h_add v k u⁻¹ (u⁻¹ * b (ι u * v) k), mul_assoc, tateTwist,
-          cyclotomicInv, smul_smul, mul_pow, mul_comm, mul_left_comm]
+        rw [hb_eq]
+        simp [cyclotomicPowDirichlet, hu, h_cyc, tateTwist, cyclotomicInv, smul_smul, mul_pow]
+        -- Only the scalar prefactors remain, differing in factor order.
+        congr 1
+        ring
       -- Right multiplication by `g` permutes the cosets of the `σ t`.
       have h_shift : ∑ t, T ψ (σ t * g) k = ∑ t, T ψ (σ t) k := by
         refine sum_equiv (.mulRight (cyclotomicCharMod Ω N g)) _ _ fun t ↦ h_coset (σ t * g) ?_
@@ -481,7 +487,7 @@ lemma New.exists_character_components {N : ℕ} [NeZero N] {E : Type} [Field E] 
     -- `cmConj` is an involution, so the value of the character there is a sign.
     have h_sign : cyclotomicPowDirichlet l e ψ cmConj = 1 ∨
         cyclotomicPowDirichlet l e ψ cmConj = -1 :=
-      (Units.inv_eq_self_iff _).mp (by grind)
+      (Units.inv_eq_self_iff _).mp (by rw [← map_inv, hc_inv])
     rcases h_sign with h_even_sign | h_odd_sign
     · simp [h_conj, h_mul, h_vanish, h_even_sign]
     · simp [h_odd ψ h_odd_sign]
@@ -590,7 +596,7 @@ lemma New.OddPart.length_shaOdd_le_of_sq_lt {N : ℕ} [NeZero N] {E : Type} [Fie
   -- For each odd `ψ`, points `γ ψ i` with `i ≤ v_l(X)` detect the cocycles in
   -- `component l e ψ n`. The values of `z` at the points `b (σ u) (γ ψ i)` then detect `z`.
   have h_tot : φ N ≤ N := N.totient_le
-  have hl_big : N + e + 3 < l := by nlinarith
+  have hl_big : N + e + 3 < l := by nlinarith only [h_le_y, hl_gt]
   obtain ⟨σ, b, h_split⟩ := exists_character_components h_sub l O he n
   have h_detect_pts : ∀ ψ : DirichletCharacter O N, cyclotomicPowDirichlet l e ψ cmConj = -1 →
       ∃ γ : Fin (X.factorization l + 1) → Gal(Ω/ℚ),
@@ -616,7 +622,7 @@ lemma New.OddPart.length_shaOdd_le_of_sq_lt {N : ℕ} [NeZero N] {E : Type} [Fie
     have h_four : (4 * φ N) • z = 0 :=
       h_kill_of_odd fun ψ hψ ↦ hγ ψ hψ _ (hz_comp ψ) fun i ↦ by simp [h_van']
     have h_pow : l ^ n • z = 0 := funext₂ fun g i ↦ nsmul_quot_eq_zero dvd_rfl (z g i)
-    have h_lt : 4 * φ N < l := by nlinarith
+    have h_lt : 4 * φ N < l := by nlinarith only [h_tot, h_le_y, hl_gt, Nat.pos_of_ne_zero he]
     have h_coprime : (l ^ n).Coprime (4 * φ N) :=
       .pow_left n (coprime_of_lt_prime out h_lt hl_prime.out)
     exact (nsmul_eq_zero_iff_of_coprime h_coprime).mp ⟨h_pow, h_four⟩
