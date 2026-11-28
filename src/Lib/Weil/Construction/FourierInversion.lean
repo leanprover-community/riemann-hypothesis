@@ -131,13 +131,13 @@ end IsRepresentativeSystem
 
 end Representatives
 
-/-- The index of `N L` in a free `ℤ`-module `L` of finite rank `r` is `N ^ r`. -/
+/-- The index of `N L` in a free `ℤ`-module `L` of finite rank `r` is `N ^ r`: Mathlib's
+`AddSubgroup.relIndex_map_nsmul`, with the instances on the submodule `L` itself. -/
 lemma relIndex_map_nsmul_toAddSubgroup {M : Type} [AddCommGroup M] (N : ℕ) (L : Submodule ℤ M)
     [Module.Free ℤ L] [Module.Finite ℤ L] :
     (L.toAddSubgroup.map (nsmulAddMonoidHom N)).relIndex L.toAddSubgroup =
-      N ^ Module.finrank ℤ L := by
-  rw [AddSubgroup.relIndex, AddSubgroup.addSubgroupOf_map_nsmulAddMonoidHom_eq_range]
-  exact AddSubgroup.index_range_nsmul L N
+      N ^ Module.finrank ℤ L :=
+  @AddSubgroup.relIndex_map_nsmul M _ N L.toAddSubgroup ‹_› ‹_›
 
 variable {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n]
   {F : (InfinitePlace E × n → ℂ) → ℂ} {δ : E} {N : ℕ}
