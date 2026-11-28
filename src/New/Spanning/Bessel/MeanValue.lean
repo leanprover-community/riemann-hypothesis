@@ -75,7 +75,12 @@ the unipotent group `𝖴⁰` with `besselHaar₀`, the image of Lebesgue measur
 theorem lintegral_fixerHaar {φ : 𝔰.G₁ → ℝ≥0∞} (hφ : Measurable φ) :
     ∫⁻ s : 𝔰.G₁, φ s ∂fixerHaar 𝔰 =
       ∫⁻ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), ∫⁻ u : besselU0, φ (u.val * embedH h) ∂𝔰.besselHaar₀ := by
-  rw [fixerHaar, Floors.lintegral_mconv_symm hφ, lintegral_map (by fun_prop) (by fun_prop)]
+  have : MeasurableMul₂ ↥𝔰.G₁ := ⟨continuous_mul.measurable⟩
+  have : MeasurableMul ↥𝔰.G₁ :=
+    ⟨fun _ ↦ (continuous_const.mul continuous_id).measurable,
+     fun _ ↦ (continuous_id.mul continuous_const).measurable⟩
+  rw [fixerHaar, Floors.lintegral_mconv_symm hφ,
+    lintegral_map (by fun_prop) continuous_embedH.measurable]
   exact lintegral_congr fun h ↦ lintegral_map (by fun_prop) measurable_subtypeVal
 
 /-- The integral for `fixerHaar 𝔰`, the measure on the fixer of the frame, in coordinates: the
@@ -98,9 +103,13 @@ theorem lintegral_fixerHaar_eq_inv {φ : 𝔰.G₁ → ℝ≥0∞} (hφ : Measur
   refine lintegral_congr fun h ↦ ?_
   have h_mem : embedH h⁻¹ ∈ besselS :=
     mem_besselS_of_mem_besselFixer (mem_besselFixer_of_mem_besselH (toBesselH_mem h⁻¹))
+  have h_inv : Measurable fun u : besselU0 ↦ φ (u.val * embedH h⁻¹) :=
+    hφ.comp (continuous_subtypeVal.mul continuous_const).measurable
   rw [← ((measurePreserving_conj_bessel mem_besselU0_iff_apply besselS_le_normalizer_besselU0
-    h_mem).comp (measurePreserving_inv 𝔰.besselHaar₀)).lintegral_comp (by fun_prop)]
-  simp [mul_assoc]
+    h_mem).comp (measurePreserving_inv 𝔰.besselHaar₀)).lintegral_comp h_inv]
+  refine lintegral_congr fun u ↦ congrArg φ ?_
+  rw [Function.comp_apply, inv_mul_cancel_right, Subgroup.coe_inv, embedH, map_inv,
+    ← _root_.mul_inv_rev]
 
 /-! ### Tuples dual to the frame -/
 
@@ -111,7 +120,9 @@ theorem re_hermOfReal_apply_self {n : Type} [DecidableEq n] (t : Matrix n n ℝ)
 theorem submatrix_hermOfReal {m n : Type} [DecidableEq m] [DecidableEq n] (t : Matrix n n ℝ)
     {f : m → n} (hf : f.Injective) :
     (hermOfReal t).submatrix f f = hermOfReal (t.submatrix f f) := by
-  simp [hermOfReal, skewOfReal, ← ext_iff, hf.eq_iff]
+  ext a b
+  simp only [Matrix.submatrix_apply, hermOfReal, skewOfReal, LinearMap.coe_mk, AddHom.coe_mk,
+    Matrix.smul_apply, Matrix.of_apply, hf.eq_iff]
 
 /-- The equivalence of `Fin j ⊕ Unit` with `Fin (j + 1)` that sends `inl b` to `b.castSucc` and the
 point of `Unit` to `Fin.last j`. -/
@@ -236,15 +247,51 @@ theorem lintegral_neg_single_add_freeCols_mulVec_eq {K : (𝔰.BesselIndex → �
           (-Pi.single 𝔰.z 1 + 𝔰.isotropicCols *ᵥ a + 𝔰.definiteCols *ᵥ x) =
         -Pi.single 𝔰.z 1 + 𝔰.isotropicCols *ᵥ (a + q.1 *ᵥ h.val.val *ᵥ x) +
           𝔰.definiteCols *ᵥ h.val.val *ᵥ x := by
-    simp [funext_iff, val_unipotentOf_coe, val_toBesselH_apply_coe, mulVec, dotProduct,
-      inclMatrix, Matrix.mul_apply, Matrix.one_apply, Pi.single_apply]
+    have hz : Pi.single 𝔰.z (1 : ℂ) = 𝔰.zCol *ᵥ fun _ ↦ 1 := by
+      ext i; simp [inclMatrix, mulVec, dotProduct, Pi.single_apply, Matrix.one_apply]
+    have h_dz : 𝔰.definiteColsᴴ * 𝔰.zCol = 0 := inclMatrix_gram_eq_zero (by simp)
+    have h_di : 𝔰.definiteColsᴴ * 𝔰.isotropicCols = 0 := inclMatrix_gram_eq_zero (by simp)
+    have h_uz : 𝔰.dualColsᴴ * 𝔰.zCol = 0 := inclMatrix_gram_eq_zero (by simp)
+    have h_ui : 𝔰.dualColsᴴ * 𝔰.isotropicCols = 0 := inclMatrix_gram_eq_zero (by simp)
+    have h_ud : 𝔰.dualColsᴴ * 𝔰.definiteCols = 0 := inclMatrix_gram_eq_zero (by simp)
+    have h_emb_z : (embedH h).val.val * 𝔰.zCol = 𝔰.zCol := by
+      simp only [coe_embedH, actOnCols, Matrix.add_mul, Matrix.sub_mul, Matrix.one_mul,
+        Matrix.mul_assoc, h_dz, Matrix.mul_zero, sub_zero, add_zero]
+    have h_emb_iso : (embedH h).val.val * 𝔰.isotropicCols = 𝔰.isotropicCols := by
+      simp only [coe_embedH, actOnCols, Matrix.add_mul, Matrix.sub_mul, Matrix.one_mul,
+        Matrix.mul_assoc, h_di, Matrix.mul_zero, sub_zero, add_zero]
+    have h_uni_z : (unipotentOf q).val.val * 𝔰.zCol = 𝔰.zCol := by
+      simp only [val_unipotentOf_coe, Matrix.add_mul, Matrix.sub_mul, Matrix.one_mul,
+        Matrix.mul_assoc, h_dz, h_uz, Matrix.mul_zero, sub_zero, add_zero]
+    have h_uni_iso : (unipotentOf q).val.val * 𝔰.isotropicCols = 𝔰.isotropicCols := by
+      simp only [val_unipotentOf_coe, Matrix.add_mul, Matrix.sub_mul, Matrix.one_mul,
+        Matrix.mul_assoc, h_di, h_ui, Matrix.mul_zero, sub_zero, add_zero]
+    have h_uni_def : (unipotentOf q).val.val * 𝔰.definiteCols =
+        𝔰.definiteCols + 𝔰.isotropicCols * q.1 := by
+      simp only [val_unipotentOf_coe, Matrix.add_mul, Matrix.sub_mul, Matrix.one_mul,
+        Matrix.mul_assoc, h_ud, conjTranspose_definiteCols_mul_self,
+        Matrix.mul_zero, Matrix.mul_one, sub_zero, add_zero]
+    have h_mul_val : (unipotentOf q * embedH h).val.val =
+        (unipotentOf q).val.val * (embedH h).val.val := rfl
+    rw [hz, mulVec_add, mulVec_add, mulVec_neg, mulVec_mulVec, mulVec_mulVec, mulVec_mulVec,
+      h_mul_val, Matrix.mul_assoc _ _ 𝔰.zCol, h_emb_z, h_uni_z,
+      Matrix.mul_assoc _ _ 𝔰.isotropicCols, h_emb_iso, h_uni_iso,
+      Matrix.mul_assoc _ _ 𝔰.definiteCols, embedH_mul_definiteCols,
+      ← Matrix.mul_assoc _ 𝔰.definiteCols, h_uni_def, Matrix.add_mul, add_mulVec,
+      Matrix.mul_assoc, ← mulVec_mulVec, ← mulVec_mulVec, ← mulVec_mulVec, mulVec_add]
+    abel
   let translated (a : Fin 𝔰.ϱ → ℂ) (x : 𝔰.κ → ℂ) : ℝ≥0∞ :=
     K (-Pi.single 𝔰.z 1 + 𝔰.isotropicCols *ᵥ (a + q.1 *ᵥ x) + 𝔰.definiteCols *ᵥ x)
   calc
     -- split `v = (a, x)` and translate `a` by `q.1 x`
     _ = ∫⁻ x : 𝔰.κ → ℂ, ∫⁻ a : Fin 𝔰.ϱ → ℂ, translated a x := by
-      rw [← Floors.measurePreserving_sumElim.lintegral_comp (by fun_prop), volume_eq_prod,
-        lintegral_prod_symm _ (by fun_prop)]
+      have h_lin : Measurable fun v : Fin 𝔰.ϱ ⊕ 𝔰.κ → ℂ ↦
+          K (-Pi.single 𝔰.z 1 + 𝔰.freeCols *ᵥ v) := by fun_prop
+      have h_elim : Measurable fun p : (Fin 𝔰.ϱ → ℂ) × (𝔰.κ → ℂ) ↦
+          K (-Pi.single 𝔰.z 1 + 𝔰.freeCols *ᵥ (p.1 ⊕ᵥ p.2)) :=
+        h_lin.comp Floors.measurePreserving_sumElim.measurable
+      rw [← Floors.measurePreserving_sumElim.lintegral_comp h_lin, volume_eq_prod,
+        lintegral_prod_symm _ h_elim.aemeasurable]
       simp only [fromCols_mulVec_sumElim, ← add_assoc]
       exact lintegral_congr fun x : 𝔰.κ → ℂ ↦ (lintegral_add_right_eq_self _ (q.1 *ᵥ x)).symm
     -- polar coordinates in `x`
@@ -275,6 +322,10 @@ theorem lintegral_eq_lintegral_sphereMass_mul_dualFrameOfGram
           ∫⁻ s : 𝔰.G₁, K (s.val.val * dualFrameOfGram (hermOfReal t)) ∂fixerHaar 𝔰 := by
   -- Choose the first `ϱ` vectors, which fixes the upper left block of `T` and the unipotent part
   -- of `s`, and then the last vector.
+  have : MeasurableMul₂ ↥𝔰.G₁ := ⟨continuous_mul.measurable⟩
+  have : MeasurableMul ↥𝔰.G₁ :=
+    ⟨fun _ ↦ (continuous_const.mul continuous_id).measurable,
+     fun _ ↦ (continuous_id.mul continuous_const).measurable⟩
   let firstCols (t : Matrix (Fin 𝔰.ϱ) (Fin 𝔰.ϱ) ℝ) : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ) ℂ :=
     𝔰.dualCols + 𝔰.isotropicCols * ((2⁻¹ : ℂ) • hermOfReal t)
   let lastIntegral (Y : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ) ℂ) : ℝ≥0∞ :=
@@ -308,8 +359,14 @@ theorem lintegral_eq_lintegral_sphereMass_mul_dualFrameOfGram
   obtain ⟨φ, φ_vol, φ_apply⟩ := exists_measurePreserving_hermCorner (splitLast 𝔰.ϱ)
   calc
     _ = ∫⁻ p : Matrix (Fin 𝔰.ϱ ⊕ 𝔰.κ) (Fin 𝔰.ϱ) ℂ, lastIntegral (𝔰.dualCols + 𝔰.freeCols * p) := by
-      rw [← (measurePreserving_joinCol (splitLast 𝔰.ϱ)).lintegral_comp (by fun_prop),
-        volume_eq_prod, lintegral_prod _ (by fun_prop)]
+      have h_lin : Measurable fun p : Matrix (Fin 𝔰.ϱ ⊕ 𝔰.κ) (Fin (𝔰.ϱ + 1)) ℂ ↦
+          K (𝔰.J₁ * 𝔰.frameCols + 𝔰.freeCols * p) := by fun_prop
+      have h_join :
+          Measurable fun p : Matrix (Fin 𝔰.ϱ ⊕ 𝔰.κ) (Fin 𝔰.ϱ) ℂ × (Fin 𝔰.ϱ ⊕ 𝔰.κ → ℂ) ↦
+          K (𝔰.J₁ * 𝔰.frameCols + 𝔰.freeCols * joinCol (splitLast 𝔰.ϱ) p) :=
+        h_lin.comp (measurePreserving_joinCol (splitLast 𝔰.ϱ)).measurable
+      rw [← (measurePreserving_joinCol (splitLast 𝔰.ϱ)).lintegral_comp h_lin,
+        volume_eq_prod, lintegral_prod _ h_join.aemeasurable]
       simp only [lastIntegral, h_split]
     _ = (2 ^ 𝔰.ϱ)⁻¹ * ∫⁻ t : Matrix (Fin 𝔰.ϱ) (Fin 𝔰.ϱ) ℝ, ∫⁻ q : 𝔰.UnipotentParams,
           lastIntegral ((unipotentOf q).val.val * firstCols t) :=
@@ -372,7 +429,11 @@ theorem lintegral_eq_dualFrameOfGram_mul {Z : 𝔰.FrameMatrix} (hZ : Z.det ≠ 
       rw [lintegral_eq_det_mul_comp_congruence hZ (G := fun T ↦ dualIntegrand (Z⁻¹ᴴ * T * Z⁻¹))
         (by fun_prop), h_exp, pow_add, mul_assoc]
       simp [← Matrix.mul_assoc, ← conjTranspose_mul, hZ]
-    _ = _ := by simp (disch := finiteness) only [dualIntegrand, mul_assoc, lintegral_const_mul']
+    _ = _ := by
+      rw [← lintegral_const_mul' _ _ (by finiteness)]
+      refine lintegral_congr fun t ↦ ?_
+      dsimp only [dualIntegrand]
+      rw [← mul_assoc, ← mul_assoc]
 
 /-- The Gram matrix of the frame is `diag(0, …, 0, -1)`; so its congruence by `Z⁻¹` is `-ζᴴ ζ` for
 the last row `ζ` of `Z⁻¹`. -/
@@ -428,12 +489,16 @@ theorem dualFrameOfGram_mul_eq_gramSection_mul {Z : 𝔰.FrameMatrix} (hZ : Z �
     sqrt_eq_sqrt_oneSubNormSqInvCorner hZ]
   congr 1
   ext (a | (i | _) | a) b
-  all_goals
-    try rw [dualFrameOfGram_apply_inl, inv_frameGram_inv_apply,
+  · rw [dualFrameOfGram_apply_inl, inv_frameGram_inv_apply,
       ← sectionCoeff_conjTranspose_castSucc_apply]
-    try rw [dualFrameOfGram_apply_indexX₀, one_add_inv_frameGram_inv_top]
-    try rw [dualFrameOfGram_apply_z, ← sectionCoeff_conjTranspose_top_apply Z]
-    try rw [dualFrameOfGram_apply_eStar]
+    simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, sum_univ_castSucc]
+  · rw [dualFrameOfGram_apply_indexX₀, one_add_inv_frameGram_inv_top]
+    induction b using lastCases <;>
+      simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, sum_univ_castSucc, diagLast,
+        diagonal_apply, (castSucc_lt_last _).ne]
+  · rw [dualFrameOfGram_apply_z, ← sectionCoeff_conjTranspose_top_apply Z]
+    simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, sum_univ_castSucc]
+  · rw [dualFrameOfGram_apply_eStar]
     induction b using lastCases <;>
       simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, sum_univ_castSucc, diagLast,
         diagonal_apply, eq_comm, (castSucc_lt_last _).ne]
@@ -496,7 +561,10 @@ theorem setLIntegral_openCell_frame_coords_le
     measurePreserving_mul_mul_add_mul conjTranspose_frameCols_mul_self
       conjTranspose_freeCols_mul_self frameCols_gram_freeCols
       card_frame_add_card_free
-  rw [← h_vol.lintegral_comp hK, volume_eq_prod, lintegral_prod _ (by fun_prop)]
+  have h_meas : Measurable fun p : 𝔰.FrameMatrix × Matrix (Fin 𝔰.ϱ ⊕ 𝔰.κ) (Fin (𝔰.ϱ + 1)) ℂ ↦
+      K (𝔰.J₁ * 𝔰.frameCols * p.1 + 𝔰.freeCols * p.2) :=
+    hK.comp h_vol.measurable
+  rw [← h_vol.lintegral_comp hK, volume_eq_prod, lintegral_prod _ h_meas.aemeasurable]
   exact setLIntegral_le_lintegral _ _
 
 -- Keeps definitional checks from unfolding the finite sums.
@@ -586,14 +654,22 @@ theorem lintegral_gramSection_le {f : 𝔰.G₁ → ℝ≥0∞} (hf : Measurable
       ∫⁻ γ : 𝔰.G₁, f γ := by
   -- The image of `gramSectionMeasure 𝔰` is at most the fibre measure on frames, so its
   -- convolution with `fixerHaar 𝔰` is at most `ratio` times Haar measure.
+  have : MeasurableMul₂ ↥𝔰.G₁ := ⟨continuous_mul.measurable⟩
+  have : MeasurableMul ↥𝔰.G₁ :=
+    ⟨fun _ ↦ (continuous_const.mul continuous_id).measurable,
+     fun _ ↦ (continuous_id.mul continuous_const).measurable⟩
   let ratio : ℝ := volU 𝔰.r / volU 𝔰.k / 2 ^ (𝔰.ϱ + 1)
   have h_volU_r_pos : 0 < volU 𝔰.r := volU_pos 𝔰.r
   have h_volU_k_pos : 0 < volU 𝔰.k := volU_pos 𝔰.k
   have h_ratio_pos : 0 < ratio := by positivity
   have h_const (Z : 𝔰.FrameMatrix) : ratio * (𝔰.openCellConst * gramDiscReal Z ^ (𝔰.k - 1)) =
       sphereDensity 𝔰.k 1 / 2 ^ (𝔰.ϱ + 1) * gramDiscReal Z ^ (𝔰.k - 1) := by
-    simp only [ratio, openCellConst]
-    field
+    have hr : volU 𝔰.r / volU 𝔰.k / 2 ^ (𝔰.ϱ + 1) * 𝔰.openCellConst =
+        sphereDensity 𝔰.k 1 / 2 ^ (𝔰.ϱ + 1) := by
+      simp only [openCellConst]
+      rw [div_mul_eq_mul_div, ← mul_assoc, div_mul_div_cancel₀ h_volU_k_pos.ne',
+        div_self h_volU_r_pos.ne', one_mul]
+    rw [← mul_assoc, hr]
   rw [← ENNReal.mul_le_mul_iff_right (ofReal_pos.2 h_ratio_pos).ne' ofReal_ne_top]
   calc
     _ = ∫⁻ Z in 𝔰.openCell,
