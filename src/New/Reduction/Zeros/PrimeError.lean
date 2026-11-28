@@ -1,10 +1,10 @@
 module
 
 public import Mathlib.NumberTheory.LSeries.PrimesInAP
-import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.MeasureTheory.Function.Floor
 import Mathlib.NumberTheory.LSeries.Linearity
 import Mathlib.NumberTheory.LSeries.SumCoeff
+import TauCeti.NumberTheory.ArithmeticDirichletSeries.Riesz.Laplace
 public import Lib.Analytic.EntireLFunction
 
 /-!
@@ -19,8 +19,8 @@ of the Dirichlet `L`-functions modulo `q` and of their twists by `χ_K`.
 * `New.logDerivMean`: the mean `G_q` over the characters `ψ` modulo `q` of the differences of the
   logarithmic derivatives of `New.entireL (New.quadTwist ψ d)` and `New.entireL ψ`, less `1 / φ(q)`.
 * `New.primeRemainder`: `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - re G_q(1)`.
-* `New.LSeries_lambdaKResidueClass_eq_add_logDerivMean`: for odd `d` prime to `q`, the Dirichlet
-  series of `λ` is `s / (φ(q) (s - 1)) + G_q(s)` in `re s > 1`.
+* `New.LSeriesHasSum_lambdaKResidueClass`: for odd `d` prime to `q`, the Dirichlet series of `λ`
+  converges absolutely to `s / (φ(q) (s - 1)) + G_q(s)` in `re s > 1`.
 * `New.isPolar_primeRemainder`: for `d ≡ 7` modulo `8` prime to `q`, the transform of
   `v ↦ R_q(e ^ v)` has at most simple poles in `re s > 0`, none at `1`, and at `s ≠ 1` with the
   residue `(n(s) - n'(s)) / (φ(q) s (1 - s))`, where `n(s)` and `n'(s)` are the sums of the orders
@@ -275,11 +275,12 @@ lemma LSeries_lambdaKResidueClass {s : ℂ} (hs : 2 < s.re) (r : ℕ) :
 
 /-- Let `d` be an odd prime coprime to `q ≥ 1`, `χ_K = (·/d)` the Legendre symbol, and
 `λ = lambdaKResidueClass d q` the weight `Λ(n) (1 - χ_K(n))` on `n ≡ 1` mod `q` and `0` elsewhere.
-For `re s > 1`, `∑ λ(n) n ^ (-s) = s / (φ(q) (s - 1)) + G_q(s)`. -/
-lemma LSeries_lambdaKResidueClass_eq_add_logDerivMean (hd : d ≠ 2) (h_cop : q.Coprime d) {s : ℂ}
+For `re s > 1`, the series `∑ λ(n) n ^ (-s)` converges absolutely to
+`s / (φ(q) (s - 1)) + G_q(s)`. -/
+lemma LSeriesHasSum_lambdaKResidueClass (hd : d ≠ 2) (h_cop : q.Coprime d) {s : ℂ}
     (hs : 1 < s.re) :
-    LSeries (fun n : ℕ ↦ lambdaKResidueClass d q n) s =
-      s / (φ q * (s - 1)) + logDerivMean d q s := by
+    LSeriesHasSum (fun n : ℕ ↦ lambdaKResidueClass d q n) s
+      (s / (φ q * (s - 1)) + logDerivMean d q s) := by
   -- Orthogonality of the characters mod `q` expresses `λ` through `ψ Λ - ψ χ_K Λ`.
   let a (ψ : DirichletCharacter ℂ q) : ℕ → ℂ :=
     (fun n : ℕ ↦ ψ n * vonMangoldt n) - fun n : ℕ ↦ quadTwist ψ d n * vonMangoldt n
@@ -301,47 +302,32 @@ lemma LSeries_lambdaKResidueClass_eq_add_logDerivMean (hd : d ≠ 2) (h_cop : q.
   have h_total : LSeriesHasSum (∑ ψ : DirichletCharacter ℂ q, a ψ) s (1 / (s - 1) + ∑ ψ, D ψ) := by
     simpa [sum_add_distrib, ite_div] using LSeriesHasSum.sum (S := univ) fun ψ _ ↦ h_series ψ
   have hs_sub_ne : s - 1 ≠ 0 := sub_ne_zero.2 (ne_of_apply_ne re hs.ne')
-  rw [LSeries_congr (fun _ ↦ h_orth _), (h_total.smul (φ q : ℂ)⁻¹).LSeries_eq, logDerivMean]
+  rw [LSeriesHasSum_congr _ _ (fun _ ↦ h_orth _)]
+  convert h_total.smul (φ q : ℂ)⁻¹ using 1
+  unfold logDerivMean
   field
 
-/-- For an odd prime `d` coprime to `q ≥ 1` and `re s > 2`, the Laplace transform of
+/-- For an odd prime `d` coprime to `q ≥ 1` and `re s > 1`, the Laplace transform of
 `v ↦ R_q(e ^ v)` at `s - 1` is `(G_q(s) / s - re G_q(1)) / (s - 1)`. -/
-lemma integral_primeRemainder (hd : d ≠ 2) (h_cop : q.Coprime d) {s : ℂ} (hs : 2 < s.re) :
+lemma integral_primeRemainder (hd : d ≠ 2) (h_cop : q.Coprime d) {s : ℂ} (hs : 1 < s.re) :
     ∫ v : ℝ in Set.Ioi 0, primeRemainder d q (Real.exp v) * Complex.exp ((1 - s) * v) =
       (logDerivMean d q s / s - re (logDerivMean d q 1)) / (s - 1) := by
-  -- Transform the four terms of `primeRemainder d q (exp v)`: two sums, `v` and a constant.
-  have hs_one : 1 < s.re := by linarith
-  let F (r : ℕ) (v : ℝ) : ℂ := lambdaKSum d q r (rexp v) * cexp ((1 - s) * v)
-  let P (k : ℕ) (v : ℝ) : ℂ := v ^ k * cexp ((1 - s) * v)
-  let c : ℂ := re (logDerivMean d q 1)
-  have hF_val (r : ℕ) :
-      s / (φ q * (s - 1)) + logDerivMean d q s = (s + r - 1) * ∫ v in Set.Ioi 0, F r v :=
-    (LSeries_lambdaKResidueClass_eq_add_logDerivMean hd h_cop hs_one).symm.trans
-      (LSeries_lambdaKResidueClass hs r)
-  have hF_int (r : ℕ) : IntegrableOn (F r) (Set.Ioi 0) := integrableOn_laplace_of_abs_le
-    (by fun_prop [lambdaKSum]) (fun v _ ↦ abs_lambdaKSum_exp_le d q r v) hs
-  have hs_sub_ne : s - 1 ≠ 0 := sub_ne_zero.2 (ne_of_apply_ne re hs_one.ne')
+  let a (n : ℕ) : ℂ := lambdaKResidueClass d q n
+  have h_series : LSeriesHasSum a s _ := LSeriesHasSum_lambdaKResidueClass hd h_cop hs
+  have h_remainder (u : ℝ) : (primeRemainder d q (rexp u) : ℂ) =
+      TauCeti.rieszSum a (rexp u) / (rexp u : ℂ) - (φ q : ℂ)⁻¹ * u -
+        re (logDerivMean d q 1) := by
+    simp [primeRemainder, lambdaKSum, TauCeti.rieszSum_def, a, ← div_eq_inv_mul, sum_div,
+      ← sum_sub_distrib]
+    refine sum_congr rfl fun n hn ↦ ?_
+    have hn_pos : 0 < n := (mem_Icc.1 hn).1
+    field [hn_pos.ne']
+  have h := (TauCeti.hasLaplace_normalized_riesz_remainder hs h_series.LSeriesSummable
+    (φ q : ℂ)⁻¹ (re (logDerivMean d q 1))).integral_eq
+  simp only [← h_remainder, neg_sub, smul_eq_mul, mul_comm (cexp _)] at h
+  rw [h, h_series.LSeries_eq]
   have hs_ne : s ≠ 0 := ne_zero_of_re_pos (by linarith)
-  have hP_val (k : ℕ) : ∫ v in Set.Ioi 0, P k v = k ! / (s - 1) ^ (k + 1) := by
-    simpa only [neg_sub] using laplace_pow (s := s - 1) (by simpa using hs_one) k
-  have hP_int (k : ℕ) : IntegrableOn (P k) (Set.Ioi 0) :=
-    -- The integral of a function that is not integrable is `0`.
-    .of_integral_ne_zero (by simp [hP_val, k.factorial_ne_zero, hs_sub_ne])
-  have h_split (v : ℝ) : primeRemainder d q (rexp v) * cexp ((1 - s) * v) =
-      F 0 v - F 1 v - (φ q : ℂ)⁻¹ * P 1 v - c * P 0 v := by
-    simp [F, P, c, primeRemainder, field]
-  have h_integral : ∫ v : ℝ in Set.Ioi 0, primeRemainder d q (rexp v) * cexp ((1 - s) * v) =
-      (∫ v in Set.Ioi 0, F 0 v) - (∫ v in Set.Ioi 0, F 1 v) -
-        (φ q : ℂ)⁻¹ * (∫ v in Set.Ioi 0, P 1 v) - c * ∫ v in Set.Ioi 0, P 0 v := by
-    -- `fun_prop` works with `Integrable` for the restricted measure.
-    unfold IntegrableOn at hF_int hP_int
-    simp (disch := fun_prop) only [h_split, integral_sub, integral_const_mul]
-  -- The terms `r = 0` and `r = 1` are the Dirichlet series divided by `s - 1` and by `s`.
-  have hF_zero : ∫ v in Set.Ioi 0, F 0 v =
-      (s / (φ q * (s - 1)) + logDerivMean d q s) / (s - 1) := by simp [hF_val 0, hs_sub_ne]
-  have hF_one : ∫ v in Set.Ioi 0, F 1 v = (s / (φ q * (s - 1)) + logDerivMean d q s) / s := by
-    simp [hF_val 1, hs_ne]
-  simp [h_integral, hF_zero, hF_one, hP_val, field]
+  field
 
 /-- For an odd prime `d` coprime to `q ≥ 1`, the number `G_q(1)` is real, so it equals the constant
 `re G_q(1)` subtracted in `primeRemainder d q`. Here `G_q = logDerivMean d q` is
@@ -350,24 +336,24 @@ where `χ_K = (·/d)` is the Legendre symbol and `E_χ = entireL χ` is `L(s, χ
 is principal. -/
 lemma ofReal_re_logDerivMean_one (hd : d ≠ 2) (h_cop : q.Coprime d) :
     ((logDerivMean d q 1).re : ℂ) = logDerivMean d q 1 := by
-  -- `F s = G_q(s) / s - c_q` is `s - 1` times the transform of a real function, so it is real on
-  -- `(2, ∞)`, and then at `1` by analytic continuation.
+  -- The transform is real on `(1, ∞)`, so its numerator is real at `1` by continuity.
   let F (s : ℂ) : ℂ := logDerivMean d q s / s - re (logDerivMean d q 1)
-  have hF : AnalyticOnNhd ℂ F (ofReal '' Set.Ici 1) := by
-    rintro _ ⟨x, hx : 1 ≤ x, rfl⟩
-    exact ((analyticAt_logDerivMean_of_one_le_re d q (by simpa)).div analyticAt_id
-      (ofReal_ne_zero.2 (by positivity))).sub analyticAt_const
-  have h_real (x : ℝ) (hx : 2 < x) : (F x).im = 0 := by
+  have h_real (x : ℝ) (hx : 1 < x) : (F x).im = 0 := by
     have h_eq : F x =
         (∫ v : ℝ in .Ioi 0, primeRemainder d q (rexp v) * cexp ((1 - x : ℂ) * v)) * (x - 1) := by
       rw [integral_primeRemainder hd h_cop (by simpa),
         div_mul_cancel₀ _ (mod_cast (by linarith : 0 < x - 1).ne')]
     rw [h_eq]
     norm_cast
-  have h_im : Set.EqOn (fun x : ℝ ↦ (F x).im) 0 (.Ici 1) :=
-    hF.im_ofReal.eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_Ici
-      (z₀ := 3) (by simp) ((lt_mem_nhds (by norm_num)).mono h_real)
-  exact Complex.ext (ofReal_re _) (by simpa [F, eq_comm] using h_im Set.self_mem_Ici)
+  have hc : ContinuousAt (fun x : ℝ ↦ (F x).im) 1 := by
+    have hG := (analyticAt_logDerivMean_of_one_le_re d q (s := 1) (by simp)).continuousAt
+    dsimp only [F]
+    fun_prop (disch := norm_num)
+  have h_im : (F (1 : ℝ)).im = 0 := by
+    refine tendsto_nhds_unique_of_eventuallyEq (l := 𝓝[>] (1 : ℝ))
+      hc.continuousWithinAt (g := fun _ : ℝ ↦ (0 : ℝ)) tendsto_const_nhds ?_
+    filter_upwards [self_mem_nhdsWithin] with x hx using h_real x hx
+  exact Complex.ext (ofReal_re _) (by simpa [F, eq_comm] using h_im)
 
 /-! ### The poles of the Laplace transform -/
 
@@ -441,7 +427,7 @@ lemma isPolar_primeRemainder (hd : d % 8 = 7) (h_cop : q.Coprime d) :
   have h_mero : Meromorphic fun s : ℂ ↦ F s / (s - 1) := fun _ ↦ by fun_prop [logDerivMean]
   have h_transform (s : ℂ) (hs : 2 < s.re) : F s / (s - 1) =
       ∫ v : ℝ in Set.Ioi 0, primeRemainder d q (rexp v) * cexp ((1 - s) * v) :=
-    (integral_primeRemainder hd_ne h_cop hs).symm
+    (integral_primeRemainder hd_ne h_cop (one_lt_two.trans hs)).symm
   have h_growth (v : ℝ) (hv : 0 ≤ v) : |primeRemainder d q (rexp v)| ≤ (|c| + 5) * rexp v :=
     abs_primeRemainder_exp_le d q hv
   refine ⟨h_meas, |c| + 5, fun s ↦ F s / (s - 1), h_mero, h_growth, h_transform, fun ρ hρ ↦ ?_⟩

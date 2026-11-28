@@ -214,7 +214,8 @@ theorem eventually_abs_primeRemainder_le (hd : d ≠ 2) (h_cop : q.Coprime d) (B
   let F : ℂ → ℂ := fun s ↦ logDerivMean d q s / s
   have h_transform (s : ℂ) (hs : 2 < s.re) : (F s - F 1) / (s - 1) =
       ∫ v : ℝ in Set.Ioi 0, (primeRemainder d q (rexp v) : ℂ) * cexp ((1 - s) * v) := by
-    simp [F, integral_primeRemainder hd h_cop hs, ofReal_re_logDerivMean_one hd h_cop]
+    simp [F, integral_primeRemainder hd h_cop (one_lt_two.trans hs),
+      ofReal_re_logDerivMean_one hd h_cop]
   have h_bound : ∀ᶠ v : ℝ in atTop, |primeRemainder d q (rexp v)| ≤ 1 / v ^ B :=
     eventually_abs_le_inv_pow_of_transform (by fun_prop [primeRemainder, lambdaKSum])
       (fun u v ↦ abs_primeRemainder_exp_sub_le) h_transform eventually_norm_logDerivMean_div_le B
