@@ -284,6 +284,7 @@ pointwise and fixes θ(z) lies in the image of j. So the field fixed by all g th
 and fix θ(z) contains the field fixed by the image of j. -/
 def IsChartOf (j : Γ →* Gp p) : Prop := ∀ g : Gp p, c.FixesThetaZ g → g ∈ j.range
 
+/-- The element `z` is the Teichmüller lift `[ϖ♭]` of `c.varpiFlat`. -/
 lemma z_eq_teichmuller : c.z = teichmuller p c.varpiFlat := c.seriesMap_X
 
 /-- The exponent `e` of a chart is not zero. -/
@@ -300,6 +301,7 @@ lemma exists_z_dvd_xi_sub_p_mul : ∃ b : Ainf, c.z.val ∣ xi - p * b := by
   obtain ⟨b, hb⟩ := c.associated_xi
   exact ⟨b, by simp [← hb, add_mul, z, IsUnit.map, NeZero.ne]⟩
 
+/-- `p` does not divide `z` in `A_inf`. -/
 lemma not_p_dvd_z : ¬↑p ∣ c.z.val := by
   -- Otherwise `p` would divide `ξ - p * b`, hence `ξ`.
   intro h_dvd
