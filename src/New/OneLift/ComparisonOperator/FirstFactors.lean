@@ -200,7 +200,8 @@ lemma firstFactorSize_sq_le_exp {q n : ℕ} {H : ℤ}
             (n * 3 * 2 * log D.M / 2 + 9 * ((12 * D.m + 1) * q) * log D.M / 2))))) ≤
       D.f * D.m * D.b * D.logB ^ 2 := by
     grw [hn, hq]
-    exact D.le_of_hasLogBound
+    -- Use smaller scale bounds to compare the nested maxima.
+    exact D.le_of_hasLogBound (by scale_arith only D)
   have h_carrier : card D.CarrierIndex ≤ D.n D.m := by simpa using D.nat_le_of_hasLogBound
   have h_fin : card (Fin D.m) ≤ D.n D.m := by simpa using D.nat_le_of_hasLogBound
   grw [D.card_stdClasses_le_exp principalLevel_le_stdLevel h_carrier,

@@ -280,7 +280,15 @@ lemma M_pow_mul_card_mul_exp_le {P : Parameters} {D : Data P} {d : ℕ} {𝔪 : 
     simp only [k, e, card_prod]
     norm_cast
     grw [le_abs_self P.constantBound, hd, hL, hN]
-    exact D.le_of_hasLogBound
+    refine D.le_of_hasLogBound (h_exp := ?_)
+    -- `scale_arith D` splits the `max`es into too many cases; distribute them instead
+    obtain ⟨⟨_, _, _, _⟩, _, _, _, _, _⟩ := New.Data.scale_inequalities' D
+    simp only [Bool.false_eq_true, ↓reduceIte, Nat.cast_ofNat, ← max_add_add_right,
+      ← max_add_add_left, ← max_sub_sub_right, max_lt_iff]
+    constructorm* _ ∧ _
+    all_goals try simp only [max_def]
+    all_goals try split_ifs
+    all_goals linarith
   grw [h_card, h_pow, ← exp_add, ← exp_add, h_log]
 
 /-- Let `L`, `N` have at most `D.gap = 2 * D.r ^ 8` elements and let `d ≤ D.M`. Let the automorphic

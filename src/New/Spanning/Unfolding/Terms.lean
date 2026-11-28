@@ -460,10 +460,17 @@ lemma pow_le_tailScale {e : ℕ} (he : e ≤ 10 ^ 5 * 𝔰.n ^ 9 * numInfPlaces 
     S.b ^ e ≤ S.tailScale := by
   -- compare the exponents
   have h_exponent : (e : ℝ) ≤ 𝔰.k * numInfPlaces E / 4 := by
-    have hk : 1000 * (2 * 𝔰.ϱ + 2) ^ 9 ≤ 𝔰.k := S.pow_le_k
-    rify at he hk
-    grw [he, ← hk]
-    grind
+    -- Compare the integer exponents before casting to reals.
+    have h_rank : 2 * 𝔰.ϱ + 2 = 2 * 𝔰.n := by simp [Shape.n, Nat.mul_add]
+    have h_scaled : e * 4 ≤ 𝔰.k * numInfPlaces E := calc
+      _ ≤ (10 ^ 5 * 𝔰.n ^ 9 * numInfPlaces E) * 4 := Nat.mul_le_mul_right 4 he
+      _ = (400000 * 𝔰.n ^ 9) * numInfPlaces E := by ring
+      _ ≤ (512000 * 𝔰.n ^ 9) * numInfPlaces E :=
+        Nat.mul_le_mul_right _ (Nat.mul_le_mul_right _ (by decide))
+      _ = 1000 * (2 * 𝔰.ϱ + 2) ^ 9 * numInfPlaces E := by rw [h_rank, mul_pow]; ring
+      _ ≤ _ := Nat.mul_le_mul_right _ S.pow_le_k
+    apply (le_div_iff₀ (by norm_num : (0 : ℝ) < 4)).2
+    exact_mod_cast h_scaled
   simpa [tailScale] using rpow_le_rpow_of_exponent_le S.one_le_b h_exponent
 
 /-- The fourth power of `tailScale` `τ = b ^ (k f / 4)` is `b ^ (k f)`, where `k = 𝔰.k` and

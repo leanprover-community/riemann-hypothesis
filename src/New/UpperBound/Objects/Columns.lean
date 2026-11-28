@@ -725,7 +725,8 @@ lemma exists_sum_columnsY_le_and_pow_le_exp :
     · exact Nat.mul_le_mul_right _ (by grind [Nat.card_Ico])
   · refine Real.le_exp_of_log_le ?_
     push_cast [sum_const, card_univ, smul_eq_mul, Real.log_pow]
-    exact D.le_of_hasLogBound
+    -- Use smaller scale bounds to compare the nested maxima.
+    exact D.le_of_hasLogBound (by scale_arith only D)
 
 /-- There is an integer matrix `br` from the Weyl module on `X_m` to that on `Y_m` that is a
 branching map (`IsBranchingMap`). It is equivariant for the block matrices `diag (g, z)` up to the
