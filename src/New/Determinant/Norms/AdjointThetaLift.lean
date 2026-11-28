@@ -34,8 +34,9 @@ definite space V_j.
 * `New.Data.singleLift_injective`, `New.Data.exists_hasSum_rallisTerm_inner_singleLift`: Θ_{j,ξ} is
   injective, and its Gram form is a constant `A` times the factor `New.DescentPair.gramFactor` of
   the pair times the sum of the terms `New.Data.rallisTerm`.
-* `New.Data.exists_hasSum_inner_singleLift`: the same Gram form as a constant `c` times
-  `New.DescentPair.twistFactor` times the sum of the terms `cosetTerm`.
+* `New.Data.exists_adjoint_singleLift_comp_eq`: Θ_{j,ξ}^* Θ_{j,ξ} is a constant `c` times
+  `New.DescentPair.twistFactor` times `New.Data.rallisOperator`, whose matrix coefficients are the
+  sums of the terms `cosetTerm`.
 
 Notions from other files:
 * `New.Data.descentPair`: the pair of W_j, of rank r, and the definite space V_j, of rank r + t,
@@ -65,9 +66,9 @@ namespace New
 /-!
 ## The theta lift of a descent pair as an equivariant map of forms
 
-* `New.DescentPair.normalizedDescent_mul_eq_normalizedDescent_formAction`: the descent θ turns the
-  action `New.DescentPair.formAction` into right translation by the stabiliser of the standard
-  lattice.
+* `New.DescentPair.thetaLift_formRep`: the lift Θ_W turns right translation by an element of the
+  stabiliser of the standard lattice into the action `New.DescentPair.formAction` of its reduction
+  at the chosen places.
 * `New.DescentPair.thetaLift`, `New.Data.singleLift`: the lifts, with their equivariance.
 -/
 

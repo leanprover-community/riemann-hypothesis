@@ -310,7 +310,7 @@ theorem sign_mul_sign {n : Type*} (δ : n → ℤˣ) (s : ℤˣ) (a b : n) :
     (if δ a = δ b then 1 else s : ℂ) * (if δ b = δ a then 1 else s : ℂ) = 1 :=
   (ite_units_eq_mul_ite_units_eq s _ _ _).trans (ite_eq_left rfl)
 
-/-- The row action of the matrix unit `(a, b)` less `T.centre = T.rowShift - n'/2` on the diagonal
+/-- The row action of the matrix unit `(a, b)` less `T.center = T.rowShift - n'/2` on the diagonal
 is `∑ c, x_ac d_bc + (n'/2) δ_ab`, times the sign `T.globalSign` of the pair where the signs `ε a`,
 `ε b` differ; here `n' = card C`, `x = T.raise` and `d = T.lower`. -/
 theorem oscRows_E_sub_center (a b : R) :
@@ -326,7 +326,7 @@ theorem oscRows_E_sub_center (a b : R) :
     module
   · simp [hab]
 
-/-- The column action of the matrix unit `(a, b)` less `T.swap.centre = T.columnShift - n/2` on the
+/-- The column action of the matrix unit `(a, b)` less `T.swap.center = T.columnShift - n/2` on the
 diagonal is `-(∑ r, x_rb d_ra + (n/2) δ_ab)`, times the sign `T.globalSign` of the pair where the
 signs `ε' a`, `ε' b` differ; here `n = card R`, `x = T.raise`, `d = T.lower`, and `T.swap` is `T`
 with rows and columns exchanged. -/

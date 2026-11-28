@@ -736,7 +736,7 @@ include hp in
 `x₀` be an object of the family `X` over `k`, and let `x` be an object over the square-zero
 extension `k ⊕ M*`, where `M*` is the dual of `M`. Assume: (a) `D` is good at `ker x₀.baseHom`
 (`PEL.IsGoodAt`, which via `ringChar_prime_and_exists_isCoprime_of_isGoodAt_ker` gives the
-generator, localizer and residue integer of `TangentBoundData`); `x₀` is rigid
+generator, localizer and residue integer that the proof uses); `x₀` is rigid
 (`New.ThetaObject.HasSpanningCoords`) and is the fibre of an object `w` over a valuation subring of
 `ℂ` that carries a `FullLevelStructure`; (b) `x` reduces to `x₀`, and `𝓞 E` maps to `k ⊕ M*` through
 `k`;
