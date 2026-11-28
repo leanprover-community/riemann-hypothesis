@@ -734,6 +734,88 @@ private lemma periodTensorMap_sum_lTensor_eq [L : PadicPlaceEmbedding E A ℓ] {
     tmul_eq_smul_one_tmul δ, ← Nat.cast_smul_eq_nsmul Bmax, smul_smul, ← pow_add,
     mem_range_le, _root_.smul_pow] using h_sum
 
+omit [PadicIso ℓ] in
+/-- A `ℤ_[ℓ]`-linear form `f : Amax →ₗ[ℤ_[ℓ]] ℤ_[ℓ]` reads the coefficient-weighted sum of
+representatives `Y N ∈ Amax ⊗ T` (applied to `v` via `u`) as the matching group-ring combination
+of lifts `surjInv hq (lift (lsmul ℤ_[ℓ] T ∘ₗ f) (Y N))` acting on `v`. -/
+private lemma lift_lsmul_sum_lTensor {T : Type} [Ring T] [Algebra ℤ_[ℓ] T] {n : ℕ}
+    {σ : PadicRep Gal(Ω/E) ℓ} {q : ℤ_[ℓ][Gal(Ω/E)] →ₐ[ℤ_[ℓ]] T} (hq : (⇑q).Surjective)
+    {u : T →ₐ[ℤ_[ℓ]] Matrix σ.Index σ.Index (PadicAlgCl ℓ)}
+    (hu : ∀ z : ℤ_[ℓ][Gal(Ω/E)], u (q z) = groupRingHom σ z)
+    (Y : ℕ → Amax ⊗[ℤ_[ℓ]] T) (Q' : (PadicAlgCl ℓ)[X]) (v : σ.Index → PadicAlgCl ℓ)
+    (f : Amax →ₗ[ℤ_[ℓ]] ℤ_[ℓ]) :
+    lift (lsmul ℤ_[ℓ] (σ.Index → PadicAlgCl ℓ) ∘ₗ f)
+        (∑ N ∈ range n, lTensor Amax (Q'.coeff N • applyVec u v) (Y N)) =
+      (∑ N ∈ range n, Q'.coeff N • groupRingHom σ
+        (surjInv hq (lift (lsmul ℤ_[ℓ] T ∘ₗ f) (Y N)))) *ᵥ v := by
+  choose G hG using fun N ↦ (Y N).exists_finset
+  have h_rel (N : ℕ) : q (surjInv hq (lift (lsmul ℤ_[ℓ] T ∘ₗ f) (Y N))) = _ := surjInv_eq hq _
+  simp only [← hu, h_rel]
+  simp [hG, sum_mulVec, smul_mulVec, smul_sum, smul_comm (Q'.coeff _)]
+
+/-- Passing the Frobenius polynomial relations to the trace limit. For each linear form
+`f : Amax →ₗ[ℤ_[ℓ]] ℤ_[ℓ]`, reading the Frobenius representatives `frobPow θ N` through `f` yields
+group-ring relations killing `ρ θ x` (from `h_kill`) whose action on `r` is independent of `θ`,
+so `IsTraceLimit.eq_zero_of_relation` forces the `P`-weighted combination on `r` to vanish. -/
+private lemma sum_coeff_smul_groupRingHom_eq_zero (h : IsTraceLimit r A F a ρ)
+    [L : PadicPlaceEmbedding E A ℓ] {s : Gal(Ω/E)} (hs : s ∈ decompGroup Gal(Ω/E) A) {k d n : ℕ}
+    {P : (PadicAlgCl ℓ)[X]} {Q : (η : I) → ι η → (PadicAlgCl ℓ)[X]}
+    (h_kill : ∀ (η : I) (i : ι η), PolyKillsAt (ρ η i).rep A s (Q η i))
+    (h_coeff : ∀ l : ℕ, TendstoUniformly
+        (fun (η : I) (g : Gal(Ω/E)) ↦
+          ∑ i : ι η, a η i * (Q η i).coeff l * ((ρ η i).rep g).val.trace)
+        (fun g : Gal(Ω/E) ↦ P.coeff l * (r g).val.trace) F)
+    (hw : IsWeilPair (L.toGp ⟨s, hs⟩) k) {T : I → Type} [∀ θ, Ring (T θ)]
+    [∀ θ, Algebra ℤ_[ℓ] (T θ)] {q : ∀ θ, ℤ_[ℓ][Gal(Ω/E)] →ₐ[ℤ_[ℓ]] T θ}
+    (hq : ∀ θ, (⇑(q θ)).Surjective)
+    {u₀ : ∀ θ, T θ →ₐ[ℤ_[ℓ]] Matrix m m (PadicAlgCl ℓ)}
+    {u₁ : ∀ θ (x : ι θ), T θ →ₐ[ℤ_[ℓ]] Matrix (ρ θ x).Index (ρ θ x).Index (PadicAlgCl ℓ)}
+    (hu₀ : ∀ θ z, u₀ θ (q θ z) = groupRingHom ⟨r⟩ z)
+    (hu₁ : ∀ θ x z, u₁ θ x (q θ z) = groupRingHom (ρ θ x) z)
+    (δ : Amax) (frobPow : ∀ θ, ℕ → Amax ⊗[ℤ_[ℓ]] T θ)
+    (hM₀ : ∀ (θ : I) (v : m → PadicAlgCl ℓ),
+      periodTensorMap Amax Bmax id
+        (∑ N ∈ range n, lTensor Amax (P.coeff N • applyVec (u₀ θ) v) (frobPow θ N)) =
+      (δ • (ℓ ^ (k * d) : Bmax) ^ n) •
+        P.eval₂ (coeffEnd (PadicAlgCl ℓ) (m → PadicAlgCl ℓ))
+          (linearFrob (decompRep r A) ⟨s, hs⟩ k) (1 ⊗ₜ v))
+    (hM₁ : ∀ (θ : I) (x : ι θ) (v : (ρ θ x).Index → PadicAlgCl ℓ),
+      periodTensorMap Amax Bmax id
+        (∑ N ∈ range n, lTensor Amax ((Q θ x).coeff N • applyVec (u₁ θ x) v) (frobPow θ N)) =
+      (δ • (ℓ ^ (k * d) : Bmax) ^ n) •
+        (Q θ x).eval₂ (coeffEnd (PadicAlgCl ℓ) ((ρ θ x).Index → PadicAlgCl ℓ))
+          (linearFrob (decompRep (ρ θ x).rep A) ⟨s, hs⟩ k) (1 ⊗ₜ v))
+    (t₀ : I) (f : Amax →ₗ[ℤ_[ℓ]] ℤ_[ℓ]) :
+    ∑ N ∈ range n, P.coeff N • groupRingHom ⟨r⟩
+      (surjInv (hq t₀) (lift (lsmul ℤ_[ℓ] (T t₀) ∘ₗ f) (frobPow t₀ N))) = 0 := by
+  let relElt (θ : I) (N : ℕ) : ℤ_[ℓ][Gal(Ω/E)] :=
+    surjInv (hq θ) (lift (lsmul ℤ_[ℓ] (T θ) ∘ₗ f) (frobPow θ N))
+  refine h.eq_zero_of_relation (n := n) h_coeff relElt
+    (fun θ x ↦ ext_iff_mulVec.mpr fun v ↦ ?_) fun θ ↦ ext_iff_mulVec.mpr fun v ↦ ?_
+  · -- `Q θ x` kills `s` on `ρ θ x`.
+    have hMx : ∑ N ∈ range n,
+        lTensor Amax ((Q θ x).coeff N • applyVec (u₁ θ x) v) (frobPow θ N) = 0 := by
+      obtain ⟨-, h_Q_zero⟩ := (h_kill θ x).right hw
+      have h_Q : (δ • (ℓ ^ (k * d) : Bmax) ^ n) • (Q θ x).eval₂
+          (coeffEnd (PadicAlgCl ℓ) ((ρ θ x).Index → PadicAlgCl ℓ))
+          (linearFrob (decompRep (ρ θ x).rep A) ⟨s, hs⟩ k) (1 ⊗ₜ v) = 0 := by
+        rw [h_Q_zero, LinearMap.zero_apply, smul_zero]
+      refine periodTensorMap_injective ((hM₁ θ x v).trans ?_)
+      rw [map_zero]
+      exact h_Q
+    have h_read_x := lift_lsmul_sum_lTensor (n := n) (hq θ) (hu₁ θ x) (frobPow θ) (Q θ x) v f
+    rw [hMx, map_zero] at h_read_x
+    rw [zero_mulVec]
+    exact h_read_x.symm
+  · -- For `r` the weighted sum does not depend on `θ`.
+    have h_indep :
+        ∑ N ∈ range n, lTensor Amax (P.coeff N • applyVec (u₀ θ) v) (frobPow θ N) =
+          ∑ N ∈ range n, lTensor Amax (P.coeff N • applyVec (u₀ t₀) v) (frobPow t₀ N) :=
+      periodTensorMap_injective ((hM₀ θ v).trans (hM₀ t₀ v).symm)
+    dsimp only [relElt]
+    rw [← lift_lsmul_sum_lTensor (σ := ⟨r⟩) (n := n) (hq θ) (hu₀ θ) (frobPow θ) P v f,
+      ← lift_lsmul_sum_lTensor (σ := ⟨r⟩) (n := n) (hq t₀) (hu₀ t₀) (frobPow t₀) P v f, h_indep]
+
 /-- The case of `polyKillsAt` at a place `A` above `ℓ`, given by an embedding `L` of Ω in ℚ̄_ℓ.
 Assume the trace of `r` is the uniform limit along `F` of ∑ᵢ `a η i`·tr `ρ η i` (`h`). Let `Q η i`
 kill `s` on `ρ η i`, let all degrees be below `n`, and let the traces also converge when weighted by
@@ -784,61 +866,25 @@ theorem isKilledBy (h : IsTraceLimit r A F a ρ) [L : PadicPlaceEmbedding E A �
   choose frobPow h_frobPow using fun θ N ↦ exists_periodTensorMap_eq_linearFrob
     (fun o ↦ (h_in θ o).left.isPotentiallyCrystalline) (u := fun o ↦ (u θ o).toLinearMap)
     (by simp [hu]) (hw.pow N) (h_span θ N)
-  -- The group ring elements that a linear form f reads off `frobPow θ N`.
-  let relElt (f : Amax →ₗ[ℤ_[ℓ]] ℤ_[ℓ]) (θ : I) (N : ℕ) : ℤ_[ℓ][Gal(Ω/E)] :=
-    surjInv (hq θ) (lift (lsmul ℤ_[ℓ] (T θ) ∘ₗ f) (frobPow θ N))
-  -- The coefficient-weighted sum of the Frobenius representatives has period image
-  -- δ ℓ ^ (k d n) Q' (β) (1 ⊗ v). A linear form reads it as the same sum of group ring actions.
-  let M (θ : I) (o : Option (ι θ)) (Q' : (PadicAlgCl ℓ)[X]) (v : (X θ o).Index → PadicAlgCl ℓ) :=
-    ∑ N ∈ range n, lTensor Amax (Q'.coeff N • applyVec (u θ o) v) (frobPow θ N)
   have hM (θ : I) (o : Option (ι θ)) {Q' : (PadicAlgCl ℓ)[X]} (hQ' : Q'.natDegree < n)
       (v : (X θ o).Index → PadicAlgCl ℓ) :=
     periodTensorMap_sum_lTensor_eq hs hw (h_in θ o) (h_crys θ o) (u θ o) δ (frobPow θ) v
       (fun N ↦ h_frobPow θ N o v) hQ'
-  have h_read (θ : I) (o : Option (ι θ)) (Q' : (PadicAlgCl ℓ)[X])
-      (v : (X θ o).Index → PadicAlgCl ℓ) (f : Amax →ₗ[ℤ_[ℓ]] ℤ_[ℓ]) :
-      lift (lsmul ℤ_[ℓ] ((X θ o).Index → PadicAlgCl ℓ) ∘ₗ f) (M θ o Q' v) =
-        (∑ N ∈ range n, Q'.coeff N • groupRingHom (X θ o) (relElt f θ N)) *ᵥ v := by
-    choose G hG using fun N ↦ (frobPow θ N).exists_finset
-    have h_rel (N : ℕ) : q θ (relElt f θ N) = _ := surjInv_eq (hq θ) _
-    simp [M, ← hu, h_rel, hG, sum_mulVec, smul_mulVec, smul_sum,
-      smul_comm (Q'.coeff _)]
-  have h_zero (f : Amax →ₗ[ℤ_[ℓ]] ℤ_[ℓ]) :
-      ∑ N ∈ range n, P.coeff N • groupRingHom ⟨r⟩ (relElt f t₀ N) = 0 := by
-    refine h.eq_zero_of_relation (n := n) h_coeff (relElt f)
-      (fun θ x ↦ ext_iff_mulVec.mpr fun v ↦ ?_) fun θ ↦ ext_iff_mulVec.mpr fun v ↦ ?_
-    · -- `Q θ x` kills s on `ρ θ x`.
-      have hMx : M θ x (Q θ x) v = 0 := by
-        obtain ⟨-, h_Q_zero⟩ := (h_kill θ x).right hw
-        have h_Q : (δ • (ℓ ^ (k * d) : Bmax) ^ n) • (Q θ x).eval₂
-            (coeffEnd (PadicAlgCl ℓ) ((ρ θ x).Index → PadicAlgCl ℓ))
-            (linearFrob (decompRep (ρ θ x).rep A) ⟨s, hs⟩ k) (1 ⊗ₜ v) = 0 := by
-          rw [h_Q_zero, LinearMap.zero_apply, smul_zero]
-        refine periodTensorMap_injective ((hM θ x (hQ θ x) v).trans ?_)
-        rw [map_zero]
-        exact h_Q
-      -- `M θ x = 0`, so the value read off it is `0`
-      have h_read_x := h_read θ x (Q θ x) v f
-      rw [hMx, map_zero] at h_read_x
-      rw [zero_mulVec]
-      exact h_read_x.symm
-    · -- For r the element M does not depend on θ.
-      have h_indep : M θ none P v = M t₀ none P v :=
-        periodTensorMap_injective ((hM θ none hP v).trans (hM t₀ none hP v).symm)
-      exact (h_read θ none P v f).symm.trans
-        ((congrArg _ h_indep).trans (h_read t₀ none P v f))
-  -- The coordinates of `Amax` separate points, so M vanishes; δ and ℓ are cancelled.
-  have hMr : M t₀ none P v = 0 := by
+  have h_zero (f : Amax →ₗ[ℤ_[ℓ]] ℤ_[ℓ]) :=
+    sum_coeff_smul_groupRingHom_eq_zero h hs h_kill h_coeff hw hq
+      (fun θ z ↦ hu θ none z) (fun θ x z ↦ hu θ (some x) z) δ frobPow
+      (fun θ v ↦ hM θ none hP v) (fun θ x v ↦ hM θ (some x) (hQ θ x) v) t₀ f
+  -- The coordinates of `Amax` separate points, so the sum at `t₀` vanishes; `δ` and `ℓ` cancel.
+  have hMr : ∑ N ∈ range n,
+      lTensor Amax (P.coeff N • applyVec (u t₀ none).toLinearMap (v : (X t₀ none).Index → _))
+        (frobPow t₀ N) = 0 := by
     refine tensor_eq_zero_of_separating c.eq_zero_of_coord _ fun i ↦ ?_
-    -- each coordinate reads `M` as the relation `h_zero` applied to `v`
-    exact (h_read t₀ none P v _).trans
+    exact (lift_lsmul_sum_lTensor (hq t₀) (hu t₀ none) (frobPow t₀) P v _).trans
       ((congrArg (· *ᵥ v) (h_zero _)).trans (zero_mulVec v))
-  -- `hM` at `t₀` for `r` (`X t₀ none` unfolds to `r`): the scaled value is `0`
   have h_scaled : (δ • (ℓ ^ (k * d) : Bmax) ^ n) •
       P.eval₂ (coeffEnd (PadicAlgCl ℓ) (m → PadicAlgCl ℓ)) (linearFrob (decompRep r A) ⟨s, hs⟩ k)
-        (1 ⊗ₜ v) = 0 := by
-    exact (hM t₀ none hP v).symm.trans
-      ((congrArg (periodTensorMap Amax Bmax id) hMr).trans (map_zero _))
+        (1 ⊗ₜ v) = 0 :=
+    (hM t₀ none hP v).symm.trans ((congrArg (periodTensorMap Amax Bmax id) hMr).trans (map_zero _))
   simpa [hδ.ne_zero, Algebra.smul_def δ, (NeZero.of_faithfulSMul ℚ_[ℓ] _ ℓ).out,
     -map_eq_zero, -isUnit_map_iff] using h_scaled
 
