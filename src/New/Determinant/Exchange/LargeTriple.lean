@@ -263,11 +263,12 @@ lemma centreCoeff_thetaIntegral_localDatum_eq_zero (hπ : ReadsAt A π) (β γ :
       D.thetaTerm V β γ f p x.val k = 0 by simp [h_sum, h_terms]
   rintro ⟨x, hx⟩ k
   -- write `q = scaleIdele E • q'` and put `Y = x' q'`, with `x'` the standard coordinates of `x`
-  obtain ⟨q', hq'⟩ : ∃ q' : GL b (𝔸 E), scaleIdele E • q' = q := MulAction.surjective _ q
+  let q' : GL b (𝔸 E) := GeneralLinearGroup.scalar b (scaleIdele E)⁻¹ * q
   let Y : Matrix a b (𝔸 E) := V.x⁻¹.val * x.map toAdele * q'.val
   have hY : V.x⁻¹.val * x.map toAdele * q.val = scaleIdele E • Y := by
-    subst hq'
-    exact Matrix.mul_smul ..
+    have hq' : scaleIdele E • q'.val = q.val := Matrix.ext fun i j ↦ by
+      simp [q', GeneralLinearGroup.scalar, Units.smul_def, ← mul_assoc]
+    rw [← hq', Matrix.mul_smul]
   -- the Gram matrix of `k⁻¹ Y` is congruent to `T` by `q'`, so the real slice there is zero
   have h_gram : (k⁻¹.adeleMatrix * Y)ᴴ * stdForm E t * (k⁻¹.adeleMatrix * Y) =
       q'.valᴴ * T.map toAdele * q'.val := by
@@ -1049,7 +1050,10 @@ lemma exists_centreCoeff_eq_mul_of_isPeriodIdentity {σ' : b ⊕ b ⊕ n ≃ m}
   let ρ' : G E (t' ⊕ᵥ s) → ℂ := fun g ↦
     if ∃ u₀ : U 1 × U 1, U.blockSumOne u₀ * g.2 ∈ stdLevel E (b ⊕ n) then ρ g.1 else 0
   have hρ'_nonneg (g : G E (t' ⊕ᵥ s)) : 0 ≤ (ρ' g).re := by
-    simpa [ρ', apply_ite Complex.re] using ite_nonneg (hρ₀ g.1) le_rfl
+    dsimp only [ρ']
+    split_ifs
+    · exact hρ₀ g.1
+    · exact le_rfl
   have hρ'_ne : ∀ᶠ g : G E (t' ⊕ᵥ s) in nhds 1, (ρ' g).re ≠ 0 := by
     refine (hρ_ne_near_one.prod_nhds (isOpen_stdLevel.mem_nhds (one_mem _))).mono
       fun g ⟨hg_inf, hg_fin⟩ ↦ ?_
@@ -1191,7 +1195,10 @@ lemma rowColExchangeIdentity_of_periods [IsBaseAdapted D₁] {σ' : b ⊕ b ⊕ 
   choose C hC h_eq using fun 𝔠 : SplitTameChar E μ ↦ h_identity 𝔠 (period 𝔠) (h_period 𝔠)
   refine ⟨hv, hv', K⁻¹ ^ 2, fun 𝔠 ↦ ⟨C 𝔠, ?_, h_eq 𝔠⟩⟩
   -- `K` cancels, and `card (b ⊕ n) - card m / 2 = card n / 2`
-  have h_rank : (card (b ⊕ n) : ℤ) - card m / 2 = card n / 2 := by grind [card_sum, D.card_eq]
+  have h_rank : (card (b ⊕ n) : ℤ) - card m / 2 = card n / 2 := by
+    have := D.card_eq
+    rw [card_sum]
+    omega
   rw [hC, h_rank]
   field [(lValueProdInt_pos 𝔠 (card n / 2)).ne']
 
