@@ -190,20 +190,42 @@ lemma form_frameImage_mulVec (γ : S.G E) (y : Fin (𝔰.ϱ + 1) → E) :
 
 /-! ### Vectors shared by two frames and the norm identity -/
 
+/-- Pairing the standard frame `e₁, …, e_ϱ, z` with a vector `v` reads off its coordinates
+at the dual vectors `e*_a`, followed by its coordinate at `z` multiplied by `-N`. -/
+lemma frameImage_one_conjTranspose_mulVec_ratGram (v : 𝔰.BesselIndex → E) :
+    (frameImage (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))ᴴ *ᵥ S.ratGram *ᵥ v =
+      Fin.snoc (fun a : Fin 𝔰.ϱ ↦ v (eStar a)) (-(S.N * v 𝔰.z)) := by
+  ext i
+  refine Fin.lastCases ?_ (fun a ↦ ?_) i
+  · simp [ratGram, Shape.middleGram, Shape.Form.splitGram, mulVec, dotProduct, Matrix.one_apply]
+  · simp [ratGram, Shape.Form.splitGram, mulVec, dotProduct, Matrix.one_apply, apply_ite star]
+
+/-- For the coefficients `x` of a combination of the frame `e_1, …, e_ϱ, z_N`, the product, for the
+form `S.ratGram`, of this combination with `y` is the sum of `x̄_a y(e*_a)` over `a ≤ ϱ` minus
+`N x̄_z y(z)`, where `x_z` is the last coefficient and `y(·)` are coordinates of `y`. -/
+lemma form_frameImage_one {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
+    (x : Fin (𝔰.ϱ + 1) → E) (y : 𝔰.BesselIndex → E) :
+    star (frameImage 1 *ᵥ x) ⬝ᵥ S.ratGram *ᵥ y =
+      ∑ a : Fin 𝔰.ϱ, star (x a.castSucc) * y (eStar a) - S.N * (star (x 𝔰.top) * y 𝔰.z) := by
+  rw [star_mulVec, ← dotProduct_mulVec, S.frameImage_one_conjTranspose_mulVec_ratGram]
+  simp [dotProduct, sum_univ_castSucc, sub_eq_add_neg, mul_left_comm]
+
+/-- The Gram matrix of the frame sends the coefficients of a translated frame vector
+to its pairings with the standard frame. -/
+private lemma frameProducts_mulVec :
+    let v := frameImage γ.val.val *ᵥ y
+    S.frameProducts γ *ᵥ y = snoc (v ∘ eStar) (-(S.N * v 𝔰.z)) := by
+  rw [frameProducts, frameGram_eq_frameImage, ← mulVec_mulVec, ← mulVec_mulVec]
+  exact S.frameImage_one_conjTranspose_mulVec_ratGram _
+
 /-- If `f · x = γ f · y`, then the `z`-coefficients of `x` and `y` have the same norm. -/
 lemma star_mul_last_eq_of_frameImage_eq
     (hxy : frameImage (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) *ᵥ x =
       frameImage γ.val.val *ᵥ y) :
     star (x 𝔰.top) * x 𝔰.top = star (y 𝔰.top) * y 𝔰.top := by
-  -- `γ` is unitary, so `frameImage 1 *ᵥ x` and `frameImage 1 *ᵥ y` have the same norm
   have h_norm := form_frameImage_mulVec γ y
-  rw [← hxy] at h_norm
-  -- on the span of the frame only the `z`-coordinate contributes, with the factor `-N`
-  have h_scaled :
-      (S.N : E) * (star (x 𝔰.top) * x 𝔰.top) = S.N * (star (y 𝔰.top) * y 𝔰.top) := by
-    simpa [↓frameImage_one_mulVec, middleGram, dotProduct, mulVec, splitGram, mul_left_comm,
-      mul_assoc] using h_norm
-  exact mul_left_cancel₀ (by simp [Nat.Prime.ne_zero]) h_scaled
+  rw [← hxy, form_frameImage_one, form_frameImage_one] at h_norm
+  simpa [frameImage_one_mulVec, S.N_prime.ne_zero] using h_norm
 
 /-- If `γ f · y = f · x`, then its products with the frame vanish except the one with `z`, which
 is `-N` times the `z`-coefficient of `x`. -/
@@ -211,10 +233,9 @@ lemma frameProducts_mulVec_of_frameImage_eq
     (hxy : frameImage (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) *ᵥ x =
       frameImage γ.val.val *ᵥ y) :
     S.frameProducts γ *ᵥ y = Pi.single 𝔰.top (-S.N * x 𝔰.top) := by
-  -- the products of `γ f · y = f · x` with the frame are read off from the Gram matrix
-  simp only [frameGram_eq_frameImage, ← mulVec_mulVec, ← hxy]
-  simp [middleGram, splitGram, frameImage_one_mulVec, funext_iff, mulVec, dotProduct,
-    Matrix.one_apply, forall_fin_succ', -mulVec_mulVec]
+  rw [frameProducts_mulVec, ← hxy, frameImage_one_mulVec]
+  funext i
+  refine Fin.lastCases ?_ (fun a ↦ ?_) i <;> simp [castSucc_ne_last]
 
 /-- The middle form is anisotropic on the vectors without `z`-coordinate. -/
 lemma eq_zero_of_ratMiddle_form_eq_zero (w : 𝔰.MiddleIndex → E) (hw : w (Sum.inr ()) = 0)
@@ -232,22 +253,14 @@ lemma eq_zero_of_ratMiddle_form_eq_zero (w : 𝔰.MiddleIndex → E) (hw : w (Su
 lemma frameImage_mulVec_eStar_eq_zero {D : E}
     (h_prod : S.frameProducts γ *ᵥ y = Pi.single 𝔰.top D) (a : Fin 𝔰.ϱ) :
     (frameImage γ.val.val *ᵥ y) (eStar a) = 0 := by
-  -- the product with the isotropic vector `e_a` reads off the dual coordinate
-  have h_row : (S.frameProducts γ *ᵥ y) a.castSucc = 0 := by simp [h_prod, castSucc_ne_last]
-  rw [frameProducts, frameGram_eq_frameImage, ← mulVec_mulVec, ← mulVec_mulVec] at h_row
-  generalize frameImage γ.val.val *ᵥ y = t at h_row
-  simpa [splitGram, mulVec, dotProduct, Matrix.one_apply, apply_ite star] using h_row
+  simpa [frameProducts_mulVec, castSucc_ne_last] using congrFun h_prod a.castSucc
 
 /-- If `γ f · y` is orthogonal to `e₁, …, e_ϱ` and has product `D` with `z`, then `-N` times
 its `z`-coordinate is `D`. -/
 lemma neg_mul_frameImage_mulVec_z_eq {D : E}
     (h_prod : S.frameProducts γ *ᵥ y = Pi.single 𝔰.top D) :
     -(S.N * (frameImage γ.val.val *ᵥ y) 𝔰.z) = D := by
-  -- the product with `z` reads off the `z`-coordinate, with the factor `-N`
-  have h_row : (S.frameProducts γ *ᵥ y) 𝔰.top = D := by simp [h_prod]
-  rw [frameProducts, frameGram_eq_frameImage, ← mulVec_mulVec, ← mulVec_mulVec] at h_row
-  generalize frameImage γ.val.val *ᵥ y = t at h_row
-  simpa [middleGram, splitGram, mulVec, dotProduct, Matrix.one_apply] using h_row
+  simpa [frameProducts_mulVec] using congrFun h_prod 𝔰.top
 
 /-- If `γ f · y` is orthogonal to `e₁, …, e_ϱ` and has product `D` with `z`, then at each
 infinite place `N` times the squared length of its `X₀`-part is `|D|² - N² |y_z|²`. -/

@@ -144,15 +144,6 @@ lemma mem_framePerp_iff_orthogonal :
   · rw [dotProduct_comm, ← star_star c, ← h_form]
     exact hy _ ⟨star c, rfl⟩
 
-/-- For the coefficients `x` of a combination of the frame `e_1, …, e_ϱ, z_N`, the product, for the
-form `S.ratGram`, of this combination with `y` is the sum of `x̄_a y(e*_a)` over `a ≤ ϱ` minus
-`N x̄_z y(z)`, where `x_z` is the last coefficient and `y(·)` are coordinates of `y`. -/
-lemma form_frameImage_one (x : Fin (𝔰.ϱ + 1) → E) (y : 𝔰.BesselIndex → E) :
-    star (frameImage 1 *ᵥ x) ⬝ᵥ S.ratGram *ᵥ y =
-      ∑ a : Fin 𝔰.ϱ, star (x a.castSucc) * y (eStar a) - S.N * (star (x 𝔰.top) * y 𝔰.z) := by
-  rw [frameImage_one_mulVec, splitGram_mulVec]
-  simp [dotProduct, mulVec, Shape.middleGram, init, sub_eq_add_neg, mul_left_comm]
-
 /-- For the form `S.ratGram`, the product of a combination with coefficients `x` of the frame
 `frameImage γ` with `y` equals the product of the same combination of the frame `frameImage 1` with
 `γ⁻¹ y`. -/
