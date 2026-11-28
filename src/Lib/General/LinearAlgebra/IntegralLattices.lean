@@ -574,6 +574,12 @@ variable {R n k : Type*} [DecidableEq k] [CommRing R] [Fintype n]
 /-- The n × k matrix X over R has a left inverse over R. -/
 abbrev HasLeftInv : Prop := ∃ L : Matrix k n R, L * X = 1
 
+/-- A matrix with a left inverse acts injectively on column vectors. -/
+lemma HasLeftInv.injective_mulVec [Fintype k] {X : Matrix n k R} (hX : HasLeftInv X) :
+    Function.Injective X.mulVec := by
+  obtain ⟨L, hL⟩ := hX
+  exact Function.LeftInverse.injective (g := L.mulVec) fun v ↦ by simp [hL]
+
 /-- Applying a ring homomorphism entrywise preserves a matrix's left inverse. -/
 lemma HasLeftInv.map {S : Type*} [CommRing S] {X : Matrix n k R} (hX : HasLeftInv X)
     (φ : R →+* S) : HasLeftInv (X.map φ) := by

@@ -123,11 +123,6 @@ open Matrix Finset
 variable {R n k : Type _} [Field R] [Fintype n] [DecidableEq n] [Fintype k] [DecidableEq k]
 variable {X Y : Matrix n k R}
 
-omit [DecidableEq n] in
-lemma HasLeftInv.injective_mulVec (hX : HasLeftInv X) : X.mulVec.Injective :=
-  let ⟨L, (hL : L * X = 1)⟩ := hX
-  Function.LeftInverse.injective (g := L.mulVec) fun x ↦ by simp [hL]
-
 /-- A matrix `X` over a field whose map `x ↦ X *ᵥ x` has trivial kernel has a left inverse. -/
 lemma HasLeftInv.of_ker_le_bot (h_ker : X.mulVecLin.ker ≤ ⊥) : HasLeftInv X := by
   obtain ⟨g, hg⟩ := X.toLin'.exists_leftInverse_of_injective (le_bot_iff.1 h_ker)

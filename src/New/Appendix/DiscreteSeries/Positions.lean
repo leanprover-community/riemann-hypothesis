@@ -220,12 +220,10 @@ lemma exists_eq_of_orthogonal (hP : IsPosition ε η d v i₀) {p : Type} {M : M
     (hM : (initCols v)ᴴ * signMatrix ε * M = 0) :
     ∃ T : Matrix (m ⊕ Fin (d + 1)) p ℂ, M = fromCols i₀ v * T := by
   -- The span of the columns lies in the kernel of the pairing with `A`, and the dimensions agree.
-  obtain ⟨W, hW⟩ := hP.hasLeftInv
   obtain ⟨Z, -, hZ⟩ := hP.exists_mul_eq_zero_and_mul_initCols_eq_one
   set combination := (fromCols i₀ v).mulVecLin
   set pairing := ((initCols v)ᴴ * signMatrix ε).mulVecLin
-  have h_inj : Function.Injective combination := Function.LeftInverse.injective (g := W.mulVec)
-    fun x ↦ by rw [mulVecLin_apply, mulVec_mulVec, hW, one_mulVec]
+  have h_inj : Function.Injective combination := hP.hasLeftInv.injective_mulVec
   have h_surj : Function.Surjective pairing :=
     Function.RightInverse.surjective (g := (signMatrix ε * Zᴴ).mulVec) fun x ↦ by
       rw [mulVecLin_apply, mulVec_mulVec, Matrix.mul_assoc, ← Matrix.mul_assoc (signMatrix ε),

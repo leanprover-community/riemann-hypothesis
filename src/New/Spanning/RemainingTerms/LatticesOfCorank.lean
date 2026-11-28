@@ -230,7 +230,8 @@ lemma tsum_discriminant_inv_le_of_out_eq {c : S.Classes} {η : U (stdSpace E �
     star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 η⁻¹.property
   have h_inv : finAdeleMatrix Hᴴ * finAdeleMatrix H = 1 := by
     simpa only [Matrix.map_mul, Matrix.map_one, map_zero, map_one] using congrArg finAdeleMatrix hH
-  have hP : Function.Injective P := injective_restrictScalars_mulVecLin h_inv
+  have hP : Function.Injective P :=
+    HasLeftInv.injective_mulVec (X := finAdeleMatrix H) ⟨_, h_inv⟩
   have h_map (L : S.BoundedDiscSublattice r (S.classLatticeX₀ c)) :
       (IsLatticeOfRank r (L.val.map P) ∧ L.val.map P ≤ unimodularLattice u ∧
         discriminant r (L.val.map P) ≤ S.discriminantBound) ∧

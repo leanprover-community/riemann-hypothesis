@@ -114,12 +114,6 @@ lemma colLattice_smul {σ ι : Type} [Fintype ι] (a : (𝔸f E)ˣ) (M : Matrix 
   ext w
   simp [colLattice, Submodule.mem_smul_pointwise_iff_exists, Units.smul_def]
 
-/-- Multiplication by an adelic matrix with a left inverse is injective. -/
-lemma injective_restrictScalars_mulVecLin {κ τ : Type} [Fintype κ] [Fintype τ] [DecidableEq τ]
-    {m : Matrix κ τ (𝔸f E)} {l : Matrix τ κ (𝔸f E)} (hl : l * m = 1) :
-    Function.Injective (m.mulVecLin.restrictScalars (Ô E)) :=
-  Function.LeftInverse.injective (g := l.mulVec) fun v ↦ by simp [hl]
-
 /-- Let the idele `d` be the nonzero number `δ`. If the columns of the rational matrix `v` lie in
 `d` times the lattice of the vectors that `H` makes integral, then `H` makes `δ⁻¹ v` integral. -/
 lemma isIntMatrix_mul_finAdeleMatrix_inv_smul {σ κ n : Type} [Fintype κ] {H : Matrix σ κ (𝔸f E)}
@@ -145,9 +139,8 @@ index, in the lattice spanned by the columns of `m`. -/
 lemma submoduleIndex_colLattice_mul {κ τ : Type} [Fintype κ] [Fintype τ] [DecidableEq τ]
     {m : Matrix κ τ (𝔸f E)} (hm : HasLeftInv m) {A : GL τ (𝔸f E)} (hA : IsIntMatrix (Ô E) A.val) :
     submoduleIndex (colLattice (Ô E) (m * A.val)) (colLattice (Ô E) m) = genIndex A.val.det := by
-  obtain ⟨l, hl⟩ := hm
   have h_inj : Function.Injective (m.mulVecLin.restrictScalars (Ô E)).toAddMonoidHom :=
-    injective_restrictScalars_mulVecLin hl
+    hm.injective_mulVec
   have h_unfold : colLattice (Ô E) m =
       (intVectors (Ô E) τ).map (m.mulVecLin.restrictScalars (Ô E)) := rfl
   rw [← submoduleIndex_colLattice_intVectors hA, colLattice_mul, h_unfold, submoduleIndex,
