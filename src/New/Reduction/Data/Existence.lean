@@ -69,8 +69,10 @@ namespace New
 
 open Finset Behrend Real Filter NumberField ClassGroup NeZero QuadField
 
-/-- A sphere is strictly convex: if three integer vectors of equal squared length satisfy
-`(α + α') v = α u + α' w` with `α, α' > 0`, they are equal. -/
+/-- By strict convexity of the Euclidean norm, if three natural-number vectors of equal squared
+length satisfy
+`(α + α') v = α u + α' w` coordinatewise in the integers, with positive natural-number
+coefficients `α` and `α'`, they are equal. -/
 lemma eq_of_add_mul_eq_of_sum_sq_eq {ι : Type*} [Fintype ι] {α α' : ℕ} {u v w : ι → ℕ}
     (hα : 0 < α) (hα' : 0 < α') (h_coord : ∀ l : ι, ((α : ℤ) + α') * v l = α * u l + α' * w l)
     (huv_sq : ∑ l : ι, u l ^ 2 = ∑ l : ι, v l ^ 2)
