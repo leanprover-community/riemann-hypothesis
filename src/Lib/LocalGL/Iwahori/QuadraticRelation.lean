@@ -299,7 +299,7 @@ private lemma apply_diagGL_compactMean_of_v_eq_one {W : Type*} [AddCommGroup W] 
   map_compactMean_of_factor hφ fun k hk ↦ ⟨k, diagGL_conj_mem_proIwahori_of_v_eq_one hk ht, by simp⟩
 
 /-- For a uniformizer `ϖ` and index `a`, the monomial matrix `permGL (finCycle a)⁻¹ * diagGL s`
-(where `s i = ϖ⁻¹` for `a ≤ i` and `1` otherwise) normalizes `New.proIwahori`. -/
+(where `s i = ϖ⁻¹` for `a ≤ i` and `1` otherwise) conjugates `New.proIwahori` into itself. -/
 private lemma conj_finCycle_inv_mul_diagGL_mem_proIwahori (hϖ : v ϖ.val = exp (-1)) (a : Fin N)
     {k : GL (Fin N) F} (hk : k ∈ proIwahori) :
     (permGL (finCycle a)⁻¹ * diagGL (fun i ↦ if a ≤ i then ϖ⁻¹ else 1))⁻¹ * k *
@@ -337,7 +337,7 @@ lemma exists_iwahoriHeckeHom_injective [CompactSpace 𝒪[F]] (hϖ : v ϖ.val = 
         (levelSpace ρ.ρ proIwahori)).comap (iwahoriHeckeHom ρ) := prod_mem fun a _ ↦ h_ker a
     exact ⟨(∏ a, s a).val, h_strict, (injective_iff_map_eq_zero _).mpr h_mem⟩
   intro a x hx
-  -- A cyclic permutation makes `s a` an element `n` that normalizes `proIwahori`, so `proIwahori`
+  -- A cyclic permutation makes `s a` an element `n` that normalises `proIwahori`, so `proIwahori`
   -- fixes `y`.
   let n : GL (Fin N) F := permGL (finCycle a)⁻¹ * diagGL (s a)
   let y : ρ := ρ n x
@@ -357,7 +357,8 @@ lemma exists_iwahoriHeckeHom_injective [CompactSpace 𝒪[F]] (hϖ : v ϖ.val = 
     let w : Module.End ℂ ρ := ρ (permGL (swap i j))
     have hz : φ z = 0 := hP
     have h_diag (t : Fin N → Fˣ) (ht : ∀ i : Fin N, v (t i).val = 1) : φ (ρ (diagGL t) z) = 0 := by
-      simpa [φ, hz] using (apply_diagGL_compactMean_of_v_eq_one (fun _ ↦ compactMean_apply) ht z).symm
+      simpa [φ, hz] using
+        (apply_diagGL_compactMean_of_v_eq_one (fun _ ↦ compactMean_apply) ht z).symm
     have h_quad : Nat.card 𝓀[F] • φ (w (φ z)) = φ (w z) + (Nat.card 𝓀[F] - 1) • 0 :=
       quadratic_relation hij 0 (fun _ ↦ compactMean_apply) (transvectionGL_apply_permGL_inv hy hσ)
         fun u hu ↦ h_diag _ (v_mulSingle_neg_inv_mul_mulSingle_eq_one hu)
@@ -393,7 +394,7 @@ entries are units of the ring of integers. Then `l (ρ(diag t) z) = ξ(t) · l z
 so the mean over `New.proIwahori` can be dropped. -/
 lemma IsExponent.apply_diagGL_unit (hl : IsExponent ρ ξ l) (ht : ∀ a : Fin N, v (t a).val = 1)
     (z : ρ) : l (ρ (diagGL t) z) = ξ t * l z := by
-  -- `t` is dominant and normalizes `proIwahori`, so the mean in the eigen-equation `hl` can be
+  -- `t` is dominant and normalises `proIwahori`, so the mean in the eigen-equation `hl` can be
   -- dropped.
   rw [← hl (t := t) fun i j _ ↦ by simp [ht]]
   exact (apply_diagGL_compactMean_of_v_eq_one hl.apply_proIwahori ht z).symm
