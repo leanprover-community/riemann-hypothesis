@@ -103,7 +103,7 @@ lemma _root_.New.LevelPlaces.LevelForm.normSqAt_nonneg {E r n : Type} [Field E] 
   rw [normSqAt, classSum]
   exact finsum_nonneg fun _ ↦ smul_nonneg (by positivity) (weylNormSq_nonneg _)
 
-/-- Let `E` be a CM field with a CM type and Weil data, and `O` a descent pair over `E`: the datum
+/-- Let `E` be a CM field with a CM type, and `O` a descent pair over `E`: the datum
 of a lift from a hermitian space `W` with basis indexed by `r` to the standard space `V` with basis
 indexed by `n`. For `φ ≠ 0` in `O.FormV`, the algebraic forms on `V` of the weight and level of `O`,
 the squared norm `φ.normSqAt σ` is positive at every automorphism `σ` of `ℂ`. -/
@@ -111,13 +111,11 @@ lemma _root_.New.LevelPlaces.LevelForm.normSqAt_pos {E r n : Type} [Field E] [CM
     [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
     {φ : O.FormV} (hφ : φ ≠ 0) (σ : ℂ ≃+* ℂ) :
     0 < φ.normSqAt σ := by
-  obtain ⟨c, hc⟩ : ∃ c : StdClasses (levelOf O.placeAt
-    (descentResidueLevel O.toLevelPlaces O.incl)),
-      φ c.out ≠ 0 := by
-    by_contra! h
-    exact hφ (levelSpace_ext_doubleCosets Quot.out_eq h)
-  exact classSum_pos (c := c) (by simp)
-    (weylGramOver_posDef.re_dotProduct_pos (by simpa [funext_iff] using hc : σ ∘ φ c.out ≠ 0))
+  have h_inner : 0 < ‖σ (inner ℂ φ φ)‖ :=
+    norm_pos_iff.2 ((map_ne_zero σ).2 (inner_self_ne_zero.2 hφ))
+  -- Cauchy–Schwarz bounds this positive quantity by a product of two square roots.
+  exact Real.sqrt_pos.1
+    (pos_of_mul_pos_left (h_inner.trans_le (norm_map_inner_le φ φ σ)) (Real.sqrt_nonneg _))
 
 /-- A nonzero form `φ` in the space `O.FormV` of forms on `V` of a descent pair `O` over the CM
 field `E` can be scaled to valuation `0` at a place `ι` (an embedding `ι.ιₚ` of `ℂ` into `ℂ_[l]`):
