@@ -111,10 +111,6 @@ lemma diag_ne_zero_of_row (hg : ∀ j ≠ i, g i j = 0) : g i i ≠ 0 :=
 lemma det_updateCol_one (j : n) (z : n → F) : (updateCol 1 j z).det = z j := by
   rw [← cramer_apply, cramer_one, one_apply_eq_self]
 
-/-- Replacing the `j`-th row of the identity matrix by `z` gives determinant `z j`. -/
-lemma det_updateRow_one (j : n) (z : n → F) : (updateRow 1 j z).det = z j := by
-  rw [← det_transpose, ← updateCol_transpose, transpose_one, det_updateCol_one]
-
 /-- Every non-zero vector is the `i`-th column of an invertible matrix. -/
 lemma exists_col_eq (i : n) {z : n → F} (hz : z ≠ 0) :
     ∃ g : GL n F, (g : Matrix n n F).col i = z := by
