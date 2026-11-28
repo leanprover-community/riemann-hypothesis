@@ -74,6 +74,8 @@ def check_trusted_files():
 def tauceti_imports(path):
     imports = set()
     for line in path.read_text(encoding="utf-8").splitlines():
+        if "TauCeti." not in line:
+            continue
         match = IMPORT.match(line)
         if match:
             imports.add(match.group(1))

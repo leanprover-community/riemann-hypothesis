@@ -21,6 +21,7 @@ groups and its SHA-256 failure count as JSON. scripts/ci-cache-get.py (`lake exe
 uses this with its own --user-agent and puts the report in its final error.
 """
 import hashlib, json, os, re, resource, subprocess, sys, tempfile
+import stat
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -107,7 +108,11 @@ def main():
 
             def settle(n):
                 p = Path(t) / n
-                if not (p.is_file() and p.stat().st_size):
+                try:
+                    info = p.stat()
+                except (FileNotFoundError, NotADirectoryError):
+                    return "missing"
+                if not stat.S_ISREG(info.st_mode) or not info.st_size:
                     return "missing"
                 if n in digests and sha256(p) != digests[n]:
                     p.unlink()
