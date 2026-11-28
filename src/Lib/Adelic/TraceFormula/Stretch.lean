@@ -57,9 +57,9 @@ lemma norm_coordsAt_mulVec_le (x : G E s) (γ : U V.J) (w : InfinitePlace E) (b 
   set t : G E s := x⁻¹ * V.ratEmbed γ * x
   have h_mulVec : (V.move x).coordsAt w ((γ : Matrix n n E) *ᵥ b) =
       WithLp.toLp 2 ((t.1 w : Matrix n n ℂ) *ᵥ WithLp.ofLp ((V.move x).coordsAt w b)) := by
+    rw [coordsAt, V.vecAtPoint_move_mulVec]
     ext i
-    simp only [coordsAt, vecAtPoint_move_mulVec, mulVec, dotProduct, Prod.fst_sum, Prod.fst_mul,
-      Finset.sum_apply, Pi.mul_apply, G.adeleMatrix_fst, t]
+    exact (evalInf w).map_mulVec t.adeleMatrix ((V.move x).vecAtPoint b) i
   rw [h_mulVec]
   exact l2_opNorm_mulVec _ _
 

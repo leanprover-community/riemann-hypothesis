@@ -346,11 +346,10 @@ lemma frameLength_pos (z : GL n (𝔸 E)) {ξ : n → E} (hξ : ξ ≠ 0) : 0 < 
   -- If the length vanishes, so does `ξ = z (z⁻¹ ξ)` at the infinite places.
   refine lt_of_not_ge fun h_le ↦ hξ (funext fun i ↦ ?_)
   obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
-  have h_coord (j : n) : ((z⁻¹.val *ᵥ toAdele ∘ ξ) j).1 w = 0 :=
-    norm_le_zero_iff.1 ((norm_apply_le_frameLength z ξ w j).trans h_le)
-  have h_frame : ((z.val *ᵥ z⁻¹.val *ᵥ toAdele ∘ ξ) i).1 w = 0 := by
-    rw [mulVec, dotProduct, fst_sum, Finset.sum_apply]
-    exact Finset.sum_eq_zero fun j _ ↦ by simp [-coe_units_inv, h_coord j]
+  have h_coord : evalInf w ∘ (z⁻¹.val *ᵥ toAdele ∘ ξ) = 0 :=
+    funext fun j ↦ norm_le_zero_iff.1 ((norm_apply_le_frameLength z ξ w j).trans h_le)
+  have h_frame := (evalInf w).map_mulVec z.val (z⁻¹.val *ᵥ toAdele ∘ ξ) i
+  rw [h_coord, mulVec_zero] at h_frame
   simpa using h_frame
 
 /-- Let `b` be triangular for the weight `wt` (`b k l = 0` if `wt l < wt k`) and `X * b` unitary, so
