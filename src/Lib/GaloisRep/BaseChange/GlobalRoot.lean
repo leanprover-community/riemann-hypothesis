@@ -139,6 +139,123 @@ lemma New.isCMField_fixedField_zpowers {E L : Type} [Field E] [NumberField E] [I
     exact (map_star_CM a.val.toRingHom y).trans (congrArg star (y.property a))
   · simp [← lift_algebraMap_apply L φ]
 
+/-- Let `E'/E` be a step with character `μ` (`IsStep`), `L ⊇ E'` a CM field and `K` a CM field
+between `E` and `L`. Let `u` be a finite idele of `L` with `μ (N_{L/E} u) = 1`, and let
+`y * N_{L/K} u = a * (w * star w)` with `y` and `a` in `Kˣ`. Then the norm of `w` to `E` is a
+totally positive element of `Eˣ` times the norm of a finite idele of `E'`. -/
+private lemma New.IsStep.exists_map_adeleNorm_eq_principalIdele_mul {E E' L : Type} [Field E]
+    [NumberField E] [IsCMField E] [Field E'] [NumberField E'] [IsCMField E'] [Field L]
+    [NumberField L] [IsCMField L] [Algebra E E'] [Algebra E' L] [Algebra E L]
+    [IsScalarTower E E' L] {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep E' μ) {K : IntermediateField E L}
+    [CMType K] {u : (𝔸f L)ˣ} (hu : u ∈ kerCompNorm L μ) {y a : Kˣ} {w : (𝔸f K)ˣ}
+    (hw : principalIdele y * u.map (adeleNorm K L) = principalIdele a * (w * star w)) :
+    ∃ (b : Eˣ) (v : (𝔸f E')ˣ), IsTotallyPositive (b : E) ∧
+      w.map (adeleNorm E K) = principalIdele b * v.map (adeleNorm E E') := by
+  have h_tower : (adeleNorm E K).comp (adeleNorm K L) = adeleNorm E L :=
+    MonoidHom.ext adeleNorm_adeleNorm
+  -- the norm of `u` to `E` is that of `w * star w` times principal ideles, which `μ` kills
+  have h_ww : μ (w.map (adeleNorm E K) * star (w.map (adeleNorm E K))) = 1 := by
+    have h_eq : u.map (adeleNorm K L) =
+        (principalIdele y)⁻¹ * (principalIdele a * (w * star w)) :=
+      eq_inv_mul_of_mul_eq hw
+    have h_u : μ ((u.map (adeleNorm K L)).map (adeleNorm E K)) = 1 := by
+      change μ (u.map (adeleNorm E L)) = 1 at hu
+      rwa [← h_tower, Units.map_comp] at hu
+    rw [h_eq, map_mul, map_inv, map_mul, map_mul, map_mul, map_inv, map_mul,
+      map_adeleNorm_principalIdele, map_adeleNorm_principalIdele,
+      hμ.apply_principal, inv_one, one_mul, hμ.apply_principal, one_mul,
+      units_map_adeleNorm_star] at h_u
+    exact h_u
+  -- by the definition of a step, the norm of `w` to `E` is then a norm from `E'` up to `Eˣ`
+  obtain ⟨b, v, hbv⟩ := (hμ.apply_norm_eq_one_iff _).mp h_ww
+  exact ⟨b, v, isTotallyPositive_of_isTotallyComplex _, hbv⟩
+
+/-- Let `E ⊆ E' ⊆ L` and `E ⊆ K ⊆ L` be number fields inside `Ω`, with `L = E'[x]` for some `x` in
+`K`, and let the characters `χ` and `ψ` cut out `E'/E` and `L/K`. If the norm of the finite idele
+`w` of `K` to `E` is an element of `Eˣ` times a norm from `E'`, then the Artin symbol of `w` fixes
+`E'` and `x`, hence all of `L`, so that `ψ` kills it. -/
+private lemma New.abelianLift_artinMap_eq_one_of_map_adeleNorm_eq {E E' L : Type} [Field E]
+    [NumberField E] [Field E'] [NumberField E'] [Field L] [NumberField L] [Algebra E E']
+    [Algebra E' L] [Algebra E L] [IsScalarTower E E' L] [IsGalois E E'] [Algebra E Ω]
+    [Algebra E' Ω] [Algebra L Ω] [IsScalarTower E L Ω] [IsScalarTower E' L Ω]
+    [IsScalarTower E E' Ω] {K : IntermediateField E L} [IsGalois K L] {x : K}
+    (hL : E'[(x : L)] = ⊤)
+    {χ : QZChar Gal(Ω/E)} (hχ : IsProGalois (QZChar.ker χ) E' Ω) {ψ : QZChar Gal(Ω/K)}
+    (hψ : IsProGalois (QZChar.ker ψ) L Ω) {w : (𝔸f K)ˣ}
+    (h_step : ∃ (b : Eˣ) (v : (𝔸f E')ˣ), IsTotallyPositive (b : E) ∧
+      w.map (adeleNorm E K) = principalIdele b * v.map (adeleNorm E E')) :
+    New.QZChar.abelianLift ψ (artinMap Gal(Ω/K) w) = 1 := by
+  obtain ⟨f, hf⟩ := Quot.exists_rep (artinMap Gal(Ω/K) w)
+  -- `f` is also the symbol of the norm of `w` to `E`, so it lies in the kernel of `χ`, the
+  -- subgroup that fixes `E'`
+  have hf_norm : artinMap Gal(Ω/E) (w.map (adeleNorm E K)) = f.restrictScalars E :=
+    artinMap_map_adeleNorm hf.symm 1 (fun t ↦ IsScalarTower.algebraMap_apply E K Ω t)
+      fun _ ↦ rfl
+  have hf_ker : New.QZChar.abelianLift χ ↑(f.restrictScalars E) = 1 := by
+    rwa [← hf_norm, abelianLift_artinMap_eq_one_iff]
+  obtain ⟨χ_ker, -⟩ : QZChar.ker χ = fixingSubgroup Gal(Ω/E) (Set.range (algebraMap E' Ω)) ∧
+      (QZChar.ker χ).index = Module.finrank E E' :=
+    eq_fixingSubgroup_of_isProGalois (J := hχ)
+  obtain ⟨ψ_ker, -⟩ : QZChar.ker ψ = fixingSubgroup Gal(Ω/K) (Set.range (algebraMap L Ω)) ∧
+      (QZChar.ker ψ).index = Module.finrank K L :=
+    eq_fixingSubgroup_of_isProGalois (J := hψ)
+  have hf_E' (t : E') : f (algebraMap E' Ω t) = algebraMap E' Ω t :=
+    χ_ker.le hf_ker ⟨algebraMap E' Ω t, Set.mem_range_self t⟩
+  let f' : L →ₐ[E'] Ω := ⟨f.toRingHom.comp (algebraMap L Ω), fun t ↦
+    (congrArg f (IsScalarTower.algebraMap_apply E' L Ω t).symm).trans (hf_E' t)⟩
+  have hf_L (t : L) : f (algebraMap L Ω t) = algebraMap L Ω t :=
+    AlgHom.adjoin_le_equalizer f' (algHom E' L Ω) (Set.eqOn_singleton.mpr (f.commutes x))
+      (hL.ge trivial)
+  rw [← hf]
+  exact ψ_ker.ge fun ⟨_, t, rfl⟩ ↦ hf_L t
+
+/-- Let `K ⊆ L` be CM fields, with norm `N = N_{L/K}` on finite ideles. If
+`y * N u = a * (w * star w)` with `w = b * N s` and `y`, `a`, `b` in `Kˣ`, then the norm of
+`s * star s / u` is the principal idele of `y / (a * b * star b)`. -/
+private lemma New.principalIdele_eq_map_adeleNorm_mul_star_div {E L : Type} [Field E]
+    [NumberField E] [Field L] [NumberField L] [IsCMField L] [Algebra E L]
+    {K : IntermediateField E L} [CMType K] {u s : (𝔸f L)ˣ} {y a b : Kˣ}
+    (hw : principalIdele y * u.map (adeleNorm K L) =
+      principalIdele a * (principalIdele b * s.map (adeleNorm K L) *
+        star (principalIdele b * s.map (adeleNorm K L)))) :
+    principalIdele (y / (a * b * star b)) = (s * star s / u).map (adeleNorm K L) := by
+  rw [map_div, map_mul, map_mul, map_div, map_mul, units_map_adeleNorm_star,
+    div_eq_div_iff_mul_eq_mul, hw, star_mul]
+  have h_sb : star (principalIdele b) = principalIdele (star b) :=
+    Units.ext (star_algebraMap_finAdele (b : K))
+  rw [h_sb]
+  set S := (Units.map (adeleNorm K L)) s
+  rw [mul_comm (star S) (principalIdele (star b)),
+    ← mul_assoc (principalIdele b * S), mul_assoc (principalIdele b) S,
+    mul_comm S (principalIdele (star b)), ← mul_assoc (principalIdele b),
+    mul_assoc (principalIdele b * principalIdele (star b)),
+    ← mul_assoc (principalIdele a), ← mul_assoc (principalIdele a),
+    mul_comm (principalIdele a * principalIdele b * principalIdele (star b))]
+
+/-- Hilbert 90 for finite ideles, as used in `New.IsStep.exists_isSelfAdjoint_of_mem_kerCompNorm`.
+Let `g` be an automorphism of the CM field `L` over the CM field `E`, and let `u` and `s` be finite
+ideles of `L` such that the norm of `s * star s / u` to the fixed field of `g` is a principal
+idele. Then `star c * (z * u * g c)` is self-adjoint for some `z` in `Lˣ` and some invertible finite
+adele `c`. -/
+private lemma New.exists_isSelfAdjoint_of_principalIdele_eq_map_adeleNorm {E L : Type} [Field E]
+    [NumberField E] [IsCMField E] [Field L] [NumberField L] [IsCMField L] [Algebra E L]
+    {g : Gal(L/E)} {u s : (𝔸f L)ˣ} {k : (fixedField (zpowers g))ˣ}
+    (hk : principalIdele k = (s * star s / u).map (adeleNorm (fixedField (zpowers g)) L)) :
+    ∃ (z : Lˣ) (c : 𝔸f L), IsUnit c ∧
+      IsSelfAdjoint (star c * (↑(principalIdele z * u) * adeleMap (g : L →+* L) c)) := by
+  have : IsCMField (fixedField (zpowers g)) := isCMField_fixedField_zpowers g
+  obtain ⟨z, c, hc, h_cob⟩ : ∃ (z : Lˣ) (c : 𝔸f L), IsUnit c ∧
+      ↑(principalIdele z / (s * star s / u)) * adeleMap (g : L →+* L) c = c :=
+    exists_principalIdele_div_mul_adeleMap_eq (isTotallyPositive_of_isTotallyComplex _) hk
+  -- `z * u * g c = s * star s * c`, so the product is `star c * (s * star s * c)`
+  have h_split : principalIdele z * u = s * star s * (principalIdele z / (s * star s / u)) := by
+    rw [div_div_eq_mul_div, mul_div_cancel]
+  refine ⟨z, c, hc, ?_⟩
+  rw [h_split, Units.val_mul, mul_assoc, h_cob]
+  -- `star c * (s * star s * c)` is its own adjoint, as `𝔸f L` is commutative
+  simp only [IsSelfAdjoint, star_mul, star_star, Units.val_mul, Units.coe_star]
+  ring
+
 /-- Hasse principle in one CM field. Let `E'/E` be a step with character `μ` (`IsStep`): `E`
 contains a primitive 5040th root of unity, `E'` is a CM field Galois over `E` of prime degree, and
 `μ` is a finite idele character of `E` with open kernel, trivial on `Eˣ`. Let `L = E'[x]` be a CM
@@ -193,74 +310,15 @@ lemma New.IsStep.exists_isSelfAdjoint_of_mem_kerCompNorm {E E' L : Type} [Field 
   -- `μ` kills `Eˣ` and the norm of `u`, hence the norm of `w * star w`; by the definition of a step
   -- the norm of `w` to `E` is then a norm from `E'` up to `Eˣ`
   have h_step : ∃ (b : Eˣ) (v : (𝔸f E')ˣ), IsTotallyPositive (b : E) ∧
-      w.map (adeleNorm E K) = principalIdele b * v.map (adeleNorm E E') := by
-    have h_tower : (adeleNorm E K).comp (adeleNorm K L) = adeleNorm E L :=
-      MonoidHom.ext adeleNorm_adeleNorm
-    -- the norm of `u` to `E` is that of `w * star w` times principal ideles, which `μ` kills
-    have h_ww : μ (w.map (adeleNorm E K) * star (w.map (adeleNorm E K))) = 1 := by
-      have h_eq : u.map (adeleNorm K L) =
-          (principalIdele y)⁻¹ * (principalIdele a * (w * star w)) :=
-        eq_inv_mul_of_mul_eq hw
-      have h_u : μ ((u.map (adeleNorm K L)).map (adeleNorm E K)) = 1 := by
-        change μ (u.map (adeleNorm E L)) = 1 at hu
-        rwa [← h_tower, Units.map_comp] at hu
-      rw [h_eq, map_mul, map_inv, map_mul, map_mul, map_mul, map_inv, map_mul,
-        map_adeleNorm_principalIdele, map_adeleNorm_principalIdele,
-        hμ.apply_principal, inv_one, one_mul, hμ.apply_principal, one_mul,
-        units_map_adeleNorm_star] at h_u
-      exact h_u
-    obtain ⟨b, v, hbv⟩ := (hμ.apply_norm_eq_one_iff _).mp h_ww
-    exact ⟨b, v, isTotallyPositive_of_isTotallyComplex _, hbv⟩
-  -- the Artin symbol `f` of `w` fixes `E'` and `x`, hence all of `L = E'[x]`
-  have h_art : New.QZChar.abelianLift ψ (artinMap Gal(Ω/K) w) = 1 := by
-    obtain ⟨f, hf⟩ := Quot.exists_rep (artinMap Gal(Ω/K) w)
-    -- `f` is also the symbol of the norm of `w` to `E`, so it lies in the kernel of `χ`, the
-    -- subgroup that fixes `E'`
-    have hf_norm : artinMap Gal(Ω/E) (w.map (adeleNorm E K)) = f.restrictScalars E :=
-      artinMap_map_adeleNorm hf.symm 1 (fun _ ↦ rfl) fun _ ↦ rfl
-    have hf_ker : New.QZChar.abelianLift χ ↑(f.restrictScalars E) = 1 := by
-      rwa [← hf_norm, abelianLift_artinMap_eq_one_iff]
-    obtain ⟨χ_ker, -⟩ : QZChar.ker χ = fixingSubgroup Gal(Ω/E) (Set.range (algebraMap E' Ω)) ∧
-        (QZChar.ker χ).index = Module.finrank E E' :=
-      eq_fixingSubgroup_of_isProGalois (J := hχ)
-    obtain ⟨ψ_ker, -⟩ : QZChar.ker ψ = fixingSubgroup Gal(Ω/K) (Set.range (algebraMap L Ω)) ∧
-        (QZChar.ker ψ).index = Module.finrank K L :=
-      eq_fixingSubgroup_of_isProGalois (J := hψ)
-    have hf_E' (t : E') : f (algebraMap E' Ω t) = algebraMap E' Ω t :=
-      χ_ker.le hf_ker ⟨algebraMap E' Ω t, Set.mem_range_self t⟩
-    let f' : L →ₐ[E'] Ω := ⟨f.toRingHom.comp (algebraMap L Ω), hf_E'⟩
-    have hf_L (t : L) : f (algebraMap L Ω t) = algebraMap L Ω t :=
-      AlgHom.adjoin_le_equalizer f' (algHom E' L Ω) (Set.eqOn_singleton.mpr (f.commutes x))
-        (hL.ge trivial)
-    rw [← hf]
-    exact ψ_ker.ge fun ⟨_, t, rfl⟩ ↦ hf_L t
+      w.map (adeleNorm E K) = principalIdele b * v.map (adeleNorm E E') :=
+    hμ.exists_map_adeleNorm_eq_principalIdele_mul hu hw
+  -- the Artin symbol of `w` fixes `E'` and `x`, hence all of `L = E'[x]`
+  have h_art : New.QZChar.abelianLift ψ (artinMap Gal(Ω/K) w) = 1 :=
+    abelianLift_artinMap_eq_one_of_map_adeleNorm_eq hL hχ hψ h_step
   -- so `w = b * N s` with `b` in `Kˣ` and `s` an idele of `L`, and `N (s * star s / u)` is in `Kˣ`
   obtain ⟨b, s, -, rfl⟩ := (abelianLift_artinMap_eq_one_iff ψ w).mp h_art
-  obtain ⟨k, hk⟩ : ∃ k : Kˣ, principalIdele k = (s * star s / u).map (adeleNorm K L) := by
-    refine ⟨y / (a * b * star b), ?_⟩
-    rw [map_div, map_mul, map_mul, map_div, map_mul, units_map_adeleNorm_star,
-      div_eq_div_iff_mul_eq_mul, hw, star_mul]
-    have h_sb : star (principalIdele b) = principalIdele (star b) :=
-      Units.ext (star_algebraMap_finAdele (b : K))
-    rw [h_sb]
-    set S := (Units.map (adeleNorm K L)) s
-    rw [mul_comm (star S) (principalIdele (star b)),
-      ← mul_assoc (principalIdele b * S), mul_assoc (principalIdele b) S,
-      mul_comm S (principalIdele (star b)), ← mul_assoc (principalIdele b),
-      mul_assoc (principalIdele b * principalIdele (star b)),
-      ← mul_assoc (principalIdele a), ← mul_assoc (principalIdele a),
-      mul_comm (principalIdele a * principalIdele b * principalIdele (star b))]
-  obtain ⟨z, c, hc, h_cob⟩ : ∃ (z : Lˣ) (c : 𝔸f L), IsUnit c ∧
-      ↑(principalIdele z / (s * star s / u)) * adeleMap (g : L →+* L) c = c :=
-    exists_principalIdele_div_mul_adeleMap_eq (isTotallyPositive_of_isTotallyComplex _) hk
-  -- `z * u * g c = s * star s * c`, so the product is `star c * (s * star s * c)`
-  have h_split : principalIdele z * u = s * star s * (principalIdele z / (s * star s / u)) := by
-    rw [div_div_eq_mul_div, mul_div_cancel]
-  refine ⟨z, c, hc, ?_⟩
-  rw [h_split, Units.val_mul, mul_assoc, h_cob]
-  -- `star c * (s * star s * c)` is its own adjoint, as `𝔸f L` is commutative
-  simp only [IsSelfAdjoint, star_mul, star_star, Units.val_mul, Units.coe_star]
-  ring
+  exact exists_isSelfAdjoint_of_principalIdele_eq_map_adeleNorm
+    (principalIdele_eq_map_adeleNorm_mul_star_div hw)
 
 end IdeleHassePrinciple
 
