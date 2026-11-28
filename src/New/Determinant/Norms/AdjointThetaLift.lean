@@ -835,6 +835,7 @@ theorem exists_hasSum_rallisTerm_inner_singleLift (j : D.LiftIndex) :
   obtain ⟨C, hC, h_rallis⟩ := rallis_inner_product_cosetTerm (S := D.spaceW j)
     (T := stdSpace D.E (D.RowIndex ⊕ Fin D.t)) (D.fitsParams_descentPair .one j).isEdge
     D.two_mul_card_rowIndex_lt
+  generalize (TameChar.one : D.TameChar) = ϑ₀ at h_rallis
   let dim : ℂ := card (WeylIndex (D.Y 1) (D.descentPair .one j).columnCount)
   refine ⟨C * dim, mul_ne_zero hC NeZero.out, fun ϑ x y ↦ ?_⟩
   let O : DescentPair D.E D.RowIndex (D.RowIndex ⊕ Fin D.t) := D.descentPair ϑ j
