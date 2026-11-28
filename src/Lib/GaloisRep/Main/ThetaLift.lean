@@ -80,9 +80,85 @@ namespace New
 
 open NumberField Space SiegelWeil Fintype
 
-variable {E n : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+variable {E n : Type} [Field E] [CMType E] [Fintype n]
 
 open Matrix Algebra Valued G Gf Polynomial AutChar Set Filter
+
+/-- Let `t` and `t'` give the Hecke polynomials at `w` of ranks `card n` and `card n + s`, the
+second of degree `card n + s`. Suppose that for all `X` their reciprocal polynomials `heckePolyEval`
+satisfy `R' X = R (μ * X) * qPochhammer w.q s (ν * X)` (`qPochhammer w.q s Y` is a product over
+`l < s` of factors linear in `q_w ^ l * Y`), where `R` is built from `t` and `R'` from `t'`, and let
+`μ * a = 1` and `θ l = q_w ^ l * ν * a` for `l < s`. Then the second Hecke polynomial, with its
+roots multiplied by `a`, is the first one times `∏ l < s, (X - θ l)`. -/
+private lemma scaleRoots_heckePoly_eq (w : FinPlace E) {s : ℕ} {t t' : ℕ → ℂ} {μ ν a : ℂ}
+    (θ : Fin s → ℂ)
+    (h_deg : (heckePoly w.q (card (Fin (card n + s))) t').natDegree = card (Fin (card n + s)))
+    (h_eigval : ∀ X : ℂ, heckePolyEval (Fin (card n + s)) w t' X =
+      heckePolyEval n w t (μ * X) * qPochhammer w.q s (ν * X))
+    (h_scale : μ * a = 1) (h_root : ∀ l : Fin s, θ l = w.q ^ (l : ℕ) * ν * a) :
+    (heckePoly w.q (card (Fin (card n + s))) t').scaleRoots a =
+      heckePoly w.q (card n) t * ∏ l : Fin s, (X - C (θ l)) := by
+  have ha_ne : a ≠ 0 := right_ne_zero_of_mul_eq_one h_scale
+  -- Compare the two polynomials at every `x ≠ 0`: there a Hecke polynomial is `x ^ n` times
+  -- `heckePolyEval` at `x⁻¹`, and `h_eigval` at `a / x` splits the left side into the two factors.
+  refine eq_of_infinite_eval_eq _ _ <|
+    infinite_of_finite_compl ((eventually_cofinite_ne 0).mono fun x hx ↦ ?_)
+  rw [eval_mul, eval_heckePoly w t hx, ← mul_div_cancel₀ x ha_ne, scaleRoots_eval_mul,
+    eval_heckePoly w t' (div_ne_zero hx ha_ne), h_deg, ← mul_assoc,
+    ← mul_pow, h_eigval, eval_prod, card_fin, pow_add, ← Fin.prod_const s, mul_mul_mul_comm,
+    qPochhammer, Finset.prod_range, ← Finset.prod_mul_distrib, mul_div_cancel₀ x ha_ne, inv_div,
+    mul_div_assoc', h_scale, one_div]
+  -- What is left is one linear factor for each `l < s`.
+  exact congrArg _ (Finset.prod_congr rfl fun l _ ↦ by simp [h_root, field])
+
+/-- Let `c ≤ e`, `card n < s`, and let `κ'` agree with `κ` below `card n`, be `e - c` at `card n`
+and `0` above. Then in rank `card n` the weight `(κ, e)` is also `(κ', c + κ' (card n))`, so a
+parameter `l` of `(κ, e)` in rank `card n` and a parameter `l'` of `(κ', 0)` in rank `card n + s`
+correspond. -/
+private lemma paramsCorrespond_of_isHCParam {κ κ' : InfinitePlace E → ℕ → ℕ}
+    {e c : InfinitePlace E → ℤ} {s : ℕ} (hc : c ≤ e)
+    (hκ : κ' = fun (v : InfinitePlace E) (h : ℕ) ↦
+      if h < card n then κ v h else if h = card n then (e v - c v).toNat else 0)
+    (hs : card n < s) {l : InfinitePlace E → n → ℤ} {l' : InfinitePlace E → Fin (card n + s) → ℤ}
+    (hl : IsHCParam (n := n) κ e l) (hl' : IsHCParam (n := Fin (card n + s)) κ' 0 l') :
+    ParamsCorrespond 0 c l l' 1 1 := by
+  -- `hcParameter` reads `κ'` only at heights below `card n`, where it is `κ`, and
+  -- `c + κ' (card n) = c + (e - c) = e`; so `l` is also a parameter of `(κ', c + κ' (card n))`.
+  have h_hcParameter_eq (w : InfinitePlace E) (p : ℕ) :
+      hcParameter κ' (fun τ ↦ c τ + (κ' τ (card n) : ℤ)) (card n) w p =
+        hcParameter κ e (card n) w p := by
+    have h_sum : (Finset.Ioo p (card n)).sum (κ' w) = (Finset.Ioo p (card n)).sum (κ w) :=
+      Finset.sum_congr rfl fun h hh ↦ by grind
+    have h_top : c w + (κ' w (card n) : ℤ) = e w := by grind [Pi.le_def]
+    simp only [hcParameter, diagramWeight_apply, h_sum, h_top]
+  have hl_weight : IsHCParam (n := n) κ' (fun τ ↦ c τ + (κ' τ (card n) : ℤ)) l := by
+    simpa only [IsHCParam, h_hcParameter_eq] using hl
+  have h_lift_weight : IsLiftWeight n (Fin (card n + s)) κ' c (fun τ ↦ c τ + (κ' τ (card n) : ℤ)) :=
+    ⟨by grind [card_fin], by simp [hs.pos], rfl⟩
+  exact (hl_weight.paramsCorrespond_iff h_lift_weight).mpr hl'
+
+variable [DecidableEq n]
+
+/-- Let `z` be a finite adele, let `g` be integral at every place where `z` is integral (the places
+off `{w | 1 < v (z w)}`), and let `D = g⁻¹ - 1`. If for an integral matrix `u` every entry
+`z * D p j + ∑ k, u p k * D k j` is integral, then every entry of `D` is integral: at a place `w`,
+a largest entry of a column of `D` that is not integral would force `z` to be integral at `w`. -/
+private lemma mem_Ô_of_mul_add_sum_mem_Ô {z : 𝔸f E} {g : Gf E n}
+    (hg : g ∈ localLevel n {w : FinPlace E | 1 < v (z w)}ᶜ) {D : Matrix n n (𝔸f E)}
+    (hD_def : D = g⁻¹.val.val - 1) {u : n → n → 𝔸f E} (hu : ∀ p k : n, u p k ∈ Ô E)
+    (h_int : ∀ p j : n, z * D p j + ∑ k : n, u p k * D k j ∈ Ô E) (i j : n) : D i j ∈ Ô E := by
+  refine mem_Ô.mpr fun w ↦ ?_
+  have : Nonempty n := ⟨i⟩
+  obtain ⟨p, hp⟩ := Finite.exists_max fun i' : n ↦ v (D i' j w)
+  refine (hp i).trans (le_of_not_gt fun h_big ↦ h_big.not_ge <| hD_def ▸ v.map_sub_le
+    ((hg w ?_).isIntMatrix_inv p j) (mem_Ô.mp (by simp [Matrix.one_apply, ite_mem]) w))
+  -- `O` is the set of adeles whose valuation at `w` is at most that of `D p j`.
+  let O : AddSubgroup (𝔸f E) := (v.comap (evalAt w)).leAddSubgroup (v (D p j w))
+  simpa [O, h_big.pos] using (O.add_mem_cancel_right (show ∑ k : n, u p k * D k j ∈ O from
+    sum_mem fun k _ ↦ by simp [O, mul_le_of_le_one_of_le, mem_Ô.mp, hu, hp])).mp
+    ((mem_Ô.mp (h_int p j) w).trans h_big.le)
+
+variable [WeilData E]
 
 /-- Let `x` be an integral matrix with `xᴴ * x = 0`, let `B` be a finite set of places with
 `stdLevel E n ⊓ trivialOn n B ≤ H`, and let `N ≠ 0` have its principal level inside `H`. Let
@@ -130,26 +206,6 @@ private lemma mem_inf_stabilizer_of_integral {m : Type} [Fintype m] [DecidableEq
         finHeisenbergOp_finHeisenbergOp]
     -- the three side conditions of `pairWeil_eq_smul_of_projOn_eq`
     all_goals simp [hg]
-
-omit [WeilData E] in
-/-- Let `z` be a finite adele, let `g` be integral at every place where `z` is integral (the places
-off `{w | 1 < v (z w)}`), and let `D = g⁻¹ - 1`. If for an integral matrix `u` every entry
-`z * D p j + ∑ k, u p k * D k j` is integral, then every entry of `D` is integral: at a place `w`,
-a largest entry of a column of `D` that is not integral would force `z` to be integral at `w`. -/
-private lemma mem_Ô_of_mul_add_sum_mem_Ô {z : 𝔸f E} {g : Gf E n}
-    (hg : g ∈ localLevel n {w : FinPlace E | 1 < v (z w)}ᶜ) {D : Matrix n n (𝔸f E)}
-    (hD_def : D = g⁻¹.val.val - 1) {u : n → n → 𝔸f E} (hu : ∀ p k : n, u p k ∈ Ô E)
-    (h_int : ∀ p j : n, z * D p j + ∑ k : n, u p k * D k j ∈ Ô E) (i j : n) : D i j ∈ Ô E := by
-  refine mem_Ô.mpr fun w ↦ ?_
-  have : Nonempty n := ⟨i⟩
-  obtain ⟨p, hp⟩ := Finite.exists_max fun i' : n ↦ v (D i' j w)
-  refine (hp i).trans (le_of_not_gt fun h_big ↦ h_big.not_ge <| hD_def ▸ v.map_sub_le
-    ((hg w ?_).isIntMatrix_inv p j) (mem_Ô.mp (by simp [Matrix.one_apply, ite_mem]) w))
-  -- `O` is the set of adeles whose valuation at `w` is at most that of `D p j`.
-  let O : AddSubgroup (𝔸f E) := (v.comap (evalAt w)).leAddSubgroup (v (D p j w))
-  simpa [O, h_big.pos] using (O.add_mem_cancel_right (show ∑ k : n, u p k * D k j ∈ O from
-    sum_mem fun k _ ↦ by simp [O, mul_le_of_le_one_of_le, mem_Ô.mp, hu, hp])).mp
-    ((mem_Ô.mp (h_int p j) w).trans h_big.le)
 
 /-- Let the row `ρ p` of `x` be the unit vector at `p`, let `g` be integral at every place where
 the finite adele `z` is integral, and let `D = g⁻¹ - 1`. Unless `g` is integral with every
@@ -273,61 +329,6 @@ lemma exists_isSharp_of_two_mul_card_le {m : Type} [Fintype m] [DecidableEq m]
   refine .symm (weilMatrixCoeff_finHeisenbergOp_eq_zero hρ hg rfl rfl fun ⟨hg_int, hzD⟩ ↦ ?_)
   exact hg_not
     ⟨mem_inf_stabilizer_of_integral hb hx_int hx_iso hB_off hN hN_cong z rfl hD hg_int hzD, hg_int⟩
-
-omit [WeilData E] [DecidableEq n] in
-/-- Let `t` and `t'` give the Hecke polynomials at `w` of ranks `card n` and `card n + s`, the
-second of degree `card n + s`. Suppose that for all `X` their reciprocal polynomials `heckePolyEval`
-satisfy `R' X = R (μ * X) * qPochhammer w.q s (ν * X)` (`qPochhammer w.q s Y` is a product over
-`l < s` of factors linear in `q_w ^ l * Y`), where `R` is built from `t` and `R'` from `t'`, and let
-`μ * a = 1` and `θ l = q_w ^ l * ν * a` for `l < s`. Then the second Hecke polynomial, with its
-roots multiplied by `a`, is the first one times `∏ l < s, (X - θ l)`. -/
-private lemma scaleRoots_heckePoly_eq (w : FinPlace E) {s : ℕ} {t t' : ℕ → ℂ} {μ ν a : ℂ}
-    (θ : Fin s → ℂ)
-    (h_deg : (heckePoly w.q (card (Fin (card n + s))) t').natDegree = card (Fin (card n + s)))
-    (h_eigval : ∀ X : ℂ, heckePolyEval (Fin (card n + s)) w t' X =
-      heckePolyEval n w t (μ * X) * qPochhammer w.q s (ν * X))
-    (h_scale : μ * a = 1) (h_root : ∀ l : Fin s, θ l = w.q ^ (l : ℕ) * ν * a) :
-    (heckePoly w.q (card (Fin (card n + s))) t').scaleRoots a =
-      heckePoly w.q (card n) t * ∏ l : Fin s, (X - C (θ l)) := by
-  have ha_ne : a ≠ 0 := right_ne_zero_of_mul_eq_one h_scale
-  -- Compare the two polynomials at every `x ≠ 0`: there a Hecke polynomial is `x ^ n` times
-  -- `heckePolyEval` at `x⁻¹`, and `h_eigval` at `a / x` splits the left side into the two factors.
-  refine eq_of_infinite_eval_eq _ _ <|
-    infinite_of_finite_compl ((eventually_cofinite_ne 0).mono fun x hx ↦ ?_)
-  rw [eval_mul, eval_heckePoly w t hx, ← mul_div_cancel₀ x ha_ne, scaleRoots_eval_mul,
-    eval_heckePoly w t' (div_ne_zero hx ha_ne), h_deg, ← mul_assoc,
-    ← mul_pow, h_eigval, eval_prod, card_fin, pow_add, ← Fin.prod_const s, mul_mul_mul_comm,
-    qPochhammer, Finset.prod_range, ← Finset.prod_mul_distrib, mul_div_cancel₀ x ha_ne, inv_div,
-    mul_div_assoc', h_scale, one_div]
-  -- What is left is one linear factor for each `l < s`.
-  exact congrArg _ (Finset.prod_congr rfl fun l _ ↦ by simp [h_root, field])
-
-omit [WeilData E] [DecidableEq n] in
-/-- Let `c ≤ e`, `card n < s`, and let `κ'` agree with `κ` below `card n`, be `e - c` at `card n`
-and `0` above. Then in rank `card n` the weight `(κ, e)` is also `(κ', c + κ' (card n))`, so a
-parameter `l` of `(κ, e)` in rank `card n` and a parameter `l'` of `(κ', 0)` in rank `card n + s`
-correspond. -/
-private lemma paramsCorrespond_of_isHCParam {κ κ' : InfinitePlace E → ℕ → ℕ}
-    {e c : InfinitePlace E → ℤ} {s : ℕ} (hc : c ≤ e)
-    (hκ : κ' = fun (v : InfinitePlace E) (h : ℕ) ↦
-      if h < card n then κ v h else if h = card n then (e v - c v).toNat else 0)
-    (hs : card n < s) {l : InfinitePlace E → n → ℤ} {l' : InfinitePlace E → Fin (card n + s) → ℤ}
-    (hl : IsHCParam (n := n) κ e l) (hl' : IsHCParam (n := Fin (card n + s)) κ' 0 l') :
-    ParamsCorrespond 0 c l l' 1 1 := by
-  -- `hcParameter` reads `κ'` only at heights below `card n`, where it is `κ`, and
-  -- `c + κ' (card n) = c + (e - c) = e`; so `l` is also a parameter of `(κ', c + κ' (card n))`.
-  have h_hcParameter_eq (w : InfinitePlace E) (p : ℕ) :
-      hcParameter κ' (fun τ ↦ c τ + (κ' τ (card n) : ℤ)) (card n) w p =
-        hcParameter κ e (card n) w p := by
-    have h_sum : (Finset.Ioo p (card n)).sum (κ' w) = (Finset.Ioo p (card n)).sum (κ w) :=
-      Finset.sum_congr rfl fun h hh ↦ by grind
-    have h_top : c w + (κ' w (card n) : ℤ) = e w := by grind [Pi.le_def]
-    simp only [hcParameter, diagramWeight_apply, h_sum, h_top]
-  have hl_weight : IsHCParam (n := n) κ' (fun τ ↦ c τ + (κ' τ (card n) : ℤ)) l := by
-    simpa only [IsHCParam, h_hcParameter_eq] using hl
-  have h_lift_weight : IsLiftWeight n (Fin (card n + s)) κ' c (fun τ ↦ c τ + (κ' τ (card n) : ℤ)) :=
-    ⟨by grind [card_fin], by simp [hs.pos], rfl⟩
-  exact (hl_weight.paramsCorrespond_iff h_lift_weight).mpr hl'
 
 omit [DecidableEq n] in
 /-- The scalars of the theta lift at the place `w` cancel: `q_w ^ s * frobValue 1 n w`, divided by

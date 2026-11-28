@@ -69,9 +69,53 @@ section IwahoriMatching
 
 open Matrix WithZero Valued Polynomial GeneralLinearGroup DoubleCoset Finset Function
 
-variable {F F' : Type*}
-  {N : ℕ} [Field F] [Valued F ℤᵐ⁰] [Field F'] [Valued F' ℤᵐ⁰]
-  [CompactSpace 𝒪[F']] {σ : F →+* F} {p : ℕ}
+variable {F F' : Type*} {N : ℕ} [Field F] {σ : F →+* F} {p : ℕ}
+
+/-- Let `σ ^ p = 1`, and let the values `c i = ∏ l < p, σ ^ l (e i)` be distinct. If the polynomial
+`z` takes the value `e i` at `c i` for every `i`, then the characteristic polynomial
+`∏ i, (X - c i)` of `diagonal c` divides `N(z) - X`, where `N(z) = ∏ l < p, σ ^ l z` is the
+twisted norm (`New.twistedNorm`) of `z`. -/
+private lemma charpoly_diagonal_dvd_twistedNorm_sub_X (hσ : σ ^ p = 1) {c e : Fin N → F}
+    (hc_inj : Injective c) (hc : ∀ i : Fin N, c i = ∏ l ∈ range p, (σ ^ l) (e i)) {z : F[X]}
+    (hz : ∀ i : Fin N, z.eval (c i) = e i) :
+    (diagonal c).charpoly ∣ twistedNorm (Polynomial.map σ) p z - X := by
+  -- The roots `c i` are distinct, so it suffices that each is a root of `N(z) - X`. As `c i` is a
+  -- norm, it is fixed by `σ`, so `(σ ^ l z) (c i) = σ ^ l (z (c i)) = σ ^ l (e i)`.
+  rw [charpoly_diagonal]
+  refine Fintype.prod_dvd_of_coprime (pairwise_coprime_X_sub_C hc_inj) fun i ↦ ?_
+  have h_eval_map (l : ℕ) : (z.map (σ ^ l)).eval (c i) = (σ ^ l) (e i) := by
+    rw [← hz, ← eval_map_apply, σ.coe_pow, hc, (isFixedPt_prod_range_pow_apply hσ).iterate]
+  have h_eval_norm : (twistedNorm (Polynomial.map σ) p z).eval (c i) = c i := by
+    rw [twistedNorm_map_eq_prod, eval_prod]
+    exact (prod_congr rfl fun l _ ↦ h_eval_map l).trans (hc i).symm
+  rw [dvd_iff_isRoot, IsRoot.def, eval_sub, eval_X, h_eval_norm, sub_self]
+
+/-- Let `γ` have the characteristic polynomial of the diagonal matrix `diagonal c`, and let
+`k⁻¹ * γ * k = diagonal c'`, where `c' i = c l` holds only for `i = l`. Then for every polynomial
+`z` the matrix `z γ` is `k * diagonal (z ∘ c) * k⁻¹`. -/
+private lemma aeval_eq_conj_diagonal_eval {c c' : Fin N → F} {k γ : GL (Fin N) F}
+    (hγ : γ.val.charpoly = (diagonal c).charpoly) (h_conj : (k⁻¹ * γ * k).val = diagonal c')
+    (h_inj : ∀ i l : Fin N, c' i = c l → i = l) (z : F[X]) :
+    aeval γ.val z = k.val * diagonal (fun i : Fin N ↦ z.eval (c i)) * k⁻¹.val := by
+  -- Each `c' i` is a root of the characteristic polynomial of `γ`, so it is some `c l`, and then
+  -- `l = i`. So `k` intertwines `diagonal c` with `γ`, hence `z (diagonal c)` with `z γ`.
+  have h_charpoly : (diagonal c').charpoly = (diagonal c).charpoly := by
+    simp only [← h_conj, Units.val_mul, coe_units_inv, charpoly_units_conj', hγ]
+  have h_eq : c' = c := by
+    funext i
+    have h_root : (diagonal c).charpoly.eval (c' i) = 0 := by
+      simp [← h_charpoly, charpoly_diagonal, eval_prod, prod_eq_zero_iff, sub_eq_zero]
+    obtain ⟨l, hl⟩ : ∃ l : Fin N, c' i = c l := by
+      simpa [charpoly_diagonal, eval_prod, prod_eq_zero_iff, sub_eq_zero] using h_root
+    rw [hl, h_inj i l hl]
+  have h_semi : k.val * diagonalAlgHom F c = γ.val * k.val := by
+    simp [← h_eq, ← h_conj, ← mul_assoc]
+  have h_aeval_diag : aeval (diagonalAlgHom F c) z = diagonal fun i : Fin N ↦ z.eval (c i) := by
+    rw [aeval_algHom_apply, diagonalAlgHom_apply, aeval_pi_apply]
+    simp
+  rw [← h_aeval_diag, aeval_semiconj h_semi z, mul_assoc, Units.mul_inv, mul_one]
+
+variable [Valued F ℤᵐ⁰] [Field F'] [Valued F' ℤᵐ⁰] [CompactSpace 𝒪[F']]
 
 /-- Let `σ` be an endomorphism of `F` that keeps the valuation. Then `g ∈ GL N F` lies in the
 pro-`p` Iwahori subgroup `New.proIwahori` exactly when `σ g`, with `σ` applied to the entries,
@@ -195,52 +239,6 @@ private lemma eq_of_prod_ringHom_pow_apply_eq (hv : ∀ x : F, v (σ x) = v x) (
   refine ht_mono.injective (show v (t i : F) = v (t j : F) from ?_)
   simpa [hp.ne', h_unit hd, h_unit hd', v_ringHom_pow_apply hv, -RingHom.coe_pow] using
     congrArg v h_eq
-
-omit [Valued F ℤᵐ⁰] in
-/-- Let `σ ^ p = 1`, and let the values `c i = ∏ l < p, σ ^ l (e i)` be distinct. If the polynomial
-`z` takes the value `e i` at `c i` for every `i`, then the characteristic polynomial
-`∏ i, (X - c i)` of `diagonal c` divides `N(z) - X`, where `N(z) = ∏ l < p, σ ^ l z` is the
-twisted norm (`New.twistedNorm`) of `z`. -/
-private lemma charpoly_diagonal_dvd_twistedNorm_sub_X (hσ : σ ^ p = 1) {c e : Fin N → F}
-    (hc_inj : Injective c) (hc : ∀ i : Fin N, c i = ∏ l ∈ range p, (σ ^ l) (e i)) {z : F[X]}
-    (hz : ∀ i : Fin N, z.eval (c i) = e i) :
-    (diagonal c).charpoly ∣ twistedNorm (Polynomial.map σ) p z - X := by
-  -- The roots `c i` are distinct, so it suffices that each is a root of `N(z) - X`. As `c i` is a
-  -- norm, it is fixed by `σ`, so `(σ ^ l z) (c i) = σ ^ l (z (c i)) = σ ^ l (e i)`.
-  rw [charpoly_diagonal]
-  refine Fintype.prod_dvd_of_coprime (pairwise_coprime_X_sub_C hc_inj) fun i ↦ ?_
-  have h_eval_map (l : ℕ) : (z.map (σ ^ l)).eval (c i) = (σ ^ l) (e i) := by
-    rw [← hz, ← eval_map_apply, σ.coe_pow, hc, (isFixedPt_prod_range_pow_apply hσ).iterate]
-  have h_eval_norm : (twistedNorm (Polynomial.map σ) p z).eval (c i) = c i := by
-    rw [twistedNorm_map_eq_prod, eval_prod]
-    exact (prod_congr rfl fun l _ ↦ h_eval_map l).trans (hc i).symm
-  rw [dvd_iff_isRoot, IsRoot.def, eval_sub, eval_X, h_eval_norm, sub_self]
-
-omit [Valued F ℤᵐ⁰] in
-/-- Let `γ` have the characteristic polynomial of the diagonal matrix `diagonal c`, and let
-`k⁻¹ * γ * k = diagonal c'`, where `c' i = c l` holds only for `i = l`. Then for every polynomial
-`z` the matrix `z γ` is `k * diagonal (z ∘ c) * k⁻¹`. -/
-private lemma aeval_eq_conj_diagonal_eval {c c' : Fin N → F} {k γ : GL (Fin N) F}
-    (hγ : γ.val.charpoly = (diagonal c).charpoly) (h_conj : (k⁻¹ * γ * k).val = diagonal c')
-    (h_inj : ∀ i l : Fin N, c' i = c l → i = l) (z : F[X]) :
-    aeval γ.val z = k.val * diagonal (fun i : Fin N ↦ z.eval (c i)) * k⁻¹.val := by
-  -- Each `c' i` is a root of the characteristic polynomial of `γ`, so it is some `c l`, and then
-  -- `l = i`. So `k` intertwines `diagonal c` with `γ`, hence `z (diagonal c)` with `z γ`.
-  have h_charpoly : (diagonal c').charpoly = (diagonal c).charpoly := by
-    simp only [← h_conj, Units.val_mul, coe_units_inv, charpoly_units_conj', hγ]
-  have h_eq : c' = c := by
-    funext i
-    have h_root : (diagonal c).charpoly.eval (c' i) = 0 := by
-      simp [← h_charpoly, charpoly_diagonal, eval_prod, prod_eq_zero_iff, sub_eq_zero]
-    obtain ⟨l, hl⟩ : ∃ l : Fin N, c' i = c l := by
-      simpa [charpoly_diagonal, eval_prod, prod_eq_zero_iff, sub_eq_zero] using h_root
-    rw [hl, h_inj i l hl]
-  have h_semi : k.val * diagonalAlgHom F c = γ.val * k.val := by
-    simp [← h_eq, ← h_conj, ← mul_assoc]
-  have h_aeval_diag : aeval (diagonalAlgHom F c) z = diagonal fun i : Fin N ↦ z.eval (c i) := by
-    rw [aeval_algHom_apply, diagonalAlgHom_apply, aeval_pi_apply]
-    simp
-  rw [← h_aeval_diag, aeval_semiconj h_semi z, mul_assoc, Units.mul_inv, mul_one]
 
 omit [CompactSpace 𝒪[F']] in
 /-- Descent for clause (a) of `New.proIwahori_doubleCoset_match`. Let `σ` preserve `v` and let the

@@ -149,7 +149,6 @@ variable {E O n : Type} [Field E] [EmbeddedNumberField E] [CommRing O] [DVR O] [
   [DecidableEq n]
   {ρ : Gal(Ω/E) → Matrix n n O} {S : Set (FinPlace E)} {L : Set (Gal(Ω/E) →₀ Matrix n n O)}
 
-omit [DVR O] in
 variable (ρ S L) in
 /-- For an embedded number field `E`, the length over `O` of the Selmer module with coefficients
 in `Frac(O) / O`: the locally constant cocycles for `ρ`

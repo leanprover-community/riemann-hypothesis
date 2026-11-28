@@ -50,7 +50,7 @@ open Matrix Finset Filter Subgroup Nat Function Ideal Quotient MulEquiv Algebra
 
 namespace New
 
-variable {R n B V : Type*} [CommRing R] [CommRing B] [Fintype n] [DecidableEq n]
+variable {R n B V : Type*} [CommRing R] [CommRing B] [Fintype n]
   {σ : R →+* R} {p : ℕ} {m x : R} {θ : B →+* B} [AddCommGroup V] [Module R V]
 
 /-! ### The five conditions of a tame action -/
@@ -198,7 +198,6 @@ lemma IsProfiniteRing.of_retract (hR : IsProfiniteRing R) (i : B →+ R) (r : R 
   have hiy : i y = L := h_unique (i y) fun M hM ↦ (hy M hM).mono fun N ↦ h_dvd_i M N y
   rw [← hiy, hri y]
 
-omit [DecidableEq n] in
 /-- If `R` is profinite (`New.IsProfiniteRing`), so is every ring `B` that is isomorphic as an
 additive group to `n → R`, through `coords`, for a finite type `n`. -/
 lemma IsProfiniteRing.of_addEquiv_pi (hR : IsProfiniteRing R) (coords : B ≃+ (n → R)) :
@@ -425,6 +424,8 @@ lemma IsTameAtLevel.exists_fixed_separating (h_tame : IsTameAtLevel σ p m)
   have ha_mem : a ∈ P :=
     (hP.mem_or_mem_of_mul_eq_zero h_zero).resolve_left (P.primeCompl.pow_mem hdP l)
   exact P.mem_of_dvd ha_dvd ha_mem
+
+variable [DecidableEq n]
 
 /-- Let `σ` be tame at level `m`: `σ m = m`, `σ ^ p = 1` with `0 < p`, some `e` has trace
 `∑ i < p, (σ ^ i) e ≡ 1 mod m`, and for `0 < i < p` every prime modulo which `σ ^ i` is the identity
