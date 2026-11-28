@@ -5,7 +5,8 @@ import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PicardGroup
-public import Lib.GaloisRep.Main.Defs
+public import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
+public import Lib.GaloisRep.Main.FrobeniusFilter
 public import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
