@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Data.Rat.Cast.OfScientific
+import TauCeti.LinearAlgebra.Spreading
 import TauCeti.NumberTheory.Padics.Complex.Basic
 public import New.Reduction.IntegralTargetForms
 public import New.Spanning.SecondMoment.SpanningTheorem
@@ -369,8 +370,9 @@ theorem exists_le_finrank_iSup_range_normalizedPoincare :
       #t * finrank ℂ D.SourceForm ≤ 5 / 2 * (1 + log (16 * (8 * D.b ^ 2)⁻¹)⁻¹) * D.targetDim ∧
       (1 - 16 * (8 * D.b ^ 2)⁻¹ : ℝ) * D.targetDim ≤
         finrank ℂ ↥(⨆ s ∈ t, (D.goodPoincare s).range) :=
-    D.isSpread_goodPoincare.exists_few_le_finrank_iSup_range D.targetDim_pos (HasLogBound.pos D)
-      D.lt_of_hasLogBound
+    TauCeti.IsSpread.exists_card_mul_finrank_le_and_le_finrank_biSup_range
+      (B := D.goodPoincare) (TauCeti.isSpread_iff.mpr D.isSpread_goodPoincare) finrank_pos
+      (HasLogBound.pos D) D.lt_of_hasLogBound
   have h_few : #t * finrank ℂ D.SourceForm ≤ 5 * D.targetDim * log (1 + 2 * D.b ^ 2) := by
     grw [h_count, D.five_halves_mul_one_add_log_le, mul_right_comm]
   refine ⟨t, by grw [D.ramifiedSourceForms.finrank_le, h_few], ?_⟩
