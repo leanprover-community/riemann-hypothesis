@@ -93,14 +93,14 @@ lemma eq_of_mem_principalUnits {a b : ZMod m} (hm : B m = 1)
     (h_mem : (rootPowHom Ω m).val (a - b) ∈ principalUnits B) :
     a = b := by
   -- The image of `a - b` is an `m`-th root of unity congruent to one, and `m` is a unit at `B`.
-  obtain ⟨μ_inj, μ_range⟩ : Injective (rootPowHom Ω m).val ∧
-      ∀ y : DiscreteUnits Ω, y ∈ (rootPowHom Ω m).val.range ↔ m • y = 0 := (rootPowHom Ω m).prop
-  have h_root : m • (rootPowHom Ω m).val (a - b) = 0 := (μ_range _).mp ⟨a - b, rfl⟩
-  have h_pow : (((rootPowHom Ω m).val (a - b)).toMul : Ω) ^ m = 1 := by
+  let μ := (rootPowHom Ω m).val
+  have h_root : m • μ (a - b) = 0 := by rw [← map_nsmul, ZModModule.char_nsmul_eq_zero, map_zero]
+  have h_pow : ((μ (a - b)).toMul : Ω) ^ m = 1 := by
     simpa using congr_arg (fun z : DiscreteUnits Ω ↦ (z.toMul : Ω)) h_root
-  have h_eq_one : (((rootPowHom Ω m).val (a - b)).toMul : Ω) = 1 :=
+  have h_eq_one : ((μ (a - b)).toMul : Ω) = 1 :=
     eq_of_val_sub_lt_one hm h_pow (one_pow m) (mem_principalUnits_iff.mp h_mem)
-  exact sub_eq_zero.mp (μ_inj ((DiscreteUnits.ext h_eq_one).trans (map_zero _).symm))
+  apply sub_eq_zero.mp
+  exact (rootPowHom Ω m).property.1 ((DiscreteUnits.ext h_eq_one).trans (map_zero μ).symm)
 
 /-- Let `M = m a` with `a` a unit at `B`. An element `g` of the inertia group of `B` that fixes
 the `m`-th roots of unity fixes the `M`-th roots of unity. -/
@@ -354,14 +354,11 @@ lemma nsmul_exponent_eq_sub {g' : Gal(Ω/ℚ)} {y' : DiscreteUnits Ω} {t s s' :
     (hs : (rootPowHom Ω m).val s = galUnitsRep γ y' - galUnitsRep (g * g' * γ * (g * g')⁻¹) y')
     (hs' : (rootPowHom Ω m).val s' = galUnitsRep γ y' - galUnitsRep (g * γ * g⁻¹) y') :
     a • t = s - s' := by
-  obtain ⟨μ_inj, μ_range⟩ : Injective (rootPowHom Ω m).val ∧
-      ∀ z : DiscreteUnits Ω, z ∈ (rootPowHom Ω m).val.range ↔ m • z = 0 := (rootPowHom Ω m).prop
-  -- `g` raises the `m`-th root of unity `ζᵗ` to the power `a`.
-  have g_pow : galUnitsRep g ((rootPowHom Ω m).val t) = a • (rootPowHom Ω m).val t :=
-    cyclotomicCharMod_eq_iff_unitsRep.mp hg ((μ_range _).mp ⟨t, rfl⟩)
+  -- Equivariance of the exponent map identifies the action of `g` on `ζᵗ`.
+  have g_pow := (map_cyclotomicCharMod_mul (rootPowHom Ω m).val g t).symm
+  rw [hg, ← nsmul_eq_mul, map_nsmul] at g_pow
   -- Apply `g` to `ζᵗ`; conjugates of `γ` act alike on the root of unity `g y / y'`.
-  apply μ_inj
-  show (rootPowHom Ω m).val (a • t) = (rootPowHom Ω m).val (s - s')
+  apply (rootPowHom Ω m).property.1
   linear_combination (norm := skip) galUnitsRep_conj_of_nsmul_eq_zero γ (g * g') hgy -
     galUnitsRep_conj_of_nsmul_eq_zero γ g hgy - g_pow
   -- `-nsmul_eq_mul` keeps `a •` outside `rootPowHom`, where `abel` can match it.
