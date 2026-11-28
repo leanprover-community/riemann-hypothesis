@@ -181,16 +181,15 @@ lemma sum_mapDomain_smul_eq_relEval (π : Γ → 𝒢) (ev : Λ →+* O) (w : �
     (f : Γ →₀ Matrix n n Λ) (i : n) :
     ∑ c : 𝒢 × n, ev (f.mapDomain π c.1 i c.2) • w c =
       relEval B (mapRel ev f) (fun (g : Γ) (j : n) ↦ w (π g, j)) i := by
-  induction f using Finsupp.induction_linear with
-  | zero => simp [mapRel]
-  | add f f' hf hf' =>
-    simp [mapRel, Finsupp.mapRange_add', Finsupp.mapDomain_add, add_smul,
-      Finset.sum_add_distrib, hf, hf']
-  | single g m =>
-    rw [Fintype.sum_prod_type, Finset.sum_eq_single (π g)]
-    · simp [mapRel]
-    · simp +contextual
-    · simp
+  -- First change coefficients and sum over the fibres of π. Pairing the result with w is
+  -- the same as pairing the original relation with the pullback of w.
+  calc _ = (Finsupp.linearCombination (Matrix n n O) (Function.curry w)
+      ((mapRel ev f).mapDomain π)) i := by
+        rw [mapRel, Finsupp.mapDomain_mapRange π f _ _ (map_add ev.mapMatrix),
+          Finsupp.linearCombination_apply, Finsupp.sum_fintype _ _ (by simp),
+          Finset.sum_apply, Fintype.sum_prod_type]
+        rfl
+    _ = _ := congrFun (Finsupp.linearCombination_mapDomain _ _ _) i
 
 /-- A vector `w` solves the linear system `relationMatrix π R`, with entries mapped by `ev`, if and
 only if the function `g ↦ w (π g, ·)` obeys the relations of `R` mapped by `ev`. -/
@@ -329,12 +328,10 @@ theorem exists_matrix_selmerModule_equiv (ρ : Gal(Ω/E) → Matrix n n Λ)
     exact congr_fun₂ h_eq g i
   have h_map : Ker.map pull = Sel := by
     refine le_antisymm (Submodule.map_le_iff_le_comap.2 fun w hw ↦ (h_mem w).1 hw) fun z hz ↦ ?_
-    have h_pull : pull (fun (c, i) ↦ z c.out i) = z := by
-      funext g
-      obtain ⟨g'', hg''⟩ : ∃ g'' : H, (π g).out = g * g'' := QuotientGroup.mk_out_eq_mul H g
-      change z (π g).out = z g
-      rw [hg'', h_inv z hz]
-    exact ⟨_, (h_mem _).2 (by rwa [h_pull]), h_pull⟩
+    -- Right invariance lets z descend to the coset set by quotient elimination.
+    let w : 𝒢 → n → B := Quotient.lift z fun g h hrel ↦ by
+      simpa using (h_inv z hz g ⟨g⁻¹ * h, QuotientGroup.leftRel_apply.1 hrel⟩).symm
+    exact ⟨Function.uncurry w, (h_mem _).2 hz, rfl⟩
   exact ⟨((Submodule.equivMapOfInjective pull h_inj Ker).trans (.ofEq _ Sel h_map)).symm⟩
 
 /-- The matrices `ψ_x(g) ρ(g)` over `O'`, where `ψ_x(g)` is the value of
