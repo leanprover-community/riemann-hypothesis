@@ -376,8 +376,8 @@ lemma etaOneClass_residueTest_bot_eq_zero {ℓ : ℕ} {A : Type} [CommRing A] [I
       fun a ha ↦ IsUnit.mk0 (algebraMap A k.obj a) ha)⟩
   -- Vanishing passes from `k` to `Q`, as pull-back between fields is injective.
   have h_eta_under : etaOneClass (ℓ := ℓ) (residueTest (TestOver.ofSelf A) Q).right = 0 :=
-    (isDetectedAtPoints_projLine.isCohomEquiv_map_of_isField _ k toK
-      (Field.toIsField (ResidueField _)) k_field 2).injective
+    (isExtEquivFor_iff.1 (isDetectedAtPoints_projLine.isCohomEquiv_map_of_isField _ k toK
+      (Field.toIsField (ResidueField _)) k_field) 2).injective
       ((map_etaOneClass toK).trans (h_eta_k.trans (map_zero _).symm))
   -- Vanishing then passes to the generic point, as the vanishing locus is open.
   have h_open : IsOpen {P : PrimeSpectrum A |
@@ -509,7 +509,7 @@ lemma hasLineFormula_locallyConstant {ℓ : ℕ} (A : Type) [CommRing A] [Invert
     single_injective false (h_line.injective ((h_eta v).trans (h_eta w).symm))
   -- The point is the functor Hom(O^♭, S^♭), as O^♭ is the initial O^♭-algebra.
   let O : CommAlg OFlat := of OFlat OFlat
-  have h_point : IsCohomEquiv Θ.functor (freeAb.map (toUnit (PadicTest.tilt ⋙ reprBy O))) :=
+  have h_point : IsExtEquivFor Θ.functor (freeAb.map (toUnit (PadicTest.tilt ⋙ reprBy O))) :=
     .of_bijective fun _ ↦ ⟨fun f f' _ ↦ ULift.down_injective (isInitialSelf.hom_ext f.down f'.down),
       fun _ ↦ ⟨ULift.up structureMap, rfl⟩⟩
   -- By acyclicity the cohomology of this functor is the value O^♭ ⊗ N ⊗ 𝔪 of the coefficient at

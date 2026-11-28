@@ -50,7 +50,7 @@ namespace New.Variety
 
 open CategoryTheory MonoidalCategory TensorProduct Abelian Function Finsupp AddSubmonoid Module
   Basis Algebra.TensorProduct CommAlgCat CartesianMonoidalCategory TotalH Ext Comparison
-  IsCohomEquiv Eqv Finset
+  CategoryTheory.IsExtEquivFor Eqv Finset
 
 /-- Coordinates for the classes on the functor represented by a test `a`: they all have degree `0`
 and are the forms on `a` (`New.Variety.TotalH.sectionEquiv`), here written in the basis
@@ -173,7 +173,7 @@ lemma exists_basis_forms_lerayHirsch {k : Type} [Field k] (c : HodgeTest k) :
   choose ε hε using h_wedge
   -- In the coordinates `formCoord` for classes on represented functors, the map becomes the
   -- isomorphism `formTensor c c' b`.
-  refine ((of_isIso π).bijective_pullbackAlong.of_comp_iff' _).mp
+  refine ((isExtEquivFor_of_isIso π).bijective_pullbackAlong.of_comp_iff' _).mp
     ((bijective_iff_of_comm_sq ?_ (mapRange.addEquiv (formCoord c' 1 1)).bijective
         (formCoord p sumEquiv.toEquiv (uncurry ε)).bijective).mp (formTensor c c' b).bijective)
   -- Both sides are additive: check the square on `r • (form S)` placed at the index `(i, T)`.
@@ -332,11 +332,11 @@ lemma kunneth {k : Type} [Field k] [CharZero k] {X : CommAlg k ⥤ Type 1} {d n 
   have h_basis : Bijective (lerayHirsch (Φ := abTensor N) θ N) :=
     h_devissage isClosedClass_isLerayHirschBasis (bijective_lerayHirsch_reprBy h_devissage)
   have h_onto : Surjective (pullbackAlong α ∘ lerayHirsch (Φ := abTensor N) θ N) :=
-    ((of_isIso α).bijective_pullbackAlong.comp h_basis).surjective
+    ((isExtEquivFor_of_isIso α).bijective_pullbackAlong.comp h_basis).surjective
   -- `U₂` is dense in `X × X`, so restriction of classes is injective.
-  have h_restrict : IsCohomEquiv hodgeCoeff (freeAb.map U₂.ι) :=
+  have h_restrict : IsExtEquivFor hodgeCoeff (freeAb.map U₂.ι) :=
     ((hU.preimage (fst ..)).inf (hU.preimage (snd ..))).isCohomEquiv
-  refine (mem_map_iff_mem (h_restrict n).injective).1 ?_
+  refine (mem_map_iff_mem (isExtEquivFor_iff.1 h_restrict n).injective).1 ?_
   -- The restriction of `z` is the degree `n` part of a sum of terms `x × y` on `U × U`.
   obtain ⟨w, hw⟩ := h_onto (.of _ n (H.map _ (freeAb.map U₂.ι) n z))
   rw [← DirectSum.of_eq_same n (H.map _ (freeAb.map U₂.ι) n z), ← hw]
@@ -347,8 +347,8 @@ lemma kunneth {k : Type} [Field k] [CharZero k] {X : CommAlg k ⥤ Type 1} {d n 
   | add y y' hy hy' => simp_all [add_mem]
   | of b y =>
     -- The homogeneous classes `x` and `y` on `U` are restrictions of classes on `X`.
-    obtain ⟨x, rfl⟩ := (hU.isCohomEquiv a).surjective x
-    obtain ⟨y, rfl⟩ := (hU.isCohomEquiv b).surjective y
+    obtain ⟨x, rfl⟩ := (isExtEquivFor_iff.1 hU.isCohomEquiv a).surjective x
+    obtain ⟨y, rfl⟩ := (isExtEquivFor_iff.1 hU.isCohomEquiv b).surjective y
     -- The cross product `x × y` on `X × X` restricts to the product of the restrictions.
     have h_square :
         α ≫ (abTensor.map (freeAb.map U.ι)).app N ≫ (abTensor _).map (freeAb.map U.ι) =

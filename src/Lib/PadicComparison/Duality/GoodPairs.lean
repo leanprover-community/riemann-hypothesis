@@ -550,18 +550,18 @@ lemma isFiniteLerayHirsch_principal_open
       (IdealFamily.bijective_toZerosCoeff _ _) dense_zeros) dense_fibre ⟨0, 0⟩
   -- They come from classes `θ` with source `G`, since `Q.toZerosCoeff` is bijective on the special
   -- fibre.
-  have h_quot : IsCohomEquiv F ((restrictAlong p).map (Q.toZerosCoeff (locConstAlong (𝟭 _)))) :=
+  have h_quot : IsExtEquivFor F ((restrictAlong p).map (Q.toZerosCoeff (locConstAlong (𝟭 _)))) :=
     dense_fibre.isCohomEquiv_of_bijective_on fun _ ↦ Q.bijective_toZerosCoeff _ _
-  choose θ hθ using fun i : ι ↦ (h_quot _).2 i.val.2
+  choose θ hθ using fun i : ι ↦ (isExtEquivFor_iff.1 h_quot _).2 i.val.2
   -- Source and target of `lerayHirsch θ` only see the special fibre.
   have transfer {E Y : TestOver A ⥤ Type 1} (u : E ⟶ Y)
       (hu : ∀ c, Q.ideal c = ⊥ → Function.Bijective (u.app c)) :
       IsLerayHirschBasis θ (freeAb E) → IsLerayHirschBasis θ (freeAb Y) := by
     have hZ (c : TestOver A) (hc : Q.ideal c = ⊥) : Function.Bijective ((freeAb.map u).app c) :=
       (FreeAddCommGroup.equivOfEquiv (.ofBijective _ (hu c hc))).bijective
-    have h_source : IsCohomEquiv G (freeAb.map u) :=
+    have h_source : IsExtEquivFor G (freeAb.map u) :=
       (Theory.locallyConstant.isCohomDense_botLocus Q).isCohomEquiv_of_bijective_on hZ
-    have h_target : IsCohomEquiv F ((restrictAlong p).map (freeAb.map u)) :=
+    have h_target : IsExtEquivFor F ((restrictAlong p).map (freeAb.map u)) :=
       dense_fibre.isCohomEquiv_of_bijective_on fun _ ↦ hZ _
     exact (Comparison.bijective_iff_of_comm_sq (lerayHirsch_mapRange_comp θ map_homClass)
       (mapRange_bijective _ _ h_source.bijective_pullbackAlong) h_target.bijective_pullbackAlong).2

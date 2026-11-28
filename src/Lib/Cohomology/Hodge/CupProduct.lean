@@ -418,10 +418,10 @@ end TotalH
 
 /-- A cohomological equivalence `f` (each pull-back `H.map G f n` is bijective) gives a bijection on
 total cohomology with coefficients in `G`. -/
-lemma IsCohomEquiv.bijective_pullbackAlong (h : IsCohomEquiv G f) :
+lemma _root_.CategoryTheory.IsExtEquivFor.bijective_pullbackAlong (h : IsExtEquivFor G f) :
     Bijective (TotalH.pullbackAlong (G := G) f) := by
   rw [TotalH.pullbackAlong_eq_map]
-  exact (congrAddEquiv fun n ↦ .ofBijective _ (h n)).bijective
+  exact (congrAddEquiv fun n ↦ .ofBijective _ (isExtEquivFor_iff.1 h n)).bijective
 
 variable [HasFlatValues M] [HasFlatValues G] (x : TotalH M F) (y : TotalH N G) [HasFlatValues G']
 

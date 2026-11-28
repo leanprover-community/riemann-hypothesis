@@ -267,7 +267,7 @@ the inclusion into h_c of the locus where some `f i` is a unit induces bijection
 cohomology with coefficients `⋀ M`, in every degree. -/
 lemma isCohomEquiv_someUnitLocus_of_span_eq_top {f : ι → c.baseAlg}
     (h_span : span (Set.range f) = ⊤) :
-    IsCohomEquiv hodgeCoeff (freeAb.map (someUnitLocus f).ι) := by
+    IsExtEquivFor hodgeCoeff (freeAb.map (someUnitLocus f).ι) := by
   -- The unit ideal holds the weakly regular sequence `1, …, 1` of any length.
   refine (relFreeAb.isCohomEquiv_iff_subsingleton_rel _).2 fun n ↦ ?_
   exact DepthVanishing.subsingleton_of_isWeaklyRegular (List.replicate (n + 1) 1) (by aesop)

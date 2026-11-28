@@ -666,7 +666,7 @@ lemma compatibleRootsAreLines_crysTest {p : ℕ} [ThePrime p] [h : CrysPeriodAlg
   obtain ⟨⟨γ⟩, hγ⟩ := (x_univ E).surjective ((TimesBNat.shiftEnd _ 1).asHom.app E x)
   obtain ⟨hγ_roots, hγ_maps⟩ := Prod.ext_iff.mp (Subtype.ext_iff.mp hγ)
   refine .of_acyclic (ψ := 𝟭 _) (F' := crysPeriodCoeff) (isoOfAppBijective _ x_univ)
-    (IsCohomEquiv.of_isIso _).bij i γ (fun D f ↦ rfl) ⟨uliftCoyonedaEquiv.injective hγ⟩ ?_
+    (isExtEquivFor_of_isIso _).bij i γ (fun D f ↦ rfl) ⟨uliftCoyonedaEquiv.injective hγ⟩ ?_
   -- `γ (v ^ a) = [ε ^ a] * v ^ a`: this holds modulo `𝔡`, and lifts of root systems are unique
   let e : Multiplicative ℚ≥0 →* Amax :=
     (algebraMap Ainf Amax).toMonoidHom.comp ((teichmuller p).comp epsPowNNRat)
@@ -1239,7 +1239,8 @@ lemma span_range_crysComparison_pull_eq_top (hi_iso : IsIso i) [IsDomain S]
       rw [Category.id_comp, toCrysPoints, whiskerRight_comp]
       rfl
     refine coeffCompBijective_counitCoeff adj crysThickening (ι _) (tensorWith Bmax Bmax) _
-      (((Comparison.restrict ..).isBijective_congr h_toCrysPoints (.of_isIso _) (.of_isIso _)).2 ?_)
+      (((Comparison.restrict ..).isBijective_congr h_toCrysPoints (isExtEquivFor_of_isIso _)
+        (isExtEquivFor_of_isIso _)).2 ?_)
     exact h_charts _ ((isClosedClass (.restrict ..) testToPdReduction).comap (restrictAlong _))
       fun b ↦ hasCrysComparison_chart _ b.etale
   -- `θ n` goes from `Bmax ⊗ H'`, where `H'` has the completed coefficients `L D`, to the period

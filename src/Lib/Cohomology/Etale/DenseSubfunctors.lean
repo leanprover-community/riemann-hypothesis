@@ -13,7 +13,7 @@ public import Lib.Cohomology.Etale.BijectiveComparisons
 
 This file studies the cohomology Hⁿ(Y) = Extⁿ(ℤ[Y], F) of a set-valued functor Y on a category C
 with coefficients in a functor F : C → Ab, where ℤ[Y] = `New.Variety.freeAb` Y. A map is an
-equivalence for F (`New.Variety.IsCohomEquiv`) if it induces bijections on all Extⁿ(-, F). A
+equivalence for F (`CategoryTheory.IsExtEquivFor`) if it induces bijections on all Extⁿ(-, F). A
 subfunctor U of Y is dense (`New.Variety.IsCohomDense`) if, over every point h_A → Y with h_A =
 Hom(A,−), the inclusion of the preimage of U is an equivalence. The Mayer–Vietoris sequence, the
 calculus of dense subfunctors and closed classes of functors are used to cut functors into pieces.
@@ -55,7 +55,8 @@ Known; see `Lib.Cohomology.Etale.FilteredLimits` for sources.
 
 namespace New.Variety
 
-open CategoryTheory Limits Subfunctor IsCohomEquiv Comparison Types biprod ShortComplex IsPushout
+open CategoryTheory Limits Subfunctor CategoryTheory.IsExtEquivFor Comparison Types biprod
+  ShortComplex IsPushout
 
 variable {C : Type _} [Category C] {F} {Y E : C ⥤ Type 1} {U V : Subfunctor Y} {g : E ⟶ Y}
 
@@ -90,12 +91,12 @@ lemma mayer_vietoris_shortExact :
 /-- A monomorphism g : E → Y with image U is an equivalence for F exactly when the inclusion
 U → Y is one. -/
 lemma isCohomEquiv_iff_range [hg : Mono g] (h : range g = U) :
-    IsCohomEquiv F (freeAb.map g) ↔ IsCohomEquiv F (freeAb.map U.ι) := by
+    IsExtEquivFor F (freeAb.map g) ↔ IsExtEquivFor F (freeAb.map U.ι) := by
   -- `g` is the isomorphism `toRange g` onto its range followed by the inclusion of the range
   subst h
   rw [show freeAb.map g = freeAb.map (toRange g) ≫ freeAb.map (range g).ι by
     rw [← Functor.map_comp, toRange_ι]]
-  exact comp_iff (of_isIso (freeAb.map (toRange g)))
+  exact (isExtEquivFor_of_isIso (freeAb.map (toRange g))).comp_iff_right _
 
 namespace IsCohomDense
 
@@ -103,10 +104,10 @@ namespace IsCohomDense
 
 /-- If the subfunctor U of Y is dense for F, then the inclusion U → Y is an equivalence: it
 induces bijections H^n(Y,F) → H^n(U,F) for all n. -/
-lemma isCohomEquiv (h : IsCohomDense F U) : IsCohomEquiv F (freeAb.map U.ι) := by
+lemma isCohomEquiv (h : IsCohomDense F U) : IsExtEquivFor F (freeAb.map U.ι) := by
   -- It suffices to test on the fibres over the points `y` (`isBijective_of_fibers`); such a fibre
   -- injects into the representable h_A with image the preimage of `U`.
-  refine (isBijective_of_fibers (𝟙 _) .of_id_snd fun A y ↦ IsCohomEquiv.bij ?_).eqv
+  refine (isBijective_of_fibers (𝟙 _) .of_id_snd fun A y ↦ IsExtEquivFor.bij ?_).eqv
   -- written in the form of the goal that `isBijective_of_fibers` leaves, so that `exact` matches it
   have h_range : range (fiberProd.snd U.ι
         ((Comparison.id F).functor.whiskerLeft (pointMap (NatTrans.app (𝟙 Y) A y)))) =
@@ -125,7 +126,7 @@ lemma preimage (h : IsCohomDense F U) (p : E ⟶ Y) : IsCohomDense (Y := E) F (U
 /-- A subfunctor U that is all of Y is dense for F. The hypothesis is stated as `⊤ ≤ U`. -/
 lemma of_top_le (h : ⊤ ≤ U) : IsCohomDense F U := by
   obtain rfl : U = ⊤ := top_unique h
-  exact fun _ _ ↦ of_isIso (freeAb.map (ι ⊤))
+  exact fun _ _ ↦ isExtEquivFor_of_isIso (freeAb.map (ι ⊤))
 
 /-- Let U, V be subfunctors of Y. If V is dense in Y for F (`h`) and U ∩ V, the preimage of U in V,
 is dense in V (`k`), then U is dense in Y. -/
@@ -135,16 +136,16 @@ lemma trans (h : IsCohomDense F V) (k : IsCohomDense F (U.preimage V.ι)) : IsCo
   let U_y : Subfunctor (reprBy A) := U.preimage (pointMap y)
   let V_y : Subfunctor (reprBy A) := V.preimage (pointMap y)
   -- `U_y ⊓ V_y ⊆ V_y` is an equivalence by `k`, and `V_y ⊆ h_A` is one by `h`.
-  have h_inf : IsCohomEquiv F (freeAb.map (U_y ⊓ V_y).ι) := by
-    have h_comp : IsCohomEquiv F
+  have h_inf : IsExtEquivFor F (freeAb.map (U_y ⊓ V_y).ι) := by
+    have h_comp : IsExtEquivFor F
         (freeAb.map ((U.preimage V.ι).preimage (V.fromPreimage (pointMap y))).ι ≫
           freeAb.map V_y.ι) :=
-      (k.preimage (fromPreimage V (pointMap y))).isCohomEquiv.comp_iff.mpr (h A y)
+      ((k.preimage (fromPreimage V (pointMap y))).isCohomEquiv.comp_iff_right _).mpr (h A y)
     -- the composite of the two inclusions is injective with image `U_y ⊓ V_y`
     rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
       at h_comp
   -- `U_y ⊓ V_y ⊆ U_y` is an equivalence by `h`, so `U_y ⊆ h_A` is one by cancellation.
-  refine (h.preimage (U_y.ι ≫ pointMap y)).isCohomEquiv.comp_iff.mp ?_
+  refine ((h.preimage (U_y.ι ≫ pointMap y)).isCohomEquiv.comp_iff_right _).mp ?_
   -- again the composite of the two inclusions has image `U_y ⊓ V_y`
   rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
 
@@ -267,10 +268,10 @@ lemma relationLocus_sum_eq_zero :
 c_i [f_i(w)] = 0 is an equivalence for F, then ∑ c_i f_i^* x = 0 for every x in H^n(Y,F). -/
 lemma H.sum_map_eq_zero_of_relationLocus {C : Type 1} [Category C] {Y W : C ⥤ Type 1}
     {F : AbFunctor C} {n : ℕ} {ι : Type _} [Fintype ι] (c : ι → ℤ) (f : ι → (W ⟶ Y))
-    (h : IsCohomEquiv F (freeAb.map (relationLocus c f).ι)) (x : H (freeAb.obj Y) F n) :
+    (h : IsExtEquivFor F (freeAb.map (relationLocus c f).ι)) (x : H (freeAb.obj Y) F n) :
     ∑ i : ι, c i • map F (freeAb.map (f i)) n x = 0 := by
   -- Pull-back along the locus is injective, and pull-back is additive in the morphism.
-  apply (h n).injective
+  apply (isExtEquivFor_iff.1 h n).injective
   have h_zero : mapHom F (freeAb.obj (relationLocus c f).toFunctor) (freeAb.obj Y) n
       (freeAb.map (relationLocus c f).ι ≫ ∑ i : ι, c i • freeAb.map (f i)) x = 0 := by
     rw [relationLocus_sum_eq_zero, map_zero, AddMonoidHom.zero_apply]
@@ -405,7 +406,7 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
     IsCohomDense F (elemKillingMaps e ⊔ elemKillingMaps (1 - e)) := by
   -- The preimage under a point `k` is the same subfunctor for the idempotent `ι.map k e`.
   suffices h_isCohomEquiv_of_idempotent : ∀ (A : C) (e : ι.obj A), IsIdempotentElem e →
-      IsCohomEquiv F (freeAb.map (elemKillingMaps e ⊔ elemKillingMaps (1 - e)).ι) by
+      IsExtEquivFor F (freeAb.map (elemKillingMaps e ⊔ elemKillingMaps (1 - e)).ι) by
     rintro B ⟨k⟩
     rw [preimage_pointMap_elemKillingMaps_sup e k]
     exact h_isCohomEquiv_of_idempotent B _ (he.map (ι.map k).hom)
@@ -466,8 +467,8 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
     have h_inter_zero : ∀ D : C,
         (elemKillingMaps e ⊓ elemKillingMaps (1 - e)).toFunctor.obj D → (0 : ι D) = 1 := by
       simp +contextual
-    exact (isCohomEquiv_quotient_of_acyclic h_mv (hF.eq_zero_of_zero_ring h_inter_zero)
-      _).injective.subsingleton
+    exact (isExtEquivFor_iff.1 (isCohomEquiv_quotient_of_acyclic h_mv
+      (hF.eq_zero_of_zero_ring h_inter_zero)) _).injective.subsingleton
 
 /-- Zariski descent. Let `F` satisfy `New.Variety.HasPartitions` for the rings `ι`: idempotents of
 ι(A) cut A into two pieces, and F of A is the product of F over the pieces. Let `η : ι ⟶ κ` be a map
@@ -511,7 +512,7 @@ lemma HasPartitions.hasZariskiDescent (hF : HasPartitions ι F) {κ : C ⥤ Comm
     have h_zero (D : C) (x : (reprBy B).obj D) : (0 : ι.obj D) = 1 :=
       -- `f ≫ x` kills `1` in `κ`, so `η` kills `1`
       (hη_inj D 1 (by simpa using (elemKillingMaps 1).map x.down hf)).symm
-    simp [IsCohomEquiv, hF.eq_zero_of_zero_ring h_zero,
+    simp [isExtEquivFor_iff, hF.eq_zero_of_zero_ring h_zero,
       hF.eq_zero_of_zero_ring fun D x ↦ h_zero D ((Subfunctor.ι _).app D x),
       bijective_iff_existsUnique, ExistsUnique]
   · -- If `f` lies in `U_y`, the preimage of `U_y` in `reprBy B` is everything.
@@ -536,15 +537,15 @@ lemma H.map_map (u : X ⟶ Y) (v : Y ⟶ K) (x : H (freeAb.obj K) F n) :
 /-- Let `W` be dense in `Y`. If `u : X ⟶ Y` restricts to an equivalence from the preimage of `W`
 to `W`, then `u` is an equivalence. -/
 lemma IsCohomDense.isCohomEquiv_of_fromPreimage {u : X ⟶ Y} (hd : IsCohomDense F W)
-    (h : IsCohomEquiv F (freeAb.map (W.fromPreimage u))) :
-    IsCohomEquiv F (freeAb.map u) := by
+    (h : IsExtEquivFor F (freeAb.map (W.fromPreimage u))) :
+    IsExtEquivFor F (freeAb.map u) := by
   -- in the square from `W.preimage u` to `Y`, the way through `W` is an equivalence by `h` and
   -- `hd`, and `W.preimage u → X` is one because density passes to preimages
-  have h_via_W : IsCohomEquiv F (freeAb.map (W.fromPreimage u) ≫ freeAb.map W.ι) :=
-    h.comp_iff.mpr hd.isCohomEquiv
-  have h_square : IsCohomEquiv F (freeAb.map (W.preimage u).ι ≫ freeAb.map u) := by
+  have h_via_W : IsExtEquivFor F (freeAb.map (W.fromPreimage u) ≫ freeAb.map W.ι) :=
+    (h.comp_iff_right _).mpr hd.isCohomEquiv
+  have h_square : IsExtEquivFor F (freeAb.map (W.preimage u).ι ≫ freeAb.map u) := by
     rwa [← Functor.map_comp, ← W.fromPreimage_ι, Functor.map_comp]
-  exact (hd.preimage u).isCohomEquiv.comp_iff.mp h_square
+  exact ((hd.preimage u).isCohomEquiv.comp_iff_right _).mp h_square
 
 end DenseRestriction
 

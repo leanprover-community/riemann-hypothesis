@@ -24,8 +24,8 @@ comparison maps give morphisms between them.
   sequences of a short exact sequence in the first and in the second variable;
   `New.Variety.Comparison.pull_hom_contravariant` and `New.Variety.Comparison.pull_hom_covariant`
   say that comparison maps give morphisms between them.
-* `New.Variety.isCohomEquiv_iff_subsingleton`: in a short exact sequence 0 → X₁ → X₂ → X₃ → 0, the
-  map X₁ → X₂ is an equivalence for F iff the quotient X₃ has no cohomology with values in F.
+* `New.Variety.isCohomEquiv_quotient_of_acyclic`: in a short exact sequence 0 → X₁ → X₂ → X₃ → 0,
+  the map X₂ → X₃ is an equivalence for F if X₁ has no cohomology with values in F.
 * `New.Variety.H.sigma_bijective`: the cohomology `New.Variety.H (freeAb.obj Y) F n` of a disjoint
   union `Y = New.Variety.sigma X` of set-valued functors is the product of the cohomology groups of
   the `X i`, by pull-back (`New.Variety.H.map`) along the inclusions.
@@ -33,7 +33,7 @@ comparison maps give morphisms between them.
   objectwise product `New.Variety.piAbFunctor`.
 
 Notions from other files:
-* `New.Variety.IsCohomEquiv`: α: N' → N is an equivalence for F: the pull-back
+* `CategoryTheory.IsExtEquivFor`: α: N' → N is an equivalence for F: the pull-back
   Ext^n(N,F) → Ext^n(N',F) is bijective for every n; `New.Variety.AllBijective f` says that every
   map f n is bijective.
 -/
@@ -395,35 +395,12 @@ lemma Comparison.pull_hom_covariant (hS : S.ShortExact) (hS' : S'.ShortExact) {�
   simp [mapExactFunctor_comp, mapExactFunctor_extClass, comp_assoc (h₂₃ := rfl),
     ShortExact.extClass_naturality (h₂ := hS')]
 
-/-- For 0 → X₁ → X₂ → X₃ → 0 short exact, X₁ → X₂ induces bijections on Extⁿ(-, F) for all n (it is
-a cohomological equivalence for F) exactly when Extⁿ(X₃, F) = 0 for all n. -/
-lemma isCohomEquiv_iff_subsingleton (hS : S.ShortExact) :
-    IsCohomEquiv F S.f ↔ ∀ n : ℕ, Subsingleton (H S.X₃ F n) := by
-  -- The long exact sequence `contravariant hS F` is Hⁿ(X₃) → Hⁿ(X₂) → Hⁿ(X₁) → Hⁿ⁺¹(X₃), and its
-  -- middle map is the pull-back along `S.f`.
-  refine ⟨fun h n ↦ ?_, fun h n ↦ ⟨?_, fun y ↦ ?_⟩⟩
-  · -- The middle map is onto in all degrees, so Hⁿ(X₃) → Hⁿ(X₂) is injective; its image is killed
-    -- by the injective middle map, so it is zero.
-    have hf_inj : Function.Injective ((contravariant hS F).f n) :=
-      (contravariant hS F).f_injective_of_g_surjective fun m _ ↦ (h m).surjective
-    have h_comp (x : H S.X₃ F n) : H.map F S.f n ((contravariant hS F).f n x) = 0 :=
-      ((contravariant hS F).exact_f_g n).apply_apply_eq_zero x
-    exact ⟨fun x y ↦ hf_inj ((h n).injective ((h_comp x).trans (h_comp y).symm))⟩
-  · -- injective: the kernel is the image of Hⁿ(X₃) = 0
-    have h_inj (L : LongExactSeq) (hA : Subsingleton (L.A n)) : Function.Injective (L.g n) := by
-      refine (injective_iff_map_eq_zero _).2 fun x hx ↦ ?_
-      obtain ⟨z, rfl⟩ := (L.exact_f_g n x).1 hx
-      exact (congrArg _ (hA.elim z 0)).trans (map_zero _)
-    exact fun x y hxy ↦ h_inj (contravariant hS F) (h n) hxy
-  · -- onto: the connecting map lands in Hⁿ⁺¹(X₃) = 0
-    exact ((contravariant hS F).exact_g_delta n y).1 ((h (n + 1)).allEq _ _)
-
 /-- For a short exact sequence 0 → X₁ → X₂ → X₃ → 0 of functors with Extⁿ(X₁,F) = 0 for all n,
 the pull-back Extⁿ(X₃,F) → Extⁿ(X₂,F) is bijective for all n. -/
 lemma isCohomEquiv_quotient_of_acyclic (hS : S.ShortExact)
-    (hX₁ : ∀ (n : ℕ) (x : H S.X₁ F n), x = 0) : IsCohomEquiv F S.g := by
+    (hX₁ : ∀ (n : ℕ) (x : H S.X₁ F n), x = 0) : IsExtEquivFor F S.g := by
   -- the pull-back along `S.g` is the first map of `contravariant hS F`, whose third terms vanish
-  intro n
+  refine isExtEquivFor_iff.2 fun n ↦ ?_
   have h_bij (L : LongExactSeq) (hC : ∀ m : ℕ, Subsingleton (L.C m)) : Bijective (L.f n) :=
     ⟨L.f_injective_of_g_surjective fun m _ z ↦ ⟨0, (hC m).elim _ _⟩,
       fun y ↦ (L.exact_f_g n y).1 ((hC n).elim _ _)⟩

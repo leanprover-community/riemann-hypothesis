@@ -1255,7 +1255,8 @@ lemma New.Variety.projSpace.hodgeTateMap_pointClass_ne_zero {p : ℕ} {k : Type}
       let g := freeAb.prod (projSpace k d) (projSpace k 1)
       let q := genericOver.whiskerLeft g
       have : IsIso q := Functor.isIso_whiskerLeft _ _
-      have h_inj := (IsCohomEquiv.of_isIso (F := genericCoeff) (α := q) (d + d + 2)).1
+      have h_inj :=
+        (isExtEquivFor_iff.1 (isExtEquivFor_of_isIso (F := genericCoeff) q) (d + d + 2)).1
       have h_pull : restrictToPairs (H.map genericCoeff q _ x) = 0 :=
         (restrictToPairs_map g x).trans ((congrArg (PairH.map g) restrictToPairs_x).trans h)
       apply h_inj

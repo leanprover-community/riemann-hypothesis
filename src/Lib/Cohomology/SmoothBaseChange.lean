@@ -256,7 +256,7 @@ private lemma isBijective_restrict_restrictScalars_iff {A : ClosurePlace} {p : �
   -- So `κ` is bijective on `X` iff `offClosedFiber X ⊆ X` is an equivalence iff the quotient is
   -- acyclic.
   calc κ.IsBijective (𝟙 (κ.functor ⋙ freeAb X))
-    _ ↔ IsCohomEquiv (locConstAlong (𝟭 _)) (freeAb.map (offClosedFiber X).ι) := by
+    _ ↔ IsExtEquivFor (locConstAlong (𝟭 _)) (freeAb.map (offClosedFiber X).ι) := by
       refine (h_univ.isBijective.trans_iff (c := .id _) ?_).trans isCohomEquiv_iff_isBijective.symm
       -- `u` followed by the inclusion of `offClosedFiber X` is the identity
       exact freeAb.hom_ext fun _ _ ↦ rfl

@@ -548,13 +548,13 @@ lemma New.Variety.CutsOutLocus.exists_map_mul_eq_map_near_prime {k ι G : Type} 
   exact (hy₁ ρ).comp ψ
 
 /-- Let `ν ≫ α = n • l` for maps `α : N' ⟶ N`, `ν : Q ⟶ N'` and `l : Q ⟶ N` of abelian functors,
-where `n ≠ 0` and `l` is an equivalence for a coefficient functor `F` (`IsCohomEquiv`: each
+where `n ≠ 0` and `l` is an equivalence for a coefficient functor `F` (`IsExtEquivFor`: each
 `H.map F l m`, pull-back on the cohomology `H^m(·, F)`, is bijective) on which the field `k` of
 characteristic zero acts. Then pull-back along `α` is injective on `H^m(·, F)`. -/
 lemma New.Variety.injective_H_map_of_comp_eq_nsmul {C : Type 1} [Category C] (k : Type) [Field k]
     [CharZero k] {F : AbFunctor C} [CoeffAction k F] {N N' Q : AbFunctor C} {α : N' ⟶ N}
     {ν : Q ⟶ N'} {l : Q ⟶ N} {n : ℕ} (hn : n ≠ 0) (h_comp : ν ≫ α = n • l)
-    (h_l : IsCohomEquiv F l) (m : ℕ) :
+    (h_l : IsExtEquivFor F l) (m : ℕ) :
     Injective (H.map F α m) := by
   -- `H(ν) ∘ H(α) = n • H(l)`, and multiplication by `n` is injective on a vector space over `k`.
   have h_fun : H.map F ν m ∘ H.map F α m = fun x ↦ n • H.map F l m x := by
@@ -565,7 +565,7 @@ lemma New.Variety.injective_H_map_of_comp_eq_nsmul {C : Type 1} [Category C] (k 
   have h_torsionFree : HasUniqueDiv (H Q F m) := .of_isTorsionFree k (H Q F m)
   refine Injective.of_comp (f := H.map F ν m) ?_
   rw [h_fun]
-  exact (nsmul_right_injective hn).comp (h_l m).injective
+  exact (nsmul_right_injective hn).comp (isExtEquivFor_iff.1 h_l m).injective
 
 /-- Pull-back along a Noether normalisation is injective on cohomology. Let `Y` be embedded in
 projective space by `L`, `ξ` a point of `Y` over a field with coordinates `g`, and `Λ` a Noether
@@ -620,7 +620,7 @@ lemma New.Variety.CutsOutLocus.IsNoetherNormalization.pullback_injective {p : �
         genericCoeff := by
     obtain ⟨e, -⟩ := exists_periodAlg_iso_genericAlg (p := p)
     exact hasZariskiDescent_genericOver (k := k) (𝟭 _) (hasPartitions_periodAlg _ e)
-  suffices h_l : IsCohomEquiv genericCoeff l by
+  suffices h_l : IsExtEquivFor genericCoeff l by
     exact injective_H_map_of_comp_eq_nsmul k Fintype.card_ne_zero h_transfer h_l n
   refine h_eqv _ (h_zar fun c x (m : Ideal (T.obj c)) hm ↦ ?_)
     (h_zar fun c x (m : Ideal (T.obj c)) hm ↦ ?_)

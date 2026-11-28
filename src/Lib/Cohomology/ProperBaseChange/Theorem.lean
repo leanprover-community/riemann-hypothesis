@@ -49,7 +49,7 @@ family of ideals, in the form used to prove that Leray–Hirsch maps are bijecti
 Notions from other files:
 * `New.Variety.IsAbsIntegrallyClosedLocal`: A is an absolutely integrally closed local domain: a
   local domain in which every monic polynomial of positive degree has a root.
-* `New.Variety.IsCohomEquiv`: α : N' → N induces bijections Extⁿ(N, F) → Extⁿ(N', F) for all n.
+* `CategoryTheory.IsExtEquivFor`: α : N' → N induces bijections Extⁿ(N, F) → Extⁿ(N', F) for all n.
 * `New.Variety.locConstCoeff` Λ: the coefficient on test rings given by the locally constant
   functions Spec B → Λ.
 * `New.Variety.IsTestCohomEquiv` Λ u: the map u of functors on rings, restricted to test rings,
@@ -560,9 +560,9 @@ lemma New.Variety.ResiduePlace.isTestCohomEquiv_closedFiber_killingPlaces {ℓ :
   have h_prime_max : (extendedIdeal (maximalIdeal A) γ B).IsPrime :=
     map_isPrime_of_surjective h_surj (le_maximalIdeal (ker_ne_top _))
   have h_le : T (maximalIdeal A) ≤ T ⊥ := fun _C x _hx ↦ h_all _ x
-  have h_eqv : IsCohomEquiv (locConstCoeff ⟨ZMod ℓ⟩) (freeAb.map (homOfLe h_le)) :=
+  have h_eqv : IsExtEquivFor (locConstCoeff ⟨ZMod ℓ⟩) (freeAb.map (homOfLe h_le)) :=
     h_bot.isCohomEquiv (isDomain _) (isDomain _) _ h_max
-  have h_top : IsCohomEquiv (locConstCoeff ⟨ZMod ℓ⟩) (freeAb.map (T ⊥).ι) :=
+  have h_top : IsExtEquivFor (locConstCoeff ⟨ZMod ℓ⟩) (freeAb.map (T ⊥).ι) :=
     IsCohomDense.isCohomEquiv (.of_top_le fun _C x _hx ↦ h_all _ x)
   -- The map in question is injective with image `T (maximalIdeal A)`.
   refine (isCohomEquiv_iff_range (hg := mono_of_app_injective ?_) (U := T (maximalIdeal A)) ?_).mpr
@@ -577,7 +577,7 @@ lemma New.Variety.ResiduePlace.isTestCohomEquiv_closedFiber_killingPlaces {ℓ :
     · rintro ⟨hx_zero, -⟩
       exact ⟨⟨⟨x.val, hx_zero⟩, x.prop⟩, rfl⟩
   · -- The inclusion of `T (maximalIdeal A)` factors through `T ⊥`; both factors are equivalences.
-    simpa only [← homOfLe_ι h_le, Functor.map_comp] using h_eqv.comp_iff.mpr h_top
+    simpa only [← homOfLe_ι h_le, Functor.map_comp] using (h_eqv.comp_iff_right _).mpr h_top
 
 /-- The places that give the value `0` to all elements of an ideal behave like its zero locus. -/
 lemma New.Variety.ResiduePlace.isZeroLocusFamily_killingPlaces {Y : PointFunctor}
@@ -673,7 +673,7 @@ lemma New.Variety.IsProperOver.proper_base_change {ℓ : ℕ} [ThePrime ℓ] {Y 
       | succ m hm => exact hW.of_isPullback hs isPullback_cech hm (𝟙 _) rfl
     -- The closed fibre of a fibre power is the fibre power of the cover of the closed fibre.
     refine (bijectiveUpTo_congr (p := 𝟙 _)
-        (((zeroPoints s' (maximalIdeal A)).whisker testIncl).lift_ι _ ?_) (.of_isIso _)
+        (((zeroPoints s' (maximalIdeal A)).whisker testIncl).lift_ι _ ?_) (isExtEquivFor_of_isIso _)
         (.of_bijective fun C ↦ ?_)).mp ?_
     · rintro _ _ ⟨x, rfl⟩
       exact (x.val 0).prop
@@ -746,7 +746,7 @@ lemma IsProperOver.injective_map_residue {ℓ n : ℕ} {W : CommRingCat ⥤ Type
   have h_proper : IsProperOver pr := hs.baseChange a
   have hℓ_unit : IsUnit (ℓ : A) := by simpa using hℓ.map a.hom
   have h_equiv : IsTestCohomEquiv ⟨ZMod ℓ⟩ X₀.ι := h_proper.proper_base_change hℓ_unit
-  have h_inj : Function.Injective (map ⟨ZMod ℓ⟩ X₀.ι n) := (h_equiv n).injective
+  have h_inj : Function.Injective (map ⟨ZMod ℓ⟩ X₀.ι n) := (isExtEquivFor_iff.1 h_equiv n).injective
   -- The ring map `A → B` of a point of `X₀` kills the maximal ideal, so it factors through `κ`.
   let fromResidue {B : CommRingCat} (y : X₀.toFunctor.obj B) : of (ResidueField A) ⟶ B :=
     ofHom (Ideal.Quotient.lift (maximalIdeal A) (baseRingMap pr y.val).hom y.property)
@@ -778,7 +778,7 @@ lemma IsProperOver.isTestCohomEquiv_field_extension (hs : IsProperOver s) (hℓ 
   -- Classes on `W_T`, and their vanishing, come from the finitely generated `S`-subalgebras `A t`
   -- of `T`, and these have `S`-points `β t` by the Nullstellensatz.
   subst h_comp
-  intro n
+  refine isExtEquivFor_iff.2 fun n ↦ ?_
   algebraize [φ.hom]
   let hS_field : Field S := hS.toField
   let hT_field : Field T := hT.toField
@@ -1103,7 +1103,7 @@ structure IsDetectedAtPoints (F : AbFunctor D) : Prop where
   /-- A map `φ : V ⟶ k` of tests over `A` that are fields induces bijections on these groups. -/
   isCohomEquiv_map_of_isField (V k : TestOver A) (φ : V ⟶ k) (hV : IsField V.obj)
     (hk : IsField k.obj) :
-    IsCohomEquiv F (freeAb.map (g.whiskerLeft (reprMap φ)))
+    IsExtEquivFor F (freeAb.map (g.whiskerLeft (reprMap φ)))
 
 /-- The family I on the points of X × Spec A, pulled back to tests: to a test B over A and x ∈ X(B)
 it assigns the ideal of I at the point (x, A → B). -/
@@ -1212,7 +1212,8 @@ lemma IdealFamily.isDetectedAtPoints_of_proper [InvertsPrime A ℓ]
   let e {c : TestOver A} {n : ℕ} :
       H (freeAb.obj (testOfPoint A X ⋙ reprBy c)) F n ≃+
         H (freeAb.obj (testIncl ⋙ Wc c)) (locConstCoeff ⟨ZMod ℓ⟩) n :=
-    (ofBijective _ ((h_dense.preimage _).isCohomEquiv n)).trans (ofBijective _ (hu c n)).symm
+    (ofBijective _ (isExtEquivFor_iff.1 (h_dense.preimage _).isCohomEquiv n)).trans
+      (ofBijective _ (hu c n)).symm
   -- `e` is natural in `c`.
   have he {c k : TestOver A} (φ : c ⟶ k) (n : ℕ)
       (x : H (freeAb.obj (testOfPoint A X ⋙ reprBy c)) F n) :
@@ -1229,7 +1230,7 @@ lemma IdealFamily.isDetectedAtPoints_of_proper [InvertsPrime A ℓ]
     refine (congrArg _ (h_pull_e x)).trans (Eq.trans ?_ (h_pull_e _).symm)
     rw [H.map_map, H.map_map]
     rfl
-  refine ⟨fun c n x ↦ ?_, fun V k φ hV hk n ↦ ?_⟩
+  refine ⟨fun c n x ↦ ?_, fun V k φ hV hk ↦ isExtEquivFor_iff.2 fun n ↦ ?_⟩
   · intro z
     -- Stated for abstract groups: applied to the groups `H`, it lets the kernel match the zero
     -- elements without unfolding the group structure of `Ext` (which made this step slow).
@@ -1247,8 +1248,8 @@ lemma IdealFamily.isDetectedAtPoints_of_proper [InvertsPrime A ℓ]
     exact (zero_iff e _).symm.trans ((Eq.congr_left (he (residueTest c P).hom n x).symm).trans
       Iff.rfl)
   · exact (Comparison.bijective_iff_of_comm_sq (he φ n) e.bijective e.bijective).mpr
-      (hs.isTestCohomEquiv_field_extension isUnit_prime _ hV hk V.property.toIsAbsIntegrallyClosed
-        k.property.toIsAbsIntegrallyClosed n)
+      (isExtEquivFor_iff.1 (hs.isTestCohomEquiv_field_extension isUnit_prime _ hV hk
+        V.property.toIsAbsIntegrallyClosed k.property.toIsAbsIntegrallyClosed) n)
 
 end ProperBaseChange
 

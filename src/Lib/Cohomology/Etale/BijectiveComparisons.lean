@@ -54,7 +54,7 @@ Notions from other files:
   restricts along φ, pushes by β and pulls by α.
 * `New.Variety.BijectiveUpTo`: For maps f_n: A_n → B_n, the first r of the conditions: f₀ injective,
   f₀ surjective, f₁ injective, f₁ surjective, and so on.
-* `New.Variety.IsCohomEquiv`: α: N' → N is an equivalence for F: the pull-back
+* `CategoryTheory.IsExtEquivFor`: α: N' → N is an equivalence for F: the pull-back
   Ext^n(N,F) → Ext^n(N',F) is bijective for every n.
 * `New.Variety.freeAbMap`: For u: Y' → Y∘φ, the induced map of free abelian group functors
   Z[Y'] → Z[Y]∘φ.
@@ -561,20 +561,20 @@ lemma Devissage.allBijective_freeAb_range_of_cech (h_dev : Devissage f)
 
 /-- p: E → Y is a cover for F: the inclusion of the image of p in Y induces bijections on
 Ext^n(Z[−],F) for all n. -/
-def IsCover : Prop := IsCohomEquiv F (freeAb.map (Subfunctor.range p).ι)
+def IsCover : Prop := IsExtEquivFor F (freeAb.map (Subfunctor.range p).ι)
 
 lemma IsPointwiseSurjective.isCover {F : AbFunctor D} (hp : IsPointwiseSurjective p) :
     IsCover F p := by
   -- `range p` is all of `Y`, so its inclusion is an isomorphism
   have : IsIso (range p).ι := (range p).eq_top_iff_isIso.1 (by aesop : range p = ⊤)
-  exact .of_isIso _
+  exact isExtEquivFor_of_isIso _
 
 end CechDescent
 
 /-!
 ## Pointwise bijections and pull-back squares of set-valued functors
 
-* `New.Variety.IsCohomEquiv.of_bijective`: a map that is bijective at every object induces
+* `CategoryTheory.IsExtEquivFor.of_bijective`: a map that is bijective at every object induces
   bijections on all `Extⁿ(ℤ[-], F)`.
 * `New.Variety.isPullback_iff`: a square is a pull-back exactly when it commutes and is a pull-back
   of sets at every object; fibre products and fibre powers give such squares.
@@ -589,9 +589,10 @@ variable {C : Type _} [Category C] {Y E W V : C ⥤ Type 1} {p : E ⟶ Y} {u : W
 
 /-- A map `p : E ⟶ Y` that is bijective at every object is an isomorphism, so `ℤ[E] ⟶ ℤ[Y]` is an
 equivalence for every coefficient functor `F`. -/
-lemma IsCohomEquiv.of_bijective {F : AbFunctor C} (hp_bij : AllBijective fun B : C ↦ p B) :
-    IsCohomEquiv F (freeAb.map p) :=
-  of_isIso (freeAb.map (isoOfAppBijective p hp_bij).hom)
+lemma _root_.CategoryTheory.IsExtEquivFor.of_bijective {F : AbFunctor C}
+    (hp_bij : AllBijective fun B : C ↦ p B) :
+    IsExtEquivFor F (freeAb.map p) :=
+  isExtEquivFor_of_isIso (freeAb.map (isoOfAppBijective p hp_bij).hom)
 
 /-- A square of functors is a pull-back if and only if it commutes and is a pull-back on points at
 every object. -/
@@ -649,8 +650,8 @@ end BijectiveEquivalence
 
 section BijectiveComparisons
 
-open CategoryTheory Abelian Function Functor Subfunctor Ext H IsCohomEquiv ConcreteCategory cech
-  Arrow BijectiveUpTo sigma IsPointwiseSurjective fiberProd Iso
+open CategoryTheory Abelian Function Functor Subfunctor Ext H CategoryTheory.IsExtEquivFor
+  ConcreteCategory cech Arrow BijectiveUpTo sigma IsPointwiseSurjective fiberProd Iso
 
 variable {C C' C'' : Type 1} [Category C] [Category C'] [Category C'']
   {F G N : AbFunctor C} {F' G' N' : AbFunctor C'} {F'' N'' : AbFunctor C''} {Y E : C ⥤ Type 1}
@@ -667,10 +668,11 @@ def Comparison.IsBijective {N : AbFunctor C} {N' : AbFunctor C'} (α : N' ⟶ c.
 /-- A map α: N → G of functors from C to abelian groups is an equivalence for F if and only if
 the identity comparison from F to itself is bijective along α in every degree. -/
 lemma isCohomEquiv_iff_isBijective {α : N ⟶ G} :
-    IsCohomEquiv F α ↔ (Comparison.id F).IsBijective α := by
-  simp [IsCohomEquiv, Comparison.IsBijective]
+    IsExtEquivFor F α ↔ (Comparison.id F).IsBijective α := by
+  simp [isExtEquivFor_iff, Comparison.IsBijective]
 
-alias ⟨IsCohomEquiv.bij, Comparison.IsBijective.eqv⟩ := isCohomEquiv_iff_isBijective
+alias ⟨_root_.CategoryTheory.IsExtEquivFor.bij, Comparison.IsBijective.eqv⟩ :=
+  isCohomEquiv_iff_isBijective
 
 lemma H.push_bijective_of_isIso {γ : F ⟶ G} (hγ : IsIso γ) (n : ℕ) : Bijective (push N γ n) :=
   bijective_of_isIso ((extFunctorObj N n).map γ)
@@ -786,8 +788,8 @@ end BijectiveComparisons
 
 section ComparisonDescent
 
-open CategoryTheory Abelian Function Functor Subfunctor Ext H IsCohomEquiv ConcreteCategory cech
-  Arrow BijectiveUpTo sigma IsPointwiseSurjective fiberProd Iso
+open CategoryTheory Abelian Function Functor Subfunctor Ext H CategoryTheory.IsExtEquivFor
+  ConcreteCategory cech Arrow BijectiveUpTo sigma IsPointwiseSurjective fiberProd Iso
 
 variable {C C' : Type 1} [Category C] [Category C'] {F : AbFunctor C} {F' : AbFunctor C'}
   {Y E : C ⥤ Type 1} {Y' E' : C' ⥤ Type 1} {r : ℕ} {φ : C' ⥤ C} {c : Comparison F F'}
@@ -836,7 +838,8 @@ lemma bijectiveUpTo_of_cech_pred (w : p' ≫ u = v ≫ c.functor.whiskerLeft p) 
       τ (freeAb (range leftToRight).toFunctor) ≫
         whiskerLeft c.functor (freeAb.map (range p).ι) :=
     freeAb.hom_ext fun _ _ ↦ rfl
-  exact (BijectiveUpTo.congr hp hp' (map_pull_eq_pull_map h_comm)).mpr h_range
+  exact (BijectiveUpTo.congr (isExtEquivFor_iff.1 hp) (isExtEquivFor_iff.1 hp')
+    (map_pull_eq_pull_map h_comm)).mpr h_range
 
 /-- Let `u : Y' ⟶ c.functor ⋙ Y` and `t : E ⟶ Y`, and let `v : E' ⟶ c.functor ⋙ E`, with
 `p' : E' ⟶ Y'`, be the pull-back of `u` along `t`. Suppose that for every point `x` of `E A` the
@@ -976,12 +979,13 @@ lemma HasUniversalPoints.isBijective_subfunctor (h_points : c.HasUniversalPoints
 if its preimage `S` in `Y'` has the cohomology of `Y'` for `F'`. -/
 lemma HasUniversalPoints.isCohomEquiv_incl_iff (h_points : c.HasUniversalPoints u)
     (U : Subfunctor Y) {S : Subfunctor Y'} (hS : S = (U.whisker c.functor).preimage u) :
-    IsCohomEquiv F (freeAb.map U.ι) ↔ IsCohomEquiv F' (freeAb.map S.ι) := by
+    IsExtEquivFor F (freeAb.map U.ι) ↔ IsExtEquivFor F' (freeAb.map S.ι) := by
   subst hS
   -- the comparison is bijective on `Y` and on `U`, and commutes with the two restrictions
   have h_comm : freeAb.map ((U.whisker c.functor).preimage u).ι ≫ freeAbMap u =
       freeAbMap ((U.whisker c.functor).fromPreimage u) ≫ whiskerLeft c.functor (freeAb.map U.ι) :=
     freeAb.hom_ext fun _ _ ↦ rfl
+  rw [isExtEquivFor_iff, isExtEquivFor_iff]
   exact forall_congr' fun n ↦ bijective_iff_of_comm_sq (map_pull_eq_pull_map h_comm n)
     (h_points.isBijective n) (h_points.isBijective_subfunctor U n)
 
@@ -1007,19 +1011,20 @@ lemma isBijective_of_adj {U : C ⥤ C'} (a : φ ⊣ U) :
 (`w : p' ≫ u = v ≫ p`), the comparisons along `u` and along `v` satisfy the same conditions of
 `New.Variety.BijectiveUpTo`. -/
 lemma bijectiveUpTo_congr (w : p' ≫ u = v ≫ c.functor.whiskerLeft p)
-    (hp_equiv : IsCohomEquiv F (freeAb.map p)) (hp'_equiv : IsCohomEquiv F' (freeAb.map p')) :
+    (hp_equiv : IsExtEquivFor F (freeAb.map p)) (hp'_equiv : IsExtEquivFor F' (freeAb.map p')) :
     BijectiveUpTo (fun n : ℕ ↦ c.pull (freeAbMap u) n) r ↔
       BijectiveUpTo (fun n : ℕ ↦ c.pull (freeAbMap v) n) r :=
-  BijectiveUpTo.congr hp_equiv hp'_equiv (map_pull_eq_pull_map (freeAb.map_commSq ⟨w⟩).w)
+  BijectiveUpTo.congr (isExtEquivFor_iff.1 hp_equiv) (isExtEquivFor_iff.1 hp'_equiv)
+    (map_pull_eq_pull_map (freeAb.map_commSq ⟨w⟩).w)
 
 /-- If `p` and `p'` are equivalences for `F` and `F'` and `v` lifts `u` along them
 (`w : p' ≫ u = v ≫ p`), the comparison is bijective along `u` if and only if it is along `v`. -/
 lemma isBijective_congr (w : p' ≫ u = v ≫ c.functor.whiskerLeft p)
-    (hp_equiv : IsCohomEquiv F (freeAb.map p)) (hp'_equiv : IsCohomEquiv F' (freeAb.map p')) :
+    (hp_equiv : IsExtEquivFor F (freeAb.map p)) (hp'_equiv : IsExtEquivFor F' (freeAb.map p')) :
     c.IsBijective (freeAbMap u) ↔ c.IsBijective (freeAbMap v) := by
   exact forall_congr' fun n ↦
     bijective_iff_of_comm_sq (fun x ↦ (map_pull_eq_pull_map (freeAb.map_commSq ⟨w⟩).w n x).symm)
-      (hp_equiv n) (hp'_equiv n)
+      (isExtEquivFor_iff.1 hp_equiv n) (isExtEquivFor_iff.1 hp'_equiv n)
 
 end Comparison
 

@@ -13,7 +13,7 @@ This file provides tools for computing the groups Ext^n(N, F) (`New.Variety.H`) 
 category C to abelian groups. For a subfunctor U of a set-valued functor V,
 `New.Variety.relFreeAb U` is the quotient ℤ[V]/ℤ[U] of free abelian groups (`New.Variety.freeAb`).
 Its Ext^n into F is the relative cohomology H^n(V, U). A map is an equivalence for F
-(`New.Variety.IsCohomEquiv`) if it is bijective on all Ext^n(·, F). A subfunctor U of Y is dense
+(`CategoryTheory.IsExtEquivFor`) if it is bijective on all Ext^n(·, F). A subfunctor U of Y is dense
 (`New.Variety.IsCohomDense`) if over every point h_A → Y its preimage gives an equivalence; with
 these notions the file proves vanishing for locally zero functors, transfer, excision and gluing of
 relative classes over finite covers.
@@ -33,9 +33,10 @@ relative classes over finite covers.
 * `New.Variety.relFreeAb.prod`: the map of pairs that gives exterior products of relative classes.
 
 Notions from other files:
-* `New.Variety.isCohomEquiv_iff_subsingleton`, `New.Variety.isCohomEquiv_quotient_of_acyclic`: for
-  0 → X₁ → X₂ → X₃ → 0 short exact, X₁ → X₂ is an equivalence for F exactly when all Ext^n(X₃, F)
-  vanish, and X₂ → X₃ is one when all Ext^n(X₁, F) vanish.
+* `CategoryTheory.isExtEquivFor_iff_of_shortExact` (Tau Ceti),
+  `New.Variety.isCohomEquiv_quotient_of_acyclic`: for 0 → X₁ → X₂ → X₃ → 0 short exact, X₁ → X₂ is
+  an equivalence for F exactly when all Ext^n(X₃, F) vanish, and X₂ → X₃ is one when all
+  Ext^n(X₁, F) vanish.
 * `New.Variety.pointMap`: The map h_A → Y from h_A = Hom(A,−) corresponding to a point y of Y(A) by
   the Yoneda lemma.
 
@@ -69,8 +70,8 @@ lemma relFreeAb.shortExact (U : Subfunctor V) :
 /-- The inclusion `ℤ[U] → ℤ[V]` is an equivalence for `F` (bijective on all `Ext^n(·, F)`) exactly
 when all the relative groups `H^n(V, U) = Ext^n(ℤ[V]/ℤ[U], F)` vanish. -/
 lemma relFreeAb.isCohomEquiv_iff_subsingleton_rel (U : Subfunctor V) :
-    IsCohomEquiv F (freeAb.map U.ι) ↔ ∀ n : ℕ, Subsingleton (H (relFreeAb U) F n) :=
-  isCohomEquiv_iff_subsingleton (S := ⟨freeAb.map U.ι, π U, (shortExact U).1⟩) (shortExact U).2
+    IsExtEquivFor F (freeAb.map U.ι) ↔ ∀ n : ℕ, Subsingleton (H (relFreeAb U) F n) :=
+  isExtEquivFor_iff_of_shortExact (S := ⟨freeAb.map U.ι, π U, (shortExact U).1⟩) (shortExact U).2
 
 variable (v : V'' ⟶ V') (u : V' ⟶ V) (h : U'' ≤ U'.preimage v) (h' : U' ≤ U.preimage u)
 
@@ -194,7 +195,7 @@ induces bijections on all `Ext^n(−, F)`. -/
 lemma isCohomEquiv_of_locallyZero
     (h_ker : ∀ (c : C) (s : M.obj c), α c s = 0 → s ∈ locallyZero F M c)
     (h_coker : ∀ (c : C) (t : N.obj c), abCoker.π α c t ∈ locallyZero F (abCoker α) c) :
-    IsCohomEquiv F α := by
+    IsExtEquivFor F α := by
   -- Factor `α` through its image `I`, the kernel of `abCoker.π α`. The map onto `I` has a locally
   -- zero kernel, and the inclusion of `I` has a locally zero cokernel; both are acyclic by
   -- `cohomology_eq_zero_of_locallyZero`.
@@ -207,24 +208,25 @@ lemma isCohomEquiv_of_locallyZero
   have ker_acyclic : ∀ n (x : H (kerComplex onto).X₁ F n), x = 0 :=
     cohomology_eq_zero_of_locallyZero fun A s ↦
       (h_ker A s.val (congrArg Subtype.val s.property)).mono fun _ _ hs ↦ Subtype.ext hs
-  have eqv_onto : IsCohomEquiv F onto :=
+  have eqv_onto : IsExtEquivFor F onto :=
     -- The ascription `( … :)` elaborates the term before unifying with the goal; without it
     -- elaboration times out.
     (isCohomEquiv_quotient_of_acyclic (kerComplex_shortExact onto_surj) ker_acyclic :)
   have cok_acyclic n : Subsingleton (H (abCoker α) F n) :=
     subsingleton_of_forall_eq 0
       (cohomology_eq_zero_of_locallyZero (fun A ↦ Quot.ind (h_coker A)) n)
-  have eqv_incl : IsCohomEquiv F (kerComplex (abCoker.π α)).f :=
-    (isCohomEquiv_iff_subsingleton
+  have eqv_incl : IsExtEquivFor F (kerComplex (abCoker.π α)).f :=
+    (isExtEquivFor_iff_of_shortExact
       (kerComplex_shortExact (α := abCoker.π α) fun _ ↦ mk_surjective)).2 cok_acyclic
-  exact (eqv_onto.comp_iff.2 eqv_incl : IsCohomEquiv F (onto ≫ (kerComplex (abCoker.π α)).f))
+  exact ((eqv_onto.comp_iff_right _).2 eqv_incl :
+    IsExtEquivFor F (onto ≫ (kerComplex (abCoker.π α)).f))
 
 /-- `New.Variety.isCohomEquiv_of_locallyZero`, with its two hypotheses given as one conjunction. -/
 lemma LocalIso.isCohomEquiv
     (h :
       (∀ (c : C) (s : M.obj c), α c s = 0 → s ∈ locallyZero F M c) ∧
       ∀ (c : C) (t : N.obj c), abCoker.π α c t ∈ locallyZero F (abCoker α) c) :
-    IsCohomEquiv F α :=
+    IsExtEquivFor F α :=
   isCohomEquiv_of_locallyZero h.1 h.2
 
 /-- The pairs `(w, w')` in a fibre of `p : V' → V` (points of `V' ×_V V'`) whose tuples `(f i w)ᵢ`
@@ -250,7 +252,7 @@ lemma exists_transfer_map {ι : Type*} [Fintype ι] {f : ι → (V' ⟶ V'')} {p
       m ≫ ν = ∑ i : ι, freeAb.map (f i) ∧
       ν ≫ freeAb.map p' = card ι • l ∧
       ∀ F : AbFunctor C, IsCohomDense F (Subfunctor.range p) →
-        IsCohomDense F (permutedPairs f p) → IsCohomEquiv F (N' := Q) l := by
+        IsCohomDense F (permutedPairs f p) → IsExtEquivFor F (X' := Q) l := by
   -- Let `Q` be the quotient of `ℤ[V']` by the differences `[w] - [w']` over the pairs in `P`.
   -- On such a pair both `p` and `∑ i, [f i ·]` agree, so they factor through `Q`.
   let P : Subfunctor (cech p 1) := permutedPairs f p
@@ -333,7 +335,7 @@ lemma shortExact_triple (U : Subfunctor V) [Mono u] :
 bijections on Ext^n(·, F) for all n. -/
 lemma isCohomEquiv_of_le {U' U : Subfunctor V} (h_le : U' ≤ U)
     (h_dense : IsCohomDense F (U'.preimage U.ι)) :
-    IsCohomEquiv F (map (𝟙 V) h_le) := by
+    IsExtEquivFor F (map (𝟙 V) h_le) := by
   -- By `shortExact_triple` for the inclusion of `U`, the kernel of the map is `ℤ[U] / ℤ[U']`, which
   -- is acyclic because `U'` is dense in `U`.
   have h_acyclic : ∀ n, Subsingleton (H (relFreeAb (U'.preimage U.ι)) F n) :=
@@ -347,11 +349,11 @@ lemma isCohomEquiv_of_le {U' U : Subfunctor V} (h_le : U' ≤ U)
 coefficient F. Then ℤ[V′]/ℤ[U′] → ℤ[V]/ℤ[U] induces bijections on Ext^n(·, F) for all n. -/
 lemma excision (h : IsCohomDense F (Subfunctor.range u ⊔ U)) [m : Mono u]
     (h_pre : U' = U.preimage u) :
-    IsCohomEquiv F (map u h_pre.le) := by
+    IsExtEquivFor F (map u h_pre.le) := by
   -- By `shortExact_triple` the cokernel of the map is `ℤ[V] / ℤ[u(V') ∪ U]`, which is acyclic by
   -- density.
   subst h_pre
-  exact (isCohomEquiv_iff_subsingleton (shortExact_triple u U).2).2
+  exact (isExtEquivFor_iff_of_shortExact (shortExact_triple u U).2).2
     ((isCohomEquiv_iff_subsingleton_rel _).1 h.isCohomEquiv)
 
 end relFreeAb
@@ -437,7 +439,7 @@ lemma relFreeAb.eq_zero_and_exists_glued_of_iSup {F : AbFunctor C} {d : ℕ}
           map (homOfLe (le_iSup ..)) le_rfl, hom_ext, hom_ext⟩
     simp at ladder
     -- The relative terms of the two sequences agree, by excision.
-    have h_exc : IsCohomEquiv F (map (homOfLe (le_iSup W 0))
+    have h_exc : IsExtEquivFor F (map (homOfLe (le_iSup W 0))
         (U := A.preimage (Subfunctor.ι _) ⊔ U.preimage (Subfunctor.ι _)) le_rfl) := by
       refine excision _ (.of_top_le fun _ v _ ↦ ?_) rfl
       have hv : v.val ∈ (W 0).obj _ ∨ v.val ∈ A.obj _ := by
@@ -447,7 +449,7 @@ lemma relFreeAb.eq_zero_and_exists_glued_of_iSup {F : AbFunctor C} {d : ℕ}
     · -- Diagram chase: `z` dies on `W 0` and on `A`, so it comes from a relative class; that
       -- class is zero by excision and the vanishing in degree `n - 1` below.
       refine ladder.rotate.eq_zero_of_delta_eq_zero (fun t ↦ ⟨0, sub_eq_zero.1 ?_⟩)
-        (h_exc n).injective z (hz 0)
+        (isExtEquivFor_iff.1 h_exc n).injective z (hz 0)
         (inj_old n hn fun i ↦
           (H.map_comp ..).symm.trans (by simpa [homOfLe_comp_homOfLe] using hz i.succ))
       -- The group of `A ⊓ W 0` in degree `n - 1 < d` is zero, as those of its pieces are.
@@ -459,7 +461,8 @@ lemma relFreeAb.eq_zero_and_exists_glued_of_iSup {F : AbFunctor C} {d : ℕ}
       -- `+instances`, `using!`: the goal contains `map (𝟙 _) le_sup_right`, which is well typed
       -- only after unfolding instances, so `rw` and plain `simpa` fail on it.
       obtain ⟨z, hz, rfl⟩ :=
-        ladder.exists_preimage (h_exc d).surjective (h_exc _).injective (x 0) y <|
+        ladder.exists_preimage (isExtEquivFor_iff.1 h_exc d).surjective
+          (isExtEquivFor_iff.1 h_exc _).injective (x 0) y <|
           sub_eq_zero.1 <| inj_inter d le_rfl fun i ↦ by
             simpa +instances [← hy, contravariant, ← H.map_comp, sub_eq_zero] using! hx i.succ 0
       refine ⟨z, fun i ↦ ?_⟩
@@ -483,7 +486,7 @@ lemma relFreeAb.exists_glued_class {r : ℕ} {F : AbFunctor C} {d : ℕ} (S : Se
   -- to `V`.
   obtain ⟨-, z, hz⟩ := eq_zero_and_exists_glued_of_iSup U S hS h_vanish W hW x hx
   have h_dense : IsCohomDense F (Subfunctor.range (iSup W).ι ⊔ U) := by simpa using hd
-  obtain ⟨y, rfl⟩ := (excision (iSup W).ι (U := U) h_dense rfl d).surjective z
+  obtain ⟨y, rfl⟩ := (isExtEquivFor_iff.1 (excision (iSup W).ι (U := U) h_dense rfl) d).surjective z
   exact ⟨y, fun i ↦ by simpa [← H.map_comp] using hz i⟩
 
 /-- For `U ⊆ V` and `W ⊆ X`, the map `ℤ[V × X] / ℤ[U × X ∪ V × W] → ℤ[V] / ℤ[U] ⊗ ℤ[X] / ℤ[W]` that

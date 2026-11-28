@@ -457,7 +457,7 @@ lemma HasFlatBaseChange.isBijective_of_isReductionMod [ThePrime p]
   -- mod `p` both sides are `X` mod `p` and the comparison is the identity
   refine .of_mod (q := coeffMap (j ≫ q)) (q' := coeffMap q) h_exact_source h_exact_target rfl
     (fun n h_div ↦ ?_) (.cohomology (fun A ↦ (hX A).isDerivedComplete) N)
-    (IsCohomEquiv.of_isIso (𝟙 N)).bij
+    (isExtEquivFor_of_isIso (𝟙 N)).bij
   -- The source is `S ⊗ Hⁿ(N, Θ)` by flat base change, and `Hⁿ(N, Θ)` is complete of finite rank.
   have h_ten : IsDerivedComplete (p : S) (S ⊗[W] H N (moduleCoeff (asModules Θ)) n) := by
     simpa using IsDerivedComplete.baseChange hp

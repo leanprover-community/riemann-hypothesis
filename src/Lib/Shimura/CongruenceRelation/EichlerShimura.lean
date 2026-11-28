@@ -181,7 +181,7 @@ lemma congruence_relation [IsProper W.hom] {g : Γ} (hg : IsFrob A (p ^ f) g) {I
   have h_char (B : CommRingCat) (x : U₀.toFunctor.obj B) : (p : B) = 0 := by
     simpa using x.property p hp
   -- restriction to `U₀` is injective by proper base change
-  have h_res : IsCohomEquiv (locConstCoeff ⟨ZMod ℓ⟩) (freeAb.map (mapOnTests U₀.ι)) := by
+  have h_res : IsExtEquivFor (locConstCoeff ⟨ZMod ℓ⟩) (freeAb.map (mapOnTests U₀.ι)) := by
     have h_max : (IsLocalRing.maximalIdeal A : Set A) = {a : A | A.valuation a < 1} :=
       Set.ext A.valuation_lt_one_iff
     unfold U₀

@@ -633,7 +633,7 @@ private lemma map_pointMap_map_scaledGraph_eq_smul_symbolClass {E : Type}
   -- cohomology.
   obtain ⟨ν, ν_fst, hν⟩ := a.exists_section_isCohomEquiv
   obtain ⟨h_unit, h_eqv⟩ := hν f_cut.preimage_fieldLocus_not
-  refine (h_eqv d).injective ?_
+  refine (isExtEquivFor_iff.1 h_eqv d).injective ?_
   let P : HodgeTest E := ⟨a.coordRing, Fin d⟩
   let e : relFreeAb (someUnitLocus (c := P) f) ⟶ sqZeroExt ⋙ relFreeAb V :=
     (relFreeAb.map (𝟙 _) h_unit ≫
@@ -1055,7 +1055,7 @@ lemma New.Variety.IsPointSum.cup_pointClass {k : Type} [Field k] [CharZero k] {d
         exact ⟨_, hO_open.preimage _, hqO, fun _ _ h ↦ .inr (hO_le _ h)⟩
     -- By excision it suffices to compare pull-backs to the product chart. That of `η` is the
     -- product of the symbols of `g ⊗ 1` and `1 ⊗ g'` (`pull_cup_along_pair`, `hx`, `hy`).
-    refine (hodge_excision (a.prod b).isOpenSubfunctor near (by rfl) _).1
+    refine (isExtEquivFor_iff.1 (hodge_excision (a.prod b).isOpenSubfunctor near (by rfl)) _).1
       ((pull_cup_along_pair ..).trans
         ((congrArg _ (congrArg₂ (fun u v ↦ cup _ u v _)
           ((hx.map _).2.2.trans (one_smul _ _))

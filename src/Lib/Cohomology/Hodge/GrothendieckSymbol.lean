@@ -818,7 +818,7 @@ lemma EtaleChart.exists_section_isCohomEquiv : ∃ μ : a.coordRing ⟶ HodgeTes
     LeftInverse fst μ ∧
     ∀ {d : ℕ} {f : Fin d → a.coordRing} {S},
       S = (unimodular (k := k)).preimage (pointMap ⟨f⟩) → ∃ h,
-      IsCohomEquiv hodgeCoeff (relFreeAb.map (U' := someUnitLocus (c := ⟨_, Fin e⟩) f) (𝟙 _) h ≫
+      IsExtEquivFor hodgeCoeff (relFreeAb.map (U' := someUnitLocus (c := ⟨_, Fin e⟩) f) (𝟙 _) h ≫
         relFreeAb.map (U := S.whisker HodgeTest.sqZeroExt) (pointMap ⟨μ⟩) le_rfl) := by
   -- A unit `f i` generates the unit ideal. The first map is an equivalence because
   -- `someUnitLocus f` is dense where `f` is unimodular, the second because the universal point
@@ -829,8 +829,8 @@ lemma EtaleChart.exists_section_isCohomEquiv : ∃ μ : a.coordRing ⟶ HodgeTes
   -- Read `f` as `fst ∘ μ ∘ f`, so that both sides speak of the point `μ ∘ f`.
   rw [show f = fun i ↦ fst (μ (f i)) by simp [μ_fst _], hS]
   refine ⟨fun _ _ ⟨i, hi⟩ ↦ projSpace.span_eq_top_of_isUnit i (isUnit_iff_isUnit_fst.mpr hi),
-    Iff.mpr (IsCohomEquiv.comp_iff (isCohomEquiv_of_le _ fun c y ↦
-      isCohomEquiv_someUnitLocus_of_span_eq_top ?_))
+    Iff.mpr (IsExtEquivFor.comp_iff_right (isCohomEquiv_of_le _ fun c y ↦
+      isCohomEquiv_someUnitLocus_of_span_eq_top ?_) _)
       ?_⟩
   · -- `f` is unimodular at `y`; project from `A ⊕ M` to `A`
     apply unimodular.map c.baseProj y.property
@@ -871,7 +871,7 @@ lemma EtaleChart.symbolClass_eq_of_cutsOutLocus {f g : Fin d → a.coordRing}
   -- The pull-back is injective, so compare there. The two composite maps of relative chains are
   -- induced by the tuples `μ ∘ f` and `μ ∘ g`.
   obtain ⟨h_le, h_bij⟩ := h_eqv hf.preimage_fieldLocus_not
-  apply (h_bij d).injective
+  apply (isExtEquivFor_iff.1 h_bij d).injective
   erw [← H.map_comp, ← H.map_comp]
   refine (symbolClass_transformation (f := μ ∘ f) (g := μ ∘ g) (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
     (by simp [comp_def, μ_fst _]) M M 1 hf_eq h_leibniz (by simp)).trans (one_smul ..)
@@ -883,7 +883,7 @@ lemma hodge_excision {u : X' ⟶ X} [Mono u] (hu_open : IsOpenSubfunctor (Subfun
     (h_cover : ∀ K : CommAlg k, IsField K.carrier → ∀ x ∉ Subfunctor.range u K, ∃ O : Subfunctor X,
       IsOpenSubfunctor O ∧ x ∈ O K ∧ O ≤ U)
     {U' : Subfunctor X'} (hU' : U' = U.preimage u) :
-    IsCohomEquiv hodgeCoeff (sqZeroExt.whiskerLeft (relFreeAb.map u hU'.le)) := by
+    IsExtEquivFor hodgeCoeff (sqZeroExt.whiskerLeft (relFreeAb.map u hU'.le)) := by
   -- Every point in a field lies in an open set contained in the range of `u` or in `U`.
   have h_open (K : CommAlg k) (hK : IsField K.carrier) (x : X K) :
       ∃ O : Subfunctor X, IsOpenSubfunctor O ∧ x ∈ O K ∧
@@ -972,8 +972,8 @@ lemma EtaleChart.exists_isLocalSymbol {g : Fin e → a.coordRing}
     ∃ ξ : HodgeH (relFreeAb (offPoints {z})) e,
       IsLocalSymbol ξ a.point (ComesFromPoints {z}) g 1 ∧ IsPointSum {z} 1 ξ := by
   -- By excision, the symbol of `g` on the chart comes from a class with support `z`.
-  obtain ⟨ξ, hξ⟩ := (hodge_excision a.isOpenSubfunctor
-    (exists_isOpenSubfunctor_le_offPoints hz) rfl e).surjective _
+  obtain ⟨ξ, hξ⟩ := (isExtEquivFor_iff.1 (hodge_excision a.isOpenSubfunctor
+    (exists_isOpenSubfunctor_le_offPoints hz) rfl) e).surjective _
   have h_loc : IsLocalSymbol ξ a.point (ComesFromPoints {z}) g 1 := ⟨h_cut, _, hξ⟩
   exact ⟨ξ, h_loc, forall_eq.mpr ⟨a, g, hz, h_loc⟩⟩
 
@@ -1000,8 +1000,8 @@ lemma IsPointSum.map_eq_smul_pointClass {n : X.obj (CommAlgCat.of k k) → k}
   rw [c.symbolClass_eq_of_cutsOutLocus cut cut₀, ← local_eq₀.trans (one_smul ..), ← map_smul]
     at local_eq
   -- By excision, restriction to the chart `c` is injective on classes with support `z`.
-  obtain rfl : ξ = n z • ξ₀ := (hodge_excision c.isOpenSubfunctor
-    (exists_isOpenSubfunctor_le_offPoints (hc.ge _ ⟨hz, hz₀⟩)) rfl d).injective local_eq
+  obtain rfl : ξ = n z • ξ₀ := (isExtEquivFor_iff.1 (hodge_excision c.isOpenSubfunctor
+    (exists_isOpenSubfunctor_le_offPoints (hc.ge _ ⟨hz, hz₀⟩)) rfl) d).injective local_eq
   exact map_smul ..
 
 /-- On a separated `X`, every class with support `z` and multiplicity `1` at `z` maps to
@@ -1035,7 +1035,8 @@ lemma IsPointSum.map_eq_sum_pointClass {s : Finset (X (CommAlgCat.of k k))}
     Subfunctor.ext (funext fun _ ↦ Set.ext fun p ↦ and_iff_left p.property)
   obtain ⟨x : HodgeH (relFreeAb (offPoints {z})) d,
       hx : x.map (map V.ι h_restrict.le) = ξ.map (map V.ι le_rfl)⟩ :=
-    (hodge_excision hV_open (exists_isOpenSubfunctor_le_offPoints hz_V) h_restrict d).2 _
+    (isExtEquivFor_iff.1
+      (hodge_excision hV_open (exists_isOpenSubfunctor_le_offPoints hz_V) h_restrict) d).2 _
   -- `ξ - x` restricts to `0` on `V`, so by the long exact sequence of the triple
   -- `offPoints {z} ⊓ V ≤ V ≤ X` it comes from a class `y` relative to `V`.
   have h_diff : (ξ - x.map (map (𝟙 X) (by simp))).map (map V.ι le_rfl) = 0 :=

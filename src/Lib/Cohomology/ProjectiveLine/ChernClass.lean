@@ -223,7 +223,7 @@ each maximal ideal of the rings g(c) is dense for F), then the map S → S ⊗ �
 bijections on all Ext^n(−, F). Here 𝕋 is the Tate module and ε = `New.Variety.tateGen`. -/
 lemma isCohomEquiv_tensorPoint_tateGen (hS : ∀ (c : C) (x : S c), ℓ • x = 0)
     (hF : HasZariskiDescent (ringOf g) F) :
-    IsCohomEquiv F (tensorPoint (tateGen g) S) := by
+    IsExtEquivFor F (tensorPoint (tateGen g) S) := by
   -- The map is locally bijective. In the localization at a maximal ideal, a domain, ζ = ε (1 / ℓ)
   -- is a primitive ℓ-th root of unity. So s ⊗ ε = 0 forces s = 0; and every t in the Tate module
   -- is i • ε plus an element t' that is locally divisible by ℓ, so that s ⊗ t' is locally zero.
@@ -308,7 +308,8 @@ variable (M K : TorsionCoeff g) (φ : C' ⥤ C) (M' : TorsionCoeff (φ ⋙ g))
 /-- The action of the Tate module 𝕋 on a coefficient M: the class in Ext⁰(M ⊗ 𝕋, M) whose
 pull-back along x ↦ x ⊗ ε, ε = `New.Variety.tateGen`, is the identity. -/
 def TorsionCoeff.tateAction : H ((abTensor.flip.obj (tateModule g)).obj M.functor) M.functor 0 :=
-  surjInv (isCohomEquiv_tensorPoint_tateGen M.prime_smul_eq_zero M.zariski_descent 0).2
+  surjInv (isExtEquivFor_iff.1
+    (isCohomEquiv_tensorPoint_tateGen M.prime_smul_eq_zero M.zariski_descent) 0).2
     (Abelian.Ext.mk₀ (𝟙 ((𝟭 (AbFunctor C)).obj M.functor)))
 
 /-- The class `New.Variety.TorsionCoeff.tateAction` of M pulls back along x ↦ x ⊗ ε to the identity
@@ -319,7 +320,8 @@ lemma TorsionCoeff.pullbackAlong_tensorPoint_tateAction :
   -- `M.tateAction` is defined as a preimage of the identity class under this pull-back
   rw [pullbackAlong_of, show H.map M.functor (tensorPoint (tateGen g) M.functor) 0 M.tateAction =
     Abelian.Ext.mk₀ (𝟙 M.functor) from
-      surjInv_eq (isCohomEquiv_tensorPoint_tateGen M.prime_smul_eq_zero M.zariski_descent 0).2 _]
+      surjInv_eq (isExtEquivFor_iff.1
+        (isCohomEquiv_tensorPoint_tateGen M.prime_smul_eq_zero M.zariski_descent) 0).2 _]
   rfl
 
 /-- The generator ε acts as the identity: for a class y in total Ext(S, M), the Yoneda composite of
@@ -465,7 +467,7 @@ lemma Theory.mulClass_congr_of_eq_on_zeros [HasFlatValues S] [HasFlatValues S'] 
         AddSubgroup.mem_bot.mp (relFreeAb.mem_of_mk_mem ⊥ (fun _ ↦ relFreeAb.mk_eq_zero hb) _)
       rw [h_r, tmul_zero]
   -- Hence F ⊗ U → F_J ⊗ U is an equivalence for F, and the class (w, then the action) lifts to v.
-  have h_eqv : IsCohomEquiv Θ.functor ((kerComplex (J.toZerosCoeff Θ.functor)).map Φ).g :=
+  have h_eqv : IsExtEquivFor Θ.functor ((kerComplex (J.toZerosCoeff Θ.functor)).map Φ).g :=
     isCohomEquiv_quotient_of_acyclic
       ((kerComplex_shortExact fun _ ↦ Quot.mk_surjective).map_of_exact Φ)
       (cohomology_eq_zero_of_locallyZero h_loc)
@@ -479,7 +481,7 @@ lemma Theory.mulClass_congr_of_eq_on_zeros [HasFlatValues S] [HasFlatValues S'] 
     exact (TotalH.comp_assoc_of_sq (hw S z) _).symm
   -- The inclusion of ker (a - a') is bijective where J = 0, a dense locus for F_J, and it
   -- equalizes a and a'.
-  have h_ker : IsCohomEquiv (J.zerosCoeff Θ.functor) (kerComplex (a - a')).f :=
+  have h_ker : IsExtEquivFor (J.zerosCoeff Θ.functor) (kerComplex (a - a')).f :=
     (Θ.isCohomDense_botLocus J).isCohomEquiv_of_bijective_on fun (c : C) (hc : J.ideal c = ⊥) ↦ by
       have h_mem (x : S' c) : x ∈ ((a - a').app c).hom.ker := by simp [h_agree c hc]
       exact ⟨Subtype.val_injective, fun x ↦ ⟨⟨x, h_mem x⟩, rfl⟩⟩

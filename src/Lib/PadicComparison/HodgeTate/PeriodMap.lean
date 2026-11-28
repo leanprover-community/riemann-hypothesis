@@ -322,8 +322,8 @@ lemma New.Variety.exists_hasHodgeTateWeight {p h : ℕ} {R : CommRingCat} {E k :
   let B {n : ℕ} (Z' : Over (Spec R)) [IsProper Z'.hom] :
       H (genericOver ⋙ restrictAlg E k ⋙ freeAb (algPointsOf E R Z')) genericCoeff n ≃ₗ[k] _ :=
     .ofBijective (mapₗ ..)
-      (IsCohomEquiv.of_bijective (p := toGenericPoints k h_compat Z')
-        (fun c ↦ c.bijective_generic_points) n)
+      (isExtEquivFor_iff.1 (IsExtEquivFor.of_bijective (p := toGenericPoints k h_compat Z')
+        (fun c ↦ c.bijective_generic_points)) n)
   -- `J` is `ℂ_[p]`-linear, hence semilinear along the section `ε` of `k → PadicAlgCl p`.
   have J_semi (Z' : Over (Spec R)) (z : PadicAlgCl p)
       (y : ℂ_[p] ⊗[ℤ_[p]] (ellAdicCohom R Ω (q + h)).obj ⟨Z'⟩) : J Z' (z • y) = ε z • J Z' y := by

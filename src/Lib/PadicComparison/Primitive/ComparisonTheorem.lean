@@ -329,7 +329,7 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
     have : IsIso (freeAbMap u.hom) := Functor.map_isIso freeAb u.hom
     exact (Iff.of_eq (congrArg (fun f : _ →+ _ ↦ Bijective f) key)).trans <|
       (E.bijective.of_comp_iff _).trans <|
-        ((IsCohomEquiv.of_isIso
+        ((isExtEquivFor_of_isIso
           (freeAbMap u.hom)).bijective_pullbackAlong.of_comp_iff' _).symm.trans
           bijective_totalH_iff_isBijective
   -- The point satisfies `D.IsFiniteLerayHirsch` (Leray–Hirsch and finiteness): `OFlat` and `Ω` are

@@ -13,6 +13,7 @@ public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.Topology.LocallyConstant.Algebra
 public import Mathlib.Algebra.Category.Grp.Abelian
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.Basic
+public import TauCeti.Algebra.Homology.Ext.EquivFor
 import Mathlib.Algebra.Category.Grp.AB
 import Mathlib.Algebra.Category.Grp.Zero
 import Mathlib.Algebra.Divisibility.Prod
@@ -27,6 +28,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Valuation.LocalSubring
+import all TauCeti.Algebra.Homology.Ext.EquivFor
 import TauCeti.RingTheory.Ideal.Maps
 public import Lib.General.Algebra.AbsIntegrallyClosed
 
@@ -46,7 +48,8 @@ congruence relations with Frobenius.
 
 * `New.Variety.H N F n = Extⁿ(N, F)` and `New.Variety.freeAb` (the functor `Y ↦ ℤ[Y]`), with
   pull-back `New.Variety.H.map` in `N` and push-forward `New.Variety.H.push` in `F`.
-* `New.Variety.IsCohomEquiv F α`: `α` is bijective on all `Extⁿ(-, F)`.
+* Tau Ceti's `CategoryTheory.IsExtEquivFor F α`: `α` is bijective on all `Extⁿ(-, F)`
+  (`New.Variety.isExtEquivFor_iff`).
   `New.Variety.IsCohomDense F U`: the subfunctor `U` gives such an equivalence over every point
   `New.Variety.pointMap y`.
 * `New.Variety.IsTest`, `New.Variety.TestRing`: test rings and their category. A test ring is
@@ -191,9 +194,12 @@ instance [CoeffAction R F] (n : ℕ) : Module R (H N F n) :=
     (.comp (.mk' ((extFunctorObj N n).mapEnd F) fun _ _ ↦ End.ext (extFunctorObj N n).map_add)
       CoeffAction.act)).isModule
 
-/-- α: N' → N is an equivalence for F: the pull-back Ext^n(N,F) → Ext^n(N',F) is bijective for
-every n. -/
-def IsCohomEquiv {N N' : AbFunctor C} (α : N' ⟶ N) : Prop := ∀ n : ℕ, Bijective (H.map F α n)
+/-- Unfolding Tau Ceti's `CategoryTheory.IsExtEquivFor` for functors to abelian groups:
+`α : N' ⟶ N` is an equivalence for `F` exactly when the pull-back `Ext^n(N,F) → Ext^n(N',F)` is
+bijective for every `n`. -/
+lemma isExtEquivFor_iff {F N N' : AbFunctor C} {α : N' ⟶ N} :
+    IsExtEquivFor F α ↔ ∀ n : ℕ, Bijective (H.map F α n) :=
+  Iff.rfl
 
 /-- A comparison from F on C to F' on C': a functor φ: C' → C (the field `functor`) with a natural
 transformation (the field `coeffHom`) β: F∘φ → F'. -/
@@ -256,7 +262,7 @@ def _root_.CategoryTheory.Subfunctor.whisker : Subfunctor (φ ⋙ Y) where
 /-- The subfunctor U of Y is dense for F: for every point h_A → Y, the inclusion of the preimage
 of U in h_A is an equivalence for F. -/
 def IsCohomDense : Prop :=
-  ∀ (A : C) (y : Y A), IsCohomEquiv F (freeAb.map (U.preimage (pointMap y)).ι)
+  ∀ (A : C) (y : Y A), IsExtEquivFor F (freeAb.map (U.preimage (pointMap y)).ι)
 
 /-! ### Tests with rings: idempotents and Zariski descent -/
 
@@ -445,7 +451,7 @@ abbrev TestCohomology.map :
 
 /-- The map u: X → Y of functors on rings induces isomorphisms Hⁱ(Y, Λ) → Hⁱ(X, Λ) in each degree i,
 for cohomology computed on test rings with locally constant coefficients. -/
-abbrev IsTestCohomEquiv : Prop := IsCohomEquiv (locConstCoeff Λ) (freeAb.map (mapOnTests u))
+abbrev IsTestCohomEquiv : Prop := IsExtEquivFor (locConstCoeff Λ) (freeAb.map (mapOnTests u))
 
 /-- The image of u: X → Y, restricted to test rings, is cohomologically dense in Y for the
 coefficient functor of locally constant functions Spec A → Λ. -/
@@ -787,13 +793,6 @@ lemma mapExactFunctor_restrictAlong_id : x.mapExactFunctor (restrictAlong (𝟭 
 
 end H
 
-/-- An isomorphism `α : M ⟶ N` induces bijections `Ext^n(N,F) → Ext^n(M,F)` in every degree. -/
-lemma IsCohomEquiv.of_isIso [IsIso α] : IsCohomEquiv F α := fun n ↦
-  -- pull-back along `inv α` is a two-sided inverse of pull-back along `α`
-  bijective_iff_has_inverse.mpr ⟨H.map F (inv α) n,
-    fun x ↦ by rw [← H.map_comp, IsIso.inv_hom_id, H.map_id],
-    fun x ↦ by rw [← H.map_comp, IsIso.hom_inv_id, H.map_id]⟩
-
 /-- If `γ : F ⟶ G` and `γ' : F' ⟶ G'` intertwine the coefficient maps of two comparisons with the
 same functor `c.functor`, then the comparison maps commute with push-forward along `γ` and `γ'`. The
 target of `α` is `c.functor ⋙ N`, written through the comparison `⟨c.functor, β⟩`. -/
@@ -830,14 +829,6 @@ abbrev Comparison.trans : Comparison F F'' where
   coeffHom := c'.functor.whiskerLeft c.coeffHom ≫ c'.coeffHom
 
 variable {c c' a a' α' α}
-
-/-- If `α' : K ⟶ M` induces bijections on cohomology with coefficients `F`, then `α' ≫ α` does if
-and only if `α : M ⟶ N` does. -/
-lemma IsCohomEquiv.comp_iff (h' : IsCohomEquiv F α') :
-    IsCohomEquiv F (α' ≫ α) ↔ IsCohomEquiv F α := by
-  refine forall_congr' fun n ↦ ?_
-  rw [show ⇑(H.map F (α' ≫ α) n) = H.map F α' n ∘ H.map F α n from funext (H.map_comp α' α)]
-  exact (h' n).of_comp_iff' _
 
 namespace Comparison
 

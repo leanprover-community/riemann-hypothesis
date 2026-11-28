@@ -704,11 +704,11 @@ seal Abelian.Ext Abelian.Ext.instAddCommGroup in
 /-- Let `α : N ⟶ N'` be a map of functors on tests over `A` such that, for every functor `g` from a
 category `C` to tests over `A` and every functor `F` on `C` with Zariski descent along `g`,
 pull-back along `α` (restricted along `g`) is a bijection of total Ext groups into `F`
-(`IsCohomEquiv`). Then `D.IsFiniteLerayHirsch N` holds if and only if `D.IsFiniteLerayHirsch N'`
+(`IsExtEquivFor`). Then `D.IsFiniteLerayHirsch N` holds if and only if `D.IsFiniteLerayHirsch N'`
 holds. -/
 lemma isFiniteLerayHirsch_iff_of_isCohomEquiv (α : N ⟶ N')
     (h : ∀ {C : Type 1} [Category C] {F : AbFunctor C} (g : C ⥤ TestOver A),
-      HasZariskiDescent (ringOf g) F → IsCohomEquiv F (g.whiskerLeft α)) :
+      HasZariskiDescent (ringOf g) F → IsExtEquivFor F (g.whiskerLeft α)) :
     D.IsFiniteLerayHirsch N ↔ D.IsFiniteLerayHirsch N' := by
   classical
   -- Pull-back along `α` is bijective in the constant theory and in `D`.

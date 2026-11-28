@@ -689,7 +689,7 @@ private lemma sum_linearFrob_apply_eq_zero {p : ℕ} [ThePrime p] {R : CommRingC
   have hT : IsCohomDense Ψ T := InfClosed.iInf_mem (s := {U | IsCohomDense Ψ U})
     (fun _ hU _ hU' ↦ IsCohomDense.inf hU hU') (IsCohomDense.of_top_le le_rfl)
     fun _ ↦ hV_dense.preimage _
-  refine (hJ.bijective W).injective ((hT.isCohomEquiv n).1 ?_)
+  refine (hJ.bijective W).injective ((isExtEquivFor_iff.1 hT.isCohomEquiv n).1 ?_)
   -- `linearFrob` acts on the fixed period `C z` as the Weil pair, giving the class `y i`, and `J`
   -- commutes with pull-backs.
   let y (i : ι) : H (freeAb.obj (testPoints.obj Y)) Ψ n :=
@@ -829,7 +829,8 @@ lemma ellAdicCohom.isCrystalline_and_linearFrob_rel {p : ℕ} [ThePrime p] {R : 
   have hV_dense : IsCohomDense Ψ V' := h_zar (hV.1.whisker _)
   let periodEquiv (n : ℕ) :
       Bmax ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩ ≃ₗ[Bmax] H (freeAb.obj V'.toFunctor) Ψ n :=
-    .ofBijective (H.mapₗ .. ∘ₗ J n Y) ((hV_dense.isCohomEquiv n).comp ((hJ n).bijective Y))
+    .ofBijective (H.mapₗ .. ∘ₗ J n Y)
+      ((isExtEquivFor_iff.1 hV_dense.isCohomEquiv n).comp ((hJ n).bijective Y))
   -- `pullFrob a ha z` is the pull-back of a crystalline class `z` along the reduction of points
   -- followed by `Frob ^ a` (`frobPowHom`); `C z` is the period with
   -- `periodEquiv n (C z) = pullFrob 0 _ z`.

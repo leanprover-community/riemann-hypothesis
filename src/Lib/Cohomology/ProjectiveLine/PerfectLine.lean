@@ -411,7 +411,7 @@ the map sends t to t⁻¹ in disc `false` minus t in disc `true`, and the point 
 `false`. -/
 lemma isCohomEquiv_tensorCoeff_gluing (c : PadicTest)
     (h_acyclic : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff N))) :
-    IsCohomEquiv (tilt ⋙ moduleCoeff (tensorCoeff N)) (gluing (tensorLeft (tilt c))) := by
+    IsExtEquivFor (tilt ⋙ moduleCoeff (tensorCoeff N)) (gluing (tensorLeft (tilt c))) := by
   -- Source and target are sums of two functors `Hom(ψc (A b), –^♭)` with `ψc (A b)` perfect, so
   -- their cohomology is `∏ b, G (ψc (A b))`, in degree `0`. Both products are identified with
   -- `U Y = (c^♭ ⊗ Y) ⊗ N` for `Y` the module of pairs of elements of `monoidAlg ℚ≥0`, compatibly
@@ -448,6 +448,7 @@ lemma isCohomEquiv_tensorCoeff_gluing (c : PadicTest)
     simpa [H.map] using congrArg _ freeAb.hom_ext
   have h_perf_discs (_ : ULift.{1} Bool) : PerfectRing (monoidAlg ℚ≥0) p :=
     perfectRing_monoidAlg_nnrat
+  refine isExtEquivFor_iff.2 ?_
   rintro (_ | n)
   · -- In degree `0`, pulling the section `sectionOfMaps _ (fun b ↦ pairProj b.down) x` back along
     -- `gluing` gives `sectionOfMaps pointOrTorus glueLinear x`.
@@ -513,7 +514,7 @@ lemma isCohomEquiv_tensorCoeff_gluing (c : PadicTest)
 /-- For every test `c`, the gluing map formed with the algebras `c^♭ ⊗ B` induces bijections on
 cohomology with coefficients in `genericCoeff`, the coefficients S ↦ S[1/p]. -/
 lemma isCohomEquiv_gluing_generic (c : PadicTest) :
-    IsCohomEquiv genericCoeff (gluing (tensorLeft (tilt c))) := by
+    IsExtEquivFor genericCoeff (gluing (tensorLeft (tilt c))) := by
   -- `isCohomEquiv_tensorCoeff_gluing` gives the claim for the coefficients `S ↦ S^♭ ⊗ N ⊗ 𝔪`, where
   -- `N = O^♭ ⊗_{A_inf} O_C` is killed by `p^♭` and `𝔪` is the maximal ideal of `O^♭`.
   -- `CoeffCompBijective.periodAlg_of_almostCoeff` lifts it to `ℂ_p ⊗ (O_C ⊗ W(S^♭))^`, which is
@@ -542,15 +543,16 @@ for ψ = id is the perfect line with a point collapsed. Suppose that for every p
 gluing with ψ = c^♭ ⊗ − induces bijections Extⁿ(ℤ[two discs], F) → Extⁿ(ℤ[torus ⊔ point], F) for all
 n; then for every `S` whose values are flat ℤ-modules, every Extⁿ(S ⊗ coker gluing, F) is zero. -/
 lemma subsingleton_H_cokernel_gluing {F : AbFunctor PadicTest}
-    (h_rep : ∀ c : PadicTest, IsCohomEquiv F (gluing (tensorLeft (tilt c))))
+    (h_rep : ∀ c : PadicTest, IsExtEquivFor F (gluing (tensorLeft (tilt c))))
     (S : AbFunctor PadicTest) [HasFlatValues S] :
     ∀ n : ℕ, Subsingleton (H (abTensor S (Limits.cokernel (gluing (𝟭 (CommAlg OFlat))))) F n) := by
   -- It suffices that `S ⊗ gluing` be an equivalence, and by dévissage `S` may be taken to be
   -- `ℤ[⊔ h_{c j}]`, with `h_c = reprBy c` the functor represented by `c`. Then
   -- `h_{c j} × Hom(B, –^♭) = Hom((c j)^♭ ⊗ B, –^♭)` turns `S ⊗ gluing` into the sum of the maps in
   -- the hypothesis.
-  suffices h_eqv : IsCohomEquiv F ((abTensor S).map gluing) from
-    (isCohomEquiv_iff_subsingleton (.map ⟨ShortComplex.exact_cokernel gluing⟩ (abTensor S))).1 h_eqv
+  suffices h_eqv : IsExtEquivFor F ((abTensor S).map gluing) from
+    (isExtEquivFor_iff_of_shortExact (.map ⟨ShortComplex.exact_cokernel gluing⟩ (abTensor S))).1
+      h_eqv
   -- Dévissage of the comparison along `– ⊗ gluing`.
   have h_devissage := (Comparison.id F).devissage (abTensor.flip _) (abTensor.flip.map gluing)
   refine Comparison.IsBijective.eqv (h_devissage.allBijective_of_allBijective_sigma_reprBy
@@ -597,9 +599,9 @@ lemma subsingleton_H_cokernel_gluing {F : AbFunctor PadicTest}
     freeAb.map (u B) ≫ freeAb.prod _ _
   have hv_bijective (B : ULift.{1} Bool → CommAlg OFlat) : Bijective fun x j ↦
       map F (freeAb.map (sigma.ι (fun j ↦ tiltPointsSum B (ψ j)) j)) n (map F (v B) n x) :=
-    have hv_eqv : IsCohomEquiv F (v B) :=
-      (IsCohomEquiv.of_bijective (hu_bijective B)).comp_iff.2 (.of_isIso _)
-    (sigma_bijective ..).comp (hv_eqv n)
+    have hv_eqv : IsExtEquivFor F (v B) :=
+      ((IsExtEquivFor.of_bijective (hu_bijective B)).comp_iff_right _).2 (isExtEquivFor_of_isIso _)
+    (sigma_bijective ..).comp (isExtEquivFor_iff.1 hv_eqv n)
   -- The square commutes already on generators of the sources, since the maps `discToTorus` and
   -- `evalZero` do not change the restriction to `(c j)^♭`.
   have h_square (j : ι) :
@@ -684,7 +686,7 @@ lemma subsingleton_H_cokernel_gluing {F : AbFunctor PadicTest}
       rw [gluing_ofTorus, _root_.map_sub, h_lhs, h_lhs, h_rhs_torus, gluing_ofTorus, tmul_sub]
       exact congrArg₂ (· - ·) (h_term _ _) (h_term _ _)
   refine (bijective_iff_of_comm_sq (fun x ↦ ?_) (hv_bijective _) (hv_bijective _)).2
-    (.piMap fun j ↦ h_rep (c j) n)
+    (.piMap fun j ↦ isExtEquivFor_iff.1 (h_rep (c j)) n)
   ext j
   simpa [← H.map_comp] using congrArg (fun φ ↦ map F φ n x) (h_square j)
 

@@ -272,7 +272,7 @@ lemma surjective_restrict_of_quotient_sieve {A : C'} {R : Subfunctor (reprBy A)}
         change φ.preimage (q ≫ (x.down ≫ φ.map f)) =
           φ.preimage (q ≫ x.down) ≫ f
         rw [← Category.assoc, Functor.preimage_comp, Functor.preimage_map] }
-  have hv_equiv : IsCohomEquiv (φ ⋙ F) (freeAb.map v) := by
+  have hv_equiv : IsExtEquivFor (φ ⋙ F) (freeAb.map v) := by
     -- `v` sends `g : b ⟶ φ.obj d` to `f` exactly when `q ≫ g = φ.map f`
     exact .of_bijective fun d ↦ (bijective_iff_existsUnique _).mpr fun f ↦
       (Equiv.ulift.existsUnique_congr fun g ↦ by
@@ -281,7 +281,7 @@ lemma surjective_restrict_of_quotient_sieve {A : C'} {R : Subfunctor (reprBy A)}
           exact (φ.map_preimage _).symm
         · exact (congrArg φ.preimage h).trans (φ.preimage_map _)).mpr (h_factor _ f.property)
   -- it suffices to be onto after pulling back along `v`
-  refine (Surjective.of_comp_iff' (hv_equiv n) _).mp ?_
+  refine (Surjective.of_comp_iff' (isExtEquivFor_iff.1 hv_equiv n) _).mp ?_
   cases n with
   | zero =>
     -- in degree `0` the target is `F b`, and the map is `F.map q`
@@ -507,7 +507,7 @@ def sliceEquiv :
       simpa [mapThenComp] using! IsBijective.bijective_totalH h_bij
     · -- the case `N = ℤ[Y]`: `ℤ[Y] ⊗ ℤ[X] = ℤ[Y × X]`, and over the points of `X` the functor `Y`
       -- is the pull-back of the tautological point along the projection `Y × X → X`
-      refine (IsCohomEquiv.of_isIso (freeAb.prod (sigma fun i ↦ reprBy (c i)) X)).bij.trans
+      refine (isExtEquivFor_of_isIso (freeAb.prod (sigma fun i ↦ reprBy (c i)) X)).bij.trans
         (hasUniversalPoints_elements.isBijective_of_isPullback
           (v := lift (𝟙 (elementsProj X ⋙ sigma fun i ↦ reprBy (c i)))
             (toUnit (elementsProj X ⋙ sigma fun i ↦ reprBy (c i)) ≫ tautologicalSection))
@@ -673,7 +673,7 @@ functors to abelian groups that is bijective at each of these objects is an equi
 lemma IsCohomDense.isCohomEquiv_of_bijective_on {F M N : AbFunctor C} {α : M ⟶ N}
     {V : Subfunctor (onePointFunctor C)} (h_dense : IsCohomDense F V)
     (h_bij : ∀ c : C, ⟨⟩ ∈ V c → Bijective (α c)) :
-    IsCohomEquiv F α := by
+    IsExtEquivFor F α := by
   -- kernel and cokernel of `α` vanish at the objects of `V`, so they are killed by a dense sieve
   have h_ker (c : C) (s : M.obj c) (hs : α c s = 0) : s ∈ locallyZero F M c := by
     refine h_dense.of_preimage_le (pointMap ⟨⟩) fun b f hb ↦ ?_
@@ -765,7 +765,7 @@ def Theory.locallyConstant : Theory (𝟭 (TestOver A)) where
     -- constant functions lift along `π`.
     obtain ⟨D, π, -, h_surj, h_univ, h_kill⟩ := B.exists_quotient I
     refine surjective_restrict_of_quotient_sieve (F := TestOver.toTest A ⋙ locConstCoeff ⟨ZMod ℓ⟩)
-      (𝟭 _) π @h_univ ?_ (IsCohomEquiv.of_isIso _).bij ?_
+      (𝟭 _) π @h_univ ?_ (isExtEquivFor_of_isIso _).bij ?_
     · rintro E _ k (rfl : π ≫ k = _)
       exact (killingMaps ..).map k h_kill
     · exact ULift.map_surjective.2 (comapAddMonoidHom_surjective_of_isComparableRing _
@@ -858,7 +858,7 @@ the objects where `I` is zero is dense for the coefficient `I.zerosCoeff Θ.func
 into that locus is bijective on `Ext^n` for all `n`. -/
 lemma Theory.isCohomDense_botLocus : IsCohomDense (I.zerosCoeff Θ.functor) I.botLocus := by
   -- injectivity in degree `0` (higher degrees of the source vanish), and surjectivity
-  refine fun c y n ↦ ⟨?_, ?_⟩
+  refine fun c y ↦ isExtEquivFor_iff.2 fun n ↦ ⟨?_, ?_⟩
   · cases n with
     | zero =>
       -- a class of degree `0` is `mk₀ u` for a map `u : ℤ[h_c] ⟶ I.zerosCoeff Θ.functor`; by
@@ -907,14 +907,15 @@ def Theory.onZeros : TorsionCoeff g where
   prime_smul_eq_zero c := Quot.ind fun x ↦ congrArg _ (Θ.prime_smul_eq_zero c x)
   zariski_descent Y U hU := by
     -- The locus `I.botLocus` is dense, so it suffices to work over a point `z` of it.
-    refine ((Θ.isCohomDense_botLocus I).preimage (toUnit _)).trans fun d z n ↦ ?_
+    refine ((Θ.isCohomDense_botLocus I).preimage (toUnit _)).trans
+      fun d z ↦ isExtEquivFor_iff.2 fun n ↦ ?_
     -- There `I.toZerosCoeff Θ.functor` is bijective, so descent follows from descent for
     -- `Θ.functor`.
     have h_bij (e : C) (f : (reprBy d).obj e) : Bijective ((I.toZerosCoeff Θ.functor).app e) :=
       I.bijective_toZerosCoeff _ _ ((pointMap z).app e f).property
     exact (bijective_iff_of_comm_sq (map_push _ _) (push_bijective_of_points _ h_bij n)
         (push_bijective_of_points _ (fun e f ↦ h_bij e (Subtype.val f)) n)).1
-      (Θ.zariski_descent hU ..)
+      (isExtEquivFor_iff.1 (Θ.zariski_descent hU _ _) n)
 
 /-- For a coefficient `M` along `g` (its values are killed by `ℓ`) and a functor `N` from `C` to
 abelian groups, `ℓ` kills the total cohomology `TotalH N M.functor`, the sum over `n` of
@@ -988,10 +989,10 @@ omit [NeZero ℓ] in
 is the locally constant `ℤ/ℓ`-valued functions, and `I` a family of ideals of the rings `g(c)`.
 Then for every functor `φ : C' ⥤ C` and every coefficient `F'` on `C'` with Zariski descent for the
 rings of `φ ⋙ g`, the map `New.Variety.IdealFamily.constToZeros`, restricted along `φ`, is an
-equivalence for `F'` (`New.Variety.IsCohomEquiv`). -/
+equivalence for `F'` (`CategoryTheory.IsExtEquivFor`). -/
 lemma IdealFamily.isCohomEquiv_constToZeros (hΘ : Θ.functor = locConstAlong g)
     (hF : HasZariskiDescent (ringOf (φ ⋙ g)) F') :
-    IsCohomEquiv F' (φ.whiskerLeft I.constToZeros) := by
+    IsExtEquivFor F' (φ.whiskerLeft I.constToZeros) := by
   -- The map is locally injective and locally surjective, for sieves dense for `F'`
   -- (`LocalIso.isCohomEquiv`). It sends `n` times the generator to the constant function `n`.
   refine LocalIso.isCohomEquiv ⟨fun c ↦ Quot.ind fun s hn ↦ ?_, fun c t ↦ ?_⟩
@@ -1060,13 +1061,13 @@ lemma TorsionCoeff.pullbackAlong_oneLocConst_surjective :
   -- so the cohomology of the locus where `I` is the unit ideal is that of the empty functor, zero
   have h_acyclic (n : ℕ) (x : H (freeAb.obj (I.whisker g).topLocus.toFunctor) M.functor n) :
     x = 0 :=
-    (h_dense.isCohomEquiv n).injective
+    (isExtEquivFor_iff.1 h_dense.isCohomEquiv n).injective
       ((H.subsingleton_of_id_eq_zero (freeAb.hom_ext nofun) M.functor n).allEq _ _)
   obtain ⟨w, h_short⟩ := relFreeAb.shortExact (I.whisker g).topLocus
   -- the ascription elaborates the term first and only then matches it with the stated type
-  have h_rel : IsCohomEquiv M.functor (relFreeAb.π (I.whisker g).topLocus) :=
+  have h_rel : IsExtEquivFor M.functor (relFreeAb.π (I.whisker g).topLocus) :=
     (isCohomEquiv_quotient_of_acyclic h_short h_acyclic :)
-  have h_j : IsCohomEquiv M.functor (g.whiskerLeft I.constToZeros) :=
+  have h_j : IsExtEquivFor M.functor (g.whiskerLeft I.constToZeros) :=
     I.isCohomEquiv_constToZeros g .locallyConstant rfl M.zariski_descent
   refine ((h_rel.bijective_pullbackAlong.surjective.comp M.pullbackAlong_abCoker_pi_surjective).comp
       h_j.bijective_pullbackAlong.surjective).forall.2

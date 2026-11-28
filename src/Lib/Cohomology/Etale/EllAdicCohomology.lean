@@ -17,8 +17,8 @@ locally constant `𝔽_ℓ`-valued functions on the spectrum.
   to `Ω`, and the action of `Γ`.
 * `New.Variety.exists_ellAdicCoeff_modShortExact_pow`,
   `New.Variety.exists_ellAdicCoeff_modShortExact`: reduction modulo `ℓ ^ k` and `ℓ`; completeness.
-* `New.Variety.finite_H_ellAdicCoeff`, `New.Variety.IsCohomEquiv.bijective_ellAdicPull`: finiteness
-  and bijectivity lift from `𝔽_ℓ`.
+* `New.Variety.finite_H_ellAdicCoeff`, `CategoryTheory.IsExtEquivFor.bijective_ellAdicPull`:
+  finiteness and bijectivity lift from `𝔽_ℓ`.
 
 Notions from other files:
 * `New.Variety.ModShortExact`: `ModShortExact a q` says that `0 → Φ → Φ → G → 0`, formed by
@@ -241,17 +241,17 @@ lemma finite_H_ellAdicCoeff {N : AbFunctor TestRing}
   exact ⟨b (q y), z, h_approx⟩
 
 /-- An equivalence for `𝔽_ℓ`-coefficients induces bijections on `ℓ`-adic cohomology. -/
-lemma IsCohomEquiv.bijective_ellAdicPull {M N : AbFunctor TestRing} {α : M ⟶ N}
-    (h_equiv : IsCohomEquiv (locConstCoeff ⟨ZMod ℓ⟩) α) :
+lemma _root_.CategoryTheory.IsExtEquivFor.bijective_ellAdicPull {M N : AbFunctor TestRing}
+    {α : M ⟶ N} (h_equiv : IsExtEquivFor (locConstCoeff ⟨ZMod ℓ⟩) α) :
     Bijective (ellAdicPull (ℓ := ℓ) n α) := by
   obtain ⟨q, h_exact, h_complete⟩ := exists_ellAdicCoeff_modShortExact (ℓ := ℓ)
   -- Bijective modulo `ℓ` and derived `ℓ`-complete on both sides, so bijective over `ℤ_ℓ`: `of_mod`
   -- applied to the identity map of coefficients.
-  have hZ : IsCohomEquiv ellAdicCoeff α :=
+  have hZ : IsExtEquivFor ellAdicCoeff α :=
     (h_equiv.bij.of_mod (β := 𝟙 (𝟭 _ ⋙ _)) h_exact h_exact rfl (fun m _ ↦ h_complete N m)
       (h_complete M)).eqv
   -- `ellAdicPull` is the base change of this map to `ℚ_ℓ`
-  exact map_bijective (f := 1) bijective_id (hZ n)
+  exact map_bijective (f := 1) bijective_id (isExtEquivFor_iff.1 hZ n)
 
 end New.Variety
 

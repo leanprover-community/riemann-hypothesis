@@ -864,7 +864,7 @@ every perfect O♭-algebra B.
 section AlmostAcyclic
 
 open CategoryTheory ObjectProperty TensorProduct Function Period Comparison freeAb Category
-  PadicTest IsCohomEquiv Eqv
+  PadicTest CategoryTheory.IsExtEquivFor Eqv
 
 variable {C C' D : Type 1} [Category C] [Category C'] [Category D]
   {F : AbFunctor C} {F' : AbFunctor C'} {G : AbFunctor D} {p : ℕ} [ThePrime p]

@@ -102,7 +102,7 @@ induces isomorphisms `Hⁿ(W) → Hⁿ(U ⊔ V)` in every degree. -/
 lemma TestCohomology.isCohomEquiv_sup_of_isCohomDense
     (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl))
     (h_le : U.whisker testIncl ⊔ V.whisker testIncl ≤ W.whisker testIncl) :
-    IsCohomEquiv (locConstCoeff Λ) (freeAb.map (homOfLe h_le)) := by
+    IsExtEquivFor (locConstCoeff Λ) (freeAb.map (homOfLe h_le)) := by
   have h_range : Subfunctor.range (homOfLe h_le) = ((U ⊔ V).preimage W.ι).whisker testIncl :=
     range_homOfLe_eq_preimage_of_inf_eq (inf_of_le_left h_le)
   exact (isCohomEquiv_iff_range h_range).2 h_dense.isCohomEquiv
@@ -148,7 +148,7 @@ lemma TestCohomology.mayer_vietoris_injective_of_sub_surjective (hUW : U ≤ W) 
     exact ⟨biprodAddEquiv.symm (x, y), (map_biprod_lift_neg_biprodAddEquiv_symm ..).trans hxy⟩
   rw [prod_map_homOfLe_eq_comp hUW hVW h_le]
   exact biprodAddEquiv.injective.comp
-    (h_inj.comp (isCohomEquiv_sup_of_isCohomDense h_dense h_le n).injective)
+    (h_inj.comp (isExtEquivFor_iff.1 (isCohomEquiv_sup_of_isCohomDense h_dense h_le) n).injective)
 
 /-- Mayer–Vietoris for subfunctors `U, V ≤ W` of `Y` with `U ⊔ V` dense in `W`, on test rings with
 locally constant `Λ`-valued coefficients: if `U ⊓ V` has points only over the zero ring, then the
@@ -168,8 +168,9 @@ lemma TestCohomology.mayer_vietoris_bijective (hUW : U ≤ W) (hVW : V ≤ W)
       x = 0 :=
     hasPartitions_locConstCoeff.eq_zero_of_zero_ring (fun (A : TestRing) ↦ h_zero A.obj) m x
   rw [prod_map_homOfLe_eq_comp hUW hVW h_le]
-  exact biprodAddEquiv.bijective.comp ((isCohomEquiv_quotient_of_acyclic h_exact h_acyclic n).comp
-    (isCohomEquiv_sup_of_isCohomDense h_dense h_le n))
+  exact biprodAddEquiv.bijective.comp
+    ((isExtEquivFor_iff.1 (isCohomEquiv_quotient_of_acyclic h_exact h_acyclic) n).comp
+      (isExtEquivFor_iff.1 (isCohomEquiv_sup_of_isCohomDense h_dense h_le) n))
 
 /-- Mayer–Vietoris for `U, V ≤ W` with `U ⊔ V` dense in `W`, on test rings with coefficients `Λ`,
 with `U ⊓ V` given as `T` and `hT`: `Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` is injective if in each degree `m < n`
@@ -408,7 +409,7 @@ private lemma bijective_map_fromPreimage_or_exists_isIdempotentElem {U : Ideal R
     exact ⟨fun x y _ ↦ (h_vanish (𝟙 Y) x).trans (h_vanish (𝟙 Y) y).symm,
       fun y ↦ ⟨0, (h_vanish u _).trans (h_vanish u y).symm⟩⟩
   · -- `a` is proper and no idempotent splits it
-    refine h_conn a ha (fun e he ↦ ?_) n
+    refine isExtEquivFor_iff.1 (h_conn a ha fun e he ↦ ?_) n
     by_contra h_not
     exact h_no_split ⟨e, he, not_or.mp h_not⟩
 
@@ -432,7 +433,7 @@ lemma IsTestCohomEquiv.of_connected (hX : IsCohomContinuous Λ X)
   -- First replace `Y` by `U ⊥`, which is all of `Y`.
   have h_bot : IsCohomDense (locConstCoeff Λ) ((U ⊥).whisker testIncl) :=
     .of_top_le fun A y _ ↦ hU.mem_bot
-  refine h_bot.isCohomEquiv_of_fromPreimage fun n ↦ ?_
+  refine h_bot.isCohomEquiv_of_fromPreimage (isExtEquivFor_iff.2 fun n ↦ ?_)
   -- `G a = Hⁿ(U a)` and `K a = Hⁿ(u⁻¹(U a))`, with restriction maps, and `π a : G a → K a` is the
   -- pull-back along `u`; the goal is that `π ⊥` is bijective.
   let G : Ideal R ⥤ AddCommGrpCat := TestCohomology.antitoneFamily hU.antitone Λ n

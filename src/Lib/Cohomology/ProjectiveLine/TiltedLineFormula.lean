@@ -267,7 +267,7 @@ lemma exists_isLerayHirschBasis_of_isCohomDense [InvertsPrime A ℓ] (M : Torsio
   -- both are maps of `A`-algebras out of the quotient `A ⧸ 𝔪_A`
   have h_unique {c : TestOver A} (α β : k₀ ⟶ c) : α = β :=
     ObjectProperty.hom_ext _ (CommAlgCat.hom_ext (Quotient.algHom_ext _ (by ext)))
-  have hk₀ : IsCohomEquiv M.functor (freeAb.map (toUnit (g ⋙ reprBy k₀))) := by
+  have hk₀ : IsExtEquivFor M.functor (freeAb.map (toUnit (g ⋙ reprBy k₀))) := by
     -- at each object the map from the preimage of the locus is bijective: one-to-one since maps
     -- out of `k₀` are unique, and onto since `f hc` lies over each point of the locus
     refine h_dense.isCohomEquiv_of_fromPreimage (.of_bijective fun a ↦
@@ -282,8 +282,8 @@ lemma exists_isLerayHirschBasis_of_isCohomDense [InvertsPrime A ℓ] (M : Torsio
   -- `α` is the map `ℤ[h_k ∘ g] → ℤ[h_k₀ ∘ g] → ℤ[pt]`
   let α : freeAb (g ⋙ reprBy k) ⟶ freeAb (onePointFunctor D) :=
     freeAb.map (g.whiskerLeft (reprMap ψ)) ≫ freeAb.map (toUnit (g ⋙ reprBy k₀))
-  have hpt : IsCohomEquiv M.functor α :=
-    (h_detect.isCohomEquiv_map_of_isField k₀ k ψ (Field.toIsField _) hk).comp_iff.2 hk₀
+  have hpt : IsExtEquivFor M.functor α :=
+    ((h_detect.isCohomEquiv_map_of_isField k₀ k ψ (Field.toIsField _) hk).comp_iff_right _).2 hk₀
   -- The locally constant functions on a point are the constants.
   have h_domain : IsDomain (testIncl.obj ((TestOver.toTest A).obj ((𝟭 (TestOver A)).obj k))) :=
     hk.isDomain
@@ -476,20 +476,20 @@ lemma isCohomEquiv_pushout_desc {i : W' ⟶ W} [Mono i] {δ' : W' ⟶ W'} {δ : 
     (h_comm : δ' ≫ i = i ≫ δ) {E : Type 1} [Category.{0} E] (Φ : AbFunctor C ⥤ AbFunctor E)
     [IsExactFunctor Φ] {F : AbFunctor E}
     (h_acyclic : ∀ n : ℕ, Subsingleton (H (Φ (cokernel i)) F n)) :
-    IsCohomEquiv F (Φ.map (pushout.desc i δ h_comm)) := by
+    IsExtEquivFor F (Φ.map (pushout.desc i δ h_comm)) := by
   -- `i` and `pushout.inl` have the same acyclic cokernel, so both are equivalences, and
   -- `pushout.inl` followed by `(i, δ)` is `i`.
   have h_eqv {M N : AbFunctor C} (g : M ⟶ N) [Mono g]
-      (hg : ∀ k : ℕ, Subsingleton (H (Φ (cokernel g)) F k)) : IsCohomEquiv F (Φ.map g) :=
-    (isCohomEquiv_iff_subsingleton (.map ⟨exact_cokernel g⟩ Φ)).2 hg
+      (hg : ∀ k : ℕ, Subsingleton (H (Φ (cokernel g)) F k)) : IsExtEquivFor F (Φ.map g) :=
+    (isExtEquivFor_iff_of_shortExact (.map ⟨exact_cokernel g⟩ Φ)).2 hg
   have h_sq : IsPushout i δ' (pushout.inr δ' i) (pushout.inl δ' i) :=
     (IsPushout.of_hasPushout δ' i).flip
   let e := cokernel.map i (pushout.inl δ' i) δ' (pushout.inr δ' i) h_sq.w.symm
   have h_iso : IsIso e := isIso_cokernel_map_of_isPushout h_sq
-  have h_inl : IsCohomEquiv F (Φ.map (pushout.inl δ' i)) :=
+  have h_inl : IsExtEquivFor F (Φ.map (pushout.inl δ' i)) :=
     h_eqv (pushout.inl δ' i) fun k ↦
-      (IsCohomEquiv.of_isIso (Φ.map (inv e)) k).surjective.subsingleton
-  refine h_inl.comp_iff.1 ?_
+      (isExtEquivFor_iff.1 (isExtEquivFor_of_isIso (Φ.map (inv e))) k).surjective.subsingleton
+  refine (h_inl.comp_iff_right _).1 ?_
   rw [← Φ.map_comp, pushout.inl_desc]
   exact h_eqv i h_acyclic
 
@@ -859,7 +859,7 @@ lemma hasLineFormula_of_isTodaCancellation {B K : AbFunctor C} {i : W' ⟶ W} {�
     have h_line (k : ℕ) : Subsingleton (H (abTensor (abTensor S L) (cokernel i)) Θ.functor k) :=
       h_acyclic (abTensor S L) k
     have h_swapped : Subsingleton (TotalH (abTensor (abTensor S (cokernel i)) L) Θ.functor) :=
-      (IsCohomEquiv.of_isIso swap.hom).bijective_pullbackAlong.injective.subsingleton
+      (isExtEquivFor_of_isIso swap.hom).bijective_pullbackAlong.injective.subsingleton
     have h_total : Subsingleton (TotalH (Φ (cokernel i)) Θ.onElements.functor) :=
       (sliceEquiv (N := abTensor S (cokernel i))).symm.injective.subsingleton
     exact (DirectSum.of_injective (β := H (Φ (cokernel i)) Θ.onElements.functor) n).subsingleton

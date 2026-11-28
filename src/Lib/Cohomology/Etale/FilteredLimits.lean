@@ -227,8 +227,9 @@ lemma ContinuousUpTo.of_cech {A : Jᵒᵖ ⥤ Arrow (C ⥤ Type 1)} (a : Cone A)
     (k n).map (whiskerRight (Subfunctor.range leftToRight).ι free).op
   have h_colim (n : ℕ) : Bijective (G.map (incl n)) :=
     (ConcreteCategory.isIso_iff_bijective _).mp <| (isomorphisms _).colimMap _
-      fun j ↦ (ConcreteCategory.isIso_iff_bijective _).mpr (hp _ n)
-  exact (BijectiveUpTo.congr h_colim hq fun n x ↦ (η.naturality_apply (incl n) x).symm).mpr h_image
+      fun j ↦ (ConcreteCategory.isIso_iff_bijective _).mpr (isExtEquivFor_iff.1 (hp _) n)
+  exact (BijectiveUpTo.congr h_colim (isExtEquivFor_iff.1 hq) fun n x ↦
+    (η.naturality_apply (incl n) x).symm).mpr h_image
 
 end FilteredColimits
 
@@ -340,9 +341,10 @@ lemma bijective_const_of_isDomain {Λ : Type*} [IsDomain B] :
 needed. -/
 lemma IsAcyclicOver.isCohomEquiv (hB : IsDomain B) (hB' : IsDomain B') (u : T' ⟶ T)
     (hT : IsAcyclicOver q Λ) (hT' : IsAcyclicOver q' Λ) :
-    IsCohomEquiv (locConstCoeff Λ) (freeAb.map u) := by
+    IsExtEquivFor (locConstCoeff Λ) (freeAb.map u) := by
   obtain ⟨h_inj, h_onto⟩ := hT
   obtain ⟨h_inj', h_onto'⟩ := hT'
+  refine isExtEquivFor_iff.2 ?_
   rintro (_ | n)
   · -- the spectra are connected, so the constants give all of `H⁰` on both sides
     have h_const : Bijective fun x : Λ ↦ locConstClass q 0 (.const _ x) :=

@@ -55,11 +55,11 @@ variable {k : Type} [Field k] {X : CommAlg k ⥤ Type 1} {d : ℕ}
 subfunctor of `X`. Pull-back along the point of `c`, seen as a point of `W`, is a bijection on Hodge
 cohomology relative to `U`: classes on `W` relative to `U` are determined by, and may be prescribed
 through, their pull-back to `c.point`. `pointMap` sends `χ : c.coordRing ⟶ B` to the image of
-`c.point`; `IsCohomEquiv hodgeCoeff` (on functors whiskered by `HodgeTest.sqZeroExt`) means
+`c.point`; `IsExtEquivFor hodgeCoeff` (on functors whiskered by `HodgeTest.sqZeroExt`) means
 bijective in every degree. -/
 lemma EtaleChart.isCohomEquiv_relFreeAb_map_pointMap (c : EtaleChart d X) (U : Subfunctor X)
     {W : Subfunctor X} (hc : c.locus = W) :
-    IsCohomEquiv hodgeCoeff (HodgeTest.sqZeroExt.whiskerLeft (relFreeAb.map (U := U.preimage W.ι)
+    IsExtEquivFor hodgeCoeff (HodgeTest.sqZeroExt.whiskerLeft (relFreeAb.map (U := U.preimage W.ι)
       (pointMap (A := c.coordRing) ⟨c.point, hc.le c.coordRing c.point_mem_locus⟩) le_rfl)) := by
   refine hodge_excision (c.comap W.ι ⟨c.point, hc.le c.coordRing c.point_mem_locus⟩
     rfl).isOpenSubfunctor ?_
@@ -86,8 +86,8 @@ lemma EtaleChart.subsingleton_hodgeH_offDiagonal (c : EtaleChart (d + d) (X ⊗ 
       (c.coordinate ∘ Fin.castAdd d - c.coordinate ∘ Fin.natAdd d))) hodgeCoeff m) :=
     hodge_vanishing_along_diagonal c.etale hm
   -- `h_vanish` enters as the instance that makes the target of this injection subsingleton
-  exact (h_univ.comp_iff.mpr (c.isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) rfl)
-    m).injective.subsingleton
+  exact (isExtEquivFor_iff.1 ((h_univ.comp_iff_right _).mpr
+    (c.isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) rfl)) m).injective.subsingleton
 
 /-- On the subfunctor `O` of `X × X`, the class `δ` is the symbol of the differences of the
 coordinates of the chart `a`: every point of `O` is a pair of points `φ`, `ψ` of the chart, the
@@ -181,8 +181,9 @@ lemma exists_isLocalSymbol_of_charts_near_diagonal [IsSeparatedFunctor X] {r : �
       IsLocalSymbol ξ ⟨(V i).point, (V i).point_mem_locus⟩
         (fun C (p : (V i).locus.toFunctor.obj C) ↦ p.val.fst = p.val.snd) (f i) 1 := by
     -- by excision, a class on `V i` may be prescribed through its pull-back to the point
-    obtain ⟨ξ, hξ⟩ := ((V i).isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) rfl d).surjective
-      ((1 : k) • symbolClass.map (relFreeAb.map _ (h_cut i).preimage_fieldLocus_not.le))
+    obtain ⟨ξ, hξ⟩ := (isExtEquivFor_iff.1
+      ((V i).isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) rfl) d).surjective
+        ((1 : k) • symbolClass.map (relFreeAb.map _ (h_cut i).preimage_fieldLocus_not.le))
     exact ⟨ξ, h_cut i, le_rfl, hξ⟩
   choose ξ hξ using h_class
   -- hence the same description of `ξ i` at every point of `V i`
@@ -235,8 +236,9 @@ lemma exists_isLocalSymbol_of_charts_near_diagonal [IsSeparatedFunctor X] {r : �
           h_symb'.symm)
       -- a class on the overlap is determined by its value at `c.point`; on each side, restriction
       -- to the overlap followed by that value is the value in `h_eq`
-      refine (c.isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) hc d).injective
-        (.trans ?_ (h_eq.trans (.symm ?_)))
+      refine (isExtEquivFor_iff.1
+        (c.isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) hc) d).injective
+          (.trans ?_ (h_eq.trans (.symm ?_)))
       · refine (HodgeH.map_comp _ (relFreeAb.restrict _ (by simp)) (ξ i)).symm.trans ?_
         rw [relFreeAb.map_comp_map]
         rfl
