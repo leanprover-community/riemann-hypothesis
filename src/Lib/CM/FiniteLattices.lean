@@ -40,25 +40,21 @@ open NumberField PeriodPair ComplexConjugate nonZeroDivisors
 
 namespace New
 
-/-- The sum `L.sumInvPow y 4 = ∑ (l - y)⁻⁴` over the lattice of `L` is homogeneous of degree `-4`:
-if `L' = c L` with `c ≠ 0` and `z ≡ c y` modulo `L'`, then the sum for `L'` at `z` is `c⁻⁴` times
-the sum for `L` at `y`. -/
-lemma sumInvPow_four_of_mul_mem_iff {L L' : PeriodPair} {c y z : ℂ} (hc : c ≠ 0)
+/-- If multiplication by `c` identifies the two lattices and `z` is congruent to `c * y` modulo
+`L'.lattice`, the inverse-power sum of degree `r` at `z` is `c⁻ʳ` times that at `y`. -/
+lemma sumInvPow_of_mul_mem_iff {L L' : PeriodPair} (r : ℕ) {c y z : ℂ} (hc : c ≠ 0)
     (hL' : ∀ x : ℂ, c * x ∈ L'.lattice ↔ x ∈ L.lattice) (hz : c * y - z ∈ L'.lattice) :
-    L'.sumInvPow z 4 = L.sumInvPow y 4 / c ^ 4 := by
-  classical
-  -- Write both sums as sums over `ℂ`, centred at the base point, and substitute `x ↦ c x`.
-  let term (M : PeriodPair) (w : ℂ) := (M.lattice : Set ℂ).indicator fun l ↦ ((l - w) ^ 4)⁻¹
-  have h_sum (M : PeriodPair) (w : ℂ) : HasSum (fun x ↦ term M w (w + x)) (M.sumInvPow w 4) :=
-    (Equiv.addLeft w).hasSum_iff.2 <|
-      hasSum_subtype_iff_indicator.1 (M.hasSum_sumInvPow w (by norm_num))
-  have h_term (x : ℂ) : term L' z (z + c * x) = term L y (y + x) / c ^ 4 := by
-    have h_mem : z + c * x ∈ L'.lattice ↔ y + x ∈ L.lattice := by
-      rw [← hL', ← add_mem_cancel_left hz, ← add_assoc, sub_add_cancel, mul_add]
-    simp only [term, Set.indicator, SetLike.mem_coe, h_mem, add_sub_cancel_left]
-    split_ifs <;> ring
-  exact ((Equiv.mulLeft₀ c hc).hasSum_iff.2 (h_sum L' z)).unique <| by
-    simpa only [Function.comp_def, Equiv.mulLeft₀_apply, h_term] using (h_sum L y).div_const _
+    L'.sumInvPow z r = L.sumInvPow y r / c ^ r := by
+  -- The affine map takes lattice points to lattice points and sends the centre `y` to `z`.
+  have hshift : z - c * y ∈ L'.lattice := by simpa only [neg_sub] using L'.lattice.neg_mem hz
+  let e : L.lattice ≃ L'.lattice :=
+    ((Equiv.mulLeft₀ c hc).trans (Equiv.addRight (z - c * y))).subtypeEquiv fun x ↦
+      (hL' x).symm.trans (add_mem_cancel_right hshift).symm
+  rw [sumInvPow, ← e.tsum_eq, sumInvPow, ← tsum_div_const]
+  refine tsum_congr fun x ↦ ?_
+  change (((c * x.val + (z - c * y)) - z) ^ r)⁻¹ = ((x.val - y) ^ r)⁻¹ / c ^ r
+  rw [show c * x.val + (z - c * y) - z = c * (x.val - y) by ring]
+  simp [mul_pow, div_eq_mul_inv]
 
 namespace CMLattice
 
@@ -95,7 +91,7 @@ so that `℘''(t) = 2` at their marked points `t` of order two. -/
 lemma pow_four_eq_one_of_mul_mem_iff {c : ℂ} (hc : c ≠ 0)
     (h_mem : ∀ x : ℂ, c * x ∈ D.Λ ↔ x ∈ C.Λ) : c ^ 4 = 1 := by
   have h_scale : D.sumInvPow D.t 4 = C.sumInvPow C.t 4 / c ^ 4 :=
-    sumInvPow_four_of_mul_mem_iff hc h_mem (mul_t_sub_t_mem h_mem)
+    sumInvPow_of_mul_mem_iff 4 hc h_mem (mul_t_sub_t_mem h_mem)
   rw [eq_div_iff (pow_ne_zero 4 hc)] at h_scale
   have hC : 6 * C.sumInvPow C.t 4 = 2 := C.six_mul_sumInvPow_t
   have hD : 6 * D.sumInvPow D.t 4 = 2 := D.six_mul_sumInvPow_t
