@@ -582,7 +582,8 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 **Avatar**: ℓ-adic avatars of algebraic Hecke characters
 
-- `Lib/ClassField/Avatar/HeckeBaseChange` (263): Base change of U(1) and Hecke characters, their L-functions and parallel twists
+- `Lib/ClassField/Avatar/HeckeBaseChange` (138): Base change of U(1) and Hecke characters and their L-functions
+- `Lib/ClassField/Avatar/HeckeTwist` (136): Twisting ℓ-adic Galois representations by algebraic Hecke characters and parallel twists
 - `Lib/ClassField/Avatar/LocalGlobalCompatibility` (136): Local-global compatibility for the ℓ-adic avatar of an algebraic Hecke character
 
 **GaloisCohomology**: Continuous Galois cohomology
