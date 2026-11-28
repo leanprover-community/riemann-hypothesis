@@ -473,15 +473,16 @@ lemma exists_blockDiagonal_lattice {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalR
   rw [h_map]
   simp [hZ, mul_assoc]
 
-/-- Let the representations `u x`, indexed by the type `Y`, have non-degenerate trace form
-(`IsTraceNondeg`) and have lattices over `O`, and for `x ∈ 𝓧` let the trace of `u x` be that of the
-twisted main summand `ψ (R x)` plus the characters `O(-e)`, `e < t`, where the twisted lattice
-`ψ' x R₀ x` spans all matrices. Then there are lattices in all these representations that, for
-`x ∈ 𝓧`, are block diagonal with the twisted lattice of the main summand and the characters. -/
-lemma exists_blockDiagonal_lattices {u : Y → GalRep ℓ D.E n}
-    (hu : ∀ x : Y, IsTraceNondeg (u x))
-    (h_lat : ∀ x : Y, ∃ v : AbsGal D →* Matrix n n O, IsLatticeIn (u x) v)
-    {ψ : AbsGal D →* PadicAlgCl ℓ} {𝓧 : Set Y} {R : 𝓧 → GalRep ℓ D.E r}
+/-- Let the representations `u x`, indexed by the type `Y`, have lattices over `O` off `𝓧`.
+For `x ∈ 𝓧`, assume non-degenerate trace form (`IsTraceNondeg`) and let the trace of `u x` be
+that of the twisted main summand `ψ (R x)` plus the characters `O(-e)`, `e < t`, where the
+twisted lattice `ψ' x R₀ x` spans all matrices. Then there are lattices in all these
+representations that, for `x ∈ 𝓧`, are block diagonal with the twisted lattice of the main summand
+and the characters. -/
+lemma exists_blockDiagonal_lattices {u : Y → GalRep ℓ D.E n} {𝓧 : Set Y}
+    (hu : ∀ x : 𝓧, IsTraceNondeg (u x))
+    (h_lat : ∀ x : ↥(𝓧ᶜ), ∃ v : AbsGal D →* Matrix n n O, IsLatticeIn (u x) v)
+    {ψ : AbsGal D →* PadicAlgCl ℓ} {R : 𝓧 → GalRep ℓ D.E r}
     (h_trace : ∀ (x : 𝓧) (g : AbsGal D), (u x g).val.trace =
       ψ g * (R x g).val.trace + ∑ e ∈ range t, cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ e)
     {R₀ : 𝓧 → AbsGal D →* Matrix r r O} (hR₀ : ∀ x : 𝓧, IsLatticeIn (R x) (R₀ x))
@@ -498,10 +499,11 @@ lemma exists_blockDiagonal_lattices {u : Y → GalRep ℓ D.E n}
     exists_blockDiagonal_lattice (hu x) (h_trace x) (hR₀ x) (hψ' x) (h_span x) ϵ
   choose v hv hv_block using h_block
   choose v' hv' using h_lat
-  refine ⟨fun x ↦ if hx : x ∈ 𝓧 then v ⟨x, hx⟩ else v' x, fun x ↦ ?_, by simpa using hv_block⟩
+  refine ⟨fun x ↦ if hx : x ∈ 𝓧 then v ⟨x, hx⟩ else v' ⟨x, hx⟩, fun x ↦ ?_,
+    by simpa using hv_block⟩
   by_cases hx : x ∈ 𝓧
   · simpa [hx] using hv ⟨x, hx⟩
-  · simpa [hx] using hv' x
+  · simpa [hx] using hv' ⟨x, hx⟩
 
 section Model
 

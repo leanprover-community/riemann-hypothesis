@@ -189,7 +189,8 @@ lemma eventually_exists_twistedLattice_and_block_lattices [PadicIso ℓ] {t : �
   -- twisting multiplies the matrices by units, which does not change their span
   have h_span_twist (x : 𝓧) : Submodule.span O (.range (twistRep (.id O) (ψ' x) (R₀ x))) = ⊤ :=
     Basis.units_smul_span_eq_top (w := (ψ' x).toHomUnits) (h_span x _ (h_tw x).isLatticeIn).1
-  obtain ⟨u', hu', hu'_block⟩ := exists_blockDiagonal_lattices (fun x ↦ (hu x).nondeg) h_lat h_trace
+  obtain ⟨u', hu', hu'_block⟩ :=
+    exists_blockDiagonal_lattices (𝓧 := 𝓧) (fun x ↦ (hu x).nondeg) (fun x ↦ h_lat x) h_trace
     (fun x ↦ (h_tw x).isLatticeIn) (fun x ↦ (h_tw x).twist_eq) h_span_twist ϵ
   exact ⟨R₀, ψ', ζ', u', fun x ↦ ⟨h_tw x, h_good x⟩, h_span_twist, hu', hu'_block⟩
 
