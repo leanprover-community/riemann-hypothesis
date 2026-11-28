@@ -546,19 +546,13 @@ lemma HCParam.IsKHighest.apply_lowerLiePart_zero (ho : o.Injective) {ρ : GlModu
   let U : Matrix n n ℂ := signMatrix ε * (lowerMask ε' o Y)ᴴ * signMatrix ε
   have eq_lower_sub : lowerLiePart ε ε' o 0 Y = lowerMask ε' o Y - U :=
     lowerLiePart_zero_eq ε ε' o Y
+  -- The signed adjoint is supported strictly above the diagonal within each sign block.
+  have U_zero {i j : n} (h : ¬ (o i < o j ∧ ε' j = ε' i)) : U i j = 0 := by
+    simp [U, signMatrix_mul_conjTranspose_mul_apply, h]
   have U_block : U ∈ blockDiagAlg ε' :=
-    mem_blockDiagAlg.2 fun i j hij ↦ by
-      dsimp only [U]
-      rw [signMatrix_mul_conjTranspose_mul_apply, lowerMask_apply]
-      simp only [hij.symm, and_false, ↓reduceIte, map_zero, mul_zero, zero_mul]
-  have U_tri : U.BlockTriangular o := fun i j hij ↦ by
-    dsimp only [U]
-    rw [signMatrix_mul_conjTranspose_mul_apply, lowerMask_apply]
-    simp only [hij.not_gt, false_and, ↓reduceIte, map_zero, mul_zero, zero_mul]
-  have U_diag (a : n) : U a a = 0 := by
-    dsimp only [U]
-    rw [signMatrix_mul_conjTranspose_mul_apply, lowerMask_apply]
-    simp only [lt_irrefl, false_and, ↓reduceIte, map_zero, mul_zero, zero_mul]
+    mem_blockDiagAlg.2 fun _ _ hij ↦ U_zero fun h ↦ hij h.2.symm
+  have U_tri : U.BlockTriangular o := fun _ _ hij ↦ U_zero fun h ↦ hij.not_gt h.1
+  have U_diag (a : n) : U a a = 0 := U_zero fun h ↦ lt_irrefl _ h.1
   have U_apply : ρ U x = 0 := by
     rw [hx.apply_triangular ho U U_block U_tri]
     simp only [U_diag, mul_zero, sum_const_zero, zero_smul]
