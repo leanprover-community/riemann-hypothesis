@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Algebra.Group.Semiconj
 import TauCeti.RepresentationTheory.Irreducible.ConjugatePow
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
@@ -71,17 +72,6 @@ section ResidualIrreducibility
 
 open Matrix IsLocalRing Fintype Module Submodule Set End
 
-/-- In a group, if `x ^ q = y⁻¹ * x * y`, then `x * y ^ k = y ^ k * x ^ q ^ k` for every `k`. -/
-private lemma mul_pow_eq_pow_mul_pow_pow_of_pow_eq_inv_mul_mul {M : Type*} [Group M] {x y : M}
-    {q : ℕ} (h : x ^ q = y⁻¹ * x * y) (k : ℕ) : x * y ^ k = y ^ k * x ^ q ^ k := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    calc x * y ^ (k + 1) = y ^ k * x ^ q ^ k * y := by rw [pow_succ, ← mul_assoc, ih]
-      _ = y ^ (k + 1) * (y⁻¹ * x ^ q ^ k * y) := by simp [pow_succ, mul_assoc]
-      _ = y ^ (k + 1) * (y⁻¹ * x * y) ^ q ^ k := by simpa using (conj_pow (a := y⁻¹)).symm
-      _ = y ^ (k + 1) * x ^ q ^ (k + 1) := by rw [← h, ← pow_mul, ← pow_succ']
-
 /-- If the differences `ζ ^ q ^ i - ζ ^ q ^ j` for distinct `i, j < d` have norm `1`, then the
 residues of the `ζ ^ q ^ i`, `i < d`, are pairwise distinct: a difference of norm `1` is a unit of
 `O`, so its residue is not zero. -/
@@ -129,9 +119,11 @@ lemma New.Selmer.IsLatticeIn.span_range_eq_top_of_map_pow_eq_map_conj {G n : Typ
     rw [charpoly_map]
     exact .map (residue O) (.of_map hζ_u O.val.subtype_injective)
   -- Iterating `h_tame`: conjugation by `φ ^ k` raises `R γ` to the power `q ^ k`.
+  have h_semiconj : SemiconjBy (R φ) (R γ ^ q) (R γ) := by
+    rw [SemiconjBy, h_tame, ← map_mul, ← map_mul]
+    simp [mul_assoc]
   have h_conj (k : ℕ) : R (γ * φ ^ k) = R (φ ^ k * γ ^ q ^ k) := by
-    simpa [map_mul, map_pow] using mul_pow_eq_pow_mul_pow_pow_of_pow_eq_inv_mul_mul
-      (x := R γ) (y := R φ) (h_tame.trans (by simp)) k
+    simpa [map_mul, map_pow] using (h_semiconj.pow_left_pow_pow k).eq.symm
   have h_mul : u γ * u φ = u φ * u γ ^ q := by
     simpa [map_mul, map_pow] using u_congr (h_conj 1)
   let w (p : Fin (card n) × Fin (card n)) : G := φ ^ (p.fst : ℕ) * γ ^ (p.snd : ℕ)
