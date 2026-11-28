@@ -66,6 +66,8 @@ noncomputable section
 
 namespace New.Lift.KummerChart.JumpLattice
 
+attribute [local instance low] NormedAlgebra.toAlgebra
+
 /-! ## Standard exponents, Frobenius on exponents, and additivity of exponents -/
 
 section HodgeExpansion
@@ -223,7 +225,8 @@ lemma apply_phi_pow_succ_smul_mem_hodgeFil_zero (hμ : μ ∈ L.forms) (hx : x �
   -- True on `L.kisinAinf` by definition; it remains to cancel a factor `k.frobE j`.
   refine saturateBy_induction hx (fun y ⟨_, hy_int⟩ ↦ hy_int m μ hμ) fun j y hy ↦ ?_
   -- Frobenius turns the factor into `k.frobE (m + 1 + j)`, which `k.frobE 0` does not divide.
-  have h_not_dvd : ¬(k.frobE 0 : Ainf) ∣ k.frobE (m + 1 + j) := not_frobE_dvd_frobE_of_ne (by lia)
+  have h_not_dvd : ¬(k.frobE 0 : Ainf) ∣ k.frobE (m + 1 + j) :=
+    not_frobE_dvd_frobE_of_ne (by omega)
   have h_factor : φ ^ (m + 1) • (k.frobE j).val • y =
       (k.frobE (m + 1 + j)).val • φ ^ (m + 1) • y := by
     simp [val_frobE, pow_add, mul_smul, frobGroup_smul_smul]
@@ -240,7 +243,8 @@ lemma phi_pow_smul_mem_withOrders (hx : x ∈ L.withOrders (i.stepBack l) c) :
     (fun _ ↦ phi_pow_smul_mem_kisinLoc) (span_kisinLoc.ge hx_loc),
     phi_pow_smul_mem_letterPart_iff.2 hx_letter⟩, fun a u hu μ hμ ↦ ?_⟩
   -- The value of φ^l x at level a is μ(φ^{l-a} x).
-  obtain ⟨m, rfl | rfl⟩ : ∃ m : ℕ, l = a + m + 1 ∨ a = l + m := ⟨max (l - a - 1) (a - l), by lia⟩
+  obtain ⟨m, rfl | rfl⟩ : ∃ m : ℕ, l = a + m + 1 ∨ a = l + m :=
+    ⟨max (l - a - 1) (a - l), by omega⟩
   · -- The value is μ(φ^{m+1} x), and the exponent is 0.
     simpa [valueAt, pow_add, mul_smul, Nat.lt_succ_iff] using
       apply_phi_pow_succ_smul_mem_hodgeFil_zero hμ.1 hx_loc m
@@ -339,7 +343,8 @@ lemma mem_withOrders_stdOrders_iff :
         fun κ ν hν D _ hD ↦ ?_
       simpa [valueAt] using mul_mem_hodgeFil
         (mem_hodgeFil_zero_and_mem_valueField_zero_of_fixed fun g ↦ hD μ μ g fun t ↦ hμ t g).1
-        (valueAt_mem_of_hodgeFil_le _ h_shift hν (by grind [hodgeFil_anti.imp]))
+        (valueAt_mem_of_hodgeFil_le _ h_shift hν fun _ _ _ ↦
+          hodgeFil_anti (by simp only [shiftedOrders, stdOrders]; split_ifs <;> omega))
     simpa [valueAt, smul_smul, pow_mul_comm] using h_int
   · -- Conversely, x has exponents -u since τⁿ x ∈ `L.ainfLattice` and τ is prime to φ^a(E).
     refine phi_pow_smul_mem_withOrders (c := fun _ u ↦ -u)
@@ -542,8 +547,10 @@ lemma exists_thetaBdR_sub_sum_smul_eq_zero {N r : ℕ} (t : Fin N → Fin r → 
   refine ⟨d, h_rank, s, A, fun j m ↦ ?_⟩
   -- expand column `m` in the basis `z` and read the entry in row `j`
   let col : U := ⟨fun i ↦ thetaBdR (t i m), Pi.single m 1, by ext; simp⟩
-  have h_expand : col.val j = (∑ i, z.repr col i • z i : U).val j := by rw [z.sum_repr]
-  simpa [smul_def', ← z.coord_apply, mul_comm, h_coord, entry, hA, sub_eq_zero, col] using h_expand
+  have h_expand : thetaBdR (t j m) = ∑ i, thetaBdR (t (s i) m) * (z i).val j := by
+    simpa [← z.coord_apply, h_coord, entry, col] using
+      congrFun (congrArg Subtype.val (z.sum_repr col).symm) j
+  simp [smul_def', hA, mul_comm, h_expand]
 
 /-- Let `o` be a system of exponents. Let `i = l.stepBack b` and assume `o b u < o b v` for all
 `v < u` in `L.jumpSet i`. Among points `x j` with exponents `o` at `l` there are `d` points
@@ -558,8 +565,8 @@ lemma exists_sub_sum_smul_mem_withOrders_raiseOrder (o : ℕ → ℤ → ℤ) {u
   -- Modulo type `u - 1` the forms of type `u` are spanned by forms `ν m`. The leading terms of
   -- their values at all `x j` are integral combinations of those at a few points `x (s m)`.
   obtain ⟨r, hr, ν, h_red⟩ := exists_span_formsOfType_mod_pred (L := L) (l.stepBack b) u
-  have h_jump_le : ∀ v ∈ L.jumpSet (l.stepBack b), v ≤ u → hodgeFil (o b v) ≤ hodgeFil (o b u) := by
-    grind [hodgeFil_anti.imp]
+  have h_jump_le : ∀ v ∈ L.jumpSet (l.stepBack b), v ≤ u → hodgeFil (o b v) ≤ hodgeFil (o b u) :=
+    fun v hv hvu ↦ hodgeFil_anti <| hvu.eq_or_lt.elim (· ▸ le_rfl) fun h ↦ (h_lt_lower v hv h).le
   have h_lead (j : Fin N) (m : Fin r) :
       ∃ t : BdRPlus, algebraMap BdRPlus BdR t * (tUnit ^ o b u).val = valueAt b (ν m).val (x j) :=
     mem_hodgeFil.1 (valueAt_mem_of_hodgeFil_le _ (hx j) (ν m).property h_jump_le)
@@ -585,8 +592,8 @@ lemma exists_sub_sum_smul_mem_withOrders_raiseOrder (o : ℕ → ℤ → ℤ) {u
   obtain ⟨κ, hκ⟩ : ∃ κ : Fin r → PadicAlgCl p,
       μ - ∑ m : Fin r, κ m • (ν m).val ∈ L.formsOfType (l.stepBack b) (u - 1) := h_red μ hμ
   have h_lower : ∀ v ∈ L.jumpSet (l.stepBack b), v ≤ u - 1 →
-      hodgeFil (o b v) ≤ hodgeFil (1 + o b u) := by
-    grind [hodgeFil_anti.imp]
+      hodgeFil (o b v) ≤ hodgeFil (1 + o b u) :=
+    fun v hv hvu ↦ hodgeFil_anti (by have := h_lt_lower v hv (by omega); omega)
   have h_rest : valueAt b μ x' - ∑ m : Fin r, κ m • valueAt b (ν m).val x' ∈
       hodgeFil (1 + o b u) := by
     simpa [valueAt] using valueAt_mem_of_hodgeFil_le _ hx' hκ h_lower
