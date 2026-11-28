@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Algebra.Order.Archimedean.Basic
 public import Mathlib.LinearAlgebra.Matrix.Permutation
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -776,16 +777,15 @@ private lemma isDiag_of_forall_mem_conjProIwahori (ht : StrictMono fun i : Fin N
     (x : Matrix (Fin N) (Fin N) F).IsDiag := by
   intro i j hij
   by_contra h_ne
-  -- Membership for the power `m` says `v (x i j) * (v (t i) / v (t j)) ^ m ≤ 1`; in logarithms:
-  have h_log (m : ℤ) : (v (x i j)).log + m * ((v (t i : F)).log - (v (t j : F)).log) ≤ 0 := by
+  -- Every integer multiple of the difference of the two log valuations is bounded above.
+  have h_bound (m : ℤ) : m • ((v (t i : F)).log - (v (t j : F)).log) ≤ -(v (x i j)).log := by
     obtain ⟨h_int, -, -⟩ := mem_proIwahori.mp (hx m)
-    simpa [← map_inv, ← log_le_log, h_ne, mul_add, sub_eq_add_neg, add_left_comm, ← map_zpow,
-      mul_assoc, zpow_ne_zero] using h_int i j
-  have h_log_ne : (v (t i : F)).log ≠ (v (t j : F)).log := fun h_log_eq ↦
-    hij (ht.injective (by simpa using congrArg exp h_log_eq))
-  -- The bound fails for `m = 1 - log v (x i j)` or for its negative.
-  rcases h_log_ne.lt_or_gt with h_lt | h_lt <;>
-    nlinarith only [h_lt, h_log (1 - (v (x i j)).log), h_log (-(1 - (v (x i j)).log))]
+    simpa [zsmul_eq_mul, le_neg_iff_add_nonpos_left, ← map_inv, ← log_le_log, h_ne, mul_add,
+      sub_eq_add_neg, add_left_comm, ← map_zpow, mul_assoc, zpow_ne_zero] using h_int i j
+  have hne : (v (t i : F)).log ≠ (v (t j : F)).log := fun h ↦
+    hij (ht.injective (by simpa using congrArg exp h))
+  obtain ⟨m, hm⟩ := TauCeti.exists_lt_zsmul (sub_ne_zero.mpr hne) (-(v (x i j)).log)
+  exact hm.not_ge (h_bound m)
 
 /-- Let `σ` be a continuous endomorphism of the local field `F` that keeps the valuation and whose
 entrywise action on `GL_n(F)` is surjective, and let `t` be diagonal with `v (t i)` strictly
