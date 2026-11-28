@@ -817,15 +817,15 @@ lemma isFiniteTypeAt_and_polyKillsAt_of_mem_conjClosure [DecidableEq n] [Nonempt
 
 /-- Let `c` be a lift setting (`IsLiftSetting`) for the descent pair `O` and the twist `ϑ`: the
 places `O.twistPlace i` are those of `ϑ.Q`. Let `ϑ.Q` be auxiliary for the set `badPlaces D ℓ` of
-places dividing `ℓ * D.M * D.N`: its places have prime norm, and they and their conjugates are not
-bad. Let `f ≠ 0` have Hecke polynomial `H w` at almost all places `w` of prime norm (`IsEigenform`),
-and the parahoric type of `O` at each `O.twistPlace i`: block triangular integral matrices act
-through `O.tamePart⁻¹` of the determinant of the block indexed by `r`. Let `R` be attached to `H`:
-for each `η > 0` and most Frobenius elements, the coefficients of the characteristic polynomial are
-within `η` of those of `ιℓ (H w)`. Let `u = normalizedRep O R` be the twist of `R` by
-`normalizingAvatar O`, the avatar of a Hecke character made from the inverse of the character
-`O.charW` of the hermitian space of `O`. Then `(u g - a g) (u g - 1) = 0` for `g` in inertia above
-`ϑ.Q` and its conjugates, where `a = ϑ.invAvatar` is the `ℓ`-adic avatar of `ϑ⁻¹`. -/
+places dividing `ℓ * D.level * D.N`: its places have prime norm, and they and their conjugates are
+not bad. Let `f ≠ 0` have Hecke polynomial `H w` at almost all places `w` of prime norm
+(`IsEigenform`), and the parahoric type of `O` at each `O.twistPlace i`: block triangular integral
+matrices act through `O.tamePart⁻¹` of the determinant of the block indexed by `r`. Let `R` be
+attached to `H`: for each `η > 0` and most Frobenius elements, the coefficients of the
+characteristic polynomial are within `η` of those of `ιℓ (H w)`. Let `u = normalizedRep O R` be the
+twist of `R` by `normalizingAvatar O`, the avatar of a Hecke character made from the inverse of the
+character `O.charW` of the hermitian space of `O`. Then `(u g - a g) (u g - 1) = 0` for `g` in
+inertia above `ϑ.Q` and its conjugates, where `a = ϑ.invAvatar` is the `ℓ`-adic avatar of `ϑ⁻¹`. -/
 lemma normalizedRep_quadratic_on_inertia [DecidableEq n] [Nonempty n] (hc : IsLiftSetting O c ϑ)
     (hQ : IsAuxiliary (badPlaces D ℓ) ϑ.Q) {f : (stdSpace D.E n).forms (O.columnCount, O.detExp)}
     {H : FinPlace D.E → ℂ[X]} {R : Gal(Ω/D.E) →* GL n (PadicAlgCl ℓ)} (he : IsEigenform f.val H)

@@ -113,15 +113,15 @@ lemma projOn_translateDatum {x : D.Translations} {j : ℕ} {S : Set (FinPlace (P
     integralAfter]
 
 /-- If `x` lies in `D.admissibleTranslations q`, then some `x'` in `D.admissibleTranslations q` that
-vanishes at all places prime to `D.M * q` (where `D.M = p₀ p₁`) has the same data:
+vanishes at all places prime to `D.level * q` (where `D.level = p₀ p₁`) has the same data:
 `D.translateDatum x = D.translateDatum x'`. -/
 lemma exists_supported_translateDatum_eq {q : ℕ} {x : D.Translations}
     (hx : x ∈ D.admissibleTranslations q) :
-    ∃ x' ∈ D.admissibleTranslations q ∩ D.supportedTranslations (D.M * q),
+    ∃ x' ∈ D.admissibleTranslations q ∩ D.supportedTranslations (D.level * q),
       D.translateDatum x = D.translateDatum x' := by
   -- The part of `x` at the places prime to `M * q` is integral and fixes the vacuum, so it can
   -- be dropped.
-  let S : Set (FinPlace D.E) := {w | ↑(D.M * q) ∈ w.asIdeal}
+  let S : Set (FinPlace D.E) := {w | ↑(D.level * q) ∈ w.asIdeal}
   refine ⟨fun j ↦ idem S • x j, ⟨fun j i w hw ↦ ?_,
     fun j i w (hw : w ∉ S) ↦ by simp [hw]⟩, funext fun j ↦ ?_⟩
   · by_cases h_mem : w ∈ S
@@ -176,11 +176,11 @@ theorem chainCombination_eq_sum {Φ : D.Translations → ∀ j : ℕ, (D.homX j)
 `ϑ.normQ * N`. For a prime `p ≠ N` coprime to `ϑ.normQ`, the datum of `x` at `j` lies in
 `New.Parameters.standardData` (the span of the translates of the integral vacuum by points that `δ`
 makes integral above `p`) for `δ = D.piMBar`, and for every `δ` if `p` does not divide
-`D.M = p₀ p₁`. -/
+`D.level = p₀ p₁`. -/
 lemma IsWeakChainDatum.translateDatum_mem_standardData (h_weak : IsWeakChainDatum ϑ Ψ)
     [PadicPlace p] (hQ : p.Coprime ϑ.normQ) (hp : p ≠ D.N) {x : D.Translations}
     (hx : x ∈ Ψ.support) (j : ℕ) {δ : NumberField.RingOfIntegers P.K}
-    (hδ : δ = D.piMBar ∨ ¬p ∣ D.M) :
+    (hδ : δ = D.piMBar ∨ ¬p ∣ D.level) :
     (D.translateDatum x j).val ∈ Parameters.standardData (homX j) δ := by
   -- The datum is the translate of the vacuum by `x j`, which `δ` has to make integral above `p`.
   suffices h_int : x j ∈ Parameters.integralAfter δ fun w ↦ ↑p ∈ w.asIdeal from

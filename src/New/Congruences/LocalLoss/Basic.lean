@@ -129,9 +129,9 @@ def crystallineLoss (h b l : ℕ) : ℕ :=
 
 /-- The unit at `l` of the bound on the loss of a lift, for the data `D`:
 `10⁶ (m/k) (natB v_l(M) + crystallineLoss halfGap natB l)`, where `v_l` is the `l`-adic valuation
-and `M = D.M` is the product of the two level primes. -/
+and `M = D.level` is the product of the two level primes. -/
 def defectBound (l : ℕ) : NNReal :=
-  10 ^ 6 * (D.m / D.k * (D.natB * padicValNat l D.M + crystallineLoss D.halfGap D.natB l))
+  10 ^ 6 * (D.m / D.k * (D.natB * padicValNat l D.level + crystallineLoss D.halfGap D.natB l))
 
 end MainSummandWeights
 

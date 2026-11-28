@@ -25,7 +25,7 @@ restrictions of short forms. Throughout, `ϑ` is an `m`-fold twist, `Q` is its f
 `ϑ.normQ` is `Nm Q`, and sizes are measured by the parameters `x = D.x` and `b = D.b`. The
 modulus `𝔪 = gridModulus ϑ` of the twist is the product of the chosen places to the power
 `D.natB` (the number `b` as a natural number), times `Q`. The other numbers of the data that occur
-are the level `D.M`, the order `D.q₁` of the root of unity that generates `E` over
+are the level `D.level`, the order `D.q₁` of the root of unity that generates `E` over
 `K = ℚ(√-P.d)`, the prime `P.d`, the ranks `D.n j` and the parameter `D.r`; at most
 `D.natB * D.r ^ 4` boxes occur in each diagram of a weight on the last path.
 
@@ -83,8 +83,8 @@ denominators of each kernel on the last path. The first factor takes the datum o
 standard data, and the second pays for the boxes of the diagram: `2 * D.n D.m` bounds the ranks on
 that path and `D.natB * D.r ^ 4` the numbers of boxes. -/
 def liftDenominator : ℕ :=
-  (D.M ^ D.natB) ^ (2 * Core.numInfPlaces D.E * (2 * D.n D.m * (2 * D.n D.m))) *
-    (D.M ^ D.natB * P.d) ^ (D.natB * D.r ^ 4)
+  (D.level ^ D.natB) ^ (2 * Core.numInfPlaces D.E * (2 * D.n D.m * (2 * D.n D.m))) *
+    (D.level ^ D.natB * P.d) ^ (D.natB * D.r ^ 4)
 
 section Denominators
 
@@ -102,35 +102,35 @@ gauges. -/
 lemma liftDenominator_smul_lastPathEdgeDatum_mem_raises {ϑ : D.MFoldTwist} {p : ℕ} [Fact p.Prime]
     [PadicPlace p] (hp : p.Coprime ϑ.normQ) (S : EdgeTuple ϑ) (z : Bool) {j : ℕ} (hj : j < D.m) :
     (D.liftDenominator : ℂ) • lastPathEdgeDatum S z j ∈ (lastPathKernel ϑ z j).raises 1 1 1 := by
-  have h_dvd : (D.M ^ D.natB) ^
+  have h_dvd : (D.level ^ D.natB) ^
         (2 * Core.numInfPlaces D.E * card (D.LastPathIndex z (j + 1) × D.LastPathIndex z j)) *
-      (D.M ^ D.natB * P.d) ^ boxes (D.lastPathColumns z) (card (D.LastPathIndex z (j + 1))) ∣
+      (D.level ^ D.natB * P.d) ^ boxes (D.lastPathColumns z) (card (D.LastPathIndex z (j + 1))) ∣
       D.liftDenominator := by
     grw [card_prod, boxes_lastPathColumns_le_natB_mul z hj, card_lastPathIndex_le z hj,
       card_lastPathIndex_le z hj.le, liftDenominator]
   unfold lastPathKernel
   exact P.smul_mem_raises_of_dvd (lastPathEdgeDatum S z j)
-    (P.smul_vacuumDatum_mem_standardData normQ_mul_M_pow_mem_modulus
+    (P.smul_vacuumDatum_mem_standardData normQ_mul_level_pow_mem_modulus
       (by simp [ite_mem, Pi.single_apply]) hp)
     embValRing.one_mem h_dvd
 
 /-- Let `t` be the idele that generates the modulus `𝔪 = gridModulus ϑ` of the `m`-fold twist `ϑ`
 and `α = P.α D.towerExp` the fixed idele of the CM field `D.E`, for which `q₁ * α` and `α⁻¹` are
 integral, with `q₁ = P.q₁ D.towerExp`. Write `star` for complex conjugation on the finite adeles of
-`D.E`, `normQ` for the product of the norms of the places in the set `Q` of `ϑ`, `M = D.M` for the
-level and `natB = D.natB` for the exponent of the chosen places in `𝔪`. The flip scalar
+`D.E`, `normQ` for the product of the norms of the places in the set `Q` of `ϑ`, `M = D.level` for
+the level and `natB = D.natB` for the exponent of the chosen places in `𝔪`. The flip scalar
 `u = star (t * α) / (t * α)` becomes an integral adele after multiplication by
 `normQ * M ^ natB * q₁`. -/
 lemma generator_inv_mul_normQ_mul_star_mem (ϑ : D.MFoldTwist) :
     (gridModulus ϑ).generator⁻¹.val *
-        algebraMap (NumberField.RingOfIntegers D.E) (Ô D.E) ↑(ϑ.normQ * D.M ^ D.natB) *
+        algebraMap (NumberField.RingOfIntegers D.E) (Ô D.E) ↑(ϑ.normQ * D.level ^ D.natB) *
       (star ((gridModulus ϑ).generator.val * (P.q₁ D.towerExp * (P.α D.towerExp).val)) *
         (P.α D.towerExp)⁻¹.val) ∈
       Ô D.E := by
   -- `t`, `q₁ * α` and `α⁻¹` are integral, and `t` divides `normQ * M ^ natB`.
   have h_red : (gridModulus ϑ).reduction (algebraMap (NumberField.RingOfIntegers D.E) (Ô D.E)
-      ↑(ϑ.normQ * D.M ^ D.natB)) = 0 :=
-    (Modulus.reduction_eq_zero_iff _).2 (Ideal.mem_map_of_mem _ normQ_mul_M_pow_mem_modulus)
+      ↑(ϑ.normQ * D.level ^ D.natB)) = 0 :=
+    (Modulus.reduction_eq_zero_iff _).2 (Ideal.mem_map_of_mem _ normQ_mul_level_pow_mem_modulus)
   rw [Modulus.reduction_eq_zero_iff_generator_inv_mul_mem] at h_red
   exact mul_mem h_red (mul_mem
     (star_mem_Ô (mul_mem (gridModulus ϑ).generator_mem P.q₁_mul_alpha_mem)) P.inv_alpha_mem)
@@ -144,7 +144,7 @@ matrix `(u ^ m)⁻¹` to `ℂ_[p]`. The map is the component at the prime above 
 of `(M ^ natB * q₁) ^ (m * |l|)` and `(δ ^ l)⁻¹` has absolute value at most `1`. -/
 lemma norm_mul_det_flipScalar_zpow_le_one {ϑ : D.MFoldTwist} {p : ℕ} [Fact p.Prime] [PadicPlace p]
     (hp : p.Coprime ϑ.normQ) (τ : D.Φ) (l : ℤ) :
-    ‖((D.M ^ D.natB * D.q₁) ^ (D.m * l.natAbs) : ℕ) *
+    ‖((D.level ^ D.natB * D.q₁) ^ (D.m * l.natAbs) : ℕ) *
       (((((gridModulus ϑ).flipScalar Unit).val ^ D.m)⁻¹.map
         (adeleExtension (weightEmbedding ιₚ τ))).det ^ l)⁻¹.val‖ ≤ 1 := by
   -- According to the sign of `l`, the number has the norm of a power of the integral adele `a` or
@@ -152,12 +152,12 @@ lemma norm_mul_det_flipScalar_zpow_le_one {ϑ : D.MFoldTwist} {p : ℕ} [Fact p.
   let f : 𝔸f D.E →+* ℂ_[p] := adeleExtension (weightEmbedding ιₚ τ)
   let u : unitary (𝔸f D.E) := divStar (star ((gridModulus ϑ).generator * P.α D.towerExp))
   let a : 𝔸f D.E := (gridModulus ϑ).generator⁻¹.val *
-      algebraMap (NumberField.RingOfIntegers D.E) (Ô D.E) ↑(ϑ.normQ * D.M ^ D.natB) *
+      algebraMap (NumberField.RingOfIntegers D.E) (Ô D.E) ↑(ϑ.normQ * D.level ^ D.natB) *
     (star ((gridModulus ϑ).generator.val * (P.q₁ D.towerExp * (P.α D.towerExp).val)) *
       (P.α D.towerExp)⁻¹.val)
-  have ha_eq : a = ((ϑ.normQ * (D.M ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * u.val := by
+  have ha_eq : a = ((ϑ.normQ * (D.level ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * u.val := by
     have hnat : (algebraMap (NumberField.RingOfIntegers D.E) (Ô D.E)
-        ↑(ϑ.normQ * D.M ^ D.natB) : 𝔸f D.E) = ((ϑ.normQ * D.M ^ D.natB : ℕ) : 𝔸f D.E) := by
+        ↑(ϑ.normQ * D.level ^ D.natB) : 𝔸f D.E) = ((ϑ.normQ * D.level ^ D.natB : ℕ) : 𝔸f D.E) := by
       simp
     have hu : u.val = star (gridModulus ϑ).generator.val * star (P.α D.towerExp).val *
         (gridModulus ϑ).generator⁻¹.val * (P.α D.towerExp)⁻¹.val := by
@@ -168,7 +168,7 @@ lemma norm_mul_det_flipScalar_zpow_le_one {ϑ : D.MFoldTwist} {p : ℕ} [Fact p.
     rw [hnat, hu]
     simp only [star_mul', star_natCast, Nat.cast_mul, Nat.cast_pow]
     ring
-  have hstar_a_eq : star a = ((ϑ.normQ * (D.M ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * (u⁻¹).val := by
+  have hstar_a_eq : star a = ((ϑ.normQ * (D.level ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * (u⁻¹).val := by
     rw [ha_eq, star_mul', star_natCast]
     rfl
   have hdet : (((((gridModulus ϑ).flipScalar Unit).val ^ D.m)⁻¹.map f).det : ℂ_[p]) =
@@ -180,13 +180,13 @@ lemma norm_mul_det_flipScalar_zpow_le_one {ϑ : D.MFoldTwist} {p : ℕ} [Fact p.
       congr 1
     rw [map_inv, map_pow, map_inv, map_pow, Units.val_inv_eq_inv_val, Units.val_pow_eq_pow_val, h1]
   have hnorm (c : 𝔸f D.E) (v : unitary (𝔸f D.E))
-      (hc : c = ((ϑ.normQ * (D.M ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * v.val) :
-      ‖((D.M ^ D.natB * D.q₁ : ℕ) : ℂ_[p]) * f v.val‖ = ‖f c‖ := by
+      (hc : c = ((ϑ.normQ * (D.level ^ D.natB * D.q₁) : ℕ) : 𝔸f D.E) * v.val) :
+      ‖((D.level ^ D.natB * D.q₁ : ℕ) : ℂ_[p]) * f v.val‖ = ‖f c‖ := by
     symm
     rw [hc, map_mul, map_natCast, Nat.cast_mul ϑ.normQ, mul_assoc, norm_mul,
       hp.norm_natCast_eq_one, one_mul]
   obtain ⟨k, rfl | rfl⟩ := l.eq_nat_or_neg
-  · have h_eq : ‖((D.M ^ D.natB * D.q₁) ^ (D.m * (k : ℤ).natAbs) : ℕ) *
+  · have h_eq : ‖((D.level ^ D.natB * D.q₁) ^ (D.m * (k : ℤ).natAbs) : ℕ) *
         (((((gridModulus ϑ).flipScalar Unit).val ^ D.m)⁻¹.map f).det ^ (k : ℤ))⁻¹.val‖ =
         ‖f a‖ ^ (D.m * k) := by
       rw [Int.natAbs_natCast, Nat.cast_pow, Units.val_inv_eq_inv_val, Units.val_zpow_eq_zpow_val,
@@ -194,7 +194,7 @@ lemma norm_mul_det_flipScalar_zpow_le_one {ϑ : D.MFoldTwist} {p : ℕ} [Fact p.
     rw [h_eq]
     exact pow_le_one₀ (norm_nonneg _)
       (norm_adeleExtension_le_one _ (generator_inv_mul_normQ_mul_star_mem ϑ))
-  · have h_eq : ‖((D.M ^ D.natB * D.q₁) ^ (D.m * (-(k : ℤ)).natAbs) : ℕ) *
+  · have h_eq : ‖((D.level ^ D.natB * D.q₁) ^ (D.m * (-(k : ℤ)).natAbs) : ℕ) *
         (((((gridModulus ϑ).flipScalar Unit).val ^ D.m)⁻¹.map f).det ^ (-(k : ℤ)))⁻¹.val‖ =
         ‖f (star a)‖ ^ (D.m * k) := by
       rw [Int.natAbs_neg, Int.natAbs_natCast, Nat.cast_pow, Units.val_inv_eq_inv_val,
@@ -230,10 +230,10 @@ lemma exists_norm_mul_lastPathPairing_le_one : ∃ N ≠ (0 : ℕ),
   have hL_le (τ : D.Φ) : (L τ).natAbs ≤ D.natB * D.r ^ 4 + ⌈20 * D.b⌉₊ :=
     (hL τ).trans (add_le_add (boxes_lastPathColumns_le_natB_mul true le_rfl)
       (natAbs_lastPathDetExp_le true le_rfl τ))
-  let N (τ : D.Φ) : ℕ := (D.M ^ D.natB * D.q₁) ^ (D.m * (L τ).natAbs)
+  let N (τ : D.Φ) : ℕ := (D.level ^ D.natB * D.q₁) ^ (D.m * (L τ).natAbs)
   have h_log : log (∏ τ, N τ : ℕ) ≤ D.x ^ 98 * D.b ^ 2 :=
     calc _ = ∑ τ, D.m * (L τ).natAbs *
-          (D.natB * log D.M + (log P.q₀ + log (towerDeg D.towerExp))) := by
+          (D.natB * log D.level + (log P.q₀ + log (towerDeg D.towerExp))) := by
           simp [N, log_prod, log_mul, NeZero.ne, -Nat.cast_natAbs]
       _ ≤ _ := by
           grw [hL_le]
@@ -294,7 +294,7 @@ lemma exists_mul_lastPathPeriod_mem_embValRing : ∃ N ≠ (0 : ℕ),
   let d : ℕ := D.liftDenominator
   have hd_ne : d ≠ 0 := by simp [d, liftDenominator, NeZero.ne]
   have h_log_d : log d ≤ 2 * Core.numInfPlaces D.E * (2 * D.n D.m * (2 * D.n D.m)) *
-      (D.natB * log D.M) + D.natB * D.r ^ 4 * (D.natB * log D.M + log P.d) := by
+      (D.natB * log D.level) + D.natB * D.r ^ 4 * (D.natB * log D.level + log P.d) := by
     simp [d, liftDenominator, log_mul, NeZero.ne]
   have h_log : log (M * (d ^ D.m * d ^ D.m) : ℕ) ≤ D.x ^ 99 * D.b ^ 2 :=
     calc _ = log M + (D.m * log d + D.m * log d) := by simp [log_mul, hM_ne, hd_ne]
@@ -332,11 +332,11 @@ lemma exists_mul_lastPathPeriod_mem_embValRing : ∃ N ≠ (0 : ℕ),
 `exp (x ^ 99 * b ^ 2)`. -/
 lemma card_stdClasses_lastPathLevel_le (z : Bool) {j : ℕ} (hj : j ≤ D.m) :
     Nat.card (StdClasses (lastPathLevel (1 : D.MFoldTwist) z j)) ≤ exp (D.x ^ 99 * D.b ^ 2) := by
-  have h_level : principalLevel _ (1 * D.M ^ D.natB : ℕ) ≤ lastPathLevel (1 : D.MFoldTwist) z
+  have h_level : principalLevel _ (1 * D.level ^ D.natB : ℕ) ≤ lastPathLevel (1 : D.MFoldTwist) z
     j := by
     unfold lastPathLevel
     rw [← show (1 : D.MFoldTwist).normQ = 1 by simp [toAutChar_one_and_toTwist_one_and_Q_one]]
-    exact Modulus.principalLevel_le_levelOfSubgroup normQ_mul_M_pow_mem_modulus
+    exact Modulus.principalLevel_le_levelOfSubgroup normQ_mul_level_pow_mem_modulus
   refine (D.card_stdClasses_le_exp_mul_log _ (card_lastPathIndex_le z hj) h_level).trans ?_
   simpa using D.le_of_hasLogBound
 

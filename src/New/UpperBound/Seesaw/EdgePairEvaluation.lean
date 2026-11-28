@@ -1126,8 +1126,8 @@ variable {P : Parameters} {D : Data P}
 
 /-- The grading of `Y_k` as `X_k` plus a string of length `2 ϱ + 1 - k`, indexed by
 `D.indexEquivY k`. As `D.m = 2 ϱ + 2`, the hypothesis says `k < D.m` and the length is
-`D.m - 1 - k`. The constant of the generic character, `-(j * (D.M * P.deltaE D.towerExp))⁻¹` with
-`j` the purely imaginary element of `New.WeilData`, does not depend on `k`. -/
+`D.m - 1 - k`. The constant of the generic character, `-(j * (D.level * P.deltaE D.towerExp))⁻¹`
+with `j` the purely imaginary element of `New.WeilData`, does not depend on `k`. -/
 def gradingY (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1 := by omega) :
     Grading (D.spaceY k) D.N (D.X k) (2 * D.ϱ + 1 - k) where
   indexEquiv := D.indexEquivY k (by grind)
@@ -1135,7 +1135,7 @@ def gradingY (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1 := by omega) :
   N_ne_zero_and_star_eq := by simp [ne]
   -- `genericConst` is nonzero as `P.deltaE D.towerExp` generates the different, and fixed by
   -- conjugation as `j` and `P.deltaE D.towerExp` are both purely imaginary
-  genericConst := ⟨-(j * (D.M * P.deltaE D.towerExp) : D.E)⁻¹, by
+  genericConst := ⟨-(j * (D.level * P.deltaE D.towerExp) : D.E)⁻¹, by
                simp [ne, ne_zero_of_differentIdeal_eq_span P.differentIdeal_eq_span_deltaE,
                  ← coe_star_ringOfIntegers, P.star_deltaE, j_ne_zero]⟩
 
@@ -1165,7 +1165,7 @@ def doubleLiftEvalY (i : ℕ) :=
 
 /-- The natural number `M ^ (f n²)`, with `M = p₀ p₁`, `f` the number of infinite places of `E` and
 `n = n_m` the rank `D.n D.m`. -/
-abbrev residueMatrixCount : ℕ := D.M ^ (D.f * D.n D.m ^ 2)
+abbrev residueMatrixCount : ℕ := D.level ^ (D.f * D.n D.m ^ 2)
 
 /-- For finite adelic points `y k` of the unitary groups, the datum `New.Data.pointDatumY ϑ k` on
 Hom(Y_k, Y_{k+1}) moved by `(y k, y (k + 1))` under the finite Weil representation

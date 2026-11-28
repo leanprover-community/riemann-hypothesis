@@ -201,10 +201,10 @@ lemma IsWeakChainDatum.gaugeLe_restrictedChain_collisionSum (hΨ : IsWeakChainDa
     (hQ : p.Coprime ϑ.normQ)
     {v : D.SourceForm} (hv : v ∈ D.integralSourceForms) (hp_small : D.IsSmallNonsplit p) :
     GaugeLe 1 (p ^ (D.m * D.collisionSum p ∅ + D.loss p - D.gain p)) (restrictedChain ϑ Ψ v) := by
-  obtain ⟨hp_M, hp_N, -⟩ := hp_small.not_dvd_M_mul_N
+  obtain ⟨hp_M, hp_N, -⟩ := hp_small.not_dvd_level_mul_N
   have hm_pos : (0 : ℝ) < D.m := HasLogBound.pos D
-  -- As `p` does not divide `D.M`, the product of the two level primes, the data are standard for
-  -- every `δ`, so lift `j` raises valuations by `divisibilityBound p j ∅`.
+  -- As `p` does not divide `D.level`, the product of the two level primes, the data are standard
+  -- for every `δ`, so lift `j` raises valuations by `divisibilityBound p j ∅`.
   have h_raises (x : D.Translations) (hx : x ∈ Ψ.support) (j : ℕ) :
       D.translateDatum x j ∈ (D.liftKernel ϑ j).raises 1 1 (p ^ (-D.divisibilityBound p j ∅)) :=
     D.mem_raises_neg_divisibilityBound hp_small.2 ϑ

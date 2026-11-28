@@ -423,13 +423,13 @@ def chosenGroupOrder : ℕ :=
   deriving NeZero
 
 /-- The norms `w.q` of the chosen places `w` above p₀ and p₁ have product M^f, where
-M = `D.M` = p₀ p₁ and f = `D.f` is the number of infinite places of E. -/
+M = `D.level` = p₀ p₁ and f = `D.f` is the number of infinite places of E. -/
 lemma prod_q_chosenPlace : ∏ x : (i : Fin 2) × D.ChosenPlace i,
-  (D.chosenPlace x).q = D.M ^ D.f := by
+  (D.chosenPlace x).q = D.level ^ D.f := by
   -- There are `f` chosen places above p_i, each of norm p_i.
   have h_norm (i : Fin 2) (w : D.ChosenPlace i) : w.val.q = D.levelPrime i :=
     D.q_eq_levelPrime w.property.right
-  simp [chosenPlace, Fintype.prod_sigma, h_norm, card_chosenPlace, Data.M, mul_pow]
+  simp [chosenPlace, Fintype.prod_sigma, h_norm, card_chosenPlace, Data.level, mul_pow]
 
 /-- At a chosen place `w` above the prime p_i = `D.levelPrime i`, the group GL_l over the residue
 field at `w` has the same order as GL_l over the field with p_i elements. -/
@@ -604,17 +604,17 @@ variable (D) in
 of the data `D`. -/
 lemma log_chosenGroupOrder_le : log D.chosenGroupOrder ≤ D.x ^ 32 := by
   -- `GL n` over a field with `q` elements has at most `q ^ n²` elements.
-  have h_order : D.chosenGroupOrder ≤ D.M ^ ((D.r * D.t) ^ 2 * D.f) :=
+  have h_order : D.chosenGroupOrder ≤ D.level ^ ((D.r * D.t) ^ 2 * D.f) :=
     calc _ = ∏ i : Fin 2, Nat.card (GL (Fin (D.r * D.t)) (ZMod (D.levelPrime i))) ^ D.f :=
           D.card_pi_GL_chosenPlace (D.r * D.t)
       _ ≤ ∏ i : Fin 2, (D.levelPrime i ^ (D.r * D.t) ^ 2) ^ D.f := by
           gcongr with i
           simpa using card_GL_le (n := Fin (D.r * D.t)) (ZMod (D.levelPrime i))
-      _ = D.M ^ ((D.r * D.t) ^ 2 * D.f) := by
-          simp only [← pow_mul, Fin.prod_univ_two, Data.M, mul_pow (D.levelPrime 0)]
-  calc log D.chosenGroupOrder ≤ log (D.M ^ ((D.r * D.t) ^ 2 * D.f) : ℕ) :=
+      _ = D.level ^ ((D.r * D.t) ^ 2 * D.f) := by
+          simp only [← pow_mul, Fin.prod_univ_two, Data.level, mul_pow (D.levelPrime 0)]
+  calc log D.chosenGroupOrder ≤ log (D.level ^ ((D.r * D.t) ^ 2 * D.f) : ℕ) :=
         log_le_log (Nat.cast_pos.2 (NeZero.pos _)) (Nat.cast_le.2 h_order)
-    _ = (D.r * D.t) ^ 2 * D.f * log D.M := by simp
+    _ = (D.r * D.t) ^ 2 * D.f * log D.level := by simp
     _ ≤ exp (32 * D.logX) := D.le_of_hasLogBound
     _ = D.x ^ 32 := exp_natCast_mul 32 D.logX
 

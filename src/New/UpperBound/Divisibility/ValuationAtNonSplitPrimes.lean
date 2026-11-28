@@ -373,8 +373,8 @@ lemma IsMarked.ω_ofSplitPlaces_mem_raises (hΛ : D.IsMarked Λ) (ϑ : D.Twist) 
 /-! ## Hecke transfer along the chain of lifts -/
 
 /-- Let `p` be coprime to the level `ϑ.normQ` of the twist. A prime of a marked set `Λ` above
-`p` contains none of this level, the element `D.piMBar` of norm `D.M`, its conjugate `D.piM`
-and the prime `D.N`: it contains `p`, which is prime to `ϑ.normQ` and to `D.M * D.N`. -/
+`p` contains none of this level, the element `D.piMBar` of norm `D.level`, its conjugate `D.piM`
+and the prime `D.N`: it contains `p`, which is prime to `ϑ.normQ` and to `D.level * D.N`. -/
 lemma IsMarked.notMem_asIdeal (hQ : p.Coprime ϑ.normQ) {Λ : Finset (FinPlace D.E)}
     (hΛ : D.IsMarked Λ) {l : FinPlace D.E} (hl : l ∈ Λ) :
     ↑ϑ.normQ ∉ l.asIdeal ∧
@@ -382,11 +382,13 @@ lemma IsMarked.notMem_asIdeal (hQ : p.Coprime ϑ.normQ) {Λ : Finset (FinPlace D
     algebraMap (NumberField.RingOfIntegers P.K) (NumberField.RingOfIntegers D.E) D.piMBar ∉
       l.asIdeal ∧
     ↑D.N ∉ l.asIdeal := by
-  obtain ⟨-, -, hp_notDvd⟩ : ¬p ∣ D.M ∧ p ≠ D.N ∧ ¬p ∣ D.M * D.N := hΛ.not_dvd_M_mul_N
+  obtain ⟨-, -, hp_notDvd⟩ : ¬p ∣ D.level ∧ p ≠ D.N ∧ ¬p ∣ D.level * D.N := hΛ.not_dvd_level_mul_N
   have h_level : ↑ϑ.normQ ∉ l.asIdeal := l.isPrime.notMem_of_isCoprime_of_mem hQ.cast
     (hΛ.natCast_mem_asIdeal hl)
-  -- In the prime `l` above `p` the product `D.M * D.N = D.piM * star D.piM * D.N` is not contained.
-  have h_MN : ↑(D.M * D.N) ∉ l.asIdeal := by rwa [l.natCast_mem_iff_dvd (hΛ.natCast_mem_asIdeal hl)]
+  -- In the prime `l` above `p` the product `D.level * D.N = D.piM * star D.piM * D.N` is not
+  -- contained.
+  have h_MN : ↑(D.level * D.N) ∉ l.asIdeal := by
+    rwa [l.natCast_mem_iff_dvd (hΛ.natCast_mem_asIdeal hl)]
   rw [Nat.cast_mul, ← piM_mul_star, l.isPrime.mul_mem_iff_mem_or_mem,
     l.isPrime.mul_mem_iff_mem_or_mem, not_or, not_or] at h_MN
   obtain ⟨⟨h_piM, h_piMBar⟩, h_N⟩ := h_MN
@@ -925,7 +927,7 @@ lemma IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator (H : IsWeakChain
   induction L with
   | nil =>
     refine ⟨1, fun x hx ↦ ⟨by simp, fun y ↦ by simp [chain, compUpTo], fun g _ hg ↦ ?_⟩⟩
-    obtain ⟨hp_M, hp_N, -⟩ := hΛ.not_dvd_M_mul_N
+    obtain ⟨hp_M, hp_N, -⟩ := hΛ.not_dvd_level_mul_N
     have h_standard : (D.translateDatum x j).val ∈ standardData (D.homX j) 1 :=
       H.translateDatum_mem_standardData hQ hp_N hx j (.inr hp_M)
     simpa using hΛ.ω_ofSplitPlaces_mem_raises ϑ h_standard (by simpa using hg)
@@ -1014,7 +1016,7 @@ theorem IsWeakChainDatum.gaugeLe_scaledHeckeOperator_pow (H : IsWeakChainDatum �
   have h_comb : restrictedChain ϑ Ψ ((Y ^ D.m) v) =
       D.restrictToY (chainCombination ϑ Ψ (fun x j ↦ t j (D.translateDatum x j)) D.m v) := by
     simp +contextual [restrictedChain, Finsupp.sum, h_chain]
-  obtain ⟨-, hp_N, -⟩ := hΛ.not_dvd_M_mul_N
+  obtain ⟨-, hp_N, -⟩ := hΛ.not_dvd_level_mul_N
   have hv_gauge : GaugeLe 1 1 v.val := hv.2
   rw [h_comb]
   refine GaugeLe.restrictToY D hp_N ?_

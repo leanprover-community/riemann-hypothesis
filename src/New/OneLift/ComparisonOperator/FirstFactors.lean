@@ -17,7 +17,7 @@ import New.UpperBound.Size.Estimates
 Fix admissible data `D`, a tame character `ϑ` and an index `1 ≤ j ≤ m`. Write `E^n` for
 the standard definite space of rank `n`, V″ for the one on `New.Data.FirstFactorIndex` and
 W^add = E^{3m−j} ⊕ W♭ ⊕ E^{3m} for the one on `New.Data.AddedIndex`. Throughout, k = `D.k`,
-m = `D.m`, M = `D.M`, and W_j is the space on `D.RowIndex` with r₊ = `D.posRank j` = k + j − 1
+m = `D.m`, M = `D.level`, and W_j is the space on `D.RowIndex` with r₊ = `D.posRank j` = k + j − 1
 plus signs. This file writes P_V as a sum of products of a polynomial in X and a coordinate of
 ζ(z), where X are the variables in the positive basis vectors of W_j and z those in W^add. Each
 value of Υ is a double class sum of products of three theta kernels of definite spaces, and this
@@ -131,13 +131,13 @@ open Real Matrix Finset Rows MvPolynomial Ideal ComplexConjugate Sum Fintype NeZ
 
 variable {P : Parameters} {D : Data P} {ϑ : D.TameChar}
 
-/-- With `M = D.M`, the integer `ϑ.normQ * M ^ c` lies in the ideal of the modulus
+/-- With `M = D.level`, the integer `ϑ.normQ * M ^ c` lies in the ideal of the modulus
 `D.twistModulus ϑ c`: the `c`-th power of the product of the chosen places (the places
 `D.chosenPlace` of the data) times the product of the places in `ϑ.Q`. -/
-lemma normQ_mul_M_pow_mem_modulus {c : ℕ} :
-    ↑(ϑ.normQ * D.M ^ c) ∈ (D.twistModulus ϑ c).ideal := by
-  -- `D.M` lies in the product `(D.piM)` of the chosen places, and each norm `w.q` in `w`.
-  have hM_mem : ↑D.M ∈ ∏ i, (D.chosenPlace i).asIdeal := by
+lemma normQ_mul_level_pow_mem_modulus {c : ℕ} :
+    ↑(ϑ.normQ * D.level ^ c) ∈ (D.twistModulus ϑ c).ideal := by
+  -- `D.level` lies in the product `(D.piM)` of the chosen places, and each norm `w.q` in `w`.
+  have hM_mem : ↑D.level ∈ ∏ i, (D.chosenPlace i).asIdeal := by
     rw [← span_piM D, mem_span_singleton]
     exact Dvd.intro _ D.piM_mul_star
   rw [TameChar.normQ, ← ϑ.Q.prod_coe_sort FinPlace.q, Nat.cast_mul, Nat.cast_pow, Nat.cast_prod]
@@ -171,33 +171,33 @@ lemma constantRows_mul_transpose_eq_mul_fromBlocks (j : D.LiftIndex) (i : D.RowC
       submatrix_apply, id_eq, Matrix.mul_apply, map_apply, map_zero, zero_mul, mul_zero,
       sum_const_zero, add_zero, zero_add]
 
-/-- Let `q` be the bound on the number of determinants, `n ≤ (10 m + 1) q` a degree with `n ≤ D.M`
-and `0 < H ≤ (n ^ n) ^ 3` a denominator. Then the constant `chosenGroupOrder ^ 2`, the two class
-numbers, three kernel bounds `exp x₁`, the order of GL_{3m} over the residue ring and the bound on
-`H` times the coordinates give at most exp(f m b log² b) after squaring. Here f = `D.f` is the
-number of infinite places, b = `D.b` and `D.natB` the weight at the b-places, log b = `D.logB`,
+/-- Let `q` be the bound on the number of determinants, `n ≤ (10 m + 1) q` a degree with
+`n ≤ D.level` and `0 < H ≤ (n ^ n) ^ 3` a denominator. Then the constant `chosenGroupOrder ^ 2`, the
+two class numbers, three kernel bounds `exp x₁`, the order of GL_{3m} over the residue ring and the
+bound on `H` times the coordinates give at most exp(f m b log² b) after squaring. Here f = `D.f` is
+the number of infinite places, b = `D.b` and `D.natB` the weight at the b-places, log b = `D.logB`,
 `D.offWeight` the weight at the other places, `D.gap` = 2 r⁸ the gap, x₁ = `D.x₁` the second cut-off
 and `D.chosenGroupOrder` a common multiple of the orders of the stabilisers. -/
 lemma firstFactorSize_sq_le_exp {q n : ℕ} {H : ℤ}
     (hq : q = Fintype.card D.Φ * (D.natB + D.offWeight + D.gap + D.m * D.gap))
-    (hn : n ≤ (10 * D.m + 1) * q) (hn_le_M : n ≤ D.M) (H_pos : 0 < H)
+    (hn : n ≤ (10 * D.m + 1) * q) (hn_le_M : n ≤ D.level) (H_pos : 0 < H)
     (H_le : H ≤ (n ^ n) ^ 3) (φ : ℂ ≃+* ℂ) :
     ‖φ (D.chosenGroupOrder ^ 2)‖ ^ 2 *
         (Nat.card (StdClasses (stdLevel D.E D.CarrierIndex)) *
           (Nat.card (StdClasses (stdLevel D.E (Fin D.m))) *
             (rexp D.x₁ * rexp D.x₁ *
               (rexp D.x₁ * Fintype.card (GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing) *
-                √((H : ℝ) ^ 2 * (D.M ^ 9) ^ ((12 * D.m + 1) * q)))))) ^ 2 ≤
+                √((H : ℝ) ^ 2 * (D.level ^ 9) ^ ((12 * D.m + 1) * q)))))) ^ 2 ≤
       rexp (D.f * D.m * D.b * D.logB ^ 2) := by
-  -- With M = `D.M` and R the residue ring of `D.untwistedModulus 2`: both class numbers are at
+  -- With M = `D.level` and R the residue ring of `D.untwistedModulus 2`: both class numbers are at
   -- most exp(x³⁰), H ≤ n³ⁿ ≤ M³ⁿ, |GL(R)| ≤ |R|^{(3m)²}, and |R| ≤ (M²)^{2e} with
   -- e = `Core.numInfPlaces D.E`. The logarithm of the product is then the left side of `h_scale`,
   -- and with n ≤ (10 m + 1) q the scale inequalities of the data put it below f m b log² b.
   have h_scale :
       4 * log D.chosenGroupOrder +
         2 * (D.x ^ 30 + (D.x ^ 30 + (D.x₁ + D.x₁ +
-          (D.x₁ + 2 * (2 * Core.numInfPlaces D.E * (2 * D.m + D.m) ^ 2) * log D.M +
-            (n * 3 * 2 * log D.M / 2 + 9 * ((12 * D.m + 1) * q) * log D.M / 2))))) ≤
+          (D.x₁ + 2 * (2 * Core.numInfPlaces D.E * (2 * D.m + D.m) ^ 2) * log D.level +
+            (n * 3 * 2 * log D.level / 2 + 9 * ((12 * D.m + 1) * q) * log D.level / 2))))) ≤
       D.f * D.m * D.b * D.logB ^ 2 := by
     grw [hn, hq]
     exact D.le_of_hasLogBound (by scale_grind D)
@@ -206,7 +206,7 @@ lemma firstFactorSize_sq_le_exp {q n : ℕ} {H : ℤ}
   grw [D.card_stdClasses_le_exp principalLevel_le_stdLevel h_carrier,
     D.card_stdClasses_le_exp principalLevel_le_stdLevel h_fin]
   grw [H_le, hn_le_M, card_eq_nat_card, card_GL_le,
-    Modulus.card_residueRing_le (levelModulus_ideal_le normQ_mul_M_pow_mem_modulus),
+    Modulus.card_residueRing_le (levelModulus_ideal_le normQ_mul_level_pow_mem_modulus),
     ← le_exp_of_log_le]
   -- The goals left are the inequality of logarithms, which is `h_scale`, and positivity conditions.
   · simp only [map_pow, map_natCast, norm_pow, RCLike.norm_natCast, ← pow_mul, Nat.reduceMul,
@@ -428,23 +428,23 @@ lemma card_le_gap (j : D.LiftIndex) :
 /-- Let ζ = `stackedDetProdCoords j i (D.shortRows i)` be the vector of coordinates of the product
 of determinants, polynomials in variables indexed by an infinite place in `D.Φ`, a row in
 `FirstFactorIndex j` and a column in `AddedIndex j`. Evaluate `H • ζ` at a point `z` whose
-`σ`-conjugates are at most `M ^ 4`, where `M = D.M`, and apply `σ`. If `q` bounds the total number
-of determinants, the root of the squared norm (`New.weylNormSq`) of the result is at most
+`σ`-conjugates are at most `M ^ 4`, where `M = D.level`, and apply `σ`. If `q` bounds the total
+number of determinants, the root of the squared norm (`New.weylNormSq`) of the result is at most
 `√(H ^ 2 (M ^ 9) ^ ((12 m + 1) q))`, with `m = D.m`. -/
 lemma sqrt_weylNormSq_smul_eval_stackedDetProdCoords_le (j : D.LiftIndex) (i : D.RowChoice) {q : ℕ}
     (hq : ∑ τ : D.Φ, card (DetIndex j τ) ≤ q) (H : ℤ) (σ : ℂ ≃+* ℂ)
     {z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ}
-    (hz : ∀ x : D.Φ × FirstFactorIndex j × AddedIndex j, ‖σ (z x)‖ ≤ D.M ^ 4) :
+    (hz : ∀ x : D.Φ × FirstFactorIndex j × AddedIndex j, ‖σ (z x)‖ ≤ D.level ^ 4) :
     √(weylNormSq (σ ∘ eval z ∘ (H • stackedDetProdCoords j i (D.shortRows i)))) ≤
-      √((H : ℝ) ^ 2 * (D.M ^ 9) ^ ((12 * D.m + 1) * q)) := by
+      √((H : ℝ) ^ 2 * (D.level ^ 9) ^ ((12 * D.m + 1) * q)) := by
   -- The rows `D.shortRows i` form a short basis, so their entries are small too.
   have hY_small (ψ : D.E →+* ℂ) (x y : D.FlatIndex) :
       ‖ψ (D.shortRows i x y)‖ ≤ Space.shortBasisConst D.E D.FlatIndex (P.q₁ D.towerExp * P.d) :=
     (Space.exists_short_basis_stdSpace P.conductor_mem_differentIdeal i.1.out).choose_spec.2 ψ y x
-  have hY_le (τ : D.Φ) (x y : D.FlatIndex) : ‖σ (Φ τ (D.shortRows i x y))‖ ≤ D.M ^ 4 :=
+  have hY_le (τ : D.Φ) (x y : D.FlatIndex) : ‖σ (Φ τ (D.shortRows i x y))‖ ≤ D.level ^ 4 :=
     (hY_small (.comp σ (Φ τ)) x y).trans (by simpa using D.le_of_hasLogBound)
   have h_coords : weylNormSq ((σ : ℂ →+* ℂ) ∘ eval z ∘ stackedDetProdCoords j i (D.shortRows i)) ≤
-      ↑(D.M ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ)) :=
+      ↑(D.level ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ)) :=
     weylNormSq_comp_eval_stackedDetProdCoords_le j i (D.shortRows i) hY_le hz
   have h_smul : eval z ∘ (H • stackedDetProdCoords j i (D.shortRows i)) =
       (H : ℂ) • eval z ∘ stackedDetProdCoords j i (D.shortRows i) := by simp [funext_iff]
@@ -508,22 +508,22 @@ lemma weylGauge_stdClassSum_stdClassSum_le_one {j : D.LiftIndex} {p : ℕ} [Fact
 
 /-- Let `q` = |D.Φ| (natB + offWeight + Δ + m Δ) be the bound on the number of determinants, with
 the weights `D.natB`, `D.offWeight` and the gap Δ = `D.gap`. Let `n ≤ (10 m + 1) q`, `n ≤ M` for
-M = `D.M`, and `0 < H ≤ (n ^ n) ^ 3`. Let every vector `F w v` have `φ`-conjugate of norm at most
-exp(3 x₁) |GL_{3m}(O_E/ϖ²)| √(H² M^{9 (12 m + 1) q}), where x₁ = `D.x₁` is a size parameter of the
-data and ϖ² = `D.untwistedModulus 2` is the square of the product of the chosen places. Then the
+M = `D.level`, and `0 < H ≤ (n ^ n) ^ 3`. Let every vector `F w v` have `φ`-conjugate of norm at
+most exp(3 x₁) |GL_{3m}(O_E/ϖ²)| √(H² M^{9 (12 m + 1) q}), where x₁ = `D.x₁` is a size parameter of
+the data and ϖ² = `D.untwistedModulus 2` is the square of the product of the chosen places. Then the
 double class sum of `F`, multiplied by the square of `D.chosenGroupOrder` (a common multiple of the
 orders of the stabilisers), has `φ`-conjugate of squared norm at most exp(f m b log² b), for the
 number f = `D.f` of infinite places, the weight b = `D.b` and log b = `D.logB`. -/
 lemma weylNormSq_stdClassSum_stdClassSum_le {j : D.LiftIndex} {q n : ℕ} {H : ℤ}
     (hq : q = Fintype.card D.Φ * (D.natB + D.offWeight + D.gap + D.m * D.gap))
-    (hn : n ≤ (10 * D.m + 1) * q) (hn_le_M : n ≤ D.M) (H_pos : 0 < H)
+    (hn : n ≤ (10 * D.m + 1) * q) (hn_le_M : n ≤ D.level) (H_pos : 0 < H)
     (H_le : H ≤ (n ^ n) ^ 3) (φ : ℂ ≃+* ℂ)
     {F : Gf D.E D.CarrierIndex → Gf D.E (Fin D.m) →
       WeylIndex (FirstFactorIndex j) (untwistedDescentPair j).colsPlus → ℂ}
     (hF : ∀ (w : Gf D.E D.CarrierIndex) (v : Gf D.E (Fin D.m)),
       √(weylNormSq (φ ∘ F w v)) ≤ rexp D.x₁ * rexp D.x₁ *
         (rexp D.x₁ * card (GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing) *
-          √((H : ℝ) ^ 2 * (D.M ^ 9) ^ ((12 * D.m + 1) * q)))) :
+          √((H : ℝ) ^ 2 * (D.level ^ 9) ^ ((12 * D.m + 1) * q)))) :
     weylNormSq (φ ∘ ((D.chosenGroupOrder ^ 2 : ℂ) •
         stdClassSum (stdLevel D.E D.CarrierIndex) fun w : Gf D.E D.CarrierIndex ↦
           stdClassSum (stdLevel D.E (Fin D.m)) (F w))) ≤
@@ -535,7 +535,7 @@ lemma weylNormSq_stdClassSum_stdClassSum_le {j : D.LiftIndex} {q n : ℕ} {H : �
         (Nat.card (StdClasses (stdLevel D.E (Fin D.m))) *
         (rexp D.x₁ * rexp D.x₁ *
           (rexp D.x₁ * card (GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing) *
-            √((H : ℝ) ^ 2 * (D.M ^ 9) ^ ((12 * D.m + 1) * q))))) :=
+            √((H : ℝ) ^ 2 * (D.level ^ 9) ^ ((12 * D.m + 1) * q))))) :=
     sqrt_weylNormSq_classSum_le φ fun w ↦ sqrt_weylNormSq_classSum_le φ (hF w)
   grw (transparency := default) [weylNormSq_comp_smul, (sqrt_le_iff.1 h_sum).2]
   exact firstFactorSize_sq_le_exp hq hn hn_le_M H_pos H_le φ
@@ -582,15 +582,15 @@ lemma norm_mul_modKernelStdSpace_twistedChiMPow_le_one {ϑ : D.TameChar} {j : D.
 the index set `FirstFactorIndex j`, for the characters `1` and `b`, a datum `Ψ` modulo `𝔪` and the
 polynomial `1`. Let `c` be a constant that normalises such kernels. Let `b` have weight `e` at the
 infinite places `D.Φ` and tame part `ψ`, a character of the residue field `ResField w` at each
-finite place `w`. Let `𝔪` contain `q * D.M ^ 2`, with `D.M` the integer `M` of the data. Let the
-values of `Ψ` have norm at most one under all ring maps `ℂ → ℂ_[l]` with `l` a prime coprime to `q`.
-Let `p` be a prime coprime to `q`, and let `h` lie in `Gf D.E (FirstFactorIndex j)`, the finite
+finite place `w`. Let `𝔪` contain `q * D.level ^ 2`, with `D.level` the integer `M` of the data. Let
+the values of `Ψ` have norm at most one under all ring maps `ℂ → ℂ_[l]` with `l` a prime coprime to
+`q`. Let `p` be a prime coprime to `q`, and let `h` lie in `Gf D.E (FirstFactorIndex j)`, the finite
 adelic unitary group of V″. Then the image under `ιₚ : ℂ → ℂ_[p]` of `c` times the kernel at `1` and
 `h` has norm at most one. -/
 lemma norm_mul_modKernelStdSpace_one_le_one {j : D.LiftIndex} {c : ℂ}
     (hc : IsModKernelScale (Fin j) (FirstFactorIndex j) D 0 c) {b : AutChar D.E} {e : D.Φ → ℤ}
     {ψ : (w : FinPlace D.E) → MulChar (ResField w) ℂ} (hb : b.HasWeight e ψ) {q : ℕ}
-    {𝔪 : Modulus D.E} (h𝔪 : ↑(q * D.M ^ 2) ∈ 𝔪.ideal)
+    {𝔪 : Modulus D.E} (h𝔪 : ↑(q * D.level ^ 2) ∈ 𝔪.ideal)
     {Ψ : Matrix (FirstFactorIndex j) (Fin j) 𝔪.ResidueRing → ℂ}
     (hΨ : ∀ x : Matrix (FirstFactorIndex j) (Fin j) 𝔪.ResidueRing, Ψ x ∈ Seesaw.integralAway q)
     {p : ℕ} [Fact p.Prime] [PadicPlace p] (hp : p.Coprime q) (h : Gf D.E (FirstFactorIndex j)) :
@@ -706,7 +706,7 @@ lemma exists_isIntegralAndSmall_leftSideSeries (j : D.LiftIndex) :
   obtain ⟨n, hn, H, H_pos, H_le, h_denom⟩ :=
     exists_isHomogeneousOverEntries_smul_stackedDetProdCoords j
   grw [h_detCount] at hn
-  have hn_le_M : n ≤ D.M := hn.trans D.nat_le_of_hasLogBound
+  have hn_le_M : n ≤ D.level := hn.trans D.nat_le_of_hasLogBound
   -- The constants of the three kernels: by `K₀`, `K₁`, `K₂`, cᵢ times the kernel is integral at
   -- p-integral points and has bounded conjugates.
   obtain ⟨c₀, hc₀, K₀⟩ := exists_ne_zero_isModKernelScale (Fin D.m) D.CarrierIndex D 0
@@ -731,7 +731,7 @@ lemma exists_isIntegralAndSmall_leftSideSeries (j : D.LiftIndex) :
   have hΨ (x : Matrix (FirstFactorIndex j) (Fin j) 𝔪.ResidueRing) :
     Ψ x ∈ Seesaw.integralAway ϑ.normQ := by
     simp [Ψ, apply_ite, Pi.single_apply]
-  have h𝔪 : ↑(ϑ.normQ * D.M ^ 2) ∈ 𝔪.ideal := normQ_mul_M_pow_mem_modulus
+  have h𝔪 : ↑(ϑ.normQ * D.level ^ 2) ∈ 𝔪.ideal := normQ_mul_level_pow_mem_modulus
   -- The kernels: `k₀`, `k₁` with their constants, and `θ w` as a linear map on polynomials.
   let k₀ (v : Gf D.E (Fin D.m)) (w : Gf D.E D.CarrierIndex) : ℂ :=
     c₀ * modKernelStdSpace (stdSpace D.E (Fin D.m)) (twistedChiMPow ϑ j) 1 (unitModulus D.E) 1 1
@@ -787,11 +787,11 @@ lemma exists_isIntegralAndSmall_leftSideSeries (j : D.LiftIndex) :
         (starRingAut.trans σ) (by simp) 1 h
     -- N bounds the datum `addedDatum`, and B the vector H·`stackedDetProdCoords` at small points.
     let N : ℕ := card (GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing)
-    let B : ℝ := √((H : ℝ) ^ 2 * (D.M ^ 9) ^ ((12 * D.m + 1) * q))
+    let B : ℝ := √((H : ℝ) ^ 2 * (D.level ^ 9) ^ ((12 * D.m + 1) * q))
     -- By duality it is enough to bound the kernel at every Q that is small at the small points.
     refine weylNormSq_stdClassSum_stdClassSum_le rfl hn hn_le_M H_pos H_le φ fun w v ↦
       sqrt_weylNormSq_comp_le_of_eval_le σ ((k₀ v w * conj k₁) • c₂ • θ w)
-        (S := {z | ∀ x, ‖σ (z x)‖ ≤ D.M ^ 4})
+        (S := {z | ∀ x, ‖σ (z x)‖ ≤ D.level ^ 4})
         (fun l ↦ isHomogeneous_iff_aeval_smul_X.2 (h_denom i (D.shortRows i) l).aeval_smul_X)
         (fun z hz ↦ sqrt_weylNormSq_smul_eval_stackedDetProdCoords_le j i h_detCount H σ hz)
         fun Q hQ_hom hQ_le ↦ ?_

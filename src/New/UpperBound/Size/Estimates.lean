@@ -213,26 +213,26 @@ lemma diagramWeight_le_rowMainLength_add_rowSlack {j : ℕ} (hj : j < D.m) (τ :
   -- In each of the three ranges of `i` the bound is linear in the four facts above.
   split_ifs at h_rows ⊢ <;> omega
 
-/-- The integer `D.piMBar` of `K ⊆ ℂ` has norm `M = D.M`, so the image of its conjugate under any
-automorphism `σ` of `ℂ` has squared absolute value `M`. -/
-lemma norm_map_star_piMBar_sq (σ : ℂ ≃+* ℂ) : ‖σ (star (D.piMBar : P.K).val)‖ ^ 2 = D.M := by
+/-- The integer `D.piMBar` of `K ⊆ ℂ` has norm `M = D.level`, so the image of its conjugate under
+any automorphism `σ` of `ℂ` has squared absolute value `M`. -/
+lemma norm_map_star_piMBar_sq (σ : ℂ ≃+* ℂ) : ‖σ (star (D.piMBar : P.K).val)‖ ^ 2 = D.level := by
   let ι : P.K →+* ℂ := σ.toRingHom.comp (ComplexEmbedding.conjugate P.K.val.toRingHom)
   have hι (z : P.K) : ι z = σ (star z.val) := rfl
-  have h_norm : (D.piMBar : P.K) * star (D.piMBar : P.K) = D.M := by
-    simpa [M] using congrArg (algebraMap (𝓞 P.K) P.K) D.piMBar_mul_star
+  have h_norm : (D.piMBar : P.K) * star (D.piMBar : P.K) = D.level := by
+    simpa [level] using congrArg (algebraMap (𝓞 P.K) P.K) D.piMBar_mul_star
   have h_conj : ‖ι (star (D.piMBar : P.K))‖ = ‖ι D.piMBar‖ := by simp
   calc ‖σ (star (D.piMBar : P.K).val)‖ ^ 2
     _ = ‖ι D.piMBar‖ * ‖ι (star (D.piMBar : P.K))‖ := by rw [h_conj, hι, sq]
-    _ = D.M := by rw [← norm_mul, ← map_mul, h_norm, map_natCast, Complex.norm_natCast]
+    _ = D.level := by rw [← norm_mul, ← map_mul, h_norm, map_natCast, Complex.norm_natCast]
 
-/-- Let `M = D.M = p₀ p₁` be the product of the two level primes of the data, let `E = D.E` and let
-`Ω = P.bigOmega D.towerExp = exp (γ - Re L'/L(1, χ_K)) · 2π / rd_E`, with `γ` Euler's constant and
-`rd_E` the root discriminant of `E`. For `l ≤ r + e` the jet size
+/-- Let `M = D.level = p₀ p₁` be the product of the two level primes of the data, let `E = D.E` and
+let `Ω = P.bigOmega D.towerExp = exp (γ - Re L'/L(1, χ_K)) · 2π / rd_E`, with `γ` Euler's constant
+and `rd_E` the root discriminant of `E`. For `l ≤ r + e` the jet size
 `D.jetSize l = log l! + l log (M / Ω)`, which measures a derivative of order `l`, is at most
 `D.jetSize r + e (log (r + e + 1) + log (M / Ω))`. -/
 lemma jetSize_le_add {l r e : ℕ} (hl : l ≤ r + e) :
     D.jetSize l ≤
-      D.jetSize r + (Real.log (↑(r + e) + 1) + Real.log (D.M / P.bigOmega D.towerExp)) * e := by
+      D.jetSize r + (Real.log (↑(r + e) + 1) + Real.log (D.level / P.bigOmega D.towerExp)) * e := by
   -- `(r + e)!` is `r!` times `e` factors, each at most `r + e + 1`.
   have h_fact : l ! ≤ r ! * (r + e + 1) ^ e := calc
     l ! ≤ (r + e)! := factorial_le hl
@@ -240,8 +240,8 @@ lemma jetSize_le_add {l r e : ℕ} (hl : l ≤ r + e) :
     _ ≤ _ := by grw [ascFactorial_le_pow_add, (r + e).le_succ]
   have h_log_fact : Real.log l ! ≤ Real.log r ! + e * Real.log (↑(r + e) + 1) := by
     simpa (disch := positivity) [log_mul] using log_le_log (by positivity) (cast_le.2 h_fact)
-  have h_linear : l * Real.log (D.M / P.bigOmega D.towerExp) ≤
-      (r + e) * Real.log (D.M / P.bigOmega D.towerExp) :=
+  have h_linear : l * Real.log (D.level / P.bigOmega D.towerExp) ≤
+      (r + e) * Real.log (D.level / P.bigOmega D.towerExp) :=
     mul_le_mul_of_nonneg_right (mod_cast hl) (log_nonneg D.le_of_hasLogBound)
   rw [jetSize, jetSize]
   linarith
@@ -275,9 +275,9 @@ lemma card_stdClasses_le_exp_mul_log {n : Type} [Fintype n] [DecidableEq n]
   gcongr <;> exact D.le_of_hasLogBound
 
 /-- The admissible data `D` give a CM field `E = D.E`, the length `x = D.x` of the prime sum, the
-level primes with product `M = D.M`, a further prime level `N = D.N`, and integers `D.piM`, `D.piN`
-of `E` whose products with their conjugates are `M` and `N`. Let `n` be an index set with at most
-`n_m = D.n D.m` elements and `G_f` the finite adelic unitary group over `E` of the form
+level primes with product `M = D.level`, a further prime level `N = D.N`, and integers `D.piM`,
+`D.piN` of `E` whose products with their conjugates are `M` and `N`. Let `n` be an index set with at
+most `n_m = D.n D.m` elements and `G_f` the finite adelic unitary group over `E` of the form
 `∑_{i ∈ n} z_i \bar z_i`, with group `Γ` of rational points. If a subgroup `K` of `G_f` contains the
 principal congruence subgroup of level `D.piM * D.piN`, then there are at most `exp (x ^ 30)` double
 cosets `Γ \ G_f / K`. -/
@@ -285,10 +285,10 @@ lemma card_stdClasses_le_exp {n : Type} [Fintype n] [DecidableEq n] {K : Subgrou
     (hK : principalLevel n (D.piM * D.piN) ≤ K) (hn : Fintype.card n ≤ D.n D.m) :
     Nat.card (StdClasses K) ≤ exp (D.x ^ 30) := by
   -- `K` contains the principal level of `M * N`, which is `piM * piN` times its conjugate.
-  have h_dvd : D.piM * D.piN ∣ ↑(D.M * D.N) := by
+  have h_dvd : D.piM * D.piN ∣ ↑(D.level * D.N) := by
     simp [← piM_mul_star, ← piN_mul_star, mul_dvd_mul]
   calc (Nat.card (StdClasses K) : ℝ)
-    _ ≤ exp (D.x ^ 29 * (1 + .log ↑(D.M * D.N))) := D.card_stdClasses_le_exp_mul_log _
+    _ ≤ exp (D.x ^ 29 * (1 + .log ↑(D.level * D.N))) := D.card_stdClasses_le_exp_mul_log _
       (by lia) ((principalLevel_le_of_dvd h_dvd).trans hK)
     _ ≤ exp (D.x ^ 30) := by simpa using D.le_of_hasLogBound
 

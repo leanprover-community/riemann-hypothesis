@@ -281,7 +281,7 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
     obtain ⟨r, hr, -⟩ := exists_mul_mem_integralAbove l (g x) 1
     simp_rw [θ, ← detKernel_stdEmbFin_mul _ r (g x)]
     let _ : PadicPlace l := ⟨j⟩
-    refine ker_int.norm_le_one (weight .one) (weight .one) D.normQ_mul_M_pow_mem_modulus
+    refine ker_int.norm_le_one (weight .one) (weight .one) D.normQ_mul_level_pow_mem_modulus
       (by simp [ite_mem, Pi.single_apply]) h_homog hl (by simp) hr
       ⟨∏ τ, det (of (.X ⟨τ, ·, ·⟩)) ^ c τ, ?_⟩
     simp [variableMinor, det_apply]
@@ -394,14 +394,14 @@ namespace New.Selmer
 variable {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePrime ℓ]
 
 /-- If `I` is an auxiliary set of places avoiding `badPlaces D ℓ`, the places dividing `ℓ M N` (with
-`M = D.M` and `N = D.N` the level), then the product of the norms of the places of `I` is prime to
-`ℓ` and to `M N`. -/
+`M = D.level` and `N = D.N` the level), then the product of the norms of the places of `I` is prime
+to `ℓ` and to `M N`. -/
 lemma coprime_prod_q_of_isAuxiliary {I : Finset (FinPlace D.E)}
     (hI : IsAuxiliary (badPlaces D ℓ) I) :
-    ℓ.Coprime (∏ w ∈ I, w.q) ∧ (D.M * D.N).Coprime (∏ w ∈ I, w.q) := by
-  -- If the prime `w.q` divided `ℓ * (D.M * D.N)`, then `w`, which contains `w.q`, would lie in
+    ℓ.Coprime (∏ w ∈ I, w.q) ∧ (D.level * D.N).Coprime (∏ w ∈ I, w.q) := by
+  -- If the prime `w.q` divided `ℓ * (D.level * D.N)`, then `w`, which contains `w.q`, would lie in
   -- `badPlaces D ℓ`.
-  have h_coprime : ∀ w ∈ I, w.q.Coprime (ℓ * (D.M * D.N)) := by
+  have h_coprime : ∀ w ∈ I, w.q.Coprime (ℓ * (D.level * D.N)) := by
     intro w hw
     obtain ⟨h_notMem, h_prime, -⟩ := hI w hw
     refine h_prime.coprime_iff_not_dvd.2 fun h_dvd ↦ h_notMem ?_
@@ -410,7 +410,7 @@ lemma coprime_prod_q_of_isAuxiliary {I : Finset (FinPlace D.E)}
 
 /-- The tame character of modulus `I` given by a member `χ = (μ, ψ)` of `tameChars I`, that is, a
 character `μ` of U(1)(𝔸) of weight `0` whose tame part `ψ` is trivial outside `I`; here `I` is an
-auxiliary set avoiding `badPlaces D ℓ`, the places dividing `ℓ`, `D.M` or `D.N`. -/
+auxiliary set avoiding `badPlaces D ℓ`, the places dividing `ℓ`, `D.level` or `D.N`. -/
 @[simp]
 noncomputable def tameCharOfAuxiliary (I : Finset (FinPlace D.E))
     (hI : IsAuxiliary (badPlaces D ℓ) I) (χ : tameChars I) :
@@ -438,11 +438,12 @@ lemma invAvatar_eq_of_artinMap_eq {τ : D.TameChar} {x : (𝔸f D.E)ˣ} {g : Abs
 
 /-- Let `ℓ` be the fixed prime, `E = D.E` the CM field of the data `D`, `Ω` the algebraic closure of
 `ℚ`, and `I` a finite set of places of `E` that is auxiliary for `badPlaces D ℓ`, the places
-dividing `ℓ * D.M * D.N`: the places of `I` have prime norm, their conjugates are outside `I`, and
-neither they nor their conjugates are bad. Let `ψ : Gal(Ω/E) → ℚ̄_ℓ` be a locally constant character
-with `ψ(Art x) = η(x / x̄)` for an idele class character `η` of modulus `I` that is trivial on the
-local components at the places over `ℓ` (`IsFromU1`). Then `ψ = τ.invAvatar` for some `τ` with
-modulus `I` in `D.TameChar`, the weight-zero tamely ramified characters of U(1)(𝔸) of `E`. -/
+dividing `ℓ * D.level * D.N`: the places of `I` have prime norm, their conjugates are outside `I`,
+and neither they nor their conjugates are bad. Let `ψ : Gal(Ω/E) → ℚ̄_ℓ` be a locally constant
+character with `ψ(Art x) = η(x / x̄)` for an idele class character `η` of modulus `I` that is
+trivial on the local components at the places over `ℓ` (`IsFromU1`). Then `ψ = τ.invAvatar` for some
+`τ` with modulus `I` in `D.TameChar`, the weight-zero tamely ramified characters of U(1)(𝔸) of `E`.
+-/
 lemma exists_tameChar_invAvatar_eq {I : Finset (FinPlace D.E)} (hI : IsAuxiliary (badPlaces D ℓ) I)
     {ψ : Gal(Ω/D.E) →* PadicAlgCl ℓ} (hψ : IsFromU1 (placesDividing D.E ℓ) I ψ) :
     ∃ τ : D.TameChar, τ.Q = I ∧ ψ = τ.invAvatar := by

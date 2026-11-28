@@ -207,8 +207,8 @@ variable {ϑ} in
 /-- Suppose that the modulus `ϑ.Q` of `ϑ` is empty (`hQ`) and that `k < D.m`. Let `T` be a finite
 set of classes of `Gf D.E (D.Y k)` modulo `levelY ϑ k`, and suppose (`hT`) that every point over `T`
 lies in `localLevel` at the places not dividing `ϑ.normQ = 1`. Then `T` has at most
-`D.residueMatrixCount = M ^ (f n²)` elements, where `M = D.M = p₀ p₁` (the primes of `D`), `f = D.f`
-is the number of infinite places of `E`, and `n = D.n D.m`. -/
+`D.residueMatrixCount = M ^ (f n²)` elements, where `M = D.level = p₀ p₁` (the primes of `D`),
+`f = D.f` is the number of infinite places of `E`, and `n = D.n D.m`. -/
 lemma card_le_residueMatrixCount (hQ : ϑ.Q = ∅) {k : ℕ} (hk : k < D.m)
     {T : Finset (Gf D.E (D.Y k) ⧸ levelY ϑ k)}
     (hT : ∀ x : Gf D.E (D.Y k),
@@ -231,8 +231,8 @@ lemma card_le_residueMatrixCount (hQ : ϑ.Q = ∅) {k : ℕ} (hk : k < D.m)
         fun h_zero ↦ absurd h_zero (relIndex_ne_zero_of_isLevel _)
     _ ≤ Ideal.absNorm (Ideal.span {D.piM}) ^ Fintype.card (D.Y k) ^ 2 :=
       relIndex_principalLevel_le D.piM_ne_zero
-    _ = D.M ^ (D.f * Fintype.card (D.Y k) ^ 2) := by rw [absNorm_piM, ← pow_mul]
-    _ ≤ D.M ^ (D.f * D.n D.m ^ 2) :=
+    _ = D.level ^ (D.f * Fintype.card (D.Y k) ^ 2) := by rw [absNorm_piM, ← pow_mul]
+    _ ≤ D.level ^ (D.f * D.n D.m ^ 2) :=
       Nat.pow_le_pow_right NeZero.one_le (by grw [D.card_Y_le hk.le])
     _ = D.residueMatrixCount := rfl
 

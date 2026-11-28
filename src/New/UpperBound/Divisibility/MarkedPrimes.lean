@@ -189,15 +189,15 @@ lemma IsExceptional.star_ne (h : D.IsExceptional p) {w : FinPlace D.E} (hw : ↑
   exact hi_odd.not_two_dvd_nat
     ((D.m_even.two_dvd.trans h.m_dvd_orderOf).trans (orderOf_dvd_of_pow_eq_one hi_eq.symm))
 
-/-- A non-split prime `p < x₁` divides neither `D.M` (the product of the two level primes
-`D.levelPrime i`) nor `D.M * D.N`, and differs from `N`: the prime factors of `D.M * D.N` are at
-least `x₁`. -/
-lemma IsSmallNonsplit.not_dvd_M_mul_N (h : D.IsSmallNonsplit p) :
-    ¬p ∣ D.M ∧ p ≠ D.N ∧ ¬p ∣ D.M * D.N := by
+/-- A non-split prime `p < x₁` divides neither `D.level` (the product of the two level primes
+`D.levelPrime i`) nor `D.level * D.N`, and differs from `N`: the prime factors of `D.level * D.N`
+are at least `x₁`. -/
+lemma IsSmallNonsplit.not_dvd_level_mul_N (h : D.IsSmallNonsplit p) :
+    ¬p ∣ D.level ∧ p ≠ D.N ∧ ¬p ∣ D.level * D.N := by
   have hN : D.x₁ ≤ D.N := D.le_of_hasLogBound
   have hg (i : Fin 2) : D.x₁ ≤ D.levelPrime i := D.le_of_hasLogBound
   have h_ne : p ≠ D.levelPrime 0 ∧ p ≠ D.levelPrime 1 ∧ p ≠ D.N := by grind [h.1]
-  grind [M, hq.out, levelPrime_prime, N_prime, Nat.Prime.dvd_mul, Nat.prime_dvd_prime_iff_eq]
+  grind [level, hq.out, levelPrime_prime, N_prime, Nat.Prime.dvd_mul, Nat.prime_dvd_prime_iff_eq]
 
 variable (D) [PadicPlace p]
 
@@ -284,10 +284,11 @@ lemma IsMarked.card_le (h : D.IsMarked Λ) : #Λ ≤ D.f :=
   card_le_card_of_surjOn inducedPlace fun l hl ↦
     (h.induced_by_aPlace l hl).imp fun τ hτ ↦ ⟨mem_univ τ, hτ.2⟩
 
-/-- For a marked set `Λ`, the prime `p` divides neither `D.M` nor `D.M * D.N`, and differs
+/-- For a marked set `Λ`, the prime `p` divides neither `D.level` nor `D.level * D.N`, and differs
 from `N`. -/
-lemma IsMarked.not_dvd_M_mul_N (h : D.IsMarked Λ) : ¬p ∣ D.M ∧ p ≠ D.N ∧ ¬p ∣ D.M * D.N :=
-  h.isSmallNonsplit.not_dvd_M_mul_N
+lemma IsMarked.not_dvd_level_mul_N (h : D.IsMarked Λ) :
+    ¬p ∣ D.level ∧ p ≠ D.N ∧ ¬p ∣ D.level * D.N :=
+  h.isSmallNonsplit.not_dvd_level_mul_N
 
 /-- If `Λ` is a marked set above `p`, multiplying a place by the place named by `-p` conjugates the
 induced prime, because `p` is inert in `K`. -/
@@ -415,10 +416,10 @@ lemma IsMarked.maxCompactAt_le_levelX (h : D.IsMarked Λ) (hl : l ∈ Λ) :
   -- Neither `l` nor its conjugate contains `piM * piN`, whose norm `M * N` is prime to `p`.
   have h_notMem (v : FinPlace D.E) (hv : ↑p ∈ v.asIdeal) : D.piM * D.piN ∉ v.asIdeal := by
     intro h_mem
-    have h_norm : ((D.M * D.N : ℕ) : NumberField.RingOfIntegers D.E) ∈ v.asIdeal := by
+    have h_norm : ((D.level * D.N : ℕ) : NumberField.RingOfIntegers D.E) ∈ v.asIdeal := by
       rw [Nat.cast_mul, ← piM_mul_star, ← piN_mul_star, mul_mul_mul_comm]
       exact v.asIdeal.mul_mem_right _ h_mem
-    obtain ⟨-, -, h_ndvd⟩ := h.not_dvd_M_mul_N
+    obtain ⟨-, -, h_ndvd⟩ := h.not_dvd_level_mul_N
     exact h_ndvd ((v.natCast_mem_iff_dvd hv).1 h_norm)
   have h_le : maxCompactAt (D.X 0) l ≤ principalLevel (D.X 0) (D.piM * D.piN) := by
     refine inf_supportedOn_le_principalLevel fun w hw ↦ ?_

@@ -566,7 +566,7 @@ tensor product of the Bessel systems, `k` is the rank of `X₀` and `f` is the n
 places. The statement is for the logarithms, with `D.logB = log b`. -/
 lemma abs_log_mainSecondMoment_div_identitySecondMoment_sub_le :
     |log (D.filling.mainSecondMoment / D.filling.identitySecondMoment) -
-        (D.f * D.k * (log D.M - 15 / 2 * D.logB) +
+        (D.f * D.k * (log D.level - 15 / 2 * D.logB) +
           log (Fintype.card D.filling.BesselCoord * (D.k - 1).factorial ^ D.f))| ≤
       D.f * D.k * D.logB / 4 := by
   -- Insert the sizes of the degree, of the ratio of the masses and of `N` into the formula for the
@@ -575,14 +575,14 @@ lemma abs_log_mainSecondMoment_div_identitySecondMoment_sub_le :
   have k_pos : 0 < D.k := D.k_pos
   have two_le_N : 2 ≤ D.N := D.N_prime.two_le
   have pred_pos : (0 : ℝ) < D.N ^ D.k - 1 := D.pow_sub_one_pos
-  have M_pos : 0 < D.M := pos D.M
+  have M_pos : 0 < D.level := pos D.level
   have deg_pos : 0 < D.filling.besselDegree := D.filling.besselDegree_pos
   have rd_pos : 0 < rootDiscr D.E := rootDiscr_pos D.E
   have dim_pos : 0 < Fintype.card D.filling.BesselCoord := card_pos
   have mass_k_pos : 0 < mass D.E D.k := mass_pos D.E D.k
   have mass_r_pos : 0 < mass D.E D.r := mass_pos D.E D.r
   have h_order : (D.filling.unipotentOrder : ℝ) =
-      D.M ^ (D.f * (D.ϱ * (2 * D.k + 2 * D.ϱ + 1))) := by
+      D.level ^ (D.f * (D.ϱ * (2 * D.k + 2 * D.ϱ + 1))) := by
     rw [unipotentOrder, Shape.k, card_X₀, Nat.cast_pow]
     rfl
   -- The range of `N`, and `N ^ k - 1` against `N ^ k`.
@@ -608,7 +608,7 @@ lemma abs_log_mainSecondMoment_div_identitySecondMoment_sub_le :
       D.f * ∑ i ∈ {D.k - 1}, log i.factorial := by rw [D.k.Ico_pred_singleton k_pos]
   -- The remaining terms are small against `f k log b`.
   have rest_small :
-      |D.f * (D.m - 1) * (D.ϱ * log (D.M * D.rootDisc / 2 / π) + log (√D.rootDisc / 2 / π)) -
+      |D.f * (D.m - 1) * (D.ϱ * log (D.level * D.rootDisc / 2 / π) + log (√D.rootDisc / 2 / π)) -
       D.m * ∑ v : D.Φ, log (D.weight v)| ≤ D.f * D.k * D.logB / 4 - (log (1 + D.b⁻¹ ^ 9) +
         D.m * (D.m * ∑ v : D.Φ, log (D.weight v) + D.f * D.r * D.x⁻¹) + D.f * D.k * √D.logB) :=
     -- The default `h_exp` tactic (`scale_arith`) splits all the `max` cases and times out here.
@@ -642,9 +642,9 @@ between `b ^ (11 k f)` and `(M / b ^ 6) ^ (k f)`. Here `b = D.b` is the weight a
 `M = p₀ p₁` is the principal level, `k` the rank of `X₀` and `f` the number of infinite places. -/
 theorem mainSecondMoment_div_identitySecondMoment_mem_Icc :
     D.filling.mainSecondMoment / D.filling.identitySecondMoment ∈
-      Set.Icc (D.b ^ (11 * (D.k * D.f))) ((D.M / D.b ^ 6) ^ (D.k * D.f)) := by
+      Set.Icc (D.b ^ (11 * (D.k * D.f))) ((D.level / D.b ^ 6) ^ (D.k * D.f)) := by
   -- The factor `d ((k - 1)!) ^ f` lies between `1` and `b ^ (5 k f / 4)`, and `b ^ 19 ≤ M`.
-  have M_pos : (0 : ℝ) < D.M := Nat.cast_pos.2 (pos D.M)
+  have M_pos : (0 : ℝ) < D.level := Nat.cast_pos.2 (pos D.level)
   have ratio_pos : 0 < D.filling.mainSecondMoment / D.filling.identitySecondMoment := by
     have order_pos : 0 < D.filling.unipotentOrder := by simp [← card_reducedImage_besselU]
     rw [mainSecondMoment_div_identitySecondMoment_eq]
@@ -657,9 +657,9 @@ theorem mainSecondMoment_div_identitySecondMoment_mem_Icc :
     refine (log_le_log (by positivity) D.card_besselCoord_mul_factorial_le).trans_eq ?_
     rw [log_pow, log_pow, log_pow, log_sqrt (sqrt_nonneg _), log_sqrt (exp_nonneg _), log_exp]
     linarith
-  have level_ge : (D.f * D.k : ℝ) * (19 * D.logB) ≤ D.f * D.k * log D.M := by
+  have level_ge : (D.f * D.k : ℝ) * (19 * D.logB) ≤ D.f * D.k * log D.level := by
     gcongr
-    simpa using log_le_log (by positivity) (D.le_of_hasLogBound : D.b ^ 19 ≤ D.M)
+    simpa using log_le_log (by positivity) (D.le_of_hasLogBound : D.b ^ 19 ≤ D.level)
   have one_le_logB : 1 ≤ D.logB := D.le_of_hasLogBound
   obtain ⟨h_lower, h_upper⟩ := abs_le.1 D.abs_log_mainSecondMoment_div_identitySecondMoment_sub_le
   constructor
@@ -701,7 +701,7 @@ instance : D.filling.IsAdmissible := by
     rw [← InfinitePlace.apply, mk_Φ]
     rfl
   have h_kappa (v : InfinitePlace D.E) :
-      |D.filling.realM v| = D.M * v (P.deltaE D.towerExp).val / (2 * π) := by
+      |D.filling.realM v| = D.level * v (P.deltaE D.towerExp).val / (2 * π) := by
     rw [abs_realM_eq, ← h_varpi v]
     rfl
   exact

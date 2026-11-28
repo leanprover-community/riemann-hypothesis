@@ -451,16 +451,16 @@ lemma card_prod_mul_card_tightFrameIndex_mul_sq_le (j : D.LiftIndex) :
   have h_aut : (1 : ℝ) ≤ D.chosenGroupOrder := mod_cast NeZero.one_le
   have h_hook : (0 : ℝ) < hookNumberMinus j := Int.cast_pos.2 hookNumber_pos
   have h_classes : (N * D.chosenGroupOrder) ^ 2 ≤ exp A := by
-    have hM : (1 : ℝ) ≤ D.M := mod_cast NeZero.one_le
+    have hM : (1 : ℝ) ≤ D.level := mod_cast NeZero.one_le
     have hb : 1 ≤ exp D.b := one_le_exp (exp_pos _).le
-    -- `M_pow_denominatorExponent_sq_mul_le_exp` has further factors `M` and `exp b`, all of which
-    -- are at least `1`.
+    -- `level_pow_denominatorExponent_sq_mul_le_exp` has further factors `M` and `exp b`, all of
+    -- which are at least `1`.
     calc (N * D.chosenGroupOrder) ^ 2
       _ = (1 ^ (splittingV j 1).denominatorExponent) ^ 2 *
         (1 * (N * (1 * D.chosenGroupOrder)) ^ 2) := by simp
-      _ ≤ (D.M ^ (splittingV j 1).denominatorExponent) ^ 2 *
+      _ ≤ (D.level ^ (splittingV j 1).denominatorExponent) ^ 2 *
           (exp D.b * (N * (exp D.b * D.chosenGroupOrder)) ^ 2) := by gcongr
-      _ ≤ exp A := M_pow_denominatorExponent_sq_mul_le_exp j
+      _ ≤ exp A := level_pow_denominatorExponent_sq_mul_le_exp j
   have h_root : N * D.chosenGroupOrder ≤ exp (A / 2) := by
     refine le_of_sq_le_sq ?_ (exp_pos _).le
     rwa [← exp_natCast_mul, Nat.cast_two, mul_div_cancel₀ _ two_ne_zero]

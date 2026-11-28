@@ -64,7 +64,7 @@ lemma New.Data.CriticalPair.sqrt_weylNormSq_pointKernel_le {P : Parameters} {D :
     {n : Type} [Fintype n] [DecidableEq n] (hp : p.HasEmptyRow n) (σ : ℂ ≃+* ℂ) (u : Gf D.E Unit)
     (g : Gf D.E n) :
     √(weylNormSq (σ ∘ pointKernel hp.2 TameChar.one u g)) ≤
-      (D.M ^ D.f : ℝ) ^ card n *
+      (D.level ^ D.f : ℝ) ^ card n *
         exp (P.constantBound * (P.q₁ D.towerExp * card n + 1) ^ 2 + D.f * card n * log 4) := by
   -- The weight is `0`, the test vector has norm `1`, and the datum is that of
   -- `identityBlockIndicator`, a function modulo an ideal of norm `M ^ f` with values `0` and `1`.
@@ -73,7 +73,7 @@ lemma New.Data.CriticalPair.sqrt_weylNormSq_pointKernel_le {P : Parameters} {D :
   have h_vec : weylNormSq (σ ∘ (1 : WeylIndexFamily (fun _ : D.Φ ↦ Unit) 0 → ℂ)) = 1 := by
     refine (congrArg weylNormSq ?_).trans (weylNormSq_weylEval_permArray (rowEquivFin _))
     simp [funext_iff, weylEval, Exchange.nablaBasis_eq_one]
-  have h_card : card ((D.levelPlaces .one).levelModulus 1).ResidueRing = D.M ^ D.f := by
+  have h_card : card ((D.levelPlaces .one).levelModulus 1).ResidueRing = D.level ^ D.f := by
     have h_twist : IsEmpty (D.levelPlaces .one).TwistIndex := ⟨nofun⟩
     rw [card_levelModulus_residueRing, pow_one, prod_empty (ι := TwistIndex _), mul_one]
     exact prod_q_chosenPlace
@@ -135,9 +135,9 @@ algebraic part `algPart`, is at most `exp (x ^ 33)`, where `x = D.x` is the leng
 lemma New.Data.CriticalPair.chosenGroupOrder_mul_denomBound_sq_le {P : Parameters} {D : Data P}
     {p : D.CriticalPair} {n : Type} [Fintype n] (hp : p.HasEmptyRow n) :
     (D.chosenGroupOrder * p.denomBound ^ 2 : ℝ) ≤ exp (D.x ^ 33) := by
-  -- The rows are empty, so `p.denomBound = D.M ^ (4 f z)`.
+  -- The rows are empty, so `p.denomBound = D.level ^ (4 f z)`.
   have h_log : log (D.chosenGroupOrder * p.denomBound ^ 2) =
-      log D.chosenGroupOrder + 8 * D.f * p.z * log D.M := by
+      log D.chosenGroupOrder + 8 * D.f * p.z * log D.level := by
     simp [denomBound, hp, log_mul, NeZero.ne]
     ring
   exact le_exp_of_log_le (h_log.trans_le D.le_of_hasLogBound)
@@ -155,7 +155,7 @@ lemma New.Data.CriticalPair.norm_map_integralAlgebraicPart_le {P : Parameters} {
   -- Cauchy–Schwarz bounds the conjugates of `‖φ‖²` by the class sums `φ.normSqAt`, and these are
   -- bounded through the bound `C` for one kernel value.
   let φ : (lValueData hp.2 .one).descentPair.FormV := trivialLift hp.2 .one
-  let C : ℝ := (D.M ^ D.f : ℝ) ^ card n *
+  let C : ℝ := (D.level ^ D.f : ℝ) ^ card n *
     exp (P.constantBound * (P.q₁ D.towerExp * card n + 1) ^ 2 + D.f * card n * log 4)
   have h_normSq (σ : ℂ ≃+* ℂ) : φ.normSqAt σ ≤ exp (D.x ^ 30) * (exp (D.x ^ 30) * C) ^ 2 :=
     normSqAt_trivialLift_le hp.2 σ (sqrt_weylNormSq_pointKernel_le hp σ)
@@ -202,23 +202,23 @@ lemma New.Parameters.exists_eq_star_map_star_and_placePerm_eq {P : Parameters} (
 let `ϑ` be a tame character and `J = p.rowLengthSum = ∑ τ, (p.negWeight τ - z)`. Let `A` be
 `jetScale ^ J` times the lift of `ν ϑ` to `U(n)` without scaling. The normalised lift
 `φ = trivialLift H ϑ` is `vacuumScale ^ card n * (star piMBar) ^ J` times `A`, where `piMBar` is an
-integer of `K` of norm `M = D.M`. Hence `‖φ‖² = ‖vacuumScale ^ card n‖² * M ^ J * ⟪A, A⟫`. -/
+integer of `K` of norm `M = D.level`. Hence `‖φ‖² = ‖vacuumScale ^ card n‖² * M ^ J * ⟪A, A⟫`. -/
 lemma New.Data.CriticalPair.norm_trivialLift_sq_eq_mul_inner {P : Parameters} {D : Data P}
     {p : D.CriticalPair}
     {n : Type} [Fintype n] [DecidableEq n] (H : p.HasLiftRank n) (ϑ : D.TameChar) :
     let A : (lValueData H ϑ).descentPair.FormV :=
       P.jetScale D.towerExp ^ p.rowLengthSum • (lValueData H ϑ).trivialLift
     (‖trivialLift H ϑ‖ ^ 2 : ℂ) =
-      (‖P.vacuumScale D.towerExp ^ card n‖ ^ 2 : ℝ) * D.M ^ p.rowLengthSum * inner ℂ A A := by
+      (‖P.vacuumScale D.towerExp ^ card n‖ ^ 2 : ℝ) * D.level ^ p.rowLengthSum * inner ℂ A A := by
   intro A
   have h_smul :
       trivialLift H ϑ = (P.vacuumScale D.towerExp ^ card n * star (D.piMBar : ℂ) ^ p.rowLengthSum) •
         A := by
     rw [trivialLift, mul_pow, ← mul_assoc, mul_smul]
   have h_norm : ‖trivialLift H ϑ‖ ^ 2 =
-      ‖P.vacuumScale D.towerExp ^ card n‖ ^ 2 * D.M ^ p.rowLengthSum * ‖A‖ ^ 2 := by
+      ‖P.vacuumScale D.towerExp ^ card n‖ ^ 2 * D.level ^ p.rowLengthSum * ‖A‖ ^ 2 := by
     rw [h_smul, norm_smul, norm_mul, norm_pow (star _), mul_pow, mul_pow, pow_right_comm,
-      show ‖star (D.piMBar : ℂ)‖ ^ 2 = D.M from D.norm_map_star_piMBar_sq 1]
+      show ‖star (D.piMBar : ℂ)‖ ^ 2 = D.level from D.norm_map_star_piMBar_sq 1]
   rw [inner_self_eq_norm_sq_to_K, ← Complex.ofReal_pow, h_norm]
   simp
 
@@ -346,8 +346,8 @@ be the imaginary quadratic field of the parameters. For `σ ∈ Aut(ℂ/K)` ther
 that for every critical pair `p` with `card n = 2 z ≥ 4` and `ν` of weight `-p.negWeight` there is a
 real `r` with (a) `-4 f ≤ r`, (b) `r ≤ 4 f` if `p.negWeight τ = z` for all `τ` (`HasEmptyRow`), and
 (c) `log ‖σ ‖φ‖²‖ = c + r + ∑ τ, jetSize (p.negWeight τ - z)`. Here
-`jetSize j = log j! + j log (M / Ω)` with `M = D.M` and `Ω = P.bigOmega D.towerExp`, and `f` is the
-number of infinite places `τ`. -/
+`jetSize j = log j! + j log (M / Ω)` with `M = D.level` and `Ω = P.bigOmega D.towerExp`, and `f` is
+the number of infinite places `τ`. -/
 lemma New.Data.CriticalPair.exists_log_norm_map_norm_sq_trivialLift_eq_add_sum_jetSize
     {P : Parameters} (D : Data P) (n : Type)
     [Fintype n] [DecidableEq n] (σ : Gal(ℂ/K P)) :
@@ -375,7 +375,7 @@ lemma New.Data.CriticalPair.exists_log_norm_map_norm_sq_trivialLift_eq_add_sum_j
   · obtain ⟨τ, rfl⟩ := (placePerm D.towerExp σ).surjective τ
     rw [h_deg, h_flat, Nat.sub_self]
   have h_norm : ‖σ (‖trivialLift H .one‖ ^ 2)‖ =
-      vacuumFactor * D.M ^ p.rowLengthSum *
+      vacuumFactor * D.level ^ p.rowLengthSum *
         ((√(P.bigOmega D.towerExp))⁻¹ ^ (2 * p.rowLengthSum) * a * N) := by
     rw [norm_trivialLift_sq_eq_mul_inner, map_mul, norm_mul, h_inner]
     simp [vacuumFactor, N]
@@ -384,10 +384,10 @@ lemma New.Data.CriticalPair.exists_log_norm_map_norm_sq_trivialLift_eq_add_sum_j
     simp only [← h_deg, Equiv.sum_comp (placePerm D.towerExp σ) fun τ ↦
       log (Y.rowLength τ).factorial]
   have hΩ_pos : 0 < P.bigOmega D.towerExp := bigOmega_pos
-  have hM_pos : 0 < D.M := NeZero.pos _
+  have hM_pos : 0 < D.level := NeZero.pos _
   have h_jet : ∑ τ : D.Φ, D.jetSize (p.negWeight τ - p.z) = ∑ τ : D.Φ,
     log (p.negWeight τ - p.z).factorial +
-      p.rowLengthSum * (log D.M - log (P.bigOmega D.towerExp)) := by
+      p.rowLengthSum * (log D.level - log (P.bigOmega D.towerExp)) := by
     simp [jetSize, Finset.sum_add_distrib, Finset.sum_mul, log_div, hΩ_pos.ne', hM_pos.ne']
   rw [h_norm, h_jet]
   simp (disch := positivity) only [log_mul, log_pow, log_inv, log_sqrt, h_log, h_fact]
@@ -477,7 +477,7 @@ as a constant family, indexed by the primes `l` with an isomorphism `ℂ ≃ ℚ
 `denominatorBudget = f a log³ b / (m k)`, with `f` the number of infinite places `τ`, `b = D.b` the
 weight scale, `a = x b` for the length `x` of the prime sum and `k = r + 1 - m`; further
 `κ τ = D.weight τ`, and `jetSize i = log i! + i log (M / Ω)` is the size of a derivative of order
-`i`, with `M = D.M` and `Ω = P.bigOmega D.towerExp`. -/
+`i`, with `M = D.level` and `Ω = P.bigOmega D.towerExp`. -/
 lemma heightLe_norm_trivialLift_sq {j : ℕ} {p : D.CriticalPair} (hp : p.IsMainPair j) :
     HeightLe (D.denominatorBudget - ∑ τ : D.Φ, D.jetSize (D.weight τ)) fun _ : PrimePadicIso ↦
       ‖trivialLift hp.hasLiftRank TameChar.one‖ ^ 2 := by

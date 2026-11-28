@@ -591,15 +591,16 @@ instance (i : Fin 2) : HasLogBound D u (D.levelPrime i) ((if u then 11 else 10) 
     (by cases u <;> grind [D.scale_inequalities])
 
 /-- `b²⁰ ≤ M ≤ b²²` for `M = p₀ p₁`. -/
-lemma M_mem_Icc : (D.M : ℝ) ∈ Set.Icc (D.b ^ 20) (D.b ^ 22) := by
-  rw [M, cast_mul]
+lemma level_mem_Icc : (D.level : ℝ) ∈ Set.Icc (D.b ^ 20) (D.b ^ 22) := by
+  rw [level, cast_mul]
   constructor
   · grw [← (D.levelPrime_mem 0).1, ← (D.levelPrime_mem 1).1, ← pow_add]
   · grw [(D.levelPrime_mem 0).2, (D.levelPrime_mem 1).2, ← pow_add]
 
-/-- `D.M`, the product `p₀ p₁` of the two primes `D.levelPrime i`, lies between `b²⁰` and `b²²`. -/
-instance : HasLogBound D u D.M ((if u then 22 else 20) * D.logB) := by
-  rw [M]
+/-- `D.level`, the product `p₀ p₁` of the two primes `D.levelPrime i`, lies between `b²⁰` and `b²²`.
+-/
+instance : HasLogBound D u D.level ((if u then 22 else 20) * D.logB) := by
+  rw [level]
   exact .of_lower_of_upper (by cases u <;> grind [D.scale_inequalities])
 
 /-- The half-gap `halfGap = r ^ 8` lies between `x⁴⁰` and `e²⁵ x⁴⁰`. -/

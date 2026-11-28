@@ -88,7 +88,7 @@ lemma normQ_mem_and_notMem_of_mem_Q (hw : w ∈ ϑ.Q ∨ star w ∈ ϑ.Q) :
   have h_dvd : w.q ∣ ϑ.normQ := by grind [Finset.dvd_prod_of_mem, q_star]
   have h_mem : (ϑ.normQ : NumberField.RingOfIntegers D.E) ∈ w.asIdeal :=
     mem_of_dvd _ (Nat.cast_dvd_cast h_dvd) (absNorm_mem _)
-  -- `ϑ.normQ` is prime to `D.M * D.N`, where `D.M = D.piM * star D.piM`.
+  -- `ϑ.normQ` is prime to `D.level * D.N`, where `D.level = D.piM * star D.piM`.
   have h_notMem : D.piM * star D.piM * D.N ∉ w.asIdeal := by
     grind [piM_mul_star, w.isPrime.notMem_of_isCoprime_of_mem ϑ.coprime.cast]
   exact ⟨h_mem, fun h ↦ h_notMem (mul_mem_right _ _ (mul_mem_right _ _ h)),

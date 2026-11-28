@@ -213,10 +213,10 @@ instance {u : Bool} : D.HasLogBound u (P.bigOmega D.towerExp) (if u then 0 else 
 
 /-- The logarithm of `N₋ = κ̄ ^ m (M rd_E / 2π) ^ (m - 1) b ^ (-15 / 2)`, the lower end of the range
 for the level. Here `κ̄` is the geometric mean of the weights at the `f = D.f` infinite places of
-`E`, the principal level `M = D.M` is the product of the two primes `D.levelPrime 0` and
+`E`, the principal level `M = D.level` is the product of the two primes `D.levelPrime 0` and
 `D.levelPrime 1`, and `rd_E = D.rootDisc` is the root discriminant of `E`. -/
 def logLevelTarget : ℝ :=
-  P.logLevelMin D.towerExp D.m D.weight D.M D.logB
+  P.logLevelMin D.towerExp D.m D.weight D.level D.logB
 
 /-- The prime level `N` of the data is chosen with `log N₋ ≤ log N ≤ log N₋ + √(log b)`, where
 `log N₋ = D.logLevelTarget` is the logarithm of `κ̄ ^ m (M rd_E / 2π) ^ (m - 1) b ^ (-15 / 2)`. This
@@ -226,7 +226,7 @@ lemma logLevelTarget_mem_Icc : D.logLevelTarget ∈ Icc (D.m * D.logB) (24 * D.m
   have h_one_le_weight (τ : D.Φ) : (1 : ℝ) ≤ D.weight τ := D.le_of_hasLogBound
   have h_two_le_m : 2 ≤ D.m := by linarith [D.ten_thousand_le_m]
   exact P.logLevelMin_mem_Icc h_two_le_m D.le_of_hasLogBound
-    (fun τ ↦ ⟨h_one_le_weight τ, D.weight_le_b τ⟩) D.M_mem_Icc D.le_of_hasLogBound
+    (fun τ ↦ ⟨h_one_le_weight τ, D.weight_le_b τ⟩) D.level_mem_Icc D.le_of_hasLogBound
 
 /-- The level `N` is `≡ 1` modulo `n = D.cyclotomicConductor = q₁ d`. Here `d` is the prime with
 `K = ℚ(√-d)` and `q₁` is the order of the root of unity that generates `E` over `K`, so `E` lies in
@@ -266,7 +266,7 @@ instance : D.HasLogLower D.N (101 * D.logB) := by
 /-! ### Tame characters and twists -/
 
 /-- A character of U(1)(𝔸) of weight 0 whose tame part is supported on a finite set Q of places. The
-places of Q have norm prime to M N, with M = `D.M` and N the level, and Q is disjoint from its
+places of Q have norm prime to M N, with M = `D.level` and N the level, and Q is disjoint from its
 conjugate. -/
 structure TameChar where
   /-- The automorphic character `ϑ` of `U(1)(𝔸)`. -/
@@ -281,8 +281,8 @@ structure TameChar where
   tamePart_eq_one : ∀ w ∉ Q, tamePart w = 1
   /-- `Q` is disjoint from its complex conjugate. -/
   star_notMem : ∀ w ∈ Q, star w ∉ Q
-  /-- The places of `Q` have norm prime to `M N`, where `M = D.M` and `N` is the level. -/
-  coprime : (D.M * D.N).Coprime (∏ w ∈ Q, w.q)
+  /-- The places of `Q` have norm prime to `M N`, where `M = D.level` and `N` is the level. -/
+  coprime : (D.level * D.N).Coprime (∏ w ∈ Q, w.q)
 
 /-- The product of the norms of the places in the finite set Q of the tame character ϑ. -/
 abbrev TameChar.normQ {D : Data P} (ϑ : D.TameChar) : ℕ := ∏ w ∈ ϑ.Q, w.q

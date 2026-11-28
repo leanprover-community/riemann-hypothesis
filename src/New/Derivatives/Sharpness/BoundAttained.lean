@@ -24,7 +24,7 @@ the vacuum. Each translate is a sum of indicator data times roots of unity.
 
 Notions from other files:
 * A tight frame of length `M` with multiplicities `c` is a family `w` of lattice vectors with
-  `∑ c i Φ_σ(w i) conj(Φ_τ(w i)) = M δ_{σ τ}` (`New.IsTightFrame`). Here `M = D.M`.
+  `∑ c i Φ_σ(w i) conj(Φ_τ(w i)) = M δ_{σ τ}` (`New.IsTightFrame`). Here `M = D.level`.
 * `val_n(l) ≤ r` (`CMLattice.LeastValLE`) says that some coefficient of degree `l` in some product
   over `n` copies of `H Θ` has valuation at most `r`. Here `Θ` is the theta product of the frame and
   `H` is an integral series in the functions `y` along the forms of the frame.
@@ -179,7 +179,7 @@ noncomputable abbrev indicatorDatum {P : Parameters} (D : Data P) (𝔪 : Modulu
 
 /-- Let `D` be admissible data for the parameters `P`, with `K = P.K = ℚ(√-d)` and `E = D.E` the
 cyclotomic extension `P.E D.towerExp` of `K`; `D.Φ` is the set of its infinite places `τ`. Let `w`
-be a tight frame of length `M = D.M` with multiplicities `c`. Let
+be a tight frame of length `M = D.level` with multiplicities `c`. Let
 `μ_i(z) = periodFactor * ∑ conj(Φ_τ(w i)) z_τ` be its linear forms (`resolutionForms`, read through
 an embedding `ιₚ : ℂ → ℂ_[p]`). Let `θ` be the theta function of the elliptic curve
 `P.cmCurve = ℂ / cmPeriod 𝓞_K`, let `y(z) = ½(℘′(z + t) - a₁(℘(z + t) - ℘(t)))` for its point `t`
@@ -194,7 +194,7 @@ the adelic `12 × 1` matrices over `E`, such that
 * its theta function is fixed by the signed translations along `π_M 𝔞₀¹²` (`IsThetaFunction`). -/
 lemma exists_integral_isThetaFunction_twelveTaylor_eq {P : Parameters} {p : ℕ} [Fact p.Prime]
     [PadicPlace p] (D : Data P) {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M) {e : Fin 12 → J → ℕ}
+    (hw : IsTightFrame w c D.level) {e : Fin 12 → J → ℕ}
     (he : ∀ (b : Fin 12) (i : J), e b i * 3 ≤ c i) : ∃ F : 𝒮 D.twelveSpace,
     (D.twelveTaylor F).map ιₚ = ∏ b : Fin 12, rename (copyEmbedding b)
       ((∏ i : J, (taylorVia ιₚ P.cmCurve.translatedY).subst
@@ -206,13 +206,13 @@ lemma exists_integral_isThetaFunction_twelveTaylor_eq {P : Parameters} {p : ℕ}
   -- `y ^ e θ ^ c = (y θ ^ 3) ^ e θ ^ (c - 3 e)` is a monomial section of degree `c`
   let monomialDegrees (x : J × Fin 12 × Unit) : ℕ × ℕ × ℕ :=
     (c x.1 - e x.2.1 x.1 * 3, 0, e x.2.1 x.1)
-  have h_area : P.cmCurve.area = ‖(P.cmPeriod : ℂ)‖ ^ 2 / D.M * D.M * √P.d / 2 := by
+  have h_area : P.cmCurve.area = ‖(P.cmPeriod : ℂ)‖ ^ 2 / D.level * D.level * √P.d / 2 := by
     rw [area_eq_of_eq_scaledIdeal latticeModule_cmCurve,
-      div_mul_cancel₀ _ (Nat.cast_ne_zero.2 (NeZero.ne D.M))]
+      div_mul_cancel₀ _ (Nat.cast_ne_zero.2 (NeZero.ne D.level))]
     dsimp only
     rw [Units.val_one, map_one, Rat.cast_one, mul_one]
   obtain ⟨F, hF, hF_int, h_periods⟩ := exists_isResolutionProduct_of_isTightFrame D.twelveSpace
-    D.piMBar (NeZero.ne D.M) D.piMBar_mul_conj hw monomialDegrees
+    D.piMBar (NeZero.ne D.level) D.piMBar_mul_conj hw monomialDegrees
     (fun x ↦ Nat.sub_add_cancel (he x.2.1 x.1)) cmPeriod_mem_cmCurve_lattice h_area
   refine ⟨F, ?_, hF_int p, h_periods⟩
   have h_scale : P.cmPeriod / conj ↑D.piMBar / P.areaScale *
@@ -280,19 +280,19 @@ lemma exists_norm_le_norm_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Prim
       (star (algebraMap P.K D.E D.piMBar) • idealLattice D.E (Fin 12 × Unit)) (Space.entireTheta F))
     {𝔪 : Modulus D.E} (h𝔪 : 𝔪.ideal = .span {D.piM}) (L : 𝒮 D.twelveSpace →ₗ[ℂ] ℂ)
     (y : Fin 12 × Unit → 𝔸f D.E) : ∃ y₀ : Matrix (Fin 12) Unit 𝔪.ResidueRing,
-    ‖(ιₚ (D.M ^ (D.f * 12) * L F * D.twelveSpace.vacElem (finVec y)) : ℂ_[p])‖ ≤
+    ‖(ιₚ (D.level ^ (D.f * 12) * L F * D.twelveSpace.vacElem (finVec y)) : ℂ_[p])‖ ≤
       ‖(ιₚ (L (D.indicatorDatum 𝔪 y₀)) : ℂ_[p])‖ := by
   -- Fourier inversion writes `M ^ (12 f) F = ∑ i, c i • ϱ(u i) vac` with `π̄_M u i` in `𝔞₀¹²`,
   -- where `ϱ(u i)` is the translation by the finite part of the rational vector `u i`.
   set v : ℂ := D.twelveSpace.vacElem (finVec y)
   have h_integral : algebraMap D.E (𝔸f D.E) (algebraMap P.K D.E D.piMBar) ∈ Ô D.E :=
     coe_mem_Ô (algebraMap (NumberField.RingOfIntegers P.K) _ D.piMBar)
-  have h_norm : algebraMap P.K D.E D.piMBar * star (algebraMap P.K D.E D.piMBar) = D.M := by
+  have h_norm : algebraMap P.K D.E D.piMBar * star (algebraMap P.K D.E D.piMBar) = D.level := by
     apply (New.Φ 1).injective
     rw [map_mul, map_star_complex, phi_algebraMap, map_natCast]
     exact D.piMBar_mul_conj
   obtain ⟨Y, Γ, _, _, u, γ, c, hu, -, -, h_average, h_inversion⟩ :=
-    D.twelveSpace.exists_fourier_coefficients h_integral (NeZero.ne D.M) h_norm h_periods
+    D.twelveSpace.exists_fourier_coefficients h_integral (NeZero.ne D.level) h_norm h_periods
   -- The values of `c i • vac`, among them `c i * v`, are integral with those of `F`.
   have hc (i : Y) : ‖(ιₚ (c i * v) : ℂ_[p])‖ ≤ 1 :=
     D.twelveSpace.norm_mul_vacElem_le_one_of_eq_sum hF_int (h_average i) y
@@ -306,10 +306,10 @@ lemma exists_norm_le_norm_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Prim
     rw [map_smul, Pi.smul_apply, Algebra.smul_def] at hk
     exact hk
   choose z hz using h_translate
-  have h_sum : D.M ^ (D.f * 12) * L F * v = ∑ x : Y × Matrix (Fin 12) Unit 𝔪.ResidueRing,
+  have h_sum : D.level ^ (D.f * 12) * L F * v = ∑ x : Y × Matrix (Fin 12) Unit 𝔪.ResidueRing,
       stdLattice.selfDualAddChar D.E (z x.1 x.2) * (c x.1 * v) * L (D.indicatorDatum 𝔪 x.2) :=
-    calc D.M ^ (D.f * 12) * L F * v
-        = L ((D.M : ℂ) ^ card (D.Φ × Fin 12 × Unit) • F) * v := by
+    calc D.level ^ (D.f * 12) * L F * v
+        = L ((D.level : ℂ) ^ card (D.Φ × Fin 12 × Unit) • F) * v := by
           rw [map_smul, smul_eq_mul, Fintype.card_prod, Fintype.card_prod, Fintype.card_fin,
             Fintype.card_unique (α := Unit), mul_one]
       _ = ∑ i : Y, c i * (∑ y₀ : Matrix (Fin 12) Unit 𝔪.ResidueRing,
@@ -335,7 +335,7 @@ lemma exists_norm_le_norm_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Prim
 
 /-- Reduction to the curve. Let `D` be admissible data for the parameters `P`, with CM field
 `E = D.E = P.E D.towerExp`, whose `f = D.f` infinite places form `D.Φ`; valuations are taken at
-`ιₚ : ℂ → ℂ_[p]`. Let `w` be a tight frame of length `M = D.M` with linear forms `μ_i`
+`ιₚ : ℂ → ℂ_[p]`. Let `w` be a tight frame of length `M = D.level` with linear forms `μ_i`
 (`resolutionForms`) and multiplicities `c i ≥ 3 |l|`. Suppose `val₁₂(l) ≤ r` (`LeastValLE`): some
 coefficient of degree `l` in some product over twelve copies of the variables of series `H Θ` has
 valuation at most `r`, where `Θ = ∏ θ(μ_i z) ^ c i` and each `H` is an integral series in the
@@ -351,12 +351,12 @@ times `vacuumScale ^ 12`, a constant that makes its values integral, and `c₀` 
 adelic vector `finVec y` with zero part at infinity. -/
 lemma exists_le_norm_coeff_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Prime] [PadicPlace p]
     (D : Data P) {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M) {l : D.Φ × Unit →₀ ℕ} (hc : ∀ i : J, l.degree * 3 ≤ c i) {r : ℝ}
+    (hw : IsTightFrame w c D.level) {l : D.Φ × Unit →₀ ℕ} (hc : ∀ i : J, l.degree * 3 ≤ c i) {r : ℝ}
     (h_val : P.cmCurve.LeastValLE (p := p) (P.resolutionForms D.towerExp w) c 12 l r)
     {𝔪 : Modulus D.E} (h𝔪 : 𝔪.ideal = .span {D.piM}) (y : Fin 12 × Unit → 𝔸f D.E) :
     ∃ (γ : D.Φ × Fin 12 × Unit →₀ ℕ) (y₀ : Matrix (Fin 12) Unit 𝔪.ResidueRing),
       (∀ σ : D.Φ, ∑ b : Fin 12, γ (σ, b, ()) = l (σ, ())) ∧
-      p ^ (-r) * ‖(ιₚ (D.M ^ (D.f * 12) * intVacuum D.twelveSpace (finVec y)) : ℂ_[p])‖ ≤
+      p ^ (-r) * ‖(ιₚ (D.level ^ (D.f * 12) * intVacuum D.twelveSpace (finVec y)) : ℂ_[p])‖ ≤
         ‖(ιₚ (P.vacuumScale D.towerExp ^ 12 * coeff γ (D.twelveTaylor (D.indicatorDatum 𝔪 y₀))) :
           ℂ_[p])‖ := by
   -- Take twelve series `∏ y(μ_i z) ^ e b i * Θ` with `|e b| ≤ |l|` whose coefficients at exponents
@@ -372,15 +372,15 @@ lemma exists_le_norm_coeff_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Pri
   set a : ℂ := coeff (copyExponent α) (D.twelveTaylor F) with ha
   have h_coeff : p ^ (-r) ≤ ‖(ιₚ a : ℂ_[p])‖ := by
     rwa [ha, ← coeff_map, h_series, coeff_prod_rename_copyEmbedding, norm_prod]
-  have h_vac : a * (D.M ^ (D.f * 12) * intVacuum D.twelveSpace (finVec y)) =
-      D.M ^ (D.f * 12) * (P.vacuumScale D.towerExp ^ 12 * a) *
+  have h_vac : a * (D.level ^ (D.f * 12) * intVacuum D.twelveSpace (finVec y)) =
+      D.level ^ (D.f * 12) * (P.vacuumScale D.towerExp ^ 12 * a) *
         D.twelveSpace.vacElem (finVec y) := by
     rw [intVacuum, Space.smul_apply, Fintype.card_prod, Fintype.card_fin, Fintype.card_unique]
     ring
-  calc p ^ (-r) * ‖(ιₚ (D.M ^ (D.f * 12) * intVacuum D.twelveSpace (finVec y)) : ℂ_[p])‖
+  calc p ^ (-r) * ‖(ιₚ (D.level ^ (D.f * 12) * intVacuum D.twelveSpace (finVec y)) : ℂ_[p])‖
       ≤ ‖(ιₚ a : ℂ_[p])‖ *
-        ‖(ιₚ (D.M ^ (D.f * 12) * intVacuum D.twelveSpace (finVec y)) : ℂ_[p])‖ := by gcongr
-    _ = ‖(ιₚ (D.M ^ (D.f * 12) * (P.vacuumScale D.towerExp ^ 12 * a) *
+        ‖(ιₚ (D.level ^ (D.f * 12) * intVacuum D.twelveSpace (finVec y)) : ℂ_[p])‖ := by gcongr
+    _ = ‖(ιₚ (D.level ^ (D.f * 12) * (P.vacuumScale D.towerExp ^ 12 * a) *
           D.twelveSpace.vacElem (finVec y)) : ℂ_[p])‖ := by
       rw [← norm_mul, ← map_mul, h_vac]
     _ ≤ _ := h_indicator_bound
@@ -388,7 +388,7 @@ lemma exists_le_norm_coeff_indicatorDatum {P : Parameters} {p : ℕ} [Fact p.Pri
 /-- Let `D` be admissible data for the parameters `P`, with CM field `E = D.E`, whose `f = D.f`
 infinite places form `D.Φ`. For degrees `l ≤ κ + x ^ 42` at the weights `κ = D.weight`, all
 conjugates of `t = M ^ (12 f) c₀ ∏ B_τ ^ 2` are at most `exp (f m b / k)` in absolute value. Here
-`x`, `b` are scales and `m`, `r` ranks of `D`, with `k = D.k = r + 1 - m` and `M = D.M`. Further
+`x`, `b` are scales and `m`, `r` ranks of `D`, with `k = D.k = r + 1 - m` and `M = D.level`. Further
 `B_τ = D.lossProduct (l τ) = (l⁻ + 1) ⋯ (l⁻ + n)` with `n = D.lossFactorCount = ⌈6 b / k⌉` and
 `l⁻ = (l τ - n)₊`. The number `c₀` is the value at `finVec y`, an adelic vector with zero part at
 infinity, of the integral vacuum `intVacuum`: the Gaussian times the twisted indicator of the
@@ -397,7 +397,7 @@ constant `vacuumScale ^ 12` that makes its values integral. -/
 lemma norm_map_mul_intVacuum_le {P : Parameters} (D : Data P) {l : D.Φ → ℕ}
     (hl : ∀ τ : D.Φ, (l τ : ℝ) ≤ D.weight τ + D.x ^ 42)
     (y : Fin 12 × Unit → 𝔸f D.E) (σ : ℂ ≃+* ℂ) :
-    ‖σ ((D.M ^ (D.f * 12) * ∏ τ : D.Φ, D.lossProduct (l τ) ^ 2 : ℕ) *
+    ‖σ ((D.level ^ (D.f * 12) * ∏ τ : D.Φ, D.lossProduct (l τ) ^ 2 : ℕ) *
       intVacuum D.twelveSpace (finVec y))‖ ≤ exp (D.f * D.m / D.k * D.b) := by
   -- the vacuum and each loss product are bounded by exponentials; their exponents add up
   set lossBase : ℝ := 2 * D.b + D.lossFactorCount with h_lossBase
@@ -417,23 +417,23 @@ lemma norm_map_mul_intVacuum_le {P : Parameters} (D : Data P) {l : D.Φ → ℕ}
     rw [cast_add]
     exact add_le_add ((Nat.cast_le.2 tsub_le_self).trans
       ((hl τ).trans (weight_add_x_pow_le_two_mul_b D τ))) le_rfl
-  have h_int : ((D.M ^ (D.f * 12) * ∏ τ : D.Φ, D.lossProduct (l τ) ^ 2 : ℕ) : ℝ) ≤
-      exp (12 * D.f * Real.log D.M + 2 * D.f * D.lossFactorCount * Real.log lossBase) := by
+  have h_int : ((D.level ^ (D.f * 12) * ∏ τ : D.Φ, D.lossProduct (l τ) ^ 2 : ℕ) : ℝ) ≤
+      exp (12 * D.f * Real.log D.level + 2 * D.f * D.lossFactorCount * Real.log lossBase) := by
     have h_lossBase_pos : 0 < lossBase := by positivity
-    calc _ ≤ (D.M : ℝ) ^ (D.f * 12) * ∏ _τ : D.Φ, (lossBase ^ D.lossFactorCount) ^ 2 := by
+    calc _ ≤ (D.level : ℝ) ^ (D.f * 12) * ∏ _τ : D.Φ, (lossBase ^ D.lossFactorCount) ^ 2 := by
           push_cast
           gcongr with τ _
           exact h_loss τ
-      _ = exp (Real.log D.M) ^ (D.f * 12) *
+      _ = exp (Real.log D.level) ^ (D.f * 12) *
             (exp (Real.log lossBase) ^ D.lossFactorCount) ^ (2 * D.f) := by
-          rw [exp_log (Nat.cast_pos.2 (NeZero.pos D.M)), exp_log h_lossBase_pos, prod_const,
+          rw [exp_log (Nat.cast_pos.2 (NeZero.pos D.level)), exp_log h_lossBase_pos, prod_const,
             Finset.card_univ, ← pow_mul]
       _ = _ := by
           simp only [← exp_natCast_mul, ← exp_add]
           congr 1
           push_cast
           ring
-  have h_exponent : 12 * D.f * Real.log D.M + 2 * D.f * D.lossFactorCount * Real.log lossBase +
+  have h_exponent : 12 * D.f * Real.log D.level + 2 * D.f * D.lossFactorCount * Real.log lossBase +
       12 * (P.constantBound * D.q₁ ^ 2) ≤ D.f * D.m / D.k * D.b := by
     rw [h_lossBase, lossFactorCount]
     exact D.le_of_hasLogBound (by scale_grind D)
@@ -450,7 +450,7 @@ embedding `ιₚ : ℂ → ℂ_[p]`, for some exponent `γ` of degree `l` and so
 `vacuumScale ^ 12 ∏ l!`, is at most `S_p + v(t)`.
 
 The numbers `x`, `b` are scales and `m`, `r` ranks of `D`, `k = r + 1 - m`, and `π_M = D.piM` is an
-integer of `K` of norm `D.M`. -/
+integer of `K` of norm `D.level`. -/
 theorem exists_rpow_neg_localPrimeSumTotal_le_norm_coeff {P : Parameters} (D : Data P) (l : D.Φ → ℕ)
     (hl : ∀ τ : D.Φ, (D.weight τ : ℝ) ≤ l τ ∧ l τ ≤ (D.weight τ : ℝ) + D.x ^ 42) :
     ∃ t : ℂ, t ≠ 0 ∧
@@ -466,10 +466,10 @@ theorem exists_rpow_neg_localPrimeSumTotal_le_norm_coeff {P : Parameters} (D : D
   obtain ⟨y, hy⟩ := exists_intVacuum_ne_zero (V := D.twelveSpace)
   -- a tight frame with multiplicities at least `6 f b` and a unit linear form at every prime
   obtain ⟨J, _, w, c, hw, hc, h_unit⟩ := D.exists_isTightFrame
-  let intFactor : ℕ := D.M ^ (D.f * 12) * ∏ τ : D.Φ, D.lossProduct (l τ) ^ 2
+  let intFactor : ℕ := D.level ^ (D.f * 12) * ∏ τ : D.Φ, D.lossProduct (l τ) ^ 2
   set c₀ : ℂ := intVacuum D.twelveSpace (finVec y)
   have ht : intFactor * c₀ ≠ 0 :=
-    mul_ne_zero (Nat.cast_ne_zero.2 (mul_ne_zero (pow_ne_zero _ (NeZero.ne D.M))
+    mul_ne_zero (Nat.cast_ne_zero.2 (mul_ne_zero (pow_ne_zero _ (NeZero.ne D.level))
       (Finset.prod_ne_zero_iff.2 fun τ _ ↦ pow_ne_zero 2 (D.lossProduct_ne_zero _)))) hy
   refine ⟨intFactor * c₀, ht, D.norm_map_mul_intVacuum_le (fun τ ↦ (hl τ).2) y,
     fun 𝔪 h𝔪 p hp _ ↦ ?_⟩
@@ -493,11 +493,11 @@ theorem exists_rpow_neg_localPrimeSumTotal_le_norm_coeff {P : Parameters} (D : D
   obtain ⟨γ, y₀, hγ, h_coeff⟩ := D.exists_le_norm_coeff_indicatorDatum hw h_degree h_leastVal h𝔪 y
   refine ⟨γ, y₀, hγ, ?_⟩
   -- Multiply by `l!` and divide by `t`.
-  set scaledVac : ℂ := D.M ^ (D.f * 12) * c₀ with h_scaledVac
+  set scaledVac : ℂ := D.level ^ (D.f * 12) * c₀ with h_scaledVac
   have hp_pos : (0 : ℝ) < p := mod_cast hp.out.pos
   have h_normVac : 0 < ‖(ιₚ scaledVac : ℂ_[p])‖ := by
     have h_ne : scaledVac ≠ 0 :=
-      mul_ne_zero (pow_ne_zero _ (Nat.cast_ne_zero.2 (NeZero.ne D.M))) hy
+      mul_ne_zero (pow_ne_zero _ (Nat.cast_ne_zero.2 (NeZero.ne D.level))) hy
     exact norm_pos_iff.2 fun h ↦ h_ne (ιₚ.injective (h.trans ιₚ.map_zero'.symm))
   have h_factor :
       intFactor * c₀ = scaledVac * (∏ τ : D.Φ, D.lossProduct (ν (τ, ())) : ℕ) ^ 2 := by

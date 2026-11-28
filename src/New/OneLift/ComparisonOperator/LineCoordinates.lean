@@ -15,12 +15,12 @@ import Lib.PadicComparison.Descent.TestCategory
 Fix admissible data `D`, a tame character `ϑ` and an index `1 ≤ j ≤ m`. Write `E^n` for the standard
 definite space of rank `n`, V″ for the one on `New.Data.FirstFactorIndex` and
 W^add = E^{3m−j} ⊕ W♭ ⊕ E^{3m} for the one on `New.Data.AddedIndex`. Throughout, k = `D.k`,
-m = `D.m`, M = `D.M`, and W_j is the space on `D.RowIndex` with r₊ = `D.posRank j` = k + j − 1 plus
-signs. This file defines the constant rows 𝖼, the datum Ψ^add and the series Υ, which is built from
-theta kernels of definite spaces. It also defines the polynomial map ζ to the Weyl module of μ⁺ with
-P_V = P_{ζ(z)}(X). Here P_V has one determinant det(𝖼; X z) for each column of μ⁺, with variables X
-in the positive basis vectors of W_j and variables z in W^add. This file bounds the norm, the degree
-and the denominator of ζ.
+m = `D.m`, M = `D.level`, and W_j is the space on `D.RowIndex` with r₊ = `D.posRank j` = k + j − 1
+plus signs. This file defines the constant rows 𝖼, the datum Ψ^add and the series Υ, which is built
+from theta kernels of definite spaces. It also defines the polynomial map ζ to the Weyl module of μ⁺
+with P_V = P_{ζ(z)}(X). Here P_V has one determinant det(𝖼; X z) for each column of μ⁺, with
+variables X in the positive basis vectors of W_j and variables z in W^add. This file bounds the
+norm, the degree and the denominator of ζ.
 
 ## Main definitions and results
 
@@ -403,38 +403,38 @@ lemma card_detIndex_le (j : D.LiftIndex) (τ : NumberField.InfinitePlace D.E) :
 /-- Let `Z` have the `2 m + card (FirstFactorIndex j)` rows of a determinant det(𝖼; X z) at `j`, and
 as columns the last `D.posRank j - h ≤ j` of the `D.posRank j` positive indices of W_j and the
 indices `AddedIndex j` of W^add = E^{3m−j} ⊕ W♭ ⊕ E^{3m}, at most `12 m + 1` columns in all. If its
-entries are at most `M ^ 4`, for the integers `m = D.m` and `M = D.M` of the data, the product of
-the squared lengths of its columns is at most `(M ^ 9) ^ (12 m + 1)`. -/
-lemma prod_sum_norm_sq_le_M_pow (j : D.LiftIndex) {h : ℕ} (h_rest : D.posRank j - h ≤ j)
+entries are at most `M ^ 4`, for the integers `m = D.m` and `M = D.level` of the data, the product
+of the squared lengths of its columns is at most `(M ^ 9) ^ (12 m + 1)`. -/
+lemma prod_sum_norm_sq_le_level_pow (j : D.LiftIndex) {h : ℕ} (h_rest : D.posRank j - h ≤ j)
     {Z : Matrix (Fin (2 * D.m) ⊕ FirstFactorIndex j) (Fin (D.posRank j - h) ⊕ AddedIndex j) ℂ}
     (hZ : ∀ (a : Fin (2 * D.m) ⊕ FirstFactorIndex j) (b : Fin (D.posRank j - h) ⊕ AddedIndex j),
-      ‖Z a b‖ ≤ D.M ^ 4) :
+      ‖Z a b‖ ≤ D.level ^ 4) :
     ∏ b : Fin (D.posRank j - h) ⊕ AddedIndex j,
       ∑ a : Fin (2 * D.m) ⊕ FirstFactorIndex j, ‖Z a b‖ ^ 2 ≤
-      (↑(D.M ^ 9) : ℝ) ^ (12 * D.m + 1) := by
+      (↑(D.level ^ 9) : ℝ) ^ (12 * D.m + 1) := by
   have h_rows : card (Fin (2 * D.m) ⊕ FirstFactorIndex j) = D.r + 11 * D.m + 1 := by
     grind [card_sum, Fintype.card_fin, card_rowIndex]
   have h_cols : card (Fin (D.posRank j - h) ⊕ AddedIndex j) ≤ 12 * D.m + 1 := by
     grind [card_sum, Fintype.card_fin]
   -- Each column has squared length at most `(r + 11 m + 1) M ^ 8 ≤ M ^ 9`.
   have h_col (b : Fin (D.posRank j - h) ⊕ AddedIndex j) :
-      ∑ a, ‖Z a b‖ ^ 2 ≤ (D.M ^ 9 : ℝ) := calc
-    _ ≤ ∑ _a : Fin (2 * D.m) ⊕ FirstFactorIndex j, (D.M ^ 4 : ℝ) ^ 2 :=
+      ∑ a, ‖Z a b‖ ^ 2 ≤ (D.level ^ 9 : ℝ) := calc
+    _ ≤ ∑ _a : Fin (2 * D.m) ⊕ FirstFactorIndex j, (D.level ^ 4 : ℝ) ^ 2 :=
         sum_le_sum fun a _ ↦ pow_le_pow_left₀ (norm_nonneg _) (hZ a b) 2
-    _ = (D.r + 11 * D.m + 1 : ℕ) * (D.M ^ 4 : ℝ) ^ 2 := by
+    _ = (D.r + 11 * D.m + 1 : ℕ) * (D.level ^ 4 : ℝ) ^ 2 := by
         rw [sum_const, card_univ, h_rows, nsmul_eq_mul]
-    _ ≤ D.M ^ 9 := D.le_of_hasLogBound
+    _ ≤ D.level ^ 9 := D.le_of_hasLogBound
   refine (prod_le_prod₀ (fun b _ ↦ by positivity) fun b _ ↦ h_col b).trans ?_
-  simpa using pow_le_pow_right₀ (D.le_of_hasLogBound : (1 : ℝ) ≤ D.M ^ 9) h_cols
+  simpa using pow_le_pow_right₀ (D.le_of_hasLogBound : (1 : ℝ) ≤ D.level ^ 9) h_cols
 
 /-- The entries that a specialisation by `z` and `φ` puts into the determinants have norm at most
-`M ^ 4`, where `M = D.M`. -/
+`M ^ 4`, where `M = D.level`. -/
 structure IsSmallSpecialization (j : D.LiftIndex) (Y : Matrix D.FlatIndex D.FlatIndex D.E)
     (φ : ℂ →+* ℂ) (z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ) : Prop where
   /-- `φ` of every conjugate of an entry of `Y` has norm at most `M ^ 4`. -/
-  norm_entry_le (τ : D.Φ) (a b : D.FlatIndex) : ‖φ (Φ τ (Y a b))‖ ≤ D.M ^ 4
+  norm_entry_le (τ : D.Φ) (a b : D.FlatIndex) : ‖φ (Φ τ (Y a b))‖ ≤ D.level ^ 4
   /-- `φ` of every value of `z` has norm at most `M ^ 4`. -/
-  norm_value_le (x : D.Φ × FirstFactorIndex j × AddedIndex j) : ‖φ (z x)‖ ≤ D.M ^ 4
+  norm_value_le (x : D.Φ × FirstFactorIndex j × AddedIndex j) : ‖φ (z x)‖ ≤ D.level ^ 4
 
 /-- Let `l` be a column of μ⁺ and `h` its height. The factor `stackedDet` for `l` is the determinant
 of the constant rows `constantRows j i Y τ l` stacked over rows of variables, with `posEquiv j`
@@ -452,7 +452,7 @@ lemma hasWeightNormSqLeIf_stackedDet (j : D.LiftIndex) (i : D.RowChoice)
     HasWeightNormSqLeIf (n := FirstFactorIndex j) (IsSmallSpecialization j Y φ z)
       (Pi.single τ (Pi.single h 1))
       (.map (φ.comp (eval z)) (inFirstCols (stackedDet τ (constantRows j i Y τ l) (posEquiv j))))
-      (↑(D.M ^ 9) ^ (12 * D.m + 1)) := by
+      (↑(D.level ^ 9) ^ (12 * D.m + 1)) := by
   classical
   -- Clear the columns of `X` after the first `h` by their unit rows, and apply
   -- `exists_toPoly_eq_det_and_weylNormSq_le` to the cleared matrix.
@@ -508,11 +508,11 @@ lemma hasWeightNormSqLeIf_stackedDet (j : D.LiftIndex) (i : D.RowChoice)
     ((posEquiv j).trans colSplit) Z
   refine ⟨ξ, funext fun x ↦ by rw [h_eval, h_clear], ?_⟩
   rintro ⟨hY_small, hz_small⟩
-  have hZ : ∀ a b, ‖Z a b‖ ≤ D.M ^ 4 := by
+  have hZ : ∀ a b, ‖Z a b‖ ≤ D.level ^ 4 := by
     -- Each entry is `0`, `1`, an entry of `Y` or a value of `z`.
     cases l <;> simp [Z, colSplit, firstCols, apply_ite, hY_small, hz_small, NeZero.one_le,
       one_le_pow₀, ↓ constantRows, ↓ inclMatrix, Matrix.one_apply, ↓ ite_apply]
-  exact h_norm.trans (prod_sum_norm_sq_le_M_pow j h_rest hZ)
+  exact h_norm.trans (prod_sum_norm_sq_le_level_pow j h_rest hZ)
 
 /-- At the `j`-th lift, take the product of the determinants of the constant rows
 `constantRows j i Y` stacked over variables with rows `FirstFactorIndex j`, as a polynomial in the
@@ -520,14 +520,15 @@ first `D.posRank j` columns. Specialise the columns on `AddedIndex j` by `z` and
 result is the polynomial of a vector of weight μ⁺, the diagram with
 `(untwistedDescentPair j).colsPlus τ h` columns of height `h` at `τ`, whose squared norm is at most
 `(M ^ 9) ^ ((12 m + 1) N)` if the specialised entries of `Y` and `z` are at most `M ^ 4`. Here `i`
-chooses the rows of `Y`, `M = D.M`, and `N` is the total number of determinants over all places. -/
+chooses the rows of `Y`, `M = D.level`, and `N` is the total number of determinants over all places.
+-/
 lemma hasWeightNormSqLeIf_stackedDetProd (j : D.LiftIndex) (i : D.RowChoice)
     (Y : Matrix D.FlatIndex D.FlatIndex D.E) (φ : ℂ →+* ℂ)
     (z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ) :
     HasWeightNormSqLeIf (n := FirstFactorIndex j) (IsSmallSpecialization j Y φ z)
       (untwistedDescentPair j).colsPlus
       (.map (φ.comp (eval z)) (inFirstCols (stackedDetProd (posEquiv j) (constantRows j i Y))))
-      (↑(D.M ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ))) := by
+      (↑(D.level ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ))) := by
   -- `stackedDetProd` is a product of determinants; `HasWeightNormSqLeIf.prod` adds their weights
   -- and multiplies the bounds.
   let height (τ : D.Φ) : DetIndex j τ → ℕ := Sum.elim (fun x ↦ (x.fst : ℕ)) fun _ ↦ D.posRank j
@@ -535,7 +536,7 @@ lemma hasWeightNormSqLeIf_stackedDetProd (j : D.LiftIndex) (i : D.RowChoice)
       (∑ τ, ∑ l, Pi.single τ (Pi.single (height τ l) 1))
       (∏ τ, ∏ l,
         .map (φ.comp (eval z)) (inFirstCols (stackedDet τ (constantRows j i Y τ l) (posEquiv j))))
-      (∏ τ : D.Φ, ∏ _l : DetIndex j τ, ↑(D.M ^ 9) ^ (12 * D.m + 1)) :=
+      (∏ τ : D.Φ, ∏ _l : DetIndex j τ, ↑(D.level ^ 9) ^ (12 * D.m + 1)) :=
     .prod fun τ _ ↦ .prod fun l _ ↦ hasWeightNormSqLeIf_stackedDet j i Y φ z τ l rfl
   -- The columns of all the factors together make up the diagram
   -- `(untwistedDescentPair j).colsPlus`.
@@ -585,10 +586,10 @@ most `(M ^ 9) ^ ((12 m + 1) · ∑ τ, card (DetIndex j τ))`. -/
 lemma weylNormSq_comp_eval_stackedDetProdCoords_le (j : D.LiftIndex) (i : D.RowChoice)
     (Y : Matrix D.FlatIndex D.FlatIndex D.E) {φ : ℂ →+* ℂ}
     {z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ}
-    (hY_small : ∀ (τ : D.Φ) (a b : D.FlatIndex), ‖φ (Φ τ (Y a b))‖ ≤ D.M ^ 4)
-    (hz_small : ∀ x : D.Φ × FirstFactorIndex j × AddedIndex j, ‖φ (z x)‖ ≤ D.M ^ 4) :
+    (hY_small : ∀ (τ : D.Φ) (a b : D.FlatIndex), ‖φ (Φ τ (Y a b))‖ ≤ D.level ^ 4)
+    (hz_small : ∀ x : D.Φ × FirstFactorIndex j × AddedIndex j, ‖φ (z x)‖ ≤ D.level ^ 4) :
     weylNormSq (φ ∘ eval z ∘ stackedDetProdCoords j i Y) ≤
-      ↑(D.M ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ)) := by
+      ↑(D.level ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ)) := by
   obtain ⟨ξ, hξ, h_norm⟩ := hasWeightNormSqLeIf_stackedDetProd j i Y φ z
   rw [comp_eval_stackedDetProdCoords_eq_of_toPoly_eq j i Y hξ]
   exact h_norm ⟨hY_small, hz_small⟩

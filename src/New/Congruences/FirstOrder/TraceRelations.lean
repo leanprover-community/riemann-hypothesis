@@ -114,10 +114,10 @@ explicit number that depends only on `D` and `ℓ`. -/
 noncomputable def localDefectBound : NNReal := 4 * D.f * defectBound D ℓ
 
 /-- The error term `e_ℓ`, with crude constants. Its four terms pay for the class group and the odd
-classes, the places above `p₀ p₁` (the principal level `D.M`), the idempotent and the automorphisms,
-and the congruences between the characters `O(-e)`. Here `D.f` is the number of infinite places of
-`E`, `D.halfGap = D.r ^ 8`, and `D.chosenGroupOrder` is the product of the orders of
-`GL (D.r * D.t)` over the residue fields at the chosen places above `p₀` and `p₁`. -/
+classes, the places above `p₀ p₁` (the principal level `D.level`), the idempotent and the
+automorphisms, and the congruences between the characters `O(-e)`. Here `D.f` is the number of
+infinite places of `E`, `D.halfGap = D.r ^ 8`, and `D.chosenGroupOrder` is the product of the orders
+of `GL (D.r * D.t)` over the residue fields at the chosen places above `p₀` and `p₁`. -/
 noncomputable def denominatorError : ℝ≥0∞ :=
   D.t * padicValNat ℓ (oddClassBound D) + 8 * D.f * D.t * padicValNat ℓ D.chosenGroupOrder +
     2 * padicValNat ℓ D.chosenGroupOrder +
@@ -521,8 +521,8 @@ is `ψ` with values in `O`, and the inertial element `γ` acts on the twisted
 lattice `ψ' R₀` by the scalar `ζ'`. Let `ψ` come from the norm-one torus with modulus `Q`
 (`IsFromU1`). Let `R` be a main summand (`IsMainSummandLike`): a conjugate self-dual representation
 of twist `t` and empty level, with Hodge–Tate jumps `J` read through the isomorphism `ℂ ≃ ℚ̄_ℓ`
-fixed by `PadicIso ℓ`; only that `R` is unramified outside `ℓ p₀ p₁` (`p₀ p₁ = D.M`) is used. Then
-`ψ' R₀` is unramified outside `ℓ p₀ p₁`, `Q` and `Q̄`. -/
+fixed by `PadicIso ℓ`; only that `R` is unramified outside `ℓ p₀ p₁` (`p₀ p₁ = D.level`) is used.
+Then `ψ' R₀` is unramified outside `ℓ p₀ p₁`, `Q` and `Q̄`. -/
 lemma IsTwistedLattice.twistRep_eq_one_of_mem_inertiaAbove [PadicIso ℓ]
     (h_model : IsTwistedLattice ψ R γ R₀ ψ' ζ')
     (hψ : IsFromU1 (placesDividing D.E ℓ) Q ψ) {J : (D.E →+* ℂ) → Multiset ℤ}
@@ -537,8 +537,8 @@ lemma IsTwistedLattice.twistRep_eq_one_of_mem_inertiaAbove [PadicIso ℓ]
 end Model
 
 /-- Let the `τ j` be tame generators at places `w j` off `ℓ`. Let `u x`, `x : Y`, be finitely many
-continuous representations over `O`, unramified outside `ℓ p₀ p₁` (`p₀ p₁ = D.M`), `Q`, the `w j`
-and their conjugates, and let `T` be unramified outside `ℓ p₀ p₁`, `Q` and `Q̄`. Consider the
+continuous representations over `O`, unramified outside `ℓ p₀ p₁` (`p₀ p₁ = D.level`), `Q`, the
+`w j` and their conjugates, and let `T` be unramified outside `ℓ p₀ p₁`, `Q` and `Q̄`. Consider the
 cocycles in `T` modulo `ℓ ^ m` that obey the linear relations among the `u x g - 1`. Those that
 vanish at `γ`, at the `τ j` and at the inverses of their conjugates have length at most
 `crystallineColength T u m`, the length of all of them modulo those obeying the crystalline
@@ -578,10 +578,10 @@ open scoped Classical in
 /-- Let the places `w j` off `ℓ`, with tame generators `τ j`, elements `φ j` and monotone exponents
 `0 < ty j < t`, form a triangle of primes for `g₀` up to `ℓ ^ sep`; `c` bounds `sep` times the
 number of places and test points. Let the `u x` be continuous and unramified outside `ℓ p₀ p₁`
-(`p₀ p₁ = D.M`), `Q`, the `w j` and their conjugates, and let `e < t`. Let `Z` consist of character
-cocycles: cocycles in `O/ℓ^ν(-e)` that obey the relations among the `u x g - 1`, vanish at tame
-generators `δ` of places `q` covering the remaining places prime to `ℓ` and at the inverses of their
-conjugates, and, if they vanish at `γ`, have their value at `g₀` killed by every `χ g - 1`,
+(`p₀ p₁ = D.level`), `Q`, the `w j` and their conjugates, and let `e < t`. Let `Z` consist of
+character cocycles: cocycles in `O/ℓ^ν(-e)` that obey the relations among the `u x g - 1`, vanish at
+tame generators `δ` of places `q` covering the remaining places prime to `ℓ` and at the inverses of
+their conjugates, and, if they vanish at `γ`, have their value at `g₀` killed by every `χ g - 1`,
 `χ = cyclotomicInv ^ e`. Here `γ` lies in inertia at a place not above `ℓ`. Then `HasTriangleCost`
 holds along the `j` with `ty j = e`: for the members `Z₀` of `Z` that vanish on some set, agreement
 at the earlier `τ i`, `φ i` and the inverses of their conjugates gives agreement at `τ j` up to

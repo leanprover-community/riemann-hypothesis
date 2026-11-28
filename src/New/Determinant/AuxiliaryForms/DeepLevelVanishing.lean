@@ -52,7 +52,7 @@ Notions from other files:
   `1`; `V.move x` is the space `V` with its adelic frame multiplied by `x`.
 * `New.Data.principalForms`, `New.Data.gridLevelForms`: the forms fixed by `D.chosenLevel`, and the
   forms on `Ỹ^i_0` fixed by the deep level, that is, the principal level of
-  `D.gridLevelGen = D.piM ^ D.natB`, where `D.piM * star D.piM = D.M` is `M`.
+  `D.gridLevelGen = D.piM ^ D.natB`, where `D.piM * star D.piM = D.level` is `M`.
 * `New.Data.spaceY`: the hermitian space `Y_j` with its adelic frame, chosen as in
   `New.Data.exists_space_isStd_of_le_and_gram_eq_of_lt`.
 * `(l w).HasLargeGap B`: the entries of `l w = 2λ` are distinct, of the parity of `card n - 1`, and
@@ -142,9 +142,9 @@ structure New.Exchange.HasDeepLevelSizes (D : Data P) (n : Type) [Fintype n] (A 
   exponent_lt : N < A
   /-- `A` exceeds by `2` or more the real dimension of a space of rank `card n + 1` over `E ⊗ ℝ`. -/
   dim_le : 2 * D.f * (card n + 1) + 2 ≤ A
-  /-- `β` bounds the constant of the cusp estimate: `D.M` is the level and `cuspConst` depends on
-  the rank and on the number `D.cyclotomicConductor` in the different of `D.E`. -/
-  cuspConst_sq_le : D.M * cuspConst D.E n D.cyclotomicConductor ^ 2 ≤ β
+  /-- `β` bounds the constant of the cusp estimate: `D.level` is the level and `cuspConst` depends
+  on the rank and on the number `D.cyclotomicConductor` in the different of `D.E`. -/
+  cuspConst_sq_le : D.level * cuspConst D.E n D.cyclotomicConductor ^ 2 ≤ β
   /-- `β` bounds a polynomial in the rank and the bound `L` of the parameters. -/
   rank_pow_le : 2000 * (card n + L + 1) ^ 6 ≤ β
   /-- `β` bounds the number of infinite places. -/
@@ -199,19 +199,19 @@ lemma New.Exchange.HasDeepLevelSizes.pow_places_le_div
 
 end
 
-/-- Under the size conditions `HasDeepLevelSizes`, `D.M * κ²` is at most `β ≤ m`. Here
+/-- Under the size conditions `HasDeepLevelSizes`, `D.level * κ²` is at most `β ≤ m`. Here
 `κ = cuspConst D.E n D.cyclotomicConductor` is the constant of the cusp estimate
 `IsForm.norm_le_of_firstMinimum_lt`. So where `V.firstMinimum` is at least the threshold
-`(m⁻² / (D.M κ²)) ^ card n` of that estimate, `m² ≤ m ^ (3 card n + 2) * V.firstMinimum`. -/
+`(m⁻² / (D.level κ²)) ^ card n` of that estimate, `m² ≤ m ^ (3 card n + 2) * V.firstMinimum`. -/
 lemma New.Exchange.HasDeepLevelSizes.sq_le_pow_mul_firstMinimum
     (h_size : Exchange.HasDeepLevelSizes D n A L N β m)
-    (h_large : (m⁻¹ ^ 2 / (D.M * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n ≤
+    (h_large : (m⁻¹ ^ 2 / (D.level * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n ≤
       V.firstMinimum) :
     m ^ 2 ≤ m ^ (3 * card n + 2) * V.firstMinimum := by
   have m_ge : 16 ≤ m := h_size.sixteen_le.trans h_size.beta_le_m
-  have const_le : D.M * cuspConst D.E n D.cyclotomicConductor ^ 2 ≤ m :=
+  have const_le : D.level * cuspConst D.E n D.cyclotomicConductor ^ 2 ≤ m :=
     h_size.cuspConst_sq_le.trans h_size.beta_le_m
-  have const_pos : 0 < D.M * cuspConst D.E n D.cyclotomicConductor ^ 2 := by
+  have const_pos : 0 < D.level * cuspConst D.E n D.cyclotomicConductor ^ 2 := by
     grw [← one_le_cuspConst]
     simp [NeZero.pos]
   calc m ^ 2
@@ -308,18 +308,18 @@ lemma New.Exchange.norm_typeKernel_inv_mul_sub_le {l : NumberField.InfinitePlace
 /-- High in a cusp a form is at most half of its bound. Assume the size conditions
 `HasDeepLevelSizes D n A L N β m`, and let the parameters `l w` have large gaps for `4 A` and
 entries bounded by `L`. Let `y` be a form on `V` of type `l`, right invariant under the principal
-congruence subgroup of level `D.M` (`HasLevel`) and bounded by `S`. Where the first minimum of the
-lattice of `V.move x` is below the threshold of the cusp estimate, whose constant is
+congruence subgroup of level `D.level` (`HasLevel`) and bounded by `S`. Where the first minimum of
+the lattice of `V.move x` is below the threshold of the cusp estimate, whose constant is
 `cuspConst D.E n D.cyclotomicConductor`, we have `‖y x‖ ≤ S / 2`. -/
 lemma New.Exchange.norm_le_half_of_firstMinimum_lt {l : NumberField.InfinitePlace D.E → HCParam s}
     (h_size : HasDeepLevelSizes D n A L N β m)
     (h_gap : ∀ w : NumberField.InfinitePlace D.E, (l w).HasLargeGap (4 * A))
     (hl : ∀ (w : NumberField.InfinitePlace D.E) (i : n), |l w i| ≤ L)
     {y : G D.E s → ℂ} (hy : V.IsForm (typeKernel l s) y)
-    (hy_level : HasLevel y (principalLevel n D.M))
+    (hy_level : HasLevel y (principalLevel n D.level))
     {S : ℝ} (hS : ∀ g : G D.E s, ‖y g‖ ≤ S) {x : G D.E s}
     (h_small : (V.move x).firstMinimum <
-      (m⁻¹ ^ 2 / (D.M * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n) :
+      (m⁻¹ ^ 2 / (D.level * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n) :
     ‖y x‖ ≤ S / 2 := by
   -- By cuspidality (`IsForm.norm_le_of_firstMinimum_lt`) it is enough to bound
   -- `‖y (x * (u, 1)) - y x‖` by `S / 2` for real points `u` within `m⁻¹ ^ 2` of `1`.
@@ -536,7 +536,7 @@ lemma New.Exchange.norm_le_half_of_le_firstMinimum {l : NumberField.InfinitePlac
         (principalLevel (n ⊕ Unit) D.gridLevelGen),
       V.petersson y (fun x : G D.E s ↦ φ (G.sum (x, 1) * (ω, 1))) = 0)
     {S : ℝ} (hS : ∀ g : G D.E s, ‖y g‖ ≤ S) {x : G D.E s}
-    (h_large : (m⁻¹ ^ 2 / (D.M * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n ≤
+    (h_large : (m⁻¹ ^ 2 / (D.level * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n ≤
       (V.move x).firstMinimum) :
     ‖y x‖ ≤ S / 2 := by
   -- Average the small convolution of `norm_realConv_translatedCoeff_le` over the kernel of `y`.
@@ -627,12 +627,12 @@ theorem New.Exchange.eq_zero_of_petersson_translate_eq_zero
     fun k hk ↦ hy_level k (D.principalLevel_le_chosenLevel ha hk)
   have half (S : ℝ) (hS : ∀ g : G D.E s, ‖y g‖ ≤ S) (x : G D.E s) : ‖y x‖ ≤ S / 2 := by
     obtain h_large | h_small := le_or_gt
-      ((m⁻¹ ^ 2 / (D.M * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n)
+      ((m⁻¹ ^ 2 / (D.level * cuspConst D.E n D.cyclotomicConductor ^ 2)) ^ card n)
       (V.move x).firstMinimum
     · exact norm_le_half_of_le_firstMinimum h_size h_gap h_gap' hl hω h_pair hy
         (level D.gridLevelGen D.piM_dvd_gridLevelGen) h_orth hS h_large
     · exact norm_le_half_of_firstMinimum_lt h_size h_gap hl hy
-        (level D.M (Dvd.intro _ D.piM_mul_star)) hS h_small
+        (level D.level (Dvd.intro _ D.piM_mul_star)) hS h_small
   obtain ⟨C, hC⟩ := hy.bounded
   exact funext fun x ↦
     norm_le_zero_iff.1 (le_of_halving hC le_rfl (fun S _ hS x ↦ .inl (half S hS x)) x)
@@ -653,7 +653,7 @@ lemma New.Exchange.exists_forall_eq_zero_of_petersson_restrict_eq_zero {t : n �
     (h_entry : ∀ (w : NumberField.InfinitePlace D.E) (i : n), |l w i| ≤ L)
     (h_rank : 8 * (card n + 1) ^ 2 < A) (h_exponent : N < A)
     (h_dim : 2 * D.f * (card n + 1) + 2 ≤ A)
-    (h_cusp : D.M * cuspConst D.E n D.cyclotomicConductor ^ 2 ≤ β)
+    (h_cusp : D.level * cuspConst D.E n D.cyclotomicConductor ^ 2 ≤ β)
     (h_rank_pow : 2000 * (card n + L + 1) ^ 6 ≤ β) (h_places : D.f ≤ β)
     (h_pow_le : β ^ (20 * A * (D.f + 1)) ≤ m)
     (h_level : ∀ w : NumberField.InfinitePlace D.E,
@@ -687,10 +687,10 @@ section RowsReached
 open Matrix.Norms.L2Operator
 
 /-- At every infinite place the generator `D.gridLevelGen = D.piM ^ D.natB` of the deep level
-has modulus `√D.M ^ D.natB`. -/
+has modulus `√D.level ^ D.natB`. -/
 lemma New.Data.norm_gridLevelGen {P : Parameters} (D : Data P)
-    (w : NumberField.InfinitePlace D.E) : ‖Φ w D.gridLevelGen.val‖ = √D.M ^ D.natB := by
-  have h_sq : ‖Φ w D.piM‖ ^ 2 = D.M := by
+    (w : NumberField.InfinitePlace D.E) : ‖Φ w D.gridLevelGen.val‖ = √D.level ^ D.natB := by
+  have h_sq : ‖Φ w D.piM‖ ^ 2 = D.level := by
     simpa [sq] using congrArg (fun a : NumberField.RingOfIntegers D.E ↦ ‖Φ w a‖) D.piM_mul_star
   simp [← h_sq]
 
@@ -718,19 +718,19 @@ lemma New.Data.exists_eq_zero_of_orthogonal_gridLevelForms {P : Parameters} (D :
   obtain ⟨e', h_steep'⟩ : ∃ e' : D.InitIndex 0 ⊕ Fin (2 * D.ϱ + 2 + 1) ≃ D.GridIndex true 0 0,
       ∀ w : D.Φ, DiscreteSeries.IsSteep (D.gridParam true 0 0 0 w) (D.liftWeight 0 w) e' :=
     D.exists_isSteep true
-  have h_mono : Monotone fun k : ℕ ↦ √D.M ^ k := pow_right_mono₀ D.le_of_hasLogBound
+  have h_mono : Monotone fun k : ℕ ↦ √D.level ^ k := pow_right_mono₀ D.le_of_hasLogBound
   have abs_param_le (z : Bool) (w : D.Φ) (x : D.GridIndex z 0 0) :
       |D.gridParam z 0 0 0 w x| ≤ ⌈20 * D.b⌉₊ :=
     D.abs_gridParam_le (z := z) w bot_le bot_le x
   -- These bounds for `β` and for the two ranks are found as instances by `D.le_of_hasLogBound` and
   -- its versions for natural numbers, which compare quantities by their logarithmic bounds.
-  have β_lb : D.HasLogLower (√D.M ^ ⌈D.x⌉₊) (3 * (20 * D.logB / 2)) :=
-    D.hasLogLower_of_le (G := √D.M ^ 3) (h_mono D.nat_le_of_hasLogBound)
+  have β_lb : D.HasLogLower (√D.level ^ ⌈D.x⌉₊) (3 * (20 * D.logB / 2)) :=
+    D.hasLogLower_of_le (G := √D.level ^ 3) (h_mono D.nat_le_of_hasLogBound)
   have rank_ub : D.HasLogUpper (Fintype.card (D.Y 0)) (5 * D.logX + 3) :=
     D.hasLogUpper_of_le_of_nonneg (F := D.r) (by simp [D.card_rowIndex]) (Nat.cast_nonneg _)
   have rank_ub' : D.HasLogUpper (Fintype.card (D.Y 0 ⊕ Unit)) (max (5 * D.logX + 3) 0 + 1) :=
     D.hasLogUpper_of_le_of_nonneg (F := D.r + 1) (by simp [D.card_rowIndex]) (Nat.cast_nonneg _)
-  let β : ℝ := √D.M ^ ⌈D.x⌉₊
+  let β : ℝ := √D.level ^ ⌈D.x⌉₊
   let A : ℕ := D.r ^ 4
   let N : ℕ := 20 * (Fintype.card (D.Y 0 ⊕ Unit) + Fintype.card (D.Y 0)) ^ 2
   have h_sizes : Exchange.HasDeepLevelSizes D (D.Y 0) A ⌈20 * D.b⌉₊ N β
@@ -759,8 +759,8 @@ lemma New.Data.exists_eq_zero_of_orthogonal_gridLevelForms {P : Parameters} (D :
   have h_steep_neg : DiscreteSeries.IsSteep (-(-l')) (D.liftWeight 0 w) e' := by rwa [neg_neg]
   have h_card_bound : (Fintype.card (D.Y 0 ⊕ Unit) : ℝ) ^ 4 *
       (6 * D.liftWeight 0 w) ^ (2 * (2 * D.ϱ + 2) + 2) ≤ β := by
-    grw [show (Fintype.card (D.Y 0 ⊕ Unit) : ℝ) ≤ √D.M from D.le_of_hasLogBound,
-      show (6 * D.liftWeight 0 w : ℝ) ≤ √D.M from D.le_of_hasLogBound, ← pow_add]
+    grw [show (Fintype.card (D.Y 0 ⊕ Unit) : ℝ) ≤ √D.level from D.le_of_hasLogBound,
+      show (6 * D.liftWeight 0 w : ℝ) ≤ √D.level from D.le_of_hasLogBound, ← pow_add]
     exact h_mono D.nat_le_of_hasLogBound
   have h_log : 10 ^ 30 * (((Fintype.card (D.Y 0 ⊕ Unit) : ℝ) + Fintype.card (D.Y 0)) ^ 2 *
       Real.log β) ^ 3 ≤ (D.r ^ 7 : ℕ) := by

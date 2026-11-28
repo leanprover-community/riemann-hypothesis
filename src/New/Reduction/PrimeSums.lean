@@ -26,7 +26,8 @@ Notions from other files:
   The class of a place modulo `q₀` is its image under `P.placeClass`, and `-n τ` stands for
   `D.placeOfInt (-n) * τ`. The weight `κ = D.weight` is `b = a / x` on `Φ_b` and `a / x₁` elsewhere.
 * `D.primeSum y τ` is `s_fin(y, τ) = ∑_{n ≤ a} Λ_K(n) (y / n - κ(-n τ))₊`.
-* `D.jetSize j` is `s_∞(j) = log j! + j log (M / Ω)` with `M = D.M` and `Ω = P.bigOmega D.towerExp`,
+* `D.jetSize j` is `s_∞(j) = log j! + j log (M / Ω)` with `M = D.level` and
+`Ω = P.bigOmega D.towerExp`,
   and the direction amount `D.directionAmount` is `∑_τ (s_∞(κ(τ)) - s_fin(κ(τ), τ))`.
 -/
 
@@ -235,9 +236,9 @@ lemma primeSum_mem_Icc {y : ℝ} (hy : 0 ≤ y) (hya : y ≤ D.a) (τ : D.Φ) :
   linarith
 
 /-- For an integer `y ≤ a` the quantity `s_∞(y) = D.jetSize y = log y! + y log (M / Ω)` satisfies
-`20 y log b ≤ s_∞(y) ≤ 25 y log b`. Here `M = D.M = p₀ p₁` is the principal level, a product of two
-primes in `[b¹⁰, b¹¹]`, `Ω = P.bigOmega D.towerExp = exp (γ - Re L'/L(1, χ_K)) 2π / rd_E` with `γ`
-Euler's constant and `rd_E` the root discriminant of `E`, and `log b = D.logB`. -/
+`20 y log b ≤ s_∞(y) ≤ 25 y log b`. Here `M = D.level = p₀ p₁` is the principal level, a product of
+two primes in `[b¹⁰, b¹¹]`, `Ω = P.bigOmega D.towerExp = exp (γ - Re L'/L(1, χ_K)) 2π / rd_E` with
+`γ` Euler's constant and `rd_E` the root discriminant of `E`, and `log b = D.logB`. -/
 lemma jetSize_mem_Icc {y : ℕ} (hya : y ≤ D.a) :
     D.jetSize y ∈ Set.Icc (20 * y * D.logB) (25 * y * D.logB) := by
   have h_fact : log y.factorial ≤ y * (2 * D.logB) := by
@@ -247,10 +248,10 @@ lemma jetSize_mem_Icc {y : ℕ} (hya : y ≤ D.a) :
           grw [Nat.factorial_le_pow, Nat.cast_pow, hya, ha]
       _ = y * (2 * D.logB) := by simp
   obtain ⟨h_log_lower, h_log_upper⟩ :
-      log (D.M / P.bigOmega D.towerExp) ∈ Set.Icc (20 * D.logB) (23 * D.logB) :=
-    D.log_M_div_bigOmega_mem_Icc
-  have h_lower : y * (20 * D.logB) ≤ y * log (D.M / P.bigOmega D.towerExp) := by gcongr
-  have h_upper : y * log (D.M / P.bigOmega D.towerExp) ≤ y * (23 * D.logB) := by gcongr
+      log (D.level / P.bigOmega D.towerExp) ∈ Set.Icc (20 * D.logB) (23 * D.logB) :=
+    D.log_level_div_bigOmega_mem_Icc
+  have h_lower : y * (20 * D.logB) ≤ y * log (D.level / P.bigOmega D.towerExp) := by gcongr
+  have h_upper : y * log (D.level / P.bigOmega D.towerExp) ≤ y * (23 * D.logB) := by gcongr
   rw [jetSize]
   constructor <;> linarith [log_natCast_nonneg y.factorial]
 

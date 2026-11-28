@@ -877,7 +877,7 @@ abbrev homX : Space D.E (D.X (j + 1) × D.X j) (homSigns 1 1) :=
 `D.levelX j`. Its two characters are the twists `New.rankTwist`, by the ranks of X_j and X_{j+1}, of
 `D.chainChar ϑ (j + 1)`, the product of `D.untwistedLiftChar (j + 1)` and ϑ^{j+1}. Derivatives are
 scaled by π_M times the period `P.jetScale D.towerExp`, where π_M is the conjugate of the integer
-`D.piMBar` of K of norm `D.M`. -/
+`D.piMBar` of K of norm `D.level`. -/
 @[simps! -isSimp ω]
 def liftKernel :
     Kernel (D.X j) (D.X (j + 1)) D.columnCount (D.lastEntry j) (D.lastEntry (j + 1))
@@ -985,13 +985,13 @@ def supportedTranslations (q : ℕ) : Set D.Translations :=
 
 /-- `Ψ` is a chain datum for the twist `ϑ`, a character of weight 0 whose tame part is non-trivial
 exactly at the places of the finite set `ϑ.Q`. Let `q` be the product of their norms and `M` the
-principal level `D.M`. The translations in the support of `Ψ` vanish at the places prime to `M q`
-and lie in `admissibleTranslations q`; the values of `Ψ` are integral away from `q`, with
+principal level `D.level`. The translations in the support of `Ψ` vanish at the places prime to
+`M q` and lie in `admissibleTranslations q`; the values of `Ψ` are integral away from `q`, with
 denominator `1`; if `ϑ.Q` is empty, then `∑ x, |σ (Ψ x)| ≤ M ^ (3 f m n_m²)` for every automorphism
 `σ` of `ℂ`; and the glued tensor is jointly invariant. -/
 structure IsChainDatum (Ψ : D.Translations →₀ ℂ) : Prop extends IsAdmissibleCoeffs
-    (D.admissibleTranslations ϑ.normQ ∩ D.supportedTranslations (D.M * ϑ.normQ))
-    ϑ.normQ 1 (ϑ.Q = ∅) (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2)) Ψ where
+    (D.admissibleTranslations ϑ.normQ ∩ D.supportedTranslations (D.level * ϑ.normQ))
+    ϑ.normQ 1 (ϑ.Q = ∅) (D.level ^ (3 * D.f * D.m * D.n D.m ^ 2)) Ψ where
   /-- The glued tensor is jointly invariant. -/
   isInvariant : (gluedTensor Ψ).IsInvariant ϑ
 

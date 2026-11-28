@@ -317,11 +317,11 @@ lemma isJointlyInvariant_of_plainTensor {ϑ : D.Twist} {Ψ : D.Translations →�
     rw [h_plain b (hb _ le_rfl)]
   simpa [plainTensor, twoKernelAction, ← hT, Finsupp.sum] using h_inv
 
-/-- A place `w` above the level `N` divides neither the principal level `D.M` nor `ϑ.normQ`, the
+/-- A place `w` above the level `N` divides neither the principal level `D.level` nor `ϑ.normQ`, the
 product of the norms of the places in the finite set `ϑ.Q` of the tame character `ϑ`. -/
-lemma TameChar.M_mul_normQ_notMem_of_N_mem (ϑ : D.TameChar) {w : FinPlace D.E}
-    (hw : ↑D.N ∈ w.asIdeal) : ↑(D.M * ϑ.normQ) ∉ w.asIdeal := by
-  have h_gProd : ↑D.M ∉ w.asIdeal := by
+lemma TameChar.level_mul_normQ_notMem_of_N_mem (ϑ : D.TameChar) {w : FinPlace D.E}
+    (hw : ↑D.N ∈ w.asIdeal) : ↑(D.level * ϑ.normQ) ∉ w.asIdeal := by
+  have h_gProd : ↑D.level ∉ w.asIdeal := by
     simpa [← piM_mul_star, IsChosen, w.isPrime.mul_mem_iff_mem_or_mem]
       using D.not_isChosen_of_N_mem hw
   simpa [w.isPrime.mul_mem_iff_mem_or_mem, h_gProd] using ϑ.normQ_notMem_of_N_mem hw
@@ -349,11 +349,11 @@ lemma IsChainDatum.gluedTensor_eq_sum_translates {ϑ : D.Twist} {Ψ : D.Translat
     ∀ y : D.GluingClasses, gluingTuple y ∈ D.supportedTranslations D.N := by
   refine ⟨Finsupp.sum_congr fun x hx ↦ ?_, D.card_gluingClasses_le,
     gluingTuple_mem_supportedTranslations⟩
-  -- `x` vanishes at the places prime to `D.M * ϑ.normQ`, hence above `N`.
-  have hx_zero : x ∈ D.supportedTranslations (D.M * ϑ.normQ) :=
+  -- `x` vanishes at the places prime to `D.level * ϑ.normQ`, hence above `N`.
+  have hx_zero : x ∈ D.supportedTranslations (D.level * ϑ.normQ) :=
     Set.inter_subset_right (hΨ.support_subset x hx)
   rw [D.gluedVacuum_eq_sum_translates fun j k w hw ↦
-    hx_zero j k w (ϑ.M_mul_normQ_notMem_of_N_mem hw)]
+    hx_zero j k w (ϑ.level_mul_normQ_notMem_of_N_mem hw)]
 
 /-- Every chain datum `Ψ` has a weak chain datum `Ψ'`, obtained by expanding the gluing, such that
 on every source form `φ` (a form on `X_0` of level `D.levelX 0`) the two composite lifts agree:
@@ -368,10 +368,10 @@ lemma IsChainDatum.exists_isWeakChainDatum_compositeLift_eq {ϑ : D.Twist}
   -- The glued tensor is a combination, with coefficients `Ψ`, of the sums over the classes `y`.
   have h_outer : IsAdmissibleCombination
       (fun x : D.Translations ↦ ∑ y : D.GluingClasses, D.ungluedVacuum (x + gluingTuple y))
-      (D.admissibleTranslations ϑ.normQ ∩ D.supportedTranslations (D.M * ϑ.normQ))
-      ϑ.normQ 1 (ϑ.Q = ∅) (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2)) (gluedTensor Ψ) :=
+      (D.admissibleTranslations ϑ.normQ ∩ D.supportedTranslations (D.level * ϑ.normQ))
+      ϑ.normQ 1 (ϑ.Q = ∅) (D.level ^ (3 * D.f * D.m * D.n D.m ^ 2)) (gluedTensor Ψ) :=
     ⟨Ψ, hΨ.toIsAdmissibleCoeffs, hΨ.gluedTensor_eq_sum_translates.left⟩
-  have h_size : (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2) * D.N ^ (D.f * D.m * D.n D.m) : ℝ) ≤
+  have h_size : (D.level ^ (3 * D.f * D.m * D.n D.m ^ 2) * D.N ^ (D.f * D.m * D.n D.m) : ℝ) ≤
       Real.exp (D.x ^ 60) := Real.le_exp_of_log_le D.le_of_hasLogBound
   obtain ⟨Ψ', h_adm, h_sum⟩ : IsAdmissibleCombination D.ungluedVacuum
       (D.admissibleTranslations (ϑ.normQ * D.N)) ϑ.normQ 1 (ϑ.Q = ∅)
@@ -433,7 +433,7 @@ lemma IsChainDatum.isWeakChainDatum {ϑ : D.Twist} {Ψ : D.Translations →₀ �
       hw (by simpa using w.asIdeal.mul_mem_right _ h_mem)
   integral := hΨ.integral
   sum_norm_le hQ σ := by
-    have h_log : Real.log (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2)) ≤ D.x ^ 60 := by
+    have h_log : Real.log (D.level ^ (3 * D.f * D.m * D.n D.m ^ 2)) ≤ D.x ^ 60 := by
       simpa using D.le_of_hasLogBound
     exact (hΨ.sum_norm_le hQ σ).trans (Real.le_exp_of_log_le h_log)
   isJointlyInvariant := isJointlyInvariant_of_plainTensor hΨ.isInvariant_plainTensor

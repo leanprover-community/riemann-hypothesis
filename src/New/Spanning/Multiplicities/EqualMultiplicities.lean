@@ -132,7 +132,7 @@ lemma exists_heckeAlgebra_inner_eq_inner_translate {γ : Gf D.E D.RowIndex}
 /-- A term `D.rallisTerm ϑ j W z y i` of Rallis' inner product formula is a vacuum coefficient of
 the Weil representation times `⟪z, γ y⟫`, for a representative `γ` of `i`, over the number of
 matrices modulo the modulus of the twist. It is a matrix coefficient `⟪z, p y⟫` of a spherical Hecke
-operator `p` away from the level `D.M`, the same for all spaces `W`. -/
+operator `p` away from the level `D.level`, the same for all spaces `W`. -/
 lemma exists_rallisTerm_eq_inner (ϑ : D.TameChar) (j : ℕ)
     (i : Gf D.E D.RowIndex ⧸ localLevel D.RowIndex (D.twistModulus ϑ 1).places.conjClosureᶜ) :
     ∃ p : D.heckeAlgebra, ∀ {s : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex s)

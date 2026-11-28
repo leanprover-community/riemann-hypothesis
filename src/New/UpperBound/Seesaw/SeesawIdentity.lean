@@ -587,9 +587,9 @@ lemma exists_lowerChainUpTo_poincareAt_eq (t : (WeylIndex (D.X 0) D.columnCount 
 /-- The tensor `φ_ξ = seesawDatum ϑ` of data for the upper chain is a combination of translated
 vacuum data, with bounds. There is one number `C` as follows for every tame character `ϑ`. Let `ϑ.Q`
 be its modulus, a finite set of finite places, and `q = ϑ.normQ` the product of their norms. Let
-`m = 2 ϱ + 2` be the number of lifts and `B = D.residueMatrixCount = D.M ^ (D.f * D.n D.m ^ 2)`,
-with `D.M` the principal level and `D.n D.m` the rank of `X_m`. An element `x` of `Translations` is
-a tuple of finite adelic matrices, one for each lift, and `D.gluedVacuum x` is the tensor of the
+`m = 2 ϱ + 2` be the number of lifts and `B = D.residueMatrixCount = D.level ^ (D.f * D.n D.m ^ 2)`,
+with `D.level` the principal level and `D.n D.m` the rank of `X_m`. An element `x` of `Translations`
+is a tuple of finite adelic matrices, one for each lift, and `D.gluedVacuum x` is the tensor of the
 integral vacuum data translated by `x`. Then `φ_ξ` is a finite sum `∑ r x • C • D.gluedVacuum x`,
 with coefficients `r x`, over `x` in `admissibleTranslations q`. Each `B ^ (2 m) * r x` is integral
 at the primes not dividing `q`. If `ϑ.Q = ∅`, then `∑ ‖σ (r x)‖ ≤ B ^ (2 ϱ + 2)` for every
@@ -647,14 +647,14 @@ theorem seesaw_identity {P : Parameters} {D : Data P}
   -- This gives the support condition separately from the equality of lifts.
   obtain ⟨Ψ, h_adm, h_glued : (u : ℂ) • c₀ • seesawDatum ϑ = gluedTensor Ψ⟩ :=
     h_rescaled.of_eq_isOfFinOrder_smul
-      (A' := admissibleTranslations ϑ.normQ ∩ supportedTranslations (D.M * ϑ.normQ))
+      (A' := admissibleTranslations ϑ.normQ ∩ supportedTranslations (D.level * ϑ.normQ))
       (v' := D.gluedVacuum) fun x hx ↦ by
         obtain ⟨x', hx', h_eq⟩ := D.exists_supported_translateDatum_eq hx
         exact ⟨1, .one, x', hx', by simp only [one_smul, gluedVacuum, h_eq]⟩
   have h_size : (↑(D.residueMatrixCount ^ (2 * D.m)) * D.residueMatrixCount ^ (2 * D.ϱ + 2) : ℝ) =
-      D.M ^ (3 * D.f * D.m * D.n D.m ^ 2) := by
+      D.level ^ (3 * D.f * D.m * D.n D.m ^ 2) := by
     rw [← D.m_eq_two_mul_varrho_add_two]
-    -- `D.residueMatrixCount = D.M ^ (D.f * D.n D.m ^ 2)` by definition.
+    -- `D.residueMatrixCount = D.level ^ (D.f * D.n D.m ^ 2)` by definition.
     push_cast
     ring
   rw [h_size] at h_adm

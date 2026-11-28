@@ -143,7 +143,7 @@ lemmas `weight_mem_Icc`, `weight_le_b` and `weight_add_x_pow_le_two_mul_b`; thos
 
 /-! ### Primes, levels and the number `Ω`
 
-The bound `b²⁰ ≤ M ≤ b²²` is `M_mem_Icc`; the range for the level is `logLevelTarget_mem_Icc`,
+The bound `b²⁰ ≤ M ≤ b²²` is `level_mem_Icc`; the range for the level is `logLevelTarget_mem_Icc`,
 `log_N_mem_Icc_logLevelTarget` and `log_N_mem_Icc`. How the three primes split in `E` is in
 `New.Parameters.star_mem_iff_notMem`, `New.Parameters.intValuation_eq_of_mul_star` and
 `New.Data.q_eq_levelPrime`. -/
@@ -163,12 +163,12 @@ lemma bigOmega_le_one : P.bigOmega D.towerExp ≤ 1 := by
     (inferInstance : D.HasLogUpper (P.bigOmega D.towerExp) 0))
 
 /-- For admissible data `D` over the parameters `P`, `20 log b ≤ log (M / Ω) ≤ 23 log b`. -/
-lemma log_M_div_bigOmega_mem_Icc :
-    log (D.M / P.bigOmega D.towerExp) ∈ Icc (20 * D.logB) (23 * D.logB) := by
-  have h_lower : D.b ^ 20 ≤ D.M / P.bigOmega D.towerExp :=
-    D.M_mem_Icc.1.trans (le_div_self (by positivity) bigOmega_pos D.bigOmega_le_one)
+lemma log_level_div_bigOmega_mem_Icc :
+    log (D.level / P.bigOmega D.towerExp) ∈ Icc (20 * D.logB) (23 * D.logB) := by
+  have h_lower : D.b ^ 20 ≤ D.level / P.bigOmega D.towerExp :=
+    D.level_mem_Icc.1.trans (le_div_self (by positivity) bigOmega_pos D.bigOmega_le_one)
   -- By sizes: `M ≤ b²²` and `1 / Ω ≤ x¹³`.
-  have h_upper : D.M / P.bigOmega D.towerExp ≤ D.b ^ 23 := D.le_of_hasLogBound
+  have h_upper : D.level / P.bigOmega D.towerExp ≤ D.b ^ 23 := D.le_of_hasLogBound
   constructor
   · simpa using log_le_log (by positivity) h_lower
   · simpa using log_le_log (HasLogBound.pos D) h_upper
@@ -176,10 +176,10 @@ lemma log_M_div_bigOmega_mem_Icc :
 /-- For admissible data `D`, `|log (M rd_E / 2π)| ≤ 23 log b`. Here `b = exp D.logB` is the largest
 scale, `M = p₀ p₁` is the product of the two distinct primes `pᵢ = D.levelPrime i`, which lie in
 `[b¹⁰, b¹¹]`, and `rd_E = D.rootDisc` is the root discriminant of the CM field `E` of the data. -/
-lemma abs_log_M_mul_rootDisc_le : |log (D.M * D.rootDisc / (2 * π))| ≤ 23 * D.logB := by
+lemma abs_log_level_mul_rootDisc_le : |log (D.level * D.rootDisc / (2 * π))| ≤ 23 * D.logB := by
   -- By sizes: `b²⁰ ≤ M ≤ b²²` and `x¹⁰ ≤ rd_E ≤ x¹²`.
-  have h_lower : 1 ≤ D.M * D.rootDisc / (2 * π) := D.le_of_hasLogBound
-  have h_upper : D.M * D.rootDisc / (2 * π) ≤ D.b ^ 23 := D.le_of_hasLogBound
+  have h_lower : 1 ≤ D.level * D.rootDisc / (2 * π) := D.le_of_hasLogBound
+  have h_upper : D.level * D.rootDisc / (2 * π) ≤ D.b ^ 23 := D.le_of_hasLogBound
   rw [abs_of_nonneg (log_nonneg h_lower)]
   simpa using log_le_log (one_pos.trans_le h_lower) h_upper
 

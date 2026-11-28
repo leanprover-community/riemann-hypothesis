@@ -16,7 +16,8 @@ multiplicities, such that `∑ y, (y† z) y = h z` for all `z`: a resolution of
   prime to `q₁`, together with the unit-linear-form property.
 * `New.Parameters.exists_isTightFrame_of_coprime`: this frame and the powers of `ζ` give tight
   frames of every length `m ≥ q₁ h + R (q₁ + h)` with multiplicities at least `R`.
-* `New.Data.exists_isTightFrame`: a tight frame of length `p₀ p₁ = D.M` with large multiplicities,
+* `New.Data.exists_isTightFrame`: a tight frame of length `p₀ p₁ = D.level` with large
+multiplicities,
   where `p₀` and `p₁` are the two primes `D.levelPrime 0` and `D.levelPrime 1` of the data.
 
 The powers of `ζ` form a tight frame of length `q₁`. To construct a tight frame of coprime length
@@ -671,19 +672,19 @@ variable {P : Parameters} (D : Data P)
 
 /-- Let `D` be data for the parameters `P` (a `Data P`), with field `E = D.E = P.E s` for the
 exponent `s = D.towerExp`, weight `b = D.b`, and `f = D.f` the number of infinite places of `E`. The
-principal level `M = D.M` is the product of the two distinct primes `D.levelPrime 0` and
+principal level `M = D.level` is the product of the two distinct primes `D.levelPrime 0` and
 `D.levelPrime 1` of the data, which lie in `[b ^ 10, b ^ 11]`. There is a tight frame `v` of length
 `M` with multiplicities `c i ≥ 6 f b`. Moreover, for every prime `p` and embedding
 `ιₚ : ℂ →+* ℂ_[p]`, some `y = v i` makes `periodFactor * conj (τ(y))` a unit at `ιₚ` for all `τ` in
 the CM type. -/
 theorem exists_isTightFrame :
     ∃ (I : Type) (_ : Fintype I) (v : I → D.E) (c : I → ℕ),
-      IsTightFrame v c D.M ∧
+      IsTightFrame v c D.level ∧
       (∀ i : I, 6 * D.f * D.b ≤ c i) ∧
       ∀ (p : ℕ) [Fact p.Prime] [PadicPlace p], ∃ i : I, P.HasUnitLinearForm D.towerExp p (v i) := by
   obtain ⟨h, I, _, v, hv, h_le, h_coprime, h_unit⟩ := P.exists_isTightFrame_coprime D.towerExp
-  -- Since `h ≤ (d q₁) ^ 6`, the threshold `q₁ h + ⌈6 f b⌉ (q₁ + h)` is at most `D.M`.
-  have h_large : D.q₁ * h + ⌈6 * D.f * D.b⌉₊ * (D.q₁ + h) ≤ D.M := by
+  -- Since `h ≤ (d q₁) ^ 6`, the threshold `q₁ h + ⌈6 f b⌉ (q₁ + h)` is at most `D.level`.
+  have h_large : D.q₁ * h + ⌈6 * D.f * D.b⌉₊ * (D.q₁ + h) ≤ D.level := by
     have h_bound : (h : ℝ) ≤ D.b := by
       calc (h : ℝ) ≤ ((P.d * D.q₁) ^ 6 : ℕ) := Nat.cast_le.2 h_le
         _ ≤ D.b := D.le_of_hasLogBound
@@ -691,7 +692,7 @@ theorem exists_isTightFrame :
     exact D.nat_le_of_hasLogBound
   let u : Fin D.q₁ ⊕ I → D.E := Sum.elim (fun i : Fin D.q₁ ↦ P.ζ D.towerExp ^ i.val) v
   obtain ⟨c, hu, hc⟩ : ∃ c : Fin D.q₁ ⊕ I → ℕ,
-      IsTightFrame u c D.M ∧ ∀ j : Fin D.q₁ ⊕ I, ⌈6 * D.f * D.b⌉₊ ≤ c j :=
+      IsTightFrame u c D.level ∧ ∀ j : Fin D.q₁ ⊕ I, ⌈6 * D.f * D.b⌉₊ ≤ c j :=
     Parameters.exists_isTightFrame_of_coprime hv h_coprime h_large
   refine ⟨Fin D.q₁ ⊕ I, inferInstance, u, c, hu, fun j ↦ Nat.ceil_le.1 (hc j), fun p _ _ ↦ ?_⟩
   rcases h_unit p with h1 | ⟨i, hi⟩

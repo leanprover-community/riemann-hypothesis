@@ -91,17 +91,17 @@ def placesAboveM : Set (FinPlace D.E) :=
 /-- The finite set of places of E dividing `ℓ p₀ p₁ N`, with `N` the level of the data; these are
 the bad places. -/
 noncomputable def badPlaces : Finset (FinPlace D.E) :=
-  (finite_natCast_mem (K := D.E) (ℓ * (D.M * D.N))).toFinset
+  (finite_natCast_mem (K := D.E) (ℓ * (D.level * D.N))).toFinset
 
 /-- The places dividing `ℓ` and the places above `p₀` or `p₁` are bad places. -/
 lemma placesDividing_union_subset_badPlaces :
     placesDividing D.E ℓ ∪ placesAboveM D ⊆ badPlaces D ℓ := by
   intro w hw
   -- A prime ideal contains `ℓ p₀ p₁ N` as soon as it contains one of the factors.
-  suffices h_mem : ↑(ℓ * (D.M * D.N)) ∈ w.asIdeal by simpa [badPlaces] using h_mem
+  suffices h_mem : ↑(ℓ * (D.level * D.N)) ∈ w.asIdeal by simpa [badPlaces] using h_mem
   obtain hℓ | ⟨i, hi⟩ := hw
   · simpa using w.asIdeal.mul_mem_right _ hℓ
-  · have h_dvd : D.levelPrime i ∣ D.M := by fin_cases i <;> simp [Data.M]
+  · have h_dvd : D.levelPrime i ∣ D.level := by fin_cases i <;> simp [Data.level]
     exact w.asIdeal.mem_of_dvd (Nat.cast_dvd_cast ((h_dvd.mul_right D.N).mul_left ℓ)) hi
 
 variable {D ℓ}

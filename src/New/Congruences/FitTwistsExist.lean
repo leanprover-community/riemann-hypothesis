@@ -111,7 +111,7 @@ lemma New.Selmer.prod_Ioc_natB_le_pow {P : Parameters} (D : Data P) :
     _ ≤ (D.natB + 30 * hCube) ^ (60 * hCube) := Nat.pow_le_pow_right (by positivity) h_card
 
 /-- Let `m` be the number of lifts, `r` the rank of the target, `k = r + 1 - m` the rank of the
-source, `b = D.natB` the weight as a natural number, `h = D.halfGap = r ^ 8`, and `M = D.M` the
+source, `b = D.natB` the weight as a natural number, `h = D.halfGap = r ^ 8`, and `M = D.level` the
 product of the two level primes. The local loss `defectBound D l` is
 `10⁶ (m / k) (b v_l(M) + v_l((2 b)! Π ^ h³))`, where `v_l` is the `l`-adic valuation and `Π` is the
 product of the positive integers in `(b - 30 h³, b + 30 h³]`. Summed over any finite set `T` of
@@ -120,7 +120,7 @@ primes `l` with weights `log l`, these losses are at most
 lemma New.Selmer.sum_defectBound_mul_log_le {P : Parameters} (D : Data P) (T : Finset ℕ)
     (hT : ∀ l ∈ T, l.Prime) :
     ∑ l ∈ T, (defectBound D l : ℝ) * log l ≤
-      10 ^ 6 * ((D.m : ℝ) / D.k) * (D.natB * log D.M +
+      10 ^ 6 * ((D.m : ℝ) / D.k) * (D.natB * log D.level +
         log ((2 * D.natB).factorial *
           ((D.natB + 30 * D.halfGap ^ 3) ^ (60 * D.halfGap ^ 3)) ^ D.halfGap ^ 3 : ℕ)) := by
   -- `defectBound` is a combination of two valuations; bound each weighted sum by a logarithm
@@ -130,7 +130,7 @@ lemma New.Selmer.sum_defectBound_mul_log_le {P : Parameters} (D : Data P) (T : F
   have hN : N ≤ (2 * D.natB).factorial * ((D.natB + 30 * hCube) ^ (60 * hCube)) ^ hCube :=
     Nat.mul_le_mul_left _ (Nat.pow_le_pow_left (prod_Ioc_natB_le_pow D) _)
   calc ∑ l ∈ T, (defectBound D l : ℝ) * log l
-      = 10 ^ 6 * ((D.m : ℝ) / D.k) * (D.natB * ∑ l ∈ T, (padicValNat l D.M : ℝ) * log l +
+      = 10 ^ 6 * ((D.m : ℝ) / D.k) * (D.natB * ∑ l ∈ T, (padicValNat l D.level : ℝ) * log l +
           ∑ l ∈ T, (padicValNat l N : ℝ) * log l) := by
         rw [mul_sum, ← sum_add_distrib, mul_sum]
         refine sum_congr rfl fun l _ ↦ ?_
@@ -149,7 +149,7 @@ lemma New.Selmer.sum_localDefectBound_mul_log_le {P : Parameters} (D : Data P) (
     (hT : ∀ l ∈ T, l.Prime) :
     ∑ l ∈ T, (localDefectBound D l : ℝ) * log l ≤
       4 * 10 ^ 6 * exp 180 * (D.f * ((D.m : ℝ) / D.k) * D.b * D.logB) := by
-  have h_bracket : D.natB * log D.M + log ((2 * D.natB).factorial *
+  have h_bracket : D.natB * log D.level + log ((2 * D.natB).factorial *
       ((D.natB + 30 * D.halfGap ^ 3) ^ (60 * D.halfGap ^ 3)) ^ D.halfGap ^ 3 : ℕ) ≤
         exp 180 * D.b * D.logB := by
     push_cast

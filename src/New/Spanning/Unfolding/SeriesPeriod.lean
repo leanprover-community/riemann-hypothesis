@@ -708,7 +708,7 @@ theorem exists_poincareAt_eq_poincareMap_comp :
   -- Both forms have the same inner product, the Bessel period, with every form `y`.
   obtain ⟨g, t, h_period⟩ := D.filling_fits.exists_integral_poincareSeries_eq_period
     (by
-      simp [gradingY, filling, M, field]
+      simp [gradingY, filling, level, field]
       rw [mul_assoc, mul_assoc, ← div_div, div_self WeilData.j_ne_zero, one_div]
       simp only [mul_inv_rev]
       ac_rfl)

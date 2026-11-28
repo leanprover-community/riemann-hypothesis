@@ -74,15 +74,15 @@ open Parameters Stirling
 /-! ### The level compensates the excess -/
 
 /-- The excess of one lift: `s_∞(a) - s_main ≤ a log (κ̄ M rd_E / 2π) + 1 + (log a) / 2`. Here
-`a = D.a` is the product `x b` of the integer scales `x` and `b` of the data `D`, `M = D.M` is the
-product of the two primes of the principal level, `rd_E` is the root discriminant of the CM field
-`E = D.E`, and `log κ̄` is the mean of `log κ(τ)`, with `κ = D.weight`, over the set `D.Φ` of the
-`f = D.f` infinite places of `E`. Further `s_∞(a) = D.jetSize a = log a! + a log (M / Ω)`, with the
-period `Ω = P.bigOmega D.towerExp`, and `s_main = D.mainPrimeSum = a (log (a / κ̄) + c₁)`, with `c₁`
-the real part of `logDerivMean P.d 1 1`. -/
+`a = D.a` is the product `x b` of the integer scales `x` and `b` of the data `D`, `M = D.level` is
+the product of the two primes of the principal level, `rd_E` is the root discriminant of the CM
+field `E = D.E`, and `log κ̄` is the mean of `log κ(τ)`, with `κ = D.weight`, over the set `D.Φ` of
+the `f = D.f` infinite places of `E`. Further `s_∞(a) = D.jetSize a = log a! + a log (M / Ω)`, with
+the period `Ω = P.bigOmega D.towerExp`, and `s_main = D.mainPrimeSum = a (log (a / κ̄) + c₁)`, with
+`c₁` the real part of `logDerivMean P.d 1 1`. -/
 lemma jetSize_sub_mainPrimeSum_le {P : Parameters} (D : Data P) :
     D.jetSize D.a - D.mainPrimeSum ≤
-      D.a * ((∑ τ : D.Φ, log (D.weight τ)) / D.f + log (D.M * D.rootDisc / (2 * Real.pi))) +
+      D.a * ((∑ τ : D.Φ, log (D.weight τ)) / D.f + log (D.level * D.rootDisc / (2 * Real.pi))) +
         (1 + log D.a / 2) := by
   have stirling : log D.a.factorial ≤ D.a * log D.a - D.a + (1 + log D.a / 2) := by
     have ha : 1 ≤ D.a := D.nat_le_of_hasLogBound
@@ -93,8 +93,8 @@ lemma jetSize_sub_mainPrimeSum_le {P : Parameters} (D : Data P) :
         using log_stirlingSeq'_antitone D.a.pred.zero_le
     linarith
   -- We have `log Ω = -1 - c₁ + log (2π / rd_E)`, with `c₁` the real part of `logDerivMean P.d 1 1`.
-  have period : log (D.M / P.bigOmega D.towerExp) =
-      1 + (logDerivMean P.d 1 1).re + log (D.M * D.rootDisc / (2 * Real.pi)) := by
+  have period : log (D.level / P.bigOmega D.towerExp) =
+      1 + (logDerivMean P.d 1 1).re + log (D.level * D.rootDisc / (2 * Real.pi)) := by
     rw [re_logDerivMean_one, bigOmega]
     -- Expand both logarithms; the terms in `c₁`, `M`, `π` and `rd_E` agree.
     simp [log_div, log_mul, (HasLogBound.pos D).ne']
@@ -107,20 +107,20 @@ lemma jetSize_sub_mainPrimeSum_le {P : Parameters} (D : Data P) :
 `m (s_∞(a) - s_main) - a log N ≤ 32 a log b`. Here `m = D.m` is the number of theta lifts in the
 chain, `a = D.a` is the product `x b` of the integer scales `x` and `b` of the data `D`,
 `log b = D.logB`, and the level `N = D.N` is a prime. Further
-`s_∞(a) = D.jetSize a = log a! + a log (M / Ω)`, with `M = D.M` the product of the two primes of the
-principal level and `Ω` the period `New.Parameters.bigOmega` of the field `D.E`, and
+`s_∞(a) = D.jetSize a = log a! + a log (M / Ω)`, with `M = D.level` the product of the two primes of
+the principal level and `Ω` the period `New.Parameters.bigOmega` of the field `D.E`, and
 `s_main = D.mainPrimeSum` is the expected mean of the prime sums `D.primeSum a τ` over the infinite
 places `τ ∈ D.aPlaces`. -/
 lemma mul_jetSize_sub_mainPrimeSum_sub_le {P : Parameters} (D : Data P) :
     D.m * (D.jetSize D.a - D.mainPrimeSum) - D.a * log D.N ≤ 32 * (D.a * D.logB) := by
   set w : ℝ := (∑ τ : D.Φ, log (D.weight τ)) / D.f
-  set G : ℝ := log (D.M * D.rootDisc / (2 * Real.pi))
+  set G : ℝ := log (D.level * D.rootDisc / (2 * Real.pi))
   -- The lower end of the window for `log N`.
   have level : D.m * (w + G) - (G + 15 / 2 * D.logB) ≤ log D.N := by
     grw [← D.log_N_mem_Icc_logLevelTarget.1, logLevelTarget, New.Parameters.logLevelMin]
     linarith
   have h_stirling : D.m * (1 + log D.a / 2) ≤ D.a * D.logB := D.le_of_hasLogBound
-  have h_size : G ≤ 23 * D.logB := le_of_abs_le D.abs_log_M_mul_rootDisc_le
+  have h_size : G ≤ 23 * D.logB := le_of_abs_le D.abs_log_level_mul_rootDisc_le
   have h_log : 0 ≤ D.logB := (HasLogBound.pos D).le
   calc D.m * (D.jetSize D.a - D.mainPrimeSum) - D.a * log D.N
       ≤ D.m * (D.a * (w + G) + (1 + log D.a / 2)) -
@@ -310,9 +310,9 @@ lemma sum_rowSizeSum_le {P : Parameters} (D : Data P) :
     ∑ j ∈ range D.m, D.rowSizeSum j ≤ D.chainSize + D.errorUnit / 2 := by
   -- Compare each row with its main length; each box of the slack costs at most `25 log b`.
   have h_log : 0 < D.logB := HasLogBound.pos D
-  have h_box : log ((2 * D.a : ℕ) + 1) + log (D.M / P.bigOmega D.towerExp) ≤ 25 * D.logB := by
+  have h_box : log ((2 * D.a : ℕ) + 1) + log (D.level / P.bigOmega D.towerExp) ≤ 25 * D.logB := by
     grw [show ((2 * D.a : ℕ) + 1 : ℝ) ≤ D.b ^ 2 from D.le_of_hasLogBound,
-      D.log_M_div_bigOmega_mem_Icc.2, log_pow, log_exp]
+      D.log_level_div_bigOmega_mem_Icc.2, log_pow, log_exp]
     exact le_of_eq (by ring)
   have h_row (j : ℕ) (hj : j < D.m) (τ : D.Φ) (i : ℕ) :
       D.jetSize (diagramWeight (rankAt fun _ : D.Φ ↦ D.X (j + 1)) D.columnCount (τ, i)) ≤

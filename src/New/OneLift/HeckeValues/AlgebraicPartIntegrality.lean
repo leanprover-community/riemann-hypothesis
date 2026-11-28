@@ -33,7 +33,7 @@ multiple of its normalised squared norm `New.Data.CriticalPair.algPart`.
 
 Notions from other files:
 * `New.Data.TameChar`: a character of `U(1)(𝔸)` of weight 0 with tame part supported on a finite set
-  `Q` of places of norm prime to `D.M * D.N`, `Q` disjoint from its conjugate.
+  `Q` of places of norm prime to `D.level * D.N`, `Q` disjoint from its conjugate.
 * `New.Data.CriticalPair`: a critical pair, that is, an integer `1 ≤ z ≤ t` and a character `ν` of
   `U(1)(𝔸)` of weight `-c`, with `z ≤ c(v) ≤ 4b` and tame part supported on the chosen places.
 * `New.Data.CriticalPair.HasLiftRank`: the index set `n` has `2 z` elements and `z ≥ 2`, for the
@@ -132,7 +132,7 @@ residue fields at the modulus of `ϑ`, and `twistResidueLift A` is an integral l
 The factor is `a ^ card n * b ^ p.rowLengthSum`. The number `a = P.vacuumScale D.towerExp` makes the
 vacuum Schwartz function of rank one integral. The number `b` scales the variables of the Taylor
 series: it is the period scale `P.jetScale D.towerExp` times the conjugate of `D.piMBar`, an integer
-of `P.K` of norm `D.M`. -/
+of `P.K` of norm `D.level`. -/
 lemma smul_kernelForm_apply (H : p.HasLiftRank n) (ϑ : D.TameChar) (g : Gf D.E Unit)
     (h : Gf D.E n) :
     (P.vacuumScale D.towerExp ^ card n * (star (D.piMBar : ℂ) * P.jetScale D.towerExp) ^
@@ -178,12 +178,13 @@ lemma trivialLift_apply (H : p.HasLiftRank n) (ϑ : D.TameChar) (h : Gf D.E n) :
 
 /-- Let `p = (ν, z)` be a critical pair with `z ≥ 2`, let `n` have `2 z` elements (hypothesis `H`),
 let `ϑ` be a tame character, `l` a prime that does not divide the norm of the modulus of `ϑ`, `j` an
-embedding of `ℂ` into `ℂ_[l]`, and `g`, `h` finite adelic points of `U(1)` and `U(n)`. Let `M = D.M`
-be the product of the two level primes, `f = D.f` the number of infinite places of `D.E`, and
-`d = P.d` the prime with `P.K = ℚ(√-d)`. Then `p.denomBound = M ^ (4 f z) * (M d) ^ p.rowLengthSum`
-times the value at `(g, h)` of the theta kernel `pointKernel H ϑ` has gauge at most `1` at the point
-`h` with respect to `j`: the inverse of `h`, acting in the highest weight of the lift with no power
-of the determinant, moves it to a vector whose coordinates have absolute value at most `1`. -/
+embedding of `ℂ` into `ℂ_[l]`, and `g`, `h` finite adelic points of `U(1)` and `U(n)`. Let
+`M = D.level` be the product of the two level primes, `f = D.f` the number of infinite places of
+`D.E`, and `d = P.d` the prime with `P.K = ℚ(√-d)`. Then
+`p.denomBound = M ^ (4 f z) * (M d) ^ p.rowLengthSum` times the value at `(g, h)` of the theta
+kernel `pointKernel H ϑ` has gauge at most `1` at the point `h` with respect to `j`: the inverse of
+`h`, acting in the highest weight of the lift with no power of the determinant, moves it to a vector
+whose coordinates have absolute value at most `1`. -/
 lemma weylGauge_denomBound_smul_pointKernel_le_one (H : p.HasLiftRank n) (ϑ : D.TameChar) {l : ℕ}
     [Fact l.Prime] {j : PadicPlace l} (g : Gf D.E Unit) (h : Gf D.E n) (hl : l.Coprime ϑ.normQ) :
     weylGauge (ι := j) (lValueData H ϑ).descentPair.columnCount 0 h
@@ -192,11 +193,12 @@ lemma weylGauge_denomBound_smul_pointKernel_le_one (H : p.HasLiftRank n) (ϑ : D
   -- the kernel of `p.denomBound • pointDatum H ϑ` does not increase gauges, and the vector `1` has
   -- gauge one.
   let X : LValueData D.E n := lValueData H ϑ
-  let datumDenom : ℕ := (D.M ^ 1) ^ (2 * Core.numInfPlaces (P.E D.towerExp) * card (n × Unit))
-  have h_std : (datumDenom : ℂ) • (pointDatum H ϑ).val ∈ Parameters.standardData _ (D.M ^ 1 : ℕ) :=
-    smul_vacuumDatum_mem_standardData normQ_mul_M_pow_mem_modulus
+  let datumDenom : ℕ := (D.level ^ 1) ^ (2 * Core.numInfPlaces (P.E D.towerExp) * card (n × Unit))
+  have h_std :
+      (datumDenom : ℂ) • (pointDatum H ϑ).val ∈ Parameters.standardData _ (D.level ^ 1 : ℕ) :=
+    smul_vacuumDatum_mem_standardData normQ_mul_level_pow_mem_modulus
       (by grind [DescentPair.identityBlockIndicator, one_mem, zero_mem]) hl
-  have h_den : datumDenom * (D.M ^ 1 * P.d) ^ boxes X.descentPair.columnCount (card n) ∣
+  have h_den : datumDenom * (D.level ^ 1 * P.d) ^ boxes X.descentPair.columnCount (card n) ∣
       p.denomBound := by
     simp [X, datumDenom, denomBound, boxes, DescentPair.columnCount, mixedWeight,
       (lValueData H ϑ).one_lt_card, ← H.1, Pi.single_apply]

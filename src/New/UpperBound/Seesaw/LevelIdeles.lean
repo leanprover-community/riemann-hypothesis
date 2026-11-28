@@ -9,7 +9,7 @@ import New.OneLift.ComparisonOperator.ExchangeData
 Facts at the finite places about the chosen data `D : New.Data P` and a tame character `ϑ`. The
 notions used:
 * `New.Data.piM` is the integer `π̄₀ π̄₁` of `E`, whose product with its conjugate is `M = p₀ p₁`
-  (`New.Data.M`). The chosen places are the prime divisors of `π̄₀ π̄₁`.
+  (`New.Data.level`). The chosen places are the prime divisors of `π̄₀ π̄₁`.
 * `New.Data.chosenIdele` is a finite idele that generates the ideal `(π̄₀ π̄₁)` and is `1` away from
   the chosen places.
 * `New.Data.ideleA` is the idele `a = α / star chosenIdele`, with `α` the idele of the Weil data.
@@ -44,8 +44,8 @@ open scoped NumberField
 variable {P : Parameters} (D : Data P)
 
 /-- The ideal of `E` spanned by `D.piM`, an integer of `K` of norm `p₀ p₁` viewed in `E`, has norm
-`M ^ f`, where `M = D.M = p₀ p₁` and `f = D.f` is the number of infinite places of `E`. -/
-lemma absNorm_piM : absNorm (span {D.piM}) = D.M ^ D.f := by
+`M ^ f`, where `M = D.level = p₀ p₁` and `f = D.f` is the number of infinite places of `E`. -/
+lemma absNorm_piM : absNorm (span {D.piM}) = D.level ^ D.f := by
   simp [span_piM, prod_q_chosenPlace]
 
 /-- At each finite place `w` of `E`, the finite idele `D.chosenIdele` has the same valuation `v` as
@@ -58,27 +58,27 @@ lemma v_chosenIdele (w : FinPlace D.E) :
     _ = v (algebraMap D.E (LocField w) D.piM) := (v_algebraMap_eq_intValuation D.piM).symm
     _ = v ((algebraMap (𝓞 D.E) (Ô D.E) D.piM).val w) := rfl
 
-/-- Let `D` be admissible data, with field `E = D.E` and level `M = D.M = p₀ p₁`, a natural number.
-At each finite place `w` of `E`, with `v` the valuation of the completion of `E` at `w`, the norm
-`α ᾱ` of the finite idele `α = WeilData.α` in the Weil data of `E` has the valuation of `a ā M`.
-Here `a = D.ideleA = α / star D.chosenIdele`, and `D.chosenIdele` generates an ideal whose product
-with its conjugate is `(M)`. -/
-lemma v_alpha_mul_star_eq_ideleA_norm_mul_M (w : FinPlace D.E) :
+/-- Let `D` be admissible data, with field `E = D.E` and level `M = D.level = p₀ p₁`, a natural
+number. At each finite place `w` of `E`, with `v` the valuation of the completion of `E` at `w`, the
+norm `α ᾱ` of the finite idele `α = WeilData.α` in the Weil data of `E` has the valuation of
+`a ā M`. Here `a = D.ideleA = α / star D.chosenIdele`, and `D.chosenIdele` generates an ideal whose
+product with its conjugate is `(M)`. -/
+lemma v_alpha_mul_star_eq_ideleA_norm_mul_level (w : FinPlace D.E) :
     v (((WeilData.α (E := D.E)).val * star (WeilData.α (E := D.E)).val) w) =
-      v ((D.ideleA.val * star D.ideleA.val) w) * w.valuation D.E (D.M : D.E) := by
+      v ((D.ideleA.val * star D.ideleA.val) w) * w.valuation D.E (D.level : D.E) := by
   have h_α : D.ideleA.val * (star D.chosenIdele).val = (WeilData.α (E := D.E)).val := by
     rw [← Units.val_mul, ideleA, div_mul_cancel]
-  have h_piM_mul_star : ((D.piM * star D.piM : 𝓞 D.E) : D.E) = D.M := by
+  have h_piM_mul_star : ((D.piM * star D.piM : 𝓞 D.E) : D.E) = D.level := by
     rw [D.piM_mul_star]
     rfl
   -- `D.chosenIdele` has the valuations of `D.piM`, whose norm is `M`.
   have h_norm : v ((D.chosenIdele * star D.chosenIdele.val) w) =
-      w.valuation D.E (D.M : D.E) := by
+      w.valuation D.E (D.level : D.E) := by
     simp [← h_piM_mul_star, v_chosenIdele]
   rw [← h_α, ← h_norm]
   simp [mul_assoc, mul_comm, mul_left_comm]
 
-/-- Let `D` be admissible data, with field `E = P.E D.towerExp`, level `M = D.M = p₀ p₁` and
+/-- Let `D` be admissible data, with field `E = P.E D.towerExp`, level `M = D.level = p₀ p₁` and
 `D.m = 2 ϱ + 2` lifts (`ϱ = D.ϱ`), and let `k ≤ 2 ϱ + 1`, that is `k < D.m`. The grading
 `D.gradingY k` presents the hermitian space `Y_k = D.spaceY k` over `E` as an orthonormal part plus
 a string of `2 ϱ + 1 - k` vectors with antidiagonal Gram matrix, and carries the constant
@@ -104,16 +104,17 @@ lemma v_gradingY_genericConst_eq_ideleA_mul_star {k : ℕ} {hk : k ≤ 2 * D.ϱ 
     refine (congrArg₂ HMul.hMul (v_weilData_j_mul_alpha_mul_star w) h_deltaE).trans ?_
     rw [← WithZero.exp_add, add_neg_cancel, WithZero.exp_zero]
   have h_genericConst : v (((D.gradingY k hk).genericConst.val : 𝔸f D.E) w) =
-      (w.valuation D.E j * (w.valuation D.E (D.M : D.E) * w.valuation D.E
+      (w.valuation D.E j * (w.valuation D.E (D.level : D.E) * w.valuation D.E
         (P.deltaE D.towerExp)))⁻¹ := by
-    change v (algebraMap D.E (LocField w) (-(j * (D.M * P.deltaE D.towerExp) : D.E)⁻¹)) = _
+    change v (algebraMap D.E (LocField w) (-(j * (D.level * P.deltaE D.towerExp) : D.E)⁻¹)) = _
     rw [v_algebraMap_eq_valuation, Valuation.map_neg, map_inv₀, map_mul, map_mul]
   refine h_genericConst.trans (inv_eq_of_mul_eq_one_right ?_)
-  calc w.valuation D.E j * (w.valuation D.E (D.M : D.E) * w.valuation D.E (P.deltaE D.towerExp)) *
+  calc w.valuation D.E j *
+          (w.valuation D.E (D.level : D.E) * w.valuation D.E (P.deltaE D.towerExp)) *
         v ((D.ideleA.val * star D.ideleA.val) w)
     _ = w.valuation D.E j * v ((α.val * star α.val : 𝔸f D.E) w) *
         w.valuation D.E (P.deltaE D.towerExp) := by
-        rw [D.v_alpha_mul_star_eq_ideleA_norm_mul_M]
+        rw [D.v_alpha_mul_star_eq_ideleA_norm_mul_level]
         ac_rfl
     _ = 1 := by simpa [v_algebraMap_eq_valuation, mul_assoc] using h_unit
 

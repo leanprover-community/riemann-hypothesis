@@ -81,12 +81,12 @@ divide p_i. -/
 protected abbrev ChosenPlace (i : Fin 2) : Type :=
   {w : FinPlace D.E // D.piM ∈ w.asIdeal ∧ ↑(D.levelPrime i) ∈ w.asIdeal}
 
-/-- The product of `D.piM` and its complex conjugate is `D.M = p₀ p₁` in 𝓞_E. -/
-lemma piM_mul_star : D.piM * star D.piM = D.M := by
+/-- The product of `D.piM` and its complex conjugate is `D.level = p₀ p₁` in 𝓞_E. -/
+lemma piM_mul_star : D.piM * star D.piM = D.level := by
   have h_conj : algebraMap (𝓞 P.K) (𝓞 D.E) (star D.piMBar) = D.piM :=
     RingOfIntegers.ext (map_star_CM (algebraMap P.K D.E) (D.piMBar : P.K))
   rw [star_star, ← h_conj, ← map_mul, mul_comm, D.piMBar_mul_star]
-  simp [M]
+  simp [level]
 
 @[simp]
 lemma piMBar_ne_zero : D.piMBar ≠ 0 := fun h_zero ↦ by
@@ -103,8 +103,8 @@ lemma exists_piM_mul_star_eq_levelPrime_mul_coprime {i : Fin 2} : ∃ c : ℕ,
   have h_coprime : (D.levelPrime i).Coprime (D.levelPrime i.rev) :=
     (coprime_primes (D.levelPrime_prime i) (D.levelPrime_prime i.rev)).2
       (D.levelPrime_injective.ne h_ne)
-  have h_prod : D.M = D.levelPrime i * D.levelPrime i.rev := by
-    fin_cases i <;> simp [M, mul_comm]
+  have h_prod : D.level = D.levelPrime i * D.levelPrime i.rev := by
+    fin_cases i <;> simp [level, mul_comm]
   exact ⟨D.levelPrime i.rev, by rw [piM_mul_star, h_prod, Nat.cast_mul], h_coprime⟩
 
 /-- If a finite place w of E is chosen, that is, its prime ideal contains `D.piM` (an integer of E
@@ -114,7 +114,7 @@ lemma exists_levelPrime_mem_of_isChosen (hw : D.IsChosen w) :
     ∃ i : Fin 2, ↑(D.levelPrime i) ∈ w.asIdeal := by
   -- The prime `w` contains `D.piM * star D.piM = p₀ p₁`, hence one of the two factors.
   have h_mem : D.piM * star D.piM ∈ w.asIdeal := mul_mem_right _ _ hw
-  rw [piM_mul_star, M, Nat.cast_mul] at h_mem
+  rw [piM_mul_star, level, Nat.cast_mul] at h_mem
   exact Fin.exists_fin_two.2 (w.isPrime.mem_or_mem h_mem)
 
 /-- A finite place w of E whose prime ideal contains `D.piM` (`D.IsChosen w`) lies above p₀ or p₁.

@@ -239,7 +239,7 @@ abbrev posRank (j : ℕ) : ℕ := D.k + j - 1
 instance (j : Fin 2) : Fact (D.levelPrime j).Prime := ⟨D.levelPrime_prime j⟩
 
 /-- The principal level `M = p₀ p₁`. -/
-def M : ℕ := D.levelPrime 0 * D.levelPrime 1 deriving NeZero
+def level : ℕ := D.levelPrime 0 * D.levelPrime 1 deriving NeZero
 
 /-- The set `Φ_a` of `a`-places: the places `≡ 1` modulo `q₀`. -/
 def aPlaces : Finset D.Φ := {τ : D.Φ | P.placeClass (P.q₀.dvd_mul_right
@@ -261,9 +261,9 @@ def primeSum (y : ℝ) (σ : D.Φ) : ℝ :=
 /-- The unit of loss `f a log³ b`, with `f` the number of infinite places and `a = x b`. -/
 abbrev errorUnit : ℝ := D.f * D.a * D.logB ^ 3
 
-/-- The size `s_∞(j) = log j! + j log (M / Ω)` of a derivative of order `j`. Here `M = D.M` and
+/-- The size `s_∞(j) = log j! + j log (M / Ω)` of a derivative of order `j`. Here `M = D.level` and
 `Ω = P.bigOmega D.towerExp = exp (γ - Re L'/L(1, χ_K)) 2π / rd_E`. -/
-def jetSize (j : ℕ) : ℝ := log j.factorial + j * log (D.M / P.bigOmega D.towerExp)
+def jetSize (j : ℕ) : ℝ := log j.factorial + j * log (D.level / P.bigOmega D.towerExp)
 
 /-- The direction amount `∑_σ (s_∞(κ(σ)) - s_fin(κ(σ), σ))`, summed over all infinite places `σ`:
 the size `s_∞ = D.jetSize` of a derivative of order `κ(σ)`, less the prime sum `s_fin = D.primeSum`

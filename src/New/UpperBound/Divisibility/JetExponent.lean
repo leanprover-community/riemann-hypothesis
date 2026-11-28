@@ -275,9 +275,9 @@ all places, in the columns of height below the rank `n_{j+1} = D.n (j + 1)`. The
 `log b = D.logB`. -/
 lemma one_add_logb_boxes_le (hj : j < D.m) :
     1 + logb p (max (boxes D.columnCount (D.n (j + 1))) 1 : ℕ) ≤ D.logB ^ 2 := by
-  have h_low (σ : D.Φ) : (D.lowBoxes j σ : ℝ) ≤ D.M :=
+  have h_low (σ : D.Φ) : (D.lowBoxes j σ : ℝ) ≤ D.level :=
     (lowBoxes_le hj σ).trans (D.le_of_hasLogBound (by scale_grind D))
-  have h_boxes : ((max (boxes D.columnCount (D.n (j + 1))) 1 : ℕ) : ℝ) ≤ D.f * D.a + D.f * D.M +
+  have h_boxes : ((max (boxes D.columnCount (D.n (j + 1))) 1 : ℕ) : ℝ) ≤ D.f * D.a + D.f * D.level +
     1 := by
     grw [max_le_add_of_nonneg (Nat.zero_le _) zero_le_one, cast_add_one,
       boxes_eq_aPlaces_add_low,
@@ -286,7 +286,7 @@ lemma one_add_logb_boxes_le (hj : j < D.m) :
   have h_log : 1 / 2 ≤ Real.log p := by
     grw [← q.out.two_le]
     linarith only [Real.log_two_gt_d9]
-  calc _ ≤ 1 + Real.log (D.f * D.a + D.f * D.M + 1) / (1 / 2) := by
+  calc _ ≤ 1 + Real.log (D.f * D.a + D.f * D.level + 1) / (1 / 2) := by
         grw [logb, ← h_log, h_boxes]
     _ ≤ D.logB ^ 2 := D.le_of_hasLogBound (by scale_grind D)
 

@@ -103,7 +103,7 @@ Letters used in comments, and their names in Lean:
 | q₀, q₁, q₂ | `P.q₀`, `D.q₁`, `P.q₂` |
 | Φ_a, Φ_b | `D.aPlaces`, `D.bPlaces` |
 | κ(τ), κ_j, κ̄ | `D.weight`, `D.liftWeight`, the geometric mean of the κ(τ) |
-| p₀, p₁, M | `D.levelPrime`, `D.M` |
+| p₀, p₁, M | `D.levelPrime`, `D.level` |
 | π_M, π_N | `D.piM`, `D.piN`; π_N is an integer of E with π_N π̄_N = N |
 | Δ, Δ/2 | `D.gap`, `D.halfGap` |
 | Ω, rd_E | `P.bigOmega`, `D.rootDisc` (root discriminant of E); in Galois theory Ω is also the algebraic closure of ℚ |

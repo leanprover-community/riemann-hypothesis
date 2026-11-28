@@ -37,7 +37,7 @@ explicit multiple of the value at `k` of the partial Hecke `L`-function of `X.u1
 
 Notions from other files:
 * `New.Data.TameChar`: a character of `U(1)(𝔸)` of weight `0` whose tame part is supported on a
-  finite set `Q` of places of norm prime to `D.M * D.N`, with `Q` disjoint from its conjugate.
+  finite set `Q` of places of norm prime to `D.level * D.N`, with `Q` disjoint from its conjugate.
 * `New.LValueData`: two families of split places (`chosenPlace`, and `twistPlace` for `Q`), row
   lengths `rowLength`, and a character `u1Char` of `U(1)(𝔸)` whose tame part is trivial off these
   places.
@@ -81,9 +81,9 @@ is the total order of the derivatives in the lift. -/
 @[simp] abbrev rowLengthSum : ℕ := ∑ τ : D.Φ, (p.negWeight τ - p.z)
 
 /-- A denominator for the values of the lift: the number `n_ν = M ^ (4 f z) * (M d) ^ j`, where
-`M = D.M`, `f = D.f` is the number of infinite places, `d = P.d`, and `j = p.rowLengthSum` is the
-sum of the row lengths. -/
-def denomBound : ℕ := D.M ^ (2 * D.f * (2 * p.z)) * (D.M * P.d) ^ p.rowLengthSum
+`M = D.level`, `f = D.f` is the number of infinite places, `d = P.d`, and `j = p.rowLengthSum` is
+the sum of the row lengths. -/
+def denomBound : ℕ := D.level ^ (2 * D.f * (2 * p.z)) * (D.level * P.d) ^ p.rowLengthSum
 
 variable {p : D.CriticalPair} {n : Type} [Fintype n] [DecidableEq n] (H : p.HasLiftRank n)
   (ϑ : D.TameChar)

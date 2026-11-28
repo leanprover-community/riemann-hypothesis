@@ -83,7 +83,7 @@ namespace Data
 variable {P : Parameters}
 
 /-- The vectors `u = w / π̄_M` of `E¹`, where the integer `π̄_M = D.piMBar` of `K` has norm
-`M = D.M`. -/
+`M = D.level`. -/
 noncomputable def resolutionVectors (D : Data P) (w : J → D.E) (i : J) (_ : Unit) : D.E :=
   w i / algebraMap P.K (P.E D.towerExp) D.piMBar
 
@@ -92,11 +92,11 @@ conjugate of `D.piMBar`. -/
 noncomputable def taylorScale (D : Data P) : ℂ_[p] :=
   ιₚ (P.periodFactor D.towerExp * conj (D.piMBar : ℂ))
 
-lemma piMBar_mul_conj (D : Data P) : D.piMBar * conj (D.piMBar : ℂ) = D.M := by
-  simpa [M] using congrArg (fun z : 𝓞 P.K ↦ (z : ℂ)) D.piMBar_mul_star
+lemma piMBar_mul_conj (D : Data P) : D.piMBar * conj (D.piMBar : ℂ) = D.level := by
+  simpa [level] using congrArg (fun z : 𝓞 P.K ↦ (z : ℂ)) D.piMBar_mul_star
 
 lemma coe_piMBar_ne_zero (D : Data P) : (D.piMBar : ℂ) ≠ 0 :=
-  left_ne_zero_of_mul (D.piMBar_mul_conj.trans_ne (cast_ne_zero.2 (NeZero.ne D.M)))
+  left_ne_zero_of_mul (D.piMBar_mul_conj.trans_ne (cast_ne_zero.2 (NeZero.ne D.level)))
 
 omit [Fintype J] in
 lemma phi_resolutionVectors (D : Data P) {w : J → D.E} (τ : D.Φ) (i : J) :
@@ -105,22 +105,22 @@ lemma phi_resolutionVectors (D : Data P) {w : J → D.E} (τ : D.Φ) (i : J) :
 
 /-- Let `D` be admissible data for the parameters `P`, with the CM field `E = D.E`, a cyclotomic
 extension of the imaginary quadratic field `K = ℚ(√-d)` (`d = P.d`), and the places `τ ∈ D.Φ` of
-its CM type. Let `w` be a tight frame of length `M = D.M` with multiplicities `c`: the `w_i` lie in
-the lattice `𝔞₀` of `E`, and `∑ c_i σ(w_i) conj (τ(w_i)) = M δ_(σ τ)` for all `σ, τ ∈ D.Φ`. Then
+its CM type. Let `w` be a tight frame of length `M = D.level` with multiplicities `c`: the `w_i` lie
+in the lattice `𝔞₀` of `E`, and `∑ c_i σ(w_i) conj (τ(w_i)) = M δ_(σ τ)` for all `σ, τ ∈ D.Φ`. Then
 the vectors `u_i = w_i / π̄_M`, where the integer `π̄_M = D.piMBar` of `K` has norm `M`, are a
 resolution of the identity: `z = ∑ c_i (u_i† z) u_i` for all complex vectors `z` indexed by the
 places, where `u_i† z = ∑ conj (τ u_i) z_τ` is a sum over the places `τ`. -/
 lemma isResolution_resolutionVectors (D : Data P) {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M) : IsResolution (D.resolutionVectors w) c := by
+    (hw : IsTightFrame w c D.level) : IsResolution (D.resolutionVectors w) c := by
   rintro ⟨σ, ⟨⟩⟩ ⟨τ, ⟨⟩⟩
   have h_gram : ∑ i : J, c i * (New.Φ σ (w i) * conj (New.Φ τ (w i))) =
-      if σ = τ then (D.M : ℂ) else 0 := hw.sum_mul_conj σ τ
+      if σ = τ then (D.level : ℂ) else 0 := hw.sum_mul_conj σ τ
   calc ∑ i : J, c i * (New.Φ σ (D.resolutionVectors w i ()) * dagger (D.resolutionVectors w i)
          (τ, ()))
-      = (∑ i : J, c i * (New.Φ σ (w i) * conj (New.Φ τ (w i)))) / D.M := by
+      = (∑ i : J, c i * (New.Φ σ (w i) * conj (New.Φ τ (w i)))) / D.level := by
         simp only [sum_div, dagger, phi_resolutionVectors, map_div₀, _root_.div_mul_div_comm,
           piMBar_mul_conj, mul_div_assoc]
-    _ = if (σ, ()) = (τ, ()) then 1 else 0 := by simp [h_gram, ite_div, NeZero.ne D.M]
+    _ = if (σ, ()) = (τ, ()) then 1 else 0 := by simp [h_gram, ite_div, NeZero.ne D.level]
 
 omit [Fintype J] in
 /-- The forms of `w` are the scale `𝔰 = D.taylorScale` times the forms `z ↦ u† z` of the vectors
@@ -135,9 +135,9 @@ lemma resolutionForms_eq_smul (D : Data P) {w : J → D.E} :
   rw [mul_assoc, mul_div_cancel₀ _ ((map_ne_zero _).2 D.coe_piMBar_ne_zero)]
 
 /-- A prime `p` that does not split in `K` (`χ_K(p) ≠ 1`) does not divide `q₁ M`, where `q₁ = D.q₁`
-is the order of the root of unity that generates `E` over `K` and the level `M = D.M` is the
+is the order of the root of unity that generates `E` over `K` and the level `M = D.level` is the
 product of the two primes `D.levelPrime i`. -/
-lemma not_dvd_q₁_mul_M (D : Data P) (h_nonsplit : chiK P.d p ≠ 1) : ¬p ∣ D.q₁ * D.M := by
+lemma not_dvd_q₁_mul_level (D : Data P) (h_nonsplit : chiK P.d p ≠ 1) : ¬p ∣ D.q₁ * D.level := by
   have hp : p.Prime := Fact.out
   have h_level (i : Fin 2) : ¬p ∣ D.levelPrime i := fun h_dvd ↦ by
     obtain rfl : p = D.levelPrime i := (prime_dvd_prime_iff_eq hp (D.levelPrime_prime i)).1 h_dvd
@@ -146,25 +146,25 @@ lemma not_dvd_q₁_mul_M (D : Data P) (h_nonsplit : chiK P.d p ≠ 1) : ¬p ∣ 
     (hp.not_dvd_mul (h_level 0) (h_level 1))
 
 /-- Let `D` be admissible data for the parameters `P`, with the CM field `E = D.E` over the
-imaginary quadratic field `K = ℚ(√-d)` (`d = P.d`). Let `w` be a tight frame of length `M = D.M`
+imaginary quadratic field `K = ℚ(√-d)` (`d = P.d`). Let `w` be a tight frame of length `M = D.level`
 with multiplicities `c`: the `w_i` lie in the lattice `𝔞₀` of `E`, and
 `∑ c_i σ(w_i) conj (τ(w_i)) = M δ_(σ τ)` for all places `σ`, `τ` of the CM type. Let `p` be a prime
 that does not split in `K` (`χ_K(p) ≠ 1`). Then `u_i = w_i / π̄_M`, where `π̄_M = D.piMBar` has norm
 `M`, is integral at every finite place `v` of `E` above `p`, that is, its `v`-adic absolute value is
 at most `1`. -/
 lemma isIntegralAbove_resolutionVectors (D : Data P) {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M) (h_nonsplit : chiK P.d p ≠ 1) (i : J) (x : Unit) :
+    (hw : IsTightFrame w c D.level) (h_nonsplit : chiK P.d p ≠ 1) (i : J) (x : Unit) :
     IsIntegralAbove p (D.resolutionVectors w i x) := by
   cases x
   -- `q₁ M u = (q₁ w) π_M`, and `q₁ w` is an integer because `q₁ 𝔞₀ ⊆ 𝓞 E`
-  refine isIntegralAbove_of_isIntegral_mul (D.not_dvd_q₁_mul_M h_nonsplit) ?_
+  refine isIntegralAbove_of_isIntegral_mul (D.not_dvd_q₁_mul_level h_nonsplit) ?_
   have h_int : IsIntegral ℤ (D.q₁ * w i) := by
     refine algebraMap_mem_Ô.1 ?_
     have h_mem_Ô : (D.q₁ : 𝔸f D.E) * P.α D.towerExp * finiteImage w i ∈ Ô D.E :=
       mul_mem P.q₁_mul_alpha_mem (hw.finiteImage_mem i)
     -- `finiteImage w i = α⁻¹ w_i`, so the idele `α` of `𝔞₀` cancels
     simpa [mul_assoc, finiteImage, WeilData.α] using h_mem_Ô
-  have h_eq : (D.q₁ * D.M : ℕ) * D.resolutionVectors w i () =
+  have h_eq : (D.q₁ * D.level : ℕ) * D.resolutionVectors w i () =
       D.q₁ * w i * algebraMap P.K (P.E D.towerExp) (star D.piMBar : 𝓞 P.K) := by
     apply (New.Φ (1 : D.Φ)).injective
     simp only [map_mul, map_natCast, cast_mul D.q₁, phi_resolutionVectors, P.phi_algebraMap,
@@ -174,14 +174,14 @@ lemma isIntegralAbove_resolutionVectors (D : Data P) {w : J → D.E} {c : J → 
   exact h_int.mul (RingOfIntegers.isIntegral_coe (star D.piMBar)).algebraMap
 
 /-- Let `D` be admissible data for the parameters `P`: the CM field `E = D.E` is generated over
-`K = ℚ(√-d)` by a root of unity of order `q₁ = D.q₁`, and the level `M = D.M` is the product of the
-two primes `D.levelPrime i`. For every prime `p` that does not divide `q₁ M` the scale
+`K = ℚ(√-d)` by a root of unity of order `q₁ = D.q₁`, and the level `M = D.level` is the product of
+the two primes `D.levelPrime i`. For every prime `p` that does not divide `q₁ M` the scale
 `𝔰 = D.taylorScale` is a `p`-adic unit. The scale is the complex number `periodFactor * π_M`, read
 in `ℂ_p` by the homomorphism `ιₚ : ℂ → ℂ_p` of `PadicPlace p`. -/
-lemma norm_taylorScale_eq_one_of_not_dvd (D : Data P) (h_not_dvd : ¬p ∣ D.q₁ * D.M) :
+lemma norm_taylorScale_eq_one_of_not_dvd (D : Data P) (h_not_dvd : ¬p ∣ D.q₁ * D.level) :
     ‖(D.taylorScale : ℂ_[p])‖ = 1 := by
   have hp : p.Prime := Fact.out
-  obtain ⟨hN₁, hM⟩ : ¬p ∣ D.q₁ ∧ ¬p ∣ D.M := not_or.1 (mt hp.dvd_mul.2 h_not_dvd)
+  obtain ⟨hN₁, hM⟩ : ¬p ∣ D.q₁ ∧ ¬p ∣ D.level := not_or.1 (mt hp.dvd_mul.2 h_not_dvd)
   -- `π_M` and `π̄_M` are integers whose product `M` is a unit
   have h_prod : ‖ιₚ (D.piMBar : ℂ)‖ * ‖ιₚ (conj (D.piMBar : ℂ))‖ = 1 := by
     rw [← norm_mul, ← map_mul, piMBar_mul_conj, map_natCast]
@@ -196,13 +196,13 @@ lemma norm_taylorScale_eq_one_of_not_dvd (D : Data P) (h_not_dvd : ¬p ∣ D.q�
 (`χ_K(p) ≠ 1`). -/
 lemma norm_taylorScale (D : Data P) (h_nonsplit : chiK P.d p ≠ 1) :
     ‖(D.taylorScale : ℂ_[p])‖ = 1 :=
-  D.norm_taylorScale_eq_one_of_not_dvd (D.not_dvd_q₁_mul_M h_nonsplit)
+  D.norm_taylorScale_eq_one_of_not_dvd (D.not_dvd_q₁_mul_level h_nonsplit)
 
 /-- Let `D` be admissible data for the parameters `P`, `p` a prime that is inert in `K = ℚ(√-d)`,
-and `w` a tight frame of length `M = D.M` with multiplicities `c`. Then `val₆(ν) ≤ 0` for every
+and `w` a tight frame of length `M = D.level` with multiplicities `c`. Then `val₆(ν) ≤ 0` for every
 degree `ν`, a multi-index over the places `τ ∈ D.Φ`. -/
 lemma leastValLE_six_zero_of_inert (D : Data P) {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M) (h_inert : chiK P.d p = -1) (ν : D.Φ × Unit →₀ ℕ) :
+    (hw : IsTightFrame w c D.level) (h_inert : chiK P.d p = -1) (ν : D.Φ × Unit →₀ ℕ) :
     P.cmCurve.LeastValLE (p := p) (P.resolutionForms D.towerExp w) c 6 ν 0 := by
   have h_nonsplit : chiK P.d p ≠ 1 := by norm_num [h_inert]
   -- `∑ c_i τ(u_i) 𝔰 u_i† z = 𝔰 z_τ`, with integral coefficients `c_i τ(u_i)`
@@ -219,7 +219,7 @@ lemma leastValLE_six_zero_of_inert (D : Data P) {w : J → D.E} {c : J → ℕ}
         simp [D.isResolution_resolutionVectors hw x y]
 
 /-- Let `D` be admissible data for the parameters `P` and `p` a prime that is inert in `K = ℚ(√-d)`.
-For a tight frame `w` of length `M = D.M` with multiplicities `c`, the theta product
+For a tight frame `w` of length `M = D.level` with multiplicities `c`, the theta product
 `Θ = ∏ θ(μ_i z) ^ c_i` of the curve `P.cmCurve` along the linear forms
 `μ = P.resolutionForms D.towerExp w` has a normal form `Θ(ϖ z) = W exp (c_ϖ ∑ λ_(e j) Γ_e ^ p ^ j)`:
 the series `W` in the variables `z_τ` and the numbers `λ_(e j) = lam e j` are integral,
@@ -227,7 +227,7 @@ the series `W` in the variables `z_τ` and the numbers `λ_(e j) = lam e j` are 
 `τ` with their partners, for `e` in `partnerExponents P.d p`, the set of odd numbers. Moreover `ϖ`
 has valuation `ρ_p = varpiValuation P.d p = 1 / (p² - 1)`, and `λ_(e 0)` is a unit for odd `e`. -/
 lemma exists_hasNormalForm_resolutionForms (D : Data P) {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M) (h_inert : chiK P.d p = -1) :
+    (hw : IsTightFrame w c D.level) (h_inert : chiK P.d p = -1) :
     ∃ (ϖ : ℂ_[p]) (lam : ℕ → ℕ → valRingCp p),
       ‖ϖ‖ = p ^ (-varpiValuation P.d p) ∧
       (∀ e : ℕ, Odd e → IsUnit (lam e 0)) ∧
@@ -248,11 +248,11 @@ lemma exists_hasNormalForm_resolutionForms (D : Data P) {w : J → D.E} {c : J �
   rw [resolutionForms_eq_smul, ← CMLattice.rescale_thetaProd]
   exact hΘ.rescale 𝔰
 
-/-- If `w`, taken `c i` times, is a tight frame with frame bound `M = D.M` (`IsTightFrame w c D.M`),
-then every coefficient of the forms `P.resolutionForms D.towerExp w` has `p`-adic norm at most `1`,
-for every prime `p`. -/
+/-- If `w`, taken `c i` times, is a tight frame with frame bound `M = D.level`
+(`IsTightFrame w c D.level`), then every coefficient of the forms `P.resolutionForms D.towerExp w`
+has `p`-adic norm at most `1`, for every prime `p`. -/
 lemma norm_resolutionForms_le_one (D : Data P) {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M) (i : J) (x : D.Φ × Unit) :
+    (hw : IsTightFrame w c D.level) (i : J) (x : D.Φ × Unit) :
     ‖(P.resolutionForms D.towerExp w i x : ℂ_[p])‖ ≤ 1 :=
   Parameters.norm_periodFactor_mul_conj_le_one (hw.finiteImage_mem i) x.1
 
@@ -522,12 +522,12 @@ lemma leastValLE_twelve_of_split (D : Data P) {p : ℕ} [Fact p.Prime] {l : D.Φ
   simpa only [hS, zero_add] using (leastValLE_zero (n := 6)).add h_six
 
 /-- Let `D` be admissible data for the parameters `P` and `p` a prime above `k = D.k = r + 1 - m`
-that is inert in `ℚ(√-d)`, `d = P.d`. Let `w` be a tight frame of length `M = D.M` with
+that is inert in `ℚ(√-d)`, `d = P.d`. Let `w` be a tight frame of length `M = D.level` with
 multiplicities `c`, and `l` a degree between the weights `κ(τ) = D.weight τ` and `κ(τ) + x ^ 42`.
 Then `v(l!) + val₁₂(l) ≤ S_p + 2 ∑ v(B_τ)`. -/
 lemma leastValLE_twelve_of_lt (D : Data P) {p : ℕ} [hp : Fact p.Prime] {l : D.Φ × Unit →₀ ℕ}
     (hl : D.IsNearWeights l) [PadicPlace p] {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M) (h_inert : chiK P.d p = -1) (hk : D.k < p) :
+    (hw : IsTightFrame w c D.level) (h_inert : chiK P.d p = -1) (hk : D.k < p) :
     P.cmCurve.LeastValLE (p := p) (P.resolutionForms D.towerExp w) c 12 l
       (D.localPrimeSumTotal p + 2 * ∑ x : D.Φ × Unit, (padicValNat p (D.lossProduct (l x)) : ℝ) -
         ∑ x : D.Φ × Unit, (padicValNat p (l x)! : ℝ)) := by
@@ -567,16 +567,16 @@ lemma _root_.New.chiK_eq_neg_one_of_ne {d : ℕ} [Fact d.Prime] {p : ℕ} [Fact 
   simpa [h_ne, h_nonsplit] using chiK_cases d p
 
 /-- Let `D` be admissible data for the parameters `P`, `p` a prime with `2 < p ≤ k = D.k` that does
-not split in `ℚ(√-d)`, `w` a tight frame of length `M = D.M` with multiplicities `c`, and `(τ, e τ)`
-a near pair for each `τ ∈ Φ₀`: `e τ` lies in `I_p`, `e τ < l₀ / 2` with `l₀` the least power of `3`
-above `27 * D.towerExp`, and `τ` and its partner `-p ^ e τ * τ` lie in the set `D.bPlaces` of places
-of weight `b`. Let `ν'`, `ν''` be the degrees of the two factors of the couplings
-`z_τ ^ p ^ e τ * z_(-p ^ e τ * τ)`, used `j τ` times. Let `val₆(ν)` be the least valuation of a
-coefficient of total degree `ν = ν' + ν''` in a product of six copies of series `H Θ`, with `Θ` the
-theta product along the forms `P.resolutionForms D.towerExp w` and `H` integral. Then
+not split in `ℚ(√-d)`, `w` a tight frame of length `M = D.level` with multiplicities `c`, and
+`(τ, e τ)` a near pair for each `τ ∈ Φ₀`: `e τ` lies in `I_p`, `e τ < l₀ / 2` with `l₀` the least
+power of `3` above `27 * D.towerExp`, and `τ` and its partner `-p ^ e τ * τ` lie in the set
+`D.bPlaces` of places of weight `b`. Let `ν'`, `ν''` be the degrees of the two factors of the
+couplings `z_τ ^ p ^ e τ * z_(-p ^ e τ * τ)`, used `j τ` times. Let `val₆(ν)` be the least valuation
+of a coefficient of total degree `ν = ν' + ν''` in a product of six copies of series `H Θ`, with `Θ`
+the theta product along the forms `P.resolutionForms D.towerExp w` and `H` integral. Then
 `v(ν'! ν''!) + val₆(ν) ≤ γ_p |ν| - |j|`. -/
 lemma leastValLE_six_of_isNearPair (D : Data P) {p : ℕ} [Fact p.Prime] [PadicPlace p]
-    {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ} (hw : IsTightFrame w c D.M)
+    {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ} (hw : IsTightFrame w c D.level)
     (h_nonsplit : chiK P.d p ≠ 1) (hp2 : 2 < p) (hk : p ≤ D.k) {Φ₀ : Finset D.Φ} {e : D.Φ → ℕ}
     (he : ∀ τ ∈ Φ₀, D.IsNearPair p τ (e τ)) (j : D.Φ → ℕ) :
     P.cmCurve.LeastValLE (p := p) (P.resolutionForms D.towerExp w) c 6
@@ -597,13 +597,13 @@ lemma leastValLE_six_of_isNearPair (D : Data P) {p : ℕ} [Fact p.Prime] [PadicP
 
 /-- Let `D` be admissible data for the parameters `P`, with the CM field `E = D.E` and its places
 `τ ∈ D.Φ`, and `p ≤ k = D.k` a prime that does not split in `ℚ(√-d)`, `d = P.d`, with `ℂ` read in
-`ℂ_p` by the homomorphism `ιₚ` of `PadicPlace p`. Let `w` be a tight frame of length `M = D.M` with
-multiplicities `c` such that the form of `w i₀` has unit coefficients, and `l` a degree between the
-weights `κ(τ) = D.weight τ` and `κ(τ) + x ^ 42`. Then `v(l!) + val₁₂(l) ≤ S_p + ∑ v(B_τ)`. -/
+`ℂ_p` by the homomorphism `ιₚ` of `PadicPlace p`. Let `w` be a tight frame of length `M = D.level`
+with multiplicities `c` such that the form of `w i₀` has unit coefficients, and `l` a degree between
+the weights `κ(τ) = D.weight τ` and `κ(τ) + x ^ 42`. Then `v(l!) + val₁₂(l) ≤ S_p + ∑ v(B_τ)`. -/
 lemma leastValLE_twelve_localPrimeSumTotal_of_le (D : Data P) {p : ℕ} [hp : Fact p.Prime]
     {l : D.Φ × Unit →₀ ℕ}
     (hl : D.IsNearWeights l) [PadicPlace p] {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M)
+    (hw : IsTightFrame w c D.level)
     {i₀ : J} (h_unit : ∀ x : D.Φ × Unit, ‖(P.resolutionForms D.towerExp w i₀ x : ℂ_[p])‖ = 1)
     (h_nonsplit : chiK P.d p ≠ 1) (hk : p ≤ D.k) :
     P.cmCurve.LeastValLE (p := p) (P.resolutionForms D.towerExp w) c 12 l
@@ -650,12 +650,12 @@ lemma leastValLE_twelve_localPrimeSumTotal_of_le (D : Data P) {p : ℕ} [hp : Fa
       D.gammaPrime_mul_degree_sub_le_localPrimeSumTotal_add hl hk h_exponent h_floor
   exact h_twelve.mono (by linarith)
 
-/-- Let `w` be a tight frame of length `M = D.M` with multiplicities `c` such that the form of
+/-- Let `w` be a tight frame of length `M = D.level` with multiplicities `c` such that the form of
 `w i₀` has unit coefficients, and let `l` be a degree between the weights `κ(τ) = D.weight τ` and
 `κ(τ) + x ^ 42`. Then `v(l!) + val₁₂(l) ≤ S_p + 2 ∑ v(B_τ)`. -/
 lemma leastValLE_twelve (D : Data P) {p : ℕ} [Fact p.Prime] {l : D.Φ × Unit →₀ ℕ}
     (hl : D.IsNearWeights l) [PadicPlace p] {J : Type} [Fintype J] {w : J → D.E} {c : J → ℕ}
-    (hw : IsTightFrame w c D.M)
+    (hw : IsTightFrame w c D.level)
     {i₀ : J} (h_unit : ∀ x : D.Φ × Unit, ‖(P.resolutionForms D.towerExp w i₀ x : ℂ_[p])‖ = 1) :
     P.cmCurve.LeastValLE (p := p) (P.resolutionForms D.towerExp w) c 12 l
       (D.localPrimeSumTotal p + 2 * ∑ x : D.Φ × Unit, (padicValNat p (D.lossProduct (l x)) : ℝ) -

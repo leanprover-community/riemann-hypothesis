@@ -153,7 +153,7 @@ theorem exists_datum_norm_modKernel_sub_polyMatrixCoeff_le {n n' : Type} [Fintyp
   -- homomorphisms is at least `λ₁(g) λ₁(g')` over a constant, and `|Φ w c| = q₁ / M` is small.
   have h_sep (w : D.Φ) : D.b ^ 6 * ‖Φ w c‖ ≤
       √(2 * .pi * (Φ w WeilData.j).im) * ((V.move g).hom (V'.move g')).firstMinimum := by
-    have h_norm : ‖Φ w c‖ = (D.q₁ : ℝ) / D.M := by
+    have h_norm : ‖Φ w c‖ = (D.q₁ : ℝ) / D.level := by
       simpa [c, sq, -Nat.cast_mul] using
         congrArg (fun x : 𝓞 D.E ↦ (D.q₁ : ℝ) / ‖Φ w (x : D.E)‖) D.piM_mul_star
     have h_cond : D.cyclotomicConductor ≠ 0 := NeZero.ne _
@@ -879,7 +879,7 @@ theorem eq_zero_of_integral_choiceFn_thetaKernelPairing (F : D.goodForms (D.spac
   by_contra F_ne
   -- `conj F` has level `M √(-d)`, so its peaks are not deep in a cusp.
   have F_level : star (F : New.G D.E (D.signsW j) → ℂ) ∈
-      rapidOfLevel (D.spaceW j) (D.M * sqrtNegDInE P D.towerExp) :=
+      rapidOfLevel (D.spaceW j) (D.level * sqrtNegDInE P D.towerExp) :=
     star_mem_rapidOfLevel
       (goodForms_mem_rapidOfLevel F (.mul_right ⟨_, D.piM_mul_star.symm⟩ _))
   have gap_one (τ : D.Φ) : HasHolGap (D.signsW j) (conjHolomorphicWeight j τ) 1 := fun a b ha hb ↦

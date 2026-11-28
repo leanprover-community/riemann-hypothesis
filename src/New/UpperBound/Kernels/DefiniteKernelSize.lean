@@ -127,12 +127,12 @@ lemma blockSumOne_mul_mem_integralAbove {p : ℕ} {γ : U (stdSpace E L).J} {γ'
 /-- The constant that normalises the theta kernels of the standard definite spaces `I_L`, `I_N`
 over the field `D.E = P.E s` of the data `D`, where `s = D.towerExp` is its exponent in the tower
 over `K = ℚ(√-P.d)`, for polynomials homogeneous of degree `d`. It is built from the principal
-level `D.M` (a product of two primes), the number `P.vacuumScale s` that makes the values of the
+level `D.level` (a product of two primes), the number `P.vacuumScale s` that makes the values of the
 vacuum of rank one (`Space.vacElem`) integral, and the scale `P.jetScale s` of the Taylor series. -/
 noncomputable def modKernelScale (L N : Type) [Fintype L] [Fintype N] {P : Parameters} (D : Data P)
     (d : ℕ) : ℂ :=
-  (D.M ^ 2) ^ (2 * Core.numInfPlaces D.E * card (N × L)) *
-    P.vacuumScale D.towerExp ^ card (N × L) * (D.M ^ 2 * P.d * P.jetScale D.towerExp) ^ d
+  (D.level ^ 2) ^ (2 * Core.numInfPlaces D.E * card (N × L)) *
+    P.vacuumScale D.towerExp ^ card (N × L) * (D.level ^ 2 * P.d * P.jetScale D.towerExp) ^ d
 
 variable (L N) in
 omit [DecidableEq L] [DecidableEq N] in
@@ -163,7 +163,7 @@ lemma jet_jetSeries_pairWeil_vacuumDatum {P : Parameters} {D : Data P} {d : ℕ}
   simp [ω, V, h_kernel, jet_jetSeries_of_isHomogeneous _ hQ, mul_assoc, mul_left_comm s]
 
 /-- Let the automorphic characters `a`, `b` of `U(1)` have exponents `ea`, `eb` at the infinite
-places and residue characters `ψ`, `ψ'`, let `𝔪` contain `q * D.M ^ 2`, let the values of `Ψ` be
+places and residue characters `ψ`, `ψ'`, let `𝔪` contain `q * D.level ^ 2`, let the values of `Ψ` be
 integral at all primes coprime to `q`, and let `Q` be homogeneous of degree `d`. Let `p` be a prime
 coprime to `q`; the instance `PadicPlace p` chooses an embedding `ιₚ : ℂ → ℂ_p`, with valuation ring
 `embValRing ⊆ ℂ`. If the finite adelic points `g`, `h` are integral above `p` and `Q` has
@@ -173,7 +173,7 @@ lemma norm_modKernelScale_mul_modKernelStdSpace_le_one {P : Parameters} {D : Dat
     {a b : AutChar D.E} {ea eb : InfinitePlace D.E → ℤ}
     {ψ ψ' : (w : FinPlace D.E) → MulChar (ResField w) ℂ} {𝔪 : Modulus D.E}
     {Ψ : Matrix N L 𝔪.ResidueRing → ℂ} {Q : MvPolynomial (InfinitePlace D.E × N × L) ℂ}
-    (ha : a.HasWeight ea ψ) (hb : b.HasWeight eb ψ') {q : ℕ} (hq : ↑(q * D.M ^ 2) ∈ 𝔪.ideal)
+    (ha : a.HasWeight ea ψ) (hb : b.HasWeight eb ψ') {q : ℕ} (hq : ↑(q * D.level ^ 2) ∈ 𝔪.ideal)
     (hΨ : ∀ x : Matrix N L 𝔪.ResidueRing, Ψ x ∈ Seesaw.integralAway q) (hQ : Q.IsHomogeneous d)
     {p : ℕ} [Fact p.Prime] [PadicPlace p] (hp : p.Coprime q) {g : Gf D.E L} {h : Gf D.E N}
     (hg : g ∈ integralAbove L p) (hh : h ∈ integralAbove N p)
@@ -182,7 +182,7 @@ lemma norm_modKernelScale_mul_modKernelStdSpace_le_one {P : Parameters} {D : Dat
   -- Once its denominator `δ ^ denomExp` is cleared, the datum is standard at `p`, and the action
   -- of `g`, `h` keeps it so. The normalised kernel is a jet of its Taylor series.
   obtain ⟨Q₀, hQ₀ : Q₀.map embValRing.subtype = Q⟩ := hQ_int
-  let δ : ℕ := D.M ^ 2
+  let δ : ℕ := D.level ^ 2
   let denomExp : ℕ := 2 * Core.numInfPlaces D.E * card (N × L)
   let V : Space D.E (N × L) (homSigns 1 1) := (stdSpace D.E L).hom (stdSpace D.E N)
   let f : 𝒮 V := ((δ ^ denomExp : ℕ) : ℂ) • P.vacuumScale D.towerExp ^ card (N × L) •
@@ -216,37 +216,38 @@ lemma norm_map_eval_le_of_isHomogeneous {ι : Type*} {Q : MvPolynomial ι ℂ} {
   rw [h_eval] at h_scaled
   simpa [u, abs_of_pos ht, inv_mul_le_iff₀ (pow_pos ht d), mul_comm B] using h_scaled
 
-/-- Let `M = D.M` be the principal level of the data `D` and `d ≤ M`. For every automorphism `σ` of
-`ℂ`, the number `‖σ (M ^ 2 * P.d)‖ ^ 2 / Ω` times `2 * d + 2` is at most `(M ^ 4) ^ 2`. Here `P.d`
-is the prime with `K = ℚ(√-P.d)`, and `Ω = P.bigOmega D.towerExp` is
+/-- Let `M = D.level` be the principal level of the data `D` and `d ≤ M`. For every automorphism `σ`
+of `ℂ`, the number `‖σ (M ^ 2 * P.d)‖ ^ 2 / Ω` times `2 * d + 2` is at most `(M ^ 4) ^ 2`. Here
+`P.d` is the prime with `K = ℚ(√-P.d)`, and `Ω = P.bigOmega D.towerExp` is
 `exp (γ - Re L'/L(1, χ_K)) * 2π` divided by the root discriminant of the field `D.E` (`γ` is Euler's
 constant). -/
-lemma norm_map_sq_div_bigOmega_mul_le {P : Parameters} {D : Data P} {d : ℕ} (hd : d ≤ D.M)
+lemma norm_map_sq_div_bigOmega_mul_le {P : Parameters} {D : Data P} {d : ℕ} (hd : d ≤ D.level)
     (σ : ℂ ≃+* ℂ) :
-    ‖σ (D.M ^ 2 * P.d)‖ ^ 2 / P.bigOmega D.towerExp * (2 * d + 2) ≤ (D.M ^ 4) ^ 2 := by
+    ‖σ (D.level ^ 2 * P.d)‖ ^ 2 / P.bigOmega D.towerExp * (2 * d + 2) ≤ (D.level ^ 4) ^ 2 := by
   have hΩ : 0 < P.bigOmega D.towerExp := bigOmega_pos
   -- `σ` fixes the natural numbers, and the claim follows from the sizes of the logarithms.
-  grw [show ‖σ (D.M ^ 2 * P.d)‖ = D.M ^ 2 * P.d by simp, hd]
+  grw [show ‖σ (D.level ^ 2 * P.d)‖ = D.level ^ 2 * P.d by simp, hd]
   exact D.le_of_hasLogBound
 
 /-- The parameters `P` fix a prime `P.d` and `K = ℚ(√-P.d)`; the data `D` fix a field `D.E`, the
-step `D.towerExp` of a cyclotomic tower over `K`, and a level `M = D.M`, a product of two primes.
-Let `σ` be an automorphism of `ℂ`, and `Q` homogeneous of degree `d ≤ M` with `‖σ (Q z)‖ ≤ B`
-whenever all `‖σ (z i)‖ ≤ M ^ 4`. Put `T = ‖σ (M ^ 2 * P.d)‖ ^ 2 / Ω`, where
-`Ω = P.bigOmega D.towerExp` is `exp (γ - Re L'/L(1, χ_K)) * 2π` divided by the root discriminant
-of `D.E` (`γ` is Euler's constant). Then `HasConjugateGrowth σ Q T d 0 B` holds: for all `z` and
-real `R` with `∑ ‖σ (z i)‖ ^ 2 ≤ T * (2 * d + 2) * R`, we have `‖σ (Q z)‖ ≤ B * exp (0 + d * R)`. -/
+step `D.towerExp` of a cyclotomic tower over `K`, and a level `M = D.level`, a product of two
+primes. Let `σ` be an automorphism of `ℂ`, and `Q` homogeneous of degree `d ≤ M` with
+`‖σ (Q z)‖ ≤ B` whenever all `‖σ (z i)‖ ≤ M ^ 4`. Put `T = ‖σ (M ^ 2 * P.d)‖ ^ 2 / Ω`, where
+`Ω = P.bigOmega D.towerExp` is `exp (γ - Re L'/L(1, χ_K)) * 2π` divided by the root discriminant of
+`D.E` (`γ` is Euler's constant). Then `HasConjugateGrowth σ Q T d 0 B` holds: for all `z` and real
+`R` with `∑ ‖σ (z i)‖ ^ 2 ≤ T * (2 * d + 2) * R`, we have `‖σ (Q z)‖ ≤ B * exp (0 + d * R)`. -/
 lemma hasConjugateGrowth_of_isHomogeneous {P : Parameters} {D : Data P} {d : ℕ} {ι : Type*}
-    [Fintype ι] {Q : MvPolynomial ι ℂ} (hd : d ≤ D.M) (hQ : Q.IsHomogeneous d) (σ : ℂ ≃+* ℂ) {B : ℝ}
-    (hB : ∀ z : ι → ℂ, (∀ i : ι, ‖σ (z i)‖ ≤ D.M ^ 4) → ‖σ (Q.eval z)‖ ≤ B) :
-    HasConjugateGrowth σ Q (‖σ (D.M ^ 2 * P.d)‖ ^ 2 / P.bigOmega D.towerExp) d 0 B := by
+    [Fintype ι] {Q : MvPolynomial ι ℂ} (hd : d ≤ D.level) (hQ : Q.IsHomogeneous d) (σ : ℂ ≃+* ℂ)
+    {B : ℝ} (hB : ∀ z : ι → ℂ, (∀ i : ι, ‖σ (z i)‖ ≤ D.level ^ 4) → ‖σ (Q.eval z)‖ ≤ B) :
+    HasConjugateGrowth σ Q (‖σ (D.level ^ 2 * P.d)‖ ^ 2 / P.bigOmega D.towerExp) d 0 B := by
   -- The hypothesis on `z` puts `σ z` in the polydisc of radius `exp R * M ^ 4`.
   intro z R hz
   have hΩ : 0 < P.bigOmega D.towerExp := bigOmega_pos
-  have coord_le (i : ι) : ‖σ (z i)‖ ^ 2 ≤ (exp R * D.M ^ 4) ^ 2 := calc
+  have coord_le (i : ι) : ‖σ (z i)‖ ^ 2 ≤ (exp R * D.level ^ 4) ^ 2 := calc
     _ ≤ ∑ j, ‖σ (z j)‖ ^ 2 := single_le_sum (f := fun j ↦ ‖σ (z j)‖ ^ 2) (by simp) (mem_univ i)
-    _ ≤ R * (‖σ (D.M ^ 2 * P.d)‖ ^ 2 / P.bigOmega D.towerExp * (2 * d + 2)) := by rwa [mul_comm R]
-    _ ≤ (exp R * D.M ^ 4) ^ 2 := by
+    _ ≤ R * (‖σ (D.level ^ 2 * P.d)‖ ^ 2 / P.bigOmega D.towerExp * (2 * d + 2)) := by
+      rwa [mul_comm R]
+    _ ≤ (exp R * D.level ^ 4) ^ 2 := by
       rw [mul_pow]
       gcongr
       · nlinarith [add_one_le_exp R]
@@ -257,28 +258,30 @@ lemma hasConjugateGrowth_of_isHomogeneous {P : Parameters} {D : Data P} {d : ℕ
 
 /-- The constants in the bound for the conjugates of the theta kernel are at most `exp D.x₁`. The
 data `D` for the parameters `P` fix a cut-off `D.x₁` (a large integer), a rank `D.r` (a power of
-`3`), a level `D.M` and a CM field `D.E = P.E s` with `s = D.towerExp`, generated over
+`3`), a level `D.level` and a CM field `D.E = P.E s` with `s = D.towerExp`, generated over
 `K = ℚ(√-P.d)` by a root of unity of order `P.q₁ s`; `P.Φ s` is the set of its infinite places, and
 `P.constantBound` bounds the constants that depend on `P` only. Let `L`, `N` have at most
-`D.gap = 2 * D.r ^ 8` elements, let `d ≤ D.M`, and let the ideal `𝔪` of `𝓞 D.E` contain `D.M ^ 2`.
-The three factors are the cleared denominator, the number of matrices over
+`D.gap = 2 * D.r ^ 8` elements, let `d ≤ D.level`, and let the ideal `𝔪` of `𝓞 D.E` contain
+`D.level ^ 2`. The three factors are the cleared denominator, the number of matrices over
 `𝔪.ResidueRing = 𝓞 D.E / 𝔪`, and the exponential in `Parameters.jetSizeBound`. -/
-lemma M_pow_mul_card_mul_exp_le {P : Parameters} {D : Data P} {d : ℕ} {𝔪 : Modulus D.E}
-    (hL : card L ≤ D.gap) (hN : card N ≤ D.gap) (hd : d ≤ D.M) (h𝔪 : ↑(D.M ^ 2) ∈ 𝔪.ideal) :
-    ((D.M : ℝ) ^ 2) ^ (2 * Core.numInfPlaces D.E * card (N × L)) * card (N × L → 𝔪.ResidueRing) *
+lemma level_pow_mul_card_mul_exp_le {P : Parameters} {D : Data P} {d : ℕ} {𝔪 : Modulus D.E}
+    (hL : card L ≤ D.gap) (hN : card N ≤ D.gap) (hd : d ≤ D.level)
+    (h𝔪 : ↑(D.level ^ 2) ∈ 𝔪.ideal) :
+    ((D.level : ℝ) ^ 2) ^ (2 * Core.numInfPlaces D.E * card (N × L)) *
+        card (N × L → 𝔪.ResidueRing) *
         exp (P.constantBound * (P.q₁ D.towerExp * card (N × L) + 1) ^ 2 +
           card (P.Φ D.towerExp × N × L) * log (2 * d + 2)) ≤
       exp D.x₁ := by
   let k : ℕ := 2 * Core.numInfPlaces D.E * card (N × L)
   let e : ℝ := P.constantBound * (P.q₁ D.towerExp * card (N × L) + 1) ^ 2 +
     card (P.Φ D.towerExp × N × L) * log (2 * d + 2)
-  have h_card : (card (N × L → 𝔪.ResidueRing) : ℝ) ≤ (D.M ^ 2) ^ k := by
+  have h_card : (card (N × L → 𝔪.ResidueRing) : ℝ) ≤ (D.level ^ 2) ^ k := by
     rw [card_fun, card_eq_nat_card (α := 𝔪.ResidueRing), pow_mul]
     exact_mod_cast Nat.pow_le_pow_left (𝔪.card_residueRing_le h𝔪 one_le) _
-  have h_pow : ((D.M : ℝ) ^ 2) ^ k = exp (k * (2 * log D.M)) := by
+  have h_pow : ((D.level : ℝ) ^ 2) ^ k = exp (k * (2 * log D.level)) := by
     simp [exp_natCast_mul, two_mul, sq, exp_add, exp_log, NeZero.pos]
   -- Insert the three size bounds; the rest is a comparison of logarithmic sizes.
-  have h_log : k * (2 * log D.M) + k * (2 * log D.M) + e ≤ D.x₁ := by
+  have h_log : k * (2 * log D.level) + k * (2 * log D.level) + e ≤ D.x₁ := by
     simp only [k, e, card_prod]
     norm_cast
     grw [le_abs_self P.constantBound, hd, hL, hN]
@@ -293,35 +296,35 @@ lemma M_pow_mul_card_mul_exp_le {P : Parameters} {D : Data P} {d : ℕ} {𝔪 : 
     all_goals linarith
   grw [h_card, h_pow, ← exp_add, ← exp_add, h_log]
 
-/-- Let `L`, `N` have at most `D.gap = 2 * D.r ^ 8` elements and let `d ≤ D.M`. Let the automorphic
-characters `a`, `b` of `U(1)` have exponents `ea`, `eb` at the infinite places and residue
-characters `ψ`, `ψ'` (`HasWeight`), and let `𝔪` contain `D.M ^ 2`. Let all conjugates of the values
-of `Ψ` have norm at most the integer `A`, and let `Q` be homogeneous of degree `d` with
-`‖σ (Q z)‖ ≤ B` whenever all `‖σ (z i)‖ ≤ D.M ^ 4`. Then the `σ`-conjugate of
+/-- Let `L`, `N` have at most `D.gap = 2 * D.r ^ 8` elements and let `d ≤ D.level`. Let the
+automorphic characters `a`, `b` of `U(1)` have exponents `ea`, `eb` at the infinite places and
+residue characters `ψ`, `ψ'` (`HasWeight`), and let `𝔪` contain `D.level ^ 2`. Let all conjugates of
+the values of `Ψ` have norm at most the integer `A`, and let `Q` be homogeneous of degree `d` with
+`‖σ (Q z)‖ ≤ B` whenever all `‖σ (z i)‖ ≤ D.level ^ 4`. Then the `σ`-conjugate of
 `modKernelScale L N D d` times the kernel has norm at most `exp D.x₁ * A * B`. -/
 lemma norm_modKernelScale_mul_modKernelStdSpace_le {P : Parameters} {D : Data P} {d : ℕ}
     {a b : AutChar D.E} {ea eb : InfinitePlace D.E → ℤ}
     {ψ ψ' : (w : FinPlace D.E) → MulChar (ResField w) ℂ} {𝔪 : Modulus D.E}
     {Ψ : Matrix N L 𝔪.ResidueRing → ℂ} {Q : MvPolynomial (InfinitePlace D.E × N × L) ℂ}
-    (hL : card L ≤ D.gap) (hN : card N ≤ D.gap) (hd : d ≤ D.M) (ha : a.HasWeight ea ψ)
-    (hb : b.HasWeight eb ψ') (h𝔪 : ↑(D.M ^ 2) ∈ 𝔪.ideal) {A : ℕ}
+    (hL : card L ≤ D.gap) (hN : card N ≤ D.gap) (hd : d ≤ D.level) (ha : a.HasWeight ea ψ)
+    (hb : b.HasWeight eb ψ') (h𝔪 : ↑(D.level ^ 2) ∈ 𝔪.ideal) {A : ℕ}
     (hA : ∀ (τ : ℂ ≃+* ℂ) (x : Matrix N L 𝔪.ResidueRing), ‖τ (Ψ x)‖ ≤ A) (hQ : Q.IsHomogeneous d)
     (σ : ℂ ≃+* ℂ) {B : ℝ} (hB : ∀ z : InfinitePlace D.E × N × L → ℂ,
-      (∀ i : InfinitePlace D.E × N × L, ‖σ (z i)‖ ≤ D.M ^ 4) → ‖σ (Q.eval z)‖ ≤ B)
+      (∀ i : InfinitePlace D.E × N × L, ‖σ (z i)‖ ≤ D.level ^ 4) → ‖σ (Q.eval z)‖ ≤ B)
     (g : Gf D.E L) (h : Gf D.E N) :
     ‖σ (modKernelScale L N D d * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h)‖ ≤
       exp D.x₁ * A * B := by
-  -- The normalised kernel is `(D.M ^ 2) ^ denomExp` times the jet along `Q` of the Taylor series
-  -- of `ω f₀`, where `f₀` is a combination of translates of the vacuum with small coefficients. The
-  -- conjugates of the jet are bounded by `norm_jet_le_of_isVacuumCombination`, and `exp D.x₁`
-  -- absorbs the constants.
+  -- The normalised kernel is `(D.level ^ 2) ^ denomExp` times the jet along `Q` of the Taylor
+  -- series of `ω f₀`, where `f₀` is a combination of translates of the vacuum with small
+  -- coefficients. The conjugates of the jet are bounded by `norm_jet_le_of_isVacuumCombination`,
+  -- and `exp D.x₁` absorbs the constants.
   let denomExp : ℕ := 2 * Core.numInfPlaces D.E * card (N × L)
   let V : Space D.E (N × L) (homSigns 1 1) := (stdSpace D.E L).hom (stdSpace D.E N)
   let f₀ : 𝒮 V := P.vacuumScale D.towerExp ^ card (N × L) • (vacuumDatum _ _ 𝔪 Ψ).val
   let ω : 𝒮 V →L[ℂ] 𝒮 V := pairWeil (stdSpace D.E L) (stdSpace D.E N) a b ((1, g), 1, h)
-  let J : ℂ := jet ℂ Q (V.jetSeries (D.M ^ 2 * P.d * P.jetScale D.towerExp) (ω f₀))
+  let J : ℂ := jet ℂ Q (V.jetSeries (D.level ^ 2 * P.d * P.jetScale D.towerExp) (ω f₀))
   have jet_eq : modKernelScale L N D d * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h =
-      (D.M ^ 2) ^ denomExp * J := by
+      (D.level ^ 2) ^ denomExp * J := by
     simp only [J, V, ω, f₀, jet_jetSeries_pairWeil_vacuumDatum hQ]
     simp [modKernelScale, denomExp, mul_assoc]
   have hB₀ : 0 ≤ B := (norm_nonneg _).trans (hB 0 (by simp))
@@ -333,56 +336,56 @@ lemma norm_modKernelScale_mul_modKernelStdSpace_le {P : Parameters} {D : Data P}
     simpa only [jetSizeBound, add_zero] using P.norm_jet_le_of_isVacuumCombination
       (isVacuumCombination_vacuumDatum A hA) g h hB₀ le_rfl
       (hasConjugateGrowth_of_isHomogeneous hd hQ σ hB)
-  calc _ = (D.M ^ 2) ^ denomExp * ‖σ J‖ := by simp [jet_eq]
-    _ ≤ (D.M ^ 2) ^ denomExp * (card (N × L → 𝔪.ResidueRing) * A * exp e * B) := by gcongr
-    _ = (D.M ^ 2) ^ denomExp * card (N × L → 𝔪.ResidueRing) * exp e * A * B := by ring
-    _ ≤ exp D.x₁ * A * B := by grw [M_pow_mul_card_mul_exp_le hL hN hd h𝔪]
+  calc _ = (D.level ^ 2) ^ denomExp * ‖σ J‖ := by simp [jet_eq]
+    _ ≤ (D.level ^ 2) ^ denomExp * (card (N × L → 𝔪.ResidueRing) * A * exp e * B) := by gcongr
+    _ = (D.level ^ 2) ^ denomExp * card (N × L → 𝔪.ResidueRing) * exp e * A * B := by ring
+    _ ≤ exp D.x₁ * A * B := by grw [level_pow_mul_card_mul_exp_le hL hN hd h𝔪]
 
 variable (L N) in
 /-- The constant `c` is a scale for the theta kernels `modKernelStdSpace` of the standard definite
 spaces `I_L`, `I_N` over the field `D.E` of the data `D`, for polynomials `Q` homogeneous of degree
 `d` and characters `a`, `b` with exponents `ea`, `eb` at the infinite places and tame parts `ψ`,
 `ψ'` (`HasWeight`): `c` times the kernel is integral at `p` when the input is, and its conjugates
-are bounded when `L`, `N`, `d` and the input are. Here the principal level `D.M` is a product of
+are bounded when `L`, `N`, `d` and the input are. Here the principal level `D.level` is a product of
 two primes, `D.gap = 2 * D.r ^ 8` with `D.r` the rank of the target (a power of `3`), and `D.x₁`
 is the second cut-off of `D`, a large integer. -/
 structure IsModKernelScale {P : Parameters} (D : Data P) (d : ℕ) (c : ℂ) : Prop where
-  /-- Let `𝔪` contain `q * D.M ^ 2` and let the values of `Ψ` be integral at the primes coprime
+  /-- Let `𝔪` contain `q * D.level ^ 2` and let the values of `Ψ` be integral at the primes coprime
   to `q`. If `p` is such a prime and `g`, `h` and the coefficients of `Q` are integral at `p`, then
   `c` times the kernel has `p`-adic norm at most `1`. -/
   norm_le_one {a b : AutChar D.E} {ea eb : InfinitePlace D.E → ℤ}
     {ψ ψ' : (w : FinPlace D.E) → MulChar (ResField w) ℂ} {𝔪 : Modulus D.E}
     {Ψ : Matrix N L 𝔪.ResidueRing → ℂ} {Q : MvPolynomial (InfinitePlace D.E × N × L) ℂ}
-    (ha : a.HasWeight ea ψ) (hb : b.HasWeight eb ψ') {q : ℕ} (hq : ↑(q * D.M ^ 2) ∈ 𝔪.ideal)
+    (ha : a.HasWeight ea ψ) (hb : b.HasWeight eb ψ') {q : ℕ} (hq : ↑(q * D.level ^ 2) ∈ 𝔪.ideal)
     (hΨ : ∀ x : Matrix N L 𝔪.ResidueRing, Ψ x ∈ Seesaw.integralAway q) (hQ : Q.IsHomogeneous d)
     {p : ℕ} [Fact p.Prime] [PadicPlace p] (hp : p.Coprime q) {g : Gf D.E L} {h : Gf D.E N}
     (hg : g ∈ integralAbove L p) (hh : h ∈ integralAbove N p)
     (hQ_int : Q ∈ (MvPolynomial.map embValRing.subtype).range) :
     ‖ιₚ (c * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h)‖ ≤ 1
-  /-- Let `L`, `N` have at most `D.gap` elements, let `d ≤ D.M` and let `𝔪` contain
-  `D.M ^ 2`. If `A` bounds all conjugates of the values of `Ψ`, and `B` bounds `σ ∘ Q` on the
-  polydisc `‖σ (z i)‖ ≤ D.M ^ 4`, then the `σ`-conjugate of `c` times the kernel has norm at
+  /-- Let `L`, `N` have at most `D.gap` elements, let `d ≤ D.level` and let `𝔪` contain
+  `D.level ^ 2`. If `A` bounds all conjugates of the values of `Ψ`, and `B` bounds `σ ∘ Q` on the
+  polydisc `‖σ (z i)‖ ≤ D.level ^ 4`, then the `σ`-conjugate of `c` times the kernel has norm at
   most `exp D.x₁ * A * B`. -/
   norm_map_le {a b : AutChar D.E} {ea eb : InfinitePlace D.E → ℤ}
     {ψ ψ' : (w : FinPlace D.E) → MulChar (ResField w) ℂ} {𝔪 : Modulus D.E}
     {Ψ : Matrix N L 𝔪.ResidueRing → ℂ} {Q : MvPolynomial (InfinitePlace D.E × N × L) ℂ}
-    (hL : card L ≤ D.gap) (hN : card N ≤ D.gap) (hd : d ≤ D.M) (ha : a.HasWeight ea ψ)
-    (hb : b.HasWeight eb ψ') (h𝔪 : ↑(D.M ^ 2) ∈ 𝔪.ideal) {A : ℕ}
+    (hL : card L ≤ D.gap) (hN : card N ≤ D.gap) (hd : d ≤ D.level) (ha : a.HasWeight ea ψ)
+    (hb : b.HasWeight eb ψ') (h𝔪 : ↑(D.level ^ 2) ∈ 𝔪.ideal) {A : ℕ}
     (hA : ∀ (τ : ℂ ≃+* ℂ) (x : Matrix N L 𝔪.ResidueRing), ‖τ (Ψ x)‖ ≤ A) (hQ : Q.IsHomogeneous d)
     (σ : ℂ ≃+* ℂ) {B : ℝ} (hB : ∀ z : InfinitePlace D.E × N × L → ℂ,
-      (∀ i : InfinitePlace D.E × N × L, ‖σ (z i)‖ ≤ D.M ^ 4) → ‖σ (Q.eval z)‖ ≤ B)
+      (∀ i : InfinitePlace D.E × N × L, ‖σ (z i)‖ ≤ D.level ^ 4) → ‖σ (Q.eval z)‖ ≤ B)
     (g : Gf D.E L) (h : Gf D.E N) :
     ‖σ (c * modKernelStdSpace (stdSpace D.E L) a b 𝔪 Ψ Q (1, g) h)‖ ≤ exp D.x₁ * A * B
 
 /-- Integrality and size of the theta kernels `modKernelStdSpace` of the standard definite spaces
 `I_L`, `I_N` over the field `D.E` of the data `D`, built from a function `Ψ` on matrices modulo `𝔪`
 and a polynomial `Q` homogeneous of degree `d`. There is a constant `c ≠ 0`, depending only on `L`,
-`N`, `D` and `d`, with the two properties of `IsModKernelScale`. If `𝔪` contains `q * D.M ^ 2`, the
-values of `Ψ` are integral away from `q`, and the points `g`, `h` and the coefficients of `Q` are
-integral at a prime `p` coprime to `q`, then `c` times the kernel is integral at `p`. If `L`, `N`
-have at most `D.gap` elements, `d ≤ D.M`, `𝔪` contains `D.M ^ 2`, `A` bounds the conjugates of the
-values of `Ψ` and `B` bounds `σ ∘ Q` on the polydisc `‖σ (z i)‖ ≤ D.M ^ 4`, then the `σ`-conjugate
-of `c` times the kernel has norm at most `exp D.x₁ * A * B`. -/
+`N`, `D` and `d`, with the two properties of `IsModKernelScale`. If `𝔪` contains `q * D.level ^ 2`,
+the values of `Ψ` are integral away from `q`, and the points `g`, `h` and the coefficients of `Q`
+are integral at a prime `p` coprime to `q`, then `c` times the kernel is integral at `p`. If `L`,
+`N` have at most `D.gap` elements, `d ≤ D.level`, `𝔪` contains `D.level ^ 2`, `A` bounds the
+conjugates of the values of `Ψ` and `B` bounds `σ ∘ Q` on the polydisc `‖σ (z i)‖ ≤ D.level ^ 4`,
+then the `σ`-conjugate of `c` times the kernel has norm at most `exp D.x₁ * A * B`. -/
 lemma exists_ne_zero_isModKernelScale (L N : Type) [Fintype L] [DecidableEq L] [Fintype N]
     [DecidableEq N] {P : Parameters} (D : Data P) (d : ℕ) :
     ∃ c : ℂ, c ≠ 0 ∧ IsModKernelScale L N D d c :=
