@@ -44,6 +44,42 @@ sources.
 
 namespace New
 
+section
+
+open Matrix
+
+private lemma map_evalAt_cutGL_val {E' n : Type _} [Field E'] [CMType E'] [Fintype n]
+    [DecidableEq n] (S : Set (FinPlace E')) (M : GL n (𝔸f E')) (u : FinPlace E')
+    [Decidable (u ∈ S)] :
+    (cutGL (idem_mul_self S) M).val.map (evalAt u) =
+      if u ∈ S then M.val.map (evalAt u) else 1 := by
+  simpa [apply_ite] using congrArg Units.val (map_evalAt_cutGL u S M)
+
+private lemma map_evalAt_idem_smul {E' n : Type _} [Field E'] [CMType E'] [Fintype n]
+    [DecidableEq n] (S : Set (FinPlace E')) (M : Matrix n n (𝔸f E')) (u : FinPlace E')
+    [Decidable (u ∈ S)] :
+    (idem S • M).map (evalAt u) = if u ∈ S then M.map (evalAt u) else 0 := by
+  ext i j
+  by_cases hu : u ∈ S <;> simp [hu]
+
+private lemma map_evalAt_one_add_idem_sub {E' n : Type _} [Field E'] [CMType E'] [Fintype n]
+    [DecidableEq n] (S : Set (FinPlace E')) (M : Matrix n n (𝔸f E')) (u : FinPlace E')
+    [Decidable (u ∈ S)] :
+    (1 + idem S • (M - 1)).map (evalAt u) = if u ∈ S then M.map (evalAt u) else 1 := by
+  ext i j
+  by_cases hu : u ∈ S <;> by_cases hij : i = j <;> simp [Matrix.one_apply, hu, hij]
+
+private lemma map_evalAt_cutGL_conjTranspose {E' n : Type _} [Field E'] [CMType E'] [Fintype n]
+    [DecidableEq n] (S : Set (FinPlace E')) (M : GL n (𝔸f E')) (u : FinPlace E')
+    [Decidable (star u ∈ S)] :
+    (cutGL (idem_mul_self S) M).valᴴ.map (evalAt u) =
+      if star u ∈ S then M.valᴴ.map (evalAt u) else 1 := by
+  ext i j
+  by_cases hu : star u ∈ S <;> by_cases hij : i = j <;>
+    simp [cutGL, Matrix.one_apply, star_idem, hu, hij]
+
+end
+
 section MatchedPlacePairs
 
 open Set Matrix RingHom Polynomial Gf Variety Module
@@ -52,7 +88,6 @@ variable {E E' n W : Type _} [Field E] [CMType E] [Field E'] [CMType E'] [Algebr
   [DecidableEq n] {σ : Gal(E'/E)} [AddCommGroup W] [Module ℂ W]
   {π : Representation ℂ (Gf E' n) W} {u : FinPlace E'}
 
-attribute [-simp] evalAt_apply in
 /-- Let `E'/E` be a step for `μ` and `σ` an element of `Gal(E'/E)`. Let `T` be a set of places of
 `E` at which `μ` is trivial and which contains no place together with its conjugate, and let `B`
 be the set of places of `E'` above `T` and its conjugates. Let `z` be a polynomial over the finite
@@ -76,8 +111,6 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
   classical
   -- The norm of `z`, evaluated at a unitary `g` with characteristic polynomial `P`, is `g` at the
   -- places above `T` and `1` elsewhere. So it is invertible, which makes `z` prime to `P`.
-  have ev_idem (u : FinPlace E') (S : Set (FinPlace E')) :
-      evalAt u (idem S) = if u ∈ S then 1 else 0 := idem_apply S u
   have mem_B (u : FinPlace E') : u ∈ B ↔ u.below E ∈ T ∨ star (u.below E) ∈ T := by
     rw [hB]
     rfl
@@ -85,9 +118,12 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
   · -- off `B` the polynomial `z` is `1`
     ext i u
     by_cases huB : u ∈ B
-    · simp [← evalAt_apply, ev_idem, huB]
+    · simp [huB]
     · have hz_u : z.map (evalAt u) = 1 := hz u fun hu ↦ huB ((mem_B u).2 (.inl hu))
-      simp [← evalAt_apply, ← coeff_map, ev_idem, huB, hz_u]
+      have h_coeff : (z.coeff i) u = ((1 : (𝔸f E')[X]).coeff i) u := by
+        rw [← evalAt_apply, ← evalAt_apply, ← coeff_map, ← coeff_map, hz_u,
+          Polynomial.map_one]
+      simp [huB, h_coeff]
   · rintro g rfl
     have h_norm : (twistedNorm (Polynomial.map (adeleMap σ)) p z).aeval g.val.val =
         cutGL (idem_mul_self (FinPlace.below E ⁻¹' T)) g.val := by
@@ -98,14 +134,14 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
         have h_norm_u : (twistedNorm (Polynomial.map (adeleMap σ)) p z).map (evalAt u) =
             g.val.val.charpoly.map (evalAt u) * q + X := sub_eq_iff_eq_add.1 hq
         rw [map_aeval_matrix, h_norm_u]
-        simp [ev_idem, hu, aeval_self_charpoly, ← charpoly_map, cutGL, Matrix.map_add, map_smul']
+        simp [map_evalAt_cutGL_val, hu, aeval_self_charpoly, ← charpoly_map]
       · -- no conjugate of `u` lies above `T`, so every factor of the norm is `1` at `u`
         have h_conj (f : E' →+* E') : (z.map (adeleMap f)).map (evalAt u) =
             (z.map (evalAt (u.comap f))).map (locMap f rfl) :=
           (z.map_map (adeleMap f) (evalAt u)).trans
             (z.map_map (evalAt (u.comap f)) (locMap f rfl)).symm
-        simp [h_conj, hz, hu, ev_idem, twistedNorm_map_eq_prod, adeleMap_gal_pow, map_aeval_matrix,
-          Polynomial.map_prod, cutGL, Matrix.map_add, map_smul']
+        simp [h_conj, hz, hu, map_evalAt_cutGL_val, twistedNorm_map_eq_prod, adeleMap_gal_pow,
+          map_aeval_matrix, Polynomial.map_prod]
     have h_coprime :
         IsCoprime g.val.val.charpoly (∏ i ∈ .range p, z.map (adeleMap σ ^ i)) := by
       rw [← twistedNorm_map_eq_prod, ← isUnit_aeval_iff_isCoprime, h_norm]
@@ -130,11 +166,11 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
       -- other places `1 * 1 = 1`
       rw [h_norm]
       by_cases hu : u.below E ∈ T
-      · simp [← U.inv_val_eq_conjTranspose, Matrix.map_sub, ev_idem, mem_B, hu, hT _ hu, cutGL,
-          star_idem, Matrix.map_add, map_smul', below_star]
+      · simp [map_evalAt_cutGL_val, map_evalAt_one_add_idem_sub, map_evalAt_cutGL_conjTranspose,
+          mem_B, hu, hT _ hu, below_star]
       · by_cases hu' : star (u.below E) ∈ T <;>
-          simp [← U.inv_val_eq_conjTranspose, Matrix.map_sub, ev_idem, mem_B, hu, hu', cutGL,
-            star_idem, Matrix.map_add, map_smul', below_star]
+          simp [← U.inv_val_eq_conjTranspose, map_evalAt_cutGL_val, map_evalAt_one_add_idem_sub,
+            map_evalAt_cutGL_conjTranspose, mem_B, hu, hu', below_star]
   · -- take `ha` at `u`: the adjoint factor comes from `star u`, not above `T`, where `z = 1`
     have h_adj (M : Matrix n n (𝔸f E')) :
         Mᴴ.map (evalAt u) = (M.map (evalAt (star u)))ᵀ.map (conjLoc (star_star u)) := rfl
@@ -143,7 +179,7 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
       congrArg (Matrix.map · (evalAt u)) ha
     change (a : Matrix n n (𝔸f E')).map (evalAt u) =
       aeval ((γ : Matrix n n (𝔸f E')).map (evalAt u)) (z.map (evalAt u))
-    simpa [hB, mem_B, ev_idem, hz, hT, hu, h_adj, placesAbove, star_idem, map_smul', below_star,
+    simpa [hB, mem_B, map_evalAt_idem_smul, hz, hT, hu, h_adj, placesAbove, star_idem, below_star,
       map_aeval_matrix] using ha_u
 
 /-- Let `π` be a representation of the unitary group over `E'`, let `u` be a split place of `E'`
