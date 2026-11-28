@@ -17,6 +17,9 @@ steps from pure data to arbitrary tensors of the data.
 
 * `New.index_stabilizer_GL_vector`: over a field `F`, the stabiliser in `GL n F` of a nonzero
   vector has index `|F| ^ |n| - 1`, by orbit-stabiliser.
+* `New.Seesaw.index_pi_univ`: in a finite product of groups, the index of a product of subgroups
+  is the product of their indices (a known result; Mathlib's `Subgroup.index_pi` is the case where
+  all the factors are the same group).
 * `New.TensorChain`: the tensor product `S (j-1) ⊗ (⋯ ⊗ (S 0 ⊗ ℂ))`, which is `ℂ` for `j = 0`.
 * `New.TensorChain.lift`, `New.TensorChain.lift_pure`: for `x` in `M 0`, the linear map to `M j`
   that sends a pure tensor to the composite (`New.compUpTo`) of the maps `b i (f i)`, `i < j`,
@@ -84,6 +87,19 @@ lemma New.index_stabilizer_GL_vector {F : Type*} [Field F] {u : n → F} (hu : u
     Nat.card_eq_fintype_card (α := n)]
 
 end CompositionChain
+
+/-- In a finite product of groups `G i`, the index of the product `∏ i, H i` of subgroups
+`H i ≤ G i` is the product of the indices of the `H i`. An infinite index is read as `0`.
+Mathlib's `Subgroup.index_pi` is the case where all the factors are the same group. -/
+lemma New.Seesaw.index_pi_univ {I : Type*} {G : I → Type*} [Fintype I] [∀ i : I, Group (G i)]
+    (H : ∀ i : I, Subgroup (G i)) :
+    (Subgroup.pi Set.univ H).index = ∏ i : I, (H i).index := by
+  -- The cosets of a product subgroup are the tuples of cosets.
+  let cosets : (∀ i : I, G i ⧸ H i) ≃ (∀ i : I, G i) ⧸ Subgroup.pi Set.univ H :=
+    (Setoid.piQuotientEquiv fun i : I ↦ QuotientGroup.leftRel (H i)).trans
+      (Quotient.congrRight fun x y ↦ by rw [QuotientGroup.leftRel_pi H])
+  simp only [Subgroup.index_eq_card]
+  rw [← Nat.card_congr cosets, Nat.card_pi]
 
 /-!
 ## Iterated tensor products of data and the multilinear chain of maps

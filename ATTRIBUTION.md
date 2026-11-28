@@ -72,7 +72,7 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/General/Geometry/GeometricPoints.lean` | instance `Flat (fromSpecStalk Z s)` | `AlgebraicGeometry.IsAffineOpen.fromSpecStalk_isPreimmersion` | `Mathlib/AlgebraicGeometry/Stalk.lean` |
 | `src/Lib/General/Geometry/PointsOfProperSchemes.lean` | `New.Variety.isProperOver_pointsToBase` | `AlgebraicGeometry.IsSeparated.hasAffineProperty` | `Mathlib/AlgebraicGeometry/Morphisms/Separated.lean` |
 | `src/Lib/General/Geometry/PointsOfProperSchemes.lean` | `le_ker_iff_factors` | `AlgebraicGeometry.eq_bot_of_comp_quotientMk_eq_sigmaSpec` | `Mathlib/AlgebraicGeometry/PointsPi.lean` |
-| `src/Lib/General/Groups/IndexOfProduct.lean` | `New.Seesaw.index_pi_univ` | `Subgroup.index_pi` | `Mathlib/GroupTheory/Index.lean` |
+| `src/Lib/General/LinearAlgebra/TensorChains.lean` | `New.Seesaw.index_pi_univ` | `Subgroup.index_pi` | `Mathlib/GroupTheory/Index.lean` |
 | `src/Lib/General/LinearAlgebra/PolarDecomposition.lean` | `New.exists_orthonormal_mul` | `LDL.lowerInv`, `IsWellFounded.wellOrderExtension` | `Mathlib/Analysis/Matrix/LDL.lean`, `Mathlib/Order/Extension/Well.lean` |
 | `src/Lib/General/Measure/IntegralOperators.lean` | `New.IsL2Contraction.pi_fin` | `MeasureTheory.Integrable.fin_nat_prod`, `MeasureTheory.integral_fin_nat_prod_eq_prod` | `Mathlib/MeasureTheory/Integral/Pi.lean` |
 | `src/Lib/General/Measure/IntegralOperators.lean` | `New.IsL2Contraction.pi` | `MeasureTheory.integral_fintype_prod_eq_prod` | `Mathlib/MeasureTheory/Integral/Pi.lean` |
