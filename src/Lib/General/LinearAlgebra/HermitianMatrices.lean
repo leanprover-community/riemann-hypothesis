@@ -57,19 +57,8 @@ lemma New.norm_det_le_norm_det_of_posSemidef (hP : P.PosSemidef) (h_le : (Q - P)
 `|det A|² ≤ |det P| * |det Q|`. -/
 lemma New.norm_det_sq_le_of_posSemidef {A B : Matrix ι ι ℂ} (h : (fromBlocks P A B Q).PosSemidef) :
     ‖A.det‖ ^ 2 ≤ ‖P.det‖ * ‖Q.det‖ := by
-  by_cases hQ : Q.det = 0
-  · obtain ⟨v, hv, hQv⟩ := exists_mulVec_eq_zero_iff.2 hQ
-    have hAv : A *ᵥ v = 0 := by simpa using h.toBlocks₁₂_mulVec_eq_zero hQv
-    simp [hQ, exists_mulVec_eq_zero_iff.1 ⟨v, hv, hAv⟩]
-  -- Otherwise `Q` is positive definite and the Schur complement `P - A Q⁻¹ Aᴴ` is semidefinite.
-  have hQ_pos : Q.PosDef := (h.submatrix Sum.inr).posDef_iff_det_ne_zero.2 hQ
-  let : Invertible Q := hQ_pos.isUnit.invertible
-  obtain ⟨-, rfl, -, -⟩ := isHermitian_fromBlocks_iff.1 h.isHermitian
-  have h_schur : (P - A * Q⁻¹ * Aᴴ).PosSemidef := (hQ_pos.fromBlocks₂₂ P A).1 h
-  have h_det : ‖(A * Q⁻¹ * Aᴴ).det‖ ≤ ‖P.det‖ :=
-    norm_det_le_norm_det_of_posSemidef (hQ_pos.inv.posSemidef.mul_mul_conjTranspose_same A) h_schur
-  have h_left : ‖(A * Q⁻¹ * Aᴴ).det‖ = ‖A.det‖ ^ 2 / ‖Q.det‖ := by simp [field]
-  rwa [h_left, div_le_iff₀ (norm_pos_iff.2 hQ)] at h_det
+  obtain ⟨_, rfl, _, _⟩ := isHermitian_fromBlocks_iff.1 h.isHermitian
+  exact h.norm_det_sq_le_of_fromBlocks
 
 /-- Gram–Schmidt for a positive definite matrix `G`: there is a lower triangular matrix `Γ` whose
 columns are orthonormal for `G`. -/
