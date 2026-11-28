@@ -82,6 +82,23 @@ def _root_.New.SpansBranchingMaps (e₀ e : Φ → ℤ)
         T * weylRep κ e x = weylRep κ₀ e₀ g * T) →
     ∃ a : ℂ, T = a • A
 
+/-- A polynomial `P` in the entries of the matrices `z τ` which vanishes on the image of
+`M ↦ (u + M - u * U M) * (1 + U M)` is zero everywhere: that map is a submersion at `0`, its
+derivative there being the identity. -/
+private lemma eq_zero_of_forall_evalMatrix_eq_zero
+    (u : ∀ τ : Φ, Matrix (N τ) (N τ) ℂ)
+    (U : (∀ τ : Φ, Matrix (N τ) (N τ) ℂ) →L[ℂ] ∀ τ : Φ, Matrix (N τ) (N τ) ℂ)
+    (P : MvPolynomial ((τ : Φ) × N τ × N τ) ℂ)
+    (h : ∀ M : ∀ τ : Φ, Matrix (N τ) (N τ) ℂ,
+        evalMatrix ((u + (1 - u • U) M) * (1 + U M)) P = 0) :
+    ∀ z : ∀ τ : Φ, Matrix (N τ) (N τ) ℂ, evalMatrix z P = 0 := by
+  intro z
+  refine eq_zero_of_submersion analyticOnNhd_evalMatrix
+    (((1 - u • U).hasStrictFDerivAt.const_add u).fun_mul' (U.hasStrictFDerivAt.const_add 1))
+    (a := 0) ?_ (.of_forall h) z
+  -- Product rule; as `U 0 = 0`, the derivative at `0` is `u * U M + (M - u * U M) = M`.
+  simp [Module.End.one_eq_id]
+
 /-- There is a complex vector `v` whose images `schur κ (diag(g, 1)) *ᵥ v`, for `g` ranging over
 tuples of lower triangular matrices on the rows `n τ`, span the whole space: a row vector `r`
 killing all of them is zero. Here `schur κ` is the Schur matrix, acting on the vectors indexed by
@@ -174,11 +191,7 @@ lemma exists_cyclic_lower_triangular (κ : Φ → ℕ → ℕ) :
     simp [Pi.mul_def, hr g hg, schur_mul_left, h_eigen, ← mulVec_mulVec, mulVec_smul]
   have h_zero (z : ∀ τ : Φ, Matrix (N τ) (N τ) ℂ) : r ⬝ᵥ schur κ z *ᵥ v = 0 := by
     rw [← hP]
-    refine eq_zero_of_submersion analyticOnNhd_evalMatrix
-      (((1 - u • U).hasStrictFDerivAt.const_add u).fun_mul' (U.hasStrictFDerivAt.const_add 1))
-      (a := 0) ?_ (.of_forall h_vanish) z
-    -- Product rule; as `U 0 = 0`, the derivative at `0` is `u * U M + (M - u * U M) = M`.
-    simp [Module.End.one_eq_id]
+    exact eq_zero_of_forall_evalMatrix_eq_zero u U P h_vanish z
   -- The vectors `schur κ g *ᵥ v` span (`ext_schur_weylEval`), and `r` is orthogonal to all of them.
   refine (dotProductEquiv ℂ (WeylIndexFamily N κ)).injective (ext_schur_weylEval E fun g ↦ ?_)
   simpa [v] using h_zero fun τ : Φ ↦ (g τ).val
