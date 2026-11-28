@@ -414,23 +414,13 @@ lemma sum_tuplesOn_union {ϑ : D.MFoldTwist} {w w' : Finset (GridNode × GridNod
     (hw : Disjoint w w') (F : EdgeTuple ϑ → ℂ) :
     ∑ S ∈ tuplesOn ϑ (w ∪ w'), F S =
       ∑ S ∈ tuplesOn ϑ w, ∑ S' ∈ tuplesOn ϑ w', F (w.piecewise S S') := by
-  rw [← sum_product']
-  -- The inverse of gluing cuts a tuple into its parts on `w` and off `w`.
-  refine sum_nbij' (fun S ↦ (w.piecewise S 0, w.piecewise 0 S)) (fun p ↦ w.piecewise p.1 p.2)
-    (fun S hS ↦ by
-      simp only [mem_product, mem_tuplesOn] at hS ⊢
-      refine ⟨fun e he ↦ by simp [Finset.piecewise, he], fun e he ↦ ?_⟩
-      by_cases h : e ∈ w
-      · simp [Finset.piecewise, h]
-      · simp [Finset.piecewise, h, hS e (by simp [h, he])])
-    (fun p hp ↦ by
-      simp only [mem_product, mem_tuplesOn] at hp ⊢
-      intro e he
-      simp only [mem_union, not_or] at he
-      simp [Finset.piecewise, he.1, hp.2 e he.2])
-    (fun S _ ↦ by simp [piecewise_same]) (fun p hp ↦ ?_) fun S _ ↦ by simp [piecewise_same]
-  simp only [mem_product, mem_tuplesOn] at hp
-  ext e : 2 <;> by_cases he : e ∈ w <;> simp [he, hp, disjoint_left.1 hw]
+  rw [sum_tuplesOn_union_updateFinset hw]
+  refine sum_congr rfl fun S hS ↦ ?_
+  rw [sum_tuplesOn]
+  refine sum_congr rfl fun y _ ↦ congrArg F (funext fun e ↦ ?_)
+  by_cases he : e ∈ w
+  · simp [updateFinset, he, disjoint_left.mp hw he]
+  · simp [updateFinset, he, mem_tuplesOn.mp hS e he]
 
 /-- The edges of the column from `(0, m)` down to `(0, b)` in the grid `z` are those from `(0, i)`
 to `(0, i + 1)` with `b ≤ i < m`. -/

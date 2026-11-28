@@ -474,10 +474,14 @@ open Exchange Space
 
 variable {P : Parameters} {D : Data P} (ϑ : D.MFoldTwist)
 
+/-- Matrices attached to the edge `e`, with columns indexed by its source and rows by its target. -/
+abbrev EdgeMatrix (e : GridNode × GridNode) : Type :=
+  Matrix (D.NodeIndex e.2) (D.NodeIndex e.1) (gridModulus ϑ).ResidueRing
+
 /-- A matrix modulo `𝔪` for each pair of nodes, where `𝔪` is `New.Data.gridModulus` of the twist
 `ϑ`. -/
 abbrev EdgeTuple : Type :=
-  ∀ e : GridNode × GridNode, Matrix (D.NodeIndex e.2) (D.NodeIndex e.1) (gridModulus ϑ).ResidueRing
+  ∀ e, EdgeMatrix ϑ e
 
 /-- An invertible matrix modulo `𝔪` for each node. -/
 abbrev NodeFamily : Type := ∀ p : GridNode, GL (D.NodeIndex p) (gridModulus ϑ).ResidueRing
@@ -583,32 +587,38 @@ lemma tuplesOn_empty : tuplesOn ϑ ∅ = {0} := by
   ext S
   simp [mem_tuplesOn, funext_iff]
 
+/-- Sum over the edge matrices on `w` by extending each assignment by zero outside `w`. -/
+lemma sum_tuplesOn {M : Type*} [AddCommMonoid M] (w : Finset (GridNode × GridNode))
+    (F : EdgeTuple ϑ → M) :
+    ∑ S ∈ tuplesOn ϑ w, F S = ∑ x, F (updateFinset 0 w x) := by
+  classical
+  rw [tuplesOn, sum_image]
+  intro x _ y _ h
+  simpa only [restrict_updateFinset] using congrArg w.restrict h
+
+/-- To enumerate tuples on disjoint edge sets, first choose a tuple on `w`, then fill in the
+matrices on `w'`. -/
+lemma sum_tuplesOn_union_updateFinset {w w' : Finset (GridNode × GridNode)} (hw : Disjoint w w')
+    {M : Type*} [AddCommMonoid M] (F : EdgeTuple ϑ → M) :
+    ∑ S ∈ tuplesOn ϑ (w ∪ w'), F S = ∑ S ∈ tuplesOn ϑ w, ∑ y, F (updateFinset S w' y) := by
+  rw [sum_tuplesOn, sum_tuplesOn,
+    ← (Equiv.piFinsetUnion (EdgeMatrix ϑ) hw).sum_comp (fun x ↦ F (updateFinset 0 (w ∪ w') x)),
+    Fintype.sum_prod_type]
+  exact sum_congr rfl fun x _ ↦ sum_congr rfl fun y _ ↦
+    congrArg F (updateFinset_updateFinset (x := 0) (y := x) (z := y) hw).symm
+
 /-- Let `edges` be a finite set of pairs of nodes and `e` a pair not in it; `tuplesOn ϑ edges` is
 the set of tuples of matrices modulo `𝔪 = gridModulus ϑ` that vanish outside `edges`. A sum over
 the tuples on `insert e edges` is a sum over the tuples on `edges` and over the matrix at `e`. -/
 lemma sum_tuplesOn_insert {edges : Finset (GridNode × GridNode)} {e : GridNode × GridNode}
     {M : Type*} [AddCommMonoid M] (he : e ∉ edges) (F : EdgeTuple ϑ → M) :
     ∑ S ∈ tuplesOn ϑ (insert e edges), F S =
-      ∑ S ∈ tuplesOn ϑ edges,
-        ∑ y : Matrix (D.NodeIndex e.2) (D.NodeIndex e.1) (gridModulus ϑ).ResidueRing,
-          F (update S e y) := by
-  rw [← sum_product']
-  -- split off the matrix at `e`; the inverse map puts it back
-  refine sum_nbij' (fun S ↦ (update S e 0, S e)) (fun p ↦ update p.1 e p.2)
-    (fun S hS ↦ ?_) (fun p hp ↦ ?_) (fun S _ ↦ by simp) (fun p hp ↦ ?_) fun S _ ↦ by simp
-  · refine mem_product.2 ⟨mem_tuplesOn.2 fun e' he' ↦ ?_, mem_univ _⟩
-    change update S e 0 e' = 0
-    by_cases h : e' = e
-    · rw [h]
-      exact update_self e 0 S
-    · rw [update_of_ne h]
-      exact mem_tuplesOn.1 hS e' fun h' ↦ (mem_insert.1 h').elim h he'
-  · refine mem_tuplesOn.2 fun e' he' ↦ ?_
-    have h : e' ≠ e := fun h' ↦ he' (h' ▸ mem_insert_self e edges)
-    rw [update_of_ne h]
-    exact mem_tuplesOn.1 (mem_product.1 hp).1 e' fun h' ↦ he' (mem_insert_of_mem h')
-  · have h_zero : p.1 e = 0 := mem_tuplesOn.1 (mem_product.1 hp).1 e he
-    simp [← h_zero]
+      ∑ S ∈ tuplesOn ϑ edges, ∑ y : EdgeMatrix ϑ e, F (update S e y) := by
+  rw [← union_singleton, sum_tuplesOn_union_updateFinset (disjoint_singleton_right.mpr he)]
+  refine sum_congr rfl fun S _ ↦ ?_
+  simp only [updateFinset_singleton]
+  exact (Equiv.piUnique fun i : ({e} : Finset _) ↦ EdgeMatrix ϑ i).sum_comp
+    (fun z ↦ F (update S e z))
 
 /-- A sum over the tuples supported on `w` does not change when each tuple is moved by a family of
 invertible matrices at the nodes. -/
