@@ -908,37 +908,24 @@ lemma IsChartOf.exists_mulVec_extendToBPlus_eq_smul (hc : IsChartOf c 𝒥.toGp)
   have hM_dR : M.val.map (algebraMap Bmax BdR) =
       hodgeMatrix W.val k * Y.val.adjugate.map (algebraMap (PadicAlgCl p) BdR) := by
     simpa [← map_inv] using (Y.toGL.map _).eq_mul_inv_iff_mul_eq.mpr h_hodge
-  have hs_dR (l : ι) :
-      ∑ j, algebraMap (PadicAlgCl p) BdR (Y.val.adjugate l j) *
-          algebraMap BPlus BdR (c.extendToBPlus f (y j)) =
-        (∑ j, algebraMap (PadicAlgCl p) BdR (Y.val.adjugate l j) * algebraMap BPlus BdR (y j)) *
-          algebraMap BdRPlus BdR (s l) := by
-    simpa [← IsScalarTower.algebraMap_apply] using congrArg (algebraMap BdRPlus BdR) (hs l)
+  -- Row by row (`hs`), `adj(Y)` times the extended vector is `diag(s)` times `adj(Y) y`.
+  have h_rows : Y.val.adjugate.map (algebraMap (PadicAlgCl p) BdR) *ᵥ
+        (fun j ↦ algebraMap BPlus BdR (c.extendToBPlus f (y j))) =
+      (diagonal fun l ↦ algebraMap BdRPlus BdR (s l)) *ᵥ
+        (Y.val.adjugate.map (algebraMap (PadicAlgCl p) BdR) *ᵥ
+          fun j ↦ algebraMap BPlus BdR (y j)) := by
+    ext l
+    rw [mulVec_diagonal]
+    simpa [mulVec, dotProduct, mul_comm, ← IsScalarTower.algebraMap_apply] using
+      congrArg (algebraMap BdRPlus BdR) (hs l)
   -- As `U = (E τ) ^ a W t ^ k Y⁻¹` over `BdR`, `U (c.extendToBPlus f ∘ y) = W diag(s) W⁻¹ (U y)`.
   have h_mulVec_extend : ((W.val * diagonal s * W.inv) *ᵥ algebraMap BPlus BdRPlus ∘ (U *ᵥ y)) i =
       algebraMap BPlus BdRPlus ((U *ᵥ c.extendToBPlus f ∘ y) i) := by
     simp [RingHom.map_mulVec, ← coe_inj _ BdR, mul_assoc, comp_def,
       ← IsScalarTower.algebraMap_apply]
     simp [hU_dR, hM_dR, ← mul_assoc, hodgeMatrix, smul_mulVec]
-    -- As `U = (E τ) ^ a W t ^ k adj(Y)` over `BdR`, both sides are `(E τ) ^ a W` times a vector.
-    change (c.E.val * tau) ^ a •
-        (((W.val.map (algebraMap BdRPlus BdR) *
-            diagonal fun j ↦ algebraMap BdRPlus BdR (s j) * (tUnit : BdR) ^ k j) *
-          Y.val.adjugate.map (algebraMap (PadicAlgCl p) BdR)) *ᵥ
-          fun j ↦ algebraMap BPlus BdR (y j)) i =
-      (c.E.val * tau) ^ a •
-        (((W.val.map (algebraMap BdRPlus BdR) * diagonal fun j ↦ (tUnit : BdR) ^ k j) *
-          Y.val.adjugate.map (algebraMap (PadicAlgCl p) BdR)) *ᵥ
-          fun j ↦ algebraMap BPlus BdR (c.extendToBPlus f (y j))) i
-    -- Row by row (`hs_dR`), `adj(Y)` times the extended vector is `diag(s)` times `adj(Y) y`.
-    have h_rows : Y.val.adjugate.map (algebraMap (PadicAlgCl p) BdR) *ᵥ
-          (fun j ↦ algebraMap BPlus BdR (c.extendToBPlus f (y j))) =
-        (diagonal fun l ↦ algebraMap BdRPlus BdR (s l)) *ᵥ
-          (Y.val.adjugate.map (algebraMap (PadicAlgCl p) BdR) *ᵥ
-            fun j ↦ algebraMap BPlus BdR (y j)) := by
-      ext l
-      rw [mulVec_diagonal]
-      simpa [mulVec, dotProduct, mul_comm] using hs_dR l
+    -- Both sides have the outer factor (E τ)^a W. Commute the diagonal factors on the left,
+    -- then use h_rows to identify the two vectors.
     have h_diag : (diagonal fun j ↦ algebraMap BdRPlus BdR (s j) * (tUnit : BdR) ^ k j) =
         (diagonal fun j ↦ (tUnit : BdR) ^ k j) * diagonal fun j ↦ algebraMap BdRPlus BdR (s j) := by
       rw [diagonal_mul_diagonal]
